@@ -8,7 +8,7 @@ namespace DotNetDupe {
             BasicSystemException(const CharT* pchMessage);
         };
         template <class CharT>
-        inline BasicSystemException<CharT>::BasicSystemException(const CharT* pchMessage) : BasicException(pchMessage) { }
+        inline BasicSystemException<CharT>::BasicSystemException(const CharT* pchMessage) : BasicException<CharT>(pchMessage) { }
     }
 }
 

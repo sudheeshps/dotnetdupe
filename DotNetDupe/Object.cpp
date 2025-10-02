@@ -3,10 +3,12 @@
 namespace DotNetDupe {
     namespace System {
         bool Object::operator==(const Object& obj) const {
+            if (this == &obj) return true;
             return *this == obj;
         }
 
         bool Object::Equals(const Object& obj) {
+            if (this == &obj) return true;
             return *this == obj;
         }
 

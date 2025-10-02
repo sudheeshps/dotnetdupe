@@ -168,5 +168,101 @@ namespace SystemTests {
                 EXPECT_EQ(std::find(invalidChars.begin(), invalidChars.end(), validChar), invalidChars.end());
             }
         }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Drive_Root) {
+            String path = _T("C:\\folder\\file.txt");
+            String actualRoot = Path::GetPathRoot(path);
+            String expectedRoot = _T("C:\\");
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_UNC_Root) {
+            String path = _T("\\Server\\Share\\folder\\file.txt");
+            String actualRoot = Path::GetPathRoot(path);
+            String expectedRoot = _T("\\Server\\Share");
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Volume_Separator_Root) {
+            EXPECT_TRUE(Path::GetPathRoot(_T("C:\\")) == _T("C:\\"));
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Empty_String_For_Relative_Path) {
+            EXPECT_TRUE(Path::GetPathRoot(_T("folder\\file.txt")) == _T(""));
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Empty_String_For_Empty_Path) {
+            EXPECT_TRUE(Path::GetPathRoot(_T("")) == _T(""));
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Drive_Root_With_Trailing_Slash) {
+            String path = _T("D:\\");
+            String actualRoot = Path::GetPathRoot(path);
+            String expectedRoot = _T("D:\\");
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_UNC_Root_With_Trailing_Slash) {
+            String path = _T("\\Server\\Share\\");
+            String actualRoot = Path::GetPathRoot(path);
+            String expectedRoot = _T("\\Server\\Share");
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+        }
+
+        TEST(PathTest, GetPathRoot_Should_Return_Empty_String_For_File_Name_Only) {
+            EXPECT_TRUE(Path::GetPathRoot(_T("file.txt")) == _T(""));
+        }
+
+        // Given: A request for a random file name
+        // When: GetRandomFileName is called
+        // Then: The returned string should not be empty
+        TEST(PathTest, GetRandomFileName_WhenCalled_ReturnsNonEmptyString) {
+            // Act
+            String randomFileName = Path::GetRandomFileName();
+
+            // Assert
+            EXPECT_FALSE(randomFileName.IsEmpty());
+        }
+
+        // Given: A request for a random file name
+        // When: GetRandomFileName is called
+        // Then: The returned string should have a length of 12
+        TEST(PathTest, GetRandomFileName_WhenCalled_ReturnsStringOfLength12) {
+            // Act
+            String randomFileName = Path::GetRandomFileName();
+
+            // Assert
+            EXPECT_EQ(12, randomFileName.GetLength());
+        }
+
+        // Given: A request for a random file name
+        // When: GetRandomFileName is called
+        // Then: The returned string should have a dot at index 8
+        TEST(PathTest, GetRandomFileName_WhenCalled_ReturnsStringWithDotAtIndex8) {
+            // Act
+            String randomFileName = Path::GetRandomFileName();
+
+            // Assert
+            EXPECT_EQ(_T('.'), randomFileName[8]);
+        }
+
+        // Given: A request for a random file name
+        // When: GetRandomFileName is called
+        // Then: The returned string should contain only valid characters
+        TEST(PathTest, GetRandomFileName_WhenCalled_ReturnsStringWithValidChars) {
+            // Arrange
+            const String validChars = _T("abcdefghijklmnopqrstuvwxyz0123456789.");
+
+            // Act
+            String randomFileName = Path::GetRandomFileName();
+
+            // Assert
+            for (int i = 0; i < randomFileName.GetLength(); ++i) {
+                EXPECT_TRUE(validChars.Contains(randomFileName[i]));
+            }
+        }
+
+        // Negative tests for GetRandomFileName are not applicable as the method does not take any input
+        // and is designed to always return a valid 8.3 format file name.
     }
 }

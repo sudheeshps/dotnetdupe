@@ -8,7 +8,7 @@ namespace DotNetDupe {
             BasicOverflowException(const CharT* pchMessage);
         };
         template <class CharT>
-        inline BasicOverflowException<CharT>::BasicOverflowException(const CharT* pchMessage) : BasicArithmeticException(pchMessage) { }
+        inline BasicOverflowException<CharT>::BasicOverflowException(const CharT* pchMessage) : BasicArithmeticException<CharT>(pchMessage) { }
     }
 }
 

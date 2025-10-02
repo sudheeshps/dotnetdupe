@@ -2,14 +2,14 @@
 #include "Common.h"
 namespace DotNetDupe {
     namespace System {
-        class DOTNETDUPE_API Object {
+        class  Object {
         public:
-            virtual bool operator == (const Object& obj) const;
-            virtual bool Equals(const Object& obj);
-            static bool Equals(const Object& obj1, const Object& obj2);
-            int GetHashCode();
-            wchar_t* ToStringW();
-            char* ToStringA();
+            DOTNETDUPE_API bool operator == (const Object& obj) const;
+            DOTNETDUPE_API virtual bool Equals(const Object& obj);
+            DOTNETDUPE_API static bool Equals(const Object& obj1, const Object& obj2);
+            DOTNETDUPE_API int GetHashCode();
+            DOTNETDUPE_API wchar_t* ToStringW();
+            DOTNETDUPE_API char* ToStringA();
         };
     }
 }

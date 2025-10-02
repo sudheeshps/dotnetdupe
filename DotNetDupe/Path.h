@@ -24,6 +24,8 @@ namespace DotNetDupe
                 DOTNETDUPE_API static String GetFullPath(const String &path);
                 DOTNETDUPE_API static std::vector<TCHAR> GetInvalidFileNameChars();
                 DOTNETDUPE_API static std::vector<TCHAR> GetInvalidPathChars();
+                DOTNETDUPE_API static String GetPathRoot(const String &path);
+                DOTNETDUPE_API static String GetRandomFileName();
             };
         }
     }
