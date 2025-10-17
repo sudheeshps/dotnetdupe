@@ -158,8 +158,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ArgumentException.h" />
+    <ClInclude Include="ArgumentNullException.h" />
     <ClInclude Include="ArgumentOutOfRangeException.h" />
     <ClInclude Include="ArithmeticException.h" />
+    <ClInclude Include="Array.h" />
     <ClInclude Include="BasicArgumentException.h" />
     <ClInclude Include="BasicArgumentOutOfRangeException.h" />
     <ClInclude Include="BasicArithmeticException.h" />
@@ -168,6 +170,7 @@
     <ClInclude Include="BasicOverflowException.h" />
     <ClInclude Include="BasicString.h" />
     <ClInclude Include="BasicSystemException.h" />
+    <ClInclude Include="Buffer.h" />
     <ClInclude Include="Char.h" />
     <ClInclude Include="BasicChar.h" />
     <ClInclude Include="CharUnicodeInfo.h" />
@@ -175,6 +178,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Comparable.h" />
     <ClInclude Include="Comparable2.h" />
+    <ClInclude Include="Environment.h" />
     <ClInclude Include="Exception.h" />
     <ClInclude Include="FormatProvider.h" />
     <ClInclude Include="framework.h" />
@@ -189,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Path.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

@@ -48,6 +48,7 @@ namespace DotNetDupe {
             BasicString<CharT> Clone() const;
 
             bool operator==(const BasicString<CharT>& str) const;
+            bool operator!=(const BasicString<CharT>& str) const;
             CharT operator[](int index) const;
             int static Compare(const BasicString<CharT>& str1, int index1,
                                const BasicString<CharT>& str2, int index2, int length,
@@ -156,6 +157,12 @@ namespace DotNetDupe {
             const BasicString<CharT>& str) const {
             return m_str.compare(str.GetRawString()) == 0;
         }
+
+        template <class CharT>
+        inline bool BasicString<CharT>::operator!=(const BasicString<CharT>& str) const {
+            return !(*this == str);
+        }
+
         template<class CharT>
         inline CharT BasicString<CharT>::operator[](int index) const {
             if (index >= m_str.size()) throw ArgumentOutOfRangeException(_T("Invalid index"));

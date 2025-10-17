@@ -4,6 +4,7 @@
 #include "../DotNetDupe/Path.h"
 #include <filesystem>
 using namespace DotNetDupe::System::IO;
+namespace fs = std::filesystem;
 namespace SystemTests {
     namespace PathTests {
         TEST(PathTest, ChangeExtension_Should_Return_Path_With_Changed_Extension) {
@@ -25,7 +26,7 @@ namespace SystemTests {
             EXPECT_TRUE(combined == _T("C:\\Test\\file.txt"));
         }
         TEST(PathTest, Combine_Should_Return_Combined_Path_For_Multiple_Components) {
-            auto combined = Path::Combine({ _T("C:\\Test"),_T("folder"), _T("file.txt")});
+            auto combined = Path::Combine({ _T("C:\\Test"),_T("folder"), _T("file.txt") });
             std::wcout << L"Combined: " << combined.GetString();
             EXPECT_TRUE(combined == _T("C:\\Test\\folder\\file.txt"));
         }
@@ -124,7 +125,7 @@ namespace SystemTests {
 
         TEST(PathTest, GetInvalidFileNameChars_Should_Contain_Invalid_Special_Chars) {
             auto invalidChars = Path::GetInvalidFileNameChars();
-            std::vector<TCHAR> specialChars = {'<', '>', ':', '"', '/', '\\', '|', '?', '*'};
+            std::vector<TCHAR> specialChars = { '<', '>', ':', '"', '/', '\\', '|', '?', '*' };
             for (auto specialChar : specialChars) {
                 EXPECT_NE(std::find(invalidChars.begin(), invalidChars.end(), specialChar), invalidChars.end());
             }
@@ -139,7 +140,7 @@ namespace SystemTests {
 
         TEST(PathTest, GetInvalidFileNameChars_Should_Not_Contain_Valid_Chars) {
             auto invalidChars = Path::GetInvalidFileNameChars();
-            std::vector<TCHAR> validChars = {'a', 'b', 'c', '1', '2', '3', '.'};
+            std::vector<TCHAR> validChars = { 'a', 'b', 'c', '1', '2', '3', '.' };
             for (auto validChar : validChars) {
                 EXPECT_EQ(std::find(invalidChars.begin(), invalidChars.end(), validChar), invalidChars.end());
             }
@@ -163,7 +164,7 @@ namespace SystemTests {
 
         TEST(PathTest, GetInvalidPathChars_Should_Not_Contain_Valid_Chars) {
             auto invalidChars = Path::GetInvalidPathChars();
-            std::vector<TCHAR> validChars = {'a', 'b', 'c', '1', '2', '3', '.', '\\', '/'};
+            std::vector<TCHAR> validChars = { 'a', 'b', 'c', '1', '2', '3', '.', '\\', '/' };
             for (auto validChar : validChars) {
                 EXPECT_EQ(std::find(invalidChars.begin(), invalidChars.end(), validChar), invalidChars.end());
             }
@@ -264,5 +265,214 @@ namespace SystemTests {
 
         // Negative tests for GetRandomFileName are not applicable as the method does not take any input
         // and is designed to always return a valid 8.3 format file name.
+        TEST(PathTest, GetRelativePath_should_return_the_relative_path) {
+            auto result = Path::GetRelativePath(_T("C:\\"), _T("C:\\Users\\Test"));
+            EXPECT_TRUE(result == _T("Users\\Test"));
+        }
+
+        TEST(PathTest, GetRelativePath_should_return_the_relative_path_when_paths_are_the_same) {
+            auto result = Path::GetRelativePath(_T("C:\\Users\\Test"), _T("C:\\Users\\Test"));
+            EXPECT_TRUE(result == _T("."));
+        }
+
+        TEST(PathTest, GetRelativePath_should_return_the_relative_path_when_path_is_a_subdirectory) {
+            auto result = Path::GetRelativePath(_T("C:\\Users"), _T("C:\\Users\\Test\\file.txt"));
+            EXPECT_TRUE(result == _T("Test\\file.txt"));
+        }
+
+        TEST(PathTest, GetRelativePath_should_return_the_relative_path_when_path_is_in_a_different_directory) {
+            auto result = Path::GetRelativePath(_T("C:\\Users\\Test1"), _T("C:\\Users\\Test2"));
+            EXPECT_TRUE(result == _T("..\\Test2"));
+        }
+
+        TEST(PathTest, GetRelativePath_should_return_the_relative_path_when_path_is_in_a_parent_directory) {
+            auto result = Path::GetRelativePath(_T("C:\\Users\\Test\\Sub"), _T("C:\\Users\\Test"));
+            EXPECT_TRUE(result == _T(".."));
+        }
+
+        TEST(PathTest, GetRelativePath_should_return_the_path_when_drives_are_different) {
+            auto result = Path::GetRelativePath(_T("C:\\Users"), _T("D:\\Users"));
+            EXPECT_TRUE(result == _T("D:\\Users"));
+        }
+
+        TEST(PathTest, GetTempFileName_ReturnsNonEmptyPath) {
+            String tempFile = Path::GetTempFileName();
+            EXPECT_FALSE(tempFile.IsEmpty());
+            fs::remove(tempFile.GetRawString());
+        }
+
+        TEST(PathTest, GetTempFileName_CreatesFile) {
+            String tempFile = Path::GetTempFileName();
+            EXPECT_TRUE(fs::exists(tempFile.GetRawString()));
+            fs::remove(tempFile.GetRawString());
+        }
+
+        TEST(PathTest, GetTempFileName_HasTmpExtension) {
+            String tempFile = Path::GetTempFileName();
+            EXPECT_TRUE(tempFile.EndsWith(_T(".tmp"), false));
+            fs::remove(tempFile.GetRawString());
+        }
+
+        TEST(PathTest, GetTempFileName_IsInTempDirectory) {
+            String tempFile = Path::GetTempFileName();
+            String tempDir = Path::GetTempPath();
+            EXPECT_TRUE(tempFile.StartsWith(tempDir, false));
+            fs::remove(tempFile.GetRawString());
+        }
+
+        TEST(PathTest, GetTempFileName_ReturnsUniqueNames) {
+            String tempFile1 = Path::GetTempFileName();
+            String tempFile2 = Path::GetTempFileName();
+            EXPECT_NE(tempFile1, tempFile2);
+            fs::remove(tempFile1.GetRawString());
+            fs::remove(tempFile2.GetRawString());
+        }
+
+        TEST(PathTest, GetTempPath_ReturnsNonEmptyPath) {
+            String tempPath = Path::GetTempPath();
+            EXPECT_FALSE(tempPath.IsEmpty());
+        }
+
+        TEST(PathTest, GetTempPath_ReturnsExistingDirectory) {
+            String tempPath = Path::GetTempPath();
+            EXPECT_TRUE(fs::exists(tempPath.GetRawString()));
+            EXPECT_TRUE(fs::is_directory(tempPath.GetRawString()));
+        }
+
+        TEST(PathTest, GetTempPath_EndsWithDirectorySeparator) {
+            String tempPath = Path::GetTempPath();
+            EXPECT_TRUE(Path::EndsInDirectorySeparator(tempPath));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_True_When_Path_Has_Extension) {
+            EXPECT_TRUE(Path::HasExtension(_T("C:\\file.txt")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_False_When_Path_Has_No_Extension) {
+            EXPECT_FALSE(Path::HasExtension(_T("C:\\file")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_False_When_Path_Ends_With_Dot) {
+            EXPECT_FALSE(Path::HasExtension(_T("C:\\file.")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_True_When_FileName_Starts_With_Dot) {
+            EXPECT_TRUE(Path::HasExtension(_T("C:\\.gitignore")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_False_For_Directory_Path) {
+            EXPECT_FALSE(Path::HasExtension(_T("C:\\directory\\")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_False_For_Empty_String) {
+            EXPECT_FALSE(Path::HasExtension(_T("")));
+        }
+
+        TEST(PathTest, HasExtension_Should_Return_True_For_Path_With_Multiple_Dots) {
+            EXPECT_TRUE(Path::HasExtension(_T("C:\\file.name.txt")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_True_For_Absolute_Path) {
+            EXPECT_TRUE(Path::IsPathFullyQualified(_T("C:\\folder\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_True_For_UNC_Path) {
+            EXPECT_TRUE(Path::IsPathFullyQualified(_T("\\\\server\\share\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_False_For_Relative_Path) {
+            EXPECT_FALSE(Path::IsPathFullyQualified(_T("folder\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_False_For_FileName_Only) {
+            EXPECT_FALSE(Path::IsPathFullyQualified(_T("file.txt")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_False_For_Empty_String) {
+            EXPECT_FALSE(Path::IsPathFullyQualified(_T("")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_False_For_Drive_Letter_Only) {
+            EXPECT_FALSE(Path::IsPathFullyQualified(_T("C:")));
+        }
+
+        TEST(PathTest, IsPathFullyQualified_Should_Return_True_For_Root_Directory) {
+            EXPECT_TRUE(Path::IsPathFullyQualified(_T("C:\\")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_True_For_Absolute_Path) {
+            EXPECT_TRUE(Path::IsPathRooted(_T("C:\\folder\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_True_For_UNC_Path) {
+            EXPECT_TRUE(Path::IsPathRooted(_T("\\\\server\\share\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_True_For_Path_Starting_With_Separator) {
+            EXPECT_TRUE(Path::IsPathRooted(_T("\\folder\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_False_For_Relative_Path) {
+            EXPECT_FALSE(Path::IsPathRooted(_T("folder\\file.txt")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_False_For_FileName_Only) {
+            EXPECT_FALSE(Path::IsPathRooted(_T("file.txt")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_False_For_Empty_String) {
+            EXPECT_FALSE(Path::IsPathRooted(_T("")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_False_For_Drive_Letter_Only) {
+            EXPECT_FALSE(Path::IsPathRooted(_T("C:")));
+        }
+
+        TEST(PathTest, IsPathRooted_Should_Return_True_For_Root_Directory) {
+            EXPECT_TRUE(Path::IsPathRooted(_T("C:\\")));
+        }
+
+        TEST(PathTest, Join_Should_Return_Joined_Path) {
+            auto joined = Path::Join({ _T("C:\\Test"), _T("file.txt") });
+            EXPECT_TRUE(joined == _T("C:\\Test\\file.txt"));
+        }
+
+        TEST(PathTest, Join_Should_Return_Joined_Path_For_Multiple_Components) {
+            auto joined = Path::Join({ _T("C:\\Test"), _T("folder"), _T("file.txt") });
+            EXPECT_TRUE(joined == _T("C:\\Test\\folder\\file.txt"));
+        }
+
+        TEST(PathTest, Join_Should_Throw_Exception_For_Invalid_Chars) {
+            ASSERT_THROW(Path::Join({ _T("C:\\Test"), _T("file|name.txt") }), ArgumentException);
+        }
+
+        TEST(PathTest, TryJoin_Should_Return_False_For_Invalid_Chars) {
+            String result(_T(""));
+            EXPECT_FALSE(Path::TryJoin({ _T("C:\\Test"), _T("file|name.txt") }, result));
+        }
+
+        TEST(PathTest, TryJoin_Should_Return_True_For_Valid_Path) {
+            String result(_T(""));
+            EXPECT_TRUE(Path::TryJoin({ _T("C:\\Test"), _T("file.txt") }, result));
+            EXPECT_TRUE(result == _T("C:\\Test\\file.txt"));
+        }
+
+        TEST(PathTest, TrimEndingDirectorySeparator_Should_Remove_Trailing_Separator) {
+            String path = _T("C:\\Test\\");
+            path = Path::TrimEndingDirectorySeparator(path);
+            EXPECT_TRUE(path == _T("C:\\Test"));
+        }
+
+        TEST(PathTest, TrimEndingDirectorySeparator_Should_Do_Nothing_If_No_Trailing_Separator) {
+            String path = _T("C:\\Test");
+            path = Path::TrimEndingDirectorySeparator(path);
+            EXPECT_TRUE(path == _T("C:\\Test"));
+        }
+
+        TEST(PathTest, TrimEndingDirectorySeparator_Should_Not_Trim_Root_Path) {
+            String path = _T("C:\\");
+            path = Path::TrimEndingDirectorySeparator(path);
+            EXPECT_TRUE(path == _T("C:\\"));
+        }
     }
 }

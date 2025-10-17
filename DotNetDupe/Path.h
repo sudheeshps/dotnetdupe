@@ -26,6 +26,15 @@ namespace DotNetDupe
                 DOTNETDUPE_API static std::vector<TCHAR> GetInvalidPathChars();
                 DOTNETDUPE_API static String GetPathRoot(const String &path);
                 DOTNETDUPE_API static String GetRandomFileName();
+                DOTNETDUPE_API static String GetRelativePath(const String& relativeTo, const String& path);
+                DOTNETDUPE_API static String GetTempFileName();
+                DOTNETDUPE_API static String GetTempPath();
+                DOTNETDUPE_API static bool HasExtension(const String& path);
+                DOTNETDUPE_API static bool IsPathFullyQualified(const String& path);
+                DOTNETDUPE_API static bool IsPathRooted(const String& path);
+                DOTNETDUPE_API static String Join(const std::initializer_list<String> paths);
+                DOTNETDUPE_API static bool TryJoin(const std::initializer_list<String> paths, String& result);
+                DOTNETDUPE_API static String TrimEndingDirectorySeparator(const String& path);
             };
         }
     }

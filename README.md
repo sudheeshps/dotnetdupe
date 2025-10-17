@@ -9,18 +9,20 @@ DotNetDupe is a C++ library designed to provide a familiar and streamlined devel
 
 ## Table of Contents 📚
 
-*   [Project Overview](#project-overview)
-*   [Features](#features)
-*   [Getting Started](#getting-started)
-    *   [Prerequisites](#prerequisites)
-    *   [Installation](#installation)
-*   [Usage](#usage)
-*   [API Reference](#api-reference)
-*   [Project Status](#project-status)
-*   [Contributions](#contributions)
-*   [License](#license)
-*   [Generated Content](#generated-content)
-*   [Contact](#contact)
+- [DotNetDupe 🚀](#dotnetdupe-)
+  - [Table of Contents 📚](#table-of-contents-)
+  - [Project Overview 💡](#project-overview-)
+  - [Features ✨](#features-)
+  - [Getting Started 🚀](#getting-started-)
+    - [Prerequisites 📋](#prerequisites-)
+    - [Installation ⬇️](#installation-️)
+  - [Usage 💻](#usage-)
+  - [API Reference 📖](#api-reference-)
+  - [Project Status 🚧](#project-status-)
+  - [Contributions 👋](#contributions-)
+  - [License 📄](#license-)
+  - [Generated Content 🤖](#generated-content-)
+  - [Contact 📧](#contact-)
 
 ## Project Overview 💡
 
@@ -83,7 +85,7 @@ int main() {
     std::wcout << message.GetRawString() << std::endl; // Output: Hello, World!
 
     // Path Example
-    DotNetDupe::System::String fullPath = DotNetDupe::System::IO::Path::Combine({_T("C:\\`), _T("Users"), _T("document.txt")});
+    DotNetDupe::System::String fullPath = DotNetDupe::System::IO::Path::Combine({_T("C:\\"), _T("Users"), _T("document.txt")});
     std::wcout << L"Combined Path: " << fullPath.GetRawString() << std::endl;
 
     // Exception Example
