@@ -37,6 +37,7 @@ namespace DotNetDupe {
         template <class CharT>
         class BasicString {
         public:
+            BasicString() = default;
             BasicString(const CharT* pStr);
             BasicString(const BasicString<CharT>& str) = default;
             BasicString<CharT>& operator=(const BasicString<CharT>& str) = default;
@@ -47,6 +48,7 @@ namespace DotNetDupe {
             std::basic_string<CharT>& GetString();
             BasicString<CharT> Clone() const;
 
+            bool operator<(const BasicString<CharT>& str) const;
             bool operator==(const BasicString<CharT>& str) const;
             bool operator!=(const BasicString<CharT>& str) const;
             CharT operator[](int index) const;
@@ -111,6 +113,7 @@ namespace DotNetDupe {
             BasicString<CharT> Replace(CharT originalChar, CharT replaceChar);
             BasicString<CharT> Replace(const BasicString<CharT>& orignalStr,
                                        const BasicString<CharT>& replaceStr);
+            std::vector<BasicString<CharT>> Split(CharT separator);
             std::vector<BasicString<CharT>> Split(BasicString<CharT> separator [], int count,
                                                   StringSplitOptions options);
             bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const;
@@ -152,6 +155,12 @@ namespace DotNetDupe {
         inline BasicString<CharT> BasicString<CharT>::Clone() const {
             return BasicString(GetRawString());
         }
+        template <class CharT>
+        inline bool BasicString<CharT>::operator<(
+            const BasicString<CharT>& str) const {
+            return m_str < str.m_str;
+        }
+
         template <class CharT>
         inline bool BasicString<CharT>::operator==(
             const BasicString<CharT>& str) const {
@@ -498,6 +507,19 @@ namespace DotNetDupe {
                 m_str, std::basic_regex<CharT>(orignalStr.m_str), replaceStr.m_str);
             return ret.c_str();
         }
+        template<class CharT>
+        inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(CharT separator)
+        {
+            std::vector<BasicString<CharT>> result;
+            std::basic_stringstream<CharT> ss(m_str);
+            std::basic_string<CharT> token;
+            while (std::getline(ss, token, separator))
+            {
+                result.push_back(BasicString<CharT>(token.c_str()));
+            }
+            return result;
+        }
+
         template<class CharT>
         inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(BasicString<CharT> separator [], int count,
                                                                          StringSplitOptions options) {

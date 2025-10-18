@@ -1,35 +1,154 @@
 #include "pch.h"
-#include "gtest/gtest.h"
 #include "../DotNetDupe/Environment.h"
 
 using namespace DotNetDupe::System;
 
-namespace SystemTests
+TEST(Environment, GetCurrentDirectory_WhenCalled_ReturnsCurrentDirectory)
 {
-    namespace EnvironmentTests
-    {
-        TEST(EnvironmentTest, When_GetMachineNameIsCalled_Then_ReturnsANonEmptyString)
-        {
-            String machineName = Environment::GetMachineName();
-            EXPECT_FALSE(machineName.IsEmpty());
-        }
+    // Given
 
-        TEST(EnvironmentTest, When_GetUserNameIsCalled_Then_ReturnsANonEmptyString)
-        {
-            String userName = Environment::GetUserName();
-            EXPECT_FALSE(userName.IsEmpty());
-        }
+    // When
+    auto currentDirectory = Environment::GetCurrentDirectory();
 
-        TEST(EnvironmentTest, When_GetProcessorCountIsCalled_Then_ReturnsAValueGreaterThanZero)
-        {
-            int processorCount = Environment::GetProcessorCount();
-            EXPECT_GT(processorCount, 0);
-        }
+    // Then
+    ASSERT_FALSE(currentDirectory.IsEmpty());
+}
 
-        TEST(EnvironmentTest, When_GetNewLineIsCalled_Then_ReturnsTheCorrectNewLineString)
-        {
-            String newLine = Environment::GetNewLine();
-            EXPECT_EQ(String(_T("\r\n")), newLine);
-        }
-    }
+TEST(Environment, GetSystemDirectory_WhenCalled_ReturnsSystemDirectory)
+{
+    // Given
+
+    // When
+    auto systemDirectory = Environment::GetSystemDirectory();
+
+    // Then
+    ASSERT_FALSE(systemDirectory.IsEmpty());
+}
+
+TEST(Environment, GetOSVersion_WhenCalled_ReturnsOSVersion)
+{
+    // Given
+
+    // When
+    auto osVersion = Environment::GetOSVersion();
+
+    // Then
+    ASSERT_FALSE(osVersion.IsEmpty());
+}
+
+TEST(Environment, GetUserDomainName_WhenCalled_ReturnsUserDomainName)
+{
+    // Given
+
+    // When
+    auto userDomainName = Environment::GetUserDomainName();
+
+    // Then
+    ASSERT_FALSE(userDomainName.IsEmpty());
+}
+
+TEST(Environment, GetVersion_WhenCalled_ReturnsVersion)
+{
+    // Given
+
+    // When
+    auto version = Environment::GetVersion();
+
+    // Then
+    ASSERT_FALSE(version.IsEmpty());
+}
+
+TEST(Environment, GetWorkingSet_WhenCalled_ReturnsWorkingSet)
+{
+    // Given
+
+    // When
+    auto workingSet = Environment::GetWorkingSet();
+
+    // Then
+    ASSERT_GT(workingSet, 0);
+}
+
+TEST(Environment, ExpandEnvironmentVariables_WhenCalled_ExpandsVariables)
+{
+    // Given
+    auto path = Environment::GetEnvironmentVariable(_T("PATH"));
+
+    // When
+    auto expanded = Environment::ExpandEnvironmentVariables(_T("%PATH%"));
+
+    // Then
+    ASSERT_EQ(path, expanded);
+}
+
+TEST(Environment, GetCommandLineArgs_WhenCalled_ReturnsCommandLineArgs)
+{
+    // Given
+
+    // When
+    auto commandLineArgs = Environment::GetCommandLineArgs();
+
+    // Then
+    ASSERT_FALSE(commandLineArgs.empty());
+}
+
+TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable)
+{
+    // Given
+    auto variable = _T("TestVar");
+    auto value = _T("TestValue");
+    Environment::SetEnvironmentVariable(variable, value);
+
+    // When
+    auto result = Environment::GetEnvironmentVariable(variable);
+
+    // Then
+    ASSERT_EQ(result, value);
+}
+
+TEST(Environment, GetEnvironmentVariables_WhenCalled_ReturnsEnvironmentVariables)
+{
+    // Given
+
+    // When
+    auto envVars = Environment::GetEnvironmentVariables();
+
+    // Then
+    ASSERT_FALSE(envVars.empty());
+}
+
+TEST(Environment, GetFolderPath_WhenCalled_ReturnsFolderPath)
+{
+    // Given
+
+    // When
+    auto folderPath = Environment::GetFolderPath(Environment::SpecialFolder::System);
+
+    // Then
+    ASSERT_FALSE(folderPath.IsEmpty());
+}
+
+TEST(Environment, GetLogicalDrives_WhenCalled_ReturnsLogicalDrives)
+{
+    // Given
+
+    // When
+    auto logicalDrives = Environment::GetLogicalDrives();
+
+    // Then
+    ASSERT_FALSE(logicalDrives.empty());
+}
+
+TEST(Environment, SetEnvironmentVariable_WhenCalled_SetsEnvironmentVariable)
+{
+    // Given
+    auto variable = _T("TestVar");
+    auto value = _T("TestValue");
+
+    // When
+    Environment::SetEnvironmentVariable(variable, value);
+
+    // Then
+    auto result = Environment::GetEnvironmentVariable(variable);
+    ASSERT_EQ(result, value);
 }

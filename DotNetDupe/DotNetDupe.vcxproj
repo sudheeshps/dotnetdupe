@@ -126,7 +126,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <LanguageStandard_C>Default</LanguageStandard_C>
+            <LanguageStandard_C>Default</LanguageStandard_C>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,12 +189,21 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="SystemException.h" />
+    <ClInclude Include="Uri.h" />
+    <ClInclude Include="UriBuilder.h" />
     <ClInclude Include="Utils.h" />
+        <ClInclude Include="Random.h" />
+        <ClInclude Include="UriParser.h" />
+    <ClInclude Include="UriEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="OperatingSystem.cpp" />
+    <ClCompile Include="Uri.cpp" />
+    <ClCompile Include="UriBuilder.cpp" />
+    <ClCompile Include="Version.cpp" />
     <ClCompile Include="Path.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -204,6 +213,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+        <ClCompile Include="Random.cpp" />
+    <ClCompile Include="UriParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
