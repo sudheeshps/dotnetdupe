@@ -4,7 +4,9 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://example.com/your-build-status)
 
-Hey, have you everbeen fascinated by the simplicity of .NET APIs? How do you feel when you compare with STL? They are 2 different worlds altogether, right? :). Though STL is vast and comprehensive, it is very difficult to use. Incontrast C# .NET being a modern framework designed by clear emphasis on API design, is the more developer friendly. This project is inspired by .NET APIs and built referring the C# namespaces and classes. Just to start with only few classes in System and IO namespaces are implemented. It will give a gist on the intention of the library. Any PRs are welcome and we can add more and more classes to it.
+Hey, have you everbeen fascinated by the simplicity of .NET APIs? How do you feel when you compare with STL? They are 2 different worlds altogether, right? :). Though STL is vast and comprehensive, it is very difficult to use. Incontrast C# .NET being a modern framework designed by clear emphasis on API design, it is the more developer friendly. This project is inspired by .NET APIs and built referring the C# namespaces and classes. Just to start with only few classes in System and IO namespaces are implemented. It will give a gist on the intention of the library. Any PRs are welcome and we can add more and more classes to it. 
+
+By the way, though I started implementation by coding myself from scratch (most of Char, String and  Path along with tests), I leveraged the boon of Gemini Code Assist to generate rest of the code. In that way, it can be treated as our playground for trying out implementing something from scratch using Gen AI.
 
 DotNetDupe is a C++ library designed to provide a familiar and streamlined development experience by mimicking common C# APIs. It offers an alternative to the often cumbersome C++ Standard Template Library (STL) for certain functionalities, allowing developers to write more concise and intuitive C++ code.
 
@@ -19,6 +21,8 @@ DotNetDupe is a C++ library designed to provide a familiar and streamlined devel
     - [Installation ⬇️](#installation-️)
   - [Usage 💻](#usage-)
   - [API Reference 📖](#api-reference-)
+    - [Namespace: `DotNetDupe::System`](#namespace-dotnetdupesystem)
+    - [Namespace: `DotNetDupe::System::IO`](#namespace-dotnetdupesystemio)
   - [Project Status 🚧](#project-status-)
   - [Contributions 👋](#contributions-)
   - [License 📄](#license-)
