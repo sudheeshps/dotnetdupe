@@ -1,18 +1,20 @@
 #pragma once
 
+#include <tchar.h>
+
 #include "Common.h"
 #include "Object.h"
-#include <vector>
-#include <stdexcept>
-#include <algorithm>
-#include <tchar.h>
-#include <functional>
 #include "ArgumentException.h"
 #include "ArgumentOutOfRangeException.h"
 
+#include <vector>
+#include <stdexcept>
+#include <algorithm>
+#include <functional>
+
 namespace DotNetDupe {
     namespace System {
-        template <typename T>
+        template <class T>
         class Array : public Object {
         private:
             std::vector<T> _items;

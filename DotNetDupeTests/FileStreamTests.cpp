@@ -156,24 +156,14 @@ namespace SystemTests {
                          }, IOException);
         }
 
-        TEST_F(FileStreamTest, Read_OnWriteOnlyStream_Should_ReturnZeroBytes) {
+        TEST_F(FileStreamTest, Read_OnWriteOnlyStream_Should_ThrowException) {
             // Given
-            FileStream fs(testFilePath, 1); // FileMode::Create (write-only for this test purpose)
-            char buffer [10];
+            FileStream fs(testFilePath, 5); // FileMode::Append (write-only)
+            char buffer[10];
 
             // When, Then
-            EXPECT_TRUE(fs.CanRead()); // FileMode::Create allows reading
-            // Depending on implementation, Read might throw or return 0
-            // For now, we expect it to return 0 if not readable
-            // This test case needs re-evaluation if a truly write-only mode is introduced.
-            // For now, we'll write some content and try to read it back.
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(_T("some content"));
-            fs.Write(contentBytes.data(), 0, static_cast<int>(contentBytes.size()));
-            fs.SetPosition(0);
-            int bytesRead = fs.Read(buffer, 0, static_cast<int>(contentBytes.size()));
-            buffer [bytesRead] = '\0';
-            EXPECT_EQ(bytesRead, contentBytes.size());
-            EXPECT_EQ(TextEncoding::UTF8()->GetString(buffer, bytesRead), _T("some content"));
+            EXPECT_FALSE(fs.CanRead());
+            EXPECT_THROW(fs.Read(buffer, 0, 10), IOException);
         }
 
         TEST_F(FileStreamTest, Write_OnReadOnlyStream_Should_NotWrite) {
@@ -192,14 +182,14 @@ namespace SystemTests {
             // If we had a true read-only mode, this would be EXPECT_FALSE(fs.CanWrite());
         }
 
-        TEST_F(FileStreamTest, Seek_OnNonSeekableStream_Should_ReturnZero) {
+        TEST_F(FileStreamTest, Seek_OnNonSeekableStream_Should_ThrowException) {
             // Given
             // FileMode::Append is non-seekable in current implementation
             FileStream fs(testFilePath, 5); // FileMode::Append
 
             // When, Then
             EXPECT_FALSE(fs.CanSeek());
-            EXPECT_EQ(fs.Seek(10, 0), 0);
+            EXPECT_THROW(fs.Seek(10, 0), IOException);
         }
     }
 }

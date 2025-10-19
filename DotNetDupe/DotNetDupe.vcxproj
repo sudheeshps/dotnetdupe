@@ -189,6 +189,7 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="NotImplementedException.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="OperatingSystem.h" />
     <ClInclude Include="OverflowException.h" />
     <ClInclude Include="Path.h" />
     <ClInclude Include="pch.h" />

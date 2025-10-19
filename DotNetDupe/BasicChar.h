@@ -225,7 +225,7 @@ namespace DotNetDupe {
 
         template<class CharT>
         inline bool BasicChar<CharT>::IsLetter(CharT c) {
-            return c >= CharT('0') && c <= CharT('9');
+            return (c >= CharT('a') && c <= CharT('z')) || (c >= CharT('A') && c <= CharT('Z'));
         }
 
         template<class CharT>

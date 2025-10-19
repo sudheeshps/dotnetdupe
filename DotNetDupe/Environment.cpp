@@ -220,5 +220,18 @@ namespace DotNetDupe {
         void Environment::SetEnvironmentVariable(const String& variable, const String& value) {
             ::SetEnvironmentVariable(variable.GetRawString(), value.GetRawString());
         }
+
+        OperatingSystem Environment::GetOperatingSystem() {
+            OSVERSIONINFOEX info;
+            ZeroMemory(&info, sizeof(OSVERSIONINFOEX));
+            info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+            GetVersionEx((LPOSVERSIONINFO)&info);
+
+            Version version(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, 0);
+
+            PlatformID platform = PlatformID::Win32NT;
+
+            return OperatingSystem(platform, version);
+        }
     }
 }

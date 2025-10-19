@@ -95,6 +95,16 @@ namespace SystemTests {
             ASSERT_TRUE(Char::IsLower('a'));
             ASSERT_FALSE(Char::IsLower('A'));
         }
+        TEST(CharTest, IsLetter) {
+            ASSERT_TRUE(Char::IsLetter('a'));
+            ASSERT_TRUE(Char::IsLetter('z'));
+            ASSERT_TRUE(Char::IsLetter('A'));
+            ASSERT_TRUE(Char::IsLetter('Z'));
+            ASSERT_FALSE(Char::IsLetter('0'));
+            ASSERT_FALSE(Char::IsLetter('9'));
+            ASSERT_FALSE(Char::IsLetter('+'));
+            ASSERT_FALSE(Char::IsLetter(' '));
+        }
         TEST(CharTest, ToLowerTest) {
             ASSERT_TRUE(Char::ToLower('A') == 'a');
             ASSERT_TRUE(Char::ToLower('0') == '0');

@@ -140,5 +140,16 @@ namespace SystemTests {
             auto result = Environment::GetEnvironmentVariable(variable);
             ASSERT_EQ(result, value);
         }
+
+        TEST(Environment, GetOperatingSystem_WhenCalled_ReturnsOperatingSystem) {
+            // Given
+
+            // When
+            auto os = Environment::GetOperatingSystem();
+
+            // Then
+            ASSERT_EQ(os.GetPlatform(), PlatformID::Win32NT);
+            ASSERT_TRUE(os.GetVersion().GetMajor() > 0);
+        }
     }
 }
