@@ -2,16 +2,11 @@
 
 #include "BasicArgumentException.h"
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        class ArgumentNullException : public BasicArgumentException<TCHAR>
-        {
+namespace DotNetDupe {
+    namespace System {
+        class ArgumentNullException : public BasicArgumentException<TCHAR> {
         public:
-            ArgumentNullException(const TCHAR* message) : BasicArgumentException<TCHAR>(message)
-            {
-            }
+            ArgumentNullException(const TCHAR* message) : BasicArgumentException<TCHAR>(message) { }
         };
     }
 }

@@ -1,156 +1,158 @@
 #include "pch.h"
 #include "Uri.h"
-#include <regex>    // For URI parsing
-#include <string>   // For std::stoi
-#include <algorithm> // For std::all_of
-#include <cctype>   // For ::isdigit
+#include <string>
+#include <algorithm>
+#include <cctype>
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        // Define the full URI regex as a static constant.
-        // This regex is a simplification and might not cover all edge cases or RFCs fully.
-        // Group 1: Scheme with colon (e.g., "http:")
-        // Group 2: Scheme (e.g., "http")
-        // Group 3: Authority with "//" (e.g., "//www.example.com")
-        // Group 4: Authority (e.g., "www.example.com")
-        // Group 5: Path (e.g., "/path/to/resource")
-        // Group 6: Query with "?" (e.g., "?key=value")
-        // Group 7: Query (e.g., "key=value")
-        // Group 8: Fragment with "#" (e.g., "#section")
-        // Group 9: Fragment (e.g., "section")
-        static const std::wregex fullUriRegex(L"^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?");
+namespace DotNetDupe {
+    namespace System {
+        Uri::Uri(const String& uriString) : _uriString(uriString) {
+            ParseUri();
+        }
 
-        // Helper function to extract a component using regex
-        static String GetRegexGroup(const String& source, const std::wregex& regex, int groupIndex)
-        {
-            std::wsmatch match;
-            // Use GetString() to get the underlying std::wstring for std::regex_search
-            const std::wstring& stdSource = source.GetRawString();
-            if (std::regex_search(stdSource, match, regex) && match.size() > groupIndex)
-            {
-                return match[groupIndex].str().c_str();
+        void Uri::ParseUri() {
+            const std::wstring& rawUri = _uriString.GetRawString();
+            size_t schemeEnd = rawUri.find(L':');
+            
+            if (schemeEnd != std::wstring::npos) {
+                _scheme = String(rawUri.substr(0, schemeEnd).c_str());
+                
+                size_t authorityStart = schemeEnd + 1;
+                if (rawUri.substr(authorityStart, 2) == L"//") {
+                    authorityStart += 2;
+                    size_t authorityEnd = rawUri.find_first_of(L"/?#", authorityStart);
+                    if (authorityEnd == std::wstring::npos) {
+                        _authority = String(rawUri.substr(authorityStart).c_str());
+                    } else {
+                        _authority = String(rawUri.substr(authorityStart, authorityEnd - authorityStart).c_str());
+                    }
+                }
             }
-            return String(L"");
+
+            size_t pathStart = rawUri.find(L"//");
+            if (pathStart != std::wstring::npos) {
+                pathStart = rawUri.find(L'/', pathStart + 2);
+            } else {
+                pathStart = rawUri.find(L':');
+                if (pathStart != std::wstring::npos) {
+                    if (_scheme.Equals(_T("mailto"))) {
+                        pathStart++; // For mailto, the path starts right after the colon
+                    } else {
+                        pathStart = rawUri.find(L'/', pathStart + 1);
+                    }
+                } else {
+                    pathStart = 0;
+                }
+            }
+
+            if (pathStart != std::wstring::npos) {
+                size_t pathEnd = rawUri.find_first_of(L"?#", pathStart);
+                if (pathEnd == std::wstring::npos) {
+                    _absolutePath = String(rawUri.substr(pathStart).c_str());
+                } else {
+                    _absolutePath = String(rawUri.substr(pathStart, pathEnd - pathStart).c_str());
+                }
+            }
+            else if (_scheme.GetLength() > 0 && _authority.GetLength() > 0 && _absolutePath.IsEmpty()) {
+                _absolutePath = _T("/");
+            }
+
+            size_t queryStart = rawUri.find(L'?');
+            if (queryStart != std::wstring::npos) {
+                size_t queryEnd = rawUri.find(L'#', queryStart);
+                if (queryEnd == std::wstring::npos) {
+                    _query = String(rawUri.substr(queryStart + 1).c_str());
+                } else {
+                    _query = String(rawUri.substr(queryStart + 1, queryEnd - (queryStart + 1)).c_str());
+                }
+            }
+
+            size_t fragmentStart = rawUri.find(L'#');
+            if (fragmentStart != std::wstring::npos) {
+                _fragment = String(rawUri.substr(fragmentStart + 1).c_str());
+            }
         }
 
-        Uri::Uri(const String& uriString) : _uriString(uriString)
-        {
-            // The constructor simply stores the URI string.
-            // Parsing of components is done on demand in the getter methods.
+        String Uri::GetAbsolutePath() const {
+            return _absolutePath;
         }
 
-        String Uri::GetAbsolutePath() const
-        {
-            // The path component is typically group 5 in the full URI regex.
-            return GetRegexGroup(_uriString, fullUriRegex, 5);
-        }
-
-        String Uri::GetAbsoluteUri() const
-        {
+        String Uri::GetAbsoluteUri() const {
             return _uriString;
         }
 
-        String Uri::GetAuthority() const
-        {
-            // The authority component is typically group 4 in the full URI regex.
-            return GetRegexGroup(_uriString, fullUriRegex, 4);
+        String Uri::GetAuthority() const {
+            return _authority;
         }
 
-        String Uri::GetHost() const
-        {
-            String authority = GetAuthority();
-            const std::wstring& rawAuthority = authority.GetRawString();
+        String Uri::GetHost() const {
+            const std::wstring& rawAuthority = _authority.GetRawString();
 
             size_t atPos = rawAuthority.find_last_of(L'@');
             std::wstring hostAndPortStr = (atPos == std::wstring::npos) ? rawAuthority : rawAuthority.substr(atPos + 1);
 
             size_t bracketStart = hostAndPortStr.find(L'[');
-            if (bracketStart != std::wstring::npos)
-            {
+            if (bracketStart != std::wstring::npos) {
                 size_t bracketEnd = hostAndPortStr.find(L']', bracketStart);
-                if (bracketEnd != std::wstring::npos)
-                {
-                    // Return IPv6 address part, e.g., [::1]
+                if (bracketEnd != std::wstring::npos) {
                     return String(hostAndPortStr.substr(bracketStart, bracketEnd - bracketStart + 1).c_str());
                 }
             }
 
             size_t colonPos = hostAndPortStr.find_last_of(L':');
-            if (colonPos != std::wstring::npos)
-            {
-                // Check if there are other colons before this one
-                if (hostAndPortStr.find(L':') == colonPos)
-                {
+            if (colonPos != std::wstring::npos) {
+                if (hostAndPortStr.find(L':') == colonPos) {
                     return String(hostAndPortStr.substr(0, colonPos).c_str());
                 }
-                // Multiple colons, assume IPv6 and return the whole thing
                 return String(hostAndPortStr.c_str());
             }
 
             return String(hostAndPortStr.c_str());
         }
 
-        int Uri::GetPort() const
-        {
-            String authority = GetAuthority();
-            const std::wstring& rawAuthority = authority.GetRawString();
-
+        int Uri::GetPort() const {
+            const std::wstring& rawAuthority = _authority.GetRawString();
             size_t colonPos = rawAuthority.find_last_of(L':');
 
-            // If no colon, no port
-            if (colonPos == std::wstring::npos)
-            {
+            if (colonPos == std::wstring::npos) {
+                if (_scheme.Equals(_T("http"))) {
+                    return 80;
+                }
                 return -1;
             }
 
-            // If there's an IPv6 address in brackets, colon must be after it
             size_t bracketEnd = rawAuthority.find_last_of(L']');
-            if (bracketEnd != std::wstring::npos && colonPos < bracketEnd)
-            {
-                return -1; // Colon is part of IPv6 address
+            if (bracketEnd != std::wstring::npos && colonPos < bracketEnd) {
+                return -1;
             }
 
-            // If there are no brackets, but multiple colons, it's a bare IPv6 address
-            if (bracketEnd == std::wstring::npos && rawAuthority.find(L':') != colonPos)
-            {
+            if (bracketEnd == std::wstring::npos && rawAuthority.find(L':') != colonPos) {
                 return -1;
             }
 
             std::wstring portStr = rawAuthority.substr(colonPos + 1);
-            if (!portStr.empty() && std::all_of(portStr.begin(), portStr.end(), ::isdigit))
-            {
-                try
-                {
+            if (!portStr.empty() && std::all_of(portStr.begin(), portStr.end(), ::isdigit)) {
+                try {
                     return std::stoi(portStr);
                 }
-                catch (const std::exception&)
-                {
-                    // Catch exceptions from stoi, e.g., out of range
+                catch (const std::exception&) {
                     return -1;
                 }
             }
 
             return -1;
         }
-    
-        String Uri::GetScheme() const
-        {
-            // The scheme component is typically group 2 in the full URI regex.
-            return GetRegexGroup(_uriString, fullUriRegex, 2);
+
+        String Uri::GetScheme() const {
+            return _scheme;
         }
 
-        String Uri::GetQuery() const
-        {
-            // The query component is typically group 7 in the full URI regex.
-            return GetRegexGroup(_uriString, fullUriRegex, 7);
+        String Uri::GetQuery() const {
+            return _query;
         }
 
-        String Uri::GetFragment() const
-        {
-            // The fragment component is typically group 9 in the full URI regex.
-            return GetRegexGroup(_uriString, fullUriRegex, 9);
+        String Uri::GetFragment() const {
+            return _fragment;
         }
     }
 }

@@ -3,12 +3,9 @@
 #include "Common.h"
 #include "Object.h"
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        class Random : public Object
-        {
+namespace DotNetDupe {
+    namespace System {
+        class Random : public Object {
         public:
             DOTNETDUPE_API Random();
             DOTNETDUPE_API Random(int seed);

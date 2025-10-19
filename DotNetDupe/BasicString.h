@@ -56,9 +56,9 @@ namespace DotNetDupe {
                                const BasicString<CharT>& str2, int index2, int length,
                                bool ignoreCase);
             int CompareTo(const BasicString& str) const;
-            BasicString<CharT>& operator+(const BasicString<CharT>& str);
-            BasicString<CharT>& Concat(
-                const std::initializer_list<BasicString<CharT>> strs);
+            BasicString<CharT> operator+(const BasicString<CharT>& str) const;
+            BasicString<CharT> Concat(
+                const std::initializer_list<BasicString<CharT>> strs) const;
 
             bool Contains(CharT c) const;
             bool Contains(const BasicString<CharT>& str);
@@ -196,20 +196,21 @@ namespace DotNetDupe {
             return basicStr1.compare(index1, length, basicStr2, index2, length);
         }
         template <class CharT>
-        inline int BasicString<CharT>::CompareTo(const BasicString& str) const {
+        inline int BasicString<CharT>::CompareTo(const BasicString<CharT>& str) const {
             return m_str.compare(str.GetRawString());
         }
         template <class CharT>
-        inline BasicString<CharT>& BasicString<CharT>::Concat(
-            const std::initializer_list<BasicString<CharT>> strs) {
+        inline BasicString<CharT> BasicString<CharT>::Concat(
+            const std::initializer_list<BasicString<CharT>> strs) const {
+            BasicString<CharT> newStr = *this;
             for (auto str : strs) {
-                m_str.append(str.GetString());
+                newStr.m_str.append(str.GetRawString());
             }
-            return *this;
+            return newStr;
         }
         template <class CharT>
-        inline BasicString<CharT>& BasicString<CharT>::operator+(
-            const BasicString<CharT>& str) {
+        inline BasicString<CharT> BasicString<CharT>::operator+(
+            const BasicString<CharT>& str) const {
             return Concat({ str });
         }
         template <class CharT>

@@ -1,5 +1,4 @@
 #pragma once
-#include <string>
 #include "BasicException.h"
 namespace DotNetDupe {
     namespace System {

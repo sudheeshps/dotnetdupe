@@ -5,15 +5,12 @@
 
 using namespace DotNetDupe::System;
 
-namespace SystemTests
-{
-    namespace UriTests
-    {
+namespace SystemTests {
+    namespace UriTests {
         // Given: A valid URI string
         // When: A Uri object is constructed
         // Then: The properties of the Uri object should be correctly parsed
-        TEST(UriTest, Constructor_Should_Parse_Uri_Correctly)
-        {
+        TEST(UriTest, Constructor_Should_Parse_Uri_Correctly) {
             // Given
             const String uriString(_T("http://www.test.com:8080/path/to/resource?query=1#fragment"));
 
@@ -25,8 +22,8 @@ namespace SystemTests
             EXPECT_EQ(uri.GetHost(), _T("www.test.com"));
             EXPECT_EQ(uri.GetPort(), 8080);
             EXPECT_EQ(uri.GetAbsolutePath(), _T("/path/to/resource"));
-            EXPECT_EQ(uri.GetQuery(), _T("?query=1"));
-            EXPECT_EQ(uri.GetFragment(), _T("#fragment"));
+            EXPECT_EQ(uri.GetQuery(), _T("query=1"));
+            EXPECT_EQ(uri.GetFragment(), _T("fragment"));
             EXPECT_EQ(uri.GetAbsoluteUri(), uriString);
             EXPECT_EQ(uri.GetAuthority(), _T("www.test.com:8080"));
         }
@@ -34,8 +31,7 @@ namespace SystemTests
         // Given: A URI string with no port
         // When: A Uri object is constructed
         // Then: The Port property should return the default for the scheme
-        TEST(UriTest, Constructor_Should_Return_Default_Port_When_No_Port_Specified)
-        {
+        TEST(UriTest, Constructor_Should_Return_Default_Port_When_No_Port_Specified) {
             // Given
             const String uriString(_T("http://www.test.com/path/to/resource"));
 
@@ -49,8 +45,7 @@ namespace SystemTests
         // Given: A URI string with no path
         // When: A Uri object is constructed
         // Then: The AbsolutePath property should return "/"
-        TEST(UriTest, Constructor_Should_Return_Slash_For_AbsolutePath_When_No_Path_Specified)
-        {
+        TEST(UriTest, Constructor_Should_Return_Slash_For_AbsolutePath_When_No_Path_Specified) {
             // Given
             const String uriString(_T("http://www.test.com"));
 
@@ -64,8 +59,7 @@ namespace SystemTests
         // Given: A URI string with no query
         // When: A Uri object is constructed
         // Then: The Query property should return an empty string
-        TEST(UriTest, Constructor_Should_Return_Empty_String_For_Query_When_No_Query_Specified)
-        {
+        TEST(UriTest, Constructor_Should_Return_Empty_String_For_Query_When_No_Query_Specified) {
             // Given
             const String uriString(_T("http://www.test.com/path"));
 
@@ -79,8 +73,7 @@ namespace SystemTests
         // Given: A URI string with no fragment
         // When: A Uri object is constructed
         // Then: The Fragment property should return an empty string
-        TEST(UriTest, Constructor_Should_Return_Empty_String_For_Fragment_When_No_Fragment_Specified)
-        {
+        TEST(UriTest, Constructor_Should_Return_Empty_String_For_Fragment_When_No_Fragment_Specified) {
             // Given
             const String uriString(_T("http://www.test.com/path"));
 
@@ -94,8 +87,7 @@ namespace SystemTests
         // Given: A simple mailto URI
         // When: A Uri object is constructed
         // Then: The properties are parsed correctly
-        TEST(UriTest, Constructor_Should_Parse_Mailto_Scheme_Correctly)
-        {
+        TEST(UriTest, Constructor_Should_Parse_Mailto_Scheme_Correctly) {
             // Given
             const String uriString(_T("mailto:test@example.com"));
 

@@ -5,12 +5,9 @@
 #include "String.h"
 #include "UriEnums.h"
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        class Uri : public Object
-        {
+namespace DotNetDupe {
+    namespace System {
+        class Uri : public Object {
         public:
             DOTNETDUPE_API Uri(const String& uriString);
 
@@ -24,7 +21,14 @@ namespace DotNetDupe
             DOTNETDUPE_API String GetFragment() const;
 
         private:
+            void ParseUri();
+
             String _uriString;
+            String _scheme;
+            String _authority;
+            String _absolutePath;
+            String _query;
+            String _fragment;
         };
     }
 }

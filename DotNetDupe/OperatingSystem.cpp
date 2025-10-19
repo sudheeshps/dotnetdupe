@@ -1,39 +1,30 @@
 #include "pch.h"
 #include "OperatingSystem.h"
 
-typedef void (WINAPI *RtlGetVersion_FUNC) (OSVERSIONINFOEXW*);
+typedef void (WINAPI* RtlGetVersion_FUNC) (OSVERSIONINFOEXW*);
 
-namespace DotNetDupe
-{
-    namespace System
-    {
+namespace DotNetDupe {
+    namespace System {
         OperatingSystem::OperatingSystem(PlatformID platform, const Version& version)
-            : _platform(platform), _version(version)
-        {
-        }
+            : _platform(platform), _version(version) { }
 
-        PlatformID OperatingSystem::GetPlatform() const
-        {
+        PlatformID OperatingSystem::GetPlatform() const {
             return _platform;
         }
 
-        const Version& OperatingSystem::GetVersion() const
-        {
+        const Version& OperatingSystem::GetVersion() const {
             return _version;
         }
 
-        String OperatingSystem::GetServicePack() const
-        {
+        String OperatingSystem::GetServicePack() const {
             OSVERSIONINFOEXW info;
             ZeroMemory(&info, sizeof(OSVERSIONINFOEXW));
             info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
 
             HMODULE hModule = GetModuleHandle(TEXT("ntdll.dll"));
-            if (hModule)
-            {
+            if (hModule) {
                 RtlGetVersion_FUNC rtlGetVersion = (RtlGetVersion_FUNC)GetProcAddress(hModule, "RtlGetVersion");
-                if (rtlGetVersion)
-                {
+                if (rtlGetVersion) {
                     rtlGetVersion(&info);
                 }
             }
@@ -41,23 +32,19 @@ namespace DotNetDupe
             return String(info.szCSDVersion);
         }
 
-        String OperatingSystem::GetVersionString() const
-        {
+        String OperatingSystem::GetVersionString() const {
             return _version.ToString();
         }
 
-        bool OperatingSystem::IsWindows()
-        {
+        bool OperatingSystem::IsWindows() {
             return true;
         }
 
-        bool OperatingSystem::IsLinux()
-        {
+        bool OperatingSystem::IsLinux() {
             return false;
         }
 
-        bool OperatingSystem::IsMacOS()
-        {
+        bool OperatingSystem::IsMacOS() {
             return false;
         }
 

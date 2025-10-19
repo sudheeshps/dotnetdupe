@@ -244,7 +244,7 @@ namespace SystemTests {
             String randomFileName = Path::GetRandomFileName();
 
             // Assert
-            EXPECT_EQ(_T('.'), randomFileName[8]);
+            EXPECT_EQ(_T('.'), randomFileName [8]);
         }
 
         // Given: A request for a random file name
@@ -259,7 +259,7 @@ namespace SystemTests {
 
             // Assert
             for (int i = 0; i < randomFileName.GetLength(); ++i) {
-                EXPECT_TRUE(validChars.Contains(randomFileName[i]));
+                EXPECT_TRUE(validChars.Contains(randomFileName [i]));
             }
         }
 
@@ -396,7 +396,7 @@ namespace SystemTests {
             EXPECT_FALSE(Path::IsPathFullyQualified(_T("C:")));
         }
 
-        TEST(PathTest, IsPathFullyQualified_Should_Return_True_For_Root_Directory) {
+        TEST(PathTest, IsPathFullyQualified_Should_Return_True__For_Root_Directory) {
             EXPECT_TRUE(Path::IsPathFullyQualified(_T("C:\\")));
         }
 

@@ -5,12 +5,9 @@
 #include "String.h"
 #include "Uri.h"
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        class UriBuilder : public Object
-        {
+namespace DotNetDupe {
+    namespace System {
+        class UriBuilder : public Object {
         public:
             DOTNETDUPE_API UriBuilder();
             DOTNETDUPE_API UriBuilder(const String& uri);
@@ -23,7 +20,7 @@ namespace DotNetDupe
             DOTNETDUPE_API void SetHost(const String& host);
 
             DOTNETDUPE_API int GetPort() const;
-                        DOTNETDUPE_API void SetPortValue(int port);
+            DOTNETDUPE_API void SetPortValue(int port);
 
             DOTNETDUPE_API String GetPath() const;
             DOTNETDUPE_API void SetPath(const String& path);

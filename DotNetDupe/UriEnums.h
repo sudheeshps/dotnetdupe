@@ -1,12 +1,9 @@
 
 #pragma once
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        enum class UriComponents
-        {
+namespace DotNetDupe {
+    namespace System {
+        enum class UriComponents {
             Scheme = 1,
             UserInfo = 2,
             Host = 4,
@@ -27,8 +24,7 @@ namespace DotNetDupe
             SafeUnescaped = 8191
         };
 
-        enum class UriFormat
-        {
+        enum class UriFormat {
             UriEscaped = 1,
             Unescaped = 2,
             SafeUnescaped = 3

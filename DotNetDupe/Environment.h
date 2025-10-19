@@ -9,15 +9,11 @@
 #include <vector>
 #include <map>
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        class Environment : public Object
-        {
+namespace DotNetDupe {
+    namespace System {
+        class Environment : public Object {
         public:
-            enum class SpecialFolder
-            {
+            enum class SpecialFolder {
                 ApplicationData,
                 CommonApplicationData,
                 CommonProgramFiles,

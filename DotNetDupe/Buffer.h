@@ -8,18 +8,14 @@
 #include "ArgumentNullException.h"
 #include "ArgumentOutOfRangeException.h"
 
-namespace DotNetDupe
-{
-    namespace System
-    {
+namespace DotNetDupe {
+    namespace System {
         using byte = unsigned char;
 
-        class Buffer : public Object
-        {
+        class Buffer : public Object {
         public:
             template <typename T>
-            static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count)
-            {
+            static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count) {
                 if (src.IsNull())
                     throw ArgumentNullException(_T("src"));
                 if (dst.IsNull())
@@ -40,31 +36,27 @@ namespace DotNetDupe
                 // TODO: This is not a real block copy, it's a byte-wise copy.
                 // A real block copy would use something like memcpy.
                 // For now, this is a placeholder.
-                for (int i = 0; i < count; ++i)
-                {
+                for (int i = 0; i < count; ++i) {
                     *((char*)dst.GetData() + dstOffset + i) = *((char*)src.GetData() + srcOffset + i);
                 }
             }
 
             template <typename T>
-            static int ByteLength(Array<T>& array)
-            {
+            static int ByteLength(Array<T>& array) {
                 if (array.IsNull())
                     throw ArgumentNullException(_T("array"));
                 return array.GetLength() * sizeof(T);
             }
 
             template <typename T>
-            static byte GetByte(Array<T>& array, int index)
-            {
+            static byte GetByte(Array<T>& array, int index) {
                 if (index < 0 || index >= ByteLength(array))
                     throw ArgumentOutOfRangeException(_T("index"));
                 return *((byte*)array.GetData() + index);
             }
 
             template <typename T>
-            static void SetByte(Array<T>& array, int index, byte value)
-            {
+            static void SetByte(Array<T>& array, int index, byte value) {
                 if (index < 0 || index >= ByteLength(array))
                     throw ArgumentOutOfRangeException(_T("index"));
                 *((byte*)array.GetData() + index) = value;

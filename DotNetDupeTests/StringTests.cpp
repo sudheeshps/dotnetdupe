@@ -99,12 +99,12 @@ namespace SystemTests {
         }
         TEST(StringTest, EqualToOperator_Should_Return_True_When_Strings_Concatinated_Compared_To_Expected_String) {
             String str1(_T("Happy"));
-            str1.Concat({ _T("New"), _T("Year"), _T("2024") });
+            str1 = str1.Concat({ _T("New"), _T("Year"), _T("2024") });
             ASSERT_TRUE(str1 == _T("HappyNewYear2024"));
         }
         TEST(StringTest, EqualToOperator_Should_Return_False_When_Strings_Concatinated_Compared_To_A_Different_String) {
             String str1(_T("Happy"));
-            str1.Concat({ _T("New"), _T("Year"), _T("2024") });
+            str1 = str1.Concat({ _T("New"), _T("Year"), _T("2024") });
             ASSERT_FALSE(str1 == _T("HappyNewYear2023"));
         }
         TEST(StringTest, Contains_Should_Return_True_When_A_Contained_Character_Is_Searched) {

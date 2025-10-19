@@ -9,54 +9,45 @@
 #pragma comment(lib, "psapi.lib")
 #pragma warning(disable : 4996)
 
-namespace DotNetDupe
-{
-    namespace System
-    {
-        String Environment::GetMachineName()
-        {
-            TCHAR buffer[MAX_COMPUTERNAME_LENGTH + 1];
+namespace DotNetDupe {
+    namespace System {
+        String Environment::GetMachineName() {
+            TCHAR buffer [MAX_COMPUTERNAME_LENGTH + 1];
             DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
             GetComputerName(buffer, &size);
             return String(buffer);
         }
 
-        String Environment::GetUserName()
-        {
-            TCHAR buffer[256];
+        String Environment::GetUserName() {
+            TCHAR buffer [256];
             DWORD size = 256;
             ::GetUserName(buffer, &size);
             return String(buffer);
         }
 
-        int Environment::GetProcessorCount()
-        {
+        int Environment::GetProcessorCount() {
             SYSTEM_INFO sysInfo;
             GetSystemInfo(&sysInfo);
             return sysInfo.dwNumberOfProcessors;
         }
 
-        String Environment::GetNewLine()
-        {
+        String Environment::GetNewLine() {
             return String(_T("\r\n"));
         }
 
-        String Environment::GetCurrentDirectory()
-        {
-            TCHAR buffer[MAX_PATH];
+        String Environment::GetCurrentDirectory() {
+            TCHAR buffer [MAX_PATH];
             ::GetCurrentDirectory(MAX_PATH, buffer);
             return String(buffer);
         }
 
-        String Environment::GetSystemDirectory()
-        {
-            TCHAR buffer[MAX_PATH];
+        String Environment::GetSystemDirectory() {
+            TCHAR buffer [MAX_PATH];
             ::GetSystemDirectory(buffer, MAX_PATH);
             return String(buffer);
         }
 
-        String Environment::GetOSVersion()
-        {
+        String Environment::GetOSVersion() {
             OSVERSIONINFOEX info;
             ZeroMemory(&info, sizeof(OSVERSIONINFOEX));
             info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
@@ -67,78 +58,66 @@ namespace DotNetDupe
             return String(ss.str().c_str());
         }
 
-        String Environment::GetUserDomainName()
-        {
-            TCHAR buffer[256];
+        String Environment::GetUserDomainName() {
+            TCHAR buffer [256];
             DWORD size = 256;
             ::GetUserName(buffer, &size);
             return String(buffer);
         }
 
-        String Environment::GetVersion()
-        {
+        String Environment::GetVersion() {
             return String(_T("4.8.0"));
         }
 
-        int64_t Environment::GetWorkingSet()
-        {
+        int64_t Environment::GetWorkingSet() {
             PROCESS_MEMORY_COUNTERS pmc;
             GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
             return pmc.WorkingSetSize;
         }
 
-        void Environment::Exit(int exitCode)
-        {
+        void Environment::Exit(int exitCode) {
             ::ExitProcess(exitCode);
         }
 
-        String Environment::ExpandEnvironmentVariables(const String& name)
-        {
-            TCHAR buffer[1024];
+        String Environment::ExpandEnvironmentVariables(const String& name) {
+            TCHAR buffer [1024];
             ::ExpandEnvironmentStrings(name.GetRawString(), buffer, 1024);
             return String(buffer);
         }
 
-        std::vector<String> Environment::GetCommandLineArgs()
-        {
+        std::vector<String> Environment::GetCommandLineArgs() {
             int nArgs;
             LPWSTR* szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-            if (szArglist == NULL)
-            {
+            if (szArglist == NULL) {
                 return std::vector<String>();
             }
 
             std::vector<String> result;
-            for (int i = 0; i < nArgs; i++)
-            {
-                result.push_back(String(szArglist[i]));
+            for (int i = 0; i < nArgs; i++) {
+                result.push_back(String(szArglist [i]));
             }
             LocalFree(szArglist);
             return result;
         }
 
-        String Environment::GetEnvironmentVariable(const String& variable)
-        {
-            TCHAR buffer[1024];
+        String Environment::GetEnvironmentVariable(const String& variable) {
+            TCHAR buffer [1024];
             ::GetEnvironmentVariable(variable.GetRawString(), buffer, 1024);
             return String(buffer);
         }
 
-        std::map<String, String> Environment::GetEnvironmentVariables()
-        {
+        std::map<String, String> Environment::GetEnvironmentVariables() {
             std::map<String, String> result;
             LPTCH lpszVariable;
             LPTSTR lpvEnv;
 
             lpvEnv = GetEnvironmentStrings();
 
-            for (lpszVariable = lpvEnv; *lpszVariable; lpszVariable++)
-            {
+            for (lpszVariable = lpvEnv; *lpszVariable; lpszVariable++) {
                 String line(lpszVariable);
                 auto parts = line.Split(_T('='));
-                if (parts.size() == 2)
-                {
-                    result[parts[0]] = parts[1];
+                if (parts.size() == 2) {
+                    result [parts [0]] = parts [1];
                 }
                 lpszVariable += lstrlen(lpszVariable);
             }
@@ -147,11 +126,9 @@ namespace DotNetDupe
             return result;
         }
 
-        String Environment::GetFolderPath(SpecialFolder folder)
-        {
+        String Environment::GetFolderPath(SpecialFolder folder) {
             int csidl = 0;
-            switch (folder)
-            {
+            switch (folder) {
             case SpecialFolder::ApplicationData:
                 csidl = CSIDL_APPDATA;
                 break;
@@ -223,28 +200,24 @@ namespace DotNetDupe
                 break;
             }
 
-            TCHAR buffer[MAX_PATH];
+            TCHAR buffer [MAX_PATH];
             SHGetFolderPath(NULL, csidl, NULL, 0, buffer);
             return String(buffer);
         }
 
-        std::vector<String> Environment::GetLogicalDrives()
-        {
+        std::vector<String> Environment::GetLogicalDrives() {
             std::vector<String> result;
             DWORD drives = ::GetLogicalDrives();
-            for (int i = 0; i < 26; i++)
-            {
-                if ((drives >> i) & 1)
-                {
-                    TCHAR driveName[4] = { (TCHAR)('A' + i), ':', '\\', 0 };
+            for (int i = 0; i < 26; i++) {
+                if ((drives >> i) & 1) {
+                    TCHAR driveName [4] = { (TCHAR)('A' + i), ':', '\\', 0 };
                     result.push_back(String(driveName));
                 }
             }
             return result;
         }
 
-        void Environment::SetEnvironmentVariable(const String& variable, const String& value)
-        {
+        void Environment::SetEnvironmentVariable(const String& variable, const String& value) {
             ::SetEnvironmentVariable(variable.GetRawString(), value.GetRawString());
         }
     }
