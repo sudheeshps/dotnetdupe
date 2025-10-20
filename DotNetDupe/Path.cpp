@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "Path.h"
 #include "IOException.h"
 #include <filesystem>

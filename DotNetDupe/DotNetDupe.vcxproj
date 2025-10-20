@@ -207,13 +207,17 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="IO\File.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="IO\FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="IO\Stream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
@@ -222,6 +226,7 @@
     <ClCompile Include="Version.cpp" />
     <ClCompile Include="Path.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -232,6 +237,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Text\TextEncoding.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="UriParser.cpp" />
   </ItemGroup>
@@ -241,4 +247,7 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <Target Name="PackNuget" AfterTargets="Build" Condition="'$(Configuration)' == 'Release' And '$(Platform)' == 'x64'">
+    <Exec Command="nuget pack &quot;$(ProjectDir)..\DotNetDupe.nuspec&quot; -OutputDirectory &quot;$(SolutionDir)nuget_packages&quot;" />
+  </Target>
 </Project>

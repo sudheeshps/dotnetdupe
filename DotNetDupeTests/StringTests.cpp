@@ -70,18 +70,6 @@ namespace SystemTests {
             String str2(_T("HELLO world2"));
             ASSERT_TRUE(String::Compare(str1, 0, str2, 0, 5, false) > 0);
         }
-        /*TEST(StringTest, ComparePassingInvalidIndexFailWithException)
-        {
-            String str1(_T("Hello world"));
-            String str2(_T("HELLO world2"));
-            ASSERT_THROW(String::Compare(str1, -1, str2, 0, 5, false), ArgumentException);
-        }
-        TEST(StringTest, ComparePassingInvalidLengthFailWithException)
-        {
-            String str1(_T("Hello world"));
-            String str2(_T("HELLO world2"));
-            ASSERT_THROW(String::Compare(str1, 0, str2, 0, 20, false), ArgumentException);
-        }*/
         TEST(StringTest, CompareTo_Should_Return_Zero_When_Same_Strings_Compared) {
             String str1(_T("Hello world"));
             String str2(_T("Hello world"));

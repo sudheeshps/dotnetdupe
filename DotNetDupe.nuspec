@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DotNetDupe</id>
+    <version>1.0.0</version>
+    <authors>Sudheesh Subramanian</authors>
+    <description>A C++ library that duplicates some .NET functionality.</description>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/user/DotNetDupe</projectUrl>
+    <license type="expression">MIT</license>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <tags>native c++ dotnet</tags>
+    <dependencies>
+    </dependencies>
+    <contentFiles>
+    </contentFiles>
+  </metadata>
+  <files>
+    <file src="README.md" target="" />
+    <!-- Add the .targets file -->
+    <file src="nuget\DotNetDupe.targets" target="build\native\DotNetDupe.targets" />
+
+    <!-- Add header files -->
+    <file src="DotNetDupe\*.h" target="include" />
+    <file src="DotNetDupe\IO\*.h" target="include\IO" />
+    <file src="DotNetDupe\Text\*.h" target="include\Text" />
+
+    <!-- Add binaries -->
+    <file src="x64\Debug\DotNetDupe.dll" target="build\native\x64\Debug\DotNetDupe.dll" />
+    <file src="x64\Debug\DotNetDupe.lib" target="build\native\x64\Debug\DotNetDupe.lib" />
+    <file src="x64\Debug\DotNetDupe.pdb" target="build\native\x64\Debug\DotNetDupe.pdb" />
+
+    <file src="x64\Release\DotNetDupe.dll" target="build\native\x64\Release\DotNetDupe.dll" />
+    <file src="x64\Release\DotNetDupe.lib" target="build\native\x64\Release\DotNetDupe.lib" />
+    <file src="x64\Release\DotNetDupe.pdb" target="build\native\x64\Release\DotNetDupe.pdb" />
+  </files>
+</package>
