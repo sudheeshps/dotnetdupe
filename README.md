@@ -203,11 +203,11 @@ DotNetDupe is currently **under active development**. We are continuously workin
 
 ## Contributions 👋
 
-Contributions to the DotNetDupe project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. (Please refer to our Contributing Guidelines for more information.)
+Contributions to the DotNetDupe project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to [GitHub's general contributing guidelines](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) for more information on how to get started.
 
 ## License 📄
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details. (Replace MIT with actual license and link to LICENSE file)
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
 ## Generated Content 🤖
 
