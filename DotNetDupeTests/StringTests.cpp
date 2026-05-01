@@ -5,8 +5,8 @@
 
 #include "gtest/gtest.h"
 
-#include "../DotNetDupe/String.h"
-#include "../DotNetDupe/ArgumentException.h"
+#include "System/String.h"
+#include "System/ArgumentException.h"
 
 //<MethodName>_Should_<ExpectedBehavior>_When_<StateUnderTest>
 

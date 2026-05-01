@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/Char.h"
+#include "System/Char.h"
 
 using namespace DotNetDupe::System;
 namespace SystemTests {

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/IO/File.h"
-#include "../DotNetDupe/String.h"
+#include "System/IO/File.h"
+#include "System/String.h"
 #include <vector>
 
 using namespace DotNetDupe::System;

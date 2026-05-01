@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Version.h"
+#include "System/Version.h"
 #include <sstream>
 
 namespace DotNetDupe {

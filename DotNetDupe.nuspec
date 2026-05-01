@@ -21,9 +21,10 @@
     <file src="nuget\DotNetDupe.targets" target="build\native\DotNetDupe.targets" />
 
     <!-- Add header files -->
-    <file src="DotNetDupe\*.h" target="include" />
-    <file src="DotNetDupe\IO\*.h" target="include\IO" />
-    <file src="DotNetDupe\Text\*.h" target="include\Text" />
+    <file src="Include\**\*.h" target="include" />
+
+    <!-- Add documentation -->
+    <file src="docs\*.md" target="docs" />
 
     <!-- Add binaries -->
     <file src="x64\Debug\DotNetDupe.dll" target="build\native\x64\Debug\DotNetDupe.dll" />

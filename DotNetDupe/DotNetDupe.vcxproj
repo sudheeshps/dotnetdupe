@@ -42,7 +42,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -90,6 +90,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,6 +109,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,6 +129,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,6 +149,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -157,67 +161,63 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ArgumentException.h" />
-    <ClInclude Include="ArgumentNullException.h" />
-    <ClInclude Include="ArgumentOutOfRangeException.h" />
-    <ClInclude Include="ArithmeticException.h" />
-    <ClInclude Include="Array.h" />
-    <ClInclude Include="BasicArgumentException.h" />
-    <ClInclude Include="BasicArgumentOutOfRangeException.h" />
-    <ClInclude Include="BasicArithmeticException.h" />
-    <ClInclude Include="BasicException.h" />
-    <ClInclude Include="BasicNotImplementedException.h" />
-    <ClInclude Include="BasicOverflowException.h" />
-    <ClInclude Include="BasicString.h" />
-    <ClInclude Include="BasicSystemException.h" />
-    <ClInclude Include="Buffer.h" />
-    <ClInclude Include="Char.h" />
-    <ClInclude Include="BasicChar.h" />
-    <ClInclude Include="CharUnicodeInfo.h" />
-    <ClInclude Include="Clonable.h" />
+    <ClInclude Include="..\Include\System\ArgumentException.h" />
+    <ClInclude Include="..\Include\System\ArgumentNullException.h" />
+    <ClInclude Include="..\Include\System\ArgumentOutOfRangeException.h" />
+    <ClInclude Include="..\Include\System\ArithmeticException.h" />
+    <ClInclude Include="..\Include\System\BitConverter.h" />
+    <ClInclude Include="..\Include\System\Array.h" />
+    <ClInclude Include="..\Include\System\BasicArgumentException.h" />
+    <ClInclude Include="..\Include\System\BasicArgumentOutOfRangeException.h" />
+    <ClInclude Include="..\Include\System\BasicArithmeticException.h" />
+    <ClInclude Include="..\Include\System\BasicException.h" />
+    <ClInclude Include="..\Include\System\BasicNotImplementedException.h" />
+    <ClInclude Include="..\Include\System\BasicOverflowException.h" />
+    <ClInclude Include="..\Include\System\BasicString.h" />
+    <ClInclude Include="..\Include\System\BasicSystemException.h" />
+    <ClInclude Include="..\Include\System\Buffer.h" />
+    <ClInclude Include="..\Include\System\Char.h" />
+    <ClInclude Include="..\Include\System\BasicChar.h" />
+    <ClInclude Include="..\Include\System\CharUnicodeInfo.h" />
+    <ClInclude Include="..\Include\System\Clonable.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="Comparable.h" />
-    <ClInclude Include="Comparable2.h" />
-    <ClInclude Include="Environment.h" />
-    <ClInclude Include="Exception.h" />
-    <ClInclude Include="IOException.h" />
-    <ClInclude Include="IO\File.h" />
-    <ClInclude Include="IO\FileStream.h" />
-    <ClInclude Include="IO\IDisposable.h" />
-    <ClInclude Include="IO\Stream.h" />
-    <ClInclude Include="FormatProvider.h" />
+    <ClInclude Include="..\Include\System\Comparable.h" />
+    <ClInclude Include="..\Include\System\Comparable2.h" />
+    <ClInclude Include="..\Include\System\Environment.h" />
+    <ClInclude Include="..\Include\System\Exception.h" />
+    <ClInclude Include="..\Include\System\IOException.h" />
+    <ClInclude Include="..\Include\System\IO\File.h" />
+    <ClInclude Include="..\Include\System\IO\FileStream.h" />
+    <ClInclude Include="..\Include\System\IO\IDisposable.h" />
+    <ClInclude Include="..\Include\System\IO\Stream.h" />
+    <ClInclude Include="..\Include\System\FormatProvider.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="NotImplementedException.h" />
-    <ClInclude Include="Object.h" />
-    <ClInclude Include="OperatingSystem.h" />
-    <ClInclude Include="OverflowException.h" />
-    <ClInclude Include="Path.h" />
+    <ClInclude Include="..\Include\System\NotImplementedException.h" />
+    <ClInclude Include="..\Include\System\Object.h" />
+    <ClInclude Include="..\Include\System\OperatingSystem.h" />
+    <ClInclude Include="..\Include\System\OverflowException.h" />
+    <ClInclude Include="..\Include\System\Path.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="String.h" />
-    <ClInclude Include="SystemException.h" />
-    <ClInclude Include="Text\TextEncoding.h" />
-    <ClInclude Include="Uri.h" />
-    <ClInclude Include="UriBuilder.h" />
+    <ClInclude Include="..\Include\System\String.h" />
+    <ClInclude Include="..\Include\System\SystemException.h" />
+    <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
+    <ClInclude Include="..\Include\System\Uri.h" />
+    <ClInclude Include="..\Include\System\UriBuilder.h" />
     <ClInclude Include="Utils.h" />
-    <ClInclude Include="Random.h" />
-    <ClInclude Include="UriParser.h" />
-    <ClInclude Include="UriEnums.h" />
+    <ClInclude Include="..\Include\System\Random.h" />
+    <ClInclude Include="..\Include\System\UriParser.h" />
+    <ClInclude Include="..\Include\System\UriEnums.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="BitConverter.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
-    <ClCompile Include="IO\File.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
-    <ClCompile Include="IO\FileStream.cpp">
+    <ClCompile Include="File.cpp" />
+    <ClCompile Include="FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="IO\Stream.cpp">
+    <ClCompile Include="Stream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
@@ -235,10 +235,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Random.cpp" />
-    <ClCompile Include="Text\TextEncoding.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">../pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">../pch.h</PrecompiledHeaderFile>
-    </ClCompile>
+    <ClCompile Include="TextEncoding.cpp" />
     <ClCompile Include="UriParser.cpp" />
   </ItemGroup>
   <ItemGroup>

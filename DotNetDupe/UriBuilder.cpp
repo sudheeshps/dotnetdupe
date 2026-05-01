@@ -1,6 +1,6 @@
 #include "pch.h"
-#include "UriBuilder.h"
-#include "String.h"
+#include "System/UriBuilder.h"
+#include "System/String.h"
 #include <sstream>
 
 namespace DotNetDupe {

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/Array.h"
+#include "System/Array.h"
 
 using namespace DotNetDupe::System;
 

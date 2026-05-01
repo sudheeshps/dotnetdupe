@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/Uri.h"
-#include "../DotNetDupe/String.h"
+#include "System/Uri.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
 

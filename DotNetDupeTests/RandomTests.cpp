@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/Random.h"
+#include "System/Random.h"
 
 using namespace DotNetDupe::System;
 

@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/UriParser.h"
-#include "../DotNetDupe/String.h"
-#include "../DotNetDupe/Uri.h"
+#include "System/UriParser.h"
+#include "System/String.h"
+#include "System/Uri.h"
 
 using namespace DotNetDupe::System;
 

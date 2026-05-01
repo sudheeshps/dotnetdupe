@@ -1,23 +1,6 @@
 ### template class `BasicString<CharT>`
 
-Represents text as a sequence of UTF-16 code units.
-
-**Note:** The `String` class is a typedef for `BasicString<TCHAR>`.
-
-#### Usage
-
-```cpp
-#include <iostream>
-#include "../DotNetDupe/String.h"
-
-int main() {
-    DotNetDupe::System::String s1 = _T("Hello");
-    DotNetDupe::System::String s2 = _T("World");
-    DotNetDupe::System::String s3 = s1 + _T(" ") + s2;
-    std::wcout << s3.GetRawString() << std::endl;
-    return 0;
-}
-```
+Represents text as a sequence of character code units. The `String` class is a typedef for `BasicString<TCHAR>`.
 
 #### Methods
 
@@ -25,182 +8,364 @@ int main() {
 
 Initializes a new instance of the `BasicString` class with a pointer to a null-terminated character array.
 
+**Parameters:**
+- `pStr`: A pointer to a null-terminated character array.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+```
+
 ##### `const CharT* GetRawString() const`
 
 Returns a pointer to the raw character array.
+
+**Returns:**
+- A pointer to the underlying null-terminated character array.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+const TCHAR* raw = s.GetRawString();
+```
 
 ##### `int GetLength() const`
 
 Returns the length of the string.
 
-##### `std::basic_string<CharT>& GetString()`
+**Returns:**
+- The number of characters in the string.
 
-Returns a reference to the underlying `std::basic_string` object.
+**Usage:**
+```cpp
+String s(_T("Hello"));
+int len = s.GetLength(); // 5
+```
 
 ##### `BasicString<CharT> Clone() const`
 
 Creates a new `BasicString` object with the same value as this instance.
 
-##### `bool operator<(const BasicString<CharT>& str) const`
+**Returns:**
+- A new `BasicString` object that is a copy of this instance.
 
-Compares this instance with another `BasicString` object.
+**Usage:**
+```cpp
+String s1(_T("Hello"));
+String s2 = s1.Clone();
+```
 
 ##### `bool operator==(const BasicString<CharT>& str) const`
 
 Compares this instance with another `BasicString` object for equality.
 
-##### `bool operator!=(const BasicString<CharT>& str) const`
+**Parameters:**
+- `str`: The string to compare with.
 
-Compares this instance with another `BasicString` object for inequality.
+**Returns:**
+- `true` if the strings are equal; otherwise, `false`.
+
+**Usage:**
+```cpp
+String s1(_T("abc")), s2(_T("abc"));
+if (s1 == s2) { /* ... */ }
+```
 
 ##### `CharT operator[](int index) const`
 
 Gets the character at the specified index.
 
+**Parameters:**
+- `index`: The zero-based position of the character to retrieve.
+
+**Returns:**
+- The character at the specified index.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+TCHAR c = s[1]; // 'e'
+```
+
 ##### `int static Compare(const BasicString<CharT>& str1, int index1, const BasicString<CharT>& str2, int index2, int length, bool ignoreCase)`
 
 Compares two specified `BasicString` objects.
 
-##### `int CompareTo(const BasicString& str) const`
+**Parameters:**
+- `str1`: The first string to compare.
+- `index1`: The position of the first substring within `str1`.
+- `str2`: The second string to compare.
+- `index2`: The position of the second substring within `str2`.
+- `length`: The number of characters to compare.
+- `ignoreCase`: `true` to ignore case during the comparison; otherwise, `false`.
 
-Compares this instance with a specified `BasicString` object.
+**Returns:**
+- An integer that indicates the lexical relationship between the two substrings.
+
+**Usage:**
+```cpp
+int result = String::Compare(s1, 0, s2, 0, 5, true);
+```
 
 ##### `BasicString<CharT> operator+(const BasicString<CharT>& str) const`
 
 Concatenates two `BasicString` objects.
 
-##### `BasicString<CharT> Concat(const std::initializer_list<BasicString<CharT>> strs) const`
+**Parameters:**
+- `str`: The string to append.
 
-Concatenates the members of a collection of `BasicString` objects.
+**Returns:**
+- A new string that is the concatenation of the current instance and `str`.
+
+**Usage:**
+```cpp
+String s1(_T("Hello")), s2(_T(" World"));
+String s3 = s1 + s2; // "Hello World"
+```
 
 ##### `bool Contains(CharT c) const`
 
 Determines whether a character occurs within this string.
 
+**Parameters:**
+- `c`: The character to seek.
+
+**Returns:**
+- `true` if the character is found; otherwise, `false`.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+bool hasE = s.Contains(_T('e')); // true
+```
+
 ##### `bool Contains(const BasicString<CharT>& str)`
 
 Determines whether a specified substring occurs within this string.
+
+**Parameters:**
+- `str`: The substring to seek.
+
+**Returns:**
+- `true` if the substring is found; otherwise, `false`.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+bool hasWorld = s.Contains(_T("World")); // true
+```
 
 ##### `void CopyTo(int sourceIndex, CharT* pDestination, int destinationIndex, int destArraySize, int count) const`
 
 Copies a specified number of characters from a specified position in this instance to a specified position in a character array.
 
-##### `bool EndsWith(CharT c, bool ignoreCase) const`
+**Parameters:**
+- `sourceIndex`: The character position in this instance from which characters will be copied.
+- `pDestination`: An array of characters to which characters in this instance will be copied.
+- `destinationIndex`: The starting index in `pDestination` at which characters will be copied.
+- `destArraySize`: The size of the destination array.
+- `count`: The number of characters to copy.
 
-Determines whether the end of this string instance matches the specified character.
+**Usage:**
+```cpp
+TCHAR buffer[10];
+s.CopyTo(0, buffer, 0, 10, 5);
+```
 
 ##### `bool EndsWith(const BasicString<CharT>& suffix, bool ignoreCase) const`
 
 Determines whether the end of this string instance matches the specified string.
 
-##### `bool static Equals(const BasicString<CharT>& str1, const BasicString<CharT>& str2)`
+**Parameters:**
+- `suffix`: The string to compare to the substring at the end of this instance.
+- `ignoreCase`: `true` to ignore case during the comparison; otherwise, `false`.
 
-Determines whether two specified `BasicString` objects have the same value.
+**Returns:**
+- `true` if `suffix` matches the end of this instance; otherwise, `false`.
 
-##### `bool Equals(const BasicString<CharT>& str) const`
-
-Determines whether this instance and a specified `BasicString` object have the same value.
-
-##### `int IndexOf(const BasicString<CharT>& substring) const`
-
-Returns the zero-based index of the first occurrence of a specified substring in this instance.
-
-##### `int IndexOf(const BasicString<CharT>& substring, bool ignoreCase) const`
-
-Returns the zero-based index of the first occurrence of a specified substring in this instance, using a specified comparison option.
+**Usage:**
+```cpp
+String s(_T("filename.txt"));
+bool isTxt = s.EndsWith(_T(".txt"), true); // true
+```
 
 ##### `int IndexOf(const BasicString<CharT>& substring, int startIndex, bool ignoreCase) const`
 
-Returns the zero-based index of the first occurrence of a specified substring in this instance, starting the search at a specified character position and using a specified comparison option.
+Returns the zero-based index of the first occurrence of a specified substring in this instance.
 
-##### `int IndexOfAny(int startIndex, std::initializer_list<CharT> chars)`
+**Parameters:**
+- `substring`: The string to seek.
+- `startIndex`: The search starting position.
+- `ignoreCase`: `true` to ignore case during the comparison; otherwise, `false`.
 
-Returns the zero-based index of the first occurrence in this instance of any character in a specified array of Unicode characters.
+**Returns:**
+- The zero-based index position of `substring` if it is found, or -1 if it is not.
 
-##### `BasicString<CharT>& Append(const CharT ch)`
-
-Appends a character to this instance.
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+int index = s.IndexOf(_T("World"), 0, false); // 6
+```
 
 ##### `BasicString<CharT>& Append(const BasicString<CharT>& str)`
 
 Appends a `BasicString` object to this instance.
 
+**Parameters:**
+- `str`: The string to append.
+
+**Returns:**
+- A reference to this instance after the append operation.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+s.Append(_T(" World"));
+```
+
 ##### `BasicString<CharT>& Insert(int index, const BasicString<CharT>& str)`
 
 Inserts a specified string at a specified index position in this instance.
+
+**Parameters:**
+- `index`: The zero-based index at which to insert.
+- `str`: The string to insert.
+
+**Returns:**
+- A reference to this instance after the insertion.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+s.Insert(5, _T(",")); // "Hello, World"
+```
 
 ##### `bool IsEmpty() const`
 
 Indicates whether this string is empty.
 
-##### `BasicString<CharT> static Join(CharT separator, std::initializer_list<BasicString<CharT>> strings)`
+**Returns:**
+- `true` if the length of the string is 0; otherwise, `false`.
 
-Concatenates the elements of a collection, using the specified separator between each element.
-
-##### `BasicString<CharT> static Join(CharT separator, std::initializer_list<BasicString<CharT>> strings, int startIndex, int count)`
-
-Concatenates the elements of a collection, using the specified separator between each element, starting from a specified index and concatenating a specified number of elements.
+**Usage:**
+```cpp
+String s(_T(""));
+if (s.IsEmpty()) { /* ... */ }
+```
 
 ##### `BasicString<CharT> static Join(const BasicString<CharT>& separator, std::initializer_list<BasicString<CharT>> strings)`
 
 Concatenates the elements of a collection, using the specified separator string between each element.
 
-##### `BasicString<CharT> static Join(const BasicString<CharT>& separator, std::initializer_list<BasicString<CharT>> strings, int startIndex, int count)`
+**Parameters:**
+- `separator`: The string to use as a separator.
+- `strings`: A collection that contains the strings to concatenate.
 
-Concatenates the elements of a collection, using the specified separator string between each element, starting from a specified index and concatenating a specified number of elements.
+**Returns:**
+- A string that consists of the members of `strings` delimited by `separator`.
 
-##### `int LastIndexOf(const BasicString<CharT>& str, bool ignoreCase)`
-
-Returns the zero-based index of the last occurrence of a specified string in this instance.
-
-##### `int LastIndexOfAny(int startIndex, std::initializer_list<CharT> chars, bool ignoreCase)`
-
-Returns the zero-based index of the last occurrence in this instance of one or more characters specified in a Unicode character array.
-
-##### `BasicString<CharT> PadLeft(int totalWidth)`
-
-Returns a new string that right-aligns the characters in this instance by padding them on the left with spaces, for a specified total length.
+**Usage:**
+```cpp
+String result = String::Join(_T(", "), { _T("apple"), _T("orange"), _T("banana") });
+```
 
 ##### `BasicString<CharT> PadLeft(int totalWidth, CharT ch)`
 
 Returns a new string that right-aligns the characters in this instance by padding them on the left with a specified character, for a specified total length.
 
-##### `BasicString<CharT> PadRight(int totalWidth)`
+**Parameters:**
+- `totalWidth`: The number of characters in the resulting string.
+- `ch`: A padding character.
 
-Returns a new string that left-aligns the characters in this instance by padding them on the right with spaces, for a specified total length.
+**Returns:**
+- A new string that is equivalent to this instance, but right-aligned and padded on the left.
 
-##### `BasicString<CharT> PadRight(int totalWidth, CharT ch)`
-
-Returns a new string that left-aligns the characters in this instance by padding them on the right with a specified character, for a specified total length.
-
-##### `BasicString<CharT> Remove(int startIndex) const`
-
-Deletes all the characters from this instance beginning at a specified position to the end of the string.
+**Usage:**
+```cpp
+String s(_T("123"));
+String padded = s.PadLeft(5, _T('0')); // "00123"
+```
 
 ##### `BasicString<CharT> Remove(int startIndex, int count) const`
 
 Deletes a specified number of characters from this instance beginning at a specified position.
 
-##### `BasicString<CharT> Replace(CharT originalChar, CharT replaceChar)`
+**Parameters:**
+- `startIndex`: The zero-based position to begin deleting.
+- `count`: The number of characters to delete.
 
-Returns a new string in which all occurrences of a specified Unicode character in this instance are replaced with another specified Unicode character.
+**Returns:**
+- A new string that is equivalent to this instance less the removed characters.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+String result = s.Remove(5, 6); // "Hello"
+```
 
 ##### `BasicString<CharT> Replace(const BasicString<CharT>& orignalStr, const BasicString<CharT>& replaceStr)`
 
 Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.
 
+**Parameters:**
+- `orignalStr`: The string to be replaced.
+- `replaceStr`: The string to replace all occurrences of `orignalStr`.
+
+**Returns:**
+- A string that is equivalent to the current string except that all occurrences of `orignalStr` are replaced with `replaceStr`.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+String result = s.Replace(_T("World"), _T("DotNet")); // "Hello DotNet"
+```
+
 ##### `std::vector<BasicString<CharT>> Split(CharT separator)`
 
-Splits a string into substrings that are based on the characters in an array.
+Splits a string into substrings based on a separator character.
 
-##### `std::vector<BasicString<CharT>> Split(BasicString<CharT> separator [], int count, StringSplitOptions options)`
+**Parameters:**
+- `separator`: A character that delimits the substrings in this string.
 
-Splits a string into substrings that are based on the characters in an array.
+**Returns:**
+- A vector whose elements contain the substrings in this instance that are delimited by `separator`.
+
+**Usage:**
+```cpp
+String s(_T("apple,orange,banana"));
+auto parts = s.Split(_T(','));
+```
 
 ##### `bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const`
 
 Determines whether the beginning of this string instance matches the specified string.
 
+**Parameters:**
+- `prefix`: The string to compare.
+- `ignoreCase`: `true` to ignore case during the comparison; otherwise, `false`.
+
+**Returns:**
+- `true` if `prefix` matches the beginning of this string; otherwise, `false`.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+bool result = s.StartsWith(_T("Hello"), false); // true
+```
+
 ##### `BasicString<CharT> Substring(int startIndex, int length) const`
 
 Retrieves a substring from this instance.
+
+**Parameters:**
+- `startIndex`: The zero-based starting character position of a substring in this instance.
+- `length`: The number of characters in the substring.
+
+**Returns:**
+- A string that is equivalent to the substring of length `length` that begins at `startIndex` in this instance.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+String sub = s.Substring(0, 5); // "Hello"
+```

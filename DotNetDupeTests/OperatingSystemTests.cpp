@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/OperatingSystem.h"
-#include "../DotNetDupe/Version.h"
-#include "../DotNetDupe/String.h"
+#include "System/OperatingSystem.h"
+#include "System/Version.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
 

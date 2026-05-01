@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../DotNetDupe/Environment.h"
+#include "System/Environment.h"
 
 using namespace DotNetDupe::System;
 namespace SystemTests {

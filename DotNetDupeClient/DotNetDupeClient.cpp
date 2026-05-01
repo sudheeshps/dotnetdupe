@@ -1,20 +1,53 @@
-#include "../DotNetDupe/Array.h"
-#include "../DotNetDupe/String.h"
-#include "../DotNetDupe/IO/File.h"
-#include "../DotNetDupe/IO/FileStream.h"
-#include "../DotNetDupe/Environment.h"
-#include "../DotNetDupe/Buffer.h"
-#include "../DotNetDupe/Char.h"
-#include "../DotNetDupe/Path.h"
-#include "../DotNetDupe/Random.h"
-#include "../DotNetDupe/Uri.h"
-#include "../DotNetDupe/Version.h"
-#include "../DotNetDupe/OperatingSystem.h"
+#include "System/Array.h"
+#include "System/String.h"
+#include "System/IO/File.h"
+#include "System/IO/FileStream.h"
+#include "System/Environment.h"
+#include "System/Buffer.h"
+#include "System/Char.h"
+#include "System/Path.h"
+#include "System/Random.h"
+#include "System/Uri.h"
+#include "System/Version.h"
+#include "System/OperatingSystem.h"
+#include "System/BitConverter.h"
 #include <iostream>
+#include <iomanip>
 //
 //
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
+
+void DemonstrateBitConverter() {
+    std::cout << "\n--- BitConverter Demonstration ---" << std::endl;
+
+    int intVal = 123456789;
+    Array<byte> intBytes = BitConverter::GetBytes(intVal);
+    std::cout << "Int: " << intVal << " to bytes: ";
+    for (int i = 0; i < intBytes.GetLength(); i++) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)intBytes [i] << " ";
+    }
+    std::cout << std::dec << std::endl;
+
+    int backToInt = BitConverter::ToInt32(intBytes, 0);
+    std::cout << "Bytes back to int: " << backToInt << std::endl;
+
+    double doubleVal = 3.141592653589793;
+    Array<byte> doubleBytes = BitConverter::GetBytes(doubleVal);
+    std::cout << "Double: " << doubleVal << " to bytes: ";
+    for (int i = 0; i < doubleBytes.GetLength(); i++) {
+        std::cout << std::hex << std::setw(2) << std::setfill('0') << (int)doubleBytes [i] << " ";
+    }
+    std::cout << std::dec << std::endl;
+
+    double backToDouble = BitConverter::ToDouble(doubleBytes, 0);
+    std::cout << "Bytes back to double: " << backToDouble << std::endl;
+
+    String hexString = BitConverter::ToString(intBytes);
+    std::wcout << L"Int bytes as hex string: " << hexString.GetRawString() << std::endl;
+
+    std::cout << "Is Little Endian: " << (BitConverter::IsLittleEndian ? "Yes" : "No") << std::endl;
+}
 
 void DemonstrateArray() {
     std::cout << "--- Array Demonstration ---" << std::endl;
@@ -154,6 +187,7 @@ void DemonstrateString() {
 }
 
 int main() {
+    DemonstrateBitConverter();
     DemonstrateArray();
     DemonstrateFile();
     DemonstrateFileStream();

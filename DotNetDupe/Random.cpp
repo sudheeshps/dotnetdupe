@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Random.h"
+#include "System/Random.h"
 #include <random>
 
 namespace DotNetDupe {

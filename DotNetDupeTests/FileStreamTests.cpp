@@ -1,12 +1,12 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/IO/FileStream.h"
-#include "../DotNetDupe/IO/File.h"
-#include "../DotNetDupe/String.h"
-#include "../DotNetDupe/ArgumentException.h"
-#include "../DotNetDupe/ArgumentOutOfRangeException.h"
-#include "../DotNetDupe/IOException.h"
-#include "../DotNetDupe/Text/TextEncoding.h"
+#include "System/IO/FileStream.h"
+#include "System/IO/File.h"
+#include "System/String.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/IOException.h"
+#include "System/Text/TextEncoding.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;

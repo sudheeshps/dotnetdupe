@@ -6,7 +6,7 @@
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
 
-Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨ Iam starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
+Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨ We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
 
 A fun fact: While I personally crafted core components like `Char`, `String`, and `Path` (along with their tests), a significant portion of the remaining code was generated with the help of Gemini Code Assist. 🤖 This project serves as a unique playground for exploring how generative AI can accelerate development from scratch. 🚀
 
@@ -137,6 +137,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | Class | Description |
 |---|---|
 | [Array<T>](docs/Array.md) | Provides methods for creating, manipulating, searching, and sorting arrays. |
+| [BitConverter](docs/BitConverter.md) | Converts base data types to an array of bytes, and an array of bytes to base data types. |
 | [Buffer](docs/Buffer.md) | Manipulates arrays of primitive types. |
 | [Char](docs/Char.md) | Represents a character. |
 | [Environment](docs/Environment.md) | Provides information about the current environment and platform. |

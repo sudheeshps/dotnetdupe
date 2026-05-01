@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "Object.h"
+#include "System/Object.h"
 namespace DotNetDupe {
     namespace System {
         bool Object::operator==(const Object& obj) const {

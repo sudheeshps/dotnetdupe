@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/Buffer.h"
-#include "../DotNetDupe/Array.h"
+#include "System/Buffer.h"
+#include "System/Array.h"
 
 using namespace DotNetDupe::System;
 

@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
-#include "../DotNetDupe/String.h"
-#include "../DotNetDupe/Path.h"
+#include "System/String.h"
+#include "System/Path.h"
 #include <filesystem>
 using namespace DotNetDupe::System::IO;
 namespace fs = std::filesystem;
