@@ -81,7 +81,7 @@ namespace DotNetDupe {
 
         String Environment::ExpandEnvironmentVariables(const String& name) {
             TCHAR buffer [1024];
-            ::ExpandEnvironmentStrings(name.GetRawString(), buffer, 1024);
+            ::ExpandEnvironmentStrings(name, buffer, 1024);
             return String(buffer);
         }
 
@@ -102,7 +102,7 @@ namespace DotNetDupe {
 
         String Environment::GetEnvironmentVariable(const String& variable) {
             TCHAR buffer [1024];
-            ::GetEnvironmentVariable(variable.GetRawString(), buffer, 1024);
+            ::GetEnvironmentVariable(variable, buffer, 1024);
             return String(buffer);
         }
 
@@ -218,7 +218,7 @@ namespace DotNetDupe {
         }
 
         void Environment::SetEnvironmentVariable(const String& variable, const String& value) {
-            ::SetEnvironmentVariable(variable.GetRawString(), value.GetRawString());
+            ::SetEnvironmentVariable(variable, value);
         }
 
         OperatingSystem Environment::GetOperatingSystem() {

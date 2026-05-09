@@ -45,9 +45,9 @@ namespace DotNetDupe {
                 }
 
                 // Convert wchar_t path to char path for std::fstream using UTF-8
-                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path.GetRawString(), path.GetLength(), NULL, 0, NULL, NULL);
+                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), NULL, 0, NULL, NULL);
                 std::string narrowPath(bufferSize, '\0');
-                WideCharToMultiByte(CP_UTF8, 0, path.GetRawString(), path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
+                WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
 
                 _fileStream.open(narrowPath, openMode);
                 if (!_fileStream.is_open()) {

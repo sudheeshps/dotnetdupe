@@ -44,13 +44,30 @@ namespace DotNetDupe {
             BasicString<CharT>(const BasicString<CharT>&& str) noexcept;
             BasicString<CharT>& operator=(const BasicString<CharT>&& str) noexcept;
             const CharT* GetRawString() const;
+            operator const CharT* () const { return GetRawString(); }
             int GetLength() const;
             std::basic_string<CharT>& GetString();
             BasicString<CharT> Clone() const;
 
+            friend std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const BasicString<CharT>& str) {
+                os << str.GetRawString();
+                return os;
+            }
+
+            friend std::basic_istream<CharT>& operator>>(std::basic_istream<CharT>& is, BasicString<CharT>& str) {
+                std::basic_string<CharT> s;
+                is >> s;
+                str = s.c_str();
+                return is;
+            }
+
             bool operator<(const BasicString<CharT>& str) const;
-            bool operator==(const BasicString<CharT>& str) const;
-            bool operator!=(const BasicString<CharT>& str) const;
+            bool operator==(const BasicString<CharT>& str) const { return m_str.compare(str.m_str) == 0; }
+            bool operator==(const CharT* str) const { return m_str.compare(str) == 0; }
+            friend bool operator==(const CharT* str1, const BasicString<CharT>& str2) { return str2 == str1; }
+            bool operator!=(const BasicString<CharT>& str) const { return !(*this == str); }
+            bool operator!=(const CharT* str) const { return !(*this == str); }
+            friend bool operator!=(const CharT* str1, const BasicString<CharT>& str2) { return !(str2 == str1); }
             CharT operator[](int index) const;
             int static Compare(const BasicString<CharT>& str1, int index1,
                                const BasicString<CharT>& str2, int index2, int length,
@@ -159,17 +176,6 @@ namespace DotNetDupe {
         inline bool BasicString<CharT>::operator<(
             const BasicString<CharT>& str) const {
             return m_str < str.m_str;
-        }
-
-        template <class CharT>
-        inline bool BasicString<CharT>::operator==(
-            const BasicString<CharT>& str) const {
-            return m_str.compare(str.GetRawString()) == 0;
-        }
-
-        template <class CharT>
-        inline bool BasicString<CharT>::operator!=(const BasicString<CharT>& str) const {
-            return !(*this == str);
         }
 
         template<class CharT>
@@ -567,3 +573,12 @@ namespace DotNetDupe {
         }
     }  // namespace System
 }  // namespace DotNetDupe
+
+namespace std {
+    template<class CharT>
+    struct hash<DotNetDupe::System::BasicString<CharT>> {
+        size_t operator()(const DotNetDupe::System::BasicString<CharT>& s) const {
+            return hash<basic_string<CharT>>()(s.GetRawString());
+        }
+    };
+}

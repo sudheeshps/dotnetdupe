@@ -183,6 +183,8 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="..\Include\System\Comparable.h" />
     <ClInclude Include="..\Include\System\Comparable2.h" />
+    <ClInclude Include="..\Include\System\Collections\Generic\List.h" />
+    <ClInclude Include="..\Include\System\Collections\Generic\Dictionary.h" />
     <ClInclude Include="..\Include\System\Environment.h" />
     <ClInclude Include="..\Include\System\Exception.h" />
     <ClInclude Include="..\Include\System\IOException.h" />
@@ -191,6 +193,7 @@
     <ClInclude Include="..\Include\System\IO\IDisposable.h" />
     <ClInclude Include="..\Include\System\IO\Stream.h" />
     <ClInclude Include="..\Include\System\FormatProvider.h" />
+    <ClInclude Include="..\Include\System\Guid.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="..\Include\System\NotImplementedException.h" />
     <ClInclude Include="..\Include\System\Object.h" />
@@ -201,24 +204,37 @@
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
     <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
+    <ClInclude Include="..\Include\System\Text\StringBuilder.h" />
     <ClInclude Include="..\Include\System\Uri.h" />
     <ClInclude Include="..\Include\System\UriBuilder.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\Stopwatch.h" />
     <ClInclude Include="..\Include\System\Random.h" />
     <ClInclude Include="..\Include\System\UriParser.h" />
+    <ClInclude Include="..\Include\System\Console.h" />
+    <ClInclude Include="..\Include\System\Convert.h" />
+    <ClInclude Include="..\Include\System\DateTimeOffset.h" />
+    <ClInclude Include="..\Include\System\TimeProvider.h" />
+    <ClInclude Include="..\Include\System\TimeSpan.h" />
+    <ClInclude Include="..\Include\System\FormatException.h" />
+    <ClInclude Include="..\Include\System\BasicFormatException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
+    <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="TimeProvider.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Guid.cpp" />
     <ClCompile Include="FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Stream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="StringBuilder.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
     <ClCompile Include="Uri.cpp" />
@@ -235,7 +251,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TextEncoding.cpp" />
+    <ClCompile Include="Console.cpp" />
     <ClCompile Include="UriParser.cpp" />
   </ItemGroup>
   <ItemGroup>

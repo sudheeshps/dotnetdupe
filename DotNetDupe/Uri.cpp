@@ -11,7 +11,7 @@ namespace DotNetDupe {
         }
 
         void Uri::ParseUri() {
-            const std::wstring& rawUri = _uriString.GetRawString();
+            const std::wstring& rawUri = (const TCHAR*)_uriString;
             size_t schemeEnd = rawUri.find(L':');
             
             if (schemeEnd != std::wstring::npos) {
@@ -86,7 +86,7 @@ namespace DotNetDupe {
         }
 
         String Uri::GetHost() const {
-            const std::wstring& rawAuthority = _authority.GetRawString();
+            const std::wstring& rawAuthority = (const TCHAR*)_authority;
 
             size_t atPos = rawAuthority.find_last_of(L'@');
             std::wstring hostAndPortStr = (atPos == std::wstring::npos) ? rawAuthority : rawAuthority.substr(atPos + 1);
@@ -111,7 +111,7 @@ namespace DotNetDupe {
         }
 
         int Uri::GetPort() const {
-            const std::wstring& rawAuthority = _authority.GetRawString();
+            const std::wstring& rawAuthority = (const TCHAR*)_authority;
             size_t colonPos = rawAuthority.find_last_of(L':');
 
             if (colonPos == std::wstring::npos) {

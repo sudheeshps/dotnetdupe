@@ -133,6 +133,16 @@
     <ClCompile Include="UriParserTests.cpp" />
     <ClCompile Include="UriTests.cpp" />
     <ClCompile Include="VersionTests.cpp" />
+    <ClCompile Include="ConsoleTests.cpp" />
+    <ClCompile Include="ConvertTests.cpp" />
+    <ClCompile Include="RandomTests.cpp" />
+    <ClCompile Include="RunTests.cpp" />
+    <ClCompile Include="TimeProviderTests.cpp" />
+    <ClCompile Include="StopwatchTests.cpp" />
+    <ClCompile Include="StringBuilderTests.cpp" />
+    <ClCompile Include="ListTests.cpp" />
+    <ClCompile Include="GuidTests.cpp" />
+    <ClCompile Include="DictionaryTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

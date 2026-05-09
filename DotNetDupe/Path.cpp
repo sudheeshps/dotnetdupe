@@ -18,14 +18,14 @@ namespace DotNetDupe {
                 if (filePath [0] == _T('.'))
                     strTempFilePath = filePath.Remove(0);
 
-                fs::path path = strTempFilePath.GetRawString();
-                path.replace_extension(extension.GetRawString());
+                fs::path path = (const TCHAR*)strTempFilePath;
+                path.replace_extension((const TCHAR*)extension);
                 return path.c_str();
             }
 
             String Path::Combine(const std::initializer_list<String> paths) {
                 auto indexedList = _init_list_with_indexer(paths);
-                fs::path rootPath = indexedList [0].GetRawString();
+                fs::path rootPath = (const TCHAR*)indexedList [0];
                 if (!rootPath.has_root_directory())
                     return indexedList [0];
                 String strCombinedPath(_T(""));
@@ -36,46 +36,46 @@ namespace DotNetDupe {
                 return strCombinedPath.Remove(strCombinedPath.GetLength() - 1);
             }
             bool Path::EndsInDirectorySeparator(const String& filePath) {
-                fs::path path = filePath.GetRawString();
+                fs::path path = (const TCHAR*)filePath;
                 if (!path.has_root_path())
                     return false;
                 return filePath.EndsWith(fs::path::preferred_separator, false);
             }
             bool Path::Exists(const String& filePath) {
-                return fs::exists(filePath.GetRawString());
+                return fs::exists((const TCHAR*)filePath);
             }
             String Path::GetDirectoryName(const String& filePath) {
                 if (filePath.IsEmpty())
                     return _T("");
 
-                fs::path path = filePath.GetRawString();
+                fs::path path = (const TCHAR*)filePath;
                 return path.parent_path().c_str();
             }
             String Path::GetFileName(const String& filePath) {
                 if (filePath.IsEmpty())
                     return _T("");
-                fs::path path = filePath.GetRawString();
+                fs::path path = (const TCHAR*)filePath;
                 return path.filename().c_str();
             }
             String Path::GetExtension(const String& filePath) {
                 if (filePath.IsEmpty())
                     return _T("");
 
-                fs::path path = filePath.GetRawString();
+                fs::path path = (const TCHAR*)filePath;
                 return path.extension().c_str() + 1;
             }
             String Path::GetFileNameWithoutExtension(const String& filePath) {
                 if (filePath.IsEmpty())
                     return _T("");
 
-                fs::path path = filePath.GetRawString();
+                fs::path path = (const TCHAR*)filePath;
                 return path.stem().c_str();
             }
             String Path::GetFullPath(const String& path) {
                 if (path.IsEmpty())
                     return _T("");
 
-                return fs::absolute(path.GetRawString()).c_str();
+                return fs::absolute((const TCHAR*)path).c_str();
             }
             std::vector<TCHAR> Path::GetInvalidFileNameChars() {
                 static const std::vector<TCHAR> invalidChars = {
@@ -138,12 +138,12 @@ namespace DotNetDupe {
                     return path;
                 }
 
-                fs::path p(path.GetRawString());
+                fs::path p((const TCHAR*)path);
                 return p.root_path().c_str();
             }
             String Path::GetRelativePath(const String& relativeTo, const String& path) {
-                const fs::path fsRelativeTo = GetFullPath(relativeTo).GetRawString();
-                const fs::path fsPath = GetFullPath(path).GetRawString();
+                const fs::path fsRelativeTo = (const TCHAR*)GetFullPath(relativeTo);
+                const fs::path fsPath = (const TCHAR*)GetFullPath(path);
 
                 if (fsRelativeTo.root_name() != fsPath.root_name()) {
                     return path;
@@ -167,7 +167,7 @@ namespace DotNetDupe {
                     }
                     random_name [8] = _T('\0');
 
-                    fs::path file_path = fs::path(temp_dir_path.GetRawString()) / (String(random_name) + _T(".tmp")).GetRawString();
+                    fs::path file_path = fs::path((const TCHAR*)temp_dir_path) / (const TCHAR*)(String(random_name) + _T(".tmp"));
 
                     if (!fs::exists(file_path)) {
                         std::ofstream ofs(file_path);
@@ -196,7 +196,7 @@ namespace DotNetDupe {
                     return false;
                 }
                 
-                std::basic_string<TCHAR> filename(filenameStr.GetRawString());
+                std::basic_string<TCHAR> filename((const TCHAR*)filenameStr);
 
                 auto dot_pos = filename.rfind(_T('.'));
 
@@ -211,7 +211,7 @@ namespace DotNetDupe {
                 if (path.IsEmpty()) {
                     return false;
                 }
-                return fs::path(path.GetRawString()).is_absolute();
+                return fs::path((const TCHAR*)path).is_absolute();
             }
 
             bool Path::IsPathRooted(const String& path) {

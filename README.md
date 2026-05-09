@@ -102,11 +102,11 @@ int main() {
     DotNetDupe::System::String greeting = _T("Hello");
     DotNetDupe::System::String name = _T("World");
     DotNetDupe::System::String message = greeting + _T(", ") + name + _T("!");
-    std::wcout << message.GetRawString() << std::endl; // Output: Hello, World!
+    std::wcout << message << std::endl; // Output: Hello, World!
 
     // Path Example
     DotNetDupe::System::String fullPath = DotNetDupe::System::IO::Path::Combine({_T("C:\\"), _T("Users"), _T("document.txt")});
-    std::wcout << L"Combined Path: " << fullPath.GetRawString() << std::endl;
+    std::wcout << L"Combined Path: " << fullPath << std::endl;
 
     // Exception Example
     try {
@@ -140,11 +140,17 @@ For detailed information on the available classes, methods, and their usage, ple
 | [BitConverter](docs/BitConverter.md) | Converts base data types to an array of bytes, and an array of bytes to base data types. |
 | [Buffer](docs/Buffer.md) | Manipulates arrays of primitive types. |
 | [Char](docs/Char.md) | Represents a character. |
+| [Console](docs/Console.md) | Provides methods for reading from and writing to the standard input, output, and error streams. |
+| [Convert](docs/Convert.md) | Provides methods for converting a base data type to another base data type. |
+| [DateTimeOffset](docs/DateTimeOffset.md) | Represents a point in time, typically expressed as a date and time of day relative to UTC. |
 | [Environment](docs/Environment.md) | Provides information about the current environment and platform. |
+| [Guid](docs/Guid.md) | Represents a globally unique identifier (GUID). |
 | [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
 | [OperatingSystem](docs/OperatingSystem.md) | Represents information about an operating system, such as the version and platform identifier. |
 | [Random](docs/Random.md) | Represents a pseudo-random number generator. |
-| [String](docs/String.md) | Represents text as a sequence of UTF-16 code units. |
+| [String](docs/String.md) | Represents text as a sequence of character code units. |
+| [TimeProvider](docs/TimeProvider.md) | Provides an abstraction for time. |
+| [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |
 | [Uri](docs/Uri.md) | Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI. |
 | [UriBuilder](docs/UriBuilder.md) | Provides a convenient way to modify the contents of a `Uri` instance. |
 | [UriComponents](docs/UriComponents.md) | Specifies the parts of a URI. |
@@ -152,6 +158,32 @@ For detailed information on the available classes, methods, and their usage, ple
 | [UriParser](docs/UriParser.md) | Parses a new URI scheme. |
 | [GenericUriParser](docs/GenericUriParser.md) | A customizable parser for a hierarchical URI. |
 | [Version](docs/Version.md) | Represents the version number of an assembly, operating system, or the common language runtime. |
+
+### Namespace: `DotNetDupe::System::Collections::Generic`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Dictionary<TKey, TValue>](docs/Dictionary.md) | Represents a collection of keys and values. |
+| [List<T>](docs/List.md) | Represents a strongly typed list of objects that can be accessed by index. |
+
+### Namespace: `DotNetDupe::System::Diagnostics`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
+
+### Namespace: `DotNetDupe::System::Text`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
+| [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
 
 **Exceptions**
 
@@ -163,6 +195,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [ArgumentNullException](docs/Exceptions.md) | The exception that is thrown when a null reference is passed to a method that does not accept it as a valid argument. |
 | [ArgumentOutOfRangeException](docs/Exceptions.md) | Represents errors that occur when an argument is outside the allowable range of values. |
 | [ArithmeticException](docs/Exceptions.md) | Represents errors in an arithmetic operation. |
+| [FormatException](docs/Exceptions.md) | The exception that is thrown when the format of an argument is invalid. |
 | [NotImplementedException](docs/Exceptions.md) | The exception that is thrown when a requested method or operation is not implemented. |
 | [OverflowException](docs/Exceptions.md) | The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow. |
 

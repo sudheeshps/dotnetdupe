@@ -2,7 +2,7 @@
 #include "Common.h"
 namespace DotNetDupe {
     namespace System {
-        class  Object {
+        class Object {
         public:
             DOTNETDUPE_API bool operator == (const Object& obj) const;
             DOTNETDUPE_API virtual bool Equals(const Object& obj);

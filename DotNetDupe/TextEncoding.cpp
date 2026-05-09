@@ -18,7 +18,7 @@ namespace DotNetDupe {
                 int buffer_size = WideCharToMultiByte(
                     CP_UTF8,                // UTF-8 code page
                     0,                      // No special flags
-                    s.GetRawString(),     // Source wide string
+                    s,     // Source wide string
                     -1,              // Number of wide characters
                     nullptr,                   // No output buffer, just calculate size
                     0,                      // Output buffer size 0
@@ -34,7 +34,7 @@ namespace DotNetDupe {
                 WideCharToMultiByte(
                     CP_UTF8,                // UTF-8 code page
                     0,                      // No special flags
-                    s.GetRawString(),     // Source wide string
+                    s,     // Source wide string
                     -1,
                     bytes.data(),           // Output buffer
                     buffer_size,

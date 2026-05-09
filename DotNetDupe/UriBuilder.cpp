@@ -97,19 +97,19 @@ namespace DotNetDupe {
         String UriBuilder::ToString() const {
             std::wstringstream wss;
             if (!_scheme.IsEmpty()) {
-                wss << _scheme.GetRawString() << _T("://");
+                wss << _scheme << _T("://");
             }
 
             if (!_userName.IsEmpty()) {
-                wss << _userName.GetRawString() << _T(":");
+                wss << _userName << _T(":");
             }
 
             if (!_password.IsEmpty()) {
-                wss << _password.GetRawString() << _T("@");
+                wss << _password << _T("@");
             }
 
             if (!_host.IsEmpty()) {
-                wss << _host.GetRawString();
+                wss << _host;
             }
 
             if (_port != -1) {
@@ -117,15 +117,15 @@ namespace DotNetDupe {
             }
 
             if (!_path.IsEmpty()) {
-                wss << _path.GetRawString();
+                wss << _path;
             }
 
             if (!_query.IsEmpty()) {
-                wss << _T("?") << _query.GetRawString();
+                wss << _T("?") << _query;
             }
 
             if (!_fragment.IsEmpty()) {
-                wss << _T("#") << _fragment.GetRawString();
+                wss << _T("#") << _fragment;
             }
 
             return String(wss.str().c_str());

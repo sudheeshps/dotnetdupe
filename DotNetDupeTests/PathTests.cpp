@@ -174,14 +174,14 @@ namespace SystemTests {
             String path = _T("C:\\folder\\file.txt");
             String actualRoot = Path::GetPathRoot(path);
             String expectedRoot = _T("C:\\");
-            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot;
         }
 
         TEST(PathTest, GetPathRoot_Should_Return_UNC_Root) {
             String path = _T("\\Server\\Share\\folder\\file.txt");
             String actualRoot = Path::GetPathRoot(path);
             String expectedRoot = _T("\\Server\\Share");
-            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot;
         }
 
         TEST(PathTest, GetPathRoot_Should_Return_Volume_Separator_Root) {
@@ -200,14 +200,14 @@ namespace SystemTests {
             String path = _T("D:\\");
             String actualRoot = Path::GetPathRoot(path);
             String expectedRoot = _T("D:\\");
-            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot;
         }
 
         TEST(PathTest, GetPathRoot_Should_Return_UNC_Root_With_Trailing_Slash) {
             String path = _T("\\Server\\Share\\");
             String actualRoot = Path::GetPathRoot(path);
             String expectedRoot = _T("\\Server\\Share");
-            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot.GetRawString();
+            EXPECT_EQ(actualRoot, expectedRoot) << "Actual root: " << actualRoot;
         }
 
         TEST(PathTest, GetPathRoot_Should_Return_Empty_String_For_File_Name_Only) {
@@ -298,34 +298,34 @@ namespace SystemTests {
         TEST(PathTest, GetTempFileName_ReturnsNonEmptyPath) {
             String tempFile = Path::GetTempFileName();
             EXPECT_FALSE(tempFile.IsEmpty());
-            fs::remove(tempFile.GetRawString());
+            fs::remove((const TCHAR*)tempFile);
         }
 
         TEST(PathTest, GetTempFileName_CreatesFile) {
             String tempFile = Path::GetTempFileName();
-            EXPECT_TRUE(fs::exists(tempFile.GetRawString()));
-            fs::remove(tempFile.GetRawString());
+            EXPECT_TRUE(fs::exists((const TCHAR*)tempFile));
+            fs::remove((const TCHAR*)tempFile);
         }
 
         TEST(PathTest, GetTempFileName_HasTmpExtension) {
             String tempFile = Path::GetTempFileName();
             EXPECT_TRUE(tempFile.EndsWith(_T(".tmp"), false));
-            fs::remove(tempFile.GetRawString());
+            fs::remove((const TCHAR*)tempFile);
         }
 
         TEST(PathTest, GetTempFileName_IsInTempDirectory) {
             String tempFile = Path::GetTempFileName();
             String tempDir = Path::GetTempPath();
             EXPECT_TRUE(tempFile.StartsWith(tempDir, false));
-            fs::remove(tempFile.GetRawString());
+            fs::remove((const TCHAR*)tempFile);
         }
 
         TEST(PathTest, GetTempFileName_ReturnsUniqueNames) {
             String tempFile1 = Path::GetTempFileName();
             String tempFile2 = Path::GetTempFileName();
             EXPECT_NE(tempFile1, tempFile2);
-            fs::remove(tempFile1.GetRawString());
-            fs::remove(tempFile2.GetRawString());
+            fs::remove((const TCHAR*)tempFile1);
+            fs::remove((const TCHAR*)tempFile2);
         }
 
         TEST(PathTest, GetTempPath_ReturnsNonEmptyPath) {
@@ -335,8 +335,8 @@ namespace SystemTests {
 
         TEST(PathTest, GetTempPath_ReturnsExistingDirectory) {
             String tempPath = Path::GetTempPath();
-            EXPECT_TRUE(fs::exists(tempPath.GetRawString()));
-            EXPECT_TRUE(fs::is_directory(tempPath.GetRawString()));
+            EXPECT_TRUE(fs::exists((const TCHAR*)tempPath));
+            EXPECT_TRUE(fs::is_directory((const TCHAR*)tempPath));
         }
 
         TEST(PathTest, GetTempPath_EndsWithDirectorySeparator) {

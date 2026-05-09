@@ -10,9 +10,9 @@ namespace DotNetDupe {
     namespace System {
         namespace IO {
             std::string File::ToNarrowPath(const String& path) {
-                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path.GetRawString(), path.GetLength(), NULL, 0, NULL, NULL);
+                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), NULL, 0, NULL, NULL);
                 std::string narrowPath(bufferSize, '\0');
-                WideCharToMultiByte(CP_UTF8, 0, path.GetRawString(), path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
+                WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
                 return narrowPath;
             }
 

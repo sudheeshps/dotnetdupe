@@ -29,6 +29,27 @@ String s(_T("Hello"));
 const TCHAR* raw = s.GetRawString();
 ```
 
+##### `operator const CharT* () const`
+
+Implicitly converts the `BasicString` to a null-terminated character array.
+
+**Usage:**
+```cpp
+String s(_T("C:\\Windows"));
+// Use directly in Windows API
+::SetCurrentDirectory(s); 
+```
+
+##### `operator<<(std::basic_ostream<CharT>& os, const BasicString<CharT>& str)`
+
+Writes the string to an output stream.
+
+**Usage:**
+```cpp
+String s(_T("Hello"));
+std::wcout << s << std::endl;
+```
+
 ##### `int GetLength() const`
 
 Returns the length of the string.
@@ -69,6 +90,16 @@ Compares this instance with another `BasicString` object for equality.
 ```cpp
 String s1(_T("abc")), s2(_T("abc"));
 if (s1 == s2) { /* ... */ }
+```
+
+##### `bool operator==(const CharT* str) const`
+
+Compares this instance with a raw character pointer for equality.
+
+**Usage:**
+```cpp
+String s(_T("abc"));
+if (s == _T("abc")) { /* ... */ }
 ```
 
 ##### `CharT operator[](int index) const`
