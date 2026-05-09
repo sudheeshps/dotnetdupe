@@ -244,6 +244,24 @@ DotNetDupe is currently **under active development**. We are continuously workin
 
 Contributions to the DotNetDupe project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to [GitHub's general contributing guidelines](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) for more information on how to get started.
 
+## CI/CD Pipeline 🚀
+
+This repository uses GitHub Actions to automate the build, test, and release process.
+
+### Workflow Details
+- **Build & Test**: Every push to `main` and all pull requests trigger a full build (Debug & Release) and execution of all unit tests.
+- **NuGet Release**: Pushing a tag (e.g., `v1.0.0`) triggers the creation and publishing of the NuGet package to [nuget.org](https://www.nuget.org/).
+
+### How to Release
+1. Update the version in `DotNetDupe.nuspec`.
+2. Commit and push the changes.
+3. Create and push a new tag:
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+   *Note: Requires `NUGET_API_KEY` to be set in GitHub repository secrets.*
+
 ## License 📄
 
 This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.

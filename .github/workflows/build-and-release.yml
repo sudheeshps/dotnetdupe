@@ -1,0 +1,52 @@
+name: Build and Release DotNetDupe
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      SOLUTION_FILE: DotNetDupe.sln
+      BUILD_CONFIGURATION: Release
+      PLATFORM: x64
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Add MSBuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore NuGet packages
+      run: nuget restore ${{ env.SOLUTION_FILE }}
+
+    - name: Build Debug x64 (for tests and package)
+      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=Debug /p:Platform=${{ env.PLATFORM }}
+
+    - name: Build Release x64 (for package)
+      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=Release /p:Platform=${{ env.PLATFORM }}
+
+    - name: Run Tests
+      run: |
+        .\x64\Debug\DotNetDupeTests.exe
+
+    - name: Create NuGet Package
+      if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+      run: |
+        mkdir artifacts
+        nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
+
+    - name: Publish NuGet Package
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        nuget push artifacts\*.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }} -SkipDuplicate
