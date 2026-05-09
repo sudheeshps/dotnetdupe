@@ -10,6 +10,11 @@ using namespace DotNetDupe::System;
 namespace SystemTests {
     namespace ConsoleTestCases {
 
+        bool IsConsoleAvailable() {
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            return GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi) != FALSE;
+        }
+
         // --- Positive Cases ---
 
         TEST(ConsoleTest, WriteLine_Should_OutputString_When_ValidStringPassed) {
@@ -97,6 +102,7 @@ namespace SystemTests {
         }
 
         TEST(ConsoleTest, SetTitle_Should_UpdateTitle_When_ValidStringPassed) {
+            if (!IsConsoleAvailable()) return;
             // Given
             String newTitle(_T("DotNetDupe Console"));
 
@@ -108,6 +114,7 @@ namespace SystemTests {
         }
 
         TEST(ConsoleTest, Colors_Should_BeConsistent_When_SetAndGet) {
+            if (!IsConsoleAvailable()) return;
             // Given
             ConsoleColor fore = ConsoleColor::Red;
             ConsoleColor back = ConsoleColor::Yellow;
@@ -125,6 +132,7 @@ namespace SystemTests {
         }
 
         TEST(ConsoleTest, CursorPosition_Should_Update_When_Set) {
+            if (!IsConsoleAvailable()) return;
             // Given
             int left = 10;
             int top = 5;
@@ -138,6 +146,7 @@ namespace SystemTests {
         }
 
         TEST(ConsoleTest, CursorVisible_Should_Toggle_When_Set) {
+            if (!IsConsoleAvailable()) return;
             // Given
             bool original = Console::GetCursorVisible();
 
@@ -153,6 +162,7 @@ namespace SystemTests {
         }
 
         TEST(ConsoleTest, WindowSize_Should_Update_When_Set) {
+            if (!IsConsoleAvailable()) return;
             // Given
             int originalWidth = Console::GetWindowWidth();
             int newWidth = originalWidth - 1; // Try to shrink slightly
