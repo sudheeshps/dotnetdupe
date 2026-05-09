@@ -52,7 +52,7 @@ Notes:
 
 - Platform/toolset behaviour:
   - Solution supports Debug/Release for Win32 and x64. Default CI/developer flow uses x64 where possible.
-  - Project files reference different platform toolsets (v143/v145) — prefer using Developer Command Prompt matching installed VS toolset.
+  - Project files reference the v143 platform toolset (Visual Studio 2022).
 
 - Tests:
   - GoogleTest is included as a NuGet package (see `DotNetDupeTests.vcxproj` imports). The test binary is a standalone executable; use gtest flags for filtering, output formats (e.g., `--gtest_output=xml:results.xml`), etc.
