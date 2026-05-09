@@ -27,12 +27,12 @@
     <file src="docs\*.md" target="docs" />
 
     <!-- Add binaries -->
-    <file src="x64\Debug\DotNetDupe.dll" target="build\native\x64\Debug\DotNetDupe.dll" />
-    <file src="x64\Debug\DotNetDupe.lib" target="build\native\x64\Debug\DotNetDupe.lib" />
-    <file src="x64\Debug\DotNetDupe.pdb" target="build\native\x64\Debug\DotNetDupe.pdb" />
+    <file src="bin\x64\Debug\DotNetDupe.dll" target="build\native\x64\Debug\DotNetDupe.dll" />
+    <file src="bin\x64\Debug\DotNetDupe.lib" target="build\native\x64\Debug\DotNetDupe.lib" />
+    <file src="bin\x64\Debug\DotNetDupe.pdb" target="build\native\x64\Debug\DotNetDupe.pdb" />
 
-    <file src="x64\Release\DotNetDupe.dll" target="build\native\x64\Release\DotNetDupe.dll" />
-    <file src="x64\Release\DotNetDupe.lib" target="build\native\x64\Release\DotNetDupe.lib" />
-    <file src="x64\Release\DotNetDupe.pdb" target="build\native\x64\Release\DotNetDupe.pdb" />
+    <file src="bin\x64\Release\DotNetDupe.dll" target="build\native\x64\Release\DotNetDupe.dll" />
+    <file src="bin\x64\Release\DotNetDupe.lib" target="build\native\x64\Release\DotNetDupe.lib" />
+    <file src="bin\x64\Release\DotNetDupe.pdb" target="build\native\x64\Release\DotNetDupe.pdb" />
   </files>
 </package>

@@ -38,7 +38,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        .\x64\Debug\DotNetDupeTests.exe
+        .\bin\x64\Debug\DotNetDupeTests.exe
 
     - name: Create NuGet Package
       if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
