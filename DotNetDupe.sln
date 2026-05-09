@@ -7,7 +7,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DotNetDupe", "DotNetDupe\Do
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DotNetDupeTests", "DotNetDupeTests\DotNetDupeTests.vcxproj", "{C5E02263-8CDD-4D04-B5C3-F50774EFB10D}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DotNetDupeClient", "DotNetDupeClient\DotNetDupeClient.vcxproj", "{0C7D61DC-EB60-4AF7-BE54-2F87BC7C64FA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DotNetDupeDemo", "DotNetDupeDemo\DotNetDupeDemo.vcxproj", "{0C7D61DC-EB60-4AF7-BE54-2F87BC7C64FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -33,7 +33,7 @@ Notes:
 - Solution (DotNetDupe.sln) contains three projects:
   - DotNetDupe — native C++ dynamic library (the library itself).
   - DotNetDupeTests — GoogleTest-based test runner that references the library.
-  - DotNetDupeClient — sample console application demonstrating usage.
+  - DotNetDupeDemo — sample console application demonstrating usage.
 
 - Public API surface is headers under `Include/` organized by pseudo-namespaces `System` and `System::IO` (e.g., `Include/System/String.h`, `Include/System/IO/Path.h`).
 

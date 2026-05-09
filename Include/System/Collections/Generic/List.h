@@ -74,6 +74,32 @@ namespace DotNetDupe {
                         std::sort(_items.begin(), _items.end());
                     }
 
+                    template <typename Predicate>
+                    bool Exists(Predicate match) const {
+                        return std::find_if(_items.begin(), _items.end(), match) != _items.end();
+                    }
+
+                    template <typename Predicate>
+                    T Find(Predicate match) const {
+                        auto it = std::find_if(_items.begin(), _items.end(), match);
+                        if (it == _items.end()) return T();
+                        return *it;
+                    }
+
+                    template <typename Predicate>
+                    List<T> FindAll(Predicate match) const {
+                        List<T> result;
+                        for (const auto& item : _items) {
+                            if (match(item)) result.Add(item);
+                        }
+                        return result;
+                    }
+
+                    template <typename Predicate>
+                    bool TrueForAll(Predicate match) const {
+                        return std::all_of(_items.begin(), _items.end(), match);
+                    }
+
                     Array<T> ToArray() const {
                         Array<T> result((int)_items.size());
                         for (int i = 0; i < (int)_items.size(); i++) {

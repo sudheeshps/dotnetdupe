@@ -334,21 +334,80 @@ String s(_T("Hello World"));
 String result = s.Remove(5, 6); // "Hello"
 ```
 
-##### `BasicString<CharT> Replace(const BasicString<CharT>& orignalStr, const BasicString<CharT>& replaceStr)`
+##### `BasicString<CharT> Replace(const BasicString<CharT>& originalStr, const BasicString<CharT>& replaceStr)`
 
 Returns a new string in which all occurrences of a specified string in the current instance are replaced with another specified string.
 
 **Parameters:**
-- `orignalStr`: The string to be replaced.
-- `replaceStr`: The string to replace all occurrences of `orignalStr`.
+- `originalStr`: The string to be replaced.
+- `replaceStr`: The string to replace all occurrences of `originalStr`.
 
 **Returns:**
-- A string that is equivalent to the current string except that all occurrences of `orignalStr` are replaced with `replaceStr`.
+- A string that is equivalent to the current string except that all occurrences of `originalStr` are replaced with `replaceStr`.
 
 **Usage:**
 ```cpp
 String s(_T("Hello World"));
 String result = s.Replace(_T("World"), _T("DotNet")); // "Hello DotNet"
+```
+
+##### `BasicString<CharT> ToLower() const`
+
+Returns a copy of this string converted to lowercase.
+
+**Returns:**
+- A string in lowercase.
+
+**Usage:**
+```cpp
+String s(_T("HELLO"));
+String lower = s.ToLower(); // "hello"
+```
+
+##### `BasicString<CharT> ToUpper() const`
+
+Returns a copy of this string converted to uppercase.
+
+**Returns:**
+- A string in uppercase.
+
+**Usage:**
+```cpp
+String s(_T("hello"));
+String upper = s.ToUpper(); // "HELLO"
+```
+
+##### `BasicString<CharT> Trim() const`
+
+Removes all leading and trailing white-space characters from the current string.
+
+**Returns:**
+- A new string that remains after all white-space characters are removed from the start and end of the current string.
+
+**Usage:**
+```cpp
+String s(_T("  hello  "));
+String trimmed = s.Trim(); // "hello"
+```
+
+##### `BasicString<CharT> TrimStart() const`
+
+Removes all leading white-space characters from the current string.
+
+**Usage:**
+```cpp
+String s(_T("  hello"));
+String result = s.TrimStart(); // "hello"
+```
+
+##### `BasicString<CharT> TrimEnd() const`
+
+Removes all trailing white-space characters from the current string.
+
+**Usage:**
+```cpp
+String s(_T("hello  "));
+String result = s.TrimEnd(); // "hello"
 ```
 
 ##### `std::vector<BasicString<CharT>> Split(CharT separator)`

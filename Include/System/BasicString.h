@@ -128,13 +128,19 @@ namespace DotNetDupe {
             BasicString<CharT> Remove(int startIndex, int count) const;
 
             BasicString<CharT> Replace(CharT originalChar, CharT replaceChar);
-            BasicString<CharT> Replace(const BasicString<CharT>& orignalStr,
+            BasicString<CharT> Replace(const BasicString<CharT>& originalStr,
                                        const BasicString<CharT>& replaceStr);
             std::vector<BasicString<CharT>> Split(CharT separator);
             std::vector<BasicString<CharT>> Split(BasicString<CharT> separator [], int count,
                                                   StringSplitOptions options);
             bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const;
             BasicString<CharT> Substring(int startIndex, int length) const;
+
+            BasicString<CharT> ToLower() const;
+            BasicString<CharT> ToUpper() const;
+            BasicString<CharT> Trim() const;
+            BasicString<CharT> TrimStart() const;
+            BasicString<CharT> TrimEnd() const;
         private:
             std::basic_string<CharT> m_str;
         };
@@ -508,10 +514,10 @@ namespace DotNetDupe {
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::Replace(
-            const BasicString<CharT>& orignalStr,
+            const BasicString<CharT>& originalStr,
             const BasicString<CharT>& replaceStr) {
             std::basic_string<CharT> ret = std::regex_replace(
-                m_str, std::basic_regex<CharT>(orignalStr.m_str), replaceStr.m_str);
+                m_str, std::basic_regex<CharT>(originalStr.m_str), replaceStr.m_str);
             return ret.c_str();
         }
         template<class CharT>
@@ -530,29 +536,32 @@ namespace DotNetDupe {
         template<class CharT>
         inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(BasicString<CharT> separator [], int count,
                                                                          StringSplitOptions options) {
-            std::vector<BasicString<CharT>> ss;
+            std::vector<BasicString<CharT>> result;
             std::set<CharT> charSet;
-            for (auto c : separator) {
-                charSet.insert(c);
+            for (int i = 0; i < count; ++i) {
+                for (auto c : separator [i].m_str) charSet.insert(c);
             }
-            BasicString<CharT> str;
+            std::basic_string<CharT> current;
             for (auto c : m_str) {
-                if (!charSet.contains(c)) {
-                    str += c;
+                if (charSet.find(c) == charSet.end()) {
+                    current += c;
                 }
                 else {
-                    if (options == StringSplitOptions::RemoveEmptyEntries) {
-                        if (!str.IsEmpty()) {
-                            ss.push_back(str);
-                        }
+                    BasicString<CharT> s(current.c_str());
+                    if (options == StringSplitOptions::TrimEntries) s = s.Trim();
+                    if (options != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
+                        result.push_back(s);
                     }
-                    else if (options == StringSplitOptions::TrimEntries) {
-                        //strings.push_back(str.Trim())
-                    }
+                    current.clear();
                 }
             }
+            BasicString<CharT> s(current.c_str());
+            if (options == StringSplitOptions::TrimEntries) s = s.Trim();
+            if (options != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
+                result.push_back(s);
+            }
 
-            return ss;
+            return result;
         }
 
         template <class CharT>
@@ -570,6 +579,39 @@ namespace DotNetDupe {
                 throw ArgumentOutOfRangeException(_T("Invalid startIndex or length"));
             }
             return BasicString<CharT>(m_str.substr(startIndex, length).c_str());
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToLower() const {
+            std::basic_string<CharT> ret = m_str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::tolower(c)); });
+            return BasicString<CharT>(ret.c_str());
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToUpper() const {
+            std::basic_string<CharT> ret = m_str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::toupper(c)); });
+            return BasicString<CharT>(ret.c_str());
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::Trim() const {
+            return TrimStart().TrimEnd();
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::TrimStart() const {
+            auto first = m_str.find_first_not_of(_T(" \t\n\r"));
+            if (first == std::basic_string<CharT>::npos) return _T("");
+            return BasicString<CharT>(m_str.substr(first).c_str());
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::TrimEnd() const {
+            auto last = m_str.find_last_not_of(_T(" \t\n\r"));
+            if (last == std::basic_string<CharT>::npos) return _T("");
+            return BasicString<CharT>(m_str.substr(0, last + 1).c_str());
         }
     }  // namespace System
 }  // namespace DotNetDupe

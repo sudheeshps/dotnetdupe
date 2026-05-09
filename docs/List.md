@@ -104,6 +104,42 @@ Sorts the elements in the entire `List<T>` using the default comparer.
 list.Sort();
 ```
 
+##### `template <typename Predicate> bool Exists(Predicate match) const`
+
+Determines whether the `List<T>` contains elements that match the conditions defined by the specified predicate.
+
+**Usage:**
+```cpp
+bool exists = list.Exists([](int x) { return x > 10; });
+```
+
+##### `template <typename Predicate> T Find(Predicate match) const`
+
+Searches for an element that matches the conditions defined by the specified predicate, and returns the first occurrence within the entire `List<T>`.
+
+**Usage:**
+```cpp
+int item = list.Find([](int x) { return x % 2 == 0; });
+```
+
+##### `template <typename Predicate> List<T> FindAll(Predicate match) const`
+
+Retrieves all the elements that match the conditions defined by the specified predicate.
+
+**Usage:**
+```cpp
+List<int> evens = list.FindAll([](int x) { return x % 2 == 0; });
+```
+
+##### `template <typename Predicate> bool TrueForAll(Predicate match) const`
+
+Determines whether every element in the `List<T>` matches the conditions defined by the specified predicate.
+
+**Usage:**
+```cpp
+bool allPositive = list.TrueForAll([](int x) { return x > 0; });
+```
+
 ##### `Array<T> ToArray() const`
 
 Copies the elements of the `List<T>` to a new `Array<T>`.

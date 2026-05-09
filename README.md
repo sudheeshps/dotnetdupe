@@ -22,6 +22,7 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [Prerequisites 📋](#prerequisites-)
     - [Installation ⬇️](#installation-️)
   - [Usage 💻](#usage-)
+  - [STL vs DotNetDupe Comparison ⚖️](#stl-vs-dotnetdupe-comparison-️)
   - [API Reference 📖](#api-reference-)
     - [Namespace: `DotNetDupe::System`](#namespace-dotnetdupesystem)
     - [Namespace: `DotNetDupe::System::IO`](#namespace-dotnetdupesystemio)
@@ -119,9 +120,13 @@ int main() {
 }
 ```
 
+## STL vs DotNetDupe Comparison ⚖️
+
+DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. For a detailed side-by-side comparison of common tasks (Strings, Collections, Timing, etc.), please see our **[Comparison Guide](docs/Comparison.md)**.
+
 ### Sample Client and Test Code 🧪
 
-The repository includes `DotNetDupeClient` (a sample console application) and `DotNetDupeTests` (unit tests) projects. These projects demonstrate how to integrate and use the `DotNetDupe` library. You can refer to their `.vcxproj` files for examples of how to configure your own projects to consume the `DotNetDupe` NuGet package.
+The repository includes `DotNetDupeDemo` (a sample console application) and `DotNetDupeTests` (unit tests) projects. These projects demonstrate how to integrate and use the `DotNetDupe` library. You can refer to their `.vcxproj` files for examples of how to configure your own projects to consume the `DotNetDupe` NuGet package.
 
 
 

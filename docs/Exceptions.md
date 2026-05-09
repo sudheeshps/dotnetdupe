@@ -146,6 +146,28 @@ throw ArithmeticException(_T("Arithmetic error."));
 
 ---
 
+### template class `BasicFormatException<CharT>`
+
+The exception that is thrown when the format of an argument is invalid, or when a composite format string is not well formed.
+
+**Note:** The `FormatException` class is a typedef for `BasicFormatException<TCHAR>`.
+
+#### Methods
+
+##### `BasicFormatException(const CharT* pchMessage)`
+
+Initializes a new instance of the `BasicFormatException` class with a specified error message.
+
+**Parameters:**
+- `pchMessage`: A pointer to the error message string.
+
+**Usage:**
+```cpp
+throw FormatException(_T("Invalid format."));
+```
+
+---
+
 ### template class `BasicIOException<CharT>`
 
 The exception that is thrown when an I/O error occurs.

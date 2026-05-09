@@ -417,15 +417,15 @@ namespace SystemTests {
             String str(_T("Hello World"));
             ASSERT_TRUE(str.Remove(0, 5) == _T(" World"));
         }
-        TEST(StringTest, Repalce_Returns_A_New_Replaced_String_When_Invoked_With_A_Char_To_Be_Replaced) {
+        TEST(StringTest, Replace_Returns_A_New_Replaced_String_When_Invoked_With_A_Char_To_Be_Replaced) {
             String str(_T("Hello World"));
             ASSERT_TRUE(str.Replace(_T('l'), _T('*')) == _T("He**o Wor*d"));
         }
-        TEST(StringTest, Repalce_Returns_Same_String_When_Char_To_Be_Replaced_Not_Found) {
+        TEST(StringTest, Replace_Returns_Same_String_When_Char_To_Be_Replaced_Not_Found) {
             String str(_T("Hello World"));
             ASSERT_TRUE(str.Replace(_T('i'), _T('*')) == _T("Hello World"));
         }
-        TEST(StringTest, Repalce_Returns_Replaced_New_String_When_String_To_Be_Replaced_Found) {
+        TEST(StringTest, Replace_Returns_Replaced_New_String_When_String_To_Be_Replaced_Found) {
             String str(_T("Hello World World"));
             ASSERT_TRUE(str.Replace(_T("World"), _T("My World")) == _T("Hello My World My World"));
         }

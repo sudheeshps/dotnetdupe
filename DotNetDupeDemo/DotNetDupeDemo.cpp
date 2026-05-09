@@ -40,7 +40,38 @@ void DemonstrateConsole() {
     Console::WriteLine(_T("Available Colors:"));
     Console::SetForegroundColor(ConsoleColor::Green);
     Console::WriteLine(_T("  This is Green text"));
+    Console::SetForegroundColor(ConsoleColor::Cyan);
+    Console::WriteLine(_T("  This is Cyan text"));
     Console::ResetColor();
+    
+    Console::SetTitle(_T("DotNetDupe Demo Application"));
+}
+
+void DemonstrateString() {
+    Console::WriteLine(_T("\n--- String Demonstration ---"));
+    
+    String s1 = _T("   Hello World   ");
+    Console::Write(_T("Original: '"));
+    Console::Write(s1);
+    Console::WriteLine(_T("'"));
+    
+    Console::Write(_T("Trimmed: '"));
+    Console::Write(s1.Trim());
+    Console::WriteLine(_T("'"));
+    
+    Console::Write(_T("Lower: "));
+    Console::WriteLine(s1.ToLower());
+    
+    Console::Write(_T("Upper: "));
+    Console::WriteLine(s1.ToUpper());
+
+    String s2 = _T("Apple,Banana,Cherry");
+    auto parts = s2.Split(_T(','));
+    Console::WriteLine(_T("Splitting 'Apple,Banana,Cherry':"));
+    for(const auto& p : parts) {
+        Console::Write(_T("  - "));
+        Console::WriteLine(p);
+    }
 }
 
 void DemonstrateBitConverter() {
@@ -66,11 +97,6 @@ void DemonstrateConvert() {
     Console::Write(_T("String '12345' to Int32: "));
     Console::WriteLine(intVal);
 
-    String doubleStr(_T("3.14159"));
-    double doubleVal = Convert::ToDouble(doubleStr);
-    Console::Write(_T("String '3.14159' to Double: "));
-    Console::WriteLine(doubleVal);
-
     // Numeric to String
     String boolStr = Convert::ToString(true);
     Console::Write(_T("Bool true to String: "));
@@ -80,24 +106,23 @@ void DemonstrateConvert() {
     String hexStr = Convert::ToString(255, 16);
     Console::Write(_T("Int 255 to Hex: "));
     Console::WriteLine(hexStr);
-
-    int fromHex = Convert::ToInt32(String(_T("FF")), 16);
-    Console::Write(_T("Hex 'FF' to Int32: "));
-    Console::WriteLine(fromHex);
 }
 
 void DemonstrateTimeProvider() {
     Console::WriteLine(_T("\n--- TimeProvider Demonstration ---"));
 
     auto provider = TimeProvider::GetSystem();
+    DateTimeOffset now = provider->GetUtcNow();
+    
+    Console::Write(_T("UTC Ticks: "));
+    Console::WriteLine(now.GetTicks());
 
     int64_t start = provider->GetTimestamp();
-    Console::WriteLine(_T("Starting operation at high-res timestamp..."));
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
+    Console::WriteLine(_T("Starting operation..."));
+    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    
     TimeSpan elapsed = provider->GetElapsedTime(start);
-    Console::Write(_T("Operation took approx: "));
+    Console::Write(_T("Operation took: "));
     Console::Write(elapsed.GetTotalMilliseconds());
     Console::WriteLine(_T(" ms"));
 }
@@ -108,16 +133,10 @@ void DemonstrateStopwatch() {
     Stopwatch sw = Stopwatch::StartNew();
     Console::WriteLine(_T("Stopwatch started..."));
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+    std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
     sw.Stop();
-    Console::Write(_T("Elapsed milliseconds: "));
-    Console::WriteLine(sw.ElapsedMilliseconds());
-
-    sw.Restart();
-    Console::WriteLine(_T("Stopwatch restarted..."));
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    Console::Write(_T("Current elapsed: "));
+    Console::Write(_T("Elapsed: "));
     Console::Write(sw.Elapsed().GetTotalMilliseconds());
     Console::WriteLine(_T(" ms"));
 }
@@ -126,107 +145,83 @@ void DemonstrateStringBuilder() {
     Console::WriteLine(_T("\n--- StringBuilder Demonstration ---"));
 
     StringBuilder sb;
-    sb.Append(_T("Items: "))
-      .Append(10)
-      .Append(_T(", Price: "))
-      .Append(19.99)
-      .Append(_T(", Available: "))
-      .Append(true);
-
-    Console::WriteLine(sb.ToString());
-
-    sb.Clear();
-    sb.AppendLine(_T("Shopping List:"))
-      .AppendLine(_T("- Apples"))
-      .AppendLine(_T("- Bananas"));
+    sb.Append(_T("User: "))
+      .Append(_T("Gemini"))
+      .AppendLine()
+      .Append(_T("Status: "))
+      .Append(true)
+      .AppendLine()
+      .Append(_T("Score: "))
+      .Append(98.5);
 
     Console::Write(sb.ToString());
+    Console::WriteLine();
 }
 
-void DemonstrateList() {
-    Console::WriteLine(_T("\n--- List<T> Demonstration ---"));
+void DemonstrateCollections() {
+    Console::WriteLine(_T("\n--- Collections Demonstration ---"));
 
-    List<String> fruits = { _T("Apple"), _T("Banana"), _T("Cherry") };
-    fruits.Add(_T("Date"));
-
-    Console::WriteLine(_T("Fruit List:"));
-    for (const auto& fruit : fruits) {
-        Console::Write(_T("  "));
-        Console::WriteLine(fruit);
+    // List
+    List<int> numbers = { 5, 2, 8, 1, 9 };
+    numbers.Add(4);
+    numbers.Sort();
+    
+    Console::Write(_T("Sorted List: "));
+    for (int n : numbers) {
+        Console::Write(n);
+        Console::Write(_T(" "));
     }
+    Console::WriteLine();
 
-    fruits.Sort();
-    Console::WriteLine(_T("Sorted Fruits:"));
-    for (const auto& fruit : fruits) {
-        Console::Write(_T("  "));
-        Console::WriteLine(fruit);
+    // List Functional
+    Console::Write(_T("Numbers > 5: "));
+    auto bigNumbers = numbers.FindAll([](int n) { return n > 5; });
+    for (int n : bigNumbers) {
+        Console::Write(n);
+        Console::Write(_T(" "));
     }
-}
+    Console::WriteLine();
 
-void DemonstrateDictionary() {
-    Console::WriteLine(_T("\n--- Dictionary Demonstration ---"));
+    // Dictionary
+    Dictionary<String, String> meta;
+    meta.Add(_T("OS"), _T("Windows"));
+    meta.Add(_T("Arch"), _T("x64"));
 
-    Dictionary<String, String> config;
-    config.Add(_T("AppName"), _T("DotNetDupe Demo"));
-    config.Add(_T("Version"), _T("1.0.0"));
-
-    Console::WriteLine(_T("Config settings:"));
-    for (auto const& [key, val] : config) {
+    Console::WriteLine(_T("Dictionary Meta:"));
+    for (auto const& [key, val] : meta) {
         Console::Write(_T("  "));
         Console::Write(key);
-        Console::Write(_T(": "));
+        Console::Write(_T(" => "));
         Console::WriteLine(val);
     }
 }
 
 void DemonstrateGuid() {
     Console::WriteLine(_T("\n--- Guid Demonstration ---"));
-
-    Guid id = Guid::NewGuid();
     Console::Write(_T("New Guid: "));
-    Console::WriteLine(id.ToString());
-
-    Guid empty = Guid::Empty;
-    Console::Write(_T("Empty Guid: "));
-    Console::WriteLine(empty.ToString());
+    Console::WriteLine(Guid::NewGuid().ToString());
 }
 
-void DemonstrateArray() {
-    Console::WriteLine(_T("\n--- Array Demonstration ---"));
-    Array<int> arr(5);
-    for (int i = 0; i < 5; i++) arr [i] = i + 1;
-
-    for (int i = 0; i < arr.GetLength(); i++) {
-        Console::Write(arr [i]);
-        Console::Write(_T(" "));
-    }
-    Console::WriteLine();
-}
-
-void DemonstrateFile() {
-    Console::WriteLine(_T("\n--- File Demonstration ---"));
-    const String testFile(_T("test.txt"));
-    const String content(_T("Hello, World!"));
-    File::WriteAllText(testFile, content);
-    String readContent = File::ReadAllText(testFile);
-    Console::Write(_T("Read from file: "));
-    Console::WriteLine(readContent);
-    File::Delete(testFile);
+void DemonstrateEnvironment() {
+    Console::WriteLine(_T("\n--- Environment Demonstration ---"));
+    Console::Write(_T("OS: "));
+    Console::WriteLine(Environment::GetOperatingSystem().GetVersionString());
+    Console::Write(_T("Processor Count: "));
+    Console::WriteLine((int)Environment::GetProcessorCount());
 }
 
 int main() {
     DemonstrateConsole();
+    DemonstrateString();
     DemonstrateBitConverter();
-    DemonstrateArray();
-    DemonstrateFile();
     DemonstrateConvert();
     DemonstrateTimeProvider();
     DemonstrateStopwatch();
     DemonstrateStringBuilder();
-    DemonstrateList();
-    DemonstrateDictionary();
+    DemonstrateCollections();
     DemonstrateGuid();
-
+    DemonstrateEnvironment();
+    
     Console::WriteLine(_T("\n--- Demonstration Complete ---"));
     return 0;
 }
