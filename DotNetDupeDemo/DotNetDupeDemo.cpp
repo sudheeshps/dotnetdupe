@@ -115,7 +115,7 @@ void DemonstrateTimeProvider() {
     DateTimeOffset now = provider->GetUtcNow();
     
     Console::Write(_T("UTC Ticks: "));
-    Console::WriteLine(now.GetTicks());
+    Console::WriteLine((long long)now.GetTicks());
 
     int64_t start = provider->GetTimestamp();
     Console::WriteLine(_T("Starting operation..."));
@@ -123,7 +123,7 @@ void DemonstrateTimeProvider() {
     
     TimeSpan elapsed = provider->GetElapsedTime(start);
     Console::Write(_T("Operation took: "));
-    Console::Write(elapsed.GetTotalMilliseconds());
+    Console::Write((double)elapsed.GetTotalMilliseconds());
     Console::WriteLine(_T(" ms"));
 }
 
@@ -137,7 +137,7 @@ void DemonstrateStopwatch() {
 
     sw.Stop();
     Console::Write(_T("Elapsed: "));
-    Console::Write(sw.Elapsed().GetTotalMilliseconds());
+    Console::Write((double)sw.Elapsed().GetTotalMilliseconds());
     Console::WriteLine(_T(" ms"));
 }
 
