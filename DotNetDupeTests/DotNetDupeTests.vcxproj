@@ -163,6 +163,7 @@
     <ClCompile Include="EnhancementTests.cpp" />
     <ClCompile Include="TimeZoneTests.cpp" />
     <ClCompile Include="TimeZoneInfoTests.cpp" />
+    <ClCompile Include="TextIOTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

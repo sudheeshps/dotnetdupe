@@ -232,6 +232,10 @@ For detailed information on the available classes, methods, and their usage, ple
 | [File](docs/File.md) | Provides static methods for the creation, copying, deletion, moving, and opening of a single file. |
 | [FileStream](docs/FileStream.md) | Provides a `Stream` for a file, supporting both synchronous and asynchronous read and write operations. |
 | [Stream](docs/Stream.md) | Provides a generic view of a sequence of bytes. |
+| [TextReader](docs/TextReader.md) | Represents a reader that can read a sequential series of characters. |
+| [TextWriter](docs/TextWriter.md) | Represents a writer that can write a sequential series of characters. |
+| [StringReader](docs/StringReader.md) | Implements a `TextReader` that reads from a string. |
+| [StringWriter](docs/StringWriter.md) | Implements a `TextWriter` for writing information to a string. |
 
 **Exceptions**
 

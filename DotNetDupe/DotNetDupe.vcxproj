@@ -231,6 +231,10 @@
     <ClInclude Include="..\Include\System\DaylightTime.h" />
     <ClInclude Include="..\Include\System\TimeZone.h" />
     <ClInclude Include="..\Include\System\TimeZoneInfo.h" />
+    <ClInclude Include="..\Include\System\IO\TextReader.h" />
+    <ClInclude Include="..\Include\System\IO\TextWriter.h" />
+    <ClInclude Include="..\Include\System\IO\StringReader.h" />
+    <ClInclude Include="..\Include\System\IO\StringWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -270,6 +274,10 @@
     <ClCompile Include="DaylightTime.cpp" />
     <ClCompile Include="TimeZone.cpp" />
     <ClCompile Include="TimeZoneInfo.cpp" />
+    <ClCompile Include="TextReader.cpp" />
+    <ClCompile Include="TextWriter.cpp" />
+    <ClCompile Include="StringReader.cpp" />
+    <ClCompile Include="StringWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
