@@ -228,6 +228,9 @@
     <ClInclude Include="..\Include\System\FormatException.h" />
     <ClInclude Include="..\Include\System\BasicFormatException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
+    <ClInclude Include="..\Include\System\DaylightTime.h" />
+    <ClInclude Include="..\Include\System\TimeZone.h" />
+    <ClInclude Include="..\Include\System\TimeZoneInfo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -264,6 +267,9 @@
     <ClCompile Include="TextEncoding.cpp" />
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="UriParser.cpp" />
+    <ClCompile Include="DaylightTime.cpp" />
+    <ClCompile Include="TimeZone.cpp" />
+    <ClCompile Include="TimeZoneInfo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
