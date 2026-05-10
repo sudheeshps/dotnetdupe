@@ -19,6 +19,8 @@
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Guid.h"
 #include "System/Console.h"
+#include "System/TimeZone.h"
+#include "System/TimeZoneInfo.h"
 #include <iostream>
 #include <iomanip>
 #include <thread>
@@ -210,6 +212,31 @@ void DemonstrateEnvironment() {
     Console::WriteLine((int)Environment::GetProcessorCount());
 }
 
+void DemonstrateTimeZone() {
+    Console::WriteLine(_T("\n--- TimeZone Demonstration ---"));
+
+    TimeZone* current = TimeZone::GetCurrentTimeZone();
+    Console::Write(_T("Current TimeZone Standard Name: "));
+    Console::WriteLine(current->GetStandardName());
+    Console::Write(_T("Current TimeZone Daylight Name: "));
+    Console::WriteLine(current->GetDaylightName());
+
+    DateTimeOffset now(638200000000000000LL); // Arbitrary point
+    TimeSpan offset = current->GetUtcOffset(now);
+    Console::Write(_T("Current UTC Offset (hours): "));
+    Console::WriteLine(offset.GetTotalHours());
+
+    TimeZoneInfo local = TimeZoneInfo::Local();
+    Console::Write(_T("TimeZoneInfo Local Id: "));
+    Console::WriteLine(local.GetId());
+    Console::Write(_T("TimeZoneInfo Local Display Name: "));
+    Console::WriteLine(local.GetDisplayName());
+
+    TimeZoneInfo utc = TimeZoneInfo::Utc();
+    Console::Write(_T("TimeZoneInfo Utc Id: "));
+    Console::WriteLine(utc.GetId());
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -221,6 +248,7 @@ int main() {
     DemonstrateCollections();
     DemonstrateGuid();
     DemonstrateEnvironment();
+    DemonstrateTimeZone();
     
     Console::WriteLine(_T("\n--- Demonstration Complete ---"));
     return 0;
