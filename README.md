@@ -46,6 +46,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
 *   **Exception Handling:** Robust exception classes mimicking .NET's exception hierarchy.
 *   **String Manipulation:** Powerful `String` class with comprehensive methods for text processing.
 *   **Path Utilities:** Convenient functions for file system path operations.
+*   **Time and Time Zone Support:** Core classes like `DateTimeOffset`, `TimeSpan`, `TimeZone`, and `TimeZoneInfo` for accurate time management.
 *   **Type System Enhancements:** (Add more specific features as they are implemented, e.g., `Object` base class, `IComparable`, `IClonable` etc.)
 
 ## Getting Started 🚀
@@ -97,6 +98,7 @@ Here are some quick examples of how to use DotNetDupe:
 #include "DotNetDupe/String.h"
 #include "DotNetDupe/Path.h"
 #include "DotNetDupe/BasicException.h"
+#include "DotNetDupe/TimeZoneInfo.h"
 
 int main() {
     // String Example
@@ -108,6 +110,10 @@ int main() {
     // Path Example
     DotNetDupe::System::String fullPath = DotNetDupe::System::IO::Path::Combine({_T("C:\\"), _T("Users"), _T("document.txt")});
     std::wcout << L"Combined Path: " << fullPath << std::endl;
+
+    // TimeZone Example
+    DotNetDupe::System::TimeZoneInfo localTz = DotNetDupe::System::TimeZoneInfo::Local();
+    std::wcout << L"Local TimeZone: " << localTz.GetDisplayName() << std::endl;
 
     // Exception Example
     try {
@@ -147,6 +153,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [Char](docs/Char.md) | Represents a character. |
 | [Console](docs/Console.md) | Provides methods for reading from and writing to the standard input, output, and error streams. |
 | [Convert](docs/Convert.md) | Provides methods for converting a base data type to another base data type. |
+| [DaylightTime](docs/DaylightTime.md) | Defines the period of daylight saving time. |
 | [DateTimeOffset](docs/DateTimeOffset.md) | Represents a point in time, typically expressed as a date and time of day relative to UTC. |
 | [Environment](docs/Environment.md) | Provides information about the current environment and platform. |
 | [Guid](docs/Guid.md) | Represents a globally unique identifier (GUID). |
@@ -156,6 +163,8 @@ For detailed information on the available classes, methods, and their usage, ple
 | [String](docs/String.md) | Represents text as a sequence of character code units. |
 | [TimeProvider](docs/TimeProvider.md) | Provides an abstraction for time. |
 | [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |
+| [TimeZone](docs/TimeZone.md) | Represents a time zone. |
+| [TimeZoneInfo](docs/TimeZoneInfo.md) | Represents any time zone in the world. |
 | [Uri](docs/Uri.md) | Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI. |
 | [UriBuilder](docs/UriBuilder.md) | Provides a convenient way to modify the contents of a `Uri` instance. |
 | [UriComponents](docs/UriComponents.md) | Specifies the parts of a URI. |
