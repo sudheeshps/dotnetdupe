@@ -21,6 +21,8 @@
 #include "System/Console.h"
 #include "System/TimeZone.h"
 #include "System/TimeZoneInfo.h"
+#include "System/IO/StringReader.h"
+#include "System/IO/StringWriter.h"
 #include <iostream>
 #include <iomanip>
 #include <thread>
@@ -237,6 +239,33 @@ void DemonstrateTimeZone() {
     Console::WriteLine(utc.GetId());
 }
 
+void DemonstrateTextIO() {
+    Console::WriteLine(_T("\n--- Text I/O Demonstration ---"));
+
+    // StringWriter
+    StringWriter sw;
+    sw.WriteLine(_T("First line"));
+    sw.WriteLine(_T("Second line"));
+    sw.Write(_T("Part of third line... "));
+    sw.Write(_T("rest of third line."));
+
+    String result = sw.ToString();
+    Console::WriteLine(_T("Written content:"));
+    Console::WriteLine(result);
+
+    // StringReader
+    StringReader sr(result);
+    Console::WriteLine(_T("Reading back line by line:"));
+    String line;
+    int lineNum = 1;
+    while (!(line = sr.ReadLine()).IsEmpty()) {
+        Console::Write(_T("Line "));
+        Console::Write(lineNum++);
+        Console::Write(_T(": "));
+        Console::WriteLine(line);
+    }
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -249,6 +278,7 @@ int main() {
     DemonstrateGuid();
     DemonstrateEnvironment();
     DemonstrateTimeZone();
+    DemonstrateTextIO();
     
     Console::WriteLine(_T("\n--- Demonstration Complete ---"));
     return 0;
