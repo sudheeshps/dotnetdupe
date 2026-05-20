@@ -235,6 +235,31 @@
     <ClInclude Include="..\Include\System\IO\TextWriter.h" />
     <ClInclude Include="..\Include\System\IO\StringReader.h" />
     <ClInclude Include="..\Include\System\IO\StringWriter.h" />
+    <ClInclude Include="..\Include\System\Threading\Thread.h" />
+    <ClInclude Include="..\Include\System\BasicTimeoutException.h" />
+    <ClInclude Include="..\Include\System\TimeoutException.h" />
+    <ClInclude Include="..\Include\System\Threading\WaitHandle.h" />
+    <ClInclude Include="..\Include\System\Threading\EventWaitHandle.h" />
+    <ClInclude Include="..\Include\System\Threading\ManualResetEvent.h" />
+    <ClInclude Include="..\Include\System\Threading\AutoResetEvent.h" />
+    <ClInclude Include="..\Include\System\Threading\Mutex.h" />
+    <ClInclude Include="..\Include\System\Threading\Semaphore.h" />
+    <ClInclude Include="..\Include\System\Threading\SemaphoreSlim.h" />
+    <ClInclude Include="..\Include\System\Threading\CriticalSection.h" />
+    <ClInclude Include="..\Include\System\Threading\Interlocked.h" />
+    <ClInclude Include="..\Include\System\Threading\Lock.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicThreadStateException.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicThreadInterruptedException.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicSynchronizationLockException.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicAbandonedMutexException.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicWaitHandleCannotBeOpenedException.h" />
+    <ClInclude Include="..\Include\System\Threading\BasicSemaphoreFullException.h" />
+    <ClInclude Include="..\Include\System\Threading\ThreadStateException.h" />
+    <ClInclude Include="..\Include\System\Threading\ThreadInterruptedException.h" />
+    <ClInclude Include="..\Include\System\Threading\SynchronizationLockException.h" />
+    <ClInclude Include="..\Include\System\Threading\AbandonedMutexException.h" />
+    <ClInclude Include="..\Include\System\Threading\WaitHandleCannotBeOpenedException.h" />
+    <ClInclude Include="..\Include\System\Threading\SemaphoreFullException.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -278,6 +303,15 @@
     <ClCompile Include="TextWriter.cpp" />
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="StringWriter.cpp" />
+    <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="EventWaitHandle.cpp" />
+    <ClCompile Include="ManualResetEvent.cpp" />
+    <ClCompile Include="AutoResetEvent.cpp" />
+    <ClCompile Include="Mutex.cpp" />
+    <ClCompile Include="Semaphore.cpp" />
+    <ClCompile Include="SemaphoreSlim.cpp" />
+    <ClCompile Include="CriticalSection.cpp" />
+    <ClCompile Include="Interlocked.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

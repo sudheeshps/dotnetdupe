@@ -18,12 +18,12 @@ Initializes a new instance of the `BasicException` class with a specified error 
 throw BasicException<wchar_t>(L"An error occurred.");
 ```
 
-##### `CharT* What() const`
+##### `const CharT* What() const`
 
 Returns a pointer to the error message.
 
 **Returns:**
-- A pointer to the error message string.
+- A const pointer to the error message string.
 
 **Usage:**
 ```cpp
@@ -231,3 +231,37 @@ Initializes a new instance of the `BasicOverflowException` class with a specifie
 ```cpp
 throw OverflowException(_T("Arithmetic overflow."));
 ```
+
+---
+
+### template class `BasicTimeoutException<CharT>`
+
+The exception that is thrown when the time allotted for a process or operation has expired.
+
+**Note:** The `TimeoutException` class is a typedef for `BasicTimeoutException<TCHAR>`.
+
+#### Methods
+
+##### `BasicTimeoutException(const CharT* pchMessage)`
+
+Initializes a new instance of the `BasicTimeoutException` class with a specified error message.
+
+---
+
+### template class `BasicSemaphoreFullException<CharT>`
+
+The exception that is thrown when the `Release` method is called on a semaphore whose count is already at the maximum.
+
+**Note:** The `SemaphoreFullException` class is a typedef for `BasicSemaphoreFullException<TCHAR>`.
+
+---
+
+### template class `BasicThreadStateException<CharT>`
+
+The exception that is thrown when a `Thread` is in an invalid `ThreadState` for the method call.
+
+---
+
+### template class `BasicThreadInterruptedException<CharT>`
+
+The exception that is thrown when a `Thread` is interrupted while it is in a waiting state.

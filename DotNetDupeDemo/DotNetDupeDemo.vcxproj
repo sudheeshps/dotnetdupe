@@ -148,14 +148,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y /d "$(ProjectDir)..\packages\DotNetDupe.1.0.0\build\native\$(Platform)\$(Configuration)\*.dll" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DotNetDupeDemo.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">
@@ -163,13 +161,5 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\DotNetDupe.1.0.0\build\native\DotNetDupe.targets" Condition="Exists('..\packages\DotNetDupe.1.0.0\build\native\DotNetDupe.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\DotNetDupe.1.0.0\build\native\DotNetDupe.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\DotNetDupe.1.0.0\build\native\DotNetDupe.targets'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

@@ -89,6 +89,7 @@ namespace DotNetDupe {
 
             // Test helpers
             DOTNETDUPE_API static void SetIn(const String& value);
+            DOTNETDUPE_API static void ClearInputs();
             DOTNETDUPE_API static std::vector<String> GetOutputs();
         };
     }
