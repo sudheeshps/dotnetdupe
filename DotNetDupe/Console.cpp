@@ -278,6 +278,11 @@ void Console::SetIn(const String& value) {
     s_inputs.push_back(value);
 }
 
+void Console::ClearInputs() {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    s_inputs.clear();
+}
+
 std::vector<String> Console::GetOutputs() {
     std::lock_guard<std::mutex> lk(s_mutex);
     return s_outputs;

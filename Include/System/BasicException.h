@@ -5,7 +5,7 @@ namespace DotNetDupe {
         template <class CharT> class BasicException {
         public:
             BasicException(const CharT* pchMessage);
-            CharT* What() const;
+            const CharT* What() const;
         private:
             std::basic_string<CharT> m_strMessage;
         };
@@ -16,7 +16,7 @@ namespace DotNetDupe {
         }
 
         template <class CharT>
-        inline CharT* BasicException<CharT>::What() const {
+        inline const CharT* BasicException<CharT>::What() const {
             return m_strMessage.c_str();
         }
     }

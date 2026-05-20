@@ -23,15 +23,29 @@
 #include "System/TimeZoneInfo.h"
 #include "System/IO/StringReader.h"
 #include "System/IO/StringWriter.h"
+#include "System/Threading/Thread.h"
+#include "System/Threading/ManualResetEvent.h"
+#include "System/Threading/AutoResetEvent.h"
+#include "System/Threading/Mutex.h"
+#include "System/Threading/Semaphore.h"
+#include "System/Threading/SemaphoreSlim.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Interlocked.h"
+#include "System/Threading/Lock.h"
+#include "System/Threading/SemaphoreFullException.h"
+#include "System/TimeoutException.h"
 #include <iostream>
 #include <iomanip>
 #include <thread>
+#include <vector>
+#include <atomic>
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
 using namespace DotNetDupe::System::Diagnostics;
 using namespace DotNetDupe::System::Text;
 using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::Threading;
 
 void DemonstrateConsole() {
     Console::WriteLine(_T("\n--- Console Demonstration ---"));
@@ -40,6 +54,9 @@ void DemonstrateConsole() {
     String name = Console::ReadLine();
     Console::Write(_T("Hello, "));
     Console::WriteLine(name);
+    
+    // Clear mock input so subsequent ReadLine calls wait for actual stdin
+    Console::ClearInputs(); 
 
     Console::WriteLine(_T("Available Colors:"));
     Console::SetForegroundColor(ConsoleColor::Green);
@@ -266,6 +283,178 @@ void DemonstrateTextIO() {
     }
 }
 
+void DemonstrateThreading() {
+    Console::WriteLine(_T("\n--- Threading Demonstration ---"));
+
+    Thread* current = Thread::GetCurrentThread();
+    Console::WriteLine(_T("Main Thread active."));
+
+    bool workerExecuted = false;
+    Thread worker([&workerExecuted]() {
+        Thread* thisThread = Thread::GetCurrentThread();
+        thisThread->SetName(_T("WorkerThread"));
+        Console::Write(_T("Worker Thread Name: "));
+        Console::WriteLine(thisThread->GetName());
+        
+        Thread::Sleep(100);
+        workerExecuted = true;
+    });
+
+    Console::WriteLine(_T("Starting worker thread..."));
+    worker.Start();
+    
+    Console::WriteLine(_T("Waiting for worker thread to finish..."));
+    worker.Join();
+
+    Console::Write(_T("Worker executed: "));
+    Console::WriteLine(Convert::ToString(workerExecuted));
+}
+
+void DemonstrateSynchronization() {
+    Console::WriteLine(_T("\n--- Thread Synchronization Demonstration ---"));
+
+    // 1. ManualResetEvent
+    Console::WriteLine(_T("Demonstrating ManualResetEvent..."));
+    ManualResetEvent mre(false);
+    Thread t1([&mre]() {
+        Console::WriteLine(_T("  Thread 1 waiting on ManualResetEvent..."));
+        mre.WaitOne();
+        Console::WriteLine(_T("  Thread 1 released from ManualResetEvent."));
+    });
+    t1.Start();
+    Thread::Sleep(100);
+    Console::WriteLine(_T("  Main thread signaling ManualResetEvent..."));
+    mre.Set();
+    t1.Join();
+
+    // 1b. Event Timeout
+    Console::WriteLine(_T("Demonstrating EventWaitHandle Timeout..."));
+    try {
+        Console::WriteLine(_T("  Waiting 100ms on a non-signaled ManualResetEvent..."));
+        mre.Reset();
+        mre.WaitOne(100);
+    }
+    catch (const TimeoutException& ex) {
+        Console::Write(_T("  Caught expected TimeoutException from Event: "));
+        Console::WriteLine(ex.What());
+    }
+
+    // 2. Interlocked
+    Console::WriteLine(_T("\nDemonstrating Interlocked..."));
+    Interlocked<int> counter = 0;
+    std::vector<Thread*> threads;
+    for (int i = 0; i < 5; ++i) {
+        threads.push_back(new Thread([&counter]() {
+            for (int j = 0; j < 1000; ++j) {
+                counter++; // Atomic increment via operator++
+            }
+        }));
+    }
+    for (auto t : threads) t->Start();
+    for (auto t : threads) {
+        t->Join();
+        delete t;
+    }
+    Console::Write(_T("  Counter value (expected 5000): "));
+    Console::WriteLine((int)counter);
+
+    // 3. Exception Handling (SemaphoreFullException and TimeoutException)
+    Console::WriteLine(_T("\nDemonstrating Synchronization Exception Handling..."));
+    Semaphore s(1, 1);
+    try {
+        Console::WriteLine(_T("  Releasing a full semaphore to trigger exception..."));
+        s.Release(); // Already at 1, max is 1
+    }
+    catch (const SemaphoreFullException& ex) {
+        Console::Write(_T("  Caught expected exception: "));
+        Console::WriteLine(ex.What());
+    }
+
+    Mutex m;
+    m.WaitOne();
+    Thread t3([&m]() {
+        try {
+            Console::WriteLine(_T("  Thread 3 attempting to acquire locked Mutex with 100ms timeout..."));
+            m.WaitOne(100);
+        }
+        catch (const TimeoutException& ex) {
+            Console::Write(_T("  Thread 3 caught expected TimeoutException: "));
+            Console::WriteLine(ex.What());
+        }
+    });
+    t3.Start();
+    t3.Join();
+    m.Release();
+
+    // 4. CriticalSection
+    Console::WriteLine(_T("\nDemonstrating CriticalSection..."));
+    CriticalSection cs;
+    int sharedResource = 0;
+    Thread t2([&cs, &sharedResource]() {
+        cs.Enter();
+        sharedResource += 10;
+        Thread::Sleep(50);
+        cs.Leave();
+    });
+    t2.Start();
+    Thread::Sleep(10);
+    if (!cs.TryEnter()) {
+        Console::WriteLine(_T("  Main thread could not enter CriticalSection (locked by Thread 2)."));
+    }
+    t2.Join();
+    Console::Write(_T("  Shared resource value: "));
+    Console::WriteLine(sharedResource);
+
+    // 5. Thread Join Timeout
+    Console::WriteLine(_T("\nDemonstrating Thread::Join Timeout..."));
+    Thread t4([]() {
+        Thread::Sleep(500); // Sleep longer than timeout
+    });
+    t4.Start();
+    try {
+        Console::WriteLine(_T("  Attempting to Join thread with 100ms timeout (should fail)..."));
+        t4.Join(100);
+    }
+    catch (const TimeoutException& ex) {
+        Console::Write(_T("  Caught expected TimeoutException from Join: "));
+        Console::WriteLine(ex.What());
+    }
+    t4.Join(); // Clean up
+}
+
+void DemonstrateLockRAII() {
+    Console::WriteLine(_T("\n--- RAII Lock Demonstration ---"));
+
+    // 1. Lock<Mutex>
+    Console::WriteLine(_T("Demonstrating Lock<Mutex>..."));
+    Mutex m;
+    {
+        MutexLock lock(m); // Auto-acquires
+        Console::WriteLine(_T("  Mutex acquired via RAII Lock."));
+        // ... work ...
+    } // Auto-releases
+    Console::WriteLine(_T("  Mutex released automatically when scope ended."));
+
+    // 2. Lock<CriticalSection>
+    Console::WriteLine(_T("\nDemonstrating Lock<CriticalSection>..."));
+    CriticalSection cs;
+    {
+        CriticalSectionLock lock(cs);
+        Console::WriteLine(_T("  CriticalSection entered via RAII Lock."));
+    }
+    Console::WriteLine(_T("  CriticalSection left automatically."));
+
+    // 3. Lock<Semaphore> with release count
+    Console::WriteLine(_T("\nDemonstrating Lock<Semaphore> with release count..."));
+    Semaphore s(2, 2);
+    {
+        // Acquire 1 unit, specify that destructor should release 1 unit (default behavior)
+        SemaphoreLock lock(s); 
+        Console::WriteLine(_T("  Semaphore unit acquired."));
+    }
+    Console::WriteLine(_T("  Semaphore unit released automatically."));
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -279,7 +468,12 @@ int main() {
     DemonstrateEnvironment();
     DemonstrateTimeZone();
     DemonstrateTextIO();
+    DemonstrateThreading();
+    DemonstrateSynchronization();
+    DemonstrateLockRAII();
     
     Console::WriteLine(_T("\n--- Demonstration Complete ---"));
+    Console::WriteLine(_T("Press Enter to exit..."));
+    Console::ReadLine();
     return 0;
 }

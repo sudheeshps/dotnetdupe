@@ -128,7 +128,10 @@ int main() {
 
 ## STL vs DotNetDupe Comparison ⚖️
 
-DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. For a detailed side-by-side comparison of common tasks (Strings, Collections, Timing, etc.), please see our **[Comparison Guide](docs/Comparison.md)**.
+DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL.
+
+*   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
+*   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
 
 ### Sample Client and Test Code 🧪
 
@@ -173,6 +176,29 @@ For detailed information on the available classes, methods, and their usage, ple
 | [GenericUriParser](docs/GenericUriParser.md) | A customizable parser for a hierarchical URI. |
 | [Version](docs/Version.md) | Represents the version number of an assembly, operating system, or the common language runtime. |
 
+**Exceptions**
+
+| Exception | Description |
+|---|---|
+| [Exception](docs/Exceptions.md) | Represents errors that occur during application execution. |
+| [SystemException](docs/Exceptions.md) | The base class for all predefined exceptions in the System namespace. |
+| [ArgumentException](docs/Exceptions.md) | Represents errors that occur during argument processing. |
+| [ArgumentNullException](docs/Exceptions.md) | The exception that is thrown when a null reference is passed to a method that does not accept it as a valid argument. |
+| [ArgumentOutOfRangeException](docs/Exceptions.md) | Represents errors that occur when an argument is outside the allowable range of values. |
+| [ArithmeticException](docs/Exceptions.md) | Represents errors in an arithmetic operation. |
+| [FormatException](docs/Exceptions.md) | The exception that is thrown when the format of an argument is invalid. |
+| [NotImplementedException](docs/Exceptions.md) | The exception that is thrown when a requested method or operation is not implemented. |
+| [OverflowException](docs/Exceptions.md) | The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow. |
+
+**Interfaces**
+
+| Interface | Description |
+|---|---|
+| [IClonable](docs/Interfaces.md) | Defines a general-purpose mechanism for creating a new object that is a copy of the current object. |
+| [IComparable](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
+| [IComparable<T>](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
+| [IFormatProvider<T>](docs/Interfaces.md) | Provides a mechanism for retrieving a formatting service for a specified type. |
+
 ### Namespace: `DotNetDupe::System::Collections::Generic`
 
 **Classes**
@@ -198,29 +224,6 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
-
-**Exceptions**
-
-| Exception | Description |
-|---|---|
-| [Exception](docs/Exceptions.md) | Represents errors that occur during application execution. |
-| [SystemException](docs/Exceptions.md) | The base class for all predefined exceptions in the System namespace. |
-| [ArgumentException](docs/Exceptions.md) | Represents errors that occur during argument processing. |
-| [ArgumentNullException](docs/Exceptions.md) | The exception that is thrown when a null reference is passed to a method that does not accept it as a valid argument. |
-| [ArgumentOutOfRangeException](docs/Exceptions.md) | Represents errors that occur when an argument is outside the allowable range of values. |
-| [ArithmeticException](docs/Exceptions.md) | Represents errors in an arithmetic operation. |
-| [FormatException](docs/Exceptions.md) | The exception that is thrown when the format of an argument is invalid. |
-| [NotImplementedException](docs/Exceptions.md) | The exception that is thrown when a requested method or operation is not implemented. |
-| [OverflowException](docs/Exceptions.md) | The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow. |
-
-**Interfaces**
-
-| Interface | Description |
-|---|---|
-| [IClonable](docs/Interfaces.md) | Defines a general-purpose mechanism for creating a new object that is a copy of the current object. |
-| [IComparable](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
-| [IComparable<T>](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
-| [IFormatProvider<T>](docs/Interfaces.md) | Provides a mechanism for retrieving a formatting service for a specified type. |
 
 ### Namespace: `DotNetDupe::System::IO`
 
@@ -248,6 +251,35 @@ For detailed information on the available classes, methods, and their usage, ple
 | Interface | Description |
 |---|---|
 | [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
+
+### Namespace: `DotNetDupe::System::Threading`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Thread](docs/Thread.md) | Creates and controls a thread, sets its priority, and gets its status. |
+| [WaitHandle](docs/WaitHandle.md) | Abstract base class for synchronization objects. |
+| [EventWaitHandle](docs/EventWaitHandle.md) | Represents a thread synchronization event. |
+| [ManualResetEvent](docs/ManualResetEvent.md) | Notifies one or more waiting threads that an event has occurred. |
+| [AutoResetEvent](docs/AutoResetEvent.md) | Notifies a waiting thread that an event has occurred. |
+| [Mutex](docs/Mutex.md) | A synchronization primitive that can also be used for inter-process synchronization. |
+| [Semaphore](docs/Semaphore.md) | Limits the number of threads that can access a resource or pool of resources concurrently. |
+| [SemaphoreSlim](docs/SemaphoreSlim.md) | A lightweight alternative to `Semaphore`. |
+| [CriticalSection](docs/CriticalSection.md) | A wrapper around a recursive mutex for critical sections. |
+| [Interlocked](docs/Interlocked.md) | Provides atomic operations for variables that are shared by multiple threads. |
+| [Lock<T>](docs/Lock.md) | RAII mechanism for synchronization objects. |
+
+**Exceptions**
+
+| Exception | Description |
+|---|---|
+| [ThreadStateException](docs/Exceptions.md) | The exception that is thrown when a Thread is in an invalid ThreadState for the method call. |
+| [ThreadInterruptedException](docs/Exceptions.md) | The exception that is thrown when a Thread is interrupted while it is in a waiting state. |
+| [SynchronizationLockException](docs/Exceptions.md) | The exception that is thrown when a method requires the caller to own the lock on a given Monitor, and the method is invoked by a caller that does not own that lock. |
+| [AbandonedMutexException](docs/Exceptions.md) | The exception that is thrown when one thread acquires a Mutex object that another thread has abandoned by exiting without releasing it. |
+| [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | The exception that is thrown when an attempt is made to open a system mutex, semaphore, or event wait handle that does not exist. |
+| [SemaphoreFullException](docs/Exceptions.md) | The exception that is thrown when the Release method is called on a semaphore whose count is already at the maximum. |
 
 ## Project Status 🚧
 
