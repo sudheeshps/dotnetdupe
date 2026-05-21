@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>Enjoy! Threading and thread synchronization objects added.</releaseNotes>
+    <releaseNotes>Enjoy! Threading and thread synchronization objects added. Minor document correction</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/user/DotNetDupe</projectUrl>
     <license type="expression">MIT</license>
