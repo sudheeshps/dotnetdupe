@@ -19,9 +19,9 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API virtual String ToString() const;
 
-                DOTNETDUPE_API void Write(wchar_t value) override;
+                DOTNETDUPE_API void Write(char value) override;
                 DOTNETDUPE_API void Write(const String& value) override;
-                DOTNETDUPE_API void Write(const wchar_t* value) override;
+                DOTNETDUPE_API void Write(const char* value) override;
 
             private:
                 Text::StringBuilder* _sb;

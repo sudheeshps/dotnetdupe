@@ -39,7 +39,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API static void Write(long long value);
             DOTNETDUPE_API static void Write(float value);
             DOTNETDUPE_API static void Write(const String& value);
-            DOTNETDUPE_API static void Write(const TCHAR* value);
+            DOTNETDUPE_API static void Write(const char* value);
 
             // WriteLine methods
             DOTNETDUPE_API static void WriteLine();
@@ -51,7 +51,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API static void WriteLine(long long value);
             DOTNETDUPE_API static void WriteLine(float value);
             DOTNETDUPE_API static void WriteLine(const String& value);
-            DOTNETDUPE_API static void WriteLine(const TCHAR* value);
+            DOTNETDUPE_API static void WriteLine(const char* value);
 
             // Reading methods
             DOTNETDUPE_API static int Read();

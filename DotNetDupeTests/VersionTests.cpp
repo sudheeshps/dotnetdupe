@@ -83,7 +83,7 @@ namespace SystemTests {
             String s = v.ToString();
 
             // Then
-            EXPECT_EQ(s, _T("1.2.3.4"));
+            EXPECT_EQ(s, "1.2.3.4");
         }
 
         // Given: Two Version objects with the same version numbers

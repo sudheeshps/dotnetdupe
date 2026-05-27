@@ -7,27 +7,13 @@
 #include <algorithm>
 #include <cwctype>
 
-#ifdef UNICODE
-#define STOLL std::stoll
-#define STOULL std::stoull
-#define STOD std::stod
-#define STOF std::stof
-#define TO_TSTRING std::to_wstring
-#else
-#define STOLL std::stoll
-#define STOULL std::stoull
-#define STOD std::stod
-#define STOF std::stof
-#define TO_TSTRING std::to_string
-#endif
-
 namespace DotNetDupe {
     namespace System {
 
         template<typename Target, typename Source>
         static Target CheckRange(Source value) {
             if (value < (Source)(std::numeric_limits<Target>::min)() || value > (Source)(std::numeric_limits<Target>::max)()) {
-                throw OverflowException(_T("Value was either too large or too small for the target type."));
+                throw OverflowException("Value was either too large or too small for the target type.");
             }
             return (Target)value;
         }
@@ -38,11 +24,11 @@ namespace DotNetDupe {
         bool Convert::ToBoolean(long long value) { return value != 0; }
         bool Convert::ToBoolean(double value) { return value != 0.0; }
         bool Convert::ToBoolean(const String& value) {
-            std::basic_string<TCHAR> s = (const TCHAR*)value;
-            std::transform(s.begin(), s.end(), s.begin(), [](TCHAR c) { return (TCHAR)std::towlower(c); });
-            if (s == _T("true")) return true;
-            if (s == _T("false")) return false;
-            throw FormatException(_T("String was not recognized as a valid Boolean."));
+            std::string s = (const char*)value;
+            std::transform(s.begin(), s.end(), s.begin(), [](char c) { return (char)std::towlower(c); });
+            if (s == "true") return true;
+            if (s == "false") return false;
+            throw FormatException("String was not recognized as a valid Boolean.");
         }
 
         // Byte
@@ -57,13 +43,13 @@ namespace DotNetDupe {
         unsigned char Convert::ToByte(const String& value, int fromBase) {
             try {
                 size_t pos;
-                long long val = STOLL((const TCHAR*)value, &pos, fromBase);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                long long val = std::stoll((const char*)value, &pos, fromBase);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<unsigned char>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for an unsigned byte."));
+                throw OverflowException("Value was either too large or too small for an unsigned byte.");
             }
         }
 
@@ -78,22 +64,22 @@ namespace DotNetDupe {
         signed char Convert::ToSByte(const String& value) {
             try {
                 size_t pos;
-                long long val = STOLL((const TCHAR*)value, &pos, 10);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                long long val = std::stoll((const char*)value, &pos, 10);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<signed char>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a signed byte."));
+                throw OverflowException("Value was either too large or too small for a signed byte.");
             }
         }
 
         // Char
-        TCHAR Convert::ToChar(unsigned short value) { return (TCHAR)value; }
-        TCHAR Convert::ToChar(int value) { return CheckRange<TCHAR>(value); }
-        TCHAR Convert::ToChar(long long value) { return CheckRange<TCHAR>(value); }
-        TCHAR Convert::ToChar(const String& value) {
-            if (value.GetLength() != 1) throw FormatException(_T("String must be exactly one character long."));
+        char Convert::ToChar(unsigned short value) { return (char)value; }
+        char Convert::ToChar(int value) { return CheckRange<char>(value); }
+        char Convert::ToChar(long long value) { return CheckRange<char>(value); }
+        char Convert::ToChar(const String& value) {
+            if (value.GetLength() != 1) throw FormatException("String must be exactly one character long.");
             return value[0];
         }
 
@@ -104,13 +90,13 @@ namespace DotNetDupe {
         double Convert::ToDouble(const String& value) {
             try {
                 size_t pos;
-                double val = STOD((const TCHAR*)value, &pos);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                double val = std::stod((const char*)value, &pos);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return val;
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a Double."));
+                throw OverflowException("Value was either too large or too small for a Double.");
             }
         }
 
@@ -121,13 +107,13 @@ namespace DotNetDupe {
         float Convert::ToSingle(const String& value) {
             try {
                 size_t pos;
-                float val = STOF((const TCHAR*)value, &pos);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                float val = std::stof((const char*)value, &pos);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return val;
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a Single."));
+                throw OverflowException("Value was either too large or too small for a Single.");
             }
         }
 
@@ -141,13 +127,13 @@ namespace DotNetDupe {
         short Convert::ToInt16(const String& value, int fromBase) {
             try {
                 size_t pos;
-                long long val = STOLL((const TCHAR*)value, &pos, fromBase);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                long long val = std::stoll((const char*)value, &pos, fromBase);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<short>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for an Int16."));
+                throw OverflowException("Value was either too large or too small for an Int16.");
             }
         }
 
@@ -160,13 +146,13 @@ namespace DotNetDupe {
         int Convert::ToInt32(const String& value, int fromBase) {
             try {
                 size_t pos;
-                long long val = STOLL((const TCHAR*)value, &pos, fromBase);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                long long val = std::stoll((const char*)value, &pos, fromBase);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<int>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for an Int32."));
+                throw OverflowException("Value was either too large or too small for an Int32.");
             }
         }
 
@@ -179,13 +165,13 @@ namespace DotNetDupe {
         long long Convert::ToInt64(const String& value, int fromBase) {
             try {
                 size_t pos;
-                long long val = STOLL((const TCHAR*)value, &pos, fromBase);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                long long val = std::stoll((const char*)value, &pos, fromBase);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return val;
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for an Int64."));
+                throw OverflowException("Value was either too large or too small for an Int64.");
             }
         }
 
@@ -197,13 +183,13 @@ namespace DotNetDupe {
         unsigned short Convert::ToUInt16(const String& value) {
             try {
                 size_t pos;
-                unsigned long long val = STOULL((const TCHAR*)value, &pos, 10);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                unsigned long long val = std::stoull((const char*)value, &pos, 10);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<unsigned short>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a UInt16."));
+                throw OverflowException("Value was either too large or too small for a UInt16.");
             }
         }
 
@@ -215,13 +201,13 @@ namespace DotNetDupe {
         unsigned int Convert::ToUInt32(const String& value) {
             try {
                 size_t pos;
-                unsigned long long val = STOULL((const TCHAR*)value, &pos, 10);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                unsigned long long val = std::stoull((const char*)value, &pos, 10);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return CheckRange<unsigned int>(val);
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a UInt32."));
+                throw OverflowException("Value was either too large or too small for a UInt32.");
             }
         }
 
@@ -233,38 +219,38 @@ namespace DotNetDupe {
         unsigned long long Convert::ToUInt64(const String& value) {
             try {
                 size_t pos;
-                unsigned long long val = STOULL((const TCHAR*)value, &pos, 10);
-                if (pos != value.GetLength()) throw FormatException(_T("Input string was not in a correct format."));
+                unsigned long long val = std::stoull((const char*)value, &pos, 10);
+                if (pos != value.GetLength()) throw FormatException("Input string was not in a correct format.");
                 return val;
             } catch (const std::invalid_argument&) {
-                throw FormatException(_T("Input string was not in a correct format."));
+                throw FormatException("Input string was not in a correct format.");
             } catch (const std::out_of_range&) {
-                throw OverflowException(_T("Value was either too large or too small for a UInt64."));
+                throw OverflowException("Value was either too large or too small for a UInt64.");
             }
         }
 
         // String
-        String Convert::ToString(bool value) { return value ? _T("True") : _T("False"); }
-        String Convert::ToString(unsigned char value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(signed char value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(TCHAR value) { TCHAR buf[2] = { value, 0 }; return String(buf); }
-        String Convert::ToString(double value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(float value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(short value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(int value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(long long value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(unsigned short value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(unsigned int value) { return String(TO_TSTRING(value).c_str()); }
-        String Convert::ToString(unsigned long long value) { return String(TO_TSTRING(value).c_str()); }
+        String Convert::ToString(bool value) { return value ? "True" : "False"; }
+        String Convert::ToString(unsigned char value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(signed char value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(char value) { char buf[2] = { value, 0 }; return String(buf); }
+        String Convert::ToString(double value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(float value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(short value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(int value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(long long value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(unsigned short value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(unsigned int value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(unsigned long long value) { return String(std::to_string(value).c_str()); }
 
         static String ToBaseString(unsigned long long value, int toBase) {
             if (toBase != 2 && toBase != 8 && toBase != 10 && toBase != 16)
-                throw ArgumentException(_T("The base must be 2, 8, 10, or 16."));
+                throw ArgumentException("The base must be 2, 8, 10, or 16.");
 
-            if (value == 0) return _T("0");
+            if (value == 0) return "0";
 
-            std::basic_string<TCHAR> res;
-            const TCHAR* digits = _T("0123456789ABCDEF");
+            std::string res;
+            const char* digits = "0123456789ABCDEF";
             while (value > 0) {
                 res += digits[value % toBase];
                 value /= toBase;

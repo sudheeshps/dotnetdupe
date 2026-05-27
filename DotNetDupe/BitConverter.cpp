@@ -1,84 +1,174 @@
 #include "pch.h"
 #include "System/BitConverter.h"
-#include "System/ArgumentException.h"
-#include "System/ArgumentNullException.h"
-#include "System/ArgumentOutOfRangeException.h"
 #include <cstring>
 #include <iomanip>
 #include <sstream>
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
 
 namespace DotNetDupe {
     namespace System {
-        const bool BitConverter::IsLittleEndian = true;
+        const bool BitConverter::IsLittleEndian = true; // Most modern systems are little-endian
 
-        template <typename T>
-        static Array<byte> GetBytesInternal(T value) {
-            Array<byte> bytes(sizeof(T));
-            std::memcpy(bytes.GetData(), &value, sizeof(T));
-            return bytes;
-        }
-
-        template <typename T>
-        static T ToTypeInternal(Array<byte>& value, int startIndex) {
-            if (value.IsNull())
-                throw ArgumentNullException(_T("value"));
-            if (startIndex < 0 || startIndex > value.GetLength() - (int)sizeof(T))
-                throw ArgumentOutOfRangeException(_T("startIndex"));
-            T result;
-            std::memcpy(&result, (byte*)value.GetData() + startIndex, sizeof(T));
+        Array<byte> BitConverter::GetBytes(bool value) {
+            Array<byte> result(1);
+            result[0] = value ? 1 : 0;
             return result;
         }
 
-        Array<byte> BitConverter::GetBytes(bool value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(TCHAR value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(double value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(short value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(int value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(long long value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(float value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(unsigned short value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(unsigned int value) { return GetBytesInternal(value); }
-        Array<byte> BitConverter::GetBytes(unsigned long long value) { return GetBytesInternal(value); }
+        Array<byte> BitConverter::GetBytes(char value) {
+            Array<byte> result(1);
+            result[0] = (byte)value;
+            return result;
+        }
 
-        bool BitConverter::ToBoolean(Array<byte>& value, int startIndex) { return ToTypeInternal<bool>(value, startIndex); }
-        TCHAR BitConverter::ToChar(Array<byte>& value, int startIndex) { return ToTypeInternal<TCHAR>(value, startIndex); }
-        double BitConverter::ToDouble(Array<byte>& value, int startIndex) { return ToTypeInternal<double>(value, startIndex); }
-        short BitConverter::ToInt16(Array<byte>& value, int startIndex) { return ToTypeInternal<short>(value, startIndex); }
-        int BitConverter::ToInt32(Array<byte>& value, int startIndex) { return ToTypeInternal<int>(value, startIndex); }
-        long long BitConverter::ToInt64(Array<byte>& value, int startIndex) { return ToTypeInternal<long long>(value, startIndex); }
-        float BitConverter::ToSingle(Array<byte>& value, int startIndex) { return ToTypeInternal<float>(value, startIndex); }
-        unsigned short BitConverter::ToUInt16(Array<byte>& value, int startIndex) { return ToTypeInternal<unsigned short>(value, startIndex); }
-        unsigned int BitConverter::ToUInt32(Array<byte>& value, int startIndex) { return ToTypeInternal<unsigned int>(value, startIndex); }
-        unsigned long long BitConverter::ToUInt64(Array<byte>& value, int startIndex) { return ToTypeInternal<unsigned long long>(value, startIndex); }
+        Array<byte> BitConverter::GetBytes(double value) {
+            Array<byte> result(8);
+            std::memcpy(result.GetData(), &value, 8);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(short value) {
+            Array<byte> result(2);
+            std::memcpy(result.GetData(), &value, 2);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(int value) {
+            Array<byte> result(4);
+            std::memcpy(result.GetData(), &value, 4);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(long long value) {
+            Array<byte> result(8);
+            std::memcpy(result.GetData(), &value, 8);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(float value) {
+            Array<byte> result(4);
+            std::memcpy(result.GetData(), &value, 4);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(unsigned short value) {
+            Array<byte> result(2);
+            std::memcpy(result.GetData(), &value, 2);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(unsigned int value) {
+            Array<byte> result(4);
+            std::memcpy(result.GetData(), &value, 4);
+            return result;
+        }
+
+        Array<byte> BitConverter::GetBytes(unsigned long long value) {
+            Array<byte> result(8);
+            std::memcpy(result.GetData(), &value, 8);
+            return result;
+        }
+
+        bool BitConverter::ToBoolean(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex >= value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            return value[startIndex] != 0;
+        }
+
+        char BitConverter::ToChar(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex >= value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            return (char)value[startIndex];
+        }
+
+        double BitConverter::ToDouble(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 8 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            double result;
+            std::memcpy(&result, value.GetData() + startIndex, 8);
+            return result;
+        }
+
+        short BitConverter::ToInt16(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 2 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            short result;
+            std::memcpy(&result, value.GetData() + startIndex, 2);
+            return result;
+        }
+
+        int BitConverter::ToInt32(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 4 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            int result;
+            std::memcpy(&result, value.GetData() + startIndex, 4);
+            return result;
+        }
+
+        long long BitConverter::ToInt64(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 8 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            long long result;
+            std::memcpy(&result, value.GetData() + startIndex, 8);
+            return result;
+        }
+
+        float BitConverter::ToSingle(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 4 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            float result;
+            std::memcpy(&result, value.GetData() + startIndex, 4);
+            return result;
+        }
+
+        unsigned short BitConverter::ToUInt16(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 2 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            unsigned short result;
+            std::memcpy(&result, value.GetData() + startIndex, 2);
+            return result;
+        }
+
+        unsigned int BitConverter::ToUInt32(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 4 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            unsigned int result;
+            std::memcpy(&result, value.GetData() + startIndex, 4);
+            return result;
+        }
+
+        unsigned long long BitConverter::ToUInt64(Array<byte>& value, int startIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (startIndex < 0 || startIndex + 8 > value.GetLength()) throw ArgumentOutOfRangeException("startIndex");
+            unsigned long long result;
+            std::memcpy(&result, value.GetData() + startIndex, 8);
+            return result;
+        }
 
         String BitConverter::ToString(Array<byte>& value) {
-            if (value.IsNull()) throw ArgumentNullException(_T("value"));
             return ToString(value, 0, value.GetLength());
         }
 
         String BitConverter::ToString(Array<byte>& value, int startIndex) {
-            if (value.IsNull()) throw ArgumentNullException(_T("value"));
             return ToString(value, startIndex, value.GetLength() - startIndex);
         }
 
         String BitConverter::ToString(Array<byte>& value, int startIndex, int length) {
-            if (value.IsNull())
-                throw ArgumentNullException(_T("value"));
-            
             int arrayLength = value.GetLength();
-            if (startIndex < 0 || (startIndex >= arrayLength && startIndex != 0))
-                throw ArgumentOutOfRangeException(_T("startIndex"));
+            if (startIndex < 0 || (startIndex >= arrayLength && arrayLength > 0))
+                throw ArgumentOutOfRangeException("startIndex");
             if (length < 0)
-                throw ArgumentOutOfRangeException(_T("length"));
+                throw ArgumentOutOfRangeException("length");
             if (startIndex + length > arrayLength)
-                throw ArgumentException(_T("startIndex + length > value.Length"));
+                throw ArgumentException("startIndex + length > value.Length");
 
-            if (length == 0) return String(_T(""));
+            if (length == 0) return String("");
 
-            std::basic_ostringstream<TCHAR> ss;
+            std::stringstream ss;
             for (int i = 0; i < length; ++i) {
-                if (i > 0) ss << _T("-");
-                ss << std::uppercase << std::hex << std::setw(2) << std::setfill(_T('0')) << (int)value [startIndex + i];
+                if (i > 0) ss << "-";
+                ss << std::uppercase << std::hex << std::setw(2) << std::setfill('0') << (int)value [startIndex + i];
             }
             return String(ss.str().c_str());
         }

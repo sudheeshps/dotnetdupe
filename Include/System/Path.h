@@ -3,7 +3,11 @@
 #include "System/String.h"
 #include <vector>
 
-using namespace DotNetDupe::System;
+#if defined(_WIN32)
+#undef GetTempFileName
+#undef GetTempPath
+#endif
+
 namespace DotNetDupe {
     namespace System {
         namespace IO {
@@ -18,8 +22,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static String GetExtension(const String& filePath);
                 DOTNETDUPE_API static String GetFileNameWithoutExtension(const String& filePath);
                 DOTNETDUPE_API static String GetFullPath(const String& path);
-                DOTNETDUPE_API static std::vector<TCHAR> GetInvalidFileNameChars();
-                DOTNETDUPE_API static std::vector<TCHAR> GetInvalidPathChars();
+                DOTNETDUPE_API static std::vector<char> GetInvalidFileNameChars();
+                DOTNETDUPE_API static std::vector<char> GetInvalidPathChars();
                 DOTNETDUPE_API static String GetPathRoot(const String& path);
                 DOTNETDUPE_API static String GetRandomFileName();
                 DOTNETDUPE_API static String GetRelativePath(const String& relativeTo, const String& path);
@@ -31,6 +35,11 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static String Join(const std::initializer_list<String> paths);
                 DOTNETDUPE_API static bool TryJoin(const std::initializer_list<String> paths, String& result);
                 DOTNETDUPE_API static String TrimEndingDirectorySeparator(const String& path);
+
+                DOTNETDUPE_API static char GetDirectorySeparatorChar();
+                DOTNETDUPE_API static char GetAltDirectorySeparatorChar();
+                DOTNETDUPE_API static char GetVolumeSeparatorChar();
+                DOTNETDUPE_API static char GetPathSeparator();
             };
         }
     }

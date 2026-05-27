@@ -1,51 +1,51 @@
 #include "pch.h"
 #include "System/Guid.h"
+#include "System/String.h"
 #include "System/FormatException.h"
-#include <objbase.h>
-#include <cstdio>
+#include <iomanip>
+#include <sstream>
 #include <algorithm>
+#include <cstdio>
 
 namespace DotNetDupe {
     namespace System {
-
         const Guid Guid::Empty = Guid();
 
         Guid::Guid() {
-            _data.fill(0);
+            for (size_t i = 0; i < 16; ++i) {
+                _data[i] = 0;
+            }
         }
 
         Guid::Guid(const std::array<uint8_t, 16>& b) : _data(b) {}
 
         Guid::Guid(const String& g) {
-            std::basic_string<TCHAR> s = (const TCHAR*)g;
-            // Remove braces or hyphens if needed, but for simplicity we expect "dddddddd-dddd-dddd-dddd-dddddddddddd"
-            s.erase(std::remove(s.begin(), s.end(), _T('{')), s.end());
-            s.erase(std::remove(s.begin(), s.end(), _T('}')), s.end());
-            s.erase(std::remove(s.begin(), s.end(), _T('-')), s.end());
+            std::string s = (const char*)g;
+            // Remove braces or hyphens if needed
+            s.erase(std::remove(s.begin(), s.end(), '{'), s.end());
+            s.erase(std::remove(s.begin(), s.end(), '}'), s.end());
+            s.erase(std::remove(s.begin(), s.end(), '-'), s.end());
 
-            if (s.length() != 32) throw FormatException(_T("Guid string should only contain 32 hexadecimal characters."));
+            if (s.length() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");
 
             for (size_t i = 0; i < 16; ++i) {
-                unsigned int byte;
-#ifdef UNICODE
-                if (swscanf_s(s.substr(i * 2, 2).c_str(), L"%02x", &byte) != 1)
-#else
-                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &byte) != 1)
-#endif
-                    throw FormatException(_T("Guid string should only contain 32 hexadecimal characters."));
-                _data[i] = (uint8_t)byte;
+                unsigned int byteVal;
+                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+                    throw FormatException("Guid string should only contain 32 hexadecimal characters.");
+                _data[i] = (uint8_t)byteVal;
             }
         }
 
         Guid Guid::NewGuid() {
-            GUID guid;
-            if (CoCreateGuid(&guid) != S_OK) return Guid();
-            
-            std::array<uint8_t, 16> b;
-            // GUID structure: Data1 (4), Data2 (2), Data3 (2), Data4 (8)
-            // .NET Guid byte array order is slightly different but we'll stick to a simple mapping
-            memcpy(b.data(), &guid, 16);
-            return Guid(b);
+            // Very simple random Guid for now
+            std::array<uint8_t, 16> data;
+            for (size_t i = 0; i < 16; ++i) {
+                data[i] = static_cast<uint8_t>(rand() % 256);
+            }
+            // Set version 4 and variant
+            data[6] = (data[6] & 0x0F) | 0x40;
+            data[8] = (data[8] & 0x3F) | 0x80;
+            return Guid(data);
         }
 
         std::array<uint8_t, 16> Guid::ToByteArray() const {
@@ -53,8 +53,8 @@ namespace DotNetDupe {
         }
 
         String Guid::ToString() const {
-            TCHAR buf[37];
-            _stprintf_s(buf, 37, _T("%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x"),
+            char buf[37];
+            sprintf_s(buf, 37, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
                 _data[0], _data[1], _data[2], _data[3],
                 _data[4], _data[5],
                 _data[6], _data[7],

@@ -13,18 +13,18 @@ namespace DotNetDupeTests {
         Dictionary<String, int> dict;
 
         // When
-        dict.Add(_T("One"), 1);
-        dict.Add(_T("Two"), 2);
+        dict.Add("One", 1);
+        dict.Add("Two", 2);
 
         // Then
         EXPECT_EQ(dict.GetCount(), 2);
-        EXPECT_EQ(dict[_T("One")], 1);
+        EXPECT_EQ(dict["One"], 1);
     }
 
     TEST(DictionaryTest, TryGetValue_Given_ExistingKey_When_Called_Then_ReturnsTrueAndValue) {
         // Given
         Dictionary<int, String> dict;
-        dict.Add(1, _T("Value1"));
+        dict.Add(1, "Value1");
 
         // When
         String val;
@@ -32,17 +32,17 @@ namespace DotNetDupeTests {
 
         // Then
         EXPECT_TRUE(found);
-        EXPECT_TRUE(val == _T("Value1"));
+        EXPECT_TRUE(val == "Value1");
     }
 
     TEST(DictionaryTest, ContainsKey_Given_ExistingKey_When_Checked_Then_ReturnsTrue) {
         // Given
         Dictionary<String, String> dict;
-        dict.Add(_T("Key"), _T("Value"));
+        dict.Add("Key", "Value");
 
         // When & Then
-        EXPECT_TRUE(dict.ContainsKey(_T("Key")));
-        EXPECT_FALSE(dict.ContainsKey(_T("Missing")));
+        EXPECT_TRUE(dict.ContainsKey("Key"));
+        EXPECT_FALSE(dict.ContainsKey("Missing"));
     }
 
     TEST(DictionaryTest, Remove_Given_ExistingKey_When_Called_Then_RemovesItem) {

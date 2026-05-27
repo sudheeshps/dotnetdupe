@@ -31,7 +31,7 @@ namespace SystemTests {
             // Given
             const Version version(6, 1, 7601, 0);
             const OperatingSystem os(PlatformID::Win32NT, version);
-            const String expectedVersionString = _T("6.1.7601.0");
+            const String expectedVersionString = "6.1.7601.0";
 
             // When
             const auto actualVersionString = os.GetVersionString();

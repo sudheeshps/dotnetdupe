@@ -5,14 +5,22 @@
 #include "System/ArgumentException.h"
 #include <limits>
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 using namespace DotNetDupe::System;
 
 namespace SystemTests {
     namespace ConsoleTestCases {
 
         bool IsConsoleAvailable() {
+#if defined(_WIN32)
             CONSOLE_SCREEN_BUFFER_INFO csbi;
             return GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi) != FALSE;
+#else
+            return isatty(STDOUT_FILENO);
+#endif
         }
 
         // --- Positive Cases ---
@@ -20,7 +28,7 @@ namespace SystemTests {
         TEST(ConsoleTest, WriteLine_Should_OutputString_When_ValidStringPassed) {
             // Given
             Console::Clear();
-            String message(_T("Hello .NET"));
+            String message("Hello .NET");
 
             // When
             Console::WriteLine(message);
@@ -34,8 +42,8 @@ namespace SystemTests {
         TEST(ConsoleTest, Write_Should_AccumulateOutput_When_MultipleCallsMade) {
             // Given
             Console::Clear();
-            String part1(_T("Hello"));
-            String part2(_T(" World"));
+            String part1("Hello");
+            String part2(" World");
 
             // When
             Console::Write(part1);
@@ -45,7 +53,7 @@ namespace SystemTests {
             // Then
             auto outputs = Console::GetOutputs();
             ASSERT_TRUE(outputs.size() == 1);
-            ASSERT_TRUE(outputs[0] == _T("Hello World"));
+            ASSERT_TRUE(outputs[0] == "Hello World");
         }
 
         TEST(ConsoleTest, Write_Should_HandleBoolean_When_TruePassed) {
@@ -58,7 +66,7 @@ namespace SystemTests {
 
             // Then
             auto outputs = Console::GetOutputs();
-            ASSERT_TRUE(outputs[0] == _T("True"));
+            ASSERT_TRUE(outputs[0] == "True");
         }
 
         TEST(ConsoleTest, Write_Should_HandleBoolean_When_FalsePassed) {
@@ -71,7 +79,7 @@ namespace SystemTests {
 
             // Then
             auto outputs = Console::GetOutputs();
-            ASSERT_TRUE(outputs[0] == _T("False"));
+            ASSERT_TRUE(outputs[0] == "False");
         }
 
         TEST(ConsoleTest, Write_Should_HandleInteger_When_PositiveValuePassed) {
@@ -85,13 +93,13 @@ namespace SystemTests {
 
             // Then
             auto outputs = Console::GetOutputs();
-            ASSERT_TRUE(outputs[0] == _T("42"));
+            ASSERT_TRUE(outputs[0] == "42");
         }
 
         TEST(ConsoleTest, ReadLine_Should_ReturnInput_When_InputWasSet) {
             // Given
             Console::Clear();
-            String input(_T("Test Input"));
+            String input("Test Input");
             Console::SetIn(input);
 
             // When
@@ -104,13 +112,15 @@ namespace SystemTests {
         TEST(ConsoleTest, SetTitle_Should_UpdateTitle_When_ValidStringPassed) {
             if (!IsConsoleAvailable()) return;
             // Given
-            String newTitle(_T("DotNetDupe Console"));
+            String newTitle("DotNetDupe Console");
 
             // When
             Console::SetTitle(newTitle);
 
             // Then
+#if defined(_WIN32)
             ASSERT_TRUE(Console::GetTitle() == newTitle);
+#endif
         }
 
         TEST(ConsoleTest, Colors_Should_BeConsistent_When_SetAndGet) {
@@ -124,8 +134,10 @@ namespace SystemTests {
             Console::SetBackgroundColor(back);
 
             // Then
+#if defined(_WIN32)
             ASSERT_TRUE(Console::GetForegroundColor() == fore);
             ASSERT_TRUE(Console::GetBackgroundColor() == back);
+#endif
 
             // Cleanup
             Console::ResetColor();
@@ -141,8 +153,10 @@ namespace SystemTests {
             Console::SetCursorPosition(left, top);
 
             // Then
+#if defined(_WIN32)
             ASSERT_TRUE(Console::GetCursorLeft() == left);
             ASSERT_TRUE(Console::GetCursorTop() == top);
+#endif
         }
 
         TEST(ConsoleTest, CursorVisible_Should_Toggle_When_Set) {
@@ -155,7 +169,9 @@ namespace SystemTests {
             bool updated = Console::GetCursorVisible();
 
             // Then
+#if defined(_WIN32)
             ASSERT_TRUE(updated == !original);
+#endif
 
             // Cleanup
             Console::SetCursorVisible(original);
@@ -173,7 +189,9 @@ namespace SystemTests {
                 int updatedWidth = Console::GetWindowWidth();
 
                 // Then
+#if defined(_WIN32)
                 ASSERT_TRUE(updatedWidth == newWidth);
+#endif
 
                 // Cleanup
                 Console::SetWindowWidth(originalWidth);
@@ -197,19 +215,19 @@ namespace SystemTests {
             Console::Clear();
 
             // When
-            Console::Write(_T(""));
+            Console::Write("");
             Console::WriteLine();
 
             // Then
             auto outputs = Console::GetOutputs();
             ASSERT_TRUE(outputs.size() > 0);
-            ASSERT_TRUE(outputs[0] == _T(""));
+            ASSERT_TRUE(outputs[0] == "");
         }
 
         TEST(ConsoleTest, Write_Should_HandleLargeString_When_LongStringPassed) {
             // Given
             Console::Clear();
-            std::basic_string<TCHAR> longStr(5000, _T('A'));
+            std::string longStr(5000, 'A');
             String message(longStr.c_str());
 
             // When
@@ -231,11 +249,7 @@ namespace SystemTests {
 
             // Then
             auto outputs = Console::GetOutputs();
-#ifdef UNICODE
-            ASSERT_TRUE(outputs[0] == String(std::to_wstring(maxValue).c_str()));
-#else
             ASSERT_TRUE(outputs[0] == String(std::to_string(maxValue).c_str()));
-#endif
         }
     }
 }

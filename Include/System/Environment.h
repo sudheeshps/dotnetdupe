@@ -5,7 +5,7 @@
 #include "System/String.h"
 #include "System/OperatingSystem.h"
 #include <Windows.h>
-#include <tchar.h>
+#include "System/Char.h"
 #include <vector>
 #include <map>
 

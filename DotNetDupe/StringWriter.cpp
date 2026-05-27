@@ -28,7 +28,7 @@ namespace DotNetDupe {
                 return _sb->ToString();
             }
 
-            void StringWriter::Write(wchar_t value) {
+            void StringWriter::Write(char value) {
                 if (!_isOpen) return;
                 _sb->Append(value);
             }
@@ -38,7 +38,7 @@ namespace DotNetDupe {
                 _sb->Append(value);
             }
 
-            void StringWriter::Write(const wchar_t* value) {
+            void StringWriter::Write(const char* value) {
                 if (!_isOpen) return;
                 _sb->Append(value);
             }

@@ -110,7 +110,7 @@ namespace SystemTests {
             ASSERT_TRUE(Char::ToLower('0') == '0');
             ASSERT_FALSE(Char::ToLower('A') == 'A');
         }
-        TEST(CharTest, GetChar) {
+        TEST(CharTest, Gechar) {
             ASSERT_TRUE(Char('A').GetChar() == 'A');
             ASSERT_TRUE(Char('0').GetChar() == '0');
             ASSERT_FALSE(Char('A').GetChar() == 'B');

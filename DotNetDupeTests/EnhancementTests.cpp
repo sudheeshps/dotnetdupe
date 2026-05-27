@@ -12,50 +12,50 @@ namespace DotNetDupeTests {
 
     TEST(StringEnhancementTest, ToLower_Should_ConvertToUpperToLower) {
         // Given
-        String s(_T("HELLO World"));
+        String s("HELLO World");
 
         // When
         String lower = s.ToLower();
 
         // Then
-        EXPECT_TRUE(lower == _T("hello world"));
+        EXPECT_TRUE(lower == "hello world");
     }
 
     TEST(StringEnhancementTest, ToUpper_Should_ConvertToLowerToUpper) {
         // Given
-        String s(_T("hello World"));
+        String s("hello World");
 
         // When
         String upper = s.ToUpper();
 
         // Then
-        EXPECT_TRUE(upper == _T("HELLO WORLD"));
+        EXPECT_TRUE(upper == "HELLO WORLD");
     }
 
     TEST(StringEnhancementTest, Trim_Should_RemoveSurroundingWhitespace) {
         // Given
-        String s(_T("  \t Hello \r\n  "));
+        String s("  \t Hello \r\n  ");
 
         // When
         String trimmed = s.Trim();
 
         // Then
-        EXPECT_TRUE(trimmed == _T("Hello"));
+        EXPECT_TRUE(trimmed == "Hello");
     }
 
     TEST(StringEnhancementTest, Split_With_TrimEntries_Should_TrimEachEntry) {
         // Given
-        String s(_T("  Apple ,  Banana , Cherry  "));
-        String sep [] = { _T(",") };
+        String s("  Apple ,  Banana , Cherry  ");
+        String sep [] = { "," };
 
         // When
         auto parts = s.Split(sep, 1, StringSplitOptions::TrimEntries);
 
         // Then
         ASSERT_EQ(parts.size(), 3);
-        EXPECT_TRUE(parts [0] == _T("Apple"));
-        EXPECT_TRUE(parts [1] == _T("Banana"));
-        EXPECT_TRUE(parts [2] == _T("Cherry"));
+        EXPECT_TRUE(parts [0] == "Apple");
+        EXPECT_TRUE(parts [1] == "Banana");
+        EXPECT_TRUE(parts [2] == "Cherry");
     }
 
     // --- List Enhancement Tests ---

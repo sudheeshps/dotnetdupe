@@ -5,88 +5,119 @@
 #include <random>
 #include <string>
 #include <fstream>
+#include <algorithm>
+
+#if defined(_WIN32)
+#include <windows.h>
+#include "Win32Internal.h"
+#undef GetTempFileName
+#undef GetTempPath
+using namespace DotNetDupe::System::Internal;
+#endif
+
 namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String& path) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(path.GetRawString()));
+#else
+        return fs::path(path.GetRawString());
+#endif
+    }
+}
+
 namespace DotNetDupe {
     namespace System {
         namespace IO {
             String Path::ChangeExtension(const String& filePath, const String& extension) {
                 if (filePath.GetLength() <= 0 || extension.GetLength() <= 0)
-                    throw ArgumentException(_T("Invalid argument"));
+                    throw ArgumentException("Invalid argument");
                 if (filePath.GetLength() <= extension.GetLength())
-                    throw ArgumentException(_T("Invalid argument"));
+                    throw ArgumentException("Invalid argument");
                 auto strTempFilePath = filePath;
-                if (filePath [0] == _T('.'))
+                if (filePath [0] == '.')
                     strTempFilePath = filePath.Remove(0);
 
-                fs::path path = (const TCHAR*)strTempFilePath;
-                path.replace_extension((const TCHAR*)extension);
-                return path.c_str();
+                fs::path path = ToFsPath(strTempFilePath);
+                path.replace_extension(Utf8ToWChar(extension.GetRawString()));
+                return String(WCharToUtf8(path.wstring().c_str()).c_str());
             }
 
             String Path::Combine(const std::initializer_list<String> paths) {
                 auto indexedList = _init_list_with_indexer(paths);
-                fs::path rootPath = (const TCHAR*)indexedList [0];
+                fs::path rootPath = ToFsPath(indexedList [0]);
                 if (!rootPath.has_root_directory())
                     return indexedList [0];
-                String strCombinedPath(_T(""));
+                String strCombinedPath("");
                 for (auto path : paths) {
                     strCombinedPath.Append(path);
-                    strCombinedPath.Append(fs::path::preferred_separator);
+                    strCombinedPath.Append(static_cast<char>(fs::path::preferred_separator));
                 }
                 return strCombinedPath.Remove(strCombinedPath.GetLength() - 1);
             }
+
             bool Path::EndsInDirectorySeparator(const String& filePath) {
-                fs::path path = (const TCHAR*)filePath;
-                if (!path.has_root_path())
-                    return false;
-                return filePath.EndsWith(fs::path::preferred_separator, false);
+                if (filePath.IsEmpty()) return false;
+                char lastChar = filePath[filePath.GetLength() - 1];
+                return lastChar == '\\' || lastChar == '/';
             }
+
             bool Path::Exists(const String& filePath) {
-                return fs::exists((const TCHAR*)filePath);
+                return fs::exists(ToFsPath(filePath));
             }
+
             String Path::GetDirectoryName(const String& filePath) {
                 if (filePath.IsEmpty())
-                    return _T("");
+                    return String("");
 
-                fs::path path = (const TCHAR*)filePath;
-                return path.parent_path().c_str();
+                fs::path path = ToFsPath(filePath);
+                return String(WCharToUtf8(path.parent_path().wstring().c_str()).c_str());
             }
+
             String Path::GetFileName(const String& filePath) {
                 if (filePath.IsEmpty())
-                    return _T("");
-                fs::path path = (const TCHAR*)filePath;
-                return path.filename().c_str();
+                    return String("");
+                fs::path path = ToFsPath(filePath);
+                return String(WCharToUtf8(path.filename().wstring().c_str()).c_str());
             }
+
             String Path::GetExtension(const String& filePath) {
                 if (filePath.IsEmpty())
-                    return _T("");
+                    return String("");
 
-                fs::path path = (const TCHAR*)filePath;
-                return path.extension().c_str() + 1;
+                fs::path path = ToFsPath(filePath);
+                std::wstring ext = path.extension().wstring();
+                if (ext.empty()) return String("");
+                return String(WCharToUtf8(ext.c_str() + 1).c_str());
             }
+
             String Path::GetFileNameWithoutExtension(const String& filePath) {
                 if (filePath.IsEmpty())
-                    return _T("");
+                    return String("");
 
-                fs::path path = (const TCHAR*)filePath;
-                return path.stem().c_str();
+                fs::path path = ToFsPath(filePath);
+                return String(WCharToUtf8(path.stem().wstring().c_str()).c_str());
             }
+
             String Path::GetFullPath(const String& path) {
                 if (path.IsEmpty())
-                    return _T("");
+                    return String("");
 
-                return fs::absolute((const TCHAR*)path).c_str();
+                return String(WCharToUtf8(fs::absolute(ToFsPath(path)).wstring().c_str()).c_str());
             }
-            std::vector<TCHAR> Path::GetInvalidFileNameChars() {
-                static const std::vector<TCHAR> invalidChars = {
+
+            std::vector<char> Path::GetInvalidFileNameChars() {
+                static const std::vector<char> invalidChars = {
                     '"', '<', '>', '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F',
                     ':', '*', '?', '\\', '/' };
                 return invalidChars;
             }
-            std::vector<TCHAR> Path::GetInvalidPathChars() {
-                static const std::vector<TCHAR> invalidChars = {
+
+            std::vector<char> Path::GetInvalidPathChars() {
+                static const std::vector<char> invalidChars = {
                     '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F' };
@@ -95,23 +126,23 @@ namespace DotNetDupe {
 
             String Path::GetRandomFileName()
             {
-                const TCHAR chars[] = _T("abcdefghijklmnopqrstuvwxyz0123456789");
-                const int chars_len = sizeof(chars) / sizeof(TCHAR) - 1;
+                const char chars[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+                const int chars_len = sizeof(chars) / sizeof(char) - 1;
 
                 std::random_device rd;
                 std::mt19937 generator(rd());
                 std::uniform_int_distribution<> distribution(0, chars_len - 1);
 
-                TCHAR random_string[13];
+                char random_string[13];
 
                 for (int i = 0; i < 8; ++i) {
                     random_string[i] = chars[distribution(generator)];
                 }
-                random_string[8] = _T('.');
+                random_string[8] = '.';
                 for (int i = 0; i < 3; ++i) {
                     random_string[9 + i] = chars[distribution(generator)];
                 }
-                random_string[12] = _T('\0');
+                random_string[12] = '\0';
 
                 return String(random_string);
             }
@@ -119,18 +150,18 @@ namespace DotNetDupe {
             String Path::GetPathRoot(const String& path)
             {
                 if (path.IsEmpty())
-                    return _T("");
+                    return String("");
 
-                if (path.StartsWith(String(_T("\\")), false))
+                if (path.StartsWith(String("\\"), false))
                 {
                     // UNC path like \\server\share
                     int len = path.GetLength();
                     if (len > 2)
                     {
-                        int idx = path.IndexOf(String(_T("\\")), 2, false);
+                        int idx = path.IndexOf(String("\\"), 2, false);
                         if (idx != -1)
                         {
-                            idx = path.IndexOf(String(_T("\\")), idx + 1, false);
+                            idx = path.IndexOf(String("\\"), idx + 1, false);
                             if (idx != -1)
                                 return path.Substring(0, idx);
                         }
@@ -138,51 +169,62 @@ namespace DotNetDupe {
                     return path;
                 }
 
-                fs::path p((const TCHAR*)path);
-                return p.root_path().c_str();
+                fs::path p = ToFsPath(path);
+                return String(WCharToUtf8(p.root_path().wstring().c_str()).c_str());
             }
+
             String Path::GetRelativePath(const String& relativeTo, const String& path) {
-                const fs::path fsRelativeTo = (const TCHAR*)GetFullPath(relativeTo);
-                const fs::path fsPath = (const TCHAR*)GetFullPath(path);
+                const fs::path fsRelativeTo = ToFsPath(GetFullPath(relativeTo));
+                const fs::path fsPath = ToFsPath(GetFullPath(path));
 
                 if (fsRelativeTo.root_name() != fsPath.root_name()) {
                     return path;
                 }
 
-                return fs::relative(fsPath, fsRelativeTo).c_str();
+                return String(WCharToUtf8(fs::relative(fsPath, fsRelativeTo).wstring().c_str()).c_str());
             }
 
             String Path::GetTempFileName() {
-                auto temp_dir_path = GetTempPath();
+                String temp_dir_path = GetTempPath();
 
                 std::random_device rd;
                 std::mt19937 generator(rd());
                 std::uniform_int_distribution<int> distribution(0, 35);
-                const TCHAR alphabet [] = _T("abcdefghijklmnopqrstuvwxyz0123456789");
+                const char alphabet [] = "abcdefghijklmnopqrstuvwxyz0123456789";
 
                 for (int i = 0; i < 100; ++i) {
-                    TCHAR random_name [9];
+                    char random_name [9];
                     for (int j = 0; j < 8; ++j) {
                         random_name [j] = alphabet [distribution(generator)];
                     }
-                    random_name [8] = _T('\0');
+                    random_name [8] = '\0';
 
-                    fs::path file_path = fs::path((const TCHAR*)temp_dir_path) / (const TCHAR*)(String(random_name) + _T(".tmp"));
+                    fs::path file_path = ToFsPath(temp_dir_path) / Utf8ToWChar((String(random_name) + ".tmp").GetRawString());
 
                     if (!fs::exists(file_path)) {
                         std::ofstream ofs(file_path);
-                        if (ofs.is_open()) {
-                            ofs.close();
-                            return String(file_path.c_str());
+                        if (ofs) {
+                            return String(WCharToUtf8(file_path.wstring().c_str()).c_str());
                         }
                     }
                 }
 
-                throw IOException(_T("Could not create a unique temporary file."));
+                throw IOException("Could not create a unique temporary file.");
             }
 
             String Path::GetTempPath() {
-                return fs::temp_directory_path().c_str();
+#if defined(_WIN32)
+                wchar_t buffer [MAX_PATH];
+                ::GetTempPathW(MAX_PATH, buffer);
+                String path(WCharToUtf8(buffer).c_str());
+                if (!path.EndsWith('\\', false)) path.Append('\\');
+                return path;
+#else
+                const char* tmpdir = getenv("TMPDIR");
+                String path = tmpdir ? String(tmpdir) : String("/tmp/");
+                if (!path.EndsWith('/', false)) path.Append('/');
+                return path;
+#endif
             }
 
             bool Path::HasExtension(const String& path) {
@@ -192,13 +234,13 @@ namespace DotNetDupe {
 
                 String filenameStr = GetFileName(path);
 
-                if (filenameStr.IsEmpty() || filenameStr == _T(".") || filenameStr == _T("..")) {
+                if (filenameStr.IsEmpty() || filenameStr == "." || filenameStr == "..") {
                     return false;
                 }
-                
-                std::basic_string<TCHAR> filename((const TCHAR*)filenameStr);
 
-                auto dot_pos = filename.rfind(_T('.'));
+                std::string filename((const char*)filenameStr);
+
+                auto dot_pos = filename.rfind('.');
 
                 if (dot_pos == std::string::npos || dot_pos == filename.length() - 1) {
                     return false;
@@ -211,7 +253,7 @@ namespace DotNetDupe {
                 if (path.IsEmpty()) {
                     return false;
                 }
-                return fs::path((const TCHAR*)path).is_absolute();
+                return ToFsPath(path).is_absolute();
             }
 
             bool Path::IsPathRooted(const String& path) {
@@ -222,19 +264,19 @@ namespace DotNetDupe {
                 int len = path.GetLength();
 
                 if (len >= 1) {
-                    TCHAR first = path[0];
-                    if (first == _T('\\') || first == _T('/')) {
+                    char first = path[0];
+                    if (first == '\\' || first == '/') {
                         return true;
                     }
                 }
 
                 if (len >= 2) {
-                    TCHAR first = path[0];
-                    TCHAR second = path[1];
-                    if (second == _T(':') && ((first >= _T('a') && first <= _T('z')) || (first >= _T('A') && first <= _T('Z')))) {
+                    char first = path[0];
+                    char second = path[1];
+                    if (second == ':' && ((first >= 'a' && first <= 'z') || (first >= 'A' && first <= 'Z'))) {
                         if (len >= 3) {
-                            TCHAR third = path[2];
-                            if (third == _T('\\') || third == _T('/')) {
+                            char third = path[2];
+                            if (third == '\\' || third == '/') {
                                 return true;
                             }
                         }
@@ -246,56 +288,81 @@ namespace DotNetDupe {
             }
 
             String Path::Join(const std::initializer_list<String> paths) {
-                String result(_T(""));
+                String result("");
                 if (TryJoin(paths, result)) {
                     return result;
                 }
-                throw ArgumentException(_T("Invalid character in path."));
+                throw ArgumentException("Invalid character in path.");
             }
 
             bool Path::TryJoin(const std::initializer_list<String> paths, String& result) {
                 auto invalidPathChars = GetInvalidPathChars();
-
                 for (const auto& path : paths) {
                     for (auto invalidChar : invalidPathChars) {
                         if (path.Contains(invalidChar)) {
-                            result = String(_T(""));
+                            result = String("");
                             return false;
                         }
                     }
                 }
 
-                String joinedPath(_T(""));
+                String joinedPath("");
                 for (const auto& path : paths) {
                     if (path.IsEmpty()) {
                         continue;
                     }
+
                     if (joinedPath.IsEmpty()) {
                         joinedPath = path;
                     }
                     else {
-                        joinedPath.Append(fs::path::preferred_separator);
-                        joinedPath.Append(path);
+                        char lastChar = joinedPath [joinedPath.GetLength() - 1];
+                        if (lastChar != '\\' && lastChar != '/') {
+                            joinedPath.Append(static_cast<char>(fs::path::preferred_separator));
+                        }
+
+                        if (path [0] == '\\' || path [0] == '/') {
+                            joinedPath.Append(path.Substring(1, path.GetLength() - 1));
+                        }
+                        else {
+                            joinedPath.Append(path);
+                        }
                     }
                 }
+
                 result = joinedPath;
                 return true;
             }
 
             String Path::TrimEndingDirectorySeparator(const String& path) {
-                if (path.IsEmpty()) {
-                    return path;
-                }
+                if (path.IsEmpty()) return path;
+                if (Path::IsPathRooted(path) && path.GetLength() <= 3) return path;
 
-                if (EndsInDirectorySeparator(path)) {
-                    String root = GetPathRoot(path);
-                    if (path.Equals(root)) {
-                        return path;
-                    }
+                char lastChar = path[path.GetLength() - 1];
+                if (lastChar == '\\' || lastChar == '/') {
                     return path.Substring(0, path.GetLength() - 1);
                 }
-
                 return path;
+            }
+
+            char Path::GetDirectorySeparatorChar() {
+                return static_cast<char>(fs::path::preferred_separator);
+            }
+
+            char Path::GetAltDirectorySeparatorChar() {
+                return (fs::path::preferred_separator == '/') ? '\\' : '/';
+            }
+
+            char Path::GetVolumeSeparatorChar() {
+                return ':';
+            }
+
+            char Path::GetPathSeparator() {
+#if defined(_WIN32)
+                return ';';
+#else
+                return ':';
+#endif
             }
         }
     }

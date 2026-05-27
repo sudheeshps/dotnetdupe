@@ -3,7 +3,7 @@
 #include "System/TimeZone.h"
 #include "System/DateTimeOffset.h"
 #include "System/DaylightTime.h"
-#include <tchar.h>
+#include "System/Char.h"
 
 using namespace DotNetDupe::System;
 

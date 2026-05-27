@@ -66,10 +66,10 @@ namespace SystemTests {
 
         TEST(Environment, ExpandEnvironmentVariables_WhenCalled_ExpandsVariables) {
             // Given
-            auto path = Environment::GetEnvironmentVariable(_T("PATH"));
+            auto path = Environment::GetEnvironmentVariable("PATH");
 
             // When
-            auto expanded = Environment::ExpandEnvironmentVariables(_T("%PATH%"));
+            auto expanded = Environment::ExpandEnvironmentVariables("%PATH%");
 
             // Then
             ASSERT_EQ(path, expanded);
@@ -87,8 +87,8 @@ namespace SystemTests {
 
         TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable) {
             // Given
-            auto variable = _T("TestVar");
-            auto value = _T("TestValue");
+            auto variable = "TestVar";
+            auto value = "TestValue";
             Environment::SetEnvironmentVariable(variable, value);
 
             // When
@@ -130,8 +130,8 @@ namespace SystemTests {
 
         TEST(Environment, SetEnvironmentVariable_WhenCalled_SetsEnvironmentVariable) {
             // Given
-            auto variable = _T("TestVar");
-            auto value = _T("TestValue");
+            auto variable = "TestVar";
+            auto value = "TestValue";
 
             // When
             Environment::SetEnvironmentVariable(variable, value);

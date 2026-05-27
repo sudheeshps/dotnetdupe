@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "System/IO/TextWriter.h"
 #include "System/Convert.h"
-#include <tchar.h>
+#include "System/Char.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -22,18 +22,18 @@ namespace DotNetDupe {
                 Write(Convert::ToString(value));
             }
 
-            void TextWriter::Write(wchar_t value) {
+            void TextWriter::Write(char value) {
                 // Base class does not know how to write, should be overridden
             }
 
-            void TextWriter::Write(const wchar_t* value) {
+            void TextWriter::Write(const char* value) {
                 if (value == nullptr) return;
                 Write(String(value));
             }
 
             void TextWriter::Write(const String& value) {
                 for (int i = 0; i < value.GetLength(); i++) {
-                    Write((wchar_t)value[i]);
+                    Write((char)value[i]);
                 }
             }
 
@@ -62,12 +62,12 @@ namespace DotNetDupe {
                 WriteLine();
             }
 
-            void TextWriter::WriteLine(wchar_t value) {
+            void TextWriter::WriteLine(char value) {
                 Write(value);
                 WriteLine();
             }
 
-            void TextWriter::WriteLine(const wchar_t* value) {
+            void TextWriter::WriteLine(const char* value) {
                 Write(value);
                 WriteLine();
             }
@@ -98,7 +98,7 @@ namespace DotNetDupe {
             }
 
             const String& TextWriter::GetNewLine() {
-                static String newLine(_T("\r\n"));
+                static String newLine("\r\n");
                 return newLine;
             }
         }

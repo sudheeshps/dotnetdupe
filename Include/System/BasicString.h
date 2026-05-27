@@ -1,14 +1,5 @@
 #pragma once
 
-/*#ifndef _INC_TCHAR
-#ifdef UNICODE
-#define _T(x) L ## x
-#else
-#define _T(x) ## x
-#endif // UNICODE
-#endif*/
-
-
 #include "System/ArgumentException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include "System/NotImplementedException.h"
@@ -23,9 +14,8 @@
 #include <string>
 #include <vector>
 #include <set>
-
-#include <tchar.h>
-#include <Shlwapi.h>
+#include <cstring>
+#include <cwctype>
 
 namespace DotNetDupe {
     namespace System {
@@ -34,6 +24,22 @@ namespace DotNetDupe {
             RemoveEmptyEntries,
             TrimEntries
         };
+
+        // Helper for portable case-insensitive comparison
+        template<typename CharT>
+        struct CaseInsensitiveCompare {
+            static bool Equals(CharT c1, CharT c2) {
+                return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
+            }
+        };
+
+        template<>
+        struct CaseInsensitiveCompare<wchar_t> {
+            static bool Equals(wchar_t c1, wchar_t c2) {
+                return std::towlower(c1) == std::towlower(c2);
+            }
+        };
+
         template <class CharT>
         class BasicString {
         public:
@@ -147,7 +153,7 @@ namespace DotNetDupe {
 
         template <class CharT>
         inline BasicString<CharT>::BasicString(const CharT* pStr) {
-            if (pStr == nullptr) throw ArgumentException(_T("Invalid input pointer"));
+            if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
             m_str = pStr;
         }
 
@@ -186,7 +192,7 @@ namespace DotNetDupe {
 
         template<class CharT>
         inline CharT BasicString<CharT>::operator[](int index) const {
-            if (index >= m_str.size()) throw ArgumentOutOfRangeException(_T("Invalid index"));
+            if (index >= (int)m_str.size()) throw ArgumentOutOfRangeException("Invalid index");
             return GetRawString() [index];
         }
         template <class CharT>
@@ -195,18 +201,39 @@ namespace DotNetDupe {
                                                const BasicString<CharT>& str2,
                                                int index2, int length,
                                                bool ignoreCase) {
-            auto basicStr1 = std::basic_string<CharT>(str1.GetRawString());
-            auto basicStr2 = std::basic_string<CharT>(str2.GetRawString());
             if (!ignoreCase) {
-                return basicStr1.compare(index1, length, basicStr2, index2, length);
+                return str1.m_str.compare(index1, length, str2.m_str, index2, length);
             }
 
-            std::transform(basicStr1.begin(), basicStr1.end(), basicStr1.begin(),
-                           [](CharT c) { return static_cast<CharT> (std::tolower(c)); });
-            std::transform(basicStr2.begin(), basicStr2.end(), basicStr2.begin(),
-                           [](CharT c) { return static_cast<CharT>(std::tolower(c)); });
-            return basicStr1.compare(index1, length, basicStr2, index2, length);
+            auto s1 = str1.m_str.substr(index1, length);
+            auto s2 = str2.m_str.substr(index2, length);
+            std::transform(s1.begin(), s1.end(), s1.begin(),
+                           [](CharT c) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(c))); });
+            std::transform(s2.begin(), s2.end(), s2.begin(),
+                           [](CharT c) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(c))); });
+            return s1.compare(s2);
         }
+
+        // Specialization for wchar_t to use towlower
+        template<>
+        inline int BasicString<wchar_t>::Compare(const BasicString<wchar_t>& str1,
+                                               int index1,
+                                               const BasicString<wchar_t>& str2,
+                                               int index2, int length,
+                                               bool ignoreCase) {
+            if (!ignoreCase) {
+                return str1.m_str.compare(index1, length, str2.m_str, index2, length);
+            }
+
+            auto s1 = str1.m_str.substr(index1, length);
+            auto s2 = str2.m_str.substr(index2, length);
+            std::transform(s1.begin(), s1.end(), s1.begin(),
+                           [](wchar_t c) { return static_cast<wchar_t>(std::towlower(c)); });
+            std::transform(s2.begin(), s2.end(), s2.begin(),
+                           [](wchar_t c) { return static_cast<wchar_t>(std::towlower(c)); });
+            return s1.compare(s2);
+        }
+
         template <class CharT>
         inline int BasicString<CharT>::CompareTo(const BasicString<CharT>& str) const {
             return m_str.compare(str.GetRawString());
@@ -239,24 +266,24 @@ namespace DotNetDupe {
                                                int destinationIndex, int destArraySize,
                                                int count) const {
             if (nullptr == pDestination)
-                throw ArgumentException(_T("Invalid destination buffer"));
+                throw ArgumentException("Invalid destination buffer");
             int len = GetLength();
             if (sourceIndex < 0 || sourceIndex >= len)
-                throw ArgumentOutOfRangeException(_T("Invalid source index"));
+                throw ArgumentOutOfRangeException("Invalid source index");
             if (count > len)
                 throw ArgumentOutOfRangeException(
-                    _T("Source array size is smaller than count"));
+                    "Source array size is smaller than count");
             if (count > destArraySize)
                 throw ArgumentOutOfRangeException(
-                    _T("Destination array is smaller than count"));
+                    "Destination array is smaller than count");
             m_str.copy(pDestination + destinationIndex, count, sourceIndex);
         }
         template <class CharT>
         inline bool BasicString<CharT>::EndsWith(CharT c, bool ignoreCase) const {
             auto len = m_str.length();
+            if (len == 0) return false;
             if (ignoreCase) {
-                c = tolower(c);
-                return tolower(m_str [len - 1]) == c;
+                return CaseInsensitiveCompare<CharT>::Equals(m_str [len - 1], c);
             }
             return m_str [len - 1] == c;
         }
@@ -265,10 +292,12 @@ namespace DotNetDupe {
                                                  bool ignoreCase) const {
             auto len = m_str.length();
             auto suffixLen = suffix.GetLength();
+            if (suffixLen > len) return false;
+
             if (ignoreCase) {
-                return _tcsicmp(m_str.c_str() + len - suffixLen, suffix.GetRawString()) == 0;
+                return Compare(*this, (int)(len - suffixLen), suffix, 0, (int)suffixLen, true) == 0;
             }
-            return _tcscmp(m_str.c_str() + len - suffixLen, suffix.GetRawString()) == 0;
+            return m_str.compare(len - suffixLen, suffixLen, suffix.m_str) == 0;
         }
         template <class CharT>
         inline bool BasicString<CharT>::Equals(const BasicString<CharT>& str1,
@@ -291,41 +320,33 @@ namespace DotNetDupe {
         template <class CharT>
         inline int BasicString<CharT>::IndexOf(const BasicString<CharT>& substring,
                                                int startIndex, bool ignoreCase) const {
-            if (startIndex < 0 || startIndex >= GetLength())
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex"));
-            const CharT* pSubstring = NULL;
-            if (ignoreCase) {
-                pSubstring = StrStrI(m_str.c_str() + startIndex, substring.GetRawString());
-            }
-            else {
-                pSubstring = StrStr(m_str.c_str() + startIndex, substring.GetRawString());
+            if (startIndex < 0 || startIndex > GetLength())
+                throw ArgumentOutOfRangeException("Invalid startIndex");
+            
+            if (substring.IsEmpty()) return startIndex;
+
+            if (!ignoreCase) {
+                auto pos = m_str.find(substring.m_str, startIndex);
+                return (pos == std::basic_string<CharT>::npos) ? -1 : (int)pos;
             }
 
-            if (pSubstring != NULL) {
-                auto index = pSubstring - m_str.c_str();
+            // Case-insensitive search
+            auto it = std::search(
+                m_str.begin() + startIndex, m_str.end(),
+                substring.m_str.begin(), substring.m_str.end(),
+                [](CharT c1, CharT c2) { return CaseInsensitiveCompare<CharT>::Equals(c1, c2); }
+            );
 
-                if (index >= INT_MAX) throw OverflowException(_T("Index found out of range"));
-
-                return static_cast<int>(index);
-            }
-            return -1;
+            return (it == m_str.end()) ? -1 : (int)std::distance(m_str.begin(), it);
         }
         template <class CharT>
         inline int BasicString<CharT>::IndexOfAny(int startIndex,
                                                   std::initializer_list<CharT> chars) {
-            if (startIndex < 0 || startIndex >= GetLength())
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex"));
-            for (auto ch : chars) {
-                CharT* pChar = StrChrI(GetString().c_str() + startIndex, ch);
-                if (pChar != NULL) {
-                    auto index = pChar - GetString().c_str();
-
-                    if (index >= INT_MAX) throw OverflowException(_T("Index found out of range"));
-
-                    return static_cast<int>(index);
-                }
-            }
-            return -1;
+            if (startIndex < 0 || startIndex > GetLength())
+                throw ArgumentOutOfRangeException("Invalid startIndex");
+            
+            auto pos = m_str.find_first_of(std::basic_string<CharT>(chars.begin(), chars.end()), startIndex);
+            return (pos == std::basic_string<CharT>::npos) ? -1 : (int)pos;
         }
         template <class CharT>
         inline BasicString<CharT>& BasicString<CharT>::Append(const CharT ch) {
@@ -342,8 +363,8 @@ namespace DotNetDupe {
         inline BasicString<CharT>& BasicString<CharT>::Insert(
             int index, const BasicString<CharT>& str) {
             int len = GetLength();
-            if (index < 0 || index >= len)
-                throw ArgumentOutOfRangeException(_T("Invalid index"));
+            if (index < 0 || index > len)
+                throw ArgumentOutOfRangeException("Invalid index");
 
             m_str.insert(index, str.GetRawString(), str.GetLength());
             return *this;
@@ -362,19 +383,17 @@ namespace DotNetDupe {
         inline BasicString<CharT> BasicString<CharT>::Join(
             CharT separator, std::initializer_list<BasicString<CharT>> strings,
             int startIndex, int count) {
-            if (startIndex < 0 || startIndex >= count)
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex"));
-            if (count < 0 || count >(int)strings.size())
-                throw ArgumentOutOfRangeException(_T("Invalid count"));
+            if (startIndex < 0 || startIndex > (int)strings.size())
+                throw ArgumentOutOfRangeException("Invalid startIndex");
+            if (count < 0 || (startIndex + count) > (int)strings.size())
+                throw ArgumentOutOfRangeException("Invalid count");
 
             auto strs = _init_list_with_indexer<BasicString<CharT>>(strings);
-            count = min(startIndex + count, (int)strings.size());
+            BasicString<CharT> joinStr("");
 
-            BasicString<CharT> joinStr(_T(""));
-
-            for (int i = startIndex; i < count; i++) {
+            for (int i = startIndex; i < startIndex + count; i++) {
                 joinStr.Append(strs [i]);
-                if (i != count - 1) {
+                if (i != startIndex + count - 1) {
                     joinStr.Append(separator);
                 }
             }
@@ -391,19 +410,17 @@ namespace DotNetDupe {
             const BasicString<CharT>& separator,
             std::initializer_list<BasicString<CharT>> strings, int startIndex,
             int count) {
-            if (startIndex < 0 || startIndex >= count)
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex"));
-            if (count < 0 || count >(int)strings.size())
-                throw ArgumentOutOfRangeException(_T("Invalid count"));
+            if (startIndex < 0 || startIndex > (int)strings.size())
+                throw ArgumentOutOfRangeException("Invalid startIndex");
+            if (count < 0 || (startIndex + count) > (int)strings.size())
+                throw ArgumentOutOfRangeException("Invalid count");
 
             auto strs = _init_list_with_indexer<BasicString<CharT>>(strings);
-            count = min(startIndex + count, (int)strings.size());
+            BasicString<CharT> joinStr("");
 
-            BasicString<CharT> joinStr(_T(""));
-
-            for (int i = startIndex; i < count; i++) {
+            for (int i = startIndex; i < startIndex + count; i++) {
                 joinStr.Append(strs [i]);
-                if (i != count - 1) {
+                if (i != startIndex + count - 1) {
                     joinStr.Append(separator);
                 }
             }
@@ -412,74 +429,83 @@ namespace DotNetDupe {
         template <class CharT>
         inline int BasicString<CharT>::LastIndexOf(const BasicString<CharT>& str,
                                                    bool ignoreCase) {
-            if (ignoreCase) {
-                CharT* pStr = StrRStrI(m_str.c_str(), NULL, str.m_str.c_str());
-                return pStr == NULL ? -1 : static_cast<int>(pStr - m_str.c_str());
+            if (str.IsEmpty()) return GetLength();
+
+            if (!ignoreCase) {
+                auto pos = m_str.rfind(str.m_str);
+                return (pos == std::basic_string<CharT>::npos) ? -1 : (int)pos;
             }
-            throw NotImplementedException(
-                _T("Case sensitive last index search not supported"));
+
+            auto it = std::find_end(
+                m_str.begin(), m_str.end(),
+                str.m_str.begin(), str.m_str.end(),
+                [](CharT c1, CharT c2) { return CaseInsensitiveCompare<CharT>::Equals(c1, c2); }
+            );
+
+            return (it == m_str.end()) ? -1 : (int)std::distance(m_str.begin(), it);
         }
         template <class CharT>
         inline int BasicString<CharT>::LastIndexOfAny(
             int startIndex, std::initializer_list<CharT> chars, bool ignoreCase) {
-            if (startIndex < 0 || startIndex >= GetLength())
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex"));
+            if (startIndex < 0 || startIndex > GetLength())
+                throw ArgumentOutOfRangeException("Invalid startIndex");
+            
+            if (IsEmpty()) return -1;
+
             for (auto ch : chars) {
-                CharT* pChar = NULL;
-                if (ignoreCase) {
-                    pChar = StrRChrI(m_str.c_str() + startIndex, NULL, ch);
-                }
-                else {
-                    pChar = StrRChr(m_str.c_str() + startIndex, NULL, ch);
-                }
-                if (pChar != NULL) {
-                    auto index = pChar - m_str.c_str();
+                size_t lastFound = std::basic_string<CharT>::npos;
+                for (int i = GetLength() - 1; i >= startIndex; --i) {
+                    bool match = false;
+                    if (ignoreCase) {
+                        match = CaseInsensitiveCompare<CharT>::Equals(m_str[i], ch);
+                    } else {
+                        match = (m_str[i] == ch);
+                    }
 
-                    if (index >= INT_MAX) throw OverflowException(_T("Index found out of range"));
-
-                    return static_cast<int>(index);
+                    if (match) {
+                        lastFound = i;
+                        break;
+                    }
+                }
+                if (lastFound != std::basic_string<CharT>::npos) {
+                    return static_cast<int>(lastFound);
                 }
             }
             return -1;
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::PadLeft(int totalWidth) {
-            return PadLeft(totalWidth, _T(' '));
+            return PadLeft(totalWidth, (CharT)' ');
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::PadLeft(int totalWidth,
                                                               CharT ch) {
             if (totalWidth < 0) {
-                throw ArgumentException(_T("Invalid totalWidth"));
+                throw ArgumentException("Invalid totalWidth");
             }
             int len = GetLength();
             if (totalWidth <= len) {
                 return *this;
             }
-            std::basic_stringstream<CharT> ss;
-            ss << std::setw(totalWidth) << std::setfill(ch) << m_str;
-            m_str.assign(ss.str());
+            std::basic_string<CharT> padding(totalWidth - len, ch);
+            m_str.insert(0, padding);
             return *this;
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::PadRight(int totalWidth) {
-            return PadRight(totalWidth, _T(' '));
+            return PadRight(totalWidth, (CharT)' ');
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::PadRight(int totalWidth,
                                                                CharT ch) {
             if (totalWidth < 0) {
-                throw ArgumentException(_T("Invalid totalWidth"));
+                throw ArgumentException("Invalid totalWidth");
             }
             int len = GetLength();
             if (totalWidth <= len) {
                 return *this;
             }
-
-            std::basic_stringstream<CharT> ss;
-            ss << std::setw(totalWidth) << std::left << std::setfill(ch) << m_str;
-            m_str.assign(ss.str());
-
+            m_str.append(totalWidth - len, ch);
             return *this;
         }
         template <class CharT>
@@ -490,35 +516,34 @@ namespace DotNetDupe {
         inline BasicString<CharT> BasicString<CharT>::Remove(int startIndex,
                                                              int count) const {
             int len = GetLength();
-            if (startIndex < 0 || startIndex >= len || count > len) {
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex or count"));
-            }
-            if ((count - startIndex) == len) {
-                return _T("");
+            if (startIndex < 0 || startIndex > len || count < 0 || (startIndex + count) > len) {
+                throw ArgumentOutOfRangeException("Invalid startIndex or count");
             }
 
-            std::basic_string<CharT> ret;
-            ret.assign(m_str);
+            std::basic_string<CharT> ret = m_str;
             ret.erase(startIndex, count);
-
             return BasicString<CharT>(ret.c_str());
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::Replace(CharT originalChar,
                                                               CharT replaceChar) {
-            std::basic_string<CharT> ret;
-            ret.assign(m_str);
+            std::basic_string<CharT> ret = m_str;
             std::replace(ret.begin(), ret.end(), originalChar, replaceChar);
-
             return BasicString<CharT>(ret.c_str());
         }
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::Replace(
             const BasicString<CharT>& originalStr,
             const BasicString<CharT>& replaceStr) {
-            std::basic_string<CharT> ret = std::regex_replace(
-                m_str, std::basic_regex<CharT>(originalStr.m_str), replaceStr.m_str);
-            return ret.c_str();
+            if (originalStr.IsEmpty()) return *this;
+
+            std::basic_string<CharT> ret = m_str;
+            size_t pos = 0;
+            while ((pos = ret.find(originalStr.m_str, pos)) != std::basic_string<CharT>::npos) {
+                ret.replace(pos, originalStr.GetLength(), replaceStr.m_str);
+                pos += replaceStr.GetLength();
+            }
+            return BasicString<CharT>(ret.c_str());
         }
         template<class CharT>
         inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(CharT separator)
@@ -566,17 +591,20 @@ namespace DotNetDupe {
 
         template <class CharT>
         inline bool BasicString<CharT>::StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const {
-            if (ignoreCase) {
-                return _tcsnicmp(m_str.c_str(), prefix.GetRawString(), prefix.GetLength()) == 0;
+            if (prefix.GetLength() > GetLength()) return false;
+            
+            if (!ignoreCase) {
+                return m_str.compare(0, prefix.GetLength(), prefix.m_str) == 0;
             }
-            return m_str.rfind(prefix.GetRawString(), 0) == 0;
+
+            return Compare(*this, 0, prefix, 0, prefix.GetLength(), true) == 0;
         }
 
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::Substring(int startIndex, int length) const {
             int len = GetLength();
             if (startIndex < 0 || startIndex > len || length < 0 || (startIndex + length) > len) {
-                throw ArgumentOutOfRangeException(_T("Invalid startIndex or length"));
+                throw ArgumentOutOfRangeException("Invalid startIndex or length");
             }
             return BasicString<CharT>(m_str.substr(startIndex, length).c_str());
         }
@@ -584,15 +612,29 @@ namespace DotNetDupe {
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::ToLower() const {
             std::basic_string<CharT> ret = m_str;
-            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::tolower(c)); });
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(c))); });
             return BasicString<CharT>(ret.c_str());
+        }
+
+        template<>
+        inline BasicString<wchar_t> BasicString<wchar_t>::ToLower() const {
+            std::basic_string<wchar_t> ret = m_str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](wchar_t c) { return static_cast<wchar_t>(std::towlower(c)); });
+            return BasicString<wchar_t>(ret.c_str());
         }
 
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::ToUpper() const {
             std::basic_string<CharT> ret = m_str;
-            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::toupper(c)); });
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](CharT c) { return static_cast<CharT>(std::toupper(static_cast<unsigned char>(c))); });
             return BasicString<CharT>(ret.c_str());
+        }
+
+        template<>
+        inline BasicString<wchar_t> BasicString<wchar_t>::ToUpper() const {
+            std::basic_string<wchar_t> ret = m_str;
+            std::transform(ret.begin(), ret.end(), ret.begin(), [](wchar_t c) { return static_cast<wchar_t>(std::towupper(c)); });
+            return BasicString<wchar_t>(ret.c_str());
         }
 
         template <class CharT>
@@ -602,16 +644,38 @@ namespace DotNetDupe {
 
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::TrimStart() const {
-            auto first = m_str.find_first_not_of(_T(" \t\n\r"));
-            if (first == std::basic_string<CharT>::npos) return _T("");
-            return BasicString<CharT>(m_str.substr(first).c_str());
+            auto it = std::find_if(m_str.begin(), m_str.end(), [](CharT ch) {
+                return !std::isspace(static_cast<unsigned char>(ch));
+            });
+            if (it == m_str.end()) return "";
+            return BasicString<CharT>(m_str.substr(std::distance(m_str.begin(), it)).c_str());
+        }
+
+        template<>
+        inline BasicString<wchar_t> BasicString<wchar_t>::TrimStart() const {
+            auto it = std::find_if(m_str.begin(), m_str.end(), [](wchar_t ch) {
+                return !std::iswspace(ch);
+            });
+            if (it == m_str.end()) return L"";
+            return BasicString<wchar_t>(m_str.substr(std::distance(m_str.begin(), it)).c_str());
         }
 
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::TrimEnd() const {
-            auto last = m_str.find_last_not_of(_T(" \t\n\r"));
-            if (last == std::basic_string<CharT>::npos) return _T("");
-            return BasicString<CharT>(m_str.substr(0, last + 1).c_str());
+            auto it = std::find_if(m_str.rbegin(), m_str.rend(), [](CharT ch) {
+                return !std::isspace(static_cast<unsigned char>(ch));
+            });
+            if (it == m_str.rend()) return "";
+            return BasicString<CharT>(m_str.substr(0, m_str.length() - std::distance(m_str.rbegin(), it)).c_str());
+        }
+
+        template<>
+        inline BasicString<wchar_t> BasicString<wchar_t>::TrimEnd() const {
+            auto it = std::find_if(m_str.rbegin(), m_str.rend(), [](wchar_t ch) {
+                return !std::iswspace(ch);
+            });
+            if (it == m_str.rend()) return L"";
+            return BasicString<wchar_t>(m_str.substr(0, m_str.length() - std::distance(m_str.rbegin(), it)).c_str());
         }
     }  // namespace System
 }  // namespace DotNetDupe

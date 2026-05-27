@@ -18,7 +18,7 @@ namespace DotNetDupe {
                 _buffer.reserve(capacity);
             }
 
-            StringBuilder::StringBuilder(const String& value) : _buffer((const TCHAR*)value) {}
+            StringBuilder::StringBuilder(const String& value) : _buffer((const char*)value) {}
 
             int StringBuilder::GetLength() const {
                 return (int)_buffer.length();
@@ -39,42 +39,42 @@ namespace DotNetDupe {
             }
 
             StringBuilder& StringBuilder::Append(const String& value) {
-                _buffer.append((const TCHAR*)value);
+                _buffer.append((const char*)value);
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(const TCHAR* value) {
+            StringBuilder& StringBuilder::Append(const char* value) {
                 if (value) _buffer.append(value);
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(TCHAR value) {
+            StringBuilder& StringBuilder::Append(char value) {
                 _buffer.append(1, value);
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(int value) {
-                _buffer.append(TO_TSTRING(value));
+                _buffer.append(std::to_string(value));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(long long value) {
-                _buffer.append(TO_TSTRING(value));
+                _buffer.append(std::to_string(value));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(double value) {
-                _buffer.append(TO_TSTRING(value));
+                _buffer.append(std::to_string(value));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(bool value) {
-                _buffer.append(value ? _T("True") : _T("False"));
+                _buffer.append(value ? "True" : "False");
                 return *this;
             }
 
             StringBuilder& StringBuilder::AppendLine() {
-                _buffer.append(_T("\r\n"));
+                _buffer.append("\r\n");
                 return *this;
             }
 

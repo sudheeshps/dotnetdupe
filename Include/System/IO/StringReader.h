@@ -14,7 +14,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Close() override;
                 DOTNETDUPE_API int Peek() override;
                 DOTNETDUPE_API int Read() override;
-                DOTNETDUPE_API int Read(wchar_t* buffer, int index, int count) override;
+                DOTNETDUPE_API int Read(char* buffer, int index, int count) override;
                 DOTNETDUPE_API String ReadLine() override;
                 DOTNETDUPE_API String ReadToEnd() override;
 

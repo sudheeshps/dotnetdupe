@@ -33,8 +33,8 @@ namespace DotNetDupe {
         }
 
         String Version::ToString() const {
-            std::wstringstream ss;
-            ss << _major << L"." << _minor << L"." << _build << L"." << _revision;
+            std::stringstream ss;
+            ss << _major << "." << _minor << "." << _build << "." << _revision;
             return String(ss.str().c_str());
         }
 

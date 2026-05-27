@@ -25,11 +25,11 @@ namespace DotNetDupeTests {
 
     TEST(ListTest, InitializerList_Given_Values_When_Constructed_Then_PopulatesList) {
         // Given & When
-        List<String> list = { _T("A"), _T("B"), _T("C") };
+        List<String> list = { "A", "B", "C" };
 
         // Then
         EXPECT_EQ(list.GetCount(), 3);
-        EXPECT_TRUE(list[1] == _T("B"));
+        EXPECT_TRUE(list[1] == "B");
     }
 
     TEST(ListTest, Remove_Given_ExistingItem_When_Called_Then_RemovesItemAndReturnsTrue) {

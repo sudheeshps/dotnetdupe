@@ -1,6 +1,6 @@
 #pragma once
 
-#include <tchar.h>
+#include "System/Char.h"
 
 #include "Common.h"
 #include "System/Object.h"
@@ -78,9 +78,9 @@ namespace DotNetDupe {
 
             void CopyTo(Array<T>& array, int index) {
                 if (index < 0)
-                    throw ArgumentOutOfRangeException(_T("index"));
+                    throw ArgumentOutOfRangeException("index");
                 if (index + GetLength() > array.GetLength())
-                    throw ArgumentException(_T("Destination array was not long enough."));
+                    throw ArgumentException("Destination array was not long enough.");
 
                 for (int i = 0; i < GetLength(); ++i) {
                     array [index + i] = _items [i];
@@ -89,11 +89,11 @@ namespace DotNetDupe {
 
             static void Copy(Array<T>& sourceArray, Array<T>& destinationArray, int length) {
                 if (length < 0)
-                    throw ArgumentOutOfRangeException(_T("length"));
+                    throw ArgumentOutOfRangeException("length");
                 if (sourceArray.GetLength() < length)
-                    throw ArgumentException(_T("Source array was not long enough."));
+                    throw ArgumentException("Source array was not long enough.");
                 if (destinationArray.GetLength() < length)
-                    throw ArgumentException(_T("Destination array was not long enough."));
+                    throw ArgumentException("Destination array was not long enough.");
 
                 for (int i = 0; i < length; ++i) {
                     destinationArray [i] = sourceArray [i];

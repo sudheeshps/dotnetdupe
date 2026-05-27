@@ -4,7 +4,7 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/String.h"
-#include <tchar.h>
+#include "System/Char.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -13,7 +13,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API static const bool IsLittleEndian;
 
             DOTNETDUPE_API static Array<byte> GetBytes(bool value);
-            DOTNETDUPE_API static Array<byte> GetBytes(TCHAR value);
+            DOTNETDUPE_API static Array<byte> GetBytes(char value);
             DOTNETDUPE_API static Array<byte> GetBytes(double value);
             DOTNETDUPE_API static Array<byte> GetBytes(short value);
             DOTNETDUPE_API static Array<byte> GetBytes(int value);
@@ -24,7 +24,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API static Array<byte> GetBytes(unsigned long long value);
 
             DOTNETDUPE_API static bool ToBoolean(Array<byte>& value, int startIndex);
-            DOTNETDUPE_API static TCHAR ToChar(Array<byte>& value, int startIndex);
+            DOTNETDUPE_API static char ToChar(Array<byte>& value, int startIndex);
             DOTNETDUPE_API static double ToDouble(Array<byte>& value, int startIndex);
             DOTNETDUPE_API static short ToInt16(Array<byte>& value, int startIndex);
             DOTNETDUPE_API static int ToInt32(Array<byte>& value, int startIndex);

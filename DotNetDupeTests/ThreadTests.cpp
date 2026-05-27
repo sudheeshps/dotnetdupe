@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "System/Threading/Thread.h"
 #include <atomic>
-#include <tchar.h>
+#include "System/Char.h"
 
 using namespace DotNetDupe::System::Threading;
 

@@ -21,8 +21,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API virtual std::shared_ptr<Text::Encoding> GetEncoding() const = 0;
 
                 DOTNETDUPE_API virtual void Write(bool value);
-                DOTNETDUPE_API virtual void Write(wchar_t value);
-                DOTNETDUPE_API virtual void Write(const wchar_t* value);
+                DOTNETDUPE_API virtual void Write(char value);
+                DOTNETDUPE_API virtual void Write(const char* value);
                 DOTNETDUPE_API virtual void Write(const String& value);
                 DOTNETDUPE_API virtual void Write(int value);
                 DOTNETDUPE_API virtual void Write(long long value);
@@ -31,8 +31,8 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API virtual void WriteLine();
                 DOTNETDUPE_API virtual void WriteLine(bool value);
-                DOTNETDUPE_API virtual void WriteLine(wchar_t value);
-                DOTNETDUPE_API virtual void WriteLine(const wchar_t* value);
+                DOTNETDUPE_API virtual void WriteLine(char value);
+                DOTNETDUPE_API virtual void WriteLine(const char* value);
                 DOTNETDUPE_API virtual void WriteLine(const String& value);
                 DOTNETDUPE_API virtual void WriteLine(int value);
                 DOTNETDUPE_API virtual void WriteLine(long long value);

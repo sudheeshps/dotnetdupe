@@ -11,35 +11,38 @@ namespace DotNetDupe {
             DOTNETDUPE_API UriBuilder();
             DOTNETDUPE_API UriBuilder(const String& uri);
             DOTNETDUPE_API UriBuilder(const Uri& uri);
+            DOTNETDUPE_API UriBuilder(const String& scheme, const String& host);
+            DOTNETDUPE_API UriBuilder(const String& scheme, const String& host, int port);
 
             DOTNETDUPE_API String GetScheme() const;
-            DOTNETDUPE_API void SetScheme(const String& scheme);
+            DOTNETDUPE_API void SetScheme(const String& value);
 
             DOTNETDUPE_API String GetHost() const;
-            DOTNETDUPE_API void SetHost(const String& host);
+            DOTNETDUPE_API void SetHost(const String& value);
 
             DOTNETDUPE_API int GetPort() const;
-            DOTNETDUPE_API void SetPortValue(int port);
+            DOTNETDUPE_API void SetPort(int value);
 
             DOTNETDUPE_API String GetPath() const;
-            DOTNETDUPE_API void SetPath(const String& path);
+            DOTNETDUPE_API void SetPath(const String& value);
 
             DOTNETDUPE_API String GetQuery() const;
-            DOTNETDUPE_API void SetQuery(const String& query);
+            DOTNETDUPE_API void SetQuery(const String& value);
 
             DOTNETDUPE_API String GetFragment() const;
-            DOTNETDUPE_API void SetFragment(const String& fragment);
+            DOTNETDUPE_API void SetFragment(const String& value);
 
             DOTNETDUPE_API String GetUserName() const;
-            DOTNETDUPE_API void SetUserName(const String& userName);
+            DOTNETDUPE_API void SetUserName(const String& value);
 
             DOTNETDUPE_API String GetPassword() const;
-            DOTNETDUPE_API void SetPassword(const String& password);
+            DOTNETDUPE_API void SetPassword(const String& value);
 
-            DOTNETDUPE_API Uri GetUri() const;
-            DOTNETDUPE_API String ToString() const;
+            DOTNETDUPE_API Uri GetUri();
+            DOTNETDUPE_API String ToString();
 
         private:
+            String _uri;
             String _scheme;
             String _host;
             int _port;

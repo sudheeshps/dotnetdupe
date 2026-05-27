@@ -1,7 +1,12 @@
 #include "pch.h"
 #include "System/TimeZoneInfo.h"
+#include "System/Char.h"
+
+#if defined(_WIN32)
 #include <windows.h>
-#include <tchar.h>
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
 
 namespace DotNetDupe {
     namespace System {
@@ -17,25 +22,29 @@ namespace DotNetDupe {
         bool TimeZoneInfo::SupportsDaylightSavingTime() const { return _supportsDaylightSavingTime; }
 
         TimeZoneInfo TimeZoneInfo::Local() {
+#if defined(_WIN32)
             DYNAMIC_TIME_ZONE_INFORMATION dtzi;
             DWORD result = GetDynamicTimeZoneInformation(&dtzi);
             
-            String id(dtzi.TimeZoneKeyName);
+            String id = String(WCharToUtf8(dtzi.TimeZoneKeyName).c_str());
             TimeSpan baseUtcOffset(dtzi.Bias * -600000000LL);
-            String displayName(dtzi.StandardName); 
-            String standardName(dtzi.StandardName);
-            String daylightName(dtzi.DaylightName);
+            String displayName = String(WCharToUtf8(dtzi.StandardName).c_str()); 
+            String standardName = String(WCharToUtf8(dtzi.StandardName).c_str());
+            String daylightName = String(WCharToUtf8(dtzi.DaylightName).c_str());
             bool supportsDaylightSavingTime = (result != TIME_ZONE_ID_UNKNOWN);
 
             return TimeZoneInfo(id, baseUtcOffset, displayName, standardName, daylightName, supportsDaylightSavingTime);
+#else
+            return Utc(); // Placeholder for non-Windows
+#endif
         }
 
         TimeZoneInfo TimeZoneInfo::Utc() {
-            return TimeZoneInfo(String(_T("UTC")), TimeSpan(0), String(_T("(UTC) Coordinated Universal Time")), String(_T("Coordinated Universal Time")), String(_T("Coordinated Universal Time")), false);
+            return TimeZoneInfo(String("UTC"), TimeSpan(0), String("(UTC) Coordinated Universal Time"), String("Coordinated Universal Time"), String("Coordinated Universal Time"), false);
         }
 
         TimeSpan TimeZoneInfo::GetUtcOffset(const DateTimeOffset& dateTimeOffset) const {
-            if (_id == _T("UTC")) return TimeSpan(0);
+            if (_id == "UTC") return TimeSpan(0);
             return _baseUtcOffset; 
         }
 
@@ -53,7 +62,7 @@ namespace DotNetDupe {
         }
 
         TimeZoneInfo TimeZoneInfo::FindSystemTimeZoneById(const String& id) {
-            if (id == _T("UTC")) return Utc();
+            if (id == "UTC") return Utc();
             return Utc(); 
         }
 

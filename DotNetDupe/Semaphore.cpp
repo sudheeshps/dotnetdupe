@@ -3,7 +3,7 @@
 #include "System/Threading/SemaphoreFullException.h"
 #include "System/TimeoutException.h"
 #include <chrono>
-#include <tchar.h>
+#include "System/Char.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -22,7 +22,7 @@ namespace DotNetDupe {
                 if (result) {
                     --_count;
                 } else {
-                    throw TimeoutException(_T("The wait operation timed out."));
+                    throw TimeoutException("The wait operation timed out.");
                 }
                 return result;
             }
@@ -30,7 +30,7 @@ namespace DotNetDupe {
             int Semaphore::Release(int releaseCount) {
                 std::lock_guard<std::mutex> lock(_mutex);
                 if (_count + releaseCount > _maxCount) {
-                    throw SemaphoreFullException(_T("Semaphore count exceeded maximum count."));
+                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");
                 }
                 int prev = _count;
                 _count += releaseCount;

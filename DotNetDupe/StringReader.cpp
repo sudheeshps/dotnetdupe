@@ -15,19 +15,19 @@ namespace DotNetDupe {
 
             int StringReader::Peek() {
                 if (_pos >= _length) return -1;
-                return (int)_s[_pos];
+                return (int)(unsigned char)_s[_pos];
             }
 
             int StringReader::Read() {
                 if (_pos >= _length) return -1;
-                return (int)_s[_pos++];
+                return (int)(unsigned char)_s[_pos++];
             }
 
-            int StringReader::Read(wchar_t* buffer, int index, int count) {
+            int StringReader::Read(char* buffer, int index, int count) {
                 if (buffer == nullptr) return 0;
                 int n = (std::min)(count, _length - _pos);
                 for (int i = 0; i < n; i++) {
-                    buffer[index + i] = (wchar_t)_s[_pos + i];
+                    buffer[index + i] = (char)_s[_pos + i];
                 }
                 _pos += n;
                 return n;
@@ -36,11 +36,11 @@ namespace DotNetDupe {
             String StringReader::ReadLine() {
                 int i = _pos;
                 while (i < _length) {
-                    wchar_t ch = (wchar_t)_s[i];
-                    if (ch == L'\r' || ch == L'\n') {
+                    char ch = (char)_s[i];
+                    if (ch == '\r' || ch == '\n') {
                         String result = _s.Substring(_pos, i - _pos);
                         _pos = i + 1;
-                        if (ch == L'\r' && _pos < _length && (wchar_t)_s[_pos] == L'\n') {
+                        if (ch == '\r' && _pos < _length && (char)_s[_pos] == '\n') {
                             _pos++;
                         }
                         return result;
@@ -52,10 +52,11 @@ namespace DotNetDupe {
                     _pos = i;
                     return result;
                 }
-                return String();
+                return String("");
             }
 
             String StringReader::ReadToEnd() {
+                if (_pos >= _length) return String("");
                 String result = _s.Substring(_pos, _length - _pos);
                 _pos = _length;
                 return result;

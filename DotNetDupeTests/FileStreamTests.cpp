@@ -14,8 +14,8 @@ using namespace DotNetDupe::System::Text;
 
 namespace SystemTests {
     namespace FileStreamTests {
-        const String testFilePath(_T("test_filestream.txt"));
-        const String testContent(_T("Hello FileStream!"));
+        const String testFilePath("test_filestream.txt");
+        const String testContent("Hello FileStream!");
 
         // Helper to clean up test files
         void CleanupTestFile() {
