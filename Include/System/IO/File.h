@@ -4,7 +4,7 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/Text/TextEncoding.h"
-#include <vector>
+#include "System/Array.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -18,9 +18,9 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static void Move(const String& sourceFileName, const String& destFileName);
                 DOTNETDUPE_API static void Delete(const String& path);
                 DOTNETDUPE_API static void AppendAllText(const String& path, const String& contents);
-                DOTNETDUPE_API static void AppendAllLines(const String& path, const std::vector<String>& contents);
-                DOTNETDUPE_API static std::vector<String> ReadAllLines(const String& path);
-                DOTNETDUPE_API static void WriteAllLines(const String& path, const std::vector<String>& contents);
+                DOTNETDUPE_API static void AppendAllLines(const String& path, const Array<String>& contents);
+                DOTNETDUPE_API static Array<String> ReadAllLines(const String& path);
+                DOTNETDUPE_API static void WriteAllLines(const String& path, const Array<String>& contents);
                 DOTNETDUPE_API static void Create(const String& path);
                 DOTNETDUPE_API static int GetAttributes(const String& path);
                 DOTNETDUPE_API static void SetAttributes(const String& path, int fileAttributes);

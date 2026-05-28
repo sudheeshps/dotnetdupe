@@ -324,7 +324,9 @@ void Console::ClearInputs() {
     s_inputs.clear();
 }
 
-std::vector<String> Console::GetOutputs() {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    return s_outputs;
+Array<String> Console::GetOutputs() {
+    std::lock_guard<std::mutex> lock(s_mutex);
+    Array<String> result((int)s_outputs.size());
+    for (int i = 0; i < (int)s_outputs.size(); i++) result[i] = s_outputs[i];
+    return result;
 }

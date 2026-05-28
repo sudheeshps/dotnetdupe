@@ -95,16 +95,16 @@ namespace SystemTests {
 
         TEST(FileTest, AppendAllLines) {
             // Given
-            std::vector<String> lines = { "Line 1", "Line 2" };
+            Array<String> lines = { "Line 1", "Line 2" };
             File::WriteAllLines(testFile, lines);
-            std::vector<String> newLines = { "Line 3", "Line 4" };
+            Array<String> newLines = { "Line 3", "Line 4" };
 
             // When
             File::AppendAllLines(testFile, newLines);
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 4);
+            EXPECT_EQ(readLines.GetLength(), 4);
             EXPECT_EQ(readLines[0], "Line 1");
             EXPECT_EQ(readLines[1], "Line 2");
             EXPECT_EQ(readLines[2], "Line 3");
@@ -113,14 +113,14 @@ namespace SystemTests {
 
         TEST(FileTest, ReadAllLines) {
             // Given
-            std::vector<String> lines = { "Line 1", "Line 2", "Line 3" };
+            Array<String> lines = { "Line 1", "Line 2", "Line 3" };
             File::WriteAllLines(testFile, lines);
 
             // When
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 3);
+            EXPECT_EQ(readLines.GetLength(), 3);
             EXPECT_EQ(readLines[0], "Line 1");
             EXPECT_EQ(readLines[1], "Line 2");
             EXPECT_EQ(readLines[2], "Line 3");
@@ -128,14 +128,14 @@ namespace SystemTests {
 
         TEST(FileTest, WriteAllLines) {
             // Given
-            std::vector<String> lines = { "Line A", "Line B" };
+            Array<String> lines = { "Line A", "Line B" };
 
             // When
             File::WriteAllLines(testFile, lines);
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 2);
+            EXPECT_EQ(readLines.GetLength(), 2);
             EXPECT_EQ(readLines[0], "Line A");
             EXPECT_EQ(readLines[1], "Line B");
         }

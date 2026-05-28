@@ -7,10 +7,12 @@
 #include "System/ArgumentException.h"
 #include "System/ArgumentOutOfRangeException.h"
 
+#include "System/Predicate.h"
+#include "System/Action.h"
+
 #include <vector>
 #include <stdexcept>
 #include <algorithm>
-#include <functional>
 
 namespace DotNetDupe {
     namespace System {
@@ -32,6 +34,16 @@ namespace DotNetDupe {
             T* GetData() {
                 return _items.data();
             }
+
+            const T* GetData() const {
+                return _items.data();
+            }
+
+            // Iterator support for range-based for loops
+            auto begin() { return _items.begin(); }
+            auto end() { return _items.end(); }
+            auto begin() const { return _items.begin(); }
+            auto end() const { return _items.end(); }
 
             bool IsNull() const {
                 return _items.empty();
@@ -100,7 +112,7 @@ namespace DotNetDupe {
                 }
             }
 
-            bool Exists(const std::function<bool(T)>& predicate) const {
+            bool Exists(const Predicate<T>& predicate) const {
                 for (const auto& item : _items) {
                     if (predicate(item)) {
                         return true;
@@ -109,7 +121,7 @@ namespace DotNetDupe {
                 return false;
             }
 
-            T Find(const std::function<bool(T)>& predicate) const {
+            T Find(const Predicate<T>& predicate) const {
                 for (const auto& item : _items) {
                     if (predicate(item)) {
                         return item;
@@ -118,7 +130,7 @@ namespace DotNetDupe {
                 return T();
             }
 
-            Array<T> FindAll(const std::function<bool(T)>& predicate) const {
+            Array<T> FindAll(const Predicate<T>& predicate) const {
                 std::vector<T> foundItems;
                 for (const auto& item : _items) {
                     if (predicate(item)) {
@@ -130,7 +142,7 @@ namespace DotNetDupe {
                 return newArr;
             }
 
-            int FindIndex(const std::function<bool(T)>& predicate) const {
+            int FindIndex(const Predicate<T>& predicate) const {
                 for (int i = 0; i < static_cast<int>(_items.size()); ++i) {
                     if (predicate(_items [i])) {
                         return i;
@@ -139,7 +151,7 @@ namespace DotNetDupe {
                 return -1;
             }
 
-            T FindLast(const std::function<bool(T)>& predicate) const {
+            T FindLast(const Predicate<T>& predicate) const {
                 for (int i = static_cast<int>(_items.size()) - 1; i >= 0; --i) {
                     if (predicate(_items [i])) {
                         return _items [i];
@@ -148,7 +160,7 @@ namespace DotNetDupe {
                 return T();
             }
 
-            int FindLastIndex(const std::function<bool(T)>& predicate) const {
+            int FindLastIndex(const Predicate<T>& predicate) const {
                 for (int i = static_cast<int>(_items.size()) - 1; i >= 0; --i) {
                     if (predicate(_items [i])) {
                         return i;
@@ -157,13 +169,13 @@ namespace DotNetDupe {
                 return -1;
             }
 
-            void ForEach(const std::function<void(T)>& action) {
+            void ForEach(const Action<T>& action) {
                 for (const auto& item : _items) {
                     action(item);
                 }
             }
 
-            bool TrueForAll(const std::function<bool(T)>& predicate) const {
+            bool TrueForAll(const Predicate<T>& predicate) const {
                 for (const auto& item : _items) {
                     if (!predicate(item)) {
                         return false;

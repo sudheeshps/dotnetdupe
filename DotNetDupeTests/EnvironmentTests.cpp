@@ -82,7 +82,7 @@ namespace SystemTests {
             auto commandLineArgs = Environment::GetCommandLineArgs();
 
             // Then
-            ASSERT_FALSE(commandLineArgs.empty());
+            ASSERT_FALSE(commandLineArgs.IsNull());
         }
 
         TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable) {
@@ -105,7 +105,7 @@ namespace SystemTests {
             auto envVars = Environment::GetEnvironmentVariables();
 
             // Then
-            ASSERT_FALSE(envVars.empty());
+            ASSERT_GT(envVars.GetCount(), 0);
         }
 
         TEST(Environment, GetFolderPath_WhenCalled_ReturnsFolderPath) {
@@ -125,7 +125,7 @@ namespace SystemTests {
             auto logicalDrives = Environment::GetLogicalDrives();
 
             // Then
-            ASSERT_FALSE(logicalDrives.empty());
+            ASSERT_FALSE(logicalDrives.IsNull());
         }
 
         TEST(Environment, SetEnvironmentVariable_WhenCalled_SetsEnvironmentVariable) {

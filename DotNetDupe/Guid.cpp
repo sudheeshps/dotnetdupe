@@ -6,6 +6,7 @@
 #include <sstream>
 #include <algorithm>
 #include <cstdio>
+#include <cstring>
 
 namespace DotNetDupe {
     namespace System {
@@ -17,7 +18,12 @@ namespace DotNetDupe {
             }
         }
 
-        Guid::Guid(const std::array<uint8_t, 16>& b) : _data(b) {}
+        Guid::Guid(const Array<uint8_t>& b) {
+            if (b.GetLength() != 16) throw ArgumentException("Guid should be 16 bytes.");
+            for (size_t i = 0; i < 16; ++i) {
+                _data[i] = b[static_cast<int>(i)];
+            }
+        }
 
         Guid::Guid(const String& g) {
             std::string s = (const char*)g;
@@ -38,9 +44,9 @@ namespace DotNetDupe {
 
         Guid Guid::NewGuid() {
             // Very simple random Guid for now
-            std::array<uint8_t, 16> data;
+            Array<uint8_t> data(16);
             for (size_t i = 0; i < 16; ++i) {
-                data[i] = static_cast<uint8_t>(rand() % 256);
+                data[static_cast<int>(i)] = static_cast<uint8_t>(rand() % 256);
             }
             // Set version 4 and variant
             data[6] = (data[6] & 0x0F) | 0x40;
@@ -48,8 +54,12 @@ namespace DotNetDupe {
             return Guid(data);
         }
 
-        std::array<uint8_t, 16> Guid::ToByteArray() const {
-            return _data;
+        Array<uint8_t> Guid::ToByteArray() const {
+            Array<uint8_t> result(16);
+            for (size_t i = 0; i < 16; ++i) {
+                result[static_cast<int>(i)] = _data[i];
+            }
+            return result;
         }
 
         String Guid::ToString() const {
@@ -64,7 +74,7 @@ namespace DotNetDupe {
         }
 
         bool Guid::operator==(const Guid& other) const {
-            return _data == other._data;
+            return std::memcmp(_data, other._data, 16) == 0;
         }
 
         bool Guid::operator!=(const Guid& other) const {

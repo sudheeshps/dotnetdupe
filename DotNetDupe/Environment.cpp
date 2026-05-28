@@ -155,18 +155,20 @@ namespace DotNetDupe {
 #endif
         }
 
-        std::vector<String> Environment::GetCommandLineArgs() {
-            std::vector<String> result;
+        Array<String> Environment::GetCommandLineArgs() {
+            std::vector<String> tempArgs;
 #if defined(_WIN32)
             int nArgs;
             LPWSTR* szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
             if (szArglist != NULL) {
                 for (int i = 0; i < nArgs; i++) {
-                    result.push_back(String(WCharToUtf8(szArglist[i]).c_str()));
+                    tempArgs.push_back(String(WCharToUtf8(szArglist[i]).c_str()));
                 }
                 LocalFree(szArglist);
             }
 #endif
+            Array<String> result((int)tempArgs.size());
+            for (int i = 0; i < (int)tempArgs.size(); i++) result[i] = tempArgs[i];
             return result;
         }
 
@@ -184,8 +186,8 @@ namespace DotNetDupe {
 #endif
         }
 
-        std::map<String, String> Environment::GetEnvironmentVariables() {
-            std::map<String, String> result;
+        Collections::Generic::Dictionary<String, String> Environment::GetEnvironmentVariables() {
+            Collections::Generic::Dictionary<String, String> result;
 #if defined(_WIN32)
             wchar_t* lpvEnv = GetEnvironmentStringsW();
             for (wchar_t* lpszVariable = lpvEnv; *lpszVariable; ) {
@@ -193,7 +195,7 @@ namespace DotNetDupe {
                 String line(lineUtf8.c_str());
                 int eqIdx = line.IndexOf("=");
                 if (eqIdx != -1) {
-                    result[line.Substring(0, eqIdx)] = line.Substring(eqIdx + 1, line.GetLength() - eqIdx - 1);
+                    result.Add(line.Substring(0, eqIdx), line.Substring(eqIdx + 1, line.GetLength() - eqIdx - 1));
                 }
                 lpszVariable += wcslen(lpszVariable) + 1;
             }
@@ -250,19 +252,21 @@ namespace DotNetDupe {
             return String("");
         }
 
-        std::vector<String> Environment::GetLogicalDrives() {
-            std::vector<String> result;
+        Array<String> Environment::GetLogicalDrives() {
+            std::vector<String> tempDrives;
 #if defined(_WIN32)
             DWORD drives = ::GetLogicalDrives();
             for (int i = 0; i < 26; i++) {
                 if ((drives >> i) & 1) {
                     char driveName [4] = { (char)('A' + i), ':', '\\', 0 };
-                    result.push_back(String(driveName));
+                    tempDrives.push_back(String(driveName));
                 }
             }
 #else
-            result.push_back(String("/"));
+            tempDrives.push_back(String("/"));
 #endif
+            Array<String> result((int)tempDrives.size());
+            for (int i = 0; i < (int)tempDrives.size(); i++) result[i] = tempDrives[i];
             return result;
         }
 

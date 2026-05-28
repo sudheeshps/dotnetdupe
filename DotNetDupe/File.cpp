@@ -31,20 +31,21 @@ namespace DotNetDupe {
             }
 
             String File::ReadAllText(const String& path) {
-                std::ifstream f(ToFsPath(path), std::ios::binary);
+                std::ifstream fileStream(ToFsPath(path), std::ios::binary);
                 std::stringstream buffer;
-                buffer << f.rdbuf();
+                buffer << fileStream.rdbuf();
                 std::string charContent = buffer.str();
                 
-                std::vector<char> bytes(charContent.begin(), charContent.end());
+                Array<char> bytes((int)charContent.size());
+                for (int i = 0; i < (int)charContent.size(); i++) bytes[i] = charContent[i];
                 return Text::TextEncoding::UTF8()->GetString(bytes);
             }
 
             void File::WriteAllText(const String& path, const String& contents) {
-                std::vector<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(contents);
+                Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(contents);
 
-                std::ofstream f(ToFsPath(path), std::ios::binary);
-                f.write(contentBytes.data(), contentBytes.size());
+                std::ofstream fileStream(ToFsPath(path), std::ios::binary);
+                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
             void File::Copy(const String& sourceFileName, const String& destFileName, bool overwrite) {
@@ -75,42 +76,48 @@ namespace DotNetDupe {
             }
 
             void File::AppendAllText(const String& path, const String& contents) {
-                std::vector<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(contents);
-                std::ofstream f(ToFsPath(path), std::ios::binary | std::ios_base::app);
-                f.write(contentBytes.data(), contentBytes.size());
+                Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(contents);
+                std::ofstream fileStream(ToFsPath(path), std::ios::binary | std::ios_base::app);
+                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
-            void File::AppendAllLines(const String& path, const std::vector<String>& contents) {
-                std::ofstream f(ToFsPath(path), std::ios::binary | std::ios_base::app);
-                for (const auto& line : contents) {
-                    std::vector<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
-                    f.write(lineBytes.data(), lineBytes.size());
-                    f << "\n";
+            void File::AppendAllLines(const String& path, const Array<String>& contents) {
+                std::ofstream fileStream(ToFsPath(path), std::ios::binary | std::ios_base::app);
+                for (int i = 0; i < contents.GetLength(); i++) {
+                    const auto& line = contents[i];
+                    Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream << "\n";
                 }
             }
 
-            std::vector<String> File::ReadAllLines(const String& path) {
-                std::vector<String> lines;
-                std::ifstream f(ToFsPath(path), std::ios::binary);
+            Array<String> File::ReadAllLines(const String& path) {
+                std::vector<String> tempLines;
+                std::ifstream fileStream(ToFsPath(path), std::ios::binary);
                 std::string line;
-                while (std::getline(f, line)) {
-                    std::vector<char> lineBytes(line.begin(), line.end());
-                    lines.push_back(Text::TextEncoding::UTF8()->GetString(lineBytes));
+                while (std::getline(fileStream, line)) {
+                    Array<char> lineBytes((int)line.size());
+                    for (int i = 0; i < (int)line.size(); i++) lineBytes[i] = line[i];
+                    tempLines.push_back(Text::TextEncoding::UTF8()->GetString(lineBytes));
                 }
+                
+                Array<String> lines((int)tempLines.size());
+                for (int i = 0; i < (int)tempLines.size(); i++) lines[i] = tempLines[i];
                 return lines;
             }
 
-            void File::WriteAllLines(const String& path, const std::vector<String>& contents) {
-                std::ofstream f(ToFsPath(path), std::ios::binary);
-                for (const auto& line : contents) {
-                    std::vector<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
-                    f.write(lineBytes.data(), lineBytes.size());
-                    f << "\n";
+            void File::WriteAllLines(const String& path, const Array<String>& contents) {
+                std::ofstream fileStream(ToFsPath(path), std::ios::binary);
+                for (int i = 0; i < contents.GetLength(); i++) {
+                    const auto& line = contents[i];
+                    Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream << "\n";
                 }
             }
 
             void File::Create(const String& path) {
-                std::ofstream f(ToFsPath(path));
+                std::ofstream fileStream(ToFsPath(path));
             }
 
             int File::GetAttributes(const String& path) {

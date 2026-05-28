@@ -2,8 +2,8 @@
 
 #include "Common.h"
 #include "System/Object.h"
+#include "System/Array.h"
 #include <unordered_map>
-#include <vector>
 #include <stdexcept>
 
 namespace DotNetDupe {
@@ -59,15 +59,17 @@ namespace DotNetDupe {
                         return false;
                     }
 
-                    std::vector<TKey> GetKeys() const {
-                        std::vector<TKey> keys;
-                        for (auto const& [key, val] : _map) keys.push_back(key);
+                    Array<TKey> GetKeys() const {
+                        Array<TKey> keys(GetCount());
+                        int i = 0;
+                        for (auto const& [key, val] : _map) keys[i++] = key;
                         return keys;
                     }
 
-                    std::vector<TValue> GetValues() const {
-                        std::vector<TValue> values;
-                        for (auto const& [key, val] : _map) values.push_back(val);
+                    Array<TValue> GetValues() const {
+                        Array<TValue> values(GetCount());
+                        int i = 0;
+                        for (auto const& [key, val] : _map) values[i++] = val;
                         return values;
                     }
 

@@ -6,6 +6,7 @@
 #include "System/OverflowException.h"
 #include "Utils.h"
 
+#include "System/Array.h"
 #include <algorithm>
 #include <iomanip>
 #include <memory>
@@ -136,8 +137,8 @@ namespace DotNetDupe {
             BasicString<CharT> Replace(CharT originalChar, CharT replaceChar);
             BasicString<CharT> Replace(const BasicString<CharT>& originalStr,
                                        const BasicString<CharT>& replaceStr);
-            std::vector<BasicString<CharT>> Split(CharT separator);
-            std::vector<BasicString<CharT>> Split(BasicString<CharT> separator [], int count,
+            Array<BasicString<CharT>> Split(CharT separator);
+            Array<BasicString<CharT>> Split(BasicString<CharT> separator [], int count,
                                                   StringSplitOptions options);
             bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const;
             BasicString<CharT> Substring(int startIndex, int length) const;
@@ -546,22 +547,25 @@ namespace DotNetDupe {
             return BasicString<CharT>(ret.c_str());
         }
         template<class CharT>
-        inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(CharT separator)
+        inline Array<BasicString<CharT>> BasicString<CharT>::Split(CharT separator)
         {
-            std::vector<BasicString<CharT>> result;
+            std::vector<BasicString<CharT>> tempResult;
             std::basic_stringstream<CharT> ss(m_str);
             std::basic_string<CharT> token;
             while (std::getline(ss, token, separator))
             {
-                result.push_back(BasicString<CharT>(token.c_str()));
+                tempResult.push_back(BasicString<CharT>(token.c_str()));
             }
+            
+            Array<BasicString<CharT>> result((int)tempResult.size());
+            for (int i = 0; i < (int)tempResult.size(); i++) result[i] = tempResult[i];
             return result;
         }
 
         template<class CharT>
-        inline std::vector<BasicString<CharT>> BasicString<CharT>::Split(BasicString<CharT> separator [], int count,
+        inline Array<BasicString<CharT>> BasicString<CharT>::Split(BasicString<CharT> separator [], int count,
                                                                          StringSplitOptions options) {
-            std::vector<BasicString<CharT>> result;
+            std::vector<BasicString<CharT>> tempResult;
             std::set<CharT> charSet;
             for (int i = 0; i < count; ++i) {
                 for (auto c : separator [i].m_str) charSet.insert(c);
@@ -575,7 +579,7 @@ namespace DotNetDupe {
                     BasicString<CharT> s(current.c_str());
                     if (options == StringSplitOptions::TrimEntries) s = s.Trim();
                     if (options != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
-                        result.push_back(s);
+                        tempResult.push_back(s);
                     }
                     current.clear();
                 }
@@ -583,9 +587,11 @@ namespace DotNetDupe {
             BasicString<CharT> s(current.c_str());
             if (options == StringSplitOptions::TrimEntries) s = s.Trim();
             if (options != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
-                result.push_back(s);
+                tempResult.push_back(s);
             }
 
+            Array<BasicString<CharT>> result((int)tempResult.size());
+            for (int i = 0; i < (int)tempResult.size(); i++) result[i] = tempResult[i];
             return result;
         }
 

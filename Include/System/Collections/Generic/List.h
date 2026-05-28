@@ -35,8 +35,10 @@ namespace DotNetDupe {
                         _items.push_back(item);
                     }
 
-                    void AddRange(const std::vector<T>& collection) {
-                        _items.insert(_items.end(), collection.begin(), collection.end());
+                    void AddRange(const Array<T>& collection) {
+                        for (int i = 0; i < collection.GetLength(); i++) {
+                            _items.push_back(collection[i]);
+                        }
                     }
 
                     void Clear() {

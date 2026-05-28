@@ -7,6 +7,7 @@
 #include "System/ArgumentOutOfRangeException.h"
 #include "System/IOException.h"
 #include "System/Text/TextEncoding.h"
+#include "System/Array.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
@@ -40,18 +41,18 @@ namespace SystemTests {
         TEST_F(FileStreamTest, Constructor_CreateNew_Should_CreateFileAndAllowWriteRead) {
             // Given
             int fileMode = 0; // FileMode::CreateNew
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
+            Array<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
 
             // When
             FileStream fs(testFilePath, fileMode);
-            fs.Write(contentBytes.data(), 0, static_cast<int>(contentBytes.size()));
+            fs.Write(contentBytes.GetData(), 0, contentBytes.GetLength());
             fs.SetPosition(0);
-            std::vector<char> readBuffer(contentBytes.size());
-            int bytesRead = fs.Read(readBuffer.data(), 0, static_cast<int>(readBuffer.size()));
+            Array<char> readBuffer(contentBytes.GetLength());
+            int bytesRead = fs.Read(readBuffer.GetData(), 0, readBuffer.GetLength());
 
             // Then
             EXPECT_TRUE(File::Exists(testFilePath));
-            EXPECT_EQ(bytesRead, contentBytes.size());
+            EXPECT_EQ(bytesRead, contentBytes.GetLength());
             EXPECT_EQ(TextEncoding::UTF8()->GetString(readBuffer), testContent);
             EXPECT_TRUE(fs.CanRead());
             EXPECT_TRUE(fs.CanWrite());
@@ -60,14 +61,14 @@ namespace SystemTests {
 
         TEST_F(FileStreamTest, Constructor_Open_Should_OpenFileAndAllowRead) {
             // Given
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
+            Array<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
             File::WriteAllText(testFilePath, testContent);
             int fileMode = 2; // FileMode::Open
 
             // When
             FileStream fs(testFilePath, fileMode);
-            std::vector<char> readBuffer(contentBytes.size());
-            int bytesRead = fs.Read(readBuffer.data(), 0, static_cast<int>(readBuffer.size()));
+            Array<char> readBuffer(contentBytes.GetLength());
+            int bytesRead = fs.Read(readBuffer.GetData(), 0, readBuffer.GetLength());
 
             // Then
             EXPECT_EQ(TextEncoding::UTF8()->GetString(readBuffer), testContent);
@@ -79,10 +80,10 @@ namespace SystemTests {
         TEST_F(FileStreamTest, Write_Should_WriteContentToFile) {
             // Given
             FileStream fs(testFilePath, 0); // FileMode::CreateNew
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
+            Array<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
 
             // When
-            fs.Write(contentBytes.data(), 0, static_cast<int>(contentBytes.size()));
+            fs.Write(contentBytes.GetData(), 0, contentBytes.GetLength());
             fs.Flush();
 
             // Then
@@ -91,17 +92,17 @@ namespace SystemTests {
 
         TEST_F(FileStreamTest, Read_Should_ReadContentFromFile) {
             // Given
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
+            Array<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
             File::WriteAllText(testFilePath, testContent); // Ensure file is written with content
             FileStream fs(testFilePath, 2); // FileMode::Open
-            std::vector<char> readBuffer(contentBytes.size());
+            Array<char> readBuffer(contentBytes.GetLength());
 
             // When
-            int bytesRead = fs.Read(readBuffer.data(), 0, static_cast<int>(readBuffer.size()));
+            int bytesRead = fs.Read(readBuffer.GetData(), 0, readBuffer.GetLength());
 
             // Then
-            EXPECT_EQ(bytesRead, contentBytes.size());
-            EXPECT_EQ(TextEncoding::UTF8()->GetString(readBuffer.data(), bytesRead), testContent);
+            EXPECT_EQ(bytesRead, contentBytes.GetLength());
+            EXPECT_EQ(TextEncoding::UTF8()->GetString(readBuffer.GetData(), bytesRead), testContent);
         }
 
         TEST_F(FileStreamTest, Seek_Should_ChangeFilePosition) {
@@ -119,7 +120,7 @@ namespace SystemTests {
 
         TEST_F(FileStreamTest, GetLength_Should_ReturnCorrectFileLength) {
             // Given
-            std::vector<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
+            Array<char> contentBytes = TextEncoding::UTF8()->GetBytes(testContent);
             File::WriteAllText(testFilePath, testContent);
             FileStream fs(testFilePath, 2); // FileMode::Open
 
@@ -127,7 +128,7 @@ namespace SystemTests {
             long length = fs.GetLength();
 
             // Then
-            EXPECT_EQ(length, contentBytes.size());
+            EXPECT_EQ(length, contentBytes.GetLength());
         }
 
         TEST_F(FileStreamTest, Dispose_Should_CloseFileStream) {

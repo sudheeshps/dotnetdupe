@@ -6,8 +6,8 @@
 #include "System/OperatingSystem.h"
 #include <Windows.h>
 #include "System/Char.h"
-#include <vector>
-#include <map>
+#include "System/Array.h"
+#include "System/Collections/Generic/Dictionary.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -51,11 +51,11 @@ namespace DotNetDupe {
             DOTNETDUPE_API static int64_t GetWorkingSet();
             DOTNETDUPE_API static void Exit(int exitCode);
             DOTNETDUPE_API static String ExpandEnvironmentVariables(const String& name);
-            DOTNETDUPE_API static std::vector<String> GetCommandLineArgs();
+            DOTNETDUPE_API static Array<String> GetCommandLineArgs();
             DOTNETDUPE_API static String GetEnvironmentVariable(const String& variable);
-            DOTNETDUPE_API static std::map<String, String> GetEnvironmentVariables();
+            DOTNETDUPE_API static Collections::Generic::Dictionary<String, String> GetEnvironmentVariables();
             DOTNETDUPE_API static String GetFolderPath(SpecialFolder folder);
-            DOTNETDUPE_API static std::vector<String> GetLogicalDrives();
+            DOTNETDUPE_API static Array<String> GetLogicalDrives();
             DOTNETDUPE_API static void SetEnvironmentVariable(const String& variable, const String& value);
             DOTNETDUPE_API static OperatingSystem GetOperatingSystem();
         };

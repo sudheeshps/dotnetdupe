@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/String.h"
-#include <functional>
+#include "System/Action.h"
 #include <memory>
 #include <thread>
 #include <atomic>
@@ -13,9 +13,9 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-            
-            typedef std::function<void()> ThreadStart;
-            typedef std::function<void(Object*)> ParameterizedThreadStart;
+
+            typedef Action<> ThreadStart;
+            typedef Action<Object*> ParameterizedThreadStart;
 
             class Thread : public Object {
             public:

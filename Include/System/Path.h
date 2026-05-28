@@ -1,7 +1,7 @@
 #pragma once
 #include "Common.h"
+#include "System/Array.h"
 #include "System/String.h"
-#include <vector>
 
 #if defined(_WIN32)
 #undef GetTempFileName
@@ -22,8 +22,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static String GetExtension(const String& filePath);
                 DOTNETDUPE_API static String GetFileNameWithoutExtension(const String& filePath);
                 DOTNETDUPE_API static String GetFullPath(const String& path);
-                DOTNETDUPE_API static std::vector<char> GetInvalidFileNameChars();
-                DOTNETDUPE_API static std::vector<char> GetInvalidPathChars();
+                DOTNETDUPE_API static Array<char> GetInvalidFileNameChars();
+                DOTNETDUPE_API static Array<char> GetInvalidPathChars();
                 DOTNETDUPE_API static String GetPathRoot(const String& path);
                 DOTNETDUPE_API static String GetRandomFileName();
                 DOTNETDUPE_API static String GetRelativePath(const String& relativeTo, const String& path);

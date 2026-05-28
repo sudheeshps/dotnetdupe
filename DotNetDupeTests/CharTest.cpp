@@ -87,9 +87,9 @@ namespace SystemTests {
             ASSERT_FALSE(Char::IsBetween('0', 'A', 'Z'));
         }
         TEST(CharTest, IsControl) {
-            ASSERT_TRUE(Char::IsControl(0x0006));
+            ASSERT_TRUE(Char::IsControl(static_cast<char>(0x0006)));
             ASSERT_FALSE(Char::IsControl('A'));
-            ASSERT_TRUE(Char::IsControl(0x009F));
+            ASSERT_TRUE(Char::IsControl(static_cast<char>(0x009F)));
         }
         TEST(CharTest, IsLowerTest) {
             ASSERT_TRUE(Char::IsLower('a'));

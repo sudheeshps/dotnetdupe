@@ -121,7 +121,7 @@ namespace SystemTests {
         }
         TEST(PathTest, GetInvalidFileNameChars_Should_Return_Vector_Of_Correct_Size) {
             auto invalidChars = Path::GetInvalidFileNameChars();
-            EXPECT_EQ(41, invalidChars.size());
+            EXPECT_EQ(41, invalidChars.GetLength());
         }
 
         TEST(PathTest, GetInvalidFileNameChars_Should_Contain_Invalid_Special_Chars) {
@@ -148,7 +148,7 @@ namespace SystemTests {
         }
         TEST(PathTest, GetInvalidPathChars_Should_Return_Vector_Of_Correct_Size) {
             auto invalidChars = Path::GetInvalidPathChars();
-            EXPECT_EQ(33, invalidChars.size());
+            EXPECT_EQ(33, invalidChars.GetLength());
         }
 
         TEST(PathTest, GetInvalidPathChars_Should_Contain_Pipe_Char) {

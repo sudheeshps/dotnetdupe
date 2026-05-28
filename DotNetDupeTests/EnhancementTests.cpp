@@ -52,7 +52,7 @@ namespace DotNetDupeTests {
         auto parts = s.Split(sep, 1, StringSplitOptions::TrimEntries);
 
         // Then
-        ASSERT_EQ(parts.size(), 3);
+        ASSERT_EQ(parts.GetLength(), 3);
         EXPECT_TRUE(parts [0] == "Apple");
         EXPECT_TRUE(parts [1] == "Banana");
         EXPECT_TRUE(parts [2] == "Cherry");
