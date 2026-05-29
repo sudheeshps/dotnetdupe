@@ -19,6 +19,10 @@ using namespace DotNetDupe::System::Internal;
 #include <pwd.h>
 #include <limits.h>
 #include <sys/utsname.h>
+#include <fstream>
+#include <iostream>
+
+extern char** environ;
 #endif
 
 namespace DotNetDupe {
@@ -92,7 +96,7 @@ namespace DotNetDupe {
             ::GetSystemDirectoryW(buffer, MAX_PATH);
             return String(WCharToUtf8(buffer).c_str());
 #else
-            return String("/system"); // Or appropriate POSIX default
+            return String("/usr/lib"); // Better POSIX default
 #endif
         }
 
@@ -128,6 +132,18 @@ namespace DotNetDupe {
             PROCESS_MEMORY_COUNTERS pmc;
             if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
                 return (int64_t)pmc.WorkingSetSize;
+            }
+#else
+            std::ifstream statusFile("/proc/self/status");
+            std::string line;
+            while (std::getline(statusFile, line)) {
+                if (line.compare(0, 6, "VmRSS:") == 0) {
+                    size_t start = line.find_first_of("0123456789");
+                    size_t end = line.find_first_not_of("0123456789", start);
+                    if (start != std::string::npos) {
+                        return std::stoll(line.substr(start, end - start)) * 1024;
+                    }
+                }
             }
 #endif
             return 0;
@@ -166,6 +182,12 @@ namespace DotNetDupe {
                 }
                 LocalFree(szArglist);
             }
+#else
+            std::ifstream cmdline("/proc/self/cmdline", std::ios::binary);
+            std::string arg;
+            while (std::getline(cmdline, arg, '\0')) {
+                tempArgs.push_back(String(arg.c_str()));
+            }
 #endif
             Array<String> result((int)tempArgs.size());
             for (int i = 0; i < (int)tempArgs.size(); i++) result[i] = tempArgs[i];
@@ -200,6 +222,14 @@ namespace DotNetDupe {
                 lpszVariable += wcslen(lpszVariable) + 1;
             }
             FreeEnvironmentStringsW(lpvEnv);
+#else
+            for (char** env = environ; *env; ++env) {
+                std::string line(*env);
+                size_t eqPos = line.find('=');
+                if (eqPos != std::string::npos) {
+                    result.Add(String(line.substr(0, eqPos).c_str()), String(line.substr(eqPos + 1).c_str()));
+                }
+            }
 #endif
             return result;
         }

@@ -36,7 +36,7 @@ namespace DotNetDupe {
 
             for (size_t i = 0; i < 16; ++i) {
                 unsigned int byteVal;
-                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+                if (sscanf(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
                     throw FormatException("Guid string should only contain 32 hexadecimal characters.");
                 _data[i] = (uint8_t)byteVal;
             }
@@ -64,7 +64,7 @@ namespace DotNetDupe {
 
         String Guid::ToString() const {
             char buf[37];
-            sprintf_s(buf, 37, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+            snprintf(buf, 37, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
                 _data[0], _data[1], _data[2], _data[3],
                 _data[4], _data[5],
                 _data[6], _data[7],

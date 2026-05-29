@@ -5,12 +5,12 @@
     <version>2.2.0</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>Added support for Linux and iOS. Removed STL dependencies from public APIs. Updated naming to Microsoft C++ standards.</releaseNotes>
+    <releaseNotes>Added support for Linux. Removed STL dependencies from public APIs. Updated naming to Microsoft C++ standards.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/user/DotNetDupe</projectUrl>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>native c++ dotnet multi-platform linux ios windows</tags>
+    <tags>native c++ dotnet multi-platform linux windows</tags>
     <dependencies>
     </dependencies>
     <contentFiles>
@@ -34,8 +34,5 @@
     
     <!-- Linux -->
     <file src="runtimes\linux-x64\native\libDotNetDupe.so" target="runtimes\linux-x64\native\libDotNetDupe.so" />
-    
-    <!-- iOS -->
-    <file src="runtimes\ios-arm64\native\libDotNetDupe.a" target="runtimes\ios-arm64\native\libDotNetDupe.a" />
   </files>
 </package>

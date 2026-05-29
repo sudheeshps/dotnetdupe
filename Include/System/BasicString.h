@@ -141,6 +141,7 @@ namespace DotNetDupe {
             Array<BasicString<CharT>> Split(BasicString<CharT> separator [], int count,
                                                   StringSplitOptions options);
             bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const;
+            BasicString<CharT> Substring(int startIndex) const;
             BasicString<CharT> Substring(int startIndex, int length) const;
 
             BasicString<CharT> ToLower() const;
@@ -604,6 +605,11 @@ namespace DotNetDupe {
             }
 
             return Compare(*this, 0, prefix, 0, prefix.GetLength(), true) == 0;
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::Substring(int startIndex) const {
+            return Substring(startIndex, GetLength() - startIndex);
         }
 
         template <class CharT>

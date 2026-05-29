@@ -127,7 +127,7 @@ namespace DotNetDupe {
                     escaped += c;
                 } else {
                     char buf[4];
-                    sprintf_s(buf, 4, "%%%02X", static_cast<unsigned char>(c));
+                    snprintf(buf, 4, "%%%02X", static_cast<unsigned char>(c));
                     escaped += buf;
                 }
             }
@@ -140,7 +140,7 @@ namespace DotNetDupe {
             for (size_t i = 0; i < s.length(); ++i) {
                 if (s[i] == '%' && i + 2 < s.length()) {
                     int value;
-                    if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
+                    if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
                         unescaped += static_cast<char>(value);
                         i += 2;
                     } else {

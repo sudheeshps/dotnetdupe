@@ -99,22 +99,22 @@ Appends the specified string to the file, creating the file if it does not alrea
 File::AppendAllText(_T("log.txt"), _T("New log entry\n"));
 ```
 
-##### `static std::vector<String> ReadAllLines(const String& path)`
+##### `static Array<String> ReadAllLines(const String& path)`
 
-Opens a text file, reads all lines of the file into a string vector, and then closes the file.
+Opens a text file, reads all lines of the file into a string array, and then closes the file.
 
 **Parameters:**
 - `path`: The file to open for reading.
 
 **Returns:**
-- A string vector containing all lines of the file.
+- An `Array<String>` containing all lines of the file.
 
 **Usage:**
 ```cpp
 auto lines = File::ReadAllLines(_T("test.txt"));
 ```
 
-##### `static void WriteAllLines(const String& path, const std::vector<String>& contents)`
+##### `static void WriteAllLines(const String& path, const Array<String>& contents)`
 
 Creates a new file, writes a collection of strings to the file, and then closes the file.
 
@@ -124,7 +124,7 @@ Creates a new file, writes a collection of strings to the file, and then closes 
 
 **Usage:**
 ```cpp
-std::vector<String> lines = { _T("Line 1"), _T("Line 2") };
+Array<String> lines = { _T("Line 1"), _T("Line 2") };
 File::WriteAllLines(_T("test.txt"), lines);
 ```
 

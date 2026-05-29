@@ -151,6 +151,6 @@ Gets a value indicating whether the NUM LOCK keyboard light is on.
 
 Adds a string to the internal input buffer for testing purposes.
 
-##### `std::vector<String> GetOutputs()`
+##### `static Array<String> GetOutputs()`
 
 Returns the accumulated outputs (from `WriteLine` calls) since the last `Clear`.

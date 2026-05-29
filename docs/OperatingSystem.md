@@ -88,15 +88,3 @@ Indicates whether the current operating system is a Linux operating system.
 ```cpp
 if (OperatingSystem::IsLinux()) { /* ... */ }
 ```
-
-##### `static bool IsMacOS()`
-
-Indicates whether the current operating system is a macOS operating system.
-
-**Returns:**
-- `true` if the platform is macOS; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (OperatingSystem::IsMacOS()) { /* ... */ }
-```

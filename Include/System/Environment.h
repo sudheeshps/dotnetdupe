@@ -4,7 +4,17 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/OperatingSystem.h"
-#include <Windows.h>
+
+#if defined(_WIN32)
+#undef GetCurrentDirectory
+#undef GetSystemDirectory
+#undef GetEnvironmentVariable
+#undef SetEnvironmentVariable
+#undef GetUserName
+#undef GetOSVersion
+#undef GetVersion
+#endif
+
 #include "System/Char.h"
 #include "System/Array.h"
 #include "System/Collections/Generic/Dictionary.h"

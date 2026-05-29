@@ -72,35 +72,8 @@ jobs:
         name: linux-x64-${{ matrix.configuration }}
         path: build/libDotNetDupe.so
 
-  build-ios:
-    runs-on: macos-latest
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Configure CMake for iOS
-      run: |
-        cmake -S . -B build \
-          -G Xcode \
-          -DCMAKE_SYSTEM_NAME=iOS \
-          -DCMAKE_OSX_DEPLOYMENT_TARGET=12.0 \
-          -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} \
-          -DCMAKE_XCODE_ATTRIBUTE_ONLY_ACTIVE_ARCH=NO \
-          -DCMAKE_IOS_INSTALL_COMBINED=YES
-
-    - name: Build iOS
-      run: cmake --build build --config ${{ matrix.configuration }} -- -sdk iphoneos
-
-    - name: Upload iOS Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: ios-arm64-${{ matrix.configuration }}
-        path: build/${{ matrix.configuration }}-iphoneos/libDotNetDupe.a
-
   package:
-    needs: [build-windows, build-linux, build-ios]
+    needs: [build-windows, build-linux]
     runs-on: windows-latest
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     steps:
@@ -118,7 +91,6 @@ jobs:
       run: |
         mkdir -p runtimes/win-x64/native
         mkdir -p runtimes/linux-x64/native
-        mkdir -p runtimes/ios-arm64/native
         
         # Windows Release
         cp artifacts-temp/win-x64-Release/DotNetDupe.dll runtimes/win-x64/native/
@@ -126,9 +98,6 @@ jobs:
         
         # Linux Release
         cp artifacts-temp/linux-x64-Release/libDotNetDupe.so runtimes/linux-x64/native/
-        
-        # iOS Release
-        cp artifacts-temp/ios-arm64-Release/libDotNetDupe.a runtimes/ios-arm64/native/
 
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts

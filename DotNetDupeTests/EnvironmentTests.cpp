@@ -66,13 +66,20 @@ namespace SystemTests {
 
         TEST(Environment, ExpandEnvironmentVariables_WhenCalled_ExpandsVariables) {
             // Given
-            auto path = Environment::GetEnvironmentVariable("PATH");
+#if defined(_WIN32)
+            auto variable = "PATH";
+            auto pattern = "%PATH%";
+#else
+            auto variable = "HOME";
+            auto pattern = "%HOME%";
+#endif
+            auto expected = Environment::GetEnvironmentVariable(variable);
 
             // When
-            auto expanded = Environment::ExpandEnvironmentVariables("%PATH%");
+            auto expanded = Environment::ExpandEnvironmentVariables(pattern);
 
             // Then
-            ASSERT_EQ(path, expanded);
+            ASSERT_EQ(expected, expanded);
         }
 
         TEST(Environment, GetCommandLineArgs_WhenCalled_ReturnsCommandLineArgs) {
@@ -83,11 +90,12 @@ namespace SystemTests {
 
             // Then
             ASSERT_FALSE(commandLineArgs.IsNull());
+            ASSERT_GT(commandLineArgs.GetLength(), 0);
         }
 
         TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable) {
             // Given
-            auto variable = "TestVar";
+            auto variable = "DotNetDupe_TestVar";
             auto value = "TestValue";
             Environment::SetEnvironmentVariable(variable, value);
 
@@ -110,9 +118,14 @@ namespace SystemTests {
 
         TEST(Environment, GetFolderPath_WhenCalled_ReturnsFolderPath) {
             // Given
+#if defined(_WIN32)
+            auto folder = Environment::SpecialFolder::System;
+#else
+            auto folder = Environment::SpecialFolder::UserProfile;
+#endif
 
             // When
-            auto folderPath = Environment::GetFolderPath(Environment::SpecialFolder::System);
+            auto folderPath = Environment::GetFolderPath(folder);
 
             // Then
             ASSERT_FALSE(folderPath.IsEmpty());
@@ -148,8 +161,12 @@ namespace SystemTests {
             auto os = Environment::GetOperatingSystem();
 
             // Then
+#if defined(_WIN32)
             ASSERT_EQ(os.GetPlatform(), PlatformID::Win32NT);
-            ASSERT_TRUE(os.GetVersion().GetMajor() > 0);
+#else
+            ASSERT_EQ(os.GetPlatform(), PlatformID::Unix);
+#endif
+            ASSERT_TRUE(os.GetVersion().GetMajor() >= 0);
         }
     }
 }

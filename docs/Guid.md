@@ -40,7 +40,7 @@ Returns a string representation of the value of this instance of the `Guid` clas
 String s = g.ToString();
 ```
 
-##### `std::array<uint8_t, 16> ToByteArray() const`
+##### `Array<uint8_t> ToByteArray() const`
 
 Returns a 16-element byte array that contains the value of this instance.
 

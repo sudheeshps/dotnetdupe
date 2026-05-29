@@ -4,7 +4,6 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/Version.h"
-#include <Windows.h>
 
 namespace DotNetDupe
 {
@@ -17,8 +16,7 @@ namespace DotNetDupe
             Win32NT = 2,
             WinCE = 3,
             Unix = 4,
-            Xbox = 5,
-            MacOSX = 6
+            Xbox = 5
         };
 
         class OperatingSystem : public Object
@@ -33,7 +31,6 @@ namespace DotNetDupe
 
             DOTNETDUPE_API static bool IsWindows();
             DOTNETDUPE_API static bool IsLinux();
-            DOTNETDUPE_API static bool IsMacOS();
 
         private:
             PlatformID _platform;

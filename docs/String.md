@@ -410,7 +410,7 @@ String s(_T("hello  "));
 String result = s.TrimEnd(); // "hello"
 ```
 
-##### `std::vector<BasicString<CharT>> Split(CharT separator)`
+##### `Array<BasicString<CharT>> Split(CharT separator)`
 
 Splits a string into substrings based on a separator character.
 
@@ -418,7 +418,7 @@ Splits a string into substrings based on a separator character.
 - `separator`: A character that delimits the substrings in this string.
 
 **Returns:**
-- A vector whose elements contain the substrings in this instance that are delimited by `separator`.
+- An `Array` whose elements contain the substrings in this instance that are delimited by `separator`.
 
 **Usage:**
 ```cpp
@@ -441,6 +441,22 @@ Determines whether the beginning of this string instance matches the specified s
 ```cpp
 String s(_T("Hello World"));
 bool result = s.StartsWith(_T("Hello"), false); // true
+```
+
+##### `BasicString<CharT> Substring(int startIndex) const`
+
+Retrieves a substring from this instance. The substring starts at a specified character position and continues to the end of the string.
+
+**Parameters:**
+- `startIndex`: The zero-based starting character position of a substring in this instance.
+
+**Returns:**
+- A string that is equivalent to the substring that begins at `startIndex` in this instance.
+
+**Usage:**
+```cpp
+String s(_T("Hello World"));
+String sub = s.Substring(6); // "World"
 ```
 
 ##### `BasicString<CharT> Substring(int startIndex, int length) const`

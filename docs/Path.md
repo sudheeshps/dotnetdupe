@@ -140,24 +140,24 @@ Returns the absolute path for the specified path string.
 String fullPath = Path::GetFullPath(_T("test.txt"));
 ```
 
-##### `static std::vector<TCHAR> GetInvalidFileNameChars()`
+##### `static Array<char> GetInvalidFileNameChars()`
 
 Gets an array of characters that are not allowed in file names.
 
 **Returns:**
-- A vector containing the characters that are not allowed in file names.
+- An `Array<char>` containing the characters that are not allowed in file names.
 
 **Usage:**
 ```cpp
 auto invalid = Path::GetInvalidFileNameChars();
 ```
 
-##### `static std::vector<TCHAR> GetInvalidPathChars()`
+##### `static Array<char> GetInvalidPathChars()`
 
 Gets an array of characters that are not allowed in path names.
 
 **Returns:**
-- A vector containing the characters that are not allowed in path names.
+- An `Array<char>` containing the characters that are not allowed in path names.
 
 **Usage:**
 ```cpp

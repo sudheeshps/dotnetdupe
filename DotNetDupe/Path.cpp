@@ -25,6 +25,14 @@ namespace {
         return fs::path(path.GetRawString());
 #endif
     }
+
+    DotNetDupe::System::String FromFsPath(const fs::path& path) {
+#if defined(_WIN32)
+        return DotNetDupe::System::String(DotNetDupe::System::Internal::WCharToUtf8(path.wstring().c_str()).c_str());
+#else
+        return DotNetDupe::System::String(path.string().c_str());
+#endif
+    }
 }
 
 namespace DotNetDupe {
@@ -40,8 +48,12 @@ namespace DotNetDupe {
                     strTempFilePath = filePath.Remove(0);
 
                 fs::path path = ToFsPath(strTempFilePath);
-                path.replace_extension(Utf8ToWChar(extension.GetRawString()));
-                return String(WCharToUtf8(path.wstring().c_str()).c_str());
+#if defined(_WIN32)
+                path.replace_extension(DotNetDupe::System::Internal::Utf8ToWChar(extension.GetRawString()));
+#else
+                path.replace_extension(extension.GetRawString());
+#endif
+                return FromFsPath(path);
             }
 
             String Path::Combine(const std::initializer_list<String> paths) {
@@ -72,14 +84,14 @@ namespace DotNetDupe {
                     return String("");
 
                 fs::path path = ToFsPath(filePath);
-                return String(WCharToUtf8(path.parent_path().wstring().c_str()).c_str());
+                return FromFsPath(path.parent_path());
             }
 
             String Path::GetFileName(const String& filePath) {
                 if (filePath.IsEmpty())
                     return String("");
                 fs::path path = ToFsPath(filePath);
-                return String(WCharToUtf8(path.filename().wstring().c_str()).c_str());
+                return FromFsPath(path.filename());
             }
 
             String Path::GetExtension(const String& filePath) {
@@ -87,9 +99,9 @@ namespace DotNetDupe {
                     return String("");
 
                 fs::path path = ToFsPath(filePath);
-                std::wstring ext = path.extension().wstring();
-                if (ext.empty()) return String("");
-                return String(WCharToUtf8(ext.c_str() + 1).c_str());
+                auto ext = FromFsPath(path.extension());
+                if (ext.IsEmpty()) return String("");
+                return ext.Substring(1);
             }
 
             String Path::GetFileNameWithoutExtension(const String& filePath) {
@@ -97,14 +109,14 @@ namespace DotNetDupe {
                     return String("");
 
                 fs::path path = ToFsPath(filePath);
-                return String(WCharToUtf8(path.stem().wstring().c_str()).c_str());
+                return FromFsPath(path.stem());
             }
 
             String Path::GetFullPath(const String& path) {
                 if (path.IsEmpty())
                     return String("");
 
-                return String(WCharToUtf8(fs::absolute(ToFsPath(path)).wstring().c_str()).c_str());
+                return FromFsPath(fs::absolute(ToFsPath(path)));
             }
 
             Array<char> Path::GetInvalidFileNameChars() {
@@ -174,18 +186,20 @@ namespace DotNetDupe {
                 }
 
                 fs::path p = ToFsPath(path);
-                return String(WCharToUtf8(p.root_path().wstring().c_str()).c_str());
+                return FromFsPath(p.root_path());
             }
 
             String Path::GetRelativePath(const String& relativeTo, const String& path) {
                 const fs::path fsRelativeTo = ToFsPath(GetFullPath(relativeTo));
                 const fs::path fsPath = ToFsPath(GetFullPath(path));
 
+#if defined(_WIN32)
                 if (fsRelativeTo.root_name() != fsPath.root_name()) {
                     return path;
                 }
+#endif
 
-                return String(WCharToUtf8(fs::relative(fsPath, fsRelativeTo).wstring().c_str()).c_str());
+                return FromFsPath(fs::relative(fsPath, fsRelativeTo));
             }
 
             String Path::GetTempFileName() {
@@ -203,12 +217,12 @@ namespace DotNetDupe {
                     }
                     random_name [8] = '\0';
 
-                    fs::path file_path = ToFsPath(temp_dir_path) / Utf8ToWChar((String(random_name) + ".tmp").GetRawString());
+                    fs::path file_path = ToFsPath(temp_dir_path) / (String(random_name) + ".tmp").GetRawString();
 
                     if (!fs::exists(file_path)) {
                         std::ofstream ofs(file_path);
                         if (ofs) {
-                            return String(WCharToUtf8(file_path.wstring().c_str()).c_str());
+                            return FromFsPath(file_path);
                         }
                     }
                 }

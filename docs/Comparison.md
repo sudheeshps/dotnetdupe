@@ -8,7 +8,7 @@ This document provides a side-by-side comparison of common development tasks usi
 | Standard Template Library (STL) | DotNetDupe |
 | :--- | :--- |
 | **Lowercase & Substring**<br>`std::string s = "Hello World";`<br>`std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c){ return std::tolower(c); });`<br>`std::string sub = s.substr(0, 5);` | **Lowercase & Substring**<br>`String s = _T("Hello World");`<br>`String sub = s.ToLower().Substring(0, 5);` |
-| **Split into List**<br>`std::vector<std::string> parts;`<br>`size_t pos = 0; while ((pos = s.find(',')) != npos) {`<br>`  parts.push_back(s.substr(0, pos)); s.erase(0, pos + 1); }`<br>`parts.push_back(s);` | **Split into List**<br>`List<String> parts = s.Split(',');` |
+| **Split into List**<br>`std::vector<std::string> parts;`<br>`size_t pos = 0; while ((pos = s.find(',')) != npos) {`<br>`  parts.push_back(s.substr(0, pos)); s.erase(0, pos + 1); }`<br>`parts.push_back(s);` | **Split into List**<br>`Array<String> parts = s.Split(',');` |
 | **Join List**<br>`std::string joined;`<br>`for (size_t i = 0; i < v.size(); ++i) {`<br>`  joined += v[i]; if (i < v.size() - 1) joined += ", "; }` | **Join List**<br>`String joined = String::Join(_T(", "), list);` |
 | **Starts / Ends With**<br>`bool b = (s.size() >= prefix.size() && `<br>`  s.compare(0, prefix.size(), prefix) == 0);` | **Starts / Ends With**<br>`bool b = s.StartsWith(prefix);` |
 | **Trim Whitespace**<br>`s.erase(0, s.find_first_not_of(' '));`<br>`s.erase(s.find_last_not_of(' ') + 1);` | **Trim Whitespace**<br>`String trimmed = s.Trim();` |

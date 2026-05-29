@@ -63,13 +63,5 @@ namespace DotNetDupe {
 #endif
         }
 
-        bool OperatingSystem::IsMacOS() {
-#if defined(__APPLE__)
-            return true;
-#else
-            return false;
-#endif
-        }
-
     }
 }

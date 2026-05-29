@@ -151,12 +151,12 @@ Replaces the name of each environment variable embedded in the specified string 
 String path = Environment::ExpandEnvironmentVariables(_T("%PATH%"));
 ```
 
-##### `static std::vector<String> GetCommandLineArgs()`
+##### `static Array<String> GetCommandLineArgs()`
 
 Returns a string array containing the command-line arguments for the current process.
 
 **Returns:**
-- A vector of strings where each element contains a command-line argument.
+- An `Array<String>` where each element contains a command-line argument.
 
 **Usage:**
 ```cpp
@@ -178,12 +178,12 @@ Retrieves the value of an environment variable from the current process.
 String temp = Environment::GetEnvironmentVariable(_T("TEMP"));
 ```
 
-##### `static std::map<String, String> GetEnvironmentVariables()`
+##### `static Collections::Generic::Dictionary<String, String> GetEnvironmentVariables()`
 
 Retrieves all environment variable names and their values from the current process.
 
 **Returns:**
-- A map containing all environment variable names and their values.
+- A `Dictionary` containing all environment variable names and their values.
 
 **Usage:**
 ```cpp
@@ -205,12 +205,12 @@ Gets the path to the system special folder that is identified by the specified e
 String desktop = Environment::GetFolderPath(Environment::SpecialFolder::Desktop);
 ```
 
-##### `static std::vector<String> GetLogicalDrives()`
+##### `static Array<String> GetLogicalDrives()`
 
 Returns an array of strings that contains the names of the logical drives on the current computer.
 
 **Returns:**
-- A vector of strings where each element contains the name of a logical drive.
+- An `Array<String>` where each element contains the name of a logical drive.
 
 **Usage:**
 ```cpp
