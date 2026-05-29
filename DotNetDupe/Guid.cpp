@@ -36,7 +36,11 @@ namespace DotNetDupe {
 
             for (size_t i = 0; i < 16; ++i) {
                 unsigned int byteVal;
+#if defined(_WIN32)
+                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+#else
                 if (sscanf(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+#endif
                     throw FormatException("Guid string should only contain 32 hexadecimal characters.");
                 _data[i] = (uint8_t)byteVal;
             }

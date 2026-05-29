@@ -140,7 +140,11 @@ namespace DotNetDupe {
             for (size_t i = 0; i < s.length(); ++i) {
                 if (s[i] == '%' && i + 2 < s.length()) {
                     int value;
+#if defined(_WIN32)
+                    if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
+#else
                     if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
+#endif
                         unescaped += static_cast<char>(value);
                         i += 2;
                     } else {
