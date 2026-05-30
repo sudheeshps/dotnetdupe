@@ -156,6 +156,29 @@ cmake --build .
 ctest --output-on-failure
 ```
 
+### 4. Running WSL Commands from PowerShell
+You can also build and test for Linux directly from a Windows PowerShell terminal without manually entering the WSL shell:
+
+```powershell
+# Create build directory
+wsl -d Ubuntu -- bash -c "mkdir -p build-wsl"
+
+# Configure
+wsl -d Ubuntu -- bash -c "cd build-wsl && cmake .. -DCMAKE_BUILD_TYPE=Release"
+
+# Build
+wsl -d Ubuntu -- bash -c "cd build-wsl && cmake --build ."
+
+# Run Tests (via CTest)
+wsl -d Ubuntu -- bash -c "cd build-wsl && ctest"
+
+# Run Tests (direct execution)
+wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeTests"
+
+# Run Demo Application
+wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeDemo"
+```
+
 ## Usage 💻
 
 Here are some quick examples of how to use DotNetDupe:
