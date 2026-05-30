@@ -10,26 +10,26 @@ Initializes a new instance of the `StringWriter` class.
 
 **Usage:**
 ```cpp
-StringWriter writer;
+StringWriter swWriter;
 ```
 
-##### `StringWriter(Text::StringBuilder& sb)`
+##### `StringWriter(Text::StringBuilder& sbBuilder)`
 
 Initializes a new instance of the `StringWriter` class that writes to the specified `StringBuilder`.
 
 **Usage:**
 ```cpp
-StringBuilder sb;
-StringWriter writer(sb);
+StringBuilder sbBuilder;
+StringWriter swWriter(sbBuilder);
 ```
 
-##### `void Write(wchar_t value) override`
+##### `void Write(wchar_t cValue) override`
 
 Writes a character to the string.
 
 **Usage:**
 ```cpp
-writer.Write(L'A');
+swWriter.Write(L'A');
 ```
 
 ##### `String ToString() const override`
@@ -38,5 +38,6 @@ Returns the string containing the characters written to the current `StringWrite
 
 **Usage:**
 ```cpp
-String s = writer.ToString();
+String sResult = swWriter.ToString();
 ```
+

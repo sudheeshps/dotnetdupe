@@ -12,14 +12,14 @@ namespace DotNetDupe {
             public:
                 virtual ~TextReader() = default;
 
-                DOTNETDUPE_API virtual void Close();
-                DOTNETDUPE_API virtual void Dispose() override;
+                DOTNETDUPE_API virtual void Close() = 0;
+                DOTNETDUPE_API virtual void Dispose() override = 0;
 
-                DOTNETDUPE_API virtual int Peek();
-                DOTNETDUPE_API virtual int Read();
-                DOTNETDUPE_API virtual int Read(wchar_t* buffer, int index, int count);
-                DOTNETDUPE_API virtual String ReadLine();
-                DOTNETDUPE_API virtual String ReadToEnd();
+                DOTNETDUPE_API virtual int Peek() = 0;
+                DOTNETDUPE_API virtual int Read() = 0;
+                DOTNETDUPE_API virtual int Read(char* pBuffer, int iIndex, int nCount) = 0;
+                DOTNETDUPE_API virtual String ReadLine() = 0;
+                DOTNETDUPE_API virtual String ReadToEnd() = 0;
 
             protected:
                 TextReader() = default;

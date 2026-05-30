@@ -1,4 +1,5 @@
 #pragma once
+#include <ostream>
 typedef unsigned char byte;
 namespace DotNetDupe {
     namespace System {
@@ -64,6 +65,11 @@ namespace DotNetDupe {
 
             CharT static ToLower(CharT c);
             CharT GetChar();
+
+            friend std::ostream& operator<<(std::ostream& os, const BasicChar<CharT>& c) {
+                os << static_cast<char>(c.m_c);
+                return os;
+            }
         private:
             CharT m_c;
             //const byte categoryForLatin1[287] = 
@@ -210,8 +216,9 @@ namespace DotNetDupe {
 
         template<class CharT>
         inline bool BasicChar<CharT>::IsControl(CharT c) {
-            return (c >= 0x0000 && c <= 0x001F) || c == 0x007F ||
-                (c >= 0x0080 && c <= 0x009F);
+            unsigned char uc = static_cast<unsigned char>(c);
+            return (uc >= 0x0000 && uc <= 0x001F) || uc == 0x007F ||
+                (uc >= 0x0080 && uc <= 0x009F);
         }
 
         template<class CharT>

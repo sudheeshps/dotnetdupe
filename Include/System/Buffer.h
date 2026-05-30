@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
-#include <tchar.h>
+#include "System/Char.h"
 #include "System/ArgumentException.h"
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
@@ -17,21 +17,21 @@ namespace DotNetDupe {
             template <typename T>
             static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count) {
                 if (src.IsNull())
-                    throw ArgumentNullException(_T("src"));
+                    throw ArgumentNullException("src");
                 if (dst.IsNull())
-                    throw ArgumentNullException(_T("dst"));
+                    throw ArgumentNullException("dst");
 
                 if (srcOffset < 0)
-                    throw ArgumentOutOfRangeException(_T("srcOffset"));
+                    throw ArgumentOutOfRangeException("srcOffset");
                 if (dstOffset < 0)
-                    throw ArgumentOutOfRangeException(_T("dstOffset"));
+                    throw ArgumentOutOfRangeException("dstOffset");
                 if (count < 0)
-                    throw ArgumentOutOfRangeException(_T("count"));
+                    throw ArgumentOutOfRangeException("count");
 
                 if (srcOffset + count > src.GetLength() * sizeof(T))
-                    throw ArgumentException(_T("srcOffset + count > src.ByteLength"));
+                    throw ArgumentException("srcOffset + count > src.ByteLength");
                 if (dstOffset + count > dst.GetLength() * sizeof(T))
-                    throw ArgumentException(_T("dstOffset + count > dst.ByteLength"));
+                    throw ArgumentException("dstOffset + count > dst.ByteLength");
 
                 // TODO: This is not a real block copy, it's a byte-wise copy.
                 // A real block copy would use something like memcpy.
@@ -44,21 +44,21 @@ namespace DotNetDupe {
             template <typename T>
             static int ByteLength(Array<T>& array) {
                 if (array.IsNull())
-                    throw ArgumentNullException(_T("array"));
+                    throw ArgumentNullException("array");
                 return array.GetLength() * sizeof(T);
             }
 
             template <typename T>
             static byte GetByte(Array<T>& array, int index) {
                 if (index < 0 || index >= ByteLength(array))
-                    throw ArgumentOutOfRangeException(_T("index"));
+                    throw ArgumentOutOfRangeException("index");
                 return *((byte*)array.GetData() + index);
             }
 
             template <typename T>
             static void SetByte(Array<T>& array, int index, byte value) {
                 if (index < 0 || index >= ByteLength(array))
-                    throw ArgumentOutOfRangeException(_T("index"));
+                    throw ArgumentOutOfRangeException("index");
                 *((byte*)array.GetData() + index) = value;
             }
         };

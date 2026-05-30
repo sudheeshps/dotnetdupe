@@ -21,13 +21,19 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
   - [Getting Started 🚀](#getting-started-)
     - [Prerequisites 📋](#prerequisites-)
     - [Installation ⬇️](#installation-️)
+  - [Cross-Platform Support 🌐](#cross-platform-support-)
+    - [Building and Testing](#building-and-testing)
+    - [Integration via NuGet](#integration-via-nuget)
+  - [WSL Setup Guide (Windows) 🐧](#wsl-setup-guide-windows-)
+    - [1. Install WSL](#1-install-wsl)
+    - [2. Environment Provisioning](#2-environment-provisioning)
+    - [3. Build & Test in WSL](#3-build--test-in-wsl)
   - [Usage 💻](#usage-)
   - [STL vs DotNetDupe Comparison ⚖️](#stl-vs-dotnetdupe-comparison-️)
   - [API Reference 📖](#api-reference-)
-    - [Namespace: `DotNetDupe::System`](#namespace-dotnetdupesystem)
-    - [Namespace: `DotNetDupe::System::IO`](#namespace-dotnetdupesystemio)
   - [Project Status 🚧](#project-status-)
   - [Contributions 👋](#contributions-)
+  - [CI/CD Pipeline 🚀](#cicd-pipeline-)
   - [License 📄](#license-)
   - [Generated Content 🤖](#generated-content-)
   - [Contact 📧](#contact-)
@@ -68,8 +74,9 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     Open a Developer Command Prompt for Visual Studio and navigate to the project root.
     ```bash
     msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
+    nuget pack DotNetDupe.nuspec -OutputDirectory nuget_packages
     ```
-    This will build the `DotNetDupe` library and automatically create a NuGet package (`DotNetDupe.1.0.0.nupkg`) in the `nuget_packages` directory at the solution root.
+    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.2.2.0.nupkg) in the nuget_packages directory at the solution root.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -88,6 +95,89 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
 5.  **Integrate into your project:**
     Once installed, ensure your project's `.vcxproj` file is configured to link against the `DotNetDupe.lib` and include its headers. The NuGet package's `.targets` file should handle most of this automatically.
 
+
+## Cross-Platform Support 🌐
+
+DotNetDupe is designed for high portability and officially supports **Windows** (via MSVC/MSBuild) and **Linux** (via GCC/Clang/CMake).
+
+### Building and Testing
+
+| Platform | Build System | Build Command | Test Command |
+| :--- | :--- | :--- | :--- |
+| **Windows** | MSBuild | `msbuild DotNetDupe.sln /p:Configuration=Release` | `.\bin\x64\Release\DotNetDupeTests.exe` |
+| **Linux / WSL** | CMake | `cmake -S . -B build && cmake --build build` | `cd build && ctest` |
+
+### Integration via NuGet
+
+DotNetDupe is distributed as a multi-platform NuGet package. It contains native binaries for:
+- `win-x64` (`DotNetDupe.dll`)
+- `linux-x64` (`libDotNetDupe.so`)
+
+When you add the NuGet package to your project, the appropriate binary is automatically selected based on your target platform.
+
+#### Note for Linux Users
+On Linux, NuGet packages are typically managed via `dotnet` CLI or integrated into CMake projects using tools like `vcpkg` or by manually extracting the shared library (`.so`) and headers from the `.nupkg` (which is a ZIP file).
+
+Example manual extraction:
+```bash
+unzip DotNetDupe.nupkg -d dotnetdupe_lib
+# Use dotnetdupe_lib/include for headers
+# Use dotnetdupe_lib/runtimes/linux-x64/native/libDotNetDupe.so for linking
+```
+
+## WSL Setup Guide (Windows) 🐧
+
+For Windows developers who want to build and test for Linux locally, we recommend using the Windows Subsystem for Linux (WSL).
+
+### 1. Install WSL
+If you haven't already, install Ubuntu via PowerShell:
+```powershell
+wsl --install -d Ubuntu
+```
+
+### 2. Environment Provisioning
+Inside your WSL terminal, install the C++ build chain:
+```bash
+sudo apt-get update
+sudo apt-get install -y build-essential cmake
+```
+
+### 3. Build & Test in WSL
+Navigate to your project root (e.g., `/mnt/d/Projects/DotNetDupe`) and run:
+```bash
+# Create build directory
+mkdir -p build-wsl && cd build-wsl
+
+# Configure and Build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+
+# Run Tests
+ctest --output-on-failure
+```
+
+### 4. Running WSL Commands from PowerShell
+You can also build and test for Linux directly from a Windows PowerShell terminal without manually entering the WSL shell:
+
+```powershell
+# Create build directory
+wsl -d Ubuntu -- bash -c "mkdir -p build-wsl"
+
+# Configure
+wsl -d Ubuntu -- bash -c "cd build-wsl && cmake .. -DCMAKE_BUILD_TYPE=Release"
+
+# Build
+wsl -d Ubuntu -- bash -c "cd build-wsl && cmake --build ."
+
+# Run Tests (via CTest)
+wsl -d Ubuntu -- bash -c "cd build-wsl && ctest"
+
+# Run Tests (direct execution)
+wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeTests"
+
+# Run Demo Application
+wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeDemo"
+```
 
 ## Usage 💻
 
@@ -163,6 +253,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
 | [OperatingSystem](docs/OperatingSystem.md) | Represents information about an operating system, such as the version and platform identifier. |
 | [Random](docs/Random.md) | Represents a pseudo-random number generator. |
+| [SmartPointer<T>](docs/SmartPointer.md) | A unified smart pointer supporting both unique and shared ownership. |
 | [String](docs/String.md) | Represents text as a sequence of character code units. |
 | [TimeProvider](docs/TimeProvider.md) | Provides an abstraction for time. |
 | [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |

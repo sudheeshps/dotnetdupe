@@ -21,8 +21,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void SetCapacity(int value);
 
                 DOTNETDUPE_API StringBuilder& Append(const String& value);
-                DOTNETDUPE_API StringBuilder& Append(const TCHAR* value);
-                DOTNETDUPE_API StringBuilder& Append(TCHAR value);
+                DOTNETDUPE_API StringBuilder& Append(const char* value);
+                DOTNETDUPE_API StringBuilder& Append(char value);
                 DOTNETDUPE_API StringBuilder& Append(int value);
                 DOTNETDUPE_API StringBuilder& Append(long long value);
                 DOTNETDUPE_API StringBuilder& Append(double value);
@@ -36,7 +36,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API String ToString() const;
 
             private:
-                std::basic_string<TCHAR> _buffer;
+                std::string m_strBuffer;
             };
         }
     }

@@ -16,7 +16,7 @@ Associates a `UriParser` with a scheme.
 **Usage:**
 ```cpp
 GenericUriParser myParser;
-UriParser::Register(&myParser, _T("myapp"), 1234);
+UriParser::Register(&myParser, "myapp", 1234);
 ```
 
 ##### `static bool IsKnownScheme(const String& schemeName)`
@@ -31,7 +31,7 @@ Indicates whether the parser for a scheme is registered.
 
 **Usage:**
 ```cpp
-bool known = UriParser::IsKnownScheme(_T("http"));
+bool known = UriParser::IsKnownScheme("http");
 ```
 
 ##### `static UriParser* GetParser(const String& schemeName)`
@@ -46,7 +46,7 @@ Gets the parser for a scheme.
 
 **Usage:**
 ```cpp
-UriParser* parser = UriParser::GetParser(_T("http"));
+UriParser* parser = UriParser::GetParser("http");
 ```
 
 ##### `UriParser()`
@@ -72,6 +72,7 @@ Gets the components of a URI.
 
 **Usage:**
 ```cpp
-Uri myUri(_T("http://example.com/path"));
+Uri myUri("http://example.com/path");
 String host = parser.GetComponents(myUri, UriComponents::Host, UriFormat::UriEscaped);
 ```
+

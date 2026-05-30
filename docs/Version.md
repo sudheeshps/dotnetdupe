@@ -4,46 +4,46 @@ Represents the version number of an assembly, operating system, or the common la
 
 #### Methods
 
-##### `Version(int major, int minor, int build, int revision)`
+##### `Version(int nMajor, int nMinor, int nBuild, int nRevision)`
 
 Initializes a new instance of the `Version` class with the specified major, minor, build, and revision numbers.
 
 **Parameters:**
-- `major`: The major version number.
-- `minor`: The minor version number.
-- `build`: The build number.
-- `revision`: The revision number.
+- `nMajor`: The major version number.
+- `nMinor`: The minor version number.
+- `nBuild`: The build number.
+- `nRevision`: The revision number.
 
 **Usage:**
 ```cpp
-Version v(1, 2, 3, 4);
+Version vVersion(1, 2, 3, 4);
 ```
 
-##### `Version(int major, int minor, int build)`
+##### `Version(int nMajor, int nMinor, int nBuild)`
 
 Initializes a new instance of the `Version` class with the specified major, minor, and build numbers.
 
 **Parameters:**
-- `major`: The major version number.
-- `minor`: The minor version number.
-- `build`: The build number.
+- `nMajor`: The major version number.
+- `nMinor`: The minor version number.
+- `nBuild`: The build number.
 
 **Usage:**
 ```cpp
-Version v(1, 2, 3);
+Version vVersion(1, 2, 3);
 ```
 
-##### `Version(int major, int minor)`
+##### `Version(int nMajor, int nMinor)`
 
 Initializes a new instance of the `Version` class with the specified major and minor numbers.
 
 **Parameters:**
-- `major`: The major version number.
-- `minor`: The minor version number.
+- `nMajor`: The major version number.
+- `nMinor`: The minor version number.
 
 **Usage:**
 ```cpp
-Version v(1, 2);
+Version vVersion(1, 2);
 ```
 
 ##### `Version()`
@@ -52,7 +52,7 @@ Initializes a new instance of the `Version` class.
 
 **Usage:**
 ```cpp
-Version v;
+Version vVersion;
 ```
 
 ##### `int GetMajor() const`
@@ -64,7 +64,7 @@ Gets the value of the major component of the version number.
 
 **Usage:**
 ```cpp
-int major = v.GetMajor();
+int nMajor = vVersion.GetMajor();
 ```
 
 ##### `int GetMinor() const`
@@ -76,7 +76,7 @@ Gets the value of the minor component of the version number.
 
 **Usage:**
 ```cpp
-int minor = v.GetMinor();
+int nMinor = vVersion.GetMinor();
 ```
 
 ##### `int GetBuild() const`
@@ -88,7 +88,7 @@ Gets the value of the build component of the version number.
 
 **Usage:**
 ```cpp
-int build = v.GetBuild();
+int nBuild = vVersion.GetBuild();
 ```
 
 ##### `int GetRevision() const`
@@ -100,7 +100,7 @@ Gets the value of the revision component of the version number.
 
 **Usage:**
 ```cpp
-int revision = v.GetRevision();
+int nRevision = vVersion.GetRevision();
 ```
 
 ##### `String ToString() const`
@@ -112,21 +112,22 @@ Converts the value of the current `Version` object to its equivalent `String` re
 
 **Usage:**
 ```cpp
-String s = v.ToString(); // "1.2.3.4"
+String sVersion = vVersion.ToString(); // "1.2.3.4"
 ```
 
-##### `bool operator==(const Version& other) const`
+##### `bool operator==(const Version& vOther) const`
 
 Determines whether two specified `Version` objects are equal.
 
 **Parameters:**
-- `other`: The `Version` object to compare with the current object.
+- `vOther`: The `Version` object to compare with the current object.
 
 **Returns:**
-- `true` if every component of the current `Version` object matches the corresponding component of the `other` parameter; otherwise, `false`.
+- `true` if every component of the current `Version` object matches the corresponding component of the `vOther` parameter; otherwise, `false`.
 
 **Usage:**
 ```cpp
-Version v1(1, 0), v2(1, 0);
-if (v1 == v2) { /* ... */ }
+Version vVer1(1, 0), vVer2(1, 0);
+if (vVer1 == vVer2) { /* ... */ }
 ```
+

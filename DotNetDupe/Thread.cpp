@@ -57,7 +57,7 @@ namespace DotNetDupe {
                     return true;
                 }
                 
-                throw TimeoutException(_T("The thread did not terminate within the allotted time."));
+                throw TimeoutException("The thread did not terminate within the allotted time.");
             }
 
             void Thread::Sleep(int millisecondsTimeout) {

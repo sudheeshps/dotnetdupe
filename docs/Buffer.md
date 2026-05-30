@@ -69,3 +69,4 @@ Sets a byte at a specified location in a specified array.
 Array<int> arr(1);
 Buffer::SetByte(arr, 0, 0xAA);
 ```
+

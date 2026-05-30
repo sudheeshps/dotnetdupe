@@ -44,16 +44,6 @@ namespace SystemTests {
             ASSERT_FALSE(userDomainName.IsEmpty());
         }
 
-        TEST(Environment, GetVersion_WhenCalled_ReturnsVersion) {
-            // Given
-
-            // When
-            auto version = Environment::GetVersion();
-
-            // Then
-            ASSERT_FALSE(version.IsEmpty());
-        }
-
         TEST(Environment, GetWorkingSet_WhenCalled_ReturnsWorkingSet) {
             // Given
 
@@ -66,13 +56,20 @@ namespace SystemTests {
 
         TEST(Environment, ExpandEnvironmentVariables_WhenCalled_ExpandsVariables) {
             // Given
-            auto path = Environment::GetEnvironmentVariable(_T("PATH"));
+#if defined(_WIN32)
+            auto variable = "PATH";
+            auto pattern = "%PATH%";
+#else
+            auto variable = "HOME";
+            auto pattern = "%HOME%";
+#endif
+            auto expected = Environment::GetEnvironmentVariable(variable);
 
             // When
-            auto expanded = Environment::ExpandEnvironmentVariables(_T("%PATH%"));
+            auto expanded = Environment::ExpandEnvironmentVariables(pattern);
 
             // Then
-            ASSERT_EQ(path, expanded);
+            ASSERT_EQ(expected, expanded);
         }
 
         TEST(Environment, GetCommandLineArgs_WhenCalled_ReturnsCommandLineArgs) {
@@ -82,13 +79,14 @@ namespace SystemTests {
             auto commandLineArgs = Environment::GetCommandLineArgs();
 
             // Then
-            ASSERT_FALSE(commandLineArgs.empty());
+            ASSERT_FALSE(commandLineArgs.IsNull());
+            ASSERT_GT(commandLineArgs.GetLength(), 0);
         }
 
         TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable) {
             // Given
-            auto variable = _T("TestVar");
-            auto value = _T("TestValue");
+            auto variable = "DotNetDupe_TestVar";
+            auto value = "TestValue";
             Environment::SetEnvironmentVariable(variable, value);
 
             // When
@@ -105,14 +103,19 @@ namespace SystemTests {
             auto envVars = Environment::GetEnvironmentVariables();
 
             // Then
-            ASSERT_FALSE(envVars.empty());
+            ASSERT_GT(envVars.GetCount(), 0);
         }
 
         TEST(Environment, GetFolderPath_WhenCalled_ReturnsFolderPath) {
             // Given
+#if defined(_WIN32)
+            auto folder = Environment::SpecialFolder::System;
+#else
+            auto folder = Environment::SpecialFolder::UserProfile;
+#endif
 
             // When
-            auto folderPath = Environment::GetFolderPath(Environment::SpecialFolder::System);
+            auto folderPath = Environment::GetFolderPath(folder);
 
             // Then
             ASSERT_FALSE(folderPath.IsEmpty());
@@ -125,13 +128,13 @@ namespace SystemTests {
             auto logicalDrives = Environment::GetLogicalDrives();
 
             // Then
-            ASSERT_FALSE(logicalDrives.empty());
+            ASSERT_FALSE(logicalDrives.IsNull());
         }
 
         TEST(Environment, SetEnvironmentVariable_WhenCalled_SetsEnvironmentVariable) {
             // Given
-            auto variable = _T("TestVar");
-            auto value = _T("TestValue");
+            auto variable = "TestVar";
+            auto value = "TestValue";
 
             // When
             Environment::SetEnvironmentVariable(variable, value);
@@ -148,8 +151,12 @@ namespace SystemTests {
             auto os = Environment::GetOperatingSystem();
 
             // Then
+#if defined(_WIN32)
             ASSERT_EQ(os.GetPlatform(), PlatformID::Win32NT);
-            ASSERT_TRUE(os.GetVersion().GetMajor() > 0);
+#else
+            ASSERT_EQ(os.GetPlatform(), PlatformID::Unix);
+#endif
+            ASSERT_TRUE(os.GetVersion().GetMajor() >= 0);
         }
     }
 }

@@ -3,14 +3,19 @@
 #include "System/IO/File.h"
 #include "System/String.h"
 #include <vector>
+#include <filesystem>
+
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
 
 namespace SystemTests {
     namespace FileTests {
-        const String testFile(_T("test.txt"));
-        const String content(_T("Hello, World!"));
+        const String testFile("test.txt");
+        const String content("Hello, World!");
 
         TEST(FileTest, WriteAllText_And_ReadAllText) {
             // Given
@@ -37,7 +42,7 @@ namespace SystemTests {
         TEST(FileTest, AppendAllText) {
             // Given
             File::WriteAllText(testFile, content);
-            const String newContent(_T(" Appended"));
+            const String newContent(" Appended");
 
             // When
             File::AppendAllText(testFile, newContent);
@@ -50,7 +55,7 @@ namespace SystemTests {
         TEST(FileTest, Copy) {
             // Given
             File::WriteAllText(testFile, content);
-            const String destFile(_T("dest.txt"));
+            const String destFile("dest.txt");
 
             // When
             File::Copy(testFile, destFile, true);
@@ -66,7 +71,7 @@ namespace SystemTests {
         TEST(FileTest, Move) {
             // Given
             File::WriteAllText(testFile, content);
-            const String destFile(_T("dest.txt"));
+            const String destFile("dest.txt");
 
             // When
             File::Move(testFile, destFile);
@@ -91,54 +96,54 @@ namespace SystemTests {
 
         TEST(FileTest, AppendAllLines) {
             // Given
-            std::vector<String> lines = { _T("Line 1"), _T("Line 2") };
+            Array<String> lines = { "Line 1", "Line 2" };
             File::WriteAllLines(testFile, lines);
-            std::vector<String> newLines = { _T("Line 3"), _T("Line 4") };
+            Array<String> newLines = { "Line 3", "Line 4" };
 
             // When
             File::AppendAllLines(testFile, newLines);
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 4);
-            EXPECT_EQ(readLines[0], _T("Line 1"));
-            EXPECT_EQ(readLines[1], _T("Line 2"));
-            EXPECT_EQ(readLines[2], _T("Line 3"));
-            EXPECT_EQ(readLines[3], _T("Line 4"));
+            EXPECT_EQ(readLines.GetLength(), 4);
+            EXPECT_EQ(readLines[0], "Line 1");
+            EXPECT_EQ(readLines[1], "Line 2");
+            EXPECT_EQ(readLines[2], "Line 3");
+            EXPECT_EQ(readLines[3], "Line 4");
         }
 
         TEST(FileTest, ReadAllLines) {
             // Given
-            std::vector<String> lines = { _T("Line 1"), _T("Line 2"), _T("Line 3") };
+            Array<String> lines = { "Line 1", "Line 2", "Line 3" };
             File::WriteAllLines(testFile, lines);
 
             // When
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 3);
-            EXPECT_EQ(readLines[0], _T("Line 1"));
-            EXPECT_EQ(readLines[1], _T("Line 2"));
-            EXPECT_EQ(readLines[2], _T("Line 3"));
+            EXPECT_EQ(readLines.GetLength(), 3);
+            EXPECT_EQ(readLines[0], "Line 1");
+            EXPECT_EQ(readLines[1], "Line 2");
+            EXPECT_EQ(readLines[2], "Line 3");
         }
 
         TEST(FileTest, WriteAllLines) {
             // Given
-            std::vector<String> lines = { _T("Line A"), _T("Line B") };
+            Array<String> lines = { "Line A", "Line B" };
 
             // When
             File::WriteAllLines(testFile, lines);
-            std::vector<String> readLines = File::ReadAllLines(testFile);
+            Array<String> readLines = File::ReadAllLines(testFile);
 
             // Then
-            EXPECT_EQ(readLines.size(), 2);
-            EXPECT_EQ(readLines[0], _T("Line A"));
-            EXPECT_EQ(readLines[1], _T("Line B"));
+            EXPECT_EQ(readLines.GetLength(), 2);
+            EXPECT_EQ(readLines[0], "Line A");
+            EXPECT_EQ(readLines[1], "Line B");
         }
 
         TEST(FileTest, Create) {
             // Given
-            const String newFile(_T("newfile.txt"));
+            const String newFile("newfile.txt");
 
             // When
             File::Create(newFile);
@@ -151,18 +156,85 @@ namespace SystemTests {
 
         TEST(FileTest, GetAndSetAttributes) {
             // Given
-            File::WriteAllText(testFile, content);
-            int initialAttributes = File::GetAttributes(testFile);
-
+            String testFile = "test_attr.txt";
+            File::WriteAllText(testFile, "test content");
+            
             // When
-            File::SetAttributes(testFile, FILE_ATTRIBUTE_READONLY);
-            int newAttributes = File::GetAttributes(testFile);
-
+            FileAttributes initialAttributes;
+            bool getResult = File::GetAttributes(testFile, initialAttributes);
+            bool setResult = File::SetAttributes(testFile, FileAttributes::ReadOnly);
+            
+            FileAttributes newAttributes;
+            bool getNewResult = File::GetAttributes(testFile, newAttributes);
+            
             // Then
-            EXPECT_EQ(newAttributes, FILE_ATTRIBUTE_READONLY);
-
-            // Cleanup
-            File::SetAttributes(testFile, initialAttributes);
+            ASSERT_TRUE(getResult);
+            ASSERT_TRUE(setResult);
+            ASSERT_TRUE(getNewResult);
+            EXPECT_NE((static_cast<int>(newAttributes) & static_cast<int>(FileAttributes::ReadOnly)), 0);
+            
+            // Clean up: Reset to normal and delete
+            File::SetAttributes(testFile, FileAttributes::Normal);
+            File::Delete(testFile);
         }
+
+        TEST(FileTest, GetAttributes_NonExistentFile_ReturnsFalse) {
+            // Given
+            String nonExistentFile = "non_existent_file.txt";
+            
+            // When
+            FileAttributes attrs;
+            bool result = File::GetAttributes(nonExistentFile, attrs);
+            
+            // Then
+            ASSERT_FALSE(result);
+        }
+
+        TEST(FileTest, SetAttributes_NonExistentFile_ReturnsFalse) {
+            // Given
+            String nonExistentFile = "non_existent_file.txt";
+            
+            // When
+            bool result = File::SetAttributes(nonExistentFile, FileAttributes::Normal);
+            
+            // Then
+            ASSERT_FALSE(result);
+        }
+
+        TEST(FileTest, GetAttributes_Directory_HasDirectoryAttribute) {
+            // Given
+            String testDir = "test_attr_dir";
+            std::filesystem::create_directory(testDir.GetRawString());
+            
+            // When
+            FileAttributes attrs;
+            bool result = File::GetAttributes(testDir, attrs);
+            
+            // Then
+            ASSERT_TRUE(result);
+            EXPECT_NE((static_cast<int>(attrs) & static_cast<int>(FileAttributes::Directory)), 0);
+            
+            // Clean up
+            std::filesystem::remove(testDir.GetRawString());
+        }
+
+#if !defined(_WIN32)
+        TEST(FileTest, GetAttributes_HiddenFileLinux_HasHiddenAttribute) {
+            // Given
+            String hiddenFile = ".hidden_test_file";
+            File::WriteAllText(hiddenFile, "hidden");
+            
+            // When
+            FileAttributes attrs;
+            bool result = File::GetAttributes(hiddenFile, attrs);
+            
+            // Then
+            ASSERT_TRUE(result);
+            EXPECT_NE((static_cast<int>(attrs) & static_cast<int>(FileAttributes::Hidden)), 0);
+            
+            // Clean up
+            File::Delete(hiddenFile);
+        }
+#endif
     }
 }

@@ -2,110 +2,184 @@
 #include "System/IO/File.h"
 #include <fstream>
 #include <sstream>
-#include <windows.h>
+#include <filesystem>
 #include <vector>
 #include "System/Text/TextEncoding.h"
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+}
 
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-            std::string File::ToNarrowPath(const String& path) {
-                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), NULL, 0, NULL, NULL);
-                std::string narrowPath(bufferSize, '\0');
-                WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
-                return narrowPath;
+            bool File::Exists(const String& sPath) {
+                return fs::exists(ToFsPath(sPath));
             }
 
-            bool File::Exists(const String& path) {
-                std::ifstream f(ToNarrowPath(path).c_str());
-                return f.good();
-            }
-
-            String File::ReadAllText(const String& path) {
-                std::ifstream f(ToNarrowPath(path).c_str(), std::ios::binary);
+            String File::ReadAllText(const String& sPath) {
+                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
                 std::stringstream buffer;
-                buffer << f.rdbuf();
+                buffer << fileStream.rdbuf();
                 std::string charContent = buffer.str();
                 
-                // Convert char content to String (wchar_t) using UTF8 encoding
-                std::vector<char> bytes(charContent.begin(), charContent.end());
+                Array<char> bytes((int)charContent.size());
+                for (int iIdx = 0; iIdx < (int)charContent.size(); iIdx++) bytes[iIdx] = charContent[iIdx];
                 return Text::TextEncoding::UTF8()->GetString(bytes);
             }
 
-            void File::WriteAllText(const String& path, const String& contents) {
-                // Convert String (wchar_t) contents to char bytes using UTF8 encoding
-                std::vector<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(contents);
+            void File::WriteAllText(const String& sPath, const String& sContents) {
+                Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(sContents);
 
-                std::ofstream f(ToNarrowPath(path).c_str(), std::ios::binary);
-                f.write(contentBytes.data(), contentBytes.size());
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
-            void File::Copy(const String& sourceFileName, const String& destFileName, bool overwrite) {
-                if (!CopyFileA(ToNarrowPath(sourceFileName).c_str(), ToNarrowPath(destFileName).c_str(), !overwrite)) {
-                    // Handle error, for now just returning
+            void File::Copy(const String& sSourceFileName, const String& sDestFileName, bool bOverwrite) {
+                fs::copy_options options = fs::copy_options::none;
+                if (bOverwrite) options |= fs::copy_options::overwrite_existing;
+                
+                try {
+                    fs::copy(ToFsPath(sSourceFileName), ToFsPath(sDestFileName), options);
+                } catch (...) {
+                    // Handle error
                 }
             }
 
-            void File::Move(const String& sourceFileName, const String& destFileName) {
-                if (!MoveFileA(ToNarrowPath(sourceFileName).c_str(), ToNarrowPath(destFileName).c_str())) {
-                    // Handle error, for now just returning
+            void File::Move(const String& sSourceFileName, const String& sDestFileName) {
+                try {
+                    fs::rename(ToFsPath(sSourceFileName), ToFsPath(sDestFileName));
+                } catch (...) {
+                    // Handle error
                 }
             }
 
-            void File::Delete(const String& path) {
-                if (!DeleteFileA(ToNarrowPath(path).c_str())) {
-                    // Handle error, for now just returning
+            void File::Delete(const String& sPath) {
+                try {
+                    fs::remove(ToFsPath(sPath));
+                } catch (...) {
+                    // Handle error
                 }
             }
 
-            void File::AppendAllText(const String& path, const String& contents) {
-                String existingContent = ReadAllText(path);
-                String newContent = existingContent + contents;
-                WriteAllText(path, newContent);
+            void File::AppendAllText(const String& sPath, const String& sContents) {
+                Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(sContents);
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
-            void File::AppendAllLines(const String& path, const std::vector<String>& contents) {
-                std::ofstream f(ToNarrowPath(path).c_str(), std::ios::binary | std::ios_base::app);
-                for (const auto& line : contents) {
-                    std::vector<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
-                    f.write(lineBytes.data(), lineBytes.size());
-                    f << "\n"; // Add newline character
+            void File::AppendAllLines(const String& sPath, const Array<String>& sContents) {
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                for (int iIdx = 0; iIdx < sContents.GetLength(); iIdx++) {
+                    const auto& line = sContents[iIdx];
+                    Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream << "\n";
                 }
             }
 
-            std::vector<String> File::ReadAllLines(const String& path) {
-                std::vector<String> lines;
-                std::ifstream f(ToNarrowPath(path).c_str(), std::ios::binary);
+            Array<String> File::ReadAllLines(const String& sPath) {
+                std::vector<String> tempLines;
+                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
                 std::string line;
-                while (std::getline(f, line)) {
-                    std::vector<char> lineBytes(line.begin(), line.end());
-                    lines.push_back(Text::TextEncoding::UTF8()->GetString(lineBytes));
+                while (std::getline(fileStream, line)) {
+                    Array<char> lineBytes((int)line.size());
+                    for (int iIdx = 0; iIdx < (int)line.size(); iIdx++) lineBytes[iIdx] = line[iIdx];
+                    tempLines.push_back(Text::TextEncoding::UTF8()->GetString(lineBytes));
                 }
+                
+                Array<String> lines((int)tempLines.size());
+                for (int iIdx = 0; iIdx < (int)tempLines.size(); iIdx++) lines[iIdx] = tempLines[iIdx];
                 return lines;
             }
 
-            void File::WriteAllLines(const String& path, const std::vector<String>& contents) {
-                std::ofstream f(ToNarrowPath(path).c_str(), std::ios::binary);
-                for (const auto& line : contents) {
-                    std::vector<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
-                    f.write(lineBytes.data(), lineBytes.size());
-                    f << "\n"; // Add newline character
+            void File::WriteAllLines(const String& sPath, const Array<String>& sContents) {
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                for (int iIdx = 0; iIdx < sContents.GetLength(); iIdx++) {
+                    const auto& line = sContents[iIdx];
+                    Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream << "\n";
                 }
             }
 
-            void File::Create(const String& path) {
-                HANDLE hFile = CreateFileA(ToNarrowPath(path).c_str(), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-                if (hFile != INVALID_HANDLE_VALUE) {
-                    CloseHandle(hFile);
+            void File::Create(const String& sPath) {
+                std::ofstream fileStream(ToFsPath(sPath));
+            }
+
+            bool File::GetAttributes(const String& sPath, FileAttributes& eAttributes) {
+            #if defined(_WIN32)
+                std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
+                DWORD iAttrs = GetFileAttributesW(sWPath.c_str());
+                if (iAttrs == INVALID_FILE_ATTRIBUTES) {
+                    return false;
                 }
+                eAttributes = static_cast<FileAttributes>(iAttrs);
+                return true;
+            #else
+                fs::path pPath = ToFsPath(sPath);
+                std::error_code ecError;
+                auto statusInfo = fs::status(pPath, ecError);
+                if (ecError) {
+                    return false;
+                }
+
+                int iAttrs = static_cast<int>(FileAttributes::Normal);
+                if ((statusInfo.permissions() & fs::perms::owner_write) == fs::perms::none) {
+                    iAttrs |= static_cast<int>(FileAttributes::ReadOnly);
+                }
+                if (fs::is_directory(statusInfo)) {
+                    iAttrs |= static_cast<int>(FileAttributes::Directory);
+                }
+
+                // On Linux, we consider files starting with '.' as hidden
+                if (!pPath.filename().empty() && pPath.filename().string()[0] == '.') {
+                    iAttrs |= static_cast<int>(FileAttributes::Hidden);
+                }
+
+                eAttributes = static_cast<FileAttributes>(iAttrs);
+                return true;
+            #endif
             }
 
-            int File::GetAttributes(const String& path) {
-                return GetFileAttributesA(ToNarrowPath(path).c_str());
-            }
+            bool File::SetAttributes(const String& sPath, FileAttributes eAttributes) {
+            #if defined(_WIN32)
+                std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
+                if (::SetFileAttributesW(sWPath.c_str(), static_cast<DWORD>(eAttributes))) {
+                    return true;
+                }
+                return false;
+            #else
+                fs::path pPath = ToFsPath(sPath);
+                std::error_code ecError;
+                auto statusInfo = fs::status(pPath, ecError);
+                if (ecError) {
+                    return false;
+                }
 
-            void File::SetAttributes(const String& path, int fileAttributes) {
-                SetFileAttributesA(ToNarrowPath(path).c_str(), fileAttributes);
+                auto permsCurrent = statusInfo.permissions();
+                if ((static_cast<int>(eAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
+                    permsCurrent &= ~(fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write);
+                } else {
+                    permsCurrent |= fs::perms::owner_write;
+                }
+
+                fs::permissions(pPath, permsCurrent, fs::perm_options::replace, ecError);
+                return !ecError;
+            #endif
             }
         }
     }

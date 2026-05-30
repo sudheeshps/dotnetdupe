@@ -91,3 +91,4 @@ Returns a string that represents the current object (ASCII character version).
 Object obj;
 char* str = obj.ToStringA();
 ```
+

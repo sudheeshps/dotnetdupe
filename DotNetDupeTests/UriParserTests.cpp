@@ -12,7 +12,7 @@ namespace SystemTests {
         public:
             String GetComponents(const Uri& uri, UriComponents components, UriFormat format) override {
                 if (components == UriComponents::Host) {
-                    return _T("custom.host");
+                    return "custom.host";
                 }
                 return UriParser::GetComponents(uri, components, format);
             }
@@ -20,7 +20,7 @@ namespace SystemTests {
 
         TEST(UriParserTest, RegisterAndIsKnownScheme_Should_Work_Correctly) {
             // Given
-            const String schemeName = _T("custom");
+            const String schemeName = "custom";
             CustomParser parser;
 
             // When
@@ -28,12 +28,12 @@ namespace SystemTests {
 
             // Then
             EXPECT_TRUE(UriParser::IsKnownScheme(schemeName));
-            EXPECT_FALSE(UriParser::IsKnownScheme(_T("unknown")));
+            EXPECT_FALSE(UriParser::IsKnownScheme("unknown"));
         }
 
         TEST(UriParserTest, CustomParser_Should_Return_Custom_Host) {
             // Given
-            const String uriString = _T("custom://www.test.com");
+            const String uriString = "custom://www.test.com";
             Uri uri(uriString);
             CustomParser parser;
 
@@ -41,7 +41,7 @@ namespace SystemTests {
             String host = parser.GetComponents(uri, UriComponents::Host, UriFormat::Unescaped);
 
             // Then
-            EXPECT_EQ(host, String(_T("custom.host")));
+            EXPECT_EQ(host, String("custom.host"));
         }
     }
 }

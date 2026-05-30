@@ -53,7 +53,7 @@ Initializes a new instance of the `BasicSystemException` class with a specified 
 
 **Usage:**
 ```cpp
-throw SystemException(_T("A system error occurred."));
+throw SystemException("A system error occurred.");
 ```
 
 ---
@@ -75,7 +75,7 @@ Initializes a new instance of the `BasicArgumentException` class with a specifie
 
 **Usage:**
 ```cpp
-throw ArgumentException(_T("Invalid argument."));
+throw ArgumentException("Invalid argument.");
 ```
 
 ---
@@ -96,7 +96,7 @@ Initializes a new instance of the `ArgumentNullException` class with a specified
 **Usage:**
 ```cpp
 if (arg == nullptr) {
-    throw ArgumentNullException(_T("arg cannot be null."));
+    throw ArgumentNullException("arg cannot be null.");
 }
 ```
 
@@ -119,7 +119,7 @@ Initializes a new instance of the `BasicArgumentOutOfRangeException` class with 
 
 **Usage:**
 ```cpp
-throw ArgumentOutOfRangeException(_T("Index was out of range."));
+throw ArgumentOutOfRangeException("Index was out of range.");
 ```
 
 ---
@@ -141,7 +141,7 @@ Initializes a new instance of the `BasicArithmeticException` class with a specif
 
 **Usage:**
 ```cpp
-throw ArithmeticException(_T("Arithmetic error."));
+throw ArithmeticException("Arithmetic error.");
 ```
 
 ---
@@ -163,7 +163,7 @@ Initializes a new instance of the `BasicFormatException` class with a specified 
 
 **Usage:**
 ```cpp
-throw FormatException(_T("Invalid format."));
+throw FormatException("Invalid format.");
 ```
 
 ---
@@ -185,7 +185,7 @@ Initializes a new instance of the `BasicIOException` class with a specified erro
 
 **Usage:**
 ```cpp
-throw IOException(_T("An I/O error occurred."));
+throw IOException("An I/O error occurred.");
 ```
 
 ---
@@ -207,7 +207,7 @@ Initializes a new instance of the `BasicNotImplementedException` class with a sp
 
 **Usage:**
 ```cpp
-throw NotImplementedException(_T("The method is not implemented."));
+throw NotImplementedException("The method is not implemented.");
 ```
 
 ---
@@ -229,7 +229,7 @@ Initializes a new instance of the `BasicOverflowException` class with a specifie
 
 **Usage:**
 ```cpp
-throw OverflowException(_T("Arithmetic overflow."));
+throw OverflowException("Arithmetic overflow.");
 ```
 
 ---
@@ -265,3 +265,4 @@ The exception that is thrown when a `Thread` is in an invalid `ThreadState` for 
 ### template class `BasicThreadInterruptedException<CharT>`
 
 The exception that is thrown when a `Thread` is interrupted while it is in a waiting state.
+

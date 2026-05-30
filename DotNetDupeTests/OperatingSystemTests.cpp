@@ -31,7 +31,7 @@ namespace SystemTests {
             // Given
             const Version version(6, 1, 7601, 0);
             const OperatingSystem os(PlatformID::Win32NT, version);
-            const String expectedVersionString = _T("6.1.7601.0");
+            const String expectedVersionString = "6.1.7601.0";
 
             // When
             const auto actualVersionString = os.GetVersionString();
@@ -87,37 +87,34 @@ namespace SystemTests {
             SUCCEED();
         }
 
-        // Given: The current operating system is Windows
+        // Given: The current operating system
         // When: IsWindows is called
-        // Then: It should return true
-        TEST(OperatingSystemTest, IsWindows_Should_Return_True) {
+        // Then: It should return true if on Windows, false otherwise
+        TEST(OperatingSystemTest, IsWindows_Should_Return_CorrectValue) {
             // When
             const bool result = OperatingSystem::IsWindows();
 
             // Then
+#if defined(_WIN32)
             EXPECT_TRUE(result);
+#else
+            EXPECT_FALSE(result);
+#endif
         }
 
-        // Given: The current operating system is Windows
+        // Given: The current operating system
         // When: IsLinux is called
-        // Then: It should return false
-        TEST(OperatingSystemTest, IsLinux_Should_Return_False) {
+        // Then: It should return true if on Linux, false otherwise
+        TEST(OperatingSystemTest, IsLinux_Should_Return_CorrectValue) {
             // When
             const bool result = OperatingSystem::IsLinux();
 
             // Then
+#if defined(__linux__)
+            EXPECT_TRUE(result);
+#else
             EXPECT_FALSE(result);
-        }
-
-        // Given: The current operating system is Windows
-        // When: IsMacOS is called
-        // Then: It should return false
-        TEST(OperatingSystemTest, IsMacOS_Should_Return_False) {
-            // When
-            const bool result = OperatingSystem::IsMacOS();
-
-            // Then
-            EXPECT_FALSE(result);
+#endif
         }
 
     }

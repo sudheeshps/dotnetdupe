@@ -4,17 +4,17 @@ Represents information about an operating system, such as the version and platfo
 
 #### Methods
 
-##### `OperatingSystem(PlatformID platform, const Version& version)`
+##### `OperatingSystem(PlatformID plPlatform, const Version& vVersion)`
 
 Initializes a new instance of the `OperatingSystem` class, using the specified platform identifier and version object.
 
 **Parameters:**
-- `platform`: One of the `PlatformID` values that identifies the operating system platform.
-- `version`: A `Version` object that identifies the operating system version.
+- `plPlatform`: One of the `PlatformID` values that identifies the operating system platform.
+- `vVersion`: A `Version` object that identifies the operating system version.
 
 **Usage:**
 ```cpp
-OperatingSystem os(PlatformID::Win32NT, Version(10, 0));
+OperatingSystem osInfo(PlatformID::Win32NT, Version(10, 0));
 ```
 
 ##### `PlatformID GetPlatform() const`
@@ -26,7 +26,7 @@ Gets a `PlatformID` enumeration value that identifies the operating system platf
 
 **Usage:**
 ```cpp
-PlatformID id = os.GetPlatform();
+PlatformID plId = osInfo.GetPlatform();
 ```
 
 ##### `const Version& GetVersion() const`
@@ -38,7 +38,7 @@ Gets a `Version` object that identifies the operating system.
 
 **Usage:**
 ```cpp
-const Version& v = os.GetVersion();
+const Version& vVer = osInfo.GetVersion();
 ```
 
 ##### `String GetVersionString() const`
@@ -50,7 +50,7 @@ Gets the concatenated string representation of the platform identifier, version,
 
 **Usage:**
 ```cpp
-String s = os.GetVersionString();
+String sVersion = osInfo.GetVersionString();
 ```
 
 ##### `String GetServicePack() const`
@@ -62,7 +62,7 @@ Gets the service pack version of the operating system.
 
 **Usage:**
 ```cpp
-String sp = os.GetServicePack();
+String sServicePack = osInfo.GetServicePack();
 ```
 
 ##### `static bool IsWindows()`
@@ -89,14 +89,3 @@ Indicates whether the current operating system is a Linux operating system.
 if (OperatingSystem::IsLinux()) { /* ... */ }
 ```
 
-##### `static bool IsMacOS()`
-
-Indicates whether the current operating system is a macOS operating system.
-
-**Returns:**
-- `true` if the platform is macOS; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (OperatingSystem::IsMacOS()) { /* ... */ }
-```

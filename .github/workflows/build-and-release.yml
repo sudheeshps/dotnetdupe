@@ -4,20 +4,17 @@ on:
   push:
     branches: [ "main" ]
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*'
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
-
-    env:
-      SOLUTION_FILE: DotNetDupe.sln
-      BUILD_CONFIGURATION: Release
-      PLATFORM: x64
-
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
     steps:
     - uses: actions/checkout@v4
 
@@ -28,23 +25,82 @@ jobs:
       uses: NuGet/setup-nuget@v2
 
     - name: Restore NuGet packages
-      run: nuget restore ${{ env.SOLUTION_FILE }}
+      run: nuget restore DotNetDupe.sln
 
-    - name: Build Debug x64 (for tests and package)
-      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=Debug /p:Platform=${{ env.PLATFORM }}
-
-    - name: Build Release x64 (for package)
-      run: msbuild ${{ env.SOLUTION_FILE }} /p:Configuration=Release /p:Platform=${{ env.PLATFORM }}
+    - name: Build Windows
+      run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64
 
     - name: Run Tests
+      if: matrix.configuration == 'Debug'
+      run: .\bin\x64\Debug\DotNetDupeTests.exe
+
+    - name: Upload Windows Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: win-x64-${{ matrix.configuration }}
+        path: |
+          bin/x64/${{ matrix.configuration }}/DotNetDupe.dll
+          bin/x64/${{ matrix.configuration }}/DotNetDupe.lib
+          bin/x64/${{ matrix.configuration }}/DotNetDupe.pdb
+
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: [Debug, Release]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Dependencies
       run: |
-        .\bin\x64\Debug\DotNetDupeTests.exe
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Configure CMake
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+
+    - name: Build Linux
+      run: cmake --build build --config ${{ matrix.configuration }}
+
+    - name: Run Tests
+      if: matrix.configuration == 'Debug'
+      run: ./build/DotNetDupeTests
+
+    - name: Upload Linux Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: linux-x64-${{ matrix.configuration }}
+        path: build/libDotNetDupe.so
+
+  package:
+    needs: [build-windows, build-linux]
+    runs-on: windows-latest
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Download All Artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: artifacts-temp
+
+    - name: Organize Artifacts for Packaging
+      run: |
+        mkdir -p bin/x64/Release
+        mkdir -p build-wsl
+        
+        # Windows Release
+        cp artifacts-temp/win-x64-Release/DotNetDupe.dll bin/x64/Release/
+        cp artifacts-temp/win-x64-Release/DotNetDupe.lib bin/x64/Release/
+        
+        # Linux Release
+        cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
 
     - name: Create NuGet Package
-      if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-      run: |
-        mkdir artifacts
-        nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
+      run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
 
     - name: Publish NuGet Package
       if: startsWith(github.ref, 'refs/tags/v')

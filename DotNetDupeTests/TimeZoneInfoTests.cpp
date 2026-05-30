@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 #include "System/TimeZoneInfo.h"
 #include "System/DateTimeOffset.h"
-#include <tchar.h>
+#include "System/Char.h"
 
 using namespace DotNetDupe::System;
 
@@ -14,7 +14,7 @@ namespace SystemTests {
             // When: TimeZoneInfo::Utc() is called
             TimeZoneInfo utc = TimeZoneInfo::Utc();
             // Then: Id should be "UTC" and offset should be zero
-            ASSERT_EQ(utc.GetId(), String(_T("UTC")));
+            ASSERT_EQ(utc.GetId(), String("UTC"));
             ASSERT_EQ(utc.GetBaseUtcOffset().GetTicks(), 0);
         }
 
@@ -47,11 +47,11 @@ namespace SystemTests {
 
         TEST(TimeZoneInfoTest, FindSystemTimeZoneById_Should_ReturnUtc_When_IdIsUtc) {
             // Given: ID "UTC"
-            String id(_T("UTC"));
+            String id("UTC");
             // When: FindSystemTimeZoneById is called
             TimeZoneInfo tz = TimeZoneInfo::FindSystemTimeZoneById(id);
             // Then: It should be UTC
-            ASSERT_EQ(tz.GetId(), _T("UTC"));
+            ASSERT_EQ(tz.GetId(), "UTC");
         }
         
         TEST(TimeZoneInfoTest, SupportsDaylightSavingTime_Should_ReturnFalse_For_Utc) {
@@ -64,11 +64,11 @@ namespace SystemTests {
 
         TEST(TimeZoneInfoTest, FindSystemTimeZoneById_Should_ReturnUtc_When_InvalidIdSpecified) {
             // Given: An invalid ID
-            String invalidId(_T("InvalidID"));
+            String invalidId("InvalidID");
             // When: FindSystemTimeZoneById is called
             TimeZoneInfo tz = TimeZoneInfo::FindSystemTimeZoneById(invalidId);
             // Then: It should return UTC (current fallback)
-            ASSERT_EQ(tz.GetId(), _T("UTC"));
+            ASSERT_EQ(tz.GetId(), "UTC");
         }
 
         TEST(TimeZoneInfoTest, GetUtcOffset_Should_BeConsistent_For_Utc) {

@@ -44,7 +44,7 @@ Returns the specified Unicode character value as an array of bytes.
 
 **Usage:**
 ```cpp
-Array<byte> bytes = BitConverter::GetBytes(_T('A'));
+Array<byte> bytes = BitConverter::GetBytes('A');
 ```
 
 ##### `static Array<byte> GetBytes(double value)`
@@ -197,7 +197,7 @@ Returns a Unicode character converted from two bytes at a specified position in 
 
 **Usage:**
 ```cpp
-Array<byte> bytes = BitConverter::GetBytes(_T('Z'));
+Array<byte> bytes = BitConverter::GetBytes('Z');
 TCHAR result = BitConverter::ToChar(bytes, 0);
 ```
 
@@ -447,3 +447,4 @@ Converts the specified 32-bit signed integer to a single-precision floating-poin
 ```cpp
 float val = BitConverter::Int32BitsToSingle(bits);
 ```
+

@@ -13,7 +13,7 @@ Initializes a new instance of the `BasicString` class with a pointer to a null-t
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
+String s("Hello");
 ```
 
 ##### `const CharT* GetRawString() const`
@@ -25,7 +25,7 @@ Returns a pointer to the raw character array.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
+String s("Hello");
 const TCHAR* raw = s.GetRawString();
 ```
 
@@ -35,7 +35,7 @@ Implicitly converts the `BasicString` to a null-terminated character array.
 
 **Usage:**
 ```cpp
-String s(_T("C:\\Windows"));
+String s("C:\\Windows");
 // Use directly in Windows API
 ::SetCurrentDirectory(s); 
 ```
@@ -46,7 +46,7 @@ Writes the string to an output stream.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
+String s("Hello");
 std::wcout << s << std::endl;
 ```
 
@@ -59,7 +59,7 @@ Returns the length of the string.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
+String s("Hello");
 int len = s.GetLength(); // 5
 ```
 
@@ -72,7 +72,7 @@ Creates a new `BasicString` object with the same value as this instance.
 
 **Usage:**
 ```cpp
-String s1(_T("Hello"));
+String s1("Hello");
 String s2 = s1.Clone();
 ```
 
@@ -88,7 +88,7 @@ Compares this instance with another `BasicString` object for equality.
 
 **Usage:**
 ```cpp
-String s1(_T("abc")), s2(_T("abc"));
+String s1("abc"), s2("abc");
 if (s1 == s2) { /* ... */ }
 ```
 
@@ -98,8 +98,8 @@ Compares this instance with a raw character pointer for equality.
 
 **Usage:**
 ```cpp
-String s(_T("abc"));
-if (s == _T("abc")) { /* ... */ }
+String s("abc");
+if (s == "abc") { /* ... */ }
 ```
 
 ##### `CharT operator[](int index) const`
@@ -114,7 +114,7 @@ Gets the character at the specified index.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
+String s("Hello");
 TCHAR c = s[1]; // 'e'
 ```
 
@@ -150,7 +150,7 @@ Concatenates two `BasicString` objects.
 
 **Usage:**
 ```cpp
-String s1(_T("Hello")), s2(_T(" World"));
+String s1("Hello"), s2(" World");
 String s3 = s1 + s2; // "Hello World"
 ```
 
@@ -166,8 +166,8 @@ Determines whether a character occurs within this string.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
-bool hasE = s.Contains(_T('e')); // true
+String s("Hello");
+bool hasE = s.Contains('e'); // true
 ```
 
 ##### `bool Contains(const BasicString<CharT>& str)`
@@ -182,8 +182,8 @@ Determines whether a specified substring occurs within this string.
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
-bool hasWorld = s.Contains(_T("World")); // true
+String s("Hello World");
+bool hasWorld = s.Contains("World"); // true
 ```
 
 ##### `void CopyTo(int sourceIndex, CharT* pDestination, int destinationIndex, int destArraySize, int count) const`
@@ -216,8 +216,8 @@ Determines whether the end of this string instance matches the specified string.
 
 **Usage:**
 ```cpp
-String s(_T("filename.txt"));
-bool isTxt = s.EndsWith(_T(".txt"), true); // true
+String s("filename.txt");
+bool isTxt = s.EndsWith(".txt", true); // true
 ```
 
 ##### `int IndexOf(const BasicString<CharT>& substring, int startIndex, bool ignoreCase) const`
@@ -234,8 +234,8 @@ Returns the zero-based index of the first occurrence of a specified substring in
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
-int index = s.IndexOf(_T("World"), 0, false); // 6
+String s("Hello World");
+int index = s.IndexOf("World", 0, false); // 6
 ```
 
 ##### `BasicString<CharT>& Append(const BasicString<CharT>& str)`
@@ -250,8 +250,8 @@ Appends a `BasicString` object to this instance.
 
 **Usage:**
 ```cpp
-String s(_T("Hello"));
-s.Append(_T(" World"));
+String s("Hello");
+s.Append(" World");
 ```
 
 ##### `BasicString<CharT>& Insert(int index, const BasicString<CharT>& str)`
@@ -267,8 +267,8 @@ Inserts a specified string at a specified index position in this instance.
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
-s.Insert(5, _T(",")); // "Hello, World"
+String s("Hello World");
+s.Insert(5, ","); // "Hello, World"
 ```
 
 ##### `bool IsEmpty() const`
@@ -280,7 +280,7 @@ Indicates whether this string is empty.
 
 **Usage:**
 ```cpp
-String s(_T(""));
+String s("");
 if (s.IsEmpty()) { /* ... */ }
 ```
 
@@ -297,7 +297,7 @@ Concatenates the elements of a collection, using the specified separator string 
 
 **Usage:**
 ```cpp
-String result = String::Join(_T(", "), { _T("apple"), _T("orange"), _T("banana") });
+String result = String::Join(", ", { "apple", "orange", "banana" });
 ```
 
 ##### `BasicString<CharT> PadLeft(int totalWidth, CharT ch)`
@@ -313,8 +313,8 @@ Returns a new string that right-aligns the characters in this instance by paddin
 
 **Usage:**
 ```cpp
-String s(_T("123"));
-String padded = s.PadLeft(5, _T('0')); // "00123"
+String s("123");
+String padded = s.PadLeft(5, '0'); // "00123"
 ```
 
 ##### `BasicString<CharT> Remove(int startIndex, int count) const`
@@ -330,7 +330,7 @@ Deletes a specified number of characters from this instance beginning at a speci
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
+String s("Hello World");
 String result = s.Remove(5, 6); // "Hello"
 ```
 
@@ -347,8 +347,8 @@ Returns a new string in which all occurrences of a specified string in the curre
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
-String result = s.Replace(_T("World"), _T("DotNet")); // "Hello DotNet"
+String s("Hello World");
+String result = s.Replace("World", "DotNet"); // "Hello DotNet"
 ```
 
 ##### `BasicString<CharT> ToLower() const`
@@ -360,7 +360,7 @@ Returns a copy of this string converted to lowercase.
 
 **Usage:**
 ```cpp
-String s(_T("HELLO"));
+String s("HELLO");
 String lower = s.ToLower(); // "hello"
 ```
 
@@ -373,7 +373,7 @@ Returns a copy of this string converted to uppercase.
 
 **Usage:**
 ```cpp
-String s(_T("hello"));
+String s("hello");
 String upper = s.ToUpper(); // "HELLO"
 ```
 
@@ -386,7 +386,7 @@ Removes all leading and trailing white-space characters from the current string.
 
 **Usage:**
 ```cpp
-String s(_T("  hello  "));
+String s("  hello  ");
 String trimmed = s.Trim(); // "hello"
 ```
 
@@ -396,7 +396,7 @@ Removes all leading white-space characters from the current string.
 
 **Usage:**
 ```cpp
-String s(_T("  hello"));
+String s("  hello");
 String result = s.TrimStart(); // "hello"
 ```
 
@@ -406,11 +406,11 @@ Removes all trailing white-space characters from the current string.
 
 **Usage:**
 ```cpp
-String s(_T("hello  "));
+String s("hello  ");
 String result = s.TrimEnd(); // "hello"
 ```
 
-##### `std::vector<BasicString<CharT>> Split(CharT separator)`
+##### `Array<BasicString<CharT>> Split(CharT separator)`
 
 Splits a string into substrings based on a separator character.
 
@@ -418,12 +418,12 @@ Splits a string into substrings based on a separator character.
 - `separator`: A character that delimits the substrings in this string.
 
 **Returns:**
-- A vector whose elements contain the substrings in this instance that are delimited by `separator`.
+- An `Array` whose elements contain the substrings in this instance that are delimited by `separator`.
 
 **Usage:**
 ```cpp
-String s(_T("apple,orange,banana"));
-auto parts = s.Split(_T(','));
+String s("apple,orange,banana");
+auto parts = s.Split(',');
 ```
 
 ##### `bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const`
@@ -439,8 +439,24 @@ Determines whether the beginning of this string instance matches the specified s
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
-bool result = s.StartsWith(_T("Hello"), false); // true
+String s("Hello World");
+bool result = s.StartsWith("Hello", false); // true
+```
+
+##### `BasicString<CharT> Substring(int startIndex) const`
+
+Retrieves a substring from this instance. The substring starts at a specified character position and continues to the end of the string.
+
+**Parameters:**
+- `startIndex`: The zero-based starting character position of a substring in this instance.
+
+**Returns:**
+- A string that is equivalent to the substring that begins at `startIndex` in this instance.
+
+**Usage:**
+```cpp
+String s("Hello World");
+String sub = s.Substring(6); // "World"
 ```
 
 ##### `BasicString<CharT> Substring(int startIndex, int length) const`
@@ -456,6 +472,7 @@ Retrieves a substring from this instance.
 
 **Usage:**
 ```cpp
-String s(_T("Hello World"));
+String s("Hello World");
 String sub = s.Substring(0, 5); // "Hello"
 ```
+

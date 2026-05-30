@@ -4,10 +4,19 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/OperatingSystem.h"
-#include <Windows.h>
-#include <tchar.h>
-#include <vector>
-#include <map>
+
+#if defined(_WIN32)
+#undef GetCurrentDirectory
+#undef GetSystemDirectory
+#undef GetEnvironmentVariable
+#undef SetEnvironmentVariable
+#undef GetUserName
+#undef GetOSVersion
+#endif
+
+#include "System/Char.h"
+#include "System/Array.h"
+#include "System/Collections/Generic/Dictionary.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -47,16 +56,15 @@ namespace DotNetDupe {
             DOTNETDUPE_API static String GetSystemDirectory();
             DOTNETDUPE_API static String GetOSVersion();
             DOTNETDUPE_API static String GetUserDomainName();
-            DOTNETDUPE_API static String GetVersion();
             DOTNETDUPE_API static int64_t GetWorkingSet();
-            DOTNETDUPE_API static void Exit(int exitCode);
-            DOTNETDUPE_API static String ExpandEnvironmentVariables(const String& name);
-            DOTNETDUPE_API static std::vector<String> GetCommandLineArgs();
-            DOTNETDUPE_API static String GetEnvironmentVariable(const String& variable);
-            DOTNETDUPE_API static std::map<String, String> GetEnvironmentVariables();
-            DOTNETDUPE_API static String GetFolderPath(SpecialFolder folder);
-            DOTNETDUPE_API static std::vector<String> GetLogicalDrives();
-            DOTNETDUPE_API static void SetEnvironmentVariable(const String& variable, const String& value);
+            DOTNETDUPE_API static void Exit(int iExitCode);
+            DOTNETDUPE_API static String ExpandEnvironmentVariables(const String& sName);
+            DOTNETDUPE_API static Array<String> GetCommandLineArgs();
+            DOTNETDUPE_API static String GetEnvironmentVariable(const String& sVariable);
+            DOTNETDUPE_API static Collections::Generic::Dictionary<String, String> GetEnvironmentVariables();
+            DOTNETDUPE_API static String GetFolderPath(SpecialFolder eFolder);
+            DOTNETDUPE_API static Array<String> GetLogicalDrives();
+            DOTNETDUPE_API static void SetEnvironmentVariable(const String& sVariable, const String& sValue);
             DOTNETDUPE_API static OperatingSystem GetOperatingSystem();
         };
     }

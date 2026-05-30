@@ -23,41 +23,41 @@ namespace DotNetDupe {
                 return -1;
             }
 
-            int TextReader::Read(wchar_t* buffer, int index, int count) {
-                if (buffer == nullptr) return 0;
-                int n = 0;
-                while (n < count) {
-                    int ch = Read();
-                    if (ch == -1) break;
-                    buffer[index + n] = (wchar_t)ch;
-                    n++;
+            int TextReader::Read(char* pBuffer, int iIndex, int nCount) {
+                if (pBuffer == nullptr) return 0;
+                int iN = 0;
+                while (iN < nCount) {
+                    int iCh = Read();
+                    if (iCh == -1) break;
+                    pBuffer[iIndex + iN] = (char)iCh;
+                    iN++;
                 }
-                return n;
+                return iN;
             }
 
             String TextReader::ReadLine() {
-                StringBuilder sb;
+                StringBuilder sbOutput;
                 while (true) {
-                    int ch = Read();
-                    if (ch == -1) {
-                        if (sb.GetLength() > 0) return sb.ToString();
-                        return String();
+                    int iCh = Read();
+                    if (iCh == -1) {
+                        if (sbOutput.GetLength() > 0) return sbOutput.ToString();
+                        return String("");
                     }
-                    if (ch == L'\r' || ch == L'\n') {
-                        if (ch == L'\r' && Peek() == L'\n') Read();
-                        return sb.ToString();
+                    if (iCh == '\r' || iCh == '\n') {
+                        if (iCh == '\r' && Peek() == '\n') Read();
+                        return sbOutput.ToString();
                     }
-                    sb.Append((wchar_t)ch);
+                    sbOutput.Append((char)iCh);
                 }
             }
 
             String TextReader::ReadToEnd() {
-                StringBuilder sb;
-                int ch;
-                while ((ch = Read()) != -1) {
-                    sb.Append((wchar_t)ch);
+                StringBuilder sbOutput;
+                int iCh;
+                while ((iCh = Read()) != -1) {
+                    sbOutput.Append((char)iCh);
                 }
-                return sb.ToString();
+                return sbOutput.ToString();
             }
         }
     }

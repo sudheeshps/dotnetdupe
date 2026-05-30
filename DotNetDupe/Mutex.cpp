@@ -2,7 +2,7 @@
 #include "System/Threading/Mutex.h"
 #include "System/TimeoutException.h"
 #include <chrono>
-#include <tchar.h>
+#include "System/Char.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,7 +15,7 @@ namespace DotNetDupe {
             }
             bool Mutex::WaitOne(int millisecondsTimeout) {
                 if (!_mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
-                    throw TimeoutException(_T("The wait operation timed out."));
+                    throw TimeoutException("The wait operation timed out.");
                 }
                 return true;
             }

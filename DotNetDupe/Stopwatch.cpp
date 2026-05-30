@@ -1,15 +1,24 @@
 #include "pch.h"
 #include "System/Diagnostics/Stopwatch.h"
+
+#if defined(_WIN32)
 #include <windows.h>
+#else
+#include <chrono>
+#endif
 
 namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
 
             const long long Stopwatch::Frequency = []() {
+#if defined(_WIN32)
                 LARGE_INTEGER li;
                 QueryPerformanceFrequency(&li);
                 return li.QuadPart;
+#else
+                return 1000000000LL; // Nanoseconds
+#endif
             }();
 
             const bool Stopwatch::IsHighResolution = true;
@@ -79,9 +88,14 @@ namespace DotNetDupe {
             }
 
             long long Stopwatch::GetTimestamp() {
+#if defined(_WIN32)
                 LARGE_INTEGER li;
                 QueryPerformanceCounter(&li);
                 return li.QuadPart;
+#else
+                auto now = std::chrono::steady_clock::now();
+                return std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count();
+#endif
             }
         }
     }

@@ -1,5 +1,6 @@
 #pragma once
 #include "System/Object.h"
+#include <mutex>
 
 namespace DotNetDupe {
     namespace System {
@@ -12,7 +13,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Leave();
                 DOTNETDUPE_API bool TryEnter();
             private:
-                void* _internalSection; // Pointer to CRITICAL_SECTION to avoid Windows.h in header
+                std::recursive_mutex _mutex;
             };
         }
     }

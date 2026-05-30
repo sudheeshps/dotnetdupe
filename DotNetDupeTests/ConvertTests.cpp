@@ -12,8 +12,8 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToBoolean_Given_ValidStrings_When_Converted_Then_ReturnsCorrectBool) {
         // Given
-        String trueStr(_T("True"));
-        String falseStr(_T("False"));
+        String trueStr("True");
+        String falseStr("False");
 
         // When & Then
         EXPECT_TRUE(Convert::ToBoolean(trueStr));
@@ -32,7 +32,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToBoolean_Given_InvalidString_When_Converted_Then_ThrowsFormatException) {
         // Given
-        String invalid(_T("not-a-bool"));
+        String invalid("not-a-bool");
 
         // When & Then
         EXPECT_THROW(Convert::ToBoolean(invalid), FormatException);
@@ -63,7 +63,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToByte_Given_StringWithBase_When_Converted_Then_ReturnsCorrectByte) {
         // Given
-        String hex(_T("FF"));
+        String hex("FF");
 
         // When
         unsigned char result = Convert::ToByte(hex, 16);
@@ -76,7 +76,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToInt32_Given_ValidString_When_Converted_Then_ReturnsInt) {
         // Given
-        String val(_T("12345"));
+        String val("12345");
 
         // When
         int result = Convert::ToInt32(val);
@@ -87,7 +87,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToInt32_Given_InvalidFormat_When_Converted_Then_ThrowsFormatException) {
         // Given
-        String invalid(_T("abc"));
+        String invalid("abc");
 
         // When & Then
         EXPECT_THROW(Convert::ToInt32(invalid), FormatException);
@@ -105,7 +105,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToDouble_Given_ValidString_When_Converted_Then_ReturnsDouble) {
         // Given
-        String val(_T("123.45"));
+        String val("123.45");
 
         // When
         double result = Convert::ToDouble(val);
@@ -116,7 +116,7 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToSingle_Given_ValidString_When_Converted_Then_ReturnsFloat) {
         // Given
-        String val(_T("12.34"));
+        String val("12.34");
 
         // When
         float result = Convert::ToSingle(val);
@@ -129,18 +129,18 @@ namespace DotNetDupeTests {
 
     TEST(ConvertTest, ToChar_Given_ValidString_When_Converted_Then_ReturnsChar) {
         // Given
-        String val(_T("A"));
+        String val("A");
 
         // When
-        TCHAR result = Convert::ToChar(val);
+        char result = Convert::ToChar(val);
 
         // Then
-        EXPECT_EQ(result, _T('A'));
+        EXPECT_EQ(result, 'A');
     }
 
     TEST(ConvertTest, ToChar_Given_InvalidStringLength_When_Converted_Then_ThrowsFormatException) {
         // Given
-        String invalid(_T("ABC"));
+        String invalid("ABC");
 
         // When & Then
         EXPECT_THROW(Convert::ToChar(invalid), FormatException);
@@ -156,7 +156,7 @@ namespace DotNetDupeTests {
         String result = Convert::ToString(val);
 
         // Then
-        EXPECT_TRUE(result == _T("123"));
+        EXPECT_TRUE(result == "123");
     }
 
     TEST(ConvertTest, ToString_Given_Int_When_ConvertedWithBase_Then_ReturnsCorrectString) {
@@ -167,7 +167,7 @@ namespace DotNetDupeTests {
         String hex = Convert::ToString(val, 16);
 
         // Then
-        EXPECT_TRUE(hex == _T("FF"));
+        EXPECT_TRUE(hex == "FF");
     }
 
     TEST(ConvertTest, ToString_Given_InvalidBase_When_Converted_Then_ThrowsArgumentException) {

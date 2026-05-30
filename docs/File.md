@@ -4,166 +4,190 @@ Provides static methods for the creation, copying, deletion, moving, and opening
 
 #### Methods
 
-##### `static bool Exists(const String& path)`
+##### `static bool Exists(const String& sPath)`
 
 Determines whether the specified file exists.
 
 **Parameters:**
-- `path`: The file to check.
+- `sPath`: The file to check.
 
 **Returns:**
-- `true` if the caller has the required permissions and `path` contains the name of an existing file; otherwise, `false`.
+- `true` if the caller has the required permissions and `sPath` contains the name of an existing file; otherwise, `false`.
 
 **Usage:**
 ```cpp
-if (File::Exists(_T("test.txt"))) { /* ... */ }
+if (File::Exists("test.txt")) { /* ... */ }
 ```
 
-##### `static String ReadAllText(const String& path)`
+##### `static String ReadAllText(const String& sPath)`
 
 Opens a text file, reads all the text in the file into a string, and then closes the file.
 
 **Parameters:**
-- `path`: The file to open for reading.
+- `sPath`: The file to open for reading.
 
 **Returns:**
 - A string containing all the text in the file.
 
 **Usage:**
 ```cpp
-String content = File::ReadAllText(_T("test.txt"));
+String sContent = File::ReadAllText("test.txt");
 ```
 
-##### `static void WriteAllText(const String& path, const String& contents)`
+##### `static void WriteAllText(const String& sPath, const String& sContents)`
 
 Creates a new file, writes the specified string to the file, and then closes the file. If the target file already exists, it is overwritten.
 
 **Parameters:**
-- `path`: The file to write to.
-- `contents`: The string to write to the file.
+- `sPath`: The file to write to.
+- `sContents`: The string to write to the file.
 
 **Usage:**
 ```cpp
-File::WriteAllText(_T("test.txt"), _T("Hello World"));
+File::WriteAllText("test.txt", "Hello World");
 ```
 
-##### `static void Copy(const String& sourceFileName, const String& destFileName, bool overwrite)`
+##### `static void Copy(const String& sSourceFileName, const String& sDestFileName, bool bOverwrite)`
 
 Copies an existing file to a new file. Overwriting a file of the same name is allowed.
 
 **Parameters:**
-- `sourceFileName`: The file to copy.
-- `destFileName`: The name of the destination file. This cannot be a directory.
-- `overwrite`: `true` if the destination file can be overwritten; otherwise, `false`.
+- `sSourceFileName`: The file to copy.
+- `sDestFileName`: The name of the destination file. This cannot be a directory.
+- `bOverwrite`: `true` if the destination file can be overwritten; otherwise, `false`.
 
 **Usage:**
 ```cpp
-File::Copy(_T("old.txt"), _T("new.txt"), true);
+File::Copy("old.txt", "new.txt", true);
 ```
 
-##### `static void Move(const String& sourceFileName, const String& destFileName)`
+##### `static void Move(const String& sSourceFileName, const String& sDestFileName)`
 
 Moves a specified file to a new location, providing the option to specify a new file name.
 
 **Parameters:**
-- `sourceFileName`: The name of the file to move.
-- `destFileName`: The new path for the file.
+- `sSourceFileName`: The name of the file to move.
+- `sDestFileName`: The new path for the file.
 
 **Usage:**
 ```cpp
-File::Move(_T("file.txt"), _T("C:\\Backup\\file.txt"));
+File::Move("file.txt", "C:\\Backup\\file.txt");
 ```
 
-##### `static void Delete(const String& path)`
+##### `static void Delete(const String& sPath)`
 
 Deletes the specified file.
 
 **Parameters:**
-- `path`: The name of the file to be deleted. Wildcard characters are not supported.
+- `sPath`: The name of the file to be deleted. Wildcard characters are not supported.
 
 **Usage:**
 ```cpp
-File::Delete(_T("temp.txt"));
+File::Delete("temp.txt");
 ```
 
-##### `static void AppendAllText(const String& path, const String& contents)`
+##### `static void AppendAllText(const String& sPath, const String& sContents)`
 
 Appends the specified string to the file, creating the file if it does not already exist.
 
 **Parameters:**
-- `path`: The file to append the specified string to.
-- `contents`: The string to append to the file.
+- `sPath`: The file to append the specified string to.
+- `sContents`: The string to append to the file.
 
 **Usage:**
 ```cpp
-File::AppendAllText(_T("log.txt"), _T("New log entry\n"));
+File::AppendAllText("log.txt", "New log entry\n");
 ```
 
-##### `static std::vector<String> ReadAllLines(const String& path)`
+##### `static Array<String> ReadAllLines(const String& sPath)`
 
-Opens a text file, reads all lines of the file into a string vector, and then closes the file.
+Opens a text file, reads all lines of the file into a string array, and then closes the file.
 
 **Parameters:**
-- `path`: The file to open for reading.
+- `sPath`: The file to open for reading.
 
 **Returns:**
-- A string vector containing all lines of the file.
+- An `Array<String>` containing all lines of the file.
 
 **Usage:**
 ```cpp
-auto lines = File::ReadAllLines(_T("test.txt"));
+auto arrLines = File::ReadAllLines("test.txt");
 ```
 
-##### `static void WriteAllLines(const String& path, const std::vector<String>& contents)`
+##### `static void WriteAllLines(const String& sPath, const Array<String>& arrContents)`
 
 Creates a new file, writes a collection of strings to the file, and then closes the file.
 
 **Parameters:**
-- `path`: The file to write to.
-- `contents`: The collection of strings to write to the file.
+- `sPath`: The file to write to.
+- `arrContents`: The collection of strings to write to the file.
 
 **Usage:**
 ```cpp
-std::vector<String> lines = { _T("Line 1"), _T("Line 2") };
-File::WriteAllLines(_T("test.txt"), lines);
+Array<String> arrLines = { "Line 1", "Line 2" };
+File::WriteAllLines("test.txt", arrLines);
 ```
 
-##### `static void Create(const String& path)`
+##### `static void Create(const String& sPath)`
 
 Creates or overwrites a file in the specified path.
 
 **Parameters:**
-- `path`: The path and name of the file to create.
+- `sPath`: The path and name of the file to create.
 
 **Usage:**
 ```cpp
-File::Create(_T("newfile.txt"));
+File::Create("newfile.txt");
 ```
 
-##### `static int GetAttributes(const String& path)`
+##### `static bool GetAttributes(const String& sPath, FileAttributes& attrAttributes)`
 
 Gets the attributes of the file on the path.
 
 **Parameters:**
-- `path`: The path to the file.
+- `sPath`: The path to the file.
+- `attrAttributes`: An output parameter that will hold the attributes of the file.
 
 **Returns:**
-- The attributes of the file.
+- `true` if the attributes were successfully retrieved; otherwise, `false`.
+
+**Platform-Specific Behavior:**
+- **Windows**: Maps directly to Win32 `GetFileAttributesW`. All `FileAttributes` values are supported.
+- **Linux/POSIX**: Uses `std::filesystem::status`. 
+    - `ReadOnly`: Set if the file does not have `owner_write` permission.
+    - `Directory`: Set if the path refers to a directory.
+    - `Hidden`: Set if the filename starts with a period (`.`).
+    - `Normal`: Set if no other mapped attributes are present.
 
 **Usage:**
 ```cpp
-int attrs = File::GetAttributes(_T("test.txt"));
+FileAttributes attrAttributes;
+if (File::GetAttributes("test.txt", attrAttributes)) {
+    if ((static_cast<int>(attrAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
+        Console::WriteLine("File is read-only");
+    }
+}
 ```
 
-##### `static void SetAttributes(const String& path, int fileAttributes)`
+##### `static bool SetAttributes(const String& sPath, FileAttributes attrAttributes)`
 
 Sets the specified attributes of the file on the specified path.
 
 **Parameters:**
-- `path`: The path to the file.
-- `fileAttributes`: A bitwise combination of the enumeration values.
+- `sPath`: The path to the file.
+- `attrAttributes`: A bitwise combination of the `FileAttributes` enumeration values.
+
+**Returns:**
+- `true` if the attributes were successfully set; otherwise, `false`.
+
+**Platform-Specific Behavior:**
+- **Windows**: Maps directly to Win32 `SetFileAttributesW`.
+- **Linux/POSIX**: Uses `std::filesystem::permissions`.
+    - `ReadOnly`: If set, removes all write permissions (`owner_write`, `group_write`, `others_write`). If NOT set, adds `owner_write`.
+    - Other flags like `Hidden` or `Directory` cannot be set via this method on Linux as they are intrinsic to the name or file type.
 
 **Usage:**
 ```cpp
-File::SetAttributes(_T("test.txt"), 0x01); // ReadOnly
+File::SetAttributes("test.txt", FileAttributes::ReadOnly);
 ```
+

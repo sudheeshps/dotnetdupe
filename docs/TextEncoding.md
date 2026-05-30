@@ -1,28 +1,19 @@
-### class `TextEncoding`
+### class `Encoding`
 
-Represents a character encoding.
+Abstract base class for character encodings.
 
 #### Methods
 
-##### `static std::shared_ptr<TextEncoding> GetUTF8()`
-
-Returns an encoding for the UTF-8 format.
-
-**Usage:**
-```cpp
-auto encoding = TextEncoding::GetUTF8();
-```
-
-##### `virtual std::vector<uint8_t> GetBytes(const String& s) const`
+##### `virtual Array<char> GetBytes(const String& s)`
 
 When overridden in a derived class, encodes all the characters in the specified string into a sequence of bytes.
 
 **Usage:**
 ```cpp
-auto bytes = encoding->GetBytes(_T("Hello"));
+auto bytes = encoding->GetBytes("Hello");
 ```
 
-##### `virtual String GetString(const std::vector<uint8_t>& bytes) const`
+##### `virtual String GetString(const Array<char>& bytes)`
 
 When overridden in a derived class, decodes all the bytes in the specified byte array into a string.
 
@@ -30,3 +21,19 @@ When overridden in a derived class, decodes all the bytes in the specified byte 
 ```cpp
 String s = encoding->GetString(bytes);
 ```
+
+### class `TextEncoding`
+
+Provides static factory methods for standard encodings.
+
+#### Methods
+
+##### `static std::shared_ptr<Encoding> UTF8()`
+
+Returns an encoding for the UTF-8 format.
+
+**Usage:**
+```cpp
+auto encoding = TextEncoding::UTF8();
+```
+

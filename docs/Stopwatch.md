@@ -104,3 +104,4 @@ Gets the frequency of the timer as the number of ticks per second.
 ##### `static const bool IsHighResolution`
 
 Indicates whether the timer is based on a high-resolution performance counter.
+

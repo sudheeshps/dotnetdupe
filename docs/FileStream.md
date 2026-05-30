@@ -14,7 +14,7 @@ Initializes a new instance of the `FileStream` class with the specified path and
 
 **Usage:**
 ```cpp
-FileStream fs(_T("test.dat"), 1); // OpenOrCreate
+FileStream fs("test.dat", 1); // OpenOrCreate
 ```
 
 ##### `bool CanRead() const override`
@@ -167,3 +167,4 @@ Releases all resources used by the `FileStream`.
 ```cpp
 fs.Dispose();
 ```
+

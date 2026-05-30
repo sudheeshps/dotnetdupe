@@ -154,3 +154,4 @@ Releases all resources used by the `Stream`.
 ```cpp
 stream->Dispose();
 ```
+

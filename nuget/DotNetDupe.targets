@@ -2,22 +2,29 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <DotNetDupe_props_imported>true</DotNetDupe_props_imported>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <Linkage-DotNetDupe>dynamic</Linkage-DotNetDupe>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <Linkage-DotNetDupe>dynamic</Linkage-DotNetDupe>
+    <DotNetDupe_Platform Condition="'$(Platform)' == 'Win32'">win-x86</DotNetDupe_Platform>
+    <DotNetDupe_Platform Condition="'$(Platform)' == 'x64' OR '$(Platform)' == 'AnyCPU'">win-x64</DotNetDupe_Platform>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
     <ClCompile>
       <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\..\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+  </ItemDefinitionGroup>
+
+  <!-- Windows Implementation -->
+  <ItemDefinitionGroup Condition="'$(OS)' == 'Windows_NT'">
     <Link>
-      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)x64\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>DotNetDupe.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
+
+  <!-- Copy DLL to output for Windows -->
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\DotNetDupe.dll" />
+  </ItemGroup>
+
+  <!-- Linux/iOS support for MSBuild (e.g. via .NET MAUI or mono) would go here -->
+  <!-- Note: Most Linux/iOS consumers would use CMake, which doesn't use .targets files directly. -->
 </Project>

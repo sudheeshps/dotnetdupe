@@ -38,10 +38,10 @@ namespace DotNetDupe {
             DOTNETDUPE_API static signed char ToSByte(const String& value);
 
             // Char
-            DOTNETDUPE_API static TCHAR ToChar(unsigned short value);
-            DOTNETDUPE_API static TCHAR ToChar(int value);
-            DOTNETDUPE_API static TCHAR ToChar(long long value);
-            DOTNETDUPE_API static TCHAR ToChar(const String& value);
+            DOTNETDUPE_API static char ToChar(unsigned short value);
+            DOTNETDUPE_API static char ToChar(int value);
+            DOTNETDUPE_API static char ToChar(long long value);
+            DOTNETDUPE_API static char ToChar(const String& value);
 
             // Double
             DOTNETDUPE_API static double ToDouble(int value);
@@ -105,7 +105,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API static String ToString(bool value);
             DOTNETDUPE_API static String ToString(unsigned char value);
             DOTNETDUPE_API static String ToString(signed char value);
-            DOTNETDUPE_API static String ToString(TCHAR value);
+            DOTNETDUPE_API static String ToString(char value);
             DOTNETDUPE_API static String ToString(double value);
             DOTNETDUPE_API static String ToString(float value);
             DOTNETDUPE_API static String ToString(short value);

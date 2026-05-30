@@ -14,3 +14,4 @@ Controls how URI information is escaped.
 ```cpp
 UriFormat format = UriFormat::SafeUnescaped;
 ```
+

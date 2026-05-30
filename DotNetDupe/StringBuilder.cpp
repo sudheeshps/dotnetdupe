@@ -14,82 +14,82 @@ namespace DotNetDupe {
 
             StringBuilder::StringBuilder() {}
 
-            StringBuilder::StringBuilder(int capacity) {
-                _buffer.reserve(capacity);
+            StringBuilder::StringBuilder(int nCapacity) {
+                m_strBuffer.reserve(nCapacity);
             }
 
-            StringBuilder::StringBuilder(const String& value) : _buffer((const TCHAR*)value) {}
+            StringBuilder::StringBuilder(const String& sValue) : m_strBuffer((const char*)sValue) {}
 
             int StringBuilder::GetLength() const {
-                return (int)_buffer.length();
+                return (int)m_strBuffer.length();
             }
 
-            void StringBuilder::SetLength(int value) {
-                if (value < 0) return;
-                _buffer.resize(value);
+            void StringBuilder::SetLength(int nLength) {
+                if (nLength < 0) return;
+                m_strBuffer.resize(nLength);
             }
 
             int StringBuilder::GetCapacity() const {
-                return (int)_buffer.capacity();
+                return (int)m_strBuffer.capacity();
             }
 
-            void StringBuilder::SetCapacity(int value) {
-                if (value < (int)_buffer.length()) return;
-                _buffer.reserve(value);
+            void StringBuilder::SetCapacity(int nCapacity) {
+                if (nCapacity < (int)m_strBuffer.length()) return;
+                m_strBuffer.reserve(nCapacity);
             }
 
-            StringBuilder& StringBuilder::Append(const String& value) {
-                _buffer.append((const TCHAR*)value);
+            StringBuilder& StringBuilder::Append(const String& sValue) {
+                m_strBuffer.append((const char*)sValue);
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(const TCHAR* value) {
-                if (value) _buffer.append(value);
+            StringBuilder& StringBuilder::Append(const char* pValue) {
+                if (pValue) m_strBuffer.append(pValue);
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(TCHAR value) {
-                _buffer.append(1, value);
+            StringBuilder& StringBuilder::Append(char chValue) {
+                m_strBuffer.append(1, chValue);
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(int value) {
-                _buffer.append(TO_TSTRING(value));
+            StringBuilder& StringBuilder::Append(int iValue) {
+                m_strBuffer.append(std::to_string(iValue));
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(long long value) {
-                _buffer.append(TO_TSTRING(value));
+            StringBuilder& StringBuilder::Append(long long llValue) {
+                m_strBuffer.append(std::to_string(llValue));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(double value) {
-                _buffer.append(TO_TSTRING(value));
+                m_strBuffer.append(std::to_string(value));
                 return *this;
             }
 
-            StringBuilder& StringBuilder::Append(bool value) {
-                _buffer.append(value ? _T("True") : _T("False"));
+            StringBuilder& StringBuilder::Append(bool bValue) {
+                m_strBuffer.append(bValue ? "True" : "False");
                 return *this;
             }
 
             StringBuilder& StringBuilder::AppendLine() {
-                _buffer.append(_T("\r\n"));
+                m_strBuffer.append("\r\n");
                 return *this;
             }
 
-            StringBuilder& StringBuilder::AppendLine(const String& value) {
-                Append(value);
+            StringBuilder& StringBuilder::AppendLine(const String& sValue) {
+                Append(sValue);
                 return AppendLine();
             }
 
             StringBuilder& StringBuilder::Clear() {
-                _buffer.clear();
+                m_strBuffer.clear();
                 return *this;
             }
 
             String StringBuilder::ToString() const {
-                return String(_buffer.c_str());
+                return String(m_strBuffer.c_str());
             }
         }
     }

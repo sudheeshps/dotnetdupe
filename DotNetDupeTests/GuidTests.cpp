@@ -25,12 +25,12 @@ namespace DotNetDupeTests {
 
         // Then
         EXPECT_EQ(s.GetLength(), 36);
-        EXPECT_TRUE(s.Contains(_T('-')));
+        EXPECT_TRUE(s.Contains('-'));
     }
 
     TEST(GuidTest, Constructor_Given_ValidString_When_Called_Then_ParsesCorrectly) {
         // Given
-        String guidStr(_T("12345678-1234-1234-1234-1234567890ab"));
+        String guidStr("12345678-1234-1234-1234-1234567890ab");
 
         // When
         Guid g(guidStr);
@@ -44,6 +44,6 @@ namespace DotNetDupeTests {
         Guid empty = Guid::Empty;
 
         // When & Then
-        EXPECT_TRUE(empty.ToString() == _T("00000000-0000-0000-0000-000000000000"));
+        EXPECT_TRUE(empty.ToString() == "00000000-0000-0000-0000-000000000000");
     }
 }

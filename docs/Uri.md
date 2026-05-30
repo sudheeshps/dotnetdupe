@@ -13,7 +13,7 @@ Initializes a new instance of the `Uri` class with the specified URI.
 
 **Usage:**
 ```cpp
-Uri uri(_T("http://example.com/path?query=1"));
+Uri uri("http://example.com/path?query=1");
 ```
 
 ##### `String GetAbsolutePath() const`
@@ -111,3 +111,4 @@ Gets the fragment portion of the URI.
 ```cpp
 String fragment = uri.GetFragment();
 ```
+

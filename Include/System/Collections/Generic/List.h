@@ -16,106 +16,108 @@ namespace DotNetDupe {
                 class List : public Object {
                 public:
                     List() {}
-                    List(int capacity) { _items.reserve(capacity); }
-                    List(const std::initializer_list<T>& collection) : _items(collection) {}
+                    List(int iCapacity) { m_vItems.reserve(iCapacity); }
+                    List(const std::initializer_list<T>& vCollection) : m_vItems(vCollection) {}
 
-                    int GetCount() const { return (int)_items.size(); }
-                    int GetCapacity() const { return (int)_items.capacity(); }
-                    void SetCapacity(int value) { _items.reserve(value); }
+                    int GetCount() const { return (int)m_vItems.size(); }
+                    int GetCapacity() const { return (int)m_vItems.capacity(); }
+                    void SetCapacity(int iValue) { m_vItems.reserve(iValue); }
 
-                    T& operator[](int index) {
-                        return _items.at(index);
+                    T& operator[](int iIndex) {
+                        return m_vItems.at(iIndex);
                     }
 
-                    const T& operator[](int index) const {
-                        return _items.at(index);
+                    const T& operator[](int iIndex) const {
+                        return m_vItems.at(iIndex);
                     }
 
                     void Add(const T& item) {
-                        _items.push_back(item);
+                        m_vItems.push_back(item);
                     }
 
-                    void AddRange(const std::vector<T>& collection) {
-                        _items.insert(_items.end(), collection.begin(), collection.end());
+                    void AddRange(const Array<T>& arrCollection) {
+                        for (int iIdx = 0; iIdx < arrCollection.GetLength(); iIdx++) {
+                            m_vItems.push_back(arrCollection[iIdx]);
+                        }
                     }
 
                     void Clear() {
-                        _items.clear();
+                        m_vItems.clear();
                     }
 
                     bool Contains(const T& item) const {
-                        return std::find(_items.begin(), _items.end(), item) != _items.end();
+                        return std::find(m_vItems.begin(), m_vItems.end(), item) != m_vItems.end();
                     }
 
                     int IndexOf(const T& item) const {
-                        auto it = std::find(_items.begin(), _items.end(), item);
-                        if (it == _items.end()) return -1;
-                        return (int)std::distance(_items.begin(), it);
+                        auto it = std::find(m_vItems.begin(), m_vItems.end(), item);
+                        if (it == m_vItems.end()) return -1;
+                        return (int)std::distance(m_vItems.begin(), it);
                     }
 
-                    void Insert(int index, const T& item) {
-                        _items.insert(_items.begin() + index, item);
+                    void Insert(int iIndex, const T& item) {
+                        m_vItems.insert(m_vItems.begin() + iIndex, item);
                     }
 
                     bool Remove(const T& item) {
-                        auto it = std::find(_items.begin(), _items.end(), item);
-                        if (it != _items.end()) {
-                            _items.erase(it);
+                        auto it = std::find(m_vItems.begin(), m_vItems.end(), item);
+                        if (it != m_vItems.end()) {
+                            m_vItems.erase(it);
                             return true;
                         }
                         return false;
                     }
 
-                    void RemoveAt(int index) {
-                        _items.erase(_items.begin() + index);
+                    void RemoveAt(int iIndex) {
+                        m_vItems.erase(m_vItems.begin() + iIndex);
                     }
 
                     void Sort() {
-                        std::sort(_items.begin(), _items.end());
+                        std::sort(m_vItems.begin(), m_vItems.end());
                     }
 
                     template <typename Predicate>
-                    bool Exists(Predicate match) const {
-                        return std::find_if(_items.begin(), _items.end(), match) != _items.end();
+                    bool Exists(Predicate fnMatch) const {
+                        return std::find_if(m_vItems.begin(), m_vItems.end(), fnMatch) != m_vItems.end();
                     }
 
                     template <typename Predicate>
-                    T Find(Predicate match) const {
-                        auto it = std::find_if(_items.begin(), _items.end(), match);
-                        if (it == _items.end()) return T();
+                    T Find(Predicate fnMatch) const {
+                        auto it = std::find_if(m_vItems.begin(), m_vItems.end(), fnMatch);
+                        if (it == m_vItems.end()) return T();
                         return *it;
                     }
 
                     template <typename Predicate>
-                    List<T> FindAll(Predicate match) const {
-                        List<T> result;
-                        for (const auto& item : _items) {
-                            if (match(item)) result.Add(item);
+                    List<T> FindAll(Predicate fnMatch) const {
+                        List<T> lstResult;
+                        for (const auto& item : m_vItems) {
+                            if (fnMatch(item)) lstResult.Add(item);
                         }
-                        return result;
+                        return lstResult;
                     }
 
                     template <typename Predicate>
-                    bool TrueForAll(Predicate match) const {
-                        return std::all_of(_items.begin(), _items.end(), match);
+                    bool TrueForAll(Predicate fnMatch) const {
+                        return std::all_of(m_vItems.begin(), m_vItems.end(), fnMatch);
                     }
 
                     Array<T> ToArray() const {
-                        Array<T> result((int)_items.size());
-                        for (int i = 0; i < (int)_items.size(); i++) {
-                            result[i] = _items[i];
+                        Array<T> arrResult((int)m_vItems.size());
+                        for (int iIdx = 0; iIdx < (int)m_vItems.size(); iIdx++) {
+                            arrResult[iIdx] = m_vItems[iIdx];
                         }
-                        return result;
+                        return arrResult;
                     }
 
                     // Iterator support for range-based for loops
-                    auto begin() { return _items.begin(); }
-                    auto end() { return _items.end(); }
-                    auto begin() const { return _items.begin(); }
-                    auto end() const { return _items.end(); }
+                    auto begin() { return m_vItems.begin(); }
+                    auto end() { return m_vItems.end(); }
+                    auto begin() const { return m_vItems.begin(); }
+                    auto end() const { return m_vItems.end(); }
 
                 private:
-                    std::vector<T> _items;
+                    std::vector<T> m_vItems;
                 };
             }
         }

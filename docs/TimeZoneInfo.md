@@ -109,7 +109,7 @@ Retrieves a `TimeZoneInfo` object from the system registry based on its identifi
 
 **Usage:**
 ```cpp
-TimeZoneInfo tz = TimeZoneInfo::FindSystemTimeZoneById(_T("UTC"));
+TimeZoneInfo tz = TimeZoneInfo::FindSystemTimeZoneById("UTC");
 ```
 
 ##### `bool Equals(const TimeZoneInfo& other) const`
@@ -120,3 +120,4 @@ Determines whether two `TimeZoneInfo` objects are equal.
 ```cpp
 if (tz1.Equals(tz2)) { /* ... */ }
 ```
+

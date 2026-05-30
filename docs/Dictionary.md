@@ -28,7 +28,7 @@ Adds the specified key and value to the dictionary.
 
 **Usage:**
 ```cpp
-dict.Add(_T("Key"), 100);
+dict.Add("Key", 100);
 ```
 
 ##### `bool ContainsKey(const TKey& key) const`
@@ -37,7 +37,7 @@ Determines whether the `Dictionary` contains the specified key.
 
 **Usage:**
 ```cpp
-if (dict.ContainsKey(_T("Key"))) { /* ... */ }
+if (dict.ContainsKey("Key")) { /* ... */ }
 ```
 
 ##### `bool Remove(const TKey& key)`
@@ -46,7 +46,7 @@ Removes the value with the specified key from the `Dictionary`.
 
 **Usage:**
 ```cpp
-bool removed = dict.Remove(_T("Key"));
+bool removed = dict.Remove("Key");
 ```
 
 ##### `bool TryGetValue(const TKey& key, TValue& value) const`
@@ -56,7 +56,7 @@ Gets the value associated with the specified key.
 **Usage:**
 ```cpp
 int val;
-if (dict.TryGetValue(_T("Key"), val)) { /* ... */ }
+if (dict.TryGetValue("Key", val)) { /* ... */ }
 ```
 
 ##### `TValue& operator[](const TKey& key)`
@@ -65,8 +65,8 @@ Gets or sets the value associated with the specified key.
 
 **Usage:**
 ```cpp
-dict[_T("Key")] = 42;
-int val = dict[_T("Key")];
+dict["Key"] = 42;
+int val = dict["Key"];
 ```
 
 ##### `void Clear()`
@@ -87,3 +87,4 @@ for (auto const& [key, val] : dict) {
     // ...
 }
 ```
+

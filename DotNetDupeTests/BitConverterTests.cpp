@@ -64,7 +64,7 @@ namespace SystemTests {
             String result = BitConverter::ToString(bytes);
 
             // Then
-            EXPECT_EQ(String(_T("0A-1B-FF")), result);
+            EXPECT_EQ(String("0A-1B-FF"), result);
         }
 
         TEST(BitConverterTest, Given_DoubleValue_When_DoubleToInt64BitsCalled_Then_ReturnsCorrectBits) {

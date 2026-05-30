@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/String.h"
-#include "System/UriEnums.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -18,6 +17,17 @@ namespace DotNetDupe {
             DOTNETDUPE_API String GetScheme() const;
             DOTNETDUPE_API String GetQuery() const;
             DOTNETDUPE_API String GetFragment() const;
+            DOTNETDUPE_API String GetUserInfo() const;
+            DOTNETDUPE_API String GetOriginalString() const;
+            
+            DOTNETDUPE_API String ToString() const;
+
+            DOTNETDUPE_API bool IsDefaultPort() const;
+            DOTNETDUPE_API bool IsFile() const;
+            DOTNETDUPE_API bool IsLoopback() const;
+
+            DOTNETDUPE_API static String EscapeDataString(const String& stringToEscape);
+            DOTNETDUPE_API static String UnescapeDataString(const String& stringToUnescape);
 
         private:
             void ParseUri();
@@ -25,9 +35,12 @@ namespace DotNetDupe {
             String _uriString;
             String _scheme;
             String _authority;
-            String _absolutePath;
+            String _host;
+            int _port;
+            String _path;
             String _query;
             String _fragment;
+            String _userInfo;
         };
     }
 }

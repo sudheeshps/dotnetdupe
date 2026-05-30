@@ -84,3 +84,4 @@ Returns a value indicating whether the specified date and time is within the spe
 ```cpp
 bool isDst = TimeZone::IsDaylightSavingTime(time, daylightTimes);
 ```
+

@@ -21,3 +21,4 @@ Blocks the current thread until the current `WaitHandle` receives a signal, usin
 
 **Exceptions:**
 - `TimeoutException`: Thrown if the wait operation times out (for derived classes that implement timeout exceptions).
+

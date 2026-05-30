@@ -117,3 +117,4 @@ int64_t ticks = ts.GetTicks();
 ##### `static constexpr int64_t TicksPerSecond`
 
 Represents the number of ticks in 1 second.
+

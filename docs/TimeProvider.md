@@ -60,3 +60,4 @@ Gets the system's default `TimeProvider` instance.
 ```cpp
 auto provider = TimeProvider::GetSystem();
 ```
+

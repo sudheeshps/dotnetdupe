@@ -3,57 +3,72 @@
 #include "System/ArgumentException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include "System/IOException.h"
+#include <filesystem>
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+}
 
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-            FileStream::FileStream(const String& path, int mode) : _path(path), _mode(mode) {
+            FileStream::FileStream(const String& sPath, int iMode) : m_sPath(sPath), m_iMode(iMode) {
                 std::ios_base::openmode openMode = std::ios_base::binary;
 
-                if (mode == 0) { // FileMode::CreateNew
+                if (iMode == 0) { // FileMode::CreateNew
+                    if (fs::exists(ToFsPath(sPath))) {
+                        throw IOException("File already exists.");
+                    }
                     openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    _canRead = true;
-                    _canWrite = true;
-                    _canSeek = true;
-                } else if (mode == 1) { // FileMode::Create
+                    m_bCanRead = true;
+                    m_bCanWrite = true;
+                    m_bCanSeek = true;
+                } else if (iMode == 1) { // FileMode::Create
                     openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    _canRead = true;
-                    _canWrite = true;
-                    _canSeek = true;
-                } else if (mode == 2) { // FileMode::Open
+                    m_bCanRead = true;
+                    m_bCanWrite = true;
+                    m_bCanSeek = true;
+                } else if (iMode == 2) { // FileMode::Open
                     openMode |= std::ios_base::in | std::ios_base::out;
-                    _canRead = true;
-                    _canWrite = true;
-                    _canSeek = true;
-                } else if (mode == 3) { // FileMode::OpenOrCreate
+                    m_bCanRead = true;
+                    m_bCanWrite = true;
+                    m_bCanSeek = true;
+                } else if (iMode == 3) { // FileMode::OpenOrCreate
                     openMode |= std::ios_base::in | std::ios_base::out;
-                    _canRead = true;
-                    _canWrite = true;
-                    _canSeek = true;
-                } else if (mode == 4) { // FileMode::Truncate
+                    m_bCanRead = true;
+                    m_bCanWrite = true;
+                    m_bCanSeek = true;
+                } else if (iMode == 4) { // FileMode::Truncate
                     openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    _canRead = true;
-                    _canWrite = true;
-                    _canSeek = true;
-                } else if (mode == 5) { // FileMode::Append
+                    m_bCanRead = true;
+                    m_bCanWrite = true;
+                    m_bCanSeek = true;
+                } else if (iMode == 5) { // FileMode::Append
                     openMode |= std::ios_base::out | std::ios_base::app;
-                    _canRead = false;
-                    _canWrite = true;
-                    _canSeek = false; // Cannot seek in append mode easily with fstream
+                    m_bCanRead = false;
+                    m_bCanWrite = true;
+                    m_bCanSeek = false;
                 } else {
-                    throw ArgumentException(_T("Invalid FileMode"));
+                    throw ArgumentException("Invalid FileMode");
                 }
 
-                // Convert wchar_t path to char path for std::fstream using UTF-8
-                int bufferSize = WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), NULL, 0, NULL, NULL);
-                std::string narrowPath(bufferSize, '\0');
-                WideCharToMultiByte(CP_UTF8, 0, path, path.GetLength(), &narrowPath[0], bufferSize, NULL, NULL);
-
-                _fileStream.open(narrowPath, openMode);
-                if (!_fileStream.is_open()) {
-                    throw IOException(_T("Could not open file."));
+                m_fsFileStream.open(ToFsPath(sPath), openMode);
+                if (!m_fsFileStream.is_open()) {
+                    throw IOException("Could not open file.");
                 }
-                _fileStream.exceptions(std::fstream::badbit | std::fstream::failbit);
+                m_fsFileStream.exceptions(std::fstream::badbit | std::fstream::failbit);
             }
 
             FileStream::~FileStream() {
@@ -61,95 +76,91 @@ namespace DotNetDupe {
             }
 
             bool FileStream::CanRead() const {
-                return _canRead;
+                return m_bCanRead;
             }
 
             bool FileStream::CanSeek() const {
-                return _canSeek;
+                return m_bCanSeek;
             }
 
             bool FileStream::CanWrite() const {
-                return _canWrite;
+                return m_bCanWrite;
             }
 
             long FileStream::GetLength() const {
                 if (!CanSeek()) {
-                    throw IOException(_T("Stream does not support seeking."));
+                    throw IOException("Stream does not support seeking.");
                 }
-                long currentPos = static_cast<long>(_fileStream.tellg());
-                _fileStream.seekg(0, std::ios_base::end);
-                long length = static_cast<long>(_fileStream.tellg());
-                _fileStream.seekg(currentPos);
-                return length;
+                auto& mutableStream = const_cast<std::fstream&>(m_fsFileStream);
+                long iCurrentPos = static_cast<long>(mutableStream.tellg());
+                mutableStream.seekg(0, std::ios_base::end);
+                long iLength = static_cast<long>(mutableStream.tellg());
+                mutableStream.seekg(iCurrentPos);
+                return iLength;
             }
 
             long FileStream::GetPosition() const {
                 if (!CanSeek()) {
-                    throw IOException(_T("Stream does not support seeking."));
+                    throw IOException("Stream does not support seeking.");
                 }
-                return static_cast<long>(_fileStream.tellg());
+                auto& mutableStream = const_cast<std::fstream&>(m_fsFileStream);
+                return static_cast<long>(mutableStream.tellg());
             }
 
-            void FileStream::SetPosition(long value) {
+            void FileStream::SetPosition(long llValue) {
                 if (!CanSeek()) {
-                    throw IOException(_T("Stream does not support seeking."));
+                    throw IOException("Stream does not support seeking.");
                 }
-                _fileStream.seekg(value);
+                m_fsFileStream.seekg(llValue);
             }
 
             void FileStream::Flush() {
-                _fileStream.flush();
+                m_fsFileStream.flush();
             }
 
-            int FileStream::Read(char* buffer, int offset, int count) {
+            int FileStream::Read(char* pBuffer, int iOffset, int nCount) {
                 if (!CanRead()) {
-                    throw IOException(_T("Stream does not support reading."));
+                    throw IOException("Stream does not support reading.");
                 }
-                _fileStream.read(buffer + offset, count);
-                if (_fileStream.eof()) {
-                    _fileStream.clear(); // Clear EOF flag
+                m_fsFileStream.read(pBuffer + iOffset, nCount);
+                if (m_fsFileStream.eof()) {
+                    m_fsFileStream.clear();
                 }
-                if (_fileStream.fail()) {
-                    throw IOException(_T("Error reading from file stream."));
-                }
-                return static_cast<int>(_fileStream.gcount());
+                return static_cast<int>(m_fsFileStream.gcount());
             }
 
-            long FileStream::Seek(long offset, int origin) {
+            long FileStream::Seek(long llOffset, int iOrigin) {
                 if (!CanSeek()) {
-                    throw IOException(_T("Stream does not support seeking."));
+                    throw IOException("Stream does not support seeking.");
                 }
                 std::ios_base::seekdir dir;
-                if (origin == 0) { // SeekOrigin::Begin
+                if (iOrigin == 0) { // SeekOrigin::Begin
                     dir = std::ios_base::beg;
-                } else if (origin == 1) { // SeekOrigin::Current
+                } else if (iOrigin == 1) { // SeekOrigin::Current
                     dir = std::ios_base::cur;
-                } else if (origin == 2) { // SeekOrigin::End
+                } else if (iOrigin == 2) { // SeekOrigin::End
                     dir = std::ios_base::end;
                 } else {
-                    throw ArgumentException(_T("Invalid SeekOrigin"));
+                    throw ArgumentException("Invalid SeekOrigin");
                 }
-                _fileStream.seekg(offset, dir);
-                return static_cast<long>(_fileStream.tellg());
+                m_fsFileStream.seekg(llOffset, dir);
+                return static_cast<long>(m_fsFileStream.tellg());
             }
 
-            void FileStream::SetLength(long value) {
-                // Not directly supported by std::fstream in a cross-platform way
-                // Requires platform-specific APIs or rewriting the file.
-                // For now, throw NotSupportedException or implement platform-specific logic.
-                throw IOException(_T("SetLength is not supported."));
+            void FileStream::SetLength(long llValue) {
+                throw IOException("SetLength is not supported.");
             }
 
-            void FileStream::Write(const char* buffer, int offset, int count) {
+            void FileStream::Write(const char* pBuffer, int iOffset, int nCount) {
                 if (!CanWrite()) {
-                    throw IOException(_T("Stream does not support writing."));
+                    throw IOException("Stream does not support writing.");
                 }
-                _fileStream.write(buffer + offset, count);
+                m_fsFileStream.write(pBuffer + iOffset, nCount);
             }
 
             void FileStream::Dispose() {
-                if (_fileStream.is_open()) {
-                    _fileStream.close();
+                if (m_fsFileStream.is_open()) {
+                    m_fsFileStream.close();
                 }
             }
         }

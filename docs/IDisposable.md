@@ -22,3 +22,4 @@ Performs application-defined tasks associated with freeing, releasing, or resett
 ```cpp
 disposable->Dispose();
 ```
+

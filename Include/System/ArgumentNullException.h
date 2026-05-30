@@ -4,9 +4,9 @@
 
 namespace DotNetDupe {
     namespace System {
-        class ArgumentNullException : public BasicArgumentException<TCHAR> {
+        class ArgumentNullException : public BasicArgumentException<char> {
         public:
-            ArgumentNullException(const TCHAR* message) : BasicArgumentException<TCHAR>(message) { }
+            ArgumentNullException(const char* message) : BasicArgumentException<char>(message) { }
         };
     }
 }

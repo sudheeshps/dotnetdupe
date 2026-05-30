@@ -12,3 +12,4 @@ Initializes a new instance of the `GenericUriParser` class.
 ```cpp
 GenericUriParser* parser = new GenericUriParser();
 ```
+

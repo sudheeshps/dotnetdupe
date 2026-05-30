@@ -93,3 +93,4 @@ Returns a random floating-point number that is greater than or equal to 0.0, and
 ```cpp
 double val = rand.NextDouble();
 ```
+

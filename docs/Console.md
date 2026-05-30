@@ -13,7 +13,7 @@ Writes the text representation of the specified value to the standard output str
 
 **Usage:**
 ```cpp
-Console::Write(_T("The answer is "));
+Console::Write("The answer is ");
 Console::Write(42);
 ```
 
@@ -26,7 +26,7 @@ Writes the text representation of the specified value, followed by the current l
 
 **Usage:**
 ```cpp
-Console::WriteLine(_T("Hello World"));
+Console::WriteLine("Hello World");
 Console::WriteLine(true);
 ```
 
@@ -109,7 +109,7 @@ Gets or sets the title to display in the console title bar.
 
 **Usage:**
 ```cpp
-Console::SetTitle(_T("My App"));
+Console::SetTitle("My App");
 String title = Console::GetTitle();
 ```
 
@@ -151,6 +151,7 @@ Gets a value indicating whether the NUM LOCK keyboard light is on.
 
 Adds a string to the internal input buffer for testing purposes.
 
-##### `std::vector<String> GetOutputs()`
+##### `static Array<String> GetOutputs()`
 
 Returns the accumulated outputs (from `WriteLine` calls) since the last `Clear`.
+

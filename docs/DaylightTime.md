@@ -39,3 +39,4 @@ Gets the time interval that represents the difference between standard time and 
 ```cpp
 TimeSpan delta = dt.GetDelta();
 ```
+

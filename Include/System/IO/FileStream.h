@@ -10,7 +10,7 @@ namespace DotNetDupe {
         namespace IO {
             class FileStream : public Stream {
             public:
-                DOTNETDUPE_API FileStream(const String& path, int mode);
+                DOTNETDUPE_API FileStream(const String& sPath, int iMode);
                 DOTNETDUPE_API ~FileStream();
 
                 // Stream overrides
@@ -19,24 +19,24 @@ namespace DotNetDupe {
                 DOTNETDUPE_API bool CanWrite() const override;
                 DOTNETDUPE_API long GetLength() const override;
                 DOTNETDUPE_API long GetPosition() const override;
-                DOTNETDUPE_API void SetPosition(long value) override;
+                DOTNETDUPE_API void SetPosition(long llValue) override;
 
                 DOTNETDUPE_API void Flush() override;
-                DOTNETDUPE_API int Read(char* buffer, int offset, int count) override;
-                DOTNETDUPE_API long Seek(long offset, int origin) override;
-                DOTNETDUPE_API void SetLength(long value) override;
-                DOTNETDUPE_API void Write(const char* buffer, int offset, int count) override;
+                DOTNETDUPE_API int Read(char* pBuffer, int iOffset, int nCount) override;
+                DOTNETDUPE_API long Seek(long llOffset, int iOrigin) override;
+                DOTNETDUPE_API void SetLength(long llValue) override;
+                DOTNETDUPE_API void Write(const char* pBuffer, int iOffset, int nCount) override;
 
                 // IDisposable override
                 DOTNETDUPE_API void Dispose() override;
 
             private:
-                mutable std::fstream _fileStream;
-                String _path;
-                int _mode;
-                bool _canRead;
-                bool _canWrite;
-                bool _canSeek;
+                mutable std::fstream m_fsFileStream;
+                String m_sPath;
+                int m_iMode;
+                bool m_bCanRead;
+                bool m_bCanWrite;
+                bool m_bCanSeek;
             };
         }
     }

@@ -13,7 +13,7 @@ Initializes a new instance of the `BasicChar` class with the specified character
 
 **Usage:**
 ```cpp
-Char c(_T('A'));
+Char c('A');
 ```
 
 ##### `void operator= (CharT c)`
@@ -25,8 +25,8 @@ Assigns a character to the `BasicChar` object.
 
 **Usage:**
 ```cpp
-Char c = _T('A');
-c = _T('B');
+Char c = 'A';
+c = 'B';
 ```
 
 ##### `bool Equals(CharT c)`
@@ -41,8 +41,8 @@ Indicates whether this instance and a specified character are equal.
 
 **Usage:**
 ```cpp
-Char c(_T('A'));
-bool result = c.Equals(_T('A')); // true
+Char c('A');
+bool result = c.Equals('A'); // true
 ```
 
 ##### `bool operator == (CharT c)`
@@ -57,8 +57,8 @@ Compares this instance to a specified character for equality.
 
 **Usage:**
 ```cpp
-Char c(_T('A'));
-if (c == _T('A')) { /* ... */ }
+Char c('A');
+if (c == 'A') { /* ... */ }
 ```
 
 ##### `double static GetNumericValue(CharT c)`
@@ -73,7 +73,7 @@ Converts the specified numeric Unicode character to a double-precision floating-
 
 **Usage:**
 ```cpp
-double val = Char::GetNumericValue(_T('5')); // 5.0
+double val = Char::GetNumericValue('5'); // 5.0
 ```
 
 ##### `bool static IsAscii(CharT c)`
@@ -88,7 +88,7 @@ Indicates whether the specified character is an ASCII character.
 
 **Usage:**
 ```cpp
-bool result = Char::IsAscii(_T('A')); // true
+bool result = Char::IsAscii('A'); // true
 ```
 
 ##### `bool static IsAsciiDigit(CharT c)`
@@ -103,7 +103,7 @@ Indicates whether the specified character is an ASCII digit.
 
 **Usage:**
 ```cpp
-bool result = Char::IsAsciiDigit(_T('7')); // true
+bool result = Char::IsAsciiDigit('7'); // true
 ```
 
 ##### `bool static IsBetween(CharT c, CharT minInclusive, CharT maxInclusive)`
@@ -120,7 +120,7 @@ Indicates whether the specified character is between the specified minimum and m
 
 **Usage:**
 ```cpp
-bool result = Char::IsBetween(_T('M'), _T('A'), _T('Z')); // true
+bool result = Char::IsBetween('M', 'A', 'Z'); // true
 ```
 
 ##### `bool static IsControl(CharT c)`
@@ -135,7 +135,7 @@ Indicates whether the specified character is a control character.
 
 **Usage:**
 ```cpp
-bool result = Char::IsControl(_T('\n')); // true
+bool result = Char::IsControl('\n'); // true
 ```
 
 ##### `bool static IsDigit(CharT c)`
@@ -150,7 +150,7 @@ Indicates whether the specified character is a decimal digit.
 
 **Usage:**
 ```cpp
-bool result = Char::IsDigit(_T('5')); // true
+bool result = Char::IsDigit('5'); // true
 ```
 
 ##### `bool static IsLower(CharT c)`
@@ -165,7 +165,7 @@ Indicates whether the specified character is a lowercase letter.
 
 **Usage:**
 ```cpp
-bool result = Char::IsLower(_T('a')); // true
+bool result = Char::IsLower('a'); // true
 ```
 
 ##### `bool static IsLetter(CharT c)`
@@ -180,7 +180,7 @@ Indicates whether the specified character is a letter.
 
 **Usage:**
 ```cpp
-bool result = Char::IsLetter(_T('A')); // true
+bool result = Char::IsLetter('A'); // true
 ```
 
 ##### `bool static IsLetterOrDigit(CharT c)`
@@ -195,7 +195,7 @@ Indicates whether the specified character is a letter or a decimal digit.
 
 **Usage:**
 ```cpp
-bool result = Char::IsLetterOrDigit(_T('A')); // true
+bool result = Char::IsLetterOrDigit('A'); // true
 ```
 
 ##### `CharT static ToLower(CharT c)`
@@ -210,7 +210,7 @@ Converts the value of a specified Unicode character to its lowercase equivalent.
 
 **Usage:**
 ```cpp
-TCHAR lower = Char::ToLower(_T('A')); // 'a'
+TCHAR lower = Char::ToLower('A'); // 'a'
 ```
 
 ##### `CharT GetChar()`
@@ -222,6 +222,7 @@ Returns the character value of this instance.
 
 **Usage:**
 ```cpp
-Char c(_T('X'));
+Char c('X');
 TCHAR val = c.GetChar(); // 'X'
 ```
+
