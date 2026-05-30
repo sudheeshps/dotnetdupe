@@ -455,6 +455,36 @@ void DemonstrateLockRAII() {
     Console::WriteLine("  Semaphore unit released automatically.");
 }
 
+void DemonstrateFileAttributes() {
+    Console::WriteLine("\n--- File Attributes Demonstration ---");
+
+    String path = "attr_demo.txt";
+    File::WriteAllText(path, "Demo content for attributes");
+
+    FileAttributes attrs;
+    if (File::GetAttributes(path, attrs)) {
+        Console::Write("Initial Attributes (int): ");
+        Console::WriteLine((int)attrs);
+
+        // Set to ReadOnly
+        if (File::SetAttributes(path, FileAttributes::ReadOnly)) {
+            Console::WriteLine("Set attribute to ReadOnly: Success");
+            
+            FileAttributes newAttrs;
+            File::GetAttributes(path, newAttrs);
+            bool isReadOnly = ((int)newAttrs & (int)FileAttributes::ReadOnly) != 0;
+            Console::Write("Is ReadOnly now? ");
+            Console::WriteLine(Convert::ToString(isReadOnly));
+        }
+
+        // Restore to Normal
+        File::SetAttributes(path, FileAttributes::Normal);
+        Console::WriteLine("Restored attributes to Normal.");
+    }
+
+    File::Delete(path);
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -468,6 +498,7 @@ int main() {
     DemonstrateEnvironment();
     DemonstrateTimeZone();
     DemonstrateTextIO();
+    DemonstrateFileAttributes();
     DemonstrateThreading();
     DemonstrateSynchronization();
     DemonstrateLockRAII();

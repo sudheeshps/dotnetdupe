@@ -12,7 +12,6 @@
 #undef SetEnvironmentVariable
 #undef GetUserName
 #undef GetOSVersion
-#undef GetVersion
 #endif
 
 #include "System/Char.h"
@@ -57,7 +56,6 @@ namespace DotNetDupe {
             DOTNETDUPE_API static String GetSystemDirectory();
             DOTNETDUPE_API static String GetOSVersion();
             DOTNETDUPE_API static String GetUserDomainName();
-            DOTNETDUPE_API static String GetVersion();
             DOTNETDUPE_API static int64_t GetWorkingSet();
             DOTNETDUPE_API static void Exit(int exitCode);
             DOTNETDUPE_API static String ExpandEnvironmentVariables(const String& name);

@@ -123,10 +123,6 @@ namespace DotNetDupe {
             return GetMachineName();
         }
 
-        String Environment::GetVersion() {
-            return String("4.8.0");
-        }
-
         int64_t Environment::GetWorkingSet() {
 #if defined(_WIN32)
             PROCESS_MEMORY_COUNTERS pmc;

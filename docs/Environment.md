@@ -100,18 +100,6 @@ Gets the user domain name of the person who is currently logged on to the Window
 String domainName = Environment::GetUserDomainName();
 ```
 
-##### `static String GetVersion()`
-
-Gets a string representation of the version numbers of the common language runtime.
-
-**Returns:**
-- A string that describes the version.
-
-**Usage:**
-```cpp
-String version = Environment::GetVersion();
-```
-
 ##### `static int64_t GetWorkingSet()`
 
 Gets the amount of physical memory mapped to the process context.

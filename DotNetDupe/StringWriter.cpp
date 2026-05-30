@@ -16,6 +16,10 @@ namespace DotNetDupe {
                 _isOpen = false;
             }
 
+            void StringWriter::Dispose() {
+                _isOpen = false;
+            }
+
             void StringWriter::Flush() {
                 // Nothing to flush
             }
@@ -26,6 +30,10 @@ namespace DotNetDupe {
 
             String StringWriter::ToString() const {
                 return _sb->ToString();
+            }
+
+            void StringWriter::Write(bool value) {
+                TextWriter::Write(value);
             }
 
             void StringWriter::Write(char value) {
@@ -41,6 +49,58 @@ namespace DotNetDupe {
             void StringWriter::Write(const char* value) {
                 if (!_isOpen) return;
                 _sb->Append(value);
+            }
+
+            void StringWriter::Write(int value) {
+                TextWriter::Write(value);
+            }
+
+            void StringWriter::Write(long long value) {
+                TextWriter::Write(value);
+            }
+
+            void StringWriter::Write(float value) {
+                TextWriter::Write(value);
+            }
+
+            void StringWriter::Write(double value) {
+                TextWriter::Write(value);
+            }
+
+            void StringWriter::WriteLine() {
+                TextWriter::WriteLine();
+            }
+
+            void StringWriter::WriteLine(bool value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(char value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(const char* value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(const String& value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(int value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(long long value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(float value) {
+                TextWriter::WriteLine(value);
+            }
+
+            void StringWriter::WriteLine(double value) {
+                TextWriter::WriteLine(value);
             }
         }
     }

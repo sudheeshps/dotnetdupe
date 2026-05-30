@@ -120,13 +120,66 @@ namespace DotNetDupe {
                 std::ofstream fileStream(ToFsPath(path));
             }
 
-            int File::GetAttributes(const String& path) {
-                // Not fully portable in a simple 'int', but we can return something basic or throw
-                return 0; 
+            bool File::GetAttributes(const String& path, FileAttributes& fileAttributes) {
+            #if defined(_WIN32)
+                std::wstring wpath = Utf8ToWChar(path.GetRawString());
+                DWORD dwAttrs = GetFileAttributesW(wpath.c_str());
+                if (dwAttrs == INVALID_FILE_ATTRIBUTES) {
+                    return false;
+                }
+                fileAttributes = static_cast<FileAttributes>(dwAttrs);
+                return true;
+            #else
+                fs::path p = ToFsPath(path);
+                std::error_code ec;
+                auto status = fs::status(p, ec);
+                if (ec) {
+                    return false;
+                }
+
+                int attrs = static_cast<int>(FileAttributes::Normal);
+                if ((status.permissions() & fs::perms::owner_write) == fs::perms::none) {
+                    attrs |= static_cast<int>(FileAttributes::ReadOnly);
+                }
+                if (fs::is_directory(status)) {
+                    attrs |= static_cast<int>(FileAttributes::Directory);
+                }
+
+                // On Linux, we consider files starting with '.' as hidden
+                if (!p.filename().empty() && p.filename().string()[0] == '.') {
+                    attrs |= static_cast<int>(FileAttributes::Hidden);
+                }
+
+                fileAttributes = static_cast<FileAttributes>(attrs);
+                return true;
+            #endif
             }
 
-            void File::SetAttributes(const String& path, int fileAttributes) {
-                // Not fully portable
+            bool File::SetAttributes(const String& path, FileAttributes fileAttributes) {
+            #if defined(_WIN32)
+                std::wstring wpath = Utf8ToWChar(path.GetRawString());
+                if (::SetFileAttributesW(wpath.c_str(), static_cast<DWORD>(fileAttributes))) {
+                    return true;
+                }
+                return false;
+            #else
+                fs::path p = ToFsPath(path);
+                std::error_code ec;
+                auto status = fs::status(p, ec);
+                if (ec) {
+                    return false;
+                }
+
+                auto perms = status.permissions();
+                if ((static_cast<int>(fileAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
+                    perms &= ~(fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write);
+                } else {
+                    perms |= fs::perms::owner_write;
+                }
+
+                fs::permissions(p, perms, fs::perm_options::replace, ec);
+                return !ec;
+            #endif
             }
         }
     }

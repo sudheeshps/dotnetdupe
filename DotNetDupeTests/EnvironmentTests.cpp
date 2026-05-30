@@ -44,16 +44,6 @@ namespace SystemTests {
             ASSERT_FALSE(userDomainName.IsEmpty());
         }
 
-        TEST(Environment, GetVersion_WhenCalled_ReturnsVersion) {
-            // Given
-
-            // When
-            auto version = Environment::GetVersion();
-
-            // Then
-            ASSERT_FALSE(version.IsEmpty());
-        }
-
         TEST(Environment, GetWorkingSet_WhenCalled_ReturnsWorkingSet) {
             // Given
 

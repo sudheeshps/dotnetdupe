@@ -12,6 +12,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API virtual ~StringReader() = default;
 
                 DOTNETDUPE_API void Close() override;
+                DOTNETDUPE_API void Dispose() override;
                 DOTNETDUPE_API int Peek() override;
                 DOTNETDUPE_API int Read() override;
                 DOTNETDUPE_API int Read(char* buffer, int index, int count) override;

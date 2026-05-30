@@ -13,6 +13,10 @@ namespace DotNetDupe {
                 _pos = _length;
             }
 
+            void StringReader::Dispose() {
+                _pos = _length;
+            }
+
             int StringReader::Peek() {
                 if (_pos >= _length) return -1;
                 return (int)(unsigned char)_s[_pos];

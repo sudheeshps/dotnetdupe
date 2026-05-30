@@ -14,30 +14,30 @@ namespace DotNetDupe {
             public:
                 virtual ~TextWriter() = default;
 
-                DOTNETDUPE_API virtual void Close();
-                DOTNETDUPE_API virtual void Dispose() override;
-                DOTNETDUPE_API virtual void Flush();
+                DOTNETDUPE_API virtual void Close() = 0;
+                DOTNETDUPE_API virtual void Dispose() override = 0;
+                DOTNETDUPE_API virtual void Flush() = 0;
 
                 DOTNETDUPE_API virtual std::shared_ptr<Text::Encoding> GetEncoding() const = 0;
 
-                DOTNETDUPE_API virtual void Write(bool value);
-                DOTNETDUPE_API virtual void Write(char value);
-                DOTNETDUPE_API virtual void Write(const char* value);
-                DOTNETDUPE_API virtual void Write(const String& value);
-                DOTNETDUPE_API virtual void Write(int value);
-                DOTNETDUPE_API virtual void Write(long long value);
-                DOTNETDUPE_API virtual void Write(float value);
-                DOTNETDUPE_API virtual void Write(double value);
+                DOTNETDUPE_API virtual void Write(bool value) = 0;
+                DOTNETDUPE_API virtual void Write(char value) = 0;
+                DOTNETDUPE_API virtual void Write(const char* value) = 0;
+                DOTNETDUPE_API virtual void Write(const String& value) = 0;
+                DOTNETDUPE_API virtual void Write(int value) = 0;
+                DOTNETDUPE_API virtual void Write(long long value) = 0;
+                DOTNETDUPE_API virtual void Write(float value) = 0;
+                DOTNETDUPE_API virtual void Write(double value) = 0;
 
-                DOTNETDUPE_API virtual void WriteLine();
-                DOTNETDUPE_API virtual void WriteLine(bool value);
-                DOTNETDUPE_API virtual void WriteLine(char value);
-                DOTNETDUPE_API virtual void WriteLine(const char* value);
-                DOTNETDUPE_API virtual void WriteLine(const String& value);
-                DOTNETDUPE_API virtual void WriteLine(int value);
-                DOTNETDUPE_API virtual void WriteLine(long long value);
-                DOTNETDUPE_API virtual void WriteLine(float value);
-                DOTNETDUPE_API virtual void WriteLine(double value);
+                DOTNETDUPE_API virtual void WriteLine() = 0;
+                DOTNETDUPE_API virtual void WriteLine(bool value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(char value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(const char* value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(const String& value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(int value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(long long value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(float value) = 0;
+                DOTNETDUPE_API virtual void WriteLine(double value) = 0;
 
             protected:
                 TextWriter() = default;

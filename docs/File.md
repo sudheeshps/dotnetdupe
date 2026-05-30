@@ -140,30 +140,53 @@ Creates or overwrites a file in the specified path.
 File::Create(_T("newfile.txt"));
 ```
 
-##### `static int GetAttributes(const String& path)`
+##### `static bool GetAttributes(const String& path, FileAttributes& fileAttributes)`
 
 Gets the attributes of the file on the path.
 
 **Parameters:**
 - `path`: The path to the file.
+- `fileAttributes`: An output parameter that will hold the attributes of the file.
 
 **Returns:**
-- The attributes of the file.
+- `true` if the attributes were successfully retrieved; otherwise, `false`.
+
+**Platform-Specific Behavior:**
+- **Windows**: Maps directly to Win32 `GetFileAttributesW`. All `FileAttributes` values are supported.
+- **Linux/POSIX**: Uses `std::filesystem::status`. 
+    - `ReadOnly`: Set if the file does not have `owner_write` permission.
+    - `Directory`: Set if the path refers to a directory.
+    - `Hidden`: Set if the filename starts with a period (`.`).
+    - `Normal`: Set if no other mapped attributes are present.
 
 **Usage:**
 ```cpp
-int attrs = File::GetAttributes(_T("test.txt"));
+FileAttributes attrs;
+if (File::GetAttributes(_T("test.txt"), attrs)) {
+    if ((static_cast<int>(attrs) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
+        Console::WriteLine("File is read-only");
+    }
+}
 ```
 
-##### `static void SetAttributes(const String& path, int fileAttributes)`
+##### `static bool SetAttributes(const String& path, FileAttributes fileAttributes)`
 
 Sets the specified attributes of the file on the specified path.
 
 **Parameters:**
 - `path`: The path to the file.
-- `fileAttributes`: A bitwise combination of the enumeration values.
+- `fileAttributes`: A bitwise combination of the `FileAttributes` enumeration values.
+
+**Returns:**
+- `true` if the attributes were successfully set; otherwise, `false`.
+
+**Platform-Specific Behavior:**
+- **Windows**: Maps directly to Win32 `SetFileAttributesW`.
+- **Linux/POSIX**: Uses `std::filesystem::permissions`.
+    - `ReadOnly`: If set, removes all write permissions (`owner_write`, `group_write`, `others_write`). If NOT set, adds `owner_write`.
+    - Other flags like `Hidden` or `Directory` cannot be set via this method on Linux as they are intrinsic to the name or file type.
 
 **Usage:**
 ```cpp
-File::SetAttributes(_T("test.txt"), 0x01); // ReadOnly
+File::SetAttributes(_T("test.txt"), FileAttributes::ReadOnly);
 ```
