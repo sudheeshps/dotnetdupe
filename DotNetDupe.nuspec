@@ -29,10 +29,10 @@
 
     <!-- Multi-platform Binaries -->
     <!-- Windows -->
-    <file src="runtimes\win-x64\native\DotNetDupe.dll" target="runtimes\win-x64\native\DotNetDupe.dll" />
-    <file src="runtimes\win-x64\native\DotNetDupe.lib" target="runtimes\win-x64\native\DotNetDupe.lib" />
+    <file src="bin\x64\Release\DotNetDupe.dll" target="runtimes\win-x64\native\DotNetDupe.dll" />
+    <file src="bin\x64\Release\DotNetDupe.lib" target="runtimes\win-x64\native\DotNetDupe.lib" />
     
     <!-- Linux -->
-    <file src="runtimes\linux-x64\native\libDotNetDupe.so" target="runtimes\linux-x64\native\libDotNetDupe.so" />
+    <file src="build-wsl\libDotNetDupe.so" target="runtimes\linux-x64\native\libDotNetDupe.so" />
   </files>
 </package>

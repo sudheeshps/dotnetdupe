@@ -74,8 +74,9 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     Open a Developer Command Prompt for Visual Studio and navigate to the project root.
     ```bash
     msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
+    nuget pack DotNetDupe.nuspec -OutputDirectory nuget_packages
     ```
-    This will build the `DotNetDupe` library and automatically create a NuGet package (`DotNetDupe.1.0.0.nupkg`) in the `nuget_packages` directory at the solution root.
+    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.2.2.0.nupkg) in the nuget_packages directory at the solution root.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:

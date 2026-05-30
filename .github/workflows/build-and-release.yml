@@ -89,15 +89,15 @@ jobs:
 
     - name: Organize Artifacts for Packaging
       run: |
-        mkdir -p runtimes/win-x64/native
-        mkdir -p runtimes/linux-x64/native
+        mkdir -p bin/x64/Release
+        mkdir -p build-wsl
         
         # Windows Release
-        cp artifacts-temp/win-x64-Release/DotNetDupe.dll runtimes/win-x64/native/
-        cp artifacts-temp/win-x64-Release/DotNetDupe.lib runtimes/win-x64/native/
+        cp artifacts-temp/win-x64-Release/DotNetDupe.dll bin/x64/Release/
+        cp artifacts-temp/win-x64-Release/DotNetDupe.lib bin/x64/Release/
         
         # Linux Release
-        cp artifacts-temp/linux-x64-Release/libDotNetDupe.so runtimes/linux-x64/native/
+        cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
 
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
