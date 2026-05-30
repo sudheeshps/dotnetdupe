@@ -19,7 +19,7 @@ Initializes a new instance of the `StringBuilder` class using the specified stri
 
 **Usage:**
 ```cpp
-StringBuilder sb(_T("Initial"));
+StringBuilder sb("Initial");
 ```
 
 ##### `StringBuilder& Append(...)`
@@ -28,7 +28,7 @@ Appends the string representation of a specified value to this instance. Overloa
 
 **Usage:**
 ```cpp
-sb.Append(_T("Items: ")).Append(10);
+sb.Append("Items: ").Append(10);
 ```
 
 ##### `StringBuilder& AppendLine(...)`
@@ -37,7 +37,7 @@ Appends the string representation of a specified value followed by the default l
 
 **Usage:**
 ```cpp
-sb.AppendLine(_T("Line 1"));
+sb.AppendLine("Line 1");
 ```
 
 ##### `StringBuilder& Clear()`
@@ -75,3 +75,4 @@ Converts the value of this instance to a `String`.
 ```cpp
 String result = sb.ToString();
 ```
+

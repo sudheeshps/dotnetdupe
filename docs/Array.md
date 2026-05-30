@@ -303,3 +303,4 @@ Determines whether every element in the `Array` matches the conditions defined b
 Array<int> arr = { 2, 4, 6 };
 bool allEven = arr.TrueForAll([](int x) { return x % 2 == 0; }); // true
 ```
+

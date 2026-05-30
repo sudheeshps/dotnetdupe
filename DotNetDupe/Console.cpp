@@ -38,17 +38,17 @@ namespace {
     }
 }
 
-void InternalWrite(const String& value) {
+void InternalWrite(const String& sValue) {
     std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + value;
-    std::cout << value.GetRawString() << std::flush;
+    s_accumulator = s_accumulator + sValue;
+    std::cout << sValue.GetRawString() << std::flush;
 }
 
-void InternalWriteLine(const String& value) {
+void InternalWriteLine(const String& sValue) {
     std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + value;
+    s_accumulator = s_accumulator + sValue;
     s_outputs.push_back(s_accumulator);
-    std::cout << value.GetRawString() << std::endl;
+    std::cout << sValue.GetRawString() << std::endl;
     s_accumulator = String("");
 }
 

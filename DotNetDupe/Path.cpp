@@ -18,11 +18,11 @@ using namespace DotNetDupe::System::Internal;
 namespace fs = std::filesystem;
 
 namespace {
-    fs::path ToFsPath(const DotNetDupe::System::String& path) {
+    fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
 #if defined(_WIN32)
-        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(path.GetRawString()));
+        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
 #else
-        return fs::path(path.GetRawString());
+        return fs::path(sPath.GetRawString());
 #endif
     }
 
@@ -38,85 +38,85 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-            String Path::ChangeExtension(const String& filePath, const String& extension) {
-                if (filePath.GetLength() <= 0 || extension.GetLength() <= 0)
+            String Path::ChangeExtension(const String& sFilePath, const String& sExtension) {
+                if (sFilePath.GetLength() <= 0 || sExtension.GetLength() <= 0)
                     throw ArgumentException("Invalid argument");
-                if (filePath.GetLength() <= extension.GetLength())
+                if (sFilePath.GetLength() <= sExtension.GetLength())
                     throw ArgumentException("Invalid argument");
-                auto strTempFilePath = filePath;
-                if (filePath [0] == '.')
-                    strTempFilePath = filePath.Remove(0);
+                auto sTempFilePath = sFilePath;
+                if (sFilePath [0] == '.')
+                    sTempFilePath = sFilePath.Remove(0);
 
-                fs::path path = ToFsPath(strTempFilePath);
+                fs::path path = ToFsPath(sTempFilePath);
 #if defined(_WIN32)
-                path.replace_extension(DotNetDupe::System::Internal::Utf8ToWChar(extension.GetRawString()));
+                path.replace_extension(DotNetDupe::System::Internal::Utf8ToWChar(sExtension.GetRawString()));
 #else
-                path.replace_extension(extension.GetRawString());
+                path.replace_extension(sExtension.GetRawString());
 #endif
                 return FromFsPath(path);
             }
 
-            String Path::Combine(const std::initializer_list<String> paths) {
-                auto indexedList = _init_list_with_indexer(paths);
+            String Path::Combine(const std::initializer_list<String> sPaths) {
+                auto indexedList = _init_list_with_indexer(sPaths);
                 fs::path rootPath = ToFsPath(indexedList [0]);
                 if (!rootPath.has_root_directory())
                     return indexedList [0];
-                String strCombinedPath("");
-                for (auto path : paths) {
-                    strCombinedPath.Append(path);
-                    strCombinedPath.Append(static_cast<char>(fs::path::preferred_separator));
+                String sCombinedPath("");
+                for (auto sPath : sPaths) {
+                    sCombinedPath.Append(sPath);
+                    sCombinedPath.Append(static_cast<char>(fs::path::preferred_separator));
                 }
-                return strCombinedPath.Remove(strCombinedPath.GetLength() - 1);
+                return sCombinedPath.Remove(sCombinedPath.GetLength() - 1);
             }
 
-            bool Path::EndsInDirectorySeparator(const String& filePath) {
-                if (filePath.IsEmpty()) return false;
-                char lastChar = filePath[filePath.GetLength() - 1];
-                return lastChar == '\\' || lastChar == '/';
+            bool Path::EndsInDirectorySeparator(const String& sFilePath) {
+                if (sFilePath.IsEmpty()) return false;
+                char chLastChar = sFilePath[sFilePath.GetLength() - 1];
+                return chLastChar == '\\' || chLastChar == '/';
             }
 
-            bool Path::Exists(const String& filePath) {
-                return fs::exists(ToFsPath(filePath));
+            bool Path::Exists(const String& sFilePath) {
+                return fs::exists(ToFsPath(sFilePath));
             }
 
-            String Path::GetDirectoryName(const String& filePath) {
-                if (filePath.IsEmpty())
+            String Path::GetDirectoryName(const String& sFilePath) {
+                if (sFilePath.IsEmpty())
                     return String("");
 
-                fs::path path = ToFsPath(filePath);
+                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.parent_path());
             }
 
-            String Path::GetFileName(const String& filePath) {
-                if (filePath.IsEmpty())
+            String Path::GetFileName(const String& sFilePath) {
+                if (sFilePath.IsEmpty())
                     return String("");
-                fs::path path = ToFsPath(filePath);
+                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.filename());
             }
 
-            String Path::GetExtension(const String& filePath) {
-                if (filePath.IsEmpty())
+            String Path::GetExtension(const String& sFilePath) {
+                if (sFilePath.IsEmpty())
                     return String("");
 
-                fs::path path = ToFsPath(filePath);
-                auto ext = FromFsPath(path.extension());
-                if (ext.IsEmpty()) return String("");
-                return ext.Substring(1);
+                fs::path path = ToFsPath(sFilePath);
+                auto sExt = FromFsPath(path.extension());
+                if (sExt.IsEmpty()) return String("");
+                return sExt.Substring(1);
             }
 
-            String Path::GetFileNameWithoutExtension(const String& filePath) {
-                if (filePath.IsEmpty())
+            String Path::GetFileNameWithoutExtension(const String& sFilePath) {
+                if (sFilePath.IsEmpty())
                     return String("");
 
-                fs::path path = ToFsPath(filePath);
+                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.stem());
             }
 
-            String Path::GetFullPath(const String& path) {
-                if (path.IsEmpty())
+            String Path::GetFullPath(const String& sPath) {
+                if (sPath.IsEmpty())
                     return String("");
 
-                return FromFsPath(fs::absolute(ToFsPath(path)));
+                return FromFsPath(fs::absolute(ToFsPath(sPath)));
             }
 
             Array<char> Path::GetInvalidFileNameChars() {
@@ -126,7 +126,7 @@ namespace DotNetDupe {
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F',
                     ':', '*', '?', '\\', '/' };
                 Array<char> invalidChars((int)tempInvalidChars.size());
-                for (int i = 0; i < (int)tempInvalidChars.size(); i++) invalidChars[i] = tempInvalidChars[i];
+                for (int iIndex = 0; iIndex < (int)tempInvalidChars.size(); iIndex++) invalidChars[iIndex] = tempInvalidChars[iIndex];
                 return invalidChars;
             }
 
@@ -136,66 +136,66 @@ namespace DotNetDupe {
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F' };
                 Array<char> invalidChars((int)tempInvalidChars.size());
-                for (int i = 0; i < (int)tempInvalidChars.size(); i++) invalidChars[i] = tempInvalidChars[i];
+                for (int iIndex = 0; iIndex < (int)tempInvalidChars.size(); iIndex++) invalidChars[iIndex] = tempInvalidChars[iIndex];
                 return invalidChars;
             }
 
             String Path::GetRandomFileName()
             {
-                const char chars[] = "abcdefghijklmnopqrstuvwxyz0123456789";
-                const int chars_len = sizeof(chars) / sizeof(char) - 1;
+                const char chChars[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+                const int nCharsLen = sizeof(chChars) / sizeof(char) - 1;
 
                 std::random_device rd;
                 std::mt19937 generator(rd());
-                std::uniform_int_distribution<> distribution(0, chars_len - 1);
+                std::uniform_int_distribution<> distribution(0, nCharsLen - 1);
 
-                char random_string[13];
+                char chRandomString[13];
 
-                for (int i = 0; i < 8; ++i) {
-                    random_string[i] = chars[distribution(generator)];
+                for (int iIndex = 0; iIndex < 8; ++iIndex) {
+                    chRandomString[iIndex] = chChars[distribution(generator)];
                 }
-                random_string[8] = '.';
-                for (int i = 0; i < 3; ++i) {
-                    random_string[9 + i] = chars[distribution(generator)];
+                chRandomString[8] = '.';
+                for (int iIndex = 0; iIndex < 3; ++iIndex) {
+                    chRandomString[9 + iIndex] = chChars[distribution(generator)];
                 }
-                random_string[12] = '\0';
+                chRandomString[12] = '\0';
 
-                return String(random_string);
+                return String(chRandomString);
             }
 
-            String Path::GetPathRoot(const String& path)
+            String Path::GetPathRoot(const String& sPath)
             {
-                if (path.IsEmpty())
+                if (sPath.IsEmpty())
                     return String("");
 
-                if (path.StartsWith(String("\\"), false))
+                if (sPath.StartsWith(String("\\"), false))
                 {
                     // UNC path like \\server\share
-                    int len = path.GetLength();
-                    if (len > 2)
+                    int nLen = sPath.GetLength();
+                    if (nLen > 2)
                     {
-                        int idx = path.IndexOf(String("\\"), 2, false);
-                        if (idx != -1)
+                        int iIdx = sPath.IndexOf(String("\\"), 2, false);
+                        if (iIdx != -1)
                         {
-                            idx = path.IndexOf(String("\\"), idx + 1, false);
-                            if (idx != -1)
-                                return path.Substring(0, idx);
+                            iIdx = sPath.IndexOf(String("\\"), iIdx + 1, false);
+                            if (iIdx != -1)
+                                return sPath.Substring(0, iIdx);
                         }
                     }
-                    return path;
+                    return sPath;
                 }
 
-                fs::path p = ToFsPath(path);
+                fs::path p = ToFsPath(sPath);
                 return FromFsPath(p.root_path());
             }
 
-            String Path::GetRelativePath(const String& relativeTo, const String& path) {
-                const fs::path fsRelativeTo = ToFsPath(GetFullPath(relativeTo));
-                const fs::path fsPath = ToFsPath(GetFullPath(path));
+            String Path::GetRelativePath(const String& sRelativeTo, const String& sPath) {
+                const fs::path fsRelativeTo = ToFsPath(GetFullPath(sRelativeTo));
+                const fs::path fsPath = ToFsPath(GetFullPath(sPath));
 
 #if defined(_WIN32)
                 if (fsRelativeTo.root_name() != fsPath.root_name()) {
-                    return path;
+                    return sPath;
                 }
 #endif
 
@@ -203,21 +203,21 @@ namespace DotNetDupe {
             }
 
             String Path::GetTempFileName() {
-                String temp_dir_path = GetTempPath();
+                String sTempDirPath = GetTempPath();
 
                 std::random_device rd;
                 std::mt19937 generator(rd());
                 std::uniform_int_distribution<int> distribution(0, 35);
                 const char alphabet [] = "abcdefghijklmnopqrstuvwxyz0123456789";
 
-                for (int i = 0; i < 100; ++i) {
-                    char random_name [9];
-                    for (int j = 0; j < 8; ++j) {
-                        random_name [j] = alphabet [distribution(generator)];
+                for (int iIndex = 0; iIndex < 100; ++iIndex) {
+                    char chRandomName [9];
+                    for (int jIndex = 0; jIndex < 8; ++jIndex) {
+                        chRandomName [jIndex] = alphabet [distribution(generator)];
                     }
-                    random_name [8] = '\0';
+                    chRandomName [8] = '\0';
 
-                    fs::path file_path = ToFsPath(temp_dir_path) / (String(random_name) + ".tmp").GetRawString();
+                    fs::path file_path = ToFsPath(sTempDirPath) / (String(chRandomName) + ".tmp").GetRawString();
 
                     if (!fs::exists(file_path)) {
                         std::ofstream ofs(file_path);
@@ -234,67 +234,67 @@ namespace DotNetDupe {
 #if defined(_WIN32)
                 wchar_t buffer [MAX_PATH];
                 ::GetTempPathW(MAX_PATH, buffer);
-                String path(WCharToUtf8(buffer).c_str());
-                if (!path.EndsWith('\\', false)) path.Append('\\');
-                return path;
+                String sPath(WCharToUtf8(buffer).c_str());
+                if (!sPath.EndsWith('\\', false)) sPath.Append('\\');
+                return sPath;
 #else
-                const char* tmpdir = getenv("TMPDIR");
-                String path = tmpdir ? String(tmpdir) : String("/tmp/");
-                if (!path.EndsWith('/', false)) path.Append('/');
-                return path;
+                const char* pTmpDir = getenv("TMPDIR");
+                String sPath = pTmpDir ? String(pTmpDir) : String("/tmp/");
+                if (!sPath.EndsWith('/', false)) sPath.Append('/');
+                return sPath;
 #endif
             }
 
-            bool Path::HasExtension(const String& path) {
-                if (path.IsEmpty()) {
+            bool Path::HasExtension(const String& sPath) {
+                if (sPath.IsEmpty()) {
                     return false;
                 }
 
-                String filenameStr = GetFileName(path);
+                String sFilenameStr = GetFileName(sPath);
 
-                if (filenameStr.IsEmpty() || filenameStr == "." || filenameStr == "..") {
+                if (sFilenameStr.IsEmpty() || sFilenameStr == "." || sFilenameStr == "..") {
                     return false;
                 }
 
-                std::string filename((const char*)filenameStr);
+                std::string sFilename((const char*)sFilenameStr);
 
-                auto dot_pos = filename.rfind('.');
+                auto nDotPos = sFilename.rfind('.');
 
-                if (dot_pos == std::string::npos || dot_pos == filename.length() - 1) {
+                if (nDotPos == std::string::npos || nDotPos == sFilename.length() - 1) {
                     return false;
                 }
 
                 return true;
             }
 
-            bool Path::IsPathFullyQualified(const String& path) {
-                if (path.IsEmpty()) {
+            bool Path::IsPathFullyQualified(const String& sPath) {
+                if (sPath.IsEmpty()) {
                     return false;
                 }
-                return ToFsPath(path).is_absolute();
+                return ToFsPath(sPath).is_absolute();
             }
 
-            bool Path::IsPathRooted(const String& path) {
-                if (path.IsEmpty()) {
+            bool Path::IsPathRooted(const String& sPath) {
+                if (sPath.IsEmpty()) {
                     return false;
                 }
 
-                int len = path.GetLength();
+                int nLen = sPath.GetLength();
 
-                if (len >= 1) {
-                    char first = path[0];
-                    if (first == '\\' || first == '/') {
+                if (nLen >= 1) {
+                    char chFirst = sPath[0];
+                    if (chFirst == '\\' || chFirst == '/') {
                         return true;
                     }
                 }
 
-                if (len >= 2) {
-                    char first = path[0];
-                    char second = path[1];
-                    if (second == ':' && ((first >= 'a' && first <= 'z') || (first >= 'A' && first <= 'Z'))) {
-                        if (len >= 3) {
-                            char third = path[2];
-                            if (third == '\\' || third == '/') {
+                if (nLen >= 2) {
+                    char chFirst = sPath[0];
+                    char chSecond = sPath[1];
+                    if (chSecond == ':' && ((chFirst >= 'a' && chFirst <= 'z') || (chFirst >= 'A' && chFirst <= 'Z'))) {
+                        if (nLen >= 3) {
+                            char chThird = sPath[2];
+                            if (chThird == '\\' || chThird == '/') {
                                 return true;
                             }
                         }
@@ -305,62 +305,62 @@ namespace DotNetDupe {
                 return false;
             }
 
-            String Path::Join(const std::initializer_list<String> paths) {
-                String result("");
-                if (TryJoin(paths, result)) {
-                    return result;
+            String Path::Join(const std::initializer_list<String> sPaths) {
+                String sResult("");
+                if (TryJoin(sPaths, sResult)) {
+                    return sResult;
                 }
                 throw ArgumentException("Invalid character in path.");
             }
 
-            bool Path::TryJoin(const std::initializer_list<String> paths, String& result) {
+            bool Path::TryJoin(const std::initializer_list<String> sPaths, String& sResult) {
                 auto invalidPathChars = GetInvalidPathChars();
-                for (const auto& path : paths) {
-                    for (auto invalidChar : invalidPathChars) {
-                        if (path.Contains(invalidChar)) {
-                            result = String("");
+                for (const auto& sPath : sPaths) {
+                    for (auto chInvalidChar : invalidPathChars) {
+                        if (sPath.Contains(chInvalidChar)) {
+                            sResult = String("");
                             return false;
                         }
                     }
                 }
 
-                String joinedPath("");
-                for (const auto& path : paths) {
-                    if (path.IsEmpty()) {
+                String sJoinedPath("");
+                for (const auto& sPath : sPaths) {
+                    if (sPath.IsEmpty()) {
                         continue;
                     }
 
-                    if (joinedPath.IsEmpty()) {
-                        joinedPath = path;
+                    if (sJoinedPath.IsEmpty()) {
+                        sJoinedPath = sPath;
                     }
                     else {
-                        char lastChar = joinedPath [joinedPath.GetLength() - 1];
-                        if (lastChar != '\\' && lastChar != '/') {
-                            joinedPath.Append(static_cast<char>(fs::path::preferred_separator));
+                        char chLastChar = sJoinedPath [sJoinedPath.GetLength() - 1];
+                        if (chLastChar != '\\' && chLastChar != '/') {
+                            sJoinedPath.Append(static_cast<char>(fs::path::preferred_separator));
                         }
 
-                        if (path [0] == '\\' || path [0] == '/') {
-                            joinedPath.Append(path.Substring(1, path.GetLength() - 1));
+                        if (sPath [0] == '\\' || sPath [0] == '/') {
+                            sJoinedPath.Append(sPath.Substring(1, sPath.GetLength() - 1));
                         }
                         else {
-                            joinedPath.Append(path);
+                            sJoinedPath.Append(sPath);
                         }
                     }
                 }
 
-                result = joinedPath;
+                sResult = sJoinedPath;
                 return true;
             }
 
-            String Path::TrimEndingDirectorySeparator(const String& path) {
-                if (path.IsEmpty()) return path;
-                if (Path::IsPathRooted(path) && path.GetLength() <= 3) return path;
+            String Path::TrimEndingDirectorySeparator(const String& sPath) {
+                if (sPath.IsEmpty()) return sPath;
+                if (Path::IsPathRooted(sPath) && sPath.GetLength() <= 3) return sPath;
 
-                char lastChar = path[path.GetLength() - 1];
-                if (lastChar == '\\' || lastChar == '/') {
-                    return path.Substring(0, path.GetLength() - 1);
+                char chLastChar = sPath[sPath.GetLength() - 1];
+                if (chLastChar == '\\' || chLastChar == '/') {
+                    return sPath.Substring(0, sPath.GetLength() - 1);
                 }
-                return path;
+                return sPath;
             }
 
             char Path::GetDirectorySeparatorChar() {

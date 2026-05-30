@@ -4,13 +4,13 @@ Implements a `TextReader` that reads from a string.
 
 #### Methods
 
-##### `StringReader(const String& s)`
+##### `StringReader(const String& sInput)`
 
 Initializes a new instance of the `StringReader` class that reads from the specified string.
 
 **Usage:**
 ```cpp
-StringReader reader(_T("Some text"));
+StringReader srReader("Some text");
 ```
 
 ##### `int Read() override`
@@ -19,7 +19,7 @@ Reads the next character from the input string and advances the character positi
 
 **Usage:**
 ```cpp
-int ch = reader.Read();
+int nCh = srReader.Read();
 ```
 
 ##### `String ReadLine() override`
@@ -28,5 +28,6 @@ Reads a line of characters from the current string and returns the data as a str
 
 **Usage:**
 ```cpp
-String line = reader.ReadLine();
+String sLine = srReader.ReadLine();
 ```
+

@@ -17,7 +17,7 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API virtual int Peek() = 0;
                 DOTNETDUPE_API virtual int Read() = 0;
-                DOTNETDUPE_API virtual int Read(char* buffer, int index, int count) = 0;
+                DOTNETDUPE_API virtual int Read(char* pBuffer, int iIndex, int nCount) = 0;
                 DOTNETDUPE_API virtual String ReadLine() = 0;
                 DOTNETDUPE_API virtual String ReadToEnd() = 0;
 

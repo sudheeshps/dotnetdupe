@@ -94,3 +94,4 @@ Gets the currently running thread.
 ```cpp
 Thread* current = Thread::GetCurrentThread();
 ```
+

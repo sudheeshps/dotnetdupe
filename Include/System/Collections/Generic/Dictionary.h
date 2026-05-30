@@ -23,36 +23,36 @@ namespace DotNetDupe {
                 public:
                     Dictionary() {}
 
-                    int GetCount() const { return (int)_map.size(); }
+                    int GetCount() const { return (int)m_uMap.size(); }
 
                     TValue& operator[](const TKey& key) {
-                        return _map[key];
+                        return m_uMap[key];
                     }
 
                     const TValue& operator[](const TKey& key) const {
-                        return _map.at(key);
+                        return m_uMap.at(key);
                     }
 
                     void Add(const TKey& key, const TValue& value) {
                         if (ContainsKey(key)) throw std::runtime_error("An item with the same key has already been added.");
-                        _map[key] = value;
+                        m_uMap[key] = value;
                     }
 
                     void Clear() {
-                        _map.clear();
+                        m_uMap.clear();
                     }
 
                     bool ContainsKey(const TKey& key) const {
-                        return _map.find(key) != _map.end();
+                        return m_uMap.find(key) != m_uMap.end();
                     }
 
                     bool Remove(const TKey& key) {
-                        return _map.erase(key) > 0;
+                        return m_uMap.erase(key) > 0;
                     }
 
                     bool TryGetValue(const TKey& key, TValue& value) const {
-                        auto it = _map.find(key);
-                        if (it != _map.end()) {
+                        auto it = m_uMap.find(key);
+                        if (it != m_uMap.end()) {
                             value = it->second;
                             return true;
                         }
@@ -60,27 +60,27 @@ namespace DotNetDupe {
                     }
 
                     Array<TKey> GetKeys() const {
-                        Array<TKey> keys(GetCount());
-                        int i = 0;
-                        for (auto const& [key, val] : _map) keys[i++] = key;
-                        return keys;
+                        Array<TKey> arrKeys(GetCount());
+                        int iIdx = 0;
+                        for (auto const& [key, val] : m_uMap) arrKeys[iIdx++] = key;
+                        return arrKeys;
                     }
 
                     Array<TValue> GetValues() const {
-                        Array<TValue> values(GetCount());
-                        int i = 0;
-                        for (auto const& [key, val] : _map) values[i++] = val;
-                        return values;
+                        Array<TValue> arrValues(GetCount());
+                        int iIdx = 0;
+                        for (auto const& [key, val] : m_uMap) arrValues[iIdx++] = val;
+                        return arrValues;
                     }
 
                     // Iterator support for range-based for loops
-                    auto begin() { return _map.begin(); }
-                    auto end() { return _map.end(); }
-                    auto begin() const { return _map.begin(); }
-                    auto end() const { return _map.end(); }
+                    auto begin() { return m_uMap.begin(); }
+                    auto end() { return m_uMap.end(); }
+                    auto begin() const { return m_uMap.begin(); }
+                    auto end() const { return m_uMap.end(); }
 
                 private:
-                    std::unordered_map<TKey, TValue> _map;
+                    std::unordered_map<TKey, TValue> m_uMap;
                 };
             }
         }

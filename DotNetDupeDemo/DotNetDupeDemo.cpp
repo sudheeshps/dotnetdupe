@@ -51,9 +51,9 @@ void DemonstrateConsole() {
     Console::WriteLine("\n--- Console Demonstration ---");
     Console::Write("MOCK INPUT: Enter your name: ");
     Console::SetIn("Gemini User"); 
-    String name = Console::ReadLine();
+    String sName = Console::ReadLine();
     Console::Write("Hello, ");
-    Console::WriteLine(name);
+    Console::WriteLine(sName);
     
     // Clear mock input so subsequent ReadLine calls wait for actual stdin
     Console::ClearInputs(); 
@@ -71,102 +71,102 @@ void DemonstrateConsole() {
 void DemonstrateString() {
     Console::WriteLine("\n--- String Demonstration ---");
     
-    String s1 = "   Hello World   ";
+    String sS1 = "   Hello World   ";
     Console::Write("Original: '");
-    Console::Write(s1);
+    Console::Write(sS1);
     Console::WriteLine("'");
     
     Console::Write("Trimmed: '");
-    Console::Write(s1.Trim());
+    Console::Write(sS1.Trim());
     Console::WriteLine("'");
     
     Console::Write("Lower: ");
-    Console::WriteLine(s1.ToLower());
+    Console::WriteLine(sS1.ToLower());
     
     Console::Write("Upper: ");
-    Console::WriteLine(s1.ToUpper());
+    Console::WriteLine(sS1.ToUpper());
 
-    String s2 = "Apple,Banana,Cherry";
-    auto parts = s2.Split(',');
+    String sS2 = "Apple,Banana,Cherry";
+    Array<String> arrParts = sS2.Split(',');
     Console::WriteLine("Splitting 'Apple,Banana,Cherry':");
-    for(const auto& p : parts) {
+    for(const auto& sPart : arrParts) {
         Console::Write("  - ");
-        Console::WriteLine(p);
+        Console::WriteLine(sPart);
     }
 }
 
 void DemonstrateBitConverter() {
     Console::WriteLine("\n--- BitConverter Demonstration ---");
 
-    int intVal = 123456789;
-    Array<byte> intBytes = BitConverter::GetBytes(intVal);
+    int iIntVal = 123456789;
+    Array<byte> arrIntBytes = BitConverter::GetBytes(iIntVal);
     Console::Write("Int: 123456789 to bytes: ");
-    String hexStr = BitConverter::ToString(intBytes);
-    Console::WriteLine(hexStr);
+    String sHexStr = BitConverter::ToString(arrIntBytes);
+    Console::WriteLine(sHexStr);
 
-    int backToInt = BitConverter::ToInt32(intBytes, 0);
+    int iBackToInt = BitConverter::ToInt32(arrIntBytes, 0);
     Console::Write("Bytes back to int: ");
-    Console::WriteLine(backToInt);
+    Console::WriteLine(iBackToInt);
 }
 
 void DemonstrateConvert() {
     Console::WriteLine("\n--- Convert Demonstration ---");
 
     // String to numeric
-    String intStr("12345");
-    int intVal = Convert::ToInt32(intStr);
+    String sIntStr("12345");
+    int iIntVal = Convert::ToInt32(sIntStr);
     Console::Write("String '12345' to Int32: ");
-    Console::WriteLine(intVal);
+    Console::WriteLine(iIntVal);
 
     // Numeric to String
-    String boolStr = Convert::ToString(true);
+    String sBoolStr = Convert::ToString(true);
     Console::Write("Bool true to String: ");
-    Console::WriteLine(boolStr);
+    Console::WriteLine(sBoolStr);
 
     // Base conversions
-    String hexStr = Convert::ToString(255, 16);
+    String sHexStr = Convert::ToString(255, 16);
     Console::Write("Int 255 to Hex: ");
-    Console::WriteLine(hexStr);
+    Console::WriteLine(sHexStr);
 }
 
 void DemonstrateTimeProvider() {
     Console::WriteLine("\n--- TimeProvider Demonstration ---");
 
-    auto provider = TimeProvider::GetSystem();
-    DateTimeOffset now = provider->GetUtcNow();
+    std::shared_ptr<TimeProvider> pProvider = TimeProvider::GetSystem();
+    DateTimeOffset dtNow = pProvider->GetUtcNow();
     
     Console::Write("UTC Ticks: ");
-    Console::WriteLine((long long)now.GetTicks());
+    Console::WriteLine((long long)dtNow.GetTicks());
 
-    int64_t start = provider->GetTimestamp();
+    int64_t llStart = pProvider->GetTimestamp();
     Console::WriteLine("Starting operation...");
     std::this_thread::sleep_for(std::chrono::milliseconds(50));
     
-    TimeSpan elapsed = provider->GetElapsedTime(start);
+    TimeSpan tsElapsed = pProvider->GetElapsedTime(llStart);
     Console::Write("Operation took: ");
-    Console::Write((double)elapsed.GetTotalMilliseconds());
+    Console::Write((double)tsElapsed.GetTotalMilliseconds());
     Console::WriteLine(" ms");
 }
 
 void DemonstrateStopwatch() {
     Console::WriteLine("\n--- Stopwatch Demonstration ---");
 
-    Stopwatch sw = Stopwatch::StartNew();
+    Stopwatch swStopwatch = Stopwatch::StartNew();
     Console::WriteLine("Stopwatch started...");
 
     std::this_thread::sleep_for(std::chrono::milliseconds(150));
 
-    sw.Stop();
+    swStopwatch.Stop();
     Console::Write("Elapsed: ");
-    Console::Write((double)sw.Elapsed().GetTotalMilliseconds());
+    Console::Write((double)swStopwatch.Elapsed().GetTotalMilliseconds());
     Console::WriteLine(" ms");
 }
 
 void DemonstrateStringBuilder() {
     Console::WriteLine("\n--- StringBuilder Demonstration ---");
 
-    StringBuilder sb;
-    sb.Append("User: ")
+    StringBuilder sbBuilder;
+    sbBuilder.Append("User: ")
       .Append("Gemini")
       .AppendLine()
       .Append("Status: ")
@@ -175,7 +175,7 @@ void DemonstrateStringBuilder() {
       .Append("Score: ")
       .Append(98.5);
 
-    Console::Write(sb.ToString());
+    Console::Write(sbBuilder.ToString());
     Console::WriteLine();
 }
 
@@ -183,37 +183,37 @@ void DemonstrateCollections() {
     Console::WriteLine("\n--- Collections Demonstration ---");
 
     // List
-    List<int> numbers = { 5, 2, 8, 1, 9 };
-    numbers.Add(4);
-    numbers.Sort();
+    List<int> lstNumbers = { 5, 2, 8, 1, 9 };
+    lstNumbers.Add(4);
+    lstNumbers.Sort();
     
     Console::Write("Sorted List: ");
-    for (int n : numbers) {
-        Console::Write(n);
+    for (int iN : lstNumbers) {
+        Console::Write(iN);
         Console::Write(" ");
     }
     Console::WriteLine();
 
     // List Functional
     Console::Write("Numbers > 5: ");
-    auto bigNumbers = numbers.FindAll([](int n) { return n > 5; });
-    for (int n : bigNumbers) {
-        Console::Write(n);
+    List<int> lstBigNumbers = lstNumbers.FindAll([](int iN) { return iN > 5; });
+    for (int iN : lstBigNumbers) {
+        Console::Write(iN);
         Console::Write(" ");
     }
     Console::WriteLine();
 
     // Dictionary
-    Dictionary<String, String> meta;
-    meta.Add("OS", "Windows");
-    meta.Add("Arch", "x64");
+    Dictionary<String, String> dictMeta;
+    dictMeta.Add("OS", "Windows");
+    dictMeta.Add("Arch", "x64");
 
     Console::WriteLine("Dictionary Meta:");
-    for (auto const& [key, val] : meta) {
+    for (auto const& [sKey, sVal] : dictMeta) {
         Console::Write("  ");
-        Console::Write(key);
+        Console::Write(sKey);
         Console::Write(" => ");
-        Console::WriteLine(val);
+        Console::WriteLine(sVal);
     }
 }
 
@@ -234,80 +234,80 @@ void DemonstrateEnvironment() {
 void DemonstrateTimeZone() {
     Console::WriteLine("\n--- TimeZone Demonstration ---");
 
-    TimeZone* current = TimeZone::GetCurrentTimeZone();
+    TimeZone* pCurrent = TimeZone::GetCurrentTimeZone();
     Console::Write("Current TimeZone Standard Name: ");
-    Console::WriteLine(current->GetStandardName());
+    Console::WriteLine(pCurrent->GetStandardName());
     Console::Write("Current TimeZone Daylight Name: ");
-    Console::WriteLine(current->GetDaylightName());
+    Console::WriteLine(pCurrent->GetDaylightName());
 
-    DateTimeOffset now(638200000000000000LL); // Arbitrary point
-    TimeSpan offset = current->GetUtcOffset(now);
+    DateTimeOffset dtNow(638200000000000000LL); // Arbitrary point
+    TimeSpan tsOffset = pCurrent->GetUtcOffset(dtNow);
     Console::Write("Current UTC Offset (hours): ");
-    Console::WriteLine(offset.GetTotalHours());
+    Console::WriteLine(tsOffset.GetTotalHours());
 
-    TimeZoneInfo local = TimeZoneInfo::Local();
+    TimeZoneInfo objLocal = TimeZoneInfo::Local();
     Console::Write("TimeZoneInfo Local Id: ");
-    Console::WriteLine(local.GetId());
+    Console::WriteLine(objLocal.GetId());
     Console::Write("TimeZoneInfo Local Display Name: ");
-    Console::WriteLine(local.GetDisplayName());
+    Console::WriteLine(objLocal.GetDisplayName());
 
-    TimeZoneInfo utc = TimeZoneInfo::Utc();
+    TimeZoneInfo objUtc = TimeZoneInfo::Utc();
     Console::Write("TimeZoneInfo Utc Id: ");
-    Console::WriteLine(utc.GetId());
+    Console::WriteLine(objUtc.GetId());
 }
 
 void DemonstrateTextIO() {
     Console::WriteLine("\n--- Text I/O Demonstration ---");
 
     // StringWriter
-    StringWriter sw;
-    sw.WriteLine("First line");
-    sw.WriteLine("Second line");
-    sw.Write("Part of third line... ");
-    sw.Write("rest of third line.");
+    StringWriter pWriter;
+    pWriter.WriteLine("First line");
+    pWriter.WriteLine("Second line");
+    pWriter.Write("Part of third line... ");
+    pWriter.Write("rest of third line.");
 
-    String result = sw.ToString();
+    String sResult = pWriter.ToString();
     Console::WriteLine("Written content:");
-    Console::WriteLine(result);
+    Console::WriteLine(sResult);
 
     // StringReader
-    StringReader sr(result);
+    StringReader pReader(sResult);
     Console::WriteLine("Reading back line by line:");
-    String line;
-    int lineNum = 1;
-    while (!(line = sr.ReadLine()).IsEmpty()) {
+    String sLine;
+    int iLineNum = 1;
+    while (!(sLine = pReader.ReadLine()).IsEmpty()) {
         Console::Write("Line ");
-        Console::Write(lineNum++);
+        Console::Write(iLineNum++);
         Console::Write(": ");
-        Console::WriteLine(line);
+        Console::WriteLine(sLine);
     }
 }
 
 void DemonstrateThreading() {
     Console::WriteLine("\n--- Threading Demonstration ---");
 
-    Thread* current = Thread::GetCurrentThread();
+    Thread* pCurrentThread = Thread::GetCurrentThread();
     Console::WriteLine("Main Thread active.");
 
-    bool workerExecuted = false;
-    Thread worker([&workerExecuted]() {
-        Thread* thisThread = Thread::GetCurrentThread();
-        thisThread->SetName("WorkerThread");
+    bool bWorkerExecuted = false;
+    Thread pThreadWorker([&bWorkerExecuted]() {
+        Thread* pThisThread = Thread::GetCurrentThread();
+        pThisThread->SetName("WorkerThread");
         Console::Write("Worker Thread Name: ");
-        Console::WriteLine(thisThread->GetName());
+        Console::WriteLine(pThisThread->GetName());
         
         Thread::Sleep(100);
-        workerExecuted = true;
+        bWorkerExecuted = true;
     });
 
     Console::WriteLine("Starting worker thread...");
-    worker.Start();
+    pThreadWorker.Start();
     
     Console::WriteLine("Waiting for worker thread to finish...");
-    worker.Join();
+    pThreadWorker.Join();
 
     Console::Write("Worker executed: ");
-    Console::WriteLine(Convert::ToString(workerExecuted));
+    Console::WriteLine(Convert::ToString(bWorkerExecuted));
 }
 
 void DemonstrateSynchronization() {
@@ -315,24 +315,24 @@ void DemonstrateSynchronization() {
 
     // 1. ManualResetEvent
     Console::WriteLine("Demonstrating ManualResetEvent...");
-    ManualResetEvent mre(false);
-    Thread t1([&mre]() {
+    ManualResetEvent objMre(false);
+    Thread pThread1([&objMre]() {
         Console::WriteLine("  Thread 1 waiting on ManualResetEvent...");
-        mre.WaitOne();
+        objMre.WaitOne();
         Console::WriteLine("  Thread 1 released from ManualResetEvent.");
     });
-    t1.Start();
+    pThread1.Start();
     Thread::Sleep(100);
     Console::WriteLine("  Main thread signaling ManualResetEvent...");
-    mre.Set();
-    t1.Join();
+    objMre.Set();
+    pThread1.Join();
 
     // 1b. Event Timeout
     Console::WriteLine("Demonstrating EventWaitHandle Timeout...");
     try {
         Console::WriteLine("  Waiting 100ms on a non-signaled ManualResetEvent...");
-        mre.Reset();
-        mre.WaitOne(100);
+        objMre.Reset();
+        objMre.WaitOne(100);
     }
     catch (const TimeoutException& ex) {
         Console::Write("  Caught expected TimeoutException from Event: ");
@@ -341,85 +341,85 @@ void DemonstrateSynchronization() {
 
     // 2. Interlocked
     Console::WriteLine("\nDemonstrating Interlocked...");
-    Interlocked<int> counter = 0;
-    std::vector<Thread*> threads;
-    for (int i = 0; i < 5; ++i) {
-        threads.push_back(new Thread([&counter]() {
-            for (int j = 0; j < 1000; ++j) {
-                counter++; // Atomic increment via operator++
+    Interlocked<int> objCounter = 0;
+    std::vector<Thread*> lstThreads;
+    for (int iI = 0; iI < 5; ++iI) {
+        lstThreads.push_back(new Thread([&objCounter]() {
+            for (int iJ = 0; iJ < 1000; ++iJ) {
+                objCounter++; // Atomic increment via operator++
             }
         }));
     }
-    for (auto t : threads) t->Start();
-    for (auto t : threads) {
-        t->Join();
-        delete t;
+    for (auto pT : lstThreads) pT->Start();
+    for (auto pT : lstThreads) {
+        pT->Join();
+        delete pT;
     }
     Console::Write("  Counter value (expected 5000): ");
-    Console::WriteLine((int)counter);
+    Console::WriteLine((int)objCounter);
 
     // 3. Exception Handling (SemaphoreFullException and TimeoutException)
     Console::WriteLine("\nDemonstrating Synchronization Exception Handling...");
-    Semaphore s(1, 1);
+    Semaphore objSemaphore(1, 1);
     try {
         Console::WriteLine("  Releasing a full semaphore to trigger exception...");
-        s.Release(); // Already at 1, max is 1
+        objSemaphore.Release(); // Already at 1, max is 1
     }
     catch (const SemaphoreFullException& ex) {
         Console::Write("  Caught expected exception: ");
         Console::WriteLine(ex.What());
     }
 
-    Mutex m;
-    m.WaitOne();
-    Thread t3([&m]() {
+    Mutex objMutex;
+    objMutex.WaitOne();
+    Thread pThread3([&objMutex]() {
         try {
             Console::WriteLine("  Thread 3 attempting to acquire locked Mutex with 100ms timeout...");
-            m.WaitOne(100);
+            objMutex.WaitOne(100);
         }
         catch (const TimeoutException& ex) {
             Console::Write("  Thread 3 caught expected TimeoutException: ");
             Console::WriteLine(ex.What());
         }
     });
-    t3.Start();
-    t3.Join();
-    m.Release();
+    pThread3.Start();
+    pThread3.Join();
+    objMutex.Release();
 
     // 4. CriticalSection
     Console::WriteLine("\nDemonstrating CriticalSection...");
-    CriticalSection cs;
-    int sharedResource = 0;
-    Thread t2([&cs, &sharedResource]() {
-        cs.Enter();
-        sharedResource += 10;
+    CriticalSection objCs;
+    int iSharedResource = 0;
+    Thread pThread2([&objCs, &iSharedResource]() {
+        objCs.Enter();
+        iSharedResource += 10;
         Thread::Sleep(50);
-        cs.Leave();
+        objCs.Leave();
     });
-    t2.Start();
+    pThread2.Start();
     Thread::Sleep(10);
-    if (!cs.TryEnter()) {
+    if (!objCs.TryEnter()) {
         Console::WriteLine("  Main thread could not enter CriticalSection (locked by Thread 2).");
     }
-    t2.Join();
+    pThread2.Join();
     Console::Write("  Shared resource value: ");
-    Console::WriteLine(sharedResource);
+    Console::WriteLine(iSharedResource);
 
     // 5. Thread Join Timeout
     Console::WriteLine("\nDemonstrating Thread::Join Timeout...");
-    Thread t4([]() {
+    Thread pThread4([]() {
         Thread::Sleep(500); // Sleep longer than timeout
     });
-    t4.Start();
+    pThread4.Start();
     try {
         Console::WriteLine("  Attempting to Join thread with 100ms timeout (should fail)...");
-        t4.Join(100);
+        pThread4.Join(100);
     }
     catch (const TimeoutException& ex) {
         Console::Write("  Caught expected TimeoutException from Join: ");
         Console::WriteLine(ex.What());
     }
-    t4.Join(); // Clean up
+    pThread4.Join(); // Clean up
 }
 
 void DemonstrateLockRAII() {
@@ -427,9 +427,9 @@ void DemonstrateLockRAII() {
 
     // 1. Lock<Mutex>
     Console::WriteLine("Demonstrating Lock<Mutex>...");
-    Mutex m;
+    Mutex objMutex;
     {
-        MutexLock lock(m); // Auto-acquires
+        MutexLock objLock(objMutex); // Auto-acquires
         Console::WriteLine("  Mutex acquired via RAII Lock.");
         // ... work ...
     } // Auto-releases
@@ -437,19 +437,19 @@ void DemonstrateLockRAII() {
 
     // 2. Lock<CriticalSection>
     Console::WriteLine("\nDemonstrating Lock<CriticalSection>...");
-    CriticalSection cs;
+    CriticalSection objCs;
     {
-        CriticalSectionLock lock(cs);
+        CriticalSectionLock objLock(objCs);
         Console::WriteLine("  CriticalSection entered via RAII Lock.");
     }
     Console::WriteLine("  CriticalSection left automatically.");
 
     // 3. Lock<Semaphore> with release count
     Console::WriteLine("\nDemonstrating Lock<Semaphore> with release count...");
-    Semaphore s(2, 2);
+    Semaphore objSemaphore(2, 2);
     {
         // Acquire 1 unit, specify that destructor should release 1 unit (default behavior)
-        SemaphoreLock lock(s); 
+        SemaphoreLock objLock(objSemaphore); 
         Console::WriteLine("  Semaphore unit acquired.");
     }
     Console::WriteLine("  Semaphore unit released automatically.");
@@ -458,31 +458,31 @@ void DemonstrateLockRAII() {
 void DemonstrateFileAttributes() {
     Console::WriteLine("\n--- File Attributes Demonstration ---");
 
-    String path = "attr_demo.txt";
-    File::WriteAllText(path, "Demo content for attributes");
+    String sPath = "attr_demo.txt";
+    File::WriteAllText(sPath, "Demo content for attributes");
 
-    FileAttributes attrs;
-    if (File::GetAttributes(path, attrs)) {
+    FileAttributes objAttrs;
+    if (File::GetAttributes(sPath, objAttrs)) {
         Console::Write("Initial Attributes (int): ");
-        Console::WriteLine((int)attrs);
+        Console::WriteLine((int)objAttrs);
 
         // Set to ReadOnly
-        if (File::SetAttributes(path, FileAttributes::ReadOnly)) {
+        if (File::SetAttributes(sPath, FileAttributes::ReadOnly)) {
             Console::WriteLine("Set attribute to ReadOnly: Success");
             
-            FileAttributes newAttrs;
-            File::GetAttributes(path, newAttrs);
-            bool isReadOnly = ((int)newAttrs & (int)FileAttributes::ReadOnly) != 0;
+            FileAttributes objNewAttrs;
+            File::GetAttributes(sPath, objNewAttrs);
+            bool bIsReadOnly = ((int)objNewAttrs & (int)FileAttributes::ReadOnly) != 0;
             Console::Write("Is ReadOnly now? ");
-            Console::WriteLine(Convert::ToString(isReadOnly));
+            Console::WriteLine(Convert::ToString(bIsReadOnly));
         }
 
         // Restore to Normal
-        File::SetAttributes(path, FileAttributes::Normal);
+        File::SetAttributes(sPath, FileAttributes::Normal);
         Console::WriteLine("Restored attributes to Normal.");
     }
 
-    File::Delete(path);
+    File::Delete(sPath);
 }
 
 int main() {

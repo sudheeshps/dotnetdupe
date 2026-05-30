@@ -10,7 +10,7 @@ namespace DotNetDupe {
             class StringWriter : public TextWriter {
             public:
                 DOTNETDUPE_API StringWriter();
-                DOTNETDUPE_API StringWriter(Text::StringBuilder& sb);
+                DOTNETDUPE_API StringWriter(Text::StringBuilder& sbOutput);
                 DOTNETDUPE_API virtual ~StringWriter() = default;
 
                 DOTNETDUPE_API void Close() override;
@@ -20,28 +20,28 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API virtual String ToString() const;
 
-                DOTNETDUPE_API void Write(bool value) override;
-                DOTNETDUPE_API void Write(char value) override;
-                DOTNETDUPE_API void Write(const String& value) override;
-                DOTNETDUPE_API void Write(const char* value) override;
-                DOTNETDUPE_API void Write(int value) override;
-                DOTNETDUPE_API void Write(long long value) override;
-                DOTNETDUPE_API void Write(float value) override;
-                DOTNETDUPE_API void Write(double value) override;
+                DOTNETDUPE_API void Write(bool bValue) override;
+                DOTNETDUPE_API void Write(char chValue) override;
+                DOTNETDUPE_API void Write(const String& sValue) override;
+                DOTNETDUPE_API void Write(const char* pValue) override;
+                DOTNETDUPE_API void Write(int iValue) override;
+                DOTNETDUPE_API void Write(long long llValue) override;
+                DOTNETDUPE_API void Write(float fValue) override;
+                DOTNETDUPE_API void Write(double dValue) override;
 
                 DOTNETDUPE_API void WriteLine() override;
-                DOTNETDUPE_API void WriteLine(bool value) override;
-                DOTNETDUPE_API void WriteLine(char value) override;
-                DOTNETDUPE_API void WriteLine(const char* value) override;
-                DOTNETDUPE_API void WriteLine(const String& value) override;
-                DOTNETDUPE_API void WriteLine(int value) override;
-                DOTNETDUPE_API void WriteLine(long long value) override;
-                DOTNETDUPE_API void WriteLine(float value) override;
-                DOTNETDUPE_API void WriteLine(double value) override;
+                DOTNETDUPE_API void WriteLine(bool bValue) override;
+                DOTNETDUPE_API void WriteLine(char chValue) override;
+                DOTNETDUPE_API void WriteLine(const char* pValue) override;
+                DOTNETDUPE_API void WriteLine(const String& sValue) override;
+                DOTNETDUPE_API void WriteLine(int iValue) override;
+                DOTNETDUPE_API void WriteLine(long long llValue) override;
+                DOTNETDUPE_API void WriteLine(float fValue) override;
+                DOTNETDUPE_API void WriteLine(double dValue) override;
 
             private:
-                Text::StringBuilder* _sb;
-                bool _isOpen;
+                Text::StringBuilder* m_pSb;
+                bool m_bIsOpen;
             };
         }
     }

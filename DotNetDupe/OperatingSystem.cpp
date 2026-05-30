@@ -12,15 +12,15 @@ using namespace DotNetDupe::System::Internal;
 
 namespace DotNetDupe {
     namespace System {
-        OperatingSystem::OperatingSystem(PlatformID platform, const Version& version)
-            : _platform(platform), _version(version) { }
+        OperatingSystem::OperatingSystem(PlatformID ePlatform, const Version& vVersion)
+            : m_ePlatform(ePlatform), m_vVersion(vVersion) { }
 
         PlatformID OperatingSystem::GetPlatform() const {
-            return _platform;
+            return m_ePlatform;
         }
 
         const Version& OperatingSystem::GetVersion() const {
-            return _version;
+            return m_vVersion;
         }
 
         String OperatingSystem::GetServicePack() const {
@@ -29,11 +29,11 @@ namespace DotNetDupe {
             ZeroMemory(&info, sizeof(OSVERSIONINFOEXW));
             info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
 
-            HMODULE hModule = GetModuleHandleW(L"ntdll.dll");
-            if (hModule) {
-                RtlGetVersion_FUNC rtlGetVersion = (RtlGetVersion_FUNC)GetProcAddress(hModule, "RtlGetVersion");
-                if (rtlGetVersion) {
-                    rtlGetVersion(&info);
+            HMODULE pModule = GetModuleHandleW(L"ntdll.dll");
+            if (pModule) {
+                RtlGetVersion_FUNC pRtlGetVersion = (RtlGetVersion_FUNC)GetProcAddress(pModule, "RtlGetVersion");
+                if (pRtlGetVersion) {
+                    pRtlGetVersion(&info);
                 }
             }
 
@@ -44,7 +44,7 @@ namespace DotNetDupe {
         }
 
         String OperatingSystem::GetVersionString() const {
-            return _version.ToString();
+            return m_vVersion.ToString();
         }
 
         bool OperatingSystem::IsWindows() {

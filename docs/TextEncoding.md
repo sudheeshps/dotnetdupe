@@ -10,7 +10,7 @@ When overridden in a derived class, encodes all the characters in the specified 
 
 **Usage:**
 ```cpp
-auto bytes = encoding->GetBytes(_T("Hello"));
+auto bytes = encoding->GetBytes("Hello");
 ```
 
 ##### `virtual String GetString(const Array<char>& bytes)`
@@ -36,3 +36,4 @@ Returns an encoding for the UTF-8 format.
 ```cpp
 auto encoding = TextEncoding::UTF8();
 ```
+

@@ -23,41 +23,41 @@ namespace DotNetDupe {
                 return -1;
             }
 
-            int TextReader::Read(char* buffer, int index, int count) {
-                if (buffer == nullptr) return 0;
-                int n = 0;
-                while (n < count) {
-                    int ch = Read();
-                    if (ch == -1) break;
-                    buffer[index + n] = (char)ch;
-                    n++;
+            int TextReader::Read(char* pBuffer, int iIndex, int nCount) {
+                if (pBuffer == nullptr) return 0;
+                int iN = 0;
+                while (iN < nCount) {
+                    int iCh = Read();
+                    if (iCh == -1) break;
+                    pBuffer[iIndex + iN] = (char)iCh;
+                    iN++;
                 }
-                return n;
+                return iN;
             }
 
             String TextReader::ReadLine() {
-                StringBuilder sb;
+                StringBuilder sbOutput;
                 while (true) {
-                    int ch = Read();
-                    if (ch == -1) {
-                        if (sb.GetLength() > 0) return sb.ToString();
+                    int iCh = Read();
+                    if (iCh == -1) {
+                        if (sbOutput.GetLength() > 0) return sbOutput.ToString();
                         return String("");
                     }
-                    if (ch == '\r' || ch == '\n') {
-                        if (ch == '\r' && Peek() == '\n') Read();
-                        return sb.ToString();
+                    if (iCh == '\r' || iCh == '\n') {
+                        if (iCh == '\r' && Peek() == '\n') Read();
+                        return sbOutput.ToString();
                     }
-                    sb.Append((char)ch);
+                    sbOutput.Append((char)iCh);
                 }
             }
 
             String TextReader::ReadToEnd() {
-                StringBuilder sb;
-                int ch;
-                while ((ch = Read()) != -1) {
-                    sb.Append((char)ch);
+                StringBuilder sbOutput;
+                int iCh;
+                while ((iCh = Read()) != -1) {
+                    sbOutput.Append((char)iCh);
                 }
-                return sb.ToString();
+                return sbOutput.ToString();
             }
         }
     }

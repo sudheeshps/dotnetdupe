@@ -19,7 +19,7 @@ Initializes a new instance of the `Guid` class using the value represented by th
 
 **Usage:**
 ```cpp
-Guid g(_T("12345678-1234-1234-1234-1234567890ab"));
+Guid g("12345678-1234-1234-1234-1234567890ab");
 ```
 
 ##### `static Guid NewGuid()`
@@ -63,3 +63,4 @@ if (g1 == g2) { /* ... */ }
 ##### `static const Guid Empty`
 
 A read-only instance of the `Guid` class whose value is all zeros.
+

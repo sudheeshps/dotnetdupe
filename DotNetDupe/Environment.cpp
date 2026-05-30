@@ -30,8 +30,8 @@ namespace DotNetDupe {
         String Environment::GetMachineName() {
 #if defined(_WIN32)
             wchar_t buffer [MAX_COMPUTERNAME_LENGTH + 1];
-            DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
-            GetComputerNameW(buffer, &size);
+            DWORD nSize = MAX_COMPUTERNAME_LENGTH + 1;
+            GetComputerNameW(buffer, &nSize);
             return String(WCharToUtf8(buffer).c_str());
 #else
             char buffer[HOST_NAME_MAX + 1];
@@ -45,16 +45,16 @@ namespace DotNetDupe {
         String Environment::GetUserName() {
 #if defined(_WIN32)
             wchar_t buffer [256];
-            DWORD size = 256;
-            ::GetUserNameW(buffer, &size);
+            DWORD nSize = 256;
+            ::GetUserNameW(buffer, &nSize);
             return String(WCharToUtf8(buffer).c_str());
 #else
-            struct passwd *pw = getpwuid(getuid());
-            if (pw) {
-                return String(pw->pw_name);
+            struct passwd *pPw = getpwuid(getuid());
+            if (pPw) {
+                return String(pPw->pw_name);
             }
-            const char* user = getenv("USER");
-            return user ? String(user) : String("");
+            const char* pUser = getenv("USER");
+            return pUser ? String(pUser) : String("");
 #endif
         }
 
@@ -131,13 +131,13 @@ namespace DotNetDupe {
             }
 #else
             std::ifstream statusFile("/proc/self/status");
-            std::string line;
-            while (std::getline(statusFile, line)) {
-                if (line.compare(0, 6, "VmRSS:") == 0) {
-                    size_t start = line.find_first_of("0123456789");
-                    size_t end = line.find_first_not_of("0123456789", start);
-                    if (start != std::string::npos) {
-                        return std::stoll(line.substr(start, end - start)) * 1024;
+            std::string sLine;
+            while (std::getline(statusFile, sLine)) {
+                if (sLine.compare(0, 6, "VmRSS:") == 0) {
+                    size_t nStart = sLine.find_first_of("0123456789");
+                    size_t nEnd = sLine.find_first_not_of("0123456789", nStart);
+                    if (nStart != std::string::npos) {
+                        return std::stoll(sLine.substr(nStart, nEnd - nStart)) * 1024;
                     }
                 }
             }
@@ -145,25 +145,25 @@ namespace DotNetDupe {
             return 0;
         }
 
-        void Environment::Exit(int exitCode) {
-            ::exit(exitCode);
+        void Environment::Exit(int iExitCode) {
+            ::exit(iExitCode);
         }
 
-        String Environment::ExpandEnvironmentVariables(const String& name) {
+        String Environment::ExpandEnvironmentVariables(const String& sName) {
 #if defined(_WIN32)
-            std::wstring wname = Utf8ToWChar(name.GetRawString());
-            DWORD size = ::ExpandEnvironmentStringsW(wname.c_str(), NULL, 0);
-            if (size == 0) return name;
-            std::vector<wchar_t> buffer(size);
-            ::ExpandEnvironmentStringsW(wname.c_str(), buffer.data(), size);
+            std::wstring sWName = Utf8ToWChar(sName.GetRawString());
+            DWORD nSize = ::ExpandEnvironmentStringsW(sWName.c_str(), NULL, 0);
+            if (nSize == 0) return sName;
+            std::vector<wchar_t> buffer(nSize);
+            ::ExpandEnvironmentStringsW(sWName.c_str(), buffer.data(), nSize);
             return String(WCharToUtf8(buffer.data()).c_str());
 #else
             // Simple implementation: check if name is exactly a variable
-            if (name.StartsWith("%", false) && name.EndsWith("%", false)) {
-                const char* val = getenv(name.Substring(1, name.GetLength() - 2).GetRawString());
-                return val ? String(val) : name;
+            if (sName.StartsWith("%", false) && sName.EndsWith("%", false)) {
+                const char* pVal = getenv(sName.Substring(1, sName.GetLength() - 2).GetRawString());
+                return pVal ? String(pVal) : sName;
             }
-            return name;
+            return sName;
 #endif
         }
 
@@ -171,101 +171,101 @@ namespace DotNetDupe {
             std::vector<String> tempArgs;
 #if defined(_WIN32)
             int nArgs;
-            LPWSTR* szArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
-            if (szArglist != NULL) {
-                for (int i = 0; i < nArgs; i++) {
-                    tempArgs.push_back(String(WCharToUtf8(szArglist[i]).c_str()));
+            LPWSTR* pSzArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
+            if (pSzArglist != NULL) {
+                for (int iIndex = 0; iIndex < nArgs; iIndex++) {
+                    tempArgs.push_back(String(WCharToUtf8(pSzArglist[iIndex]).c_str()));
                 }
-                LocalFree(szArglist);
+                LocalFree(pSzArglist);
             }
 #else
             std::ifstream cmdline("/proc/self/cmdline", std::ios::binary);
-            std::string arg;
-            while (std::getline(cmdline, arg, '\0')) {
-                tempArgs.push_back(String(arg.c_str()));
+            std::string sArg;
+            while (std::getline(cmdline, sArg, '\0')) {
+                tempArgs.push_back(String(sArg.c_str()));
             }
 #endif
             Array<String> result((int)tempArgs.size());
-            for (int i = 0; i < (int)tempArgs.size(); i++) result[i] = tempArgs[i];
+            for (int iIndex = 0; iIndex < (int)tempArgs.size(); iIndex++) result[iIndex] = tempArgs[iIndex];
             return result;
         }
 
-        String Environment::GetEnvironmentVariable(const String& variable) {
+        String Environment::GetEnvironmentVariable(const String& sVariable) {
 #if defined(_WIN32)
-            std::wstring wvar = Utf8ToWChar(variable.GetRawString());
-            DWORD size = ::GetEnvironmentVariableW(wvar.c_str(), NULL, 0);
-            if (size == 0) return String("");
-            std::vector<wchar_t> buffer(size);
-            ::GetEnvironmentVariableW(wvar.c_str(), buffer.data(), size);
+            std::wstring sWVar = Utf8ToWChar(sVariable.GetRawString());
+            DWORD nSize = ::GetEnvironmentVariableW(sWVar.c_str(), NULL, 0);
+            if (nSize == 0) return String("");
+            std::vector<wchar_t> buffer(nSize);
+            ::GetEnvironmentVariableW(sWVar.c_str(), buffer.data(), nSize);
             return String(WCharToUtf8(buffer.data()).c_str());
 #else
-            const char* val = getenv(variable.GetRawString());
-            return val ? String(val) : String("");
+            const char* pVal = getenv(sVariable.GetRawString());
+            return pVal ? String(pVal) : String("");
 #endif
         }
 
         Collections::Generic::Dictionary<String, String> Environment::GetEnvironmentVariables() {
             Collections::Generic::Dictionary<String, String> result;
 #if defined(_WIN32)
-            wchar_t* lpvEnv = GetEnvironmentStringsW();
-            for (wchar_t* lpszVariable = lpvEnv; *lpszVariable; ) {
-                std::string lineUtf8 = WCharToUtf8(lpszVariable);
-                String line(lineUtf8.c_str());
-                int eqIdx = line.IndexOf("=");
-                if (eqIdx != -1) {
-                    result.Add(line.Substring(0, eqIdx), line.Substring(eqIdx + 1, line.GetLength() - eqIdx - 1));
+            wchar_t* pLpvEnv = GetEnvironmentStringsW();
+            for (wchar_t* pLpszVariable = pLpvEnv; *pLpszVariable; ) {
+                std::string sLineUtf8 = WCharToUtf8(pLpszVariable);
+                String sLine(sLineUtf8.c_str());
+                int iEqIdx = sLine.IndexOf("=");
+                if (iEqIdx != -1) {
+                    result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));
                 }
-                lpszVariable += wcslen(lpszVariable) + 1;
+                pLpszVariable += wcslen(pLpszVariable) + 1;
             }
-            FreeEnvironmentStringsW(lpvEnv);
+            FreeEnvironmentStringsW(pLpvEnv);
 #else
-            for (char** env = environ; *env; ++env) {
-                std::string line(*env);
-                size_t eqPos = line.find('=');
-                if (eqPos != std::string::npos) {
-                    result.Add(String(line.substr(0, eqPos).c_str()), String(line.substr(eqPos + 1).c_str()));
+            for (char** ppEnv = environ; *ppEnv; ++ppEnv) {
+                std::string sLine(*ppEnv);
+                size_t nEqPos = sLine.find('=');
+                if (nEqPos != std::string::npos) {
+                    result.Add(String(sLine.substr(0, nEqPos).c_str()), String(sLine.substr(nEqPos + 1).c_str()));
                 }
             }
 #endif
             return result;
         }
 
-        String Environment::GetFolderPath(SpecialFolder folder) {
+        String Environment::GetFolderPath(SpecialFolder eFolder) {
 #if defined(_WIN32)
-            int csidl = 0;
-            switch (folder) {
-            case SpecialFolder::ApplicationData: csidl = CSIDL_APPDATA; break;
-            case SpecialFolder::CommonApplicationData: csidl = CSIDL_COMMON_APPDATA; break;
-            case SpecialFolder::CommonProgramFiles: csidl = CSIDL_PROGRAM_FILES_COMMON; break;
-            case SpecialFolder::Cookies: csidl = CSIDL_COOKIES; break;
-            case SpecialFolder::Desktop: csidl = CSIDL_DESKTOP; break;
-            case SpecialFolder::Favorites: csidl = CSIDL_FAVORITES; break;
-            case SpecialFolder::History: csidl = CSIDL_HISTORY; break;
-            case SpecialFolder::InternetCache: csidl = CSIDL_INTERNET_CACHE; break;
-            case SpecialFolder::LocalApplicationData: csidl = CSIDL_LOCAL_APPDATA; break;
-            case SpecialFolder::MyComputer: csidl = CSIDL_DRIVES; break;
-            case SpecialFolder::MyDocuments: csidl = CSIDL_MYDOCUMENTS; break;
-            case SpecialFolder::MyMusic: csidl = CSIDL_MYMUSIC; break;
-            case SpecialFolder::MyPictures: csidl = CSIDL_MYPICTURES; break;
-            case SpecialFolder::MyVideos: csidl = CSIDL_MYVIDEO; break;
-            case SpecialFolder::ProgramFiles: csidl = CSIDL_PROGRAM_FILES; break;
-            case SpecialFolder::Programs: csidl = CSIDL_PROGRAMS; break;
-            case SpecialFolder::Recent: csidl = CSIDL_RECENT; break;
-            case SpecialFolder::SendTo: csidl = CSIDL_SENDTO; break;
-            case SpecialFolder::StartMenu: csidl = CSIDL_STARTMENU; break;
-            case SpecialFolder::Startup: csidl = CSIDL_STARTUP; break;
-            case SpecialFolder::System: csidl = CSIDL_SYSTEM; break;
-            case SpecialFolder::Templates: csidl = CSIDL_TEMPLATES; break;
-            case SpecialFolder::UserProfile: csidl = CSIDL_PROFILE; break;
+            int iCsidl = 0;
+            switch (eFolder) {
+            case SpecialFolder::ApplicationData: iCsidl = CSIDL_APPDATA; break;
+            case SpecialFolder::CommonApplicationData: iCsidl = CSIDL_COMMON_APPDATA; break;
+            case SpecialFolder::CommonProgramFiles: iCsidl = CSIDL_PROGRAM_FILES_COMMON; break;
+            case SpecialFolder::Cookies: iCsidl = CSIDL_COOKIES; break;
+            case SpecialFolder::Desktop: iCsidl = CSIDL_DESKTOP; break;
+            case SpecialFolder::Favorites: iCsidl = CSIDL_FAVORITES; break;
+            case SpecialFolder::History: iCsidl = CSIDL_HISTORY; break;
+            case SpecialFolder::InternetCache: iCsidl = CSIDL_INTERNET_CACHE; break;
+            case SpecialFolder::LocalApplicationData: iCsidl = CSIDL_LOCAL_APPDATA; break;
+            case SpecialFolder::MyComputer: iCsidl = CSIDL_DRIVES; break;
+            case SpecialFolder::MyDocuments: iCsidl = CSIDL_MYDOCUMENTS; break;
+            case SpecialFolder::MyMusic: iCsidl = CSIDL_MYMUSIC; break;
+            case SpecialFolder::MyPictures: iCsidl = CSIDL_MYPICTURES; break;
+            case SpecialFolder::MyVideos: iCsidl = CSIDL_MYVIDEO; break;
+            case SpecialFolder::ProgramFiles: iCsidl = CSIDL_PROGRAM_FILES; break;
+            case SpecialFolder::Programs: iCsidl = CSIDL_PROGRAMS; break;
+            case SpecialFolder::Recent: iCsidl = CSIDL_RECENT; break;
+            case SpecialFolder::SendTo: iCsidl = CSIDL_SENDTO; break;
+            case SpecialFolder::StartMenu: iCsidl = CSIDL_STARTMENU; break;
+            case SpecialFolder::Startup: iCsidl = CSIDL_STARTUP; break;
+            case SpecialFolder::System: iCsidl = CSIDL_SYSTEM; break;
+            case SpecialFolder::Templates: iCsidl = CSIDL_TEMPLATES; break;
+            case SpecialFolder::UserProfile: iCsidl = CSIDL_PROFILE; break;
             }
 
             wchar_t buffer [MAX_PATH];
-            if (SHGetFolderPathW(NULL, csidl, NULL, 0, buffer) == S_OK) {
+            if (SHGetFolderPathW(NULL, iCsidl, NULL, 0, buffer) == S_OK) {
                 return String(WCharToUtf8(buffer).c_str());
             }
 #else
             // Simple POSIX mapping
-            switch (folder) {
+            switch (eFolder) {
             case SpecialFolder::UserProfile:
             case SpecialFolder::MyDocuments:
                 return String(getenv("HOME"));
@@ -281,28 +281,28 @@ namespace DotNetDupe {
         Array<String> Environment::GetLogicalDrives() {
             std::vector<String> tempDrives;
 #if defined(_WIN32)
-            DWORD drives = ::GetLogicalDrives();
-            for (int i = 0; i < 26; i++) {
-                if ((drives >> i) & 1) {
-                    char driveName [4] = { (char)('A' + i), ':', '\\', 0 };
-                    tempDrives.push_back(String(driveName));
+            DWORD nDrives = ::GetLogicalDrives();
+            for (int iIndex = 0; iIndex < 26; iIndex++) {
+                if ((nDrives >> iIndex) & 1) {
+                    char chDriveName [4] = { (char)('A' + iIndex), ':', '\\', 0 };
+                    tempDrives.push_back(String(chDriveName));
                 }
             }
 #else
             tempDrives.push_back(String("/"));
 #endif
             Array<String> result((int)tempDrives.size());
-            for (int i = 0; i < (int)tempDrives.size(); i++) result[i] = tempDrives[i];
+            for (int iIndex = 0; iIndex < (int)tempDrives.size(); iIndex++) result[iIndex] = tempDrives[iIndex];
             return result;
         }
 
-        void Environment::SetEnvironmentVariable(const String& variable, const String& value) {
+        void Environment::SetEnvironmentVariable(const String& sVariable, const String& sValue) {
 #if defined(_WIN32)
-            std::wstring wvar = Utf8ToWChar(variable.GetRawString());
-            std::wstring wval = Utf8ToWChar(value.GetRawString());
-            ::SetEnvironmentVariableW(wvar.c_str(), wval.c_str());
+            std::wstring sWVar = Utf8ToWChar(sVariable.GetRawString());
+            std::wstring sWVal = Utf8ToWChar(sValue.GetRawString());
+            ::SetEnvironmentVariableW(sWVar.c_str(), sWVal.c_str());
 #else
-            setenv(variable.GetRawString(), value.GetRawString(), 1);
+            setenv(sVariable.GetRawString(), sValue.GetRawString(), 1);
 #endif
         }
 
@@ -314,14 +314,14 @@ namespace DotNetDupe {
             GetVersionExW((LPOSVERSIONINFOW)&info);
 
             Version version(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, 0);
-            PlatformID platform = PlatformID::Win32NT;
-            return OperatingSystem(platform, version);
+            PlatformID ePlatform = PlatformID::Win32NT;
+            return OperatingSystem(ePlatform, version);
 #else
             struct utsname name;
             uname(&name);
             Version version(0, 0, 0, 0); // Need better parsing
-            PlatformID platform = PlatformID::Unix;
-            return OperatingSystem(platform, version);
+            PlatformID ePlatform = PlatformID::Unix;
+            return OperatingSystem(ePlatform, version);
 #endif
         }
     }

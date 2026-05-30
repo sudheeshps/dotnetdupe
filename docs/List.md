@@ -19,7 +19,7 @@ Initializes a new instance of the `List<T>` class that contains elements copied 
 
 **Usage:**
 ```cpp
-List<String> list = { _T("A"), _T("B") };
+List<String> list = { "A", "B" };
 ```
 
 ##### `int GetCount() const`
@@ -166,3 +166,4 @@ for (const auto& item : list) {
     // ...
 }
 ```
+

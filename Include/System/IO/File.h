@@ -30,21 +30,21 @@ namespace DotNetDupe {
 
             class File : public Object {
             public:
-                DOTNETDUPE_API static bool Exists(const String& path);
-                DOTNETDUPE_API static String ReadAllText(const String& path);
-                DOTNETDUPE_API static void WriteAllText(const String& path, const String& contents);
-                DOTNETDUPE_API static void Copy(const String& sourceFileName, const String& destFileName, bool overwrite);
-                DOTNETDUPE_API static void Move(const String& sourceFileName, const String& destFileName);
-                DOTNETDUPE_API static void Delete(const String& path);
-                DOTNETDUPE_API static void AppendAllText(const String& path, const String& contents);
-                DOTNETDUPE_API static void AppendAllLines(const String& path, const Array<String>& contents);
-                DOTNETDUPE_API static Array<String> ReadAllLines(const String& path);
-                DOTNETDUPE_API static void WriteAllLines(const String& path, const Array<String>& contents);
-                DOTNETDUPE_API static void Create(const String& path);
-                DOTNETDUPE_API static bool GetAttributes(const String& path, FileAttributes& fileAttributes);
-                DOTNETDUPE_API static bool SetAttributes(const String& path, FileAttributes fileAttributes);
+                DOTNETDUPE_API static bool Exists(const String& sPath);
+                DOTNETDUPE_API static String ReadAllText(const String& sPath);
+                DOTNETDUPE_API static void WriteAllText(const String& sPath, const String& sContents);
+                DOTNETDUPE_API static void Copy(const String& sSourceFileName, const String& sDestFileName, bool bOverwrite);
+                DOTNETDUPE_API static void Move(const String& sSourceFileName, const String& sDestFileName);
+                DOTNETDUPE_API static void Delete(const String& sPath);
+                DOTNETDUPE_API static void AppendAllText(const String& sPath, const String& sContents);
+                DOTNETDUPE_API static void AppendAllLines(const String& sPath, const Array<String>& sContents);
+                DOTNETDUPE_API static Array<String> ReadAllLines(const String& sPath);
+                DOTNETDUPE_API static void WriteAllLines(const String& sPath, const Array<String>& sContents);
+                DOTNETDUPE_API static void Create(const String& sPath);
+                DOTNETDUPE_API static bool GetAttributes(const String& sPath, FileAttributes& attrAttributes);
+                DOTNETDUPE_API static bool SetAttributes(const String& sPath, FileAttributes attrAttributes);
             private:
-                static std::string ToNarrowPath(const String& path);
+                static std::string ToNarrowPath(const String& sPath);
             };
         }
     }

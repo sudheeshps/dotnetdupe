@@ -4,45 +4,45 @@
 
 namespace DotNetDupe {
     namespace System {
-        Version::Version(int major, int minor, int build, int revision)
-            : _major(major), _minor(minor), _build(build), _revision(revision) { }
+        Version::Version(int iMajor, int iMinor, int iBuild, int iRevision)
+            : m_iMajor(iMajor), m_iMinor(iMinor), m_iBuild(iBuild), m_iRevision(iRevision) { }
 
-        Version::Version(int major, int minor, int build)
-            : _major(major), _minor(minor), _build(build), _revision(0) { }
+        Version::Version(int iMajor, int iMinor, int iBuild)
+            : m_iMajor(iMajor), m_iMinor(iMinor), m_iBuild(iBuild), m_iRevision(0) { }
 
-        Version::Version(int major, int minor)
-            : _major(major), _minor(minor), _build(0), _revision(0) { }
+        Version::Version(int iMajor, int iMinor)
+            : m_iMajor(iMajor), m_iMinor(iMinor), m_iBuild(0), m_iRevision(0) { }
 
         Version::Version()
-            : _major(0), _minor(0), _build(0), _revision(0) { }
+            : m_iMajor(0), m_iMinor(0), m_iBuild(0), m_iRevision(0) { }
 
         int Version::GetMajor() const {
-            return _major;
+            return m_iMajor;
         }
 
         int Version::GetMinor() const {
-            return _minor;
+            return m_iMinor;
         }
 
         int Version::GetBuild() const {
-            return _build;
+            return m_iBuild;
         }
 
         int Version::GetRevision() const {
-            return _revision;
+            return m_iRevision;
         }
 
         String Version::ToString() const {
             std::stringstream ss;
-            ss << _major << "." << _minor << "." << _build << "." << _revision;
+            ss << m_iMajor << "." << m_iMinor << "." << m_iBuild << "." << m_iRevision;
             return String(ss.str().c_str());
         }
 
-        bool Version::operator==(const Version& other) const {
-            return _major == other._major &&
-                _minor == other._minor &&
-                _build == other._build &&
-                _revision == other._revision;
+        bool Version::operator==(const Version& vOther) const {
+            return m_iMajor == vOther.m_iMajor &&
+                m_iMinor == vOther.m_iMinor &&
+                m_iBuild == vOther.m_iBuild &&
+                m_iRevision == vOther.m_iRevision;
         }
 
         bool Version::operator!=(const Version& other) const {

@@ -22,7 +22,7 @@ Initializes a new instance of the `UriBuilder` class with the specified URI stri
 
 **Usage:**
 ```cpp
-UriBuilder builder(_T("http://example.com"));
+UriBuilder builder("http://example.com");
 ```
 
 ##### `UriBuilder(const Uri& uri)`
@@ -34,7 +34,7 @@ Initializes a new instance of the `UriBuilder` class with the specified `Uri` in
 
 **Usage:**
 ```cpp
-Uri myUri(_T("http://example.com"));
+Uri myUri("http://example.com");
 UriBuilder builder(myUri);
 ```
 
@@ -59,7 +59,7 @@ Sets the scheme name of the URI.
 
 **Usage:**
 ```cpp
-builder.SetScheme(_T("https"));
+builder.SetScheme("https");
 ```
 
 ##### `String GetHost() const`
@@ -83,7 +83,7 @@ Sets the Domain Name System (DNS) host name or IP address of a server.
 
 **Usage:**
 ```cpp
-builder.SetHost(_T("www.example.com"));
+builder.SetHost("www.example.com");
 ```
 
 ##### `int GetPort() const`
@@ -131,7 +131,7 @@ Sets the path to the resource referenced by the URI.
 
 **Usage:**
 ```cpp
-builder.SetPath(_T("/api/v1/data"));
+builder.SetPath("/api/v1/data");
 ```
 
 ##### `String GetQuery() const`
@@ -155,7 +155,7 @@ Sets any query information included in the URI.
 
 **Usage:**
 ```cpp
-builder.SetQuery(_T("id=123"));
+builder.SetQuery("id=123");
 ```
 
 ##### `String GetFragment() const`
@@ -179,7 +179,7 @@ Sets the fragment portion of the URI.
 
 **Usage:**
 ```cpp
-builder.SetFragment(_T("section1"));
+builder.SetFragment("section1");
 ```
 
 ##### `String GetUserName() const`
@@ -203,7 +203,7 @@ Sets the user name associated with the URI.
 
 **Usage:**
 ```cpp
-builder.SetUserName(_T("admin"));
+builder.SetUserName("admin");
 ```
 
 ##### `String GetPassword() const`
@@ -227,7 +227,7 @@ Sets the password associated with the URI.
 
 **Usage:**
 ```cpp
-builder.SetPassword(_T("secret"));
+builder.SetPassword("secret");
 ```
 
 ##### `Uri GetUri() const`
@@ -253,3 +253,4 @@ Returns the display string for the specified `UriBuilder` instance.
 ```cpp
 String uriStr = builder.ToString();
 ```
+

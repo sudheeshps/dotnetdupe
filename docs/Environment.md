@@ -13,7 +13,7 @@ Gets the NetBIOS name of this local computer.
 
 **Usage:**
 ```cpp
-String machineName = Environment::GetMachineName();
+String sMachineName = Environment::GetMachineName();
 ```
 
 ##### `static String GetUserName()`
@@ -25,7 +25,7 @@ Gets the user name of the person who is currently logged on to the Windows opera
 
 **Usage:**
 ```cpp
-String userName = Environment::GetUserName();
+String sUserName = Environment::GetUserName();
 ```
 
 ##### `static int GetProcessorCount()`
@@ -37,7 +37,7 @@ Gets the number of processors on the current machine.
 
 **Usage:**
 ```cpp
-int processors = Environment::GetProcessorCount();
+int nProcessors = Environment::GetProcessorCount();
 ```
 
 ##### `static String GetNewLine()`
@@ -49,7 +49,7 @@ Gets the newline string defined for this environment.
 
 **Usage:**
 ```cpp
-String newLine = Environment::GetNewLine();
+String sNewLine = Environment::GetNewLine();
 ```
 
 ##### `static String GetCurrentDirectory()`
@@ -61,7 +61,7 @@ Gets the fully qualified path of the current working directory.
 
 **Usage:**
 ```cpp
-String currentDir = Environment::GetCurrentDirectory();
+String sCurrentDir = Environment::GetCurrentDirectory();
 ```
 
 ##### `static String GetSystemDirectory()`
@@ -73,7 +73,7 @@ Gets the fully qualified path of the system directory.
 
 **Usage:**
 ```cpp
-String systemDir = Environment::GetSystemDirectory();
+String sSystemDir = Environment::GetSystemDirectory();
 ```
 
 ##### `static String GetOSVersion()`
@@ -85,7 +85,7 @@ Gets a string representation of the current platform identifier and version numb
 
 **Usage:**
 ```cpp
-String osVersion = Environment::GetOSVersion();
+String sOSVersion = Environment::GetOSVersion();
 ```
 
 ##### `static String GetUserDomainName()`
@@ -97,7 +97,7 @@ Gets the user domain name of the person who is currently logged on to the Window
 
 **Usage:**
 ```cpp
-String domainName = Environment::GetUserDomainName();
+String sDomainName = Environment::GetUserDomainName();
 ```
 
 ##### `static int64_t GetWorkingSet()`
@@ -109,34 +109,34 @@ Gets the amount of physical memory mapped to the process context.
 
 **Usage:**
 ```cpp
-int64_t memory = Environment::GetWorkingSet();
+int64_t nMemory = Environment::GetWorkingSet();
 ```
 
-##### `static void Exit(int exitCode)`
+##### `static void Exit(int nExitCode)`
 
 Terminates this process and gives the underlying operating system the specified exit code.
 
 **Parameters:**
-- `exitCode`: Exit code to be given to the operating system.
+- `nExitCode`: Exit code to be given to the operating system.
 
 **Usage:**
 ```cpp
 Environment::Exit(0);
 ```
 
-##### `static String ExpandEnvironmentVariables(const String& name)`
+##### `static String ExpandEnvironmentVariables(const String& sName)`
 
 Replaces the name of each environment variable embedded in the specified string with the string equivalent of the value of the variable.
 
 **Parameters:**
-- `name`: A string containing the names of environment variables.
+- `sName`: A string containing the names of environment variables.
 
 **Returns:**
 - A string with each environment variable replaced by its value.
 
 **Usage:**
 ```cpp
-String path = Environment::ExpandEnvironmentVariables(_T("%PATH%"));
+String sPath = Environment::ExpandEnvironmentVariables("%PATH%");
 ```
 
 ##### `static Array<String> GetCommandLineArgs()`
@@ -148,22 +148,22 @@ Returns a string array containing the command-line arguments for the current pro
 
 **Usage:**
 ```cpp
-auto args = Environment::GetCommandLineArgs();
+auto arrArgs = Environment::GetCommandLineArgs();
 ```
 
-##### `static String GetEnvironmentVariable(const String& variable)`
+##### `static String GetEnvironmentVariable(const String& sVariable)`
 
 Retrieves the value of an environment variable from the current process.
 
 **Parameters:**
-- `variable`: The name of an environment variable.
+- `sVariable`: The name of an environment variable.
 
 **Returns:**
-- The value of the environment variable specified by `variable`, or an empty string if the environment variable is not found.
+- The value of the environment variable specified by `sVariable`, or an empty string if the environment variable is not found.
 
 **Usage:**
 ```cpp
-String temp = Environment::GetEnvironmentVariable(_T("TEMP"));
+String sTemp = Environment::GetEnvironmentVariable("TEMP");
 ```
 
 ##### `static Collections::Generic::Dictionary<String, String> GetEnvironmentVariables()`
@@ -175,22 +175,22 @@ Retrieves all environment variable names and their values from the current proce
 
 **Usage:**
 ```cpp
-auto envVars = Environment::GetEnvironmentVariables();
+auto dictEnvVars = Environment::GetEnvironmentVariables();
 ```
 
-##### `static String GetFolderPath(SpecialFolder folder)`
+##### `static String GetFolderPath(SpecialFolder sfFolder)`
 
 Gets the path to the system special folder that is identified by the specified enumeration.
 
 **Parameters:**
-- `folder`: An enumerated constant that identifies a system special folder.
+- `sfFolder`: An enumerated constant that identifies a system special folder.
 
 **Returns:**
 - The path to the specified system special folder, if that folder physically exists on your computer; otherwise, an empty string.
 
 **Usage:**
 ```cpp
-String desktop = Environment::GetFolderPath(Environment::SpecialFolder::Desktop);
+String sDesktop = Environment::GetFolderPath(Environment::SpecialFolder::Desktop);
 ```
 
 ##### `static Array<String> GetLogicalDrives()`
@@ -202,20 +202,20 @@ Returns an array of strings that contains the names of the logical drives on the
 
 **Usage:**
 ```cpp
-auto drives = Environment::GetLogicalDrives();
+auto arrDrives = Environment::GetLogicalDrives();
 ```
 
-##### `static void SetEnvironmentVariable(const String& variable, const String& value)`
+##### `static void SetEnvironmentVariable(const String& sVariable, const String& sValue)`
 
 Creates, modifies, or deletes an environment variable stored in the current process.
 
 **Parameters:**
-- `variable`: The name of an environment variable.
-- `value`: A value to assign to `variable`.
+- `sVariable`: The name of an environment variable.
+- `sValue`: A value to assign to `sVariable`.
 
 **Usage:**
 ```cpp
-Environment::SetEnvironmentVariable(_T("MYVAR"), _T("MYVALUE"));
+Environment::SetEnvironmentVariable("MYVAR", "MYVALUE");
 ```
 
 ##### `static OperatingSystem GetOperatingSystem()`
@@ -227,5 +227,6 @@ Gets an `OperatingSystem` object that contains the current platform identifier a
 
 **Usage:**
 ```cpp
-OperatingSystem os = Environment::GetOperatingSystem();
+OperatingSystem osCurrent = Environment::GetOperatingSystem();
 ```
+

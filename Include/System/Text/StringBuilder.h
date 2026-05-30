@@ -36,7 +36,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API String ToString() const;
 
             private:
-                std::string _buffer;
+                std::string m_strBuffer;
             };
         }
     }

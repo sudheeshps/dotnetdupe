@@ -33,8 +33,8 @@ namespace DotNetDupe
             DOTNETDUPE_API static bool IsLinux();
 
         private:
-            PlatformID _platform;
-            Version _version;
+            PlatformID m_ePlatform;
+            Version m_vVersion;
         };
     }
 }
