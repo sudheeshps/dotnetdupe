@@ -253,6 +253,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
 | [OperatingSystem](docs/OperatingSystem.md) | Represents information about an operating system, such as the version and platform identifier. |
 | [Random](docs/Random.md) | Represents a pseudo-random number generator. |
+| [SmartPointer<T>](docs/SmartPointer.md) | A unified smart pointer supporting both unique and shared ownership. |
 | [String](docs/String.md) | Represents text as a sequence of character code units. |
 | [TimeProvider](docs/TimeProvider.md) | Provides an abstraction for time. |
 | [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |

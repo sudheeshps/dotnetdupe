@@ -165,6 +165,7 @@
     <ClCompile Include="TimeZoneInfoTests.cpp" />
     <ClCompile Include="TextIOTests.cpp" />
     <ClCompile Include="ThreadTests.cpp" />
+    <ClCompile Include="SmartPointerTests.cpp" />
     <ClCompile Include="ThreadSynchronizationTests.cpp" />
   </ItemGroup>
   <ItemGroup>

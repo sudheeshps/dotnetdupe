@@ -93,6 +93,11 @@ This document provides a side-by-side comparison of common development tasks usi
 | :--- | :--- |
 | `// Cumbersome (deprecated std::codecvt or WinAPI)`<br>`int size = WideCharToMultiByte(CP_UTF8, 0, wstr, -1, NULL, 0, ...);`<br>`std::string utf8(size, '\0');`<br>`WideCharToMultiByte(CP_UTF8, 0, wstr, -1, &utf8[0], size, ...);` | `auto encoding = TextEncoding::GetUTF8();`<br>`auto bytes = encoding->GetBytes(str);`<br>`String s = encoding->GetString(bytes);` |
 
+### 18. Smart Pointers 🧠
+| Standard Template Library (STL) | DotNetDupe |
+| :--- | :--- |
+| **Unique Ownership**<br>`std::unique_ptr<int> p = std::make_unique<int>(10);`<br>`auto p2 = std::move(p);`<br><br>**Shared Ownership**<br>`std::shared_ptr<int> p = std::make_shared<int>(10);`<br>`auto p2 = p; // Increments ref count` | **Unified SmartPointer**<br>`// Unique by default`<br>`SmartPointer<int> p(new int(10));`<br>`auto p2 = std::move(p);`<br><br>`// Shared via flag`<br>`SmartPointer<int> p(new int(10), true);`<br>`auto p2 = p; // Increments ref count` |
+
 ---
 
 ## Conclusion
