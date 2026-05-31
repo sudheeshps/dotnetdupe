@@ -187,7 +187,7 @@ This section describes how to use the pre-compiled NuGet package to build and ru
 ### 1. Extract the NuGet Package
 The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
 ```powershell
-Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+Expand-Archive -Path "nuget_packages\DotNetDupe.2.2.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
 ```
 
 ### 2. Configure and Build in WSL
