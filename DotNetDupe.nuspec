@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>2.2.0</version>
+    <version>3.0.0</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>Added support for Linux. Removed STL dependencies from public APIs. Updated naming to Microsoft C++ standards.</releaseNotes>
+    <releaseNotes>Major release: cross platform support added - tested using Ubuntu on WSL, C++ core coding guidelines applied, introduced SmartPointer</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/user/DotNetDupe</projectUrl>
     <license type="expression">MIT</license>
