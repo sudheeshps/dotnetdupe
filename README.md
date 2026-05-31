@@ -77,7 +77,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
     nuget pack DotNetDupe.nuspec -OutputDirectory nuget_packages
     ```
-    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.2.2.0.nupkg) in the nuget_packages directory at the solution root.
+    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.3.0.0.nupkg) in the nuget_packages directory at the solution root.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -187,7 +187,7 @@ This section describes how to use the pre-compiled NuGet package to build and ru
 ### 1. Extract the NuGet Package
 The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
 ```powershell
-Expand-Archive -Path "nuget_packages\DotNetDupe.2.2.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
 ```
 
 ### 2. Configure and Build in WSL
