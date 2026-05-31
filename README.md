@@ -6,7 +6,12 @@
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
 
-Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨ We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
+Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨
+
+> [!IMPORTANT]
+> **Major Update (v3.0.0):** DotNetDupe is now fully cross-platform! 🌐 We've introduced official support for Linux (tested via Ubuntu on WSL) alongside Windows, applied C++ Core Coding Guidelines for better reliability, and introduced the `SmartPointer` utility for unified resource management.
+
+We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
 
 A fun fact: While I personally crafted core components like `Char`, `String`, and `Path` (along with their tests), a significant portion of the remaining code was generated with the help of Gemini Code Assist. 🤖 This project serves as a unique playground for exploring how generative AI can accelerate development from scratch. 🚀
 
@@ -187,7 +192,7 @@ This section describes how to use the pre-compiled NuGet package to build and ru
 ### 1. Extract the NuGet Package
 The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
 ```powershell
-Expand-Archive -Path "nuget_packages\DotNetDupe.2.2.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
 ```
 
 ### 2. Configure and Build in WSL
