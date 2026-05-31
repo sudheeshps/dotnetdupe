@@ -28,6 +28,7 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [1. Install WSL](#1-install-wsl)
     - [2. Environment Provisioning](#2-environment-provisioning)
     - [3. Build & Test in WSL](#3-build--test-in-wsl)
+  - [Building and Running with NuGet in WSL 🐧📦](#building-and-running-with-nuget-in-wsl-)
   - [Usage 💻](#usage-)
   - [STL vs DotNetDupe Comparison ⚖️](#stl-vs-dotnetdupe-comparison-️)
   - [API Reference 📖](#api-reference-)
@@ -177,6 +178,33 @@ wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeTests"
 
 # Run Demo Application
 wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeDemo"
+```
+
+## Building and Running with NuGet in WSL 🐧📦
+
+This section describes how to use the pre-compiled NuGet package to build and run the `DotNetDupeDemo` application in a WSL environment.
+
+### 1. Extract the NuGet Package
+The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
+```powershell
+Expand-Archive -Path "nuget_packages\DotNetDupe.2.2.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+```
+
+### 2. Configure and Build in WSL
+Use CMake with the `USE_NUGET` option enabled and point `NUGET_PATH` to the extracted directory. WSL automatically handles the path mapping for Windows drives.
+
+```powershell
+# Configure
+wsl cmake -S . -B build-wsl -DUSE_NUGET=ON -DNUGET_PATH="./DotNetDupe_NuGet"
+
+# Build the Demo Application
+wsl cmake --build build-wsl --target DotNetDupeDemo
+```
+
+### 3. Execute in WSL
+Run the demo application directly from PowerShell via `wsl`:
+```powershell
+wsl ./build-wsl/DotNetDupeDemo
 ```
 
 ## Usage 💻
