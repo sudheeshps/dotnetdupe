@@ -243,9 +243,11 @@
     <ClInclude Include="..\Include\System\Threading\Thread.h" />
     <ClInclude Include="..\Include\System\BasicTimeoutException.h" />
     <ClInclude Include="..\Include\System\TimeoutException.h" />
-    <ClInclude Include="..\Include\System\Threading\Thread.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadPool.h" />
+    <ClInclude Include="..\Include\System\Threading\Tasks\TaskStatus.h" />
+    <ClInclude Include="..\Include\System\Threading\Tasks\Task.h" />
     <ClInclude Include="..\Include\System\Threading\WaitHandle.h" />
+    <ClInclude Include="..\Include\System\Threading\EventWaitHandle.h" />
     <ClInclude Include="..\Include\System\Threading\ManualResetEvent.h" />
     <ClInclude Include="..\Include\System\Threading\AutoResetEvent.h" />
     <ClInclude Include="..\Include\System\Threading\Mutex.h" />
@@ -311,6 +313,8 @@
     <ClCompile Include="StringReader.cpp" />
     <ClCompile Include="StringWriter.cpp" />
     <ClCompile Include="Thread.cpp" />
+    <ClCompile Include="ThreadPool.cpp" />
+    <ClCompile Include="Task.cpp" />
     <ClCompile Include="EventWaitHandle.cpp" />
     <ClCompile Include="ManualResetEvent.cpp" />
     <ClCompile Include="AutoResetEvent.cpp" />

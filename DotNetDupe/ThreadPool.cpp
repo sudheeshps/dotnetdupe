@@ -46,7 +46,7 @@ namespace DotNetDupe {
 
             private:
                 ThreadPoolInternal() 
-                    : m_bIsShuttingDown(false), m_evtWorkAvailable(false, EventResetMode::AutoReset) {
+                    : m_bIsShuttingDown(false), m_evtWorkAvailable(false, false) {
                     
                     int iThreadCount = Environment::GetProcessorCount();
                     if (iThreadCount <= 0) iThreadCount = 4;
@@ -94,6 +94,8 @@ namespace DotNetDupe {
                                     m_evtWorkAvailable.Set();
                                 }
                             } else if (m_bIsShuttingDown) {
+                                // Signal the next thread to wake up and exit
+                                m_evtWorkAvailable.Set();
                                 return;
                             }
                         }

@@ -15,6 +15,8 @@
 #include "System/TimeProvider.h"
 #include "System/Diagnostics/Stopwatch.h"
 #include "System/Diagnostics/Process.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Tasks/Task.h"
 #include "System/Text/StringBuilder.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
@@ -515,6 +517,41 @@ void DemonstrateProcess() {
     }
 }
 
+void DemonstrateThreadPool() {
+    Console::WriteLine("\n--- ThreadPool Demonstration ---");
+    Console::WriteLine("Queuing task to ThreadPool...");
+
+    ManualResetEvent objMre(false);
+    
+    ThreadPool::QueueUserWorkItem(WaitCallback([&objMre](Object* pState) {
+        Console::WriteLine("  -> Executing inside ThreadPool worker thread!");
+        // Simulate work
+        Thread::Sleep(500);
+        Console::WriteLine("  -> ThreadPool work complete.");
+        objMre.Set();
+    }));
+
+    Console::WriteLine("Main thread waiting for ThreadPool task to finish...");
+    objMre.WaitOne();
+}
+
+void DemonstrateTask() {
+    Console::WriteLine("\n--- Task Demonstration ---");
+    Console::WriteLine("Starting asynchronous Task...");
+
+    auto pTask = DotNetDupe::System::Threading::Tasks::Task::Run(Action<>([]() {
+        Console::WriteLine("  -> Task is running...");
+        Thread::Sleep(500);
+        Console::WriteLine("  -> Task complete.");
+    }));
+
+    Console::WriteLine("Main thread waiting on Task::Wait()...");
+    pTask->Wait();
+    
+    Console::Write("Task completed successfully? ");
+    Console::WriteLine(Convert::ToString(pTask->GetIsCompleted() && !pTask->GetIsFaulted()));
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -533,6 +570,8 @@ int main() {
     DemonstrateSynchronization();
     DemonstrateLockRAII();
     DemonstrateProcess();
+    DemonstrateThreadPool();
+    DemonstrateTask();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

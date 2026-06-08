@@ -168,6 +168,8 @@
     <ClCompile Include="ThreadTests.cpp" />
     <ClCompile Include="SmartPointerTests.cpp" />
     <ClCompile Include="ThreadSynchronizationTests.cpp" />
+    <ClCompile Include="ThreadPoolTests.cpp" />
+    <ClCompile Include="TaskTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">
