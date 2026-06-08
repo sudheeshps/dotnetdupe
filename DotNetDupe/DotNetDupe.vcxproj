@@ -221,6 +221,7 @@
     <ClInclude Include="..\Include\System\Action.h" />
     <ClInclude Include="..\Include\System\Func.h" />
     <ClInclude Include="..\Include\System\Predicate.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\Process.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Stopwatch.h" />
     <ClInclude Include="..\Include\System\Random.h" />
     <ClInclude Include="..\Include\System\UriParser.h" />
@@ -295,6 +296,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Process.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TextEncoding.cpp" />

@@ -7,7 +7,7 @@
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
     <releaseNotes>Major release: cross platform support added - tested using Ubuntu on WSL, C++ core coding guidelines applied, introduced SmartPointer</releaseNotes>
     <readme>README.md</readme>
-    <projectUrl>https://github.com/user/DotNetDupe</projectUrl>
+    <projectUrl>https://github.com/sudheeshps/dotnetdupe</projectUrl>
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>native c++ dotnet multi-platform linux windows</tags>

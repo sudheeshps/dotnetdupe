@@ -73,7 +73,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/DotNetDupe.git
+    git clone https://github.com/sudheeshps/DotNetDupe.git
     cd DotNetDupe
     ```
 2.  **Build the solution and generate NuGet package:**
@@ -255,6 +255,7 @@ DotNetDupe is designed to be more intuitive and less verbose than the standard C
 
 *   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
 *   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
+*   **[Process Management Comparison Guide](docs/ProcessComparison.md)**: Comparison of process execution and management.
 
 ### Sample Client and Test Code 🧪
 
@@ -338,6 +339,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
+| [Process](docs/Process.md) | Provides access to local processes and enables you to start and stop local system processes. |
 | [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
 
 ### Namespace: `DotNetDupe::System::Text`
@@ -441,4 +443,4 @@ This project is a unique blend of manual craftsmanship and AI-powered developmen
 
 ## Contact 📧
 
-For questions or support, please open an issue on the [GitHub repository](https://github.com/your-username/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:your-email@example.com).
+For questions or support, please open an issue on the [GitHub repository](https://github.com/sudheeshps/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:your-email@example.com).

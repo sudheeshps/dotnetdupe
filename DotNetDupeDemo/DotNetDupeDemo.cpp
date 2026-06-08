@@ -14,6 +14,7 @@
 #include "System/Convert.h"
 #include "System/TimeProvider.h"
 #include "System/Diagnostics/Stopwatch.h"
+#include "System/Diagnostics/Process.h"
 #include "System/Text/StringBuilder.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
@@ -485,6 +486,35 @@ void DemonstrateFileAttributes() {
     File::Delete(sPath);
 }
 
+void DemonstrateProcess() {
+    Console::WriteLine("\n--- Process Demonstration ---");
+
+#if defined(_WIN32)
+    String sFileName = "cmd.exe";
+    String sArguments = "/c echo Hello from child process! && exit 42";
+#else
+    String sFileName = "/bin/sh";
+    String sArguments = "-c \"echo Hello from child process!; exit 42\"";
+#endif
+
+    Console::Write("Starting process: ");
+    Console::WriteLine(sFileName);
+
+    auto pProcess = Process::Start(sFileName, sArguments);
+    if (!pProcess.IsNull()) {
+        Console::Write("Process started with ID: ");
+        Console::WriteLine(pProcess->GetId());
+
+        Console::WriteLine("Waiting for process to exit...");
+        pProcess->WaitForExit();
+
+        Console::Write("Process exited with code: ");
+        Console::WriteLine(pProcess->GetExitCode());
+    } else {
+        Console::WriteLine("Failed to start process.");
+    }
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -502,6 +532,7 @@ int main() {
     DemonstrateThreading();
     DemonstrateSynchronization();
     DemonstrateLockRAII();
+    DemonstrateProcess();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

@@ -9,6 +9,7 @@ include_directories(Include)
 include_directories(DotNetDupe)
 
 # Library sources
+# Force re-configure to pick up new files (like Process.cpp)
 file(GLOB LIB_SOURCES "DotNetDupe/*.cpp")
 
 # Remove dllmain.cpp from non-Windows builds if necessary, 
