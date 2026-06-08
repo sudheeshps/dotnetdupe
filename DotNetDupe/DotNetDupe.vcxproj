@@ -243,8 +243,9 @@
     <ClInclude Include="..\Include\System\Threading\Thread.h" />
     <ClInclude Include="..\Include\System\BasicTimeoutException.h" />
     <ClInclude Include="..\Include\System\TimeoutException.h" />
+    <ClInclude Include="..\Include\System\Threading\Thread.h" />
+    <ClInclude Include="..\Include\System\Threading\ThreadPool.h" />
     <ClInclude Include="..\Include\System\Threading\WaitHandle.h" />
-    <ClInclude Include="..\Include\System\Threading\EventWaitHandle.h" />
     <ClInclude Include="..\Include\System\Threading\ManualResetEvent.h" />
     <ClInclude Include="..\Include\System\Threading\AutoResetEvent.h" />
     <ClInclude Include="..\Include\System\Threading\Mutex.h" />

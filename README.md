@@ -385,6 +385,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | Class | Description |
 |---|---|
 | [Thread](docs/Thread.md) | Creates and controls a thread, sets its priority, and gets its status. |
+| [ThreadPool](docs/ThreadPool.md) | Provides a pool of threads that can be used to execute tasks, post work items, and more. |
 | [WaitHandle](docs/WaitHandle.md) | Abstract base class for synchronization objects. |
 | [EventWaitHandle](docs/EventWaitHandle.md) | Represents a thread synchronization event. |
 | [ManualResetEvent](docs/ManualResetEvent.md) | Notifies one or more waiting threads that an event has occurred. |
