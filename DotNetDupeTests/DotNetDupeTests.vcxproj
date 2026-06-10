@@ -171,6 +171,7 @@
     <ClCompile Include="ThreadPoolTests.cpp" />
     <ClCompile Include="TaskTests.cpp" />
     <ClCompile Include="JsonSerializerTests.cpp" />
+    <ClCompile Include="SocketsTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

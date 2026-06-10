@@ -19,6 +19,11 @@
 #include "System/Threading/Tasks/Task.h"
 #include "System/Text/StringBuilder.h"
 #include "System/Text/Json/JsonSerializer.h"
+#include "System/Net/Sockets/Socket.h"
+#include "System/Net/Sockets/NetworkStream.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/UdpClient.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Guid.h"
@@ -40,7 +45,6 @@
 #include "System/TimeoutException.h"
 #include <iostream>
 #include <iomanip>
-#include <thread>
 #include <vector>
 #include <atomic>
 
@@ -50,6 +54,7 @@ using namespace DotNetDupe::System::Diagnostics;
 using namespace DotNetDupe::System::Text;
 using namespace DotNetDupe::System::Collections::Generic;
 using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Net::Sockets;
 
 void DemonstrateConsole() {
     Console::WriteLine("\n--- Console Demonstration ---");
@@ -144,7 +149,7 @@ void DemonstrateTimeProvider() {
 
     int64_t llStart = pProvider->GetTimestamp();
     Console::WriteLine("Starting operation...");
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    Thread::Sleep(50);
     
     TimeSpan tsElapsed = pProvider->GetElapsedTime(llStart);
     Console::Write("Operation took: ");
@@ -158,7 +163,7 @@ void DemonstrateStopwatch() {
     Stopwatch swStopwatch = Stopwatch::StartNew();
     Console::WriteLine("Stopwatch started...");
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    Thread::Sleep(150);
 
     swStopwatch.Stop();
     Console::Write("Elapsed: ");
@@ -628,6 +633,73 @@ void DemonstrateJson() {
     Console::WriteLine(Convert::ToString(objDeserialized.Age));
 }
 
+void DemonstrateSockets() {
+    Console::WriteLine("\n--- Sockets Demonstration ---");
+    int port = 19090;
+
+    Console::WriteLine("Starting TcpListener on 127.0.0.1:19090...");
+    TcpListener listener("127.0.0.1", port);
+    listener.Start();
+
+    Thread serverThread([&listener]() {
+        try {
+            auto serverClient = listener.AcceptTcpClient();
+            Console::WriteLine("  [Server] Accepted client connection!");
+            auto stream = serverClient->GetStream();
+
+            char buffer[128] = {0};
+            int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+            if (bytesRead > 0) {
+                Console::Write("  [Server] Received: '");
+                Console::Write(buffer);
+                Console::WriteLine("'");
+            }
+
+            String response = "World";
+            stream->Write(response.GetRawString(), 0, response.GetLength());
+            serverClient->Close();
+        } catch (const DotNetDupe::System::SystemException& ex) {
+            Console::Write("  [Server] SystemException: ");
+            Console::WriteLine(ex.What());
+        } catch (const std::exception& ex) {
+            Console::Write("  [Server] std::exception: ");
+            Console::WriteLine(ex.what());
+        }
+    });
+
+    serverThread.Start();
+    Thread::Sleep(100);
+
+    try {
+        Console::WriteLine("Connecting TcpClient to 127.0.0.1:19090...");
+        TcpClient client;
+        client.Connect("127.0.0.1", port);
+
+        auto stream = client.GetStream();
+        String msg = "Hello";
+        stream->Write(msg.GetRawString(), 0, msg.GetLength());
+
+        char buffer[128] = {0};
+        int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+        if (bytesRead > 0) {
+            Console::Write("  [Client] Received back: '");
+            Console::Write(buffer);
+            Console::WriteLine("'");
+        }
+        client.Close();
+    } catch (const DotNetDupe::System::SystemException& ex) {
+        Console::Write("  [Client] SystemException: ");
+        Console::WriteLine(ex.What());
+    } catch (const std::exception& ex) {
+        Console::Write("  [Client] std::exception: ");
+        Console::WriteLine(ex.what());
+    }
+
+    serverThread.Join();
+    listener.Stop();
+    Console::WriteLine("TcpListener stopped.");
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -649,6 +721,7 @@ int main() {
     DemonstrateThreadPool();
     DemonstrateTask();
     DemonstrateJson();
+    DemonstrateSockets();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

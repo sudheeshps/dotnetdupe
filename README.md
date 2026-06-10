@@ -386,6 +386,18 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
 
+### Namespace: `DotNetDupe::System::Net::Sockets`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Socket](docs/Sockets.md) | A wrapper around standard native socket APIs. |
+| [NetworkStream](docs/Sockets.md) | Provides the underlying stream of data for network access. |
+| [TcpClient](docs/Sockets.md) | Provides client connections for TCP network services. |
+| [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
+| [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
+
 ### Namespace: `DotNetDupe::System::Threading`
 
 **Classes**

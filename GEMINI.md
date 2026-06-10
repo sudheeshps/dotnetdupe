@@ -67,9 +67,11 @@ The project is configured to generate a NuGet package on build (as specified in 
 When generating a new class, the following instructions must be strictly followed:
 1. **Strictly follow the development guidelines** defined in this document (naming, style, code patterns, etc.).
 2. **Add tests in GivenWhenThen format** covering positive, negative, and edge cases to ensure robust functionality.
-3. **Add documentation following documentation guidelines** in the `docs/` directory, referring to existing documentation (e.g., `docs/String.md`, `docs/Process.md`) for style and structure.
+3. **Add documentation following documentation guidelines** in the `docs/` directory, referring to existing documentation (e.g., `docs/String.md`, `docs/Process.md`) for style and structure. **Each API documentation file must include clear, complete, and compilation-ready sample code usage showing real-world application of the API.**
 4. **Link the documentation to README.md** under the appropriate namespace section to ensure discoverability.
 5. **Add demo code** in the `DotNetDupeDemo` project showing clear, compile-ready usage of the new class, and call it from its `main()` entrypoint.
+6. **Do not throw standard C++ exceptions** (e.g., `std::runtime_error`, `std::invalid_argument`). Instead, throw the library's custom exception types (e.g., `SystemException`, `ArgumentException`, `IOException`, `SocketException`) inheriting from `BasicException` to match .NET behavior and ensure unified exception handling.
+7. **Do not use STL threading/timing utilities in demo code** (e.g., `std::thread`, `std::this_thread::sleep_for`). Use the library's own `Thread` class, `ThreadPool`, `Task`, or `Thread::Sleep()` to demonstrate library-centric API usage.
 
 ## Contextual Precedence
 The instructions in this file are foundational. Always adhere to these patterns when extending or modifying the codebase to maintain architectural consistency.

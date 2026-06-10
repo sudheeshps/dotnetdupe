@@ -216,6 +216,12 @@
     <ClInclude Include="..\Include\System\Text\StringBuilder.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonElement.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonSerializer.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\Socket.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\NetworkStream.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\TcpClient.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\TcpListener.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\UdpClient.h" />
+    <ClInclude Include="..\Include\System\Net\Sockets\SocketException.h" />
     <ClInclude Include="..\Include\System\Uri.h" />
     <ClInclude Include="..\Include\System\UriBuilder.h" />
     <ClInclude Include="..\Include\System\Utils.h" />
@@ -288,6 +294,11 @@
     <ClCompile Include="StringBuilder.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />
+    <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="NetworkStream.cpp" />
+    <ClCompile Include="TcpClient.cpp" />
+    <ClCompile Include="TcpListener.cpp" />
+    <ClCompile Include="UdpClient.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
     <ClCompile Include="Uri.cpp" />
     <ClCompile Include="UriBuilder.cpp" />
