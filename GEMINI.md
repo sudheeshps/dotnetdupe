@@ -69,6 +69,7 @@ When generating a new class, the following instructions must be strictly followe
 2. **Add tests in GivenWhenThen format** covering positive, negative, and edge cases to ensure robust functionality.
 3. **Add documentation following documentation guidelines** in the `docs/` directory, referring to existing documentation (e.g., `docs/String.md`, `docs/Process.md`) for style and structure.
 4. **Link the documentation to README.md** under the appropriate namespace section to ensure discoverability.
+5. **Add demo code** in the `DotNetDupeDemo` project showing clear, compile-ready usage of the new class, and call it from its `main()` entrypoint.
 
 ## Contextual Precedence
 The instructions in this file are foundational. Always adhere to these patterns when extending or modifying the codebase to maintain architectural consistency.

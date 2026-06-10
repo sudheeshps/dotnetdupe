@@ -351,6 +351,14 @@ For detailed information on the available classes, methods, and their usage, ple
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
 
+### Namespace: `DotNetDupe::System::Text::Json`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [JsonSerializer](docs/JsonSerializer.md) | Provides functionality to serialize objects to JSON and deserialize JSON to objects. |
+
 ### Namespace: `DotNetDupe::System::IO`
 
 **Classes**
