@@ -73,7 +73,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/DotNetDupe.git
+    git clone https://github.com/sudheeshps/DotNetDupe.git
     cd DotNetDupe
     ```
 2.  **Build the solution and generate NuGet package:**
@@ -255,6 +255,7 @@ DotNetDupe is designed to be more intuitive and less verbose than the standard C
 
 *   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
 *   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
+*   **[Process Management Comparison Guide](docs/ProcessComparison.md)**: Comparison of process execution and management.
 
 ### Sample Client and Test Code 🧪
 
@@ -338,6 +339,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
+| [Process](docs/Process.md) | Provides access to local processes and enables you to start and stop local system processes. |
 | [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
 
 ### Namespace: `DotNetDupe::System::Text`
@@ -348,6 +350,14 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
+
+### Namespace: `DotNetDupe::System::Text::Json`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [JsonSerializer](docs/JsonSerializer.md) | Provides functionality to serialize objects to JSON and deserialize JSON to objects. |
 
 ### Namespace: `DotNetDupe::System::IO`
 
@@ -376,6 +386,18 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
 
+### Namespace: `DotNetDupe::System::Net::Sockets`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Socket](docs/Sockets.md) | A wrapper around standard native socket APIs. |
+| [NetworkStream](docs/Sockets.md) | Provides the underlying stream of data for network access. |
+| [TcpClient](docs/Sockets.md) | Provides client connections for TCP network services. |
+| [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
+| [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
+
 ### Namespace: `DotNetDupe::System::Threading`
 
 **Classes**
@@ -383,6 +405,8 @@ For detailed information on the available classes, methods, and their usage, ple
 | Class | Description |
 |---|---|
 | [Thread](docs/Thread.md) | Creates and controls a thread, sets its priority, and gets its status. |
+| [ThreadPool](docs/ThreadPool.md) | Provides a pool of threads that can be used to execute tasks, post work items, and more. |
+| [Task](docs/Task.md) | Represents an asynchronous operation. |
 | [WaitHandle](docs/WaitHandle.md) | Abstract base class for synchronization objects. |
 | [EventWaitHandle](docs/EventWaitHandle.md) | Represents a thread synchronization event. |
 | [ManualResetEvent](docs/ManualResetEvent.md) | Notifies one or more waiting threads that an event has occurred. |
@@ -441,4 +465,4 @@ This project is a unique blend of manual craftsmanship and AI-powered developmen
 
 ## Contact 📧
 
-For questions or support, please open an issue on the [GitHub repository](https://github.com/your-username/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:your-email@example.com).
+For questions or support, please open an issue on the [GitHub repository](https://github.com/sudheeshps/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:your-email@example.com).

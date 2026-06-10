@@ -26,10 +26,10 @@ namespace DotNetDupe {
              * For concrete types: Automatically allocates a new instance of T.
              * For abstract types: Initializes to nullptr.
              */
-            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U>, int> = 0>
+            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U> && std::is_default_constructible_v<U>, int> = 0>
             SmartPointer() : m_pObject(new T()), m_pnRefCount(nullptr) {}
 
-            template <typename U = T, typename std::enable_if_t<std::is_abstract_v<U>, int> = 0>
+            template <typename U = T, typename std::enable_if_t<std::is_abstract_v<U> || !std::is_default_constructible_v<U>, int> = 0>
             SmartPointer() : m_pObject(nullptr), m_pnRefCount(nullptr) {}
 
             /**
@@ -37,7 +37,7 @@ namespace DotNetDupe {
              * Automatically allocates a new instance of T.
              * @param bIsShared If true, enables reference counting (Shared mode).
              */
-            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U>, int> = 0>
+            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U> && std::is_default_constructible_v<U>, int> = 0>
             explicit SmartPointer(bool bIsShared) : m_pObject(new T()), m_pnRefCount(nullptr) {
                 if (bIsShared) {
                     m_pnRefCount = new int(1);

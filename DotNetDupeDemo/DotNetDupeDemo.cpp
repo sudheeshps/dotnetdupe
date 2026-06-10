@@ -14,7 +14,16 @@
 #include "System/Convert.h"
 #include "System/TimeProvider.h"
 #include "System/Diagnostics/Stopwatch.h"
+#include "System/Diagnostics/Process.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Tasks/Task.h"
 #include "System/Text/StringBuilder.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/Net/Sockets/Socket.h"
+#include "System/Net/Sockets/NetworkStream.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/UdpClient.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Guid.h"
@@ -36,7 +45,6 @@
 #include "System/TimeoutException.h"
 #include <iostream>
 #include <iomanip>
-#include <thread>
 #include <vector>
 #include <atomic>
 
@@ -46,6 +54,7 @@ using namespace DotNetDupe::System::Diagnostics;
 using namespace DotNetDupe::System::Text;
 using namespace DotNetDupe::System::Collections::Generic;
 using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Net::Sockets;
 
 void DemonstrateConsole() {
     Console::WriteLine("\n--- Console Demonstration ---");
@@ -140,7 +149,7 @@ void DemonstrateTimeProvider() {
 
     int64_t llStart = pProvider->GetTimestamp();
     Console::WriteLine("Starting operation...");
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    Thread::Sleep(50);
     
     TimeSpan tsElapsed = pProvider->GetElapsedTime(llStart);
     Console::Write("Operation took: ");
@@ -154,7 +163,7 @@ void DemonstrateStopwatch() {
     Stopwatch swStopwatch = Stopwatch::StartNew();
     Console::WriteLine("Stopwatch started...");
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(150));
+    Thread::Sleep(150);
 
     swStopwatch.Stop();
     Console::Write("Elapsed: ");
@@ -485,6 +494,212 @@ void DemonstrateFileAttributes() {
     File::Delete(sPath);
 }
 
+void DemonstrateProcess() {
+    Console::WriteLine("\n--- Process Demonstration ---");
+
+#if defined(_WIN32)
+    String sFileName = "cmd.exe";
+    String sArguments = "/c echo Hello from child process! && exit 42";
+#else
+    String sFileName = "/bin/sh";
+    String sArguments = "-c \"echo Hello from child process!; exit 42\"";
+#endif
+
+    Console::Write("Starting process: ");
+    Console::WriteLine(sFileName);
+
+    auto pProcess = Process::Start(sFileName, sArguments);
+    if (!pProcess.IsNull()) {
+        Console::Write("Process started with ID: ");
+        Console::WriteLine(pProcess->GetId());
+
+        Console::WriteLine("Waiting for process to exit...");
+        pProcess->WaitForExit();
+
+        Console::Write("Process exited with code: ");
+        Console::WriteLine(pProcess->GetExitCode());
+    } else {
+        Console::WriteLine("Failed to start process.");
+    }
+}
+
+void DemonstrateThreadPool() {
+    Console::WriteLine("\n--- ThreadPool Demonstration ---");
+    Console::WriteLine("Queuing task to ThreadPool...");
+
+    ManualResetEvent objMre(false);
+    
+    ThreadPool::QueueUserWorkItem(WaitCallback([&objMre](Object* pState) {
+        Console::WriteLine("  -> Executing inside ThreadPool worker thread!");
+        // Simulate work
+        Thread::Sleep(500);
+        Console::WriteLine("  -> ThreadPool work complete.");
+        objMre.Set();
+    }));
+
+    Console::WriteLine("Main thread waiting for ThreadPool task to finish...");
+    objMre.WaitOne();
+}
+
+void DemonstrateTask() {
+    Console::WriteLine("\n--- Task Demonstration ---");
+    Console::WriteLine("Starting asynchronous Task...");
+
+    auto pTask = DotNetDupe::System::Threading::Tasks::Task::Run(Action<>([]() {
+        Console::WriteLine("  -> Task is running...");
+        Thread::Sleep(500);
+        Console::WriteLine("  -> Task complete.");
+    }));
+
+    Console::WriteLine("Main thread waiting on Task::Wait()...");
+    pTask->Wait();
+    
+    Console::Write("Task completed successfully? ");
+    Console::WriteLine(Convert::ToString(pTask->GetIsCompleted() && !pTask->GetIsFaulted()));
+}
+
+struct DemoPerson {
+    String Name;
+    int Age;
+};
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+            namespace Json {
+                template <>
+                struct JsonConverter<::DemoPerson> {
+                    static JsonElement Write(const ::DemoPerson& value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        obj.SetProperty("Name", JsonConverter<String>::Write(value.Name));
+                        obj.SetProperty("Age", JsonConverter<int>::Write(value.Age));
+                        return obj;
+                    }
+
+                    static ::DemoPerson Read(const JsonElement& element) {
+                        if (element.GetValueKind() != JsonValueKind::Object) {
+                            throw std::runtime_error("Expected a JSON object");
+                        }
+                        ::DemoPerson p;
+                        JsonElement prop;
+                        if (element.TryGetProperty("Name", prop)) {
+                            p.Name = JsonConverter<String>::Read(prop);
+                        }
+                        if (element.TryGetProperty("Age", prop)) {
+                            p.Age = JsonConverter<int>::Read(prop);
+                        }
+                        return p;
+                    }
+                };
+            }
+        }
+    }
+}
+
+void DemonstrateJson() {
+    using namespace DotNetDupe::System::Text::Json;
+    Console::WriteLine("\n--- JSON Serialization/Deserialization Demonstration ---");
+
+    // 1. Primitives
+    int iOriginal = 123;
+    String sJsonInt = JsonSerializer::Serialize(iOriginal);
+    Console::Write("Serialized int: ");
+    Console::WriteLine(sJsonInt);
+
+    int iDeserialized = JsonSerializer::Deserialize<int>(sJsonInt);
+    Console::Write("Deserialized int: ");
+    Console::WriteLine(Convert::ToString(iDeserialized));
+
+    // 2. List
+    List<int> lstNumbers = { 10, 20, 30, 40 };
+    String sJsonList = JsonSerializer::Serialize(lstNumbers);
+    Console::Write("Serialized List<int>: ");
+    Console::WriteLine(sJsonList);
+
+    List<int> lstDeserialized = JsonSerializer::Deserialize<List<int>>(sJsonList);
+    Console::Write("Deserialized List<int> (count): ");
+    Console::WriteLine(Convert::ToString(lstDeserialized.GetCount()));
+
+    // 3. Custom Object
+    DemoPerson objPerson = { "Bob", 25 };
+    String sJsonObj = JsonSerializer::Serialize(objPerson);
+    Console::Write("Serialized DemoPerson: ");
+    Console::WriteLine(sJsonObj);
+
+    DemoPerson objDeserialized = JsonSerializer::Deserialize<DemoPerson>(sJsonObj);
+    Console::Write("Deserialized DemoPerson - Name: '");
+    Console::Write(objDeserialized.Name);
+    Console::Write("', Age: ");
+    Console::WriteLine(Convert::ToString(objDeserialized.Age));
+}
+
+void DemonstrateSockets() {
+    Console::WriteLine("\n--- Sockets Demonstration ---");
+    int port = 19090;
+
+    Console::WriteLine("Starting TcpListener on 127.0.0.1:19090...");
+    TcpListener listener("127.0.0.1", port);
+    listener.Start();
+
+    Thread serverThread([&listener]() {
+        try {
+            auto serverClient = listener.AcceptTcpClient();
+            Console::WriteLine("  [Server] Accepted client connection!");
+            auto stream = serverClient->GetStream();
+
+            char buffer[128] = {0};
+            int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+            if (bytesRead > 0) {
+                Console::Write("  [Server] Received: '");
+                Console::Write(buffer);
+                Console::WriteLine("'");
+            }
+
+            String response = "World";
+            stream->Write(response.GetRawString(), 0, response.GetLength());
+            serverClient->Close();
+        } catch (const DotNetDupe::System::SystemException& ex) {
+            Console::Write("  [Server] SystemException: ");
+            Console::WriteLine(ex.What());
+        } catch (const std::exception& ex) {
+            Console::Write("  [Server] std::exception: ");
+            Console::WriteLine(ex.what());
+        }
+    });
+
+    serverThread.Start();
+    Thread::Sleep(100);
+
+    try {
+        Console::WriteLine("Connecting TcpClient to 127.0.0.1:19090...");
+        TcpClient client;
+        client.Connect("127.0.0.1", port);
+
+        auto stream = client.GetStream();
+        String msg = "Hello";
+        stream->Write(msg.GetRawString(), 0, msg.GetLength());
+
+        char buffer[128] = {0};
+        int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+        if (bytesRead > 0) {
+            Console::Write("  [Client] Received back: '");
+            Console::Write(buffer);
+            Console::WriteLine("'");
+        }
+        client.Close();
+    } catch (const DotNetDupe::System::SystemException& ex) {
+        Console::Write("  [Client] SystemException: ");
+        Console::WriteLine(ex.What());
+    } catch (const std::exception& ex) {
+        Console::Write("  [Client] std::exception: ");
+        Console::WriteLine(ex.what());
+    }
+
+    serverThread.Join();
+    listener.Stop();
+    Console::WriteLine("TcpListener stopped.");
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -502,6 +717,11 @@ int main() {
     DemonstrateThreading();
     DemonstrateSynchronization();
     DemonstrateLockRAII();
+    DemonstrateProcess();
+    DemonstrateThreadPool();
+    DemonstrateTask();
+    DemonstrateJson();
+    DemonstrateSockets();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");
