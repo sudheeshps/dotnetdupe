@@ -476,3 +476,57 @@ String s("Hello World");
 String sub = s.Substring(0, 5); // "Hello"
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `String`.
+
+```cpp
+#include "System/String.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+#include "System/Array.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        String sMessage = "   Welcome to DotNetDupe library!   ";
+        Console::Write("Original: '");
+        Console::Write(sMessage);
+        Console::WriteLine("'");
+
+        // Trim
+        String sTrimmed = sMessage.Trim();
+        Console::Write("Trimmed: '");
+        Console::Write(sTrimmed);
+        Console::WriteLine("'");
+
+        // Substring
+        String sSub = sTrimmed.Substring(11, 10);
+        Console::Write("Substring (11, 10): ");
+        Console::WriteLine(sSub);
+
+        // Split
+        String sCsv = "C++,C#,Java,Python,Go";
+        Array<String> parts = sCsv.Split(',');
+        Console::WriteLine("Split languages:");
+        parts.ForEach([](String part) {
+            Console::Write("- ");
+            Console::WriteLine(part);
+        });
+
+        // Case Conversion & Comparison
+        String sUpper = sTrimmed.ToUpper();
+        if (sUpper.StartsWith("WELCOME", true)) {
+            Console::WriteLine("Message starts with 'welcome' (case-insensitive check)");
+        }
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

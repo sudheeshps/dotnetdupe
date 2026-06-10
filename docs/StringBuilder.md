@@ -76,3 +76,48 @@ Converts the value of this instance to a `String`.
 String result = sb.ToString();
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `StringBuilder`.
+
+```cpp
+#include "System/Text/StringBuilder.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Text;
+
+int main() {
+    try {
+        StringBuilder sb;
+        
+        // Chained Appends
+        sb.Append("Value: ")
+          .Append(42)
+          .Append(", Status: ")
+          .Append(true)
+          .AppendLine()
+          .AppendLine("Next line of data.");
+          
+        Console::WriteLine("StringBuilder result:");
+        Console::WriteLine(sb.ToString());
+        
+        // Displaying length
+        Console::Write("Buffer length: ");
+        Console::WriteLine(sb.GetLength());
+        
+        // Clearing
+        sb.Clear();
+        sb.Append("Brand new content");
+        Console::WriteLine(sb.ToString());
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

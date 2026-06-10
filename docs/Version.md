@@ -131,3 +131,55 @@ Version vVer1(1, 0), vVer2(1, 0);
 if (vVer1 == vVer2) { /* ... */ }
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to create `Version` instances using different constructors, inspect individual version components, check equality, and manage `Version` instances dynamically using `SmartPointer`.
+
+```cpp
+#include "System/Console.h"
+#include "System/Version.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Instantiate Version objects
+    Version v1(1, 2, 3, 4);
+    Version v2(1, 2);
+
+    Console::Write("v1 string representation: ");
+    Console::WriteLine(v1.ToString());
+
+    Console::Write("v2 string representation: ");
+    Console::WriteLine(v2.ToString());
+
+    // Compare version components
+    Console::Write("v1 Major: ");
+    Console::WriteLine(v1.GetMajor());
+
+    Console::Write("v1 Minor: ");
+    Console::WriteLine(v1.GetMinor());
+
+    Console::Write("v1 Build: ");
+    Console::WriteLine(v1.GetBuild());
+
+    Console::Write("v1 Revision: ");
+    Console::WriteLine(v1.GetRevision());
+
+    // Comparison operators
+    if (v1 != v2) {
+        Console::WriteLine("v1 is not equal to v2.");
+    }
+
+    // Dynamic memory management using SmartPointer
+    auto pVer = SmartPointer<Version>::New(2, 0, 0);
+    Console::Write("pVer string representation: ");
+    Console::WriteLine(pVer->ToString());
+
+    return 0;
+}
+```
+
+

@@ -88,3 +88,56 @@ for (auto const& [key, val] : dict) {
 }
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Dictionary`.
+
+```cpp
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/SmartPointer.h"
+#include "System/String.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+
+int main() {
+    try {
+        // Create a Dictionary mapping keys to dynamically managed values using SmartPointer
+        Dictionary<String, SmartPointer<String>> dict;
+
+        // Add elements
+        dict.Add("one", SmartPointer<String>::New("First"));
+        dict.Add("two", SmartPointer<String>::New("Second"));
+        dict.Add("three", SmartPointer<String>::New("Third"));
+
+        Console::WriteLine("Dictionary contents:");
+        for (const auto& [key, pStr] : dict) {
+            Console::Write(key);
+            Console::Write(" -> ");
+            if (!pStr.IsNull()) {
+                Console::WriteLine(*pStr);
+            } else {
+                Console::WriteLine("null");
+            }
+        }
+
+        // Search for a key
+        if (dict.ContainsKey("two")) {
+            auto val = dict["two"];
+            if (!val.IsNull()) {
+                Console::Write("Found value for key 'two': ");
+                Console::WriteLine(*val);
+            }
+        }
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

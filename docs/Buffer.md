@@ -70,3 +70,52 @@ Array<int> arr(1);
 Buffer::SetByte(arr, 0, 0xAA);
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Buffer`.
+
+```cpp
+#include "System/Buffer.h"
+#include "System/Array.h"
+#include "System/Console.h"
+#include "System/Convert.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        Array<int> src = { 100, 200, 300, 400 };
+        Array<int> dst(4);
+
+        // Copy bytes from src to dst using Buffer::BlockCopy
+        Buffer::BlockCopy(src, 0, dst, 0, src.GetLength() * sizeof(int));
+
+        Console::WriteLine("Destination Array after BlockCopy:");
+        dst.ForEach([](int val) {
+            Console::Write(val);
+            Console::Write(" ");
+        });
+        Console::WriteLine();
+
+        // Get byte length of destination array
+        int byteLen = Buffer::ByteLength(dst);
+        Console::Write("Byte length: ");
+        Console::WriteLine(byteLen);
+
+        // Manipulate bytes directly using SetByte and GetByte
+        Buffer::SetByte(dst, 0, 0x55);
+        byte firstByte = Buffer::GetByte(dst, 0);
+        Console::Write("First byte of dst: 0x");
+        Console::WriteLine(Convert::ToString((int)firstByte, 16));
+        
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

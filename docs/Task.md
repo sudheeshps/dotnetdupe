@@ -47,3 +47,45 @@ Represents the current stage in the lifecycle of a Task.
 - `RanToCompletion`: The task completed execution successfully.
 - `Canceled`: The task acknowledged cancellation by throwing OperationCanceledException.
 - `Faulted`: The task completed due to an unhandled exception.
+
+---
+
+## Code Example
+
+The following example shows how to dispatch an asynchronous operation to the ThreadPool using `Task::Run`, do concurrent work, and wait for its completion.
+
+```cpp
+#include "System/Console.h"
+#include "System/Threading/Tasks/Task.h"
+#include "System/Threading/Thread.h"
+#include "System/SmartPointer.h"
+#include "System/Action.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Threading::Tasks;
+
+int main() {
+    Console::WriteLine("Main: Starting task...");
+
+    // Run an asynchronous task on the ThreadPool
+    SmartPointer<Task> pTask = Task::Run(Action<>([]() {
+        Console::WriteLine("Task: Background work started.");
+        Thread::Sleep(100);
+        Console::WriteLine("Task: Background work completed.");
+    }));
+
+    Console::WriteLine("Main: Task is queued. Doing other work...");
+    Thread::Sleep(50);
+
+    Console::WriteLine("Main: Waiting for task to complete...");
+    pTask->Wait();
+
+    if (pTask->GetStatus() == TaskStatus::RanToCompletion) {
+        Console::WriteLine("Main: Task completed successfully!");
+    }
+
+    return 0;
+}
+```
+

@@ -126,3 +126,51 @@ String s1 = Convert::ToString(true); // "True"
 String s2 = Convert::ToString(255, 16); // "FF"
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Convert`.
+
+```cpp
+#include "System/Convert.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // String to integer conversions
+        int val1 = Convert::ToInt32("12345");
+        Console::Write("Parsed Int32: ");
+        Console::WriteLine(val1);
+
+        // Parsing with a specific base (Hexadecimal)
+        int val2 = Convert::ToInt32("FE", 16);
+        Console::Write("Parsed Hex 'FE' to Int32: ");
+        Console::WriteLine(val2);
+
+        // Double conversion
+        double val3 = Convert::ToDouble("3.14159");
+        Console::Write("Parsed Double: ");
+        Console::WriteLine(val3);
+
+        // String to Boolean conversion
+        bool bVal = Convert::ToBoolean("true");
+        Console::Write("Parsed Boolean: ");
+        Console::WriteLine(bVal);
+
+        // Integer to String conversion with base (Hex)
+        String hexStr = Convert::ToString(255, 16);
+        Console::Write("255 to Hex string: ");
+        Console::WriteLine(hexStr);
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

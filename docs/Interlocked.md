@@ -57,14 +57,62 @@ The `Interlocked` class provides a thread-safe way to perform common operations 
 
 The implementation uses `_Interlocked` intrinsics from the Windows header, ensuring high performance and reliability on Windows platforms.
 
-## Example Usage
+## Code Example
 
 ```cpp
+#include "System/Threading/Interlocked.h"
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
-Interlocked<int> counter(0);
-counter.Increment();
-counter++;
-int result = counter; // result is 2
+int main() {
+    Console::WriteLine("Interlocked demo started.");
+
+    // Create a shared atomic counter using SmartPointer and Interlocked
+    auto pCounter = SmartPointer<Interlocked<int>>::NewShared(0);
+
+    // Spawn threads that increment the counter atomically without locks
+    auto runIncrement = [pCounter]() {
+        for (int iI = 0; iI < 1000; ++iI) {
+            (*pCounter)++; // Atomic increment
+        }
+    };
+
+    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New(runIncrement);
+    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New(runIncrement);
+
+    pT1->Start();
+    pT2->Start();
+
+    pT1->Join();
+    pT2->Join();
+
+    // Verify counter value (expected to be 2000)
+    int iFinalVal = *pCounter;
+    Console::Write("Final counter value (expected 2000): ");
+    Console::WriteLine(iFinalVal);
+
+    // Demonstrate CompareExchange
+    // If current value is 2000, exchange it with 5000
+    int iOriginal = pCounter->CompareExchange(5000, 2000);
+    Console::Write("Original value returned from CompareExchange: ");
+    Console::WriteLine(iOriginal);
+    Console::Write("New counter value after CompareExchange: ");
+    Console::WriteLine((int)*pCounter);
+
+    // Demonstrate Exchange
+    int iPrevVal = pCounter->Exchange(999);
+    Console::Write("Previous value returned from Exchange: ");
+    Console::WriteLine(iPrevVal);
+    Console::Write("New counter value after Exchange: ");
+    Console::WriteLine((int)*pCounter);
+
+    Console::WriteLine("Interlocked demo completed.");
+    return 0;
+}
 ```
+
 

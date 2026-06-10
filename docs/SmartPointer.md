@@ -100,3 +100,51 @@ void Demonstrate() {
     SmartPointer<TextReader> pReader(new StringReader("data"));
 }
 ```
+
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `SmartPointer`.
+
+```cpp
+#include "System/SmartPointer.h"
+#include "System/String.h"
+#include "System/Console.h"
+#include "System/Version.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // 1. Auto-allocated Unique ownership
+        SmartPointer<String> pUniqueStr;
+        *pUniqueStr = "Hello Unique";
+        Console::WriteLine(*pUniqueStr);
+
+        // 2. Auto-allocated Shared ownership (ref counted)
+        SmartPointer<String> pSharedStr(true);
+        *pSharedStr = "Hello Shared";
+        {
+            SmartPointer<String> pSharedCopy = pSharedStr; // Increments ref count
+            Console::Write("Copy content: ");
+            Console::WriteLine(*pSharedCopy);
+            Console::Write("Ref Count: ");
+            Console::WriteLine(pSharedStr.GetRefCount()); // Should be 2
+        }
+        Console::Write("Ref Count after copy went out of scope: ");
+        Console::WriteLine(pSharedStr.GetRefCount()); // Should be 1
+
+        // 3. Static Factory (with constructor args)
+        auto pVersion = SmartPointer<Version>::New(2, 1, 0);
+        Console::Write("Version via SmartPointer: ");
+        Console::WriteLine(pVersion->ToString());
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+

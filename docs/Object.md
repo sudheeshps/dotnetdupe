@@ -92,3 +92,44 @@ Object obj;
 char* str = obj.ToStringA();
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Object`.
+
+```cpp
+#include "System/Object.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        Object obj1;
+        Object obj2;
+
+        // Equals comparison
+        bool isEqual = obj1.Equals(obj2);
+        Console::Write("obj1.Equals(obj2): ");
+        Console::WriteLine(isEqual);
+
+        // Get hash code
+        int hash1 = obj1.GetHashCode();
+        Console::Write("obj1 HashCode: ");
+        Console::WriteLine(hash1);
+
+        // Convert to string representations
+        char* strA = obj1.ToStringA();
+        Console::Write("obj1.ToStringA(): ");
+        Console::WriteLine(strA);
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

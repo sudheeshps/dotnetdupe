@@ -105,3 +105,49 @@ Gets the frequency of the timer as the number of ticks per second.
 
 Indicates whether the timer is based on a high-resolution performance counter.
 
+---
+
+## Code Example
+
+The following example demonstrates how to create a `Stopwatch` using `SmartPointer`, start and stop timing, read elapsed time in different formats, and restart the stopwatch.
+
+```cpp
+#include "System/Console.h"
+#include "System/Diagnostics/Stopwatch.h"
+#include "System/SmartPointer.h"
+#include "System/Threading/Thread.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Diagnostics;
+using namespace DotNetDupe::System::Threading;
+
+int main() {
+    // Dynamic memory management using SmartPointer
+    auto pStopwatch = SmartPointer<Stopwatch>::New();
+
+    Console::WriteLine("Starting stopwatch...");
+    pStopwatch->Start();
+
+    // Sleep to simulate elapsed time
+    Thread::Sleep(150);
+
+    pStopwatch->Stop();
+    Console::WriteLine("Stopwatch stopped.");
+
+    Console::WriteLine("Elapsed milliseconds: ");
+    Console::WriteLine(pStopwatch->ElapsedMilliseconds());
+
+    Console::WriteLine("Elapsed ticks: ");
+    Console::WriteLine(pStopwatch->ElapsedTicks());
+
+    // Restart the stopwatch
+    pStopwatch->Restart();
+    Thread::Sleep(50);
+    pStopwatch->Stop();
+
+    Console::WriteLine("Elapsed seconds after restart: ");
+    Console::WriteLine(pStopwatch->Elapsed().GetTotalSeconds());
+
+    return 0;
+}
+```

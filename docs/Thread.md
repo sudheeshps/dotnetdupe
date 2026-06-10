@@ -95,3 +95,41 @@ Gets the currently running thread.
 Thread* current = Thread::GetCurrentThread();
 ```
 
+## Code Example
+
+```cpp
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Threading;
+
+int main() {
+    Console::WriteLine("Thread demo started.");
+
+    // Create a background thread using SmartPointer
+    SmartPointer<Thread> pWorker = SmartPointer<Thread>::New([]() {
+        Thread* pCurrent = Thread::GetCurrentThread();
+        pCurrent->SetName("Worker-Thread");
+        
+        Console::Write("Thread '");
+        Console::Write(pCurrent->GetName());
+        Console::WriteLine("' is working...");
+        
+        Thread::Sleep(100);
+        Console::WriteLine("Worker thread task complete.");
+    });
+
+    Console::WriteLine("Starting worker thread...");
+    pWorker->Start();
+
+    Console::WriteLine("Waiting for worker thread to finish...");
+    pWorker->Join();
+
+    Console::WriteLine("Thread demo completed.");
+    return 0;
+}
+```
+
+

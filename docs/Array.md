@@ -304,3 +304,50 @@ Array<int> arr = { 2, 4, 6 };
 bool allEven = arr.TrueForAll([](int x) { return x % 2 == 0; }); // true
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Array`.
+
+```cpp
+#include "System/Array.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // Initialize an Array using initializer list
+        Array<int> arr = { 5, 2, 8, 1, 9 };
+
+        Console::WriteLine("Array Elements:");
+        arr.ForEach([](int val) {
+            Console::Write(val);
+            Console::Write(" ");
+        });
+        Console::WriteLine();
+
+        // Find an element
+        int index = arr.IndexOf(8);
+        Console::Write("Index of 8: ");
+        Console::WriteLine(index);
+
+        // Filter elements
+        Array<int> evenNumbers = arr.FindAll([](int val) { return val % 2 == 0; });
+        Console::WriteLine("Even elements:");
+        evenNumbers.ForEach([](int val) {
+            Console::Write(val);
+            Console::Write(" ");
+        });
+        Console::WriteLine();
+
+    } catch (const Exception& ex) {
+        Console::Write("Exception occurred: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

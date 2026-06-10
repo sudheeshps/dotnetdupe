@@ -167,3 +167,53 @@ for (const auto& item : list) {
 }
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `List`.
+
+```cpp
+#include "System/Collections/Generic/List.h"
+#include "System/SmartPointer.h"
+#include "System/String.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+
+int main() {
+    try {
+        // Create a List of SmartPointers to demonstrate dynamic memory management
+        List<SmartPointer<String>> list;
+        
+        // Add elements
+        list.Add(SmartPointer<String>::New("Apple"));
+        list.Add(SmartPointer<String>::New("Banana"));
+        list.Add(SmartPointer<String>::New("Cherry"));
+        
+        Console::WriteLine("List contents:");
+        for (const auto& pStr : list) {
+            if (!pStr.IsNull()) {
+                Console::WriteLine(*pStr);
+            }
+        }
+        
+        // Find an element
+        auto found = list.Find([](const SmartPointer<String>& pStr) {
+            return pStr->StartsWith("B", false);
+        });
+        
+        if (!found.IsNull()) {
+            Console::Write("Found string starting with B: ");
+            Console::WriteLine(*found);
+        }
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

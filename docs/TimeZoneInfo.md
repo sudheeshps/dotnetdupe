@@ -121,3 +121,57 @@ Determines whether two `TimeZoneInfo` objects are equal.
 if (tz1.Equals(tz2)) { /* ... */ }
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to retrieve local and UTC `TimeZoneInfo` instances, print their IDs and display names, convert times between zones, and manage a copy dynamically using `SmartPointer`.
+
+```cpp
+#include "System/Console.h"
+#include "System/TimeZoneInfo.h"
+#include "System/DateTimeOffset.h"
+#include "System/TimeSpan.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Get Local and UTC time zone information
+    TimeZoneInfo local = TimeZoneInfo::Local();
+    TimeZoneInfo utc = TimeZoneInfo::Utc();
+
+    Console::Write("Local Time Zone ID: ");
+    Console::WriteLine(local.GetId());
+
+    Console::Write("Local Display Name: ");
+    Console::WriteLine(local.GetDisplayName());
+
+    Console::Write("Base UTC Offset (Hours): ");
+    Console::WriteLine(local.GetBaseUtcOffset().GetTotalHours());
+
+    // Current point in time (in ticks)
+    DateTimeOffset time(638200000000000000);
+
+    // Convert time from local to UTC
+    DateTimeOffset convertedTime = TimeZoneInfo::ConvertTime(time, local, utc);
+    Console::Write("Converted UTC Time Ticks: ");
+    Console::WriteLine(convertedTime.GetTicks());
+
+    // Check if DST is supported/active
+    Console::Write("Supports DST: ");
+    Console::WriteLine(local.SupportsDaylightSavingTime());
+
+    Console::Write("Is DST Active for specified time: ");
+    Console::WriteLine(local.IsDaylightSavingTime(time));
+
+    // Dynamic memory management using SmartPointer
+    auto pTzInfo = SmartPointer<TimeZoneInfo>::New(local);
+    Console::Write("DisplayName from SmartPointer: ");
+    Console::WriteLine(pTzInfo->GetDisplayName());
+
+    return 0;
+}
+```
+
+

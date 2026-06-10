@@ -89,3 +89,45 @@ Indicates whether the current operating system is a Linux operating system.
 if (OperatingSystem::IsLinux()) { /* ... */ }
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to determine the operating system type, instantiate an `OperatingSystem` representing a specific version, query its properties, and manage it dynamically using `SmartPointer`.
+
+```cpp
+#include "System/Console.h"
+#include "System/OperatingSystem.h"
+#include "System/Version.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Check current operating system family
+    if (OperatingSystem::IsWindows()) {
+        Console::WriteLine("Running on Windows.");
+    } else if (OperatingSystem::IsLinux()) {
+        Console::WriteLine("Running on Linux.");
+    } else {
+        Console::WriteLine("Running on an unknown OS.");
+    }
+
+    // Instantiation and dynamic memory management using SmartPointer
+    Version ver(10, 0, 19045, 0);
+    auto pOS = SmartPointer<OperatingSystem>::New(PlatformID::Win32NT, ver);
+
+    Console::Write("Version: ");
+    Console::WriteLine(pOS->GetVersion().ToString());
+
+    Console::Write("Version String: ");
+    Console::WriteLine(pOS->GetVersionString());
+
+    Console::Write("Platform ID: ");
+    Console::WriteLine(static_cast<int>(pOS->GetPlatform()));
+
+    return 0;
+}
+```
+
+

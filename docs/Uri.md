@@ -112,3 +112,56 @@ Gets the fragment portion of the URI.
 String fragment = uri.GetFragment();
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to parse a URI, read its various components, and manage the `Uri` instance dynamically using `SmartPointer`. It also shows how to catch a custom `FormatException` if one occurs.
+
+```cpp
+#include "System/Console.h"
+#include "System/Uri.h"
+#include "System/SmartPointer.h"
+#include "System/FormatException.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // Construct Uri using SmartPointer
+        auto pUri = SmartPointer<Uri>::New("https://admin:secret@example.com:8080/path/to/resource?query=1#section");
+
+        Console::Write("Scheme: ");
+        Console::WriteLine(pUri->GetScheme());
+
+        Console::Write("Host: ");
+        Console::WriteLine(pUri->GetHost());
+
+        Console::Write("Port: ");
+        Console::WriteLine(pUri->GetPort());
+
+        Console::Write("Absolute Path: ");
+        Console::WriteLine(pUri->GetAbsolutePath());
+
+        Console::Write("Query: ");
+        Console::WriteLine(pUri->GetQuery());
+
+        Console::Write("Fragment: ");
+        Console::WriteLine(pUri->GetFragment());
+
+        Console::Write("UserInfo: ");
+        Console::WriteLine(pUri->GetUserInfo());
+
+        Console::Write("Is Loopback: ");
+        Console::WriteLine(pUri->IsLoopback());
+
+    } catch (const FormatException& ex) {
+        Console::Write("Error parsing URI: ");
+        Console::WriteLine(ex.What());
+    }
+
+    return 0;
+}
+```
+
+
