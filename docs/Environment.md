@@ -230,3 +230,55 @@ Gets an `OperatingSystem` object that contains the current platform identifier a
 OperatingSystem osCurrent = Environment::GetOperatingSystem();
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to use the static helper methods on the `Environment` class to query system parameters, OS details, and command-line arguments. It also shows dynamic allocation of an `OperatingSystem` object via `SmartPointer`.
+
+```cpp
+#include "System/Console.h"
+#include "System/Environment.h"
+#include "System/OperatingSystem.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    Console::WriteLine("System Information:");
+    
+    Console::Write("Machine Name: ");
+    Console::WriteLine(Environment::GetMachineName());
+
+    Console::Write("User Name: ");
+    Console::WriteLine(Environment::GetUserName());
+
+    Console::Write("Processors: ");
+    Console::WriteLine(Environment::GetProcessorCount());
+
+    Console::Write("Current Directory: ");
+    Console::WriteLine(Environment::GetCurrentDirectory());
+
+    Console::Write("OS Version: ");
+    Console::WriteLine(Environment::GetOSVersion());
+
+    // Retrieve operating system details
+    OperatingSystem os = Environment::GetOperatingSystem();
+    Console::Write("Platform ID: ");
+    Console::WriteLine(static_cast<int>(os.GetPlatform()));
+
+    // Get command line args
+    auto args = Environment::GetCommandLineArgs();
+    Console::Write("Command Line Args Count: ");
+    Console::WriteLine(args.GetLength());
+
+    // Dynamic memory management using SmartPointer
+    auto pOS = SmartPointer<OperatingSystem>::New(os);
+    Console::Write("Service Pack from SmartPointer: ");
+    Console::WriteLine(pOS->GetServicePack());
+
+    return 0;
+}
+```
+
+

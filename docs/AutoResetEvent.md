@@ -16,19 +16,55 @@ Blocks the current thread until the current event receives a signal.
 ## Remarks
 When an `AutoResetEvent` is signaled, it automatically resets to nonsignaled after a single waiting thread has been released.
 
-## Example Usage
+## Code Example
 
 ```cpp
+#include "System/Threading/AutoResetEvent.h"
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+#include "System/TimeoutException.h"
+
+using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
-AutoResetEvent are(false);
+int main() {
+    Console::WriteLine("AutoResetEvent demo started.");
 
-Thread t([&are]() {
-    are.WaitOne(); // Blocks
-    // Released, 'are' is now nonsignaled again
-});
-t.Start();
+    // Create an AutoResetEvent in nonsignaled state
+    auto pAre = SmartPointer<AutoResetEvent>::NewShared(false);
 
-are.Set();
+    // Spawn a worker thread that waits on the event
+    SmartPointer<Thread> pWorker = SmartPointer<Thread>::New([pAre]() {
+        Console::WriteLine("Worker thread waiting for signal...");
+        pAre->WaitOne();
+        Console::WriteLine("Worker thread received signal and is executing.");
+        
+        // WaitOne on an AutoResetEvent automatically resets it to nonsignaled, 
+        // so a subsequent wait will block or timeout.
+        try {
+            Console::WriteLine("Worker thread waiting again (should timeout)...");
+            pAre->WaitOne(50);
+            Console::WriteLine("Worker thread received second signal (unexpected).");
+        } catch (const TimeoutException& ex) {
+            Console::Write("Worker thread expected timeout: ");
+            Console::WriteLine(ex.What());
+        }
+    });
+
+    pWorker->Start();
+
+    // Let the worker thread start waiting
+    Thread::Sleep(50);
+
+    Console::WriteLine("Main thread signaling the event...");
+    pAre->Set();
+
+    pWorker->Join();
+
+    Console::WriteLine("AutoResetEvent demo completed.");
+    return 0;
+}
 ```
+
 

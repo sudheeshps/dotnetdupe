@@ -448,3 +448,49 @@ Converts the specified 32-bit signed integer to a single-precision floating-poin
 float val = BitConverter::Int32BitsToSingle(bits);
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `BitConverter`.
+
+```cpp
+#include "System/BitConverter.h"
+#include "System/Console.h"
+#include "System/Array.h"
+#include "System/Convert.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        int originalValue = 0x12345678;
+        
+        // Convert int to byte array
+        Array<byte> bytes = BitConverter::GetBytes(originalValue);
+        
+        Console::Write("Bytes of 0x12345678: ");
+        bytes.ForEach([](byte b) {
+            Console::Write(Convert::ToString((int)b, 16));
+            Console::Write(" ");
+        });
+        Console::WriteLine();
+
+        // Convert byte array back to int
+        int restoredValue = BitConverter::ToInt32(bytes, 0);
+        Console::Write("Restored value: 0x");
+        Console::WriteLine(Convert::ToString(restoredValue, 16));
+
+        // Output system endianness info
+        Console::Write("Is Little Endian: ");
+        Console::WriteLine(BitConverter::IsLittleEndian);
+        
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

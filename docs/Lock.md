@@ -70,3 +70,85 @@ void TryWork() {
 }
 ```
 
+## Code Example
+
+```cpp
+#include "System/Threading/Lock.h"
+#include "System/Threading/Mutex.h"
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+#include "System/TimeoutException.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Threading;
+
+int main() {
+    Console::WriteLine("Lock/MutexLock demo started.");
+
+    // Create a shared Mutex using SmartPointer
+    auto pMutex = SmartPointer<Mutex>::NewShared();
+    
+    // Shared state
+    int iSharedCounter = 0;
+
+    // Spawn thread 1
+    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New([pMutex, &iSharedCounter]() {
+        for (int iI = 0; iI < 3; ++iI) {
+            {
+                MutexLock lock(*pMutex); // Acquires mutex
+                iSharedCounter++;
+                Console::Write("Thread 1 incremented counter to: ");
+                Console::WriteLine(iSharedCounter);
+            } // Automatically releases mutex
+            Thread::Sleep(50);
+        }
+    });
+
+    // Spawn thread 2
+    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New([pMutex, &iSharedCounter]() {
+        for (int iI = 0; iI < 3; ++iI) {
+            {
+                MutexLock lock(*pMutex); // Acquires mutex
+                iSharedCounter++;
+                Console::Write("Thread 2 incremented counter to: ");
+                Console::WriteLine(iSharedCounter);
+            } // Automatically releases mutex
+            Thread::Sleep(50);
+        }
+    });
+
+    pT1->Start();
+    pT2->Start();
+
+    pT1->Join();
+    pT2->Join();
+
+    Console::Write("Final counter value: ");
+    Console::WriteLine(iSharedCounter);
+
+    // Try to demonstrate MutexLock with Timeout
+    pMutex->WaitOne(); // Acquire it in main thread to block others
+    
+    SmartPointer<Thread> pTimeoutThread = SmartPointer<Thread>::New([pMutex]() {
+        try {
+            Console::WriteLine("Attempting to acquire MutexLock with 50ms timeout...");
+            MutexLock lock(*pMutex, 50); // This should timeout
+            Console::WriteLine("Acquired MutexLock (unexpected).");
+        } catch (const TimeoutException& ex) {
+            Console::Write("Expected TimeoutException: ");
+            Console::WriteLine(ex.What());
+        }
+    });
+
+    pTimeoutThread->Start();
+    pTimeoutThread->Join();
+
+    pMutex->Release(); // Release it
+
+    Console::WriteLine("Lock/MutexLock demo completed.");
+    return 0;
+}
+```
+
+

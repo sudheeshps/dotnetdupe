@@ -94,3 +94,59 @@ Returns a random floating-point number that is greater than or equal to 0.0, and
 double val = rand.NextDouble();
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Random`.
+
+```cpp
+#include "System/Random.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // Initialize Random with seed
+        Random rand(42);
+
+        // Next positive integer
+        int val1 = rand.Next();
+        Console::Write("Random Int: ");
+        Console::WriteLine(val1);
+
+        // Next integer with max limit (exclusive)
+        int val2 = rand.Next(100);
+        Console::Write("Random Int (0-99): ");
+        Console::WriteLine(val2);
+
+        // Next integer within range (min inclusive, max exclusive)
+        int val3 = rand.Next(50, 60);
+        Console::Write("Random Int (50-59): ");
+        Console::WriteLine(val3);
+
+        // Next double
+        double val4 = rand.NextDouble();
+        Console::Write("Random Double (0.0-1.0): ");
+        Console::WriteLine(val4);
+
+        // Fill buffer with random bytes
+        unsigned char byteBuffer[5];
+        rand.NextBytes(byteBuffer, 5);
+        Console::Write("Random Bytes: ");
+        for (int i = 0; i < 5; i++) {
+            Console::Write((int)byteBuffer[i]);
+            Console::Write(" ");
+        }
+        Console::WriteLine();
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

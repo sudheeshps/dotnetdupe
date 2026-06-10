@@ -85,3 +85,60 @@ Returns a value indicating whether the specified date and time is within the spe
 bool isDst = TimeZone::IsDaylightSavingTime(time, daylightTimes);
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to retrieve the current local `TimeZone`, query its standard and daylight names, determine if a specific time is under daylight saving time, and calculate UTC offsets. It also shows using `SmartPointer` for dynamic allocation.
+
+```cpp
+#include "System/Console.h"
+#include "System/TimeZone.h"
+#include "System/DateTimeOffset.h"
+#include "System/DaylightTime.h"
+#include "System/TimeSpan.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Get the current local time zone (raw pointer managed by the library)
+    TimeZone* tz = TimeZone::GetCurrentTimeZone();
+
+    Console::Write("Standard Name: ");
+    Console::WriteLine(tz->GetStandardName());
+
+    Console::Write("Daylight Name: ");
+    Console::WriteLine(tz->GetDaylightName());
+
+    // Current point in time
+    DateTimeOffset time(638200000000000000); 
+
+    // Check if it is Daylight Saving Time
+    bool isDst = tz->IsDaylightSavingTime(time);
+    Console::Write("Is Daylight Saving Time: ");
+    Console::WriteLine(isDst);
+
+    // Get UTC offset
+    TimeSpan offset = tz->GetUtcOffset(time);
+    Console::Write("UTC Offset (Hours): ");
+    Console::WriteLine(offset.GetTotalHours());
+
+    // Convert to local time
+    DateTimeOffset localTime = tz->ToLocalTime(time);
+    Console::Write("Local Time Ticks: ");
+    Console::WriteLine(localTime.GetTicks());
+
+    // Get daylight saving time details for the year 2026
+    DaylightTime dt = tz->GetDaylightChanges(2026);
+
+    // Dynamically manage a copy using SmartPointer
+    auto pDaylight = SmartPointer<DaylightTime>::New(dt.GetStart(), dt.GetEnd(), dt.GetDelta());
+    Console::Write("Daylight Delta (Minutes): ");
+    Console::WriteLine(pDaylight->GetDelta().GetTotalMinutes());
+
+    return 0;
+}
+```
+
+

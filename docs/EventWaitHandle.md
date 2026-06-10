@@ -22,19 +22,43 @@ Blocks the current thread until the current `WaitHandle` receives a signal, usin
 **Exceptions:**
 - `TimeoutException`: Thrown if the wait operation times out.
 
-## Example Usage
+## Code Example
 
 ```cpp
+#include "System/Threading/EventWaitHandle.h"
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
-EventWaitHandle ewh(false, true); // Manual reset
+int main() {
+    Console::WriteLine("EventWaitHandle demo started.");
 
-Thread t([&ewh]() {
-    ewh.WaitOne();
-    // Do work
-});
-t.Start();
+    // Create an EventWaitHandle as a manual reset event (manualReset = true)
+    auto pEwh = SmartPointer<EventWaitHandle>::NewShared(false, true);
 
-ewh.Set(); // Signal thread to start
+    // Spawn a worker thread that waits on the event
+    SmartPointer<Thread> pWorker = SmartPointer<Thread>::New([pEwh]() {
+        Console::WriteLine("Worker thread waiting for signal...");
+        pEwh->WaitOne();
+        Console::WriteLine("Worker thread received signal and is executing.");
+    });
+
+    pWorker->Start();
+
+    // Sleep a bit to let worker thread start waiting
+    Thread::Sleep(100);
+
+    Console::WriteLine("Main thread signaling the EventWaitHandle...");
+    pEwh->Set();
+
+    pWorker->Join();
+
+    Console::WriteLine("EventWaitHandle demo completed.");
+    return 0;
+}
 ```
+
 

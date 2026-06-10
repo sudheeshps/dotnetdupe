@@ -226,3 +226,49 @@ Char c('X');
 TCHAR val = c.GetChar(); // 'X'
 ```
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Char`.
+
+```cpp
+#include "System/Char.h"
+#include "System/Console.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        Char ch('A');
+        
+        // Character checks
+        Console::Write("Is Letter: ");
+        Console::WriteLine(Char::IsLetter(ch.GetChar()));
+
+        Console::Write("Is Digit: ");
+        Console::WriteLine(Char::IsDigit(ch.GetChar()));
+
+        Console::Write("Is Lowercase: ");
+        Console::WriteLine(Char::IsLower(ch.GetChar()));
+
+        // Case conversions
+        TCHAR lowerCh = Char::ToLower(ch.GetChar());
+        Console::Write("Lowercase of A: ");
+        Console::Write(lowerCh);
+        Console::WriteLine();
+
+        // Get numeric value
+        double numericVal = Char::GetNumericValue('7');
+        Console::Write("Numeric value of '7': ");
+        Console::WriteLine(numericVal);
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

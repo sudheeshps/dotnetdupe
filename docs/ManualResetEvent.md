@@ -16,19 +16,64 @@ Blocks the current thread until the current event receives a signal.
 ## Remarks
 When a `ManualResetEvent` is signaled, it remains signaled until it is manually reset by calling the `Reset` method.
 
-## Example Usage
+## Code Example
 
 ```cpp
+#include "System/Threading/ManualResetEvent.h"
+#include "System/Threading/Thread.h"
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
-ManualResetEvent mre(false);
+int main() {
+    Console::WriteLine("ManualResetEvent demo started.");
 
-Thread t([&mre]() {
-    mre.WaitOne();
-    // Proceed after signal
-});
-t.Start();
+    // Create a ManualResetEvent in nonsignaled state
+    auto pMre = SmartPointer<ManualResetEvent>::NewShared(false);
 
-mre.Set();
+    // Lambda for worker threads
+    auto runWorker = [pMre](Object* pState) {
+        int iId = (int)(intptr_t)pState;
+        Console::Write("Worker ");
+        Console::Write(iId);
+        Console::WriteLine(" waiting for signal...");
+        
+        pMre->WaitOne();
+        
+        Console::Write("Worker ");
+        Console::Write(iId);
+        Console::WriteLine(" received signal and is proceeding.");
+    };
+
+    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New(runWorker);
+    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New(runWorker);
+
+    pT1->Start(reinterpret_cast<Object*>(1));
+    pT2->Start(reinterpret_cast<Object*>(2));
+
+    // Let the worker threads start waiting
+    Thread::Sleep(50);
+
+    Console::WriteLine("Main thread signaling the event (releases both threads)...");
+    pMre->Set();
+
+    pT1->Join();
+    pT2->Join();
+
+    // Since it's a manual reset event, it remains signaled
+    Console::WriteLine("Verifying that it remains signaled...");
+    pMre->WaitOne();
+    Console::WriteLine("WaitOne completed immediately without blocking.");
+
+    // Now reset it
+    Console::WriteLine("Resetting event...");
+    pMre->Reset();
+
+    Console::WriteLine("ManualResetEvent demo completed.");
+    return 0;
+}
 ```
+
 

@@ -254,3 +254,45 @@ Returns the display string for the specified `UriBuilder` instance.
 String uriStr = builder.ToString();
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to build a complex URI using `UriBuilder` dynamically with `SmartPointer`, convert it to a `Uri` instance, and print its components.
+
+```cpp
+#include "System/Console.h"
+#include "System/Uri.h"
+#include "System/UriBuilder.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Dynamic memory management using SmartPointer
+    auto pBuilder = SmartPointer<UriBuilder>::New();
+
+    // Configure URI components using UriBuilder
+    pBuilder->SetScheme("https");
+    pBuilder->SetHost("www.example.com");
+    pBuilder->SetPort(8080);
+    pBuilder->SetPath("/api/v1/users");
+    pBuilder->SetQuery("id=42");
+    pBuilder->SetFragment("profile");
+    pBuilder->SetUserName("user");
+    pBuilder->SetPassword("pass");
+
+    // Output raw builder state
+    Console::Write("Builder string representation: ");
+    Console::WriteLine(pBuilder->ToString());
+
+    // Build the final Uri
+    Uri finalUri = pBuilder->GetUri();
+    Console::Write("Constructed Absolute URI: ");
+    Console::WriteLine(finalUri.GetAbsoluteUri());
+
+    return 0;
+}
+```
+
+

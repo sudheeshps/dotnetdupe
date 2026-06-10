@@ -64,3 +64,56 @@ if (g1 == g2) { /* ... */ }
 
 A read-only instance of the `Guid` class whose value is all zeros.
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Guid`.
+
+```cpp
+#include "System/Guid.h"
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Exception.h"
+#include "System/Array.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // Create a new random GUID
+        Guid guidNew = Guid::NewGuid();
+        Console::Write("New Guid: ");
+        Console::WriteLine(guidNew.ToString());
+
+        // Create GUID from string
+        String guidString = "936da01f-9abd-4d9d-80c7-02af85c822a8";
+        Guid guidFromString(guidString);
+        Console::Write("Guid from string: ");
+        Console::WriteLine(guidFromString.ToString());
+
+        // Check Guid::Empty
+        Guid guidEmpty = Guid::Empty;
+        Console::Write("Empty Guid: ");
+        Console::WriteLine(guidEmpty.ToString());
+
+        // Compare GUIDs
+        if (guidFromString == guidNew) {
+            Console::WriteLine("GUIDs are equal (unexpected).");
+        } else {
+            Console::WriteLine("GUIDs are not equal.");
+        }
+
+        // Get byte representation
+        Array<uint8_t> bytes = guidFromString.ToByteArray();
+        Console::Write("Byte length: ");
+        Console::WriteLine(bytes.GetLength());
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

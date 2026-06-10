@@ -110,3 +110,50 @@ Specifies a set of values that are used when you start a process.
 - `String WorkingDirectory`: The working directory for the process to be started.
 - `bool CreateNoWindow`: Whether to start the process in a new window.
 - `bool UseShellExecute`: Whether to use the operating system shell to start the process.
+
+---
+
+## Code Example
+
+The following example shows how to launch a command-line process cross-platform, inspect its PID, wait for it to exit, and check the exit code.
+
+```cpp
+#include "System/Console.h"
+#include "System/Diagnostics/Process.h"
+#include "System/SmartPointer.h"
+#include "System/Convert.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Diagnostics;
+
+int main() {
+    try {
+#if defined(_WIN32)
+        String sFileName = "cmd.exe";
+        String sArgs = "/c dir";
+#else
+        String sFileName = "ls";
+        String sArgs = "-la";
+#endif
+
+        Console::WriteLine("Starting process...");
+        SmartPointer<Process> pProcess = Process::Start(sFileName, sArgs);
+
+        Console::Write("Spawned Process ID: ");
+        Console::WriteLine(Convert::ToString(pProcess->GetId()));
+
+        Console::WriteLine("Waiting for process to exit...");
+        pProcess->WaitForExit();
+
+        if (pProcess->GetHasExited()) {
+            Console::Write("Process exited with code: ");
+            Console::WriteLine(Convert::ToString(pProcess->GetExitCode()));
+        }
+    } catch (const std::exception& ex) {
+        Console::Write("Exception: ");
+        Console::WriteLine(ex.what());
+    }
+    return 0;
+}
+```
+

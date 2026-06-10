@@ -40,3 +40,46 @@ Determines whether two specified `DateTimeOffset` objects represent the same poi
 if (dto1 == dto2) { /* ... */ }
 ```
 
+---
+
+## Code Example
+
+The following example demonstrates how to create `DateTimeOffset` instances, compare them, and calculate elapsed time intervals using `TimeSpan`. It also demonstrates managing `DateTimeOffset` objects dynamically using `SmartPointer`.
+
+```cpp
+#include "System/Console.h"
+#include "System/DateTimeOffset.h"
+#include "System/TimeSpan.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Create DateTimeOffset objects on the stack
+    DateTimeOffset dtoStart(638200000000000000);
+    DateTimeOffset dtoEnd(638200000010000000); // 1 second later (10,000,000 ticks)
+
+    Console::WriteLine("dtoStart ticks: ");
+    Console::WriteLine(dtoStart.GetTicks());
+
+    Console::WriteLine("dtoEnd ticks: ");
+    Console::WriteLine(dtoEnd.GetTicks());
+
+    // Calculate elapsed time using subtraction operator
+    TimeSpan elapsed = dtoEnd - dtoStart;
+    Console::WriteLine("Elapsed seconds: ");
+    Console::WriteLine(elapsed.GetTotalSeconds());
+
+    // Compare two points in time
+    if (dtoEnd > dtoStart) {
+        Console::WriteLine("dtoEnd is after dtoStart.");
+    }
+
+    // Dynamic memory management using SmartPointer
+    auto pDto = SmartPointer<DateTimeOffset>::New(638200000020000000);
+    Console::WriteLine("pDto ticks: ");
+    Console::WriteLine(pDto->GetTicks());
+
+    return 0;
+}
+```

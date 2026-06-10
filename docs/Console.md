@@ -155,3 +155,46 @@ Adds a string to the internal input buffer for testing purposes.
 
 Returns the accumulated outputs (from `WriteLine` calls) since the last `Clear`.
 
+## Code Example
+
+Below is a complete, compile-ready example demonstrating the usage of `Console`.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Exception.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    try {
+        // Set colors and write lines
+        Console::SetForegroundColor(ConsoleColor::Cyan);
+        Console::WriteLine("--- Console API Demonstration ---");
+        Console::ResetColor();
+
+        Console::Write("Using Console::Write without newline: ");
+        Console::WriteLine("Followed by WriteLine");
+
+        // Console title
+        Console::SetTitle("DotNetDupe Console Demo");
+        Console::Write("Console Title has been set to: ");
+        Console::WriteLine(Console::GetTitle());
+
+        // Test Helper functionality
+        Console::WriteLine("Mocking input for testing:");
+        Console::SetIn("Hello from Mock Input!");
+        String mockedInput = Console::ReadLine();
+        Console::Write("Mocked input read: ");
+        Console::WriteLine(mockedInput);
+
+    } catch (const Exception& ex) {
+        Console::Write("Error: ");
+        Console::WriteLine(ex.What());
+        return 1;
+    }
+    return 0;
+}
+```
+
+

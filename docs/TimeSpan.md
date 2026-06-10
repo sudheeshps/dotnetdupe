@@ -118,3 +118,50 @@ int64_t ticks = ts.GetTicks();
 
 Represents the number of ticks in 1 second.
 
+---
+
+## Code Example
+
+The following example demonstrates how to create `TimeSpan` instances representing different durations, perform arithmetic operations, compare intervals, and use `SmartPointer` to manage them.
+
+```cpp
+#include "System/Console.h"
+#include "System/TimeSpan.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+int main() {
+    // Create TimeSpan using From* methods
+    TimeSpan tsDays = TimeSpan::FromDays(1.5);
+    TimeSpan tsHours = TimeSpan::FromHours(3);
+    TimeSpan tsSeconds = TimeSpan::FromSeconds(45.5);
+
+    Console::WriteLine("tsDays total hours: ");
+    Console::WriteLine(tsDays.GetTotalHours());
+
+    Console::WriteLine("tsHours total minutes: ");
+    Console::WriteLine(tsHours.GetTotalMinutes());
+
+    // Perform arithmetic operations
+    TimeSpan tsSum = tsHours + tsSeconds;
+    Console::WriteLine("tsSum total seconds: ");
+    Console::WriteLine(tsSum.GetTotalSeconds());
+
+    TimeSpan tsDiff = tsDays - tsHours;
+    Console::WriteLine("tsDiff total days: ");
+    Console::WriteLine(tsDiff.GetTotalDays());
+
+    // Comparison operators
+    if (tsHours > tsSeconds) {
+        Console::WriteLine("tsHours is longer than tsSeconds.");
+    }
+
+    // Dynamic memory management using SmartPointer
+    auto pSpan = SmartPointer<TimeSpan>::New(TimeSpan::TicksPerSecond * 10);
+    Console::WriteLine("pSpan total milliseconds: ");
+    Console::WriteLine(pSpan->GetTotalMilliseconds());
+
+    return 0;
+}
+```
