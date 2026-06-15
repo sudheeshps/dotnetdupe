@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "System/Text/Json/JsonElement.h"
+#include "System/Text/Json/JsonException.h"
+#include "System/InvalidOperationException.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Text/StringBuilder.h"
@@ -65,7 +67,7 @@ namespace DotNetDupe {
                         JsonElement res = ParseValue(s, index);
                         SkipWhitespace(s, index);
                         if (index < s.length()) {
-                            throw std::runtime_error("Extra characters after JSON value");
+                            throw JsonException("Extra characters after JSON value");
                         }
                         return res;
                     }
@@ -80,7 +82,7 @@ namespace DotNetDupe {
                     static JsonElement ParseValue(const std::string& s, size_t& index) {
                         SkipWhitespace(s, index);
                         if (index >= s.length()) {
-                            throw std::runtime_error("Unexpected end of JSON input");
+                            throw JsonException("Unexpected end of JSON input");
                         }
                         char c = s[index];
                         if (c == '{') {
@@ -96,7 +98,7 @@ namespace DotNetDupe {
                         } else if (c == '-' || std::isdigit(static_cast<unsigned char>(c))) {
                             return ParseNumber(s, index);
                         } else {
-                            throw std::runtime_error(std::string("Unexpected character: ") + c);
+                            throw JsonException((std::string("Unexpected character: ") + c).c_str());
                         }
                     }
 
@@ -111,13 +113,13 @@ namespace DotNetDupe {
                         while (true) {
                             SkipWhitespace(s, index);
                             if (index >= s.length() || s[index] != '\"') {
-                                throw std::runtime_error("Expected string key in object");
+                                throw JsonException("Expected string key in object");
                             }
                             JsonElement keyEl = ParseString(s, index);
                             String key = keyEl.GetString();
                             SkipWhitespace(s, index);
                             if (index >= s.length() || s[index] != ':') {
-                                throw std::runtime_error("Expected ':' after key in object");
+                                throw JsonException("Expected ':' after key in object");
                             }
                             index++; // Skip ':'
                             JsonElement val = ParseValue(s, index);
@@ -128,7 +130,7 @@ namespace DotNetDupe {
                                 break;
                             }
                             if (index >= s.length() || s[index] != ',') {
-                                throw std::runtime_error("Expected ',' or '}' in object");
+                                throw JsonException("Expected ',' or '}' in object");
                             }
                             index++; // Skip ','
                         }
@@ -152,7 +154,7 @@ namespace DotNetDupe {
                                 break;
                             }
                             if (index >= s.length() || s[index] != ',') {
-                                throw std::runtime_error("Expected ',' or ']' in array");
+                                throw JsonException("Expected ',' or ']' in array");
                             }
                             index++; // Skip ','
                         }
@@ -169,7 +171,7 @@ namespace DotNetDupe {
                                 return JsonElement(String(res.c_str()));
                             } else if (c == '\\') {
                                 if (index + 1 >= s.length()) {
-                                    throw std::runtime_error("Unterminated escape sequence in string");
+                                    throw JsonException("Unterminated escape sequence in string");
                                 }
                                 char escaped = s[index + 1];
                                 index += 2;
@@ -184,7 +186,7 @@ namespace DotNetDupe {
                                     case 't': res += '\t'; break;
                                     case 'u': {
                                         if (index + 4 > s.length()) {
-                                            throw std::runtime_error("Invalid unicode escape sequence");
+                                            throw JsonException("Invalid unicode escape sequence");
                                         }
                                         std::string hexStr = s.substr(index, 4);
                                         index += 4;
@@ -202,14 +204,14 @@ namespace DotNetDupe {
                                         break;
                                     }
                                     default:
-                                        throw std::runtime_error(std::string("Unknown escape sequence: \\") + escaped);
+                                        throw JsonException((std::string("Unknown escape sequence: \\") + escaped).c_str());
                                 }
                             } else {
                                 res += c;
                                 index++;
                             }
                         }
-                        throw std::runtime_error("Unterminated string in JSON");
+                        throw JsonException("Unterminated string in JSON");
                     }
 
                     static JsonElement ParseBool(const std::string& s, size_t& index) {
@@ -220,7 +222,7 @@ namespace DotNetDupe {
                             index += 5;
                             return JsonElement(false);
                         }
-                        throw std::runtime_error("Expected boolean value");
+                        throw JsonException("Expected boolean value");
                     }
 
                     static JsonElement ParseNull(const std::string& s, size_t& index) {
@@ -228,7 +230,7 @@ namespace DotNetDupe {
                             index += 4;
                             return JsonElement(nullptr);
                         }
-                        throw std::runtime_error("Expected null value");
+                        throw JsonException("Expected null value");
                     }
 
                     static JsonElement ParseNumber(const std::string& s, size_t& index) {
@@ -244,7 +246,7 @@ namespace DotNetDupe {
                             double val = std::stod(numStr);
                             return JsonElement(val);
                         } catch (...) {
-                            throw std::runtime_error("Invalid number format: " + numStr);
+                            throw JsonException(("Invalid number format: " + numStr).c_str());
                         }
                     }
                 };
@@ -338,11 +340,11 @@ namespace DotNetDupe {
                 bool JsonElement::GetBoolean() const {
                     if (GetValueKind() == JsonValueKind::True) return true;
                     if (GetValueKind() == JsonValueKind::False) return false;
-                    throw std::runtime_error("JsonElement is not a boolean.");
+                    throw InvalidOperationException("JsonElement is not a boolean.");
                 }
 
                 double JsonElement::GetDouble() const {
-                    if (GetValueKind() != JsonValueKind::Number) throw std::runtime_error("JsonElement is not a number.");
+                    if (GetValueKind() != JsonValueKind::Number) throw InvalidOperationException("JsonElement is not a number.");
                     return m_pImpl->dNumValue;
                 }
 
@@ -355,22 +357,22 @@ namespace DotNetDupe {
                 }
 
                 String JsonElement::GetString() const {
-                    if (GetValueKind() != JsonValueKind::String) throw std::runtime_error("JsonElement is not a string.");
+                    if (GetValueKind() != JsonValueKind::String) throw InvalidOperationException("JsonElement is not a string.");
                     return m_pImpl->sStrValue;
                 }
 
                 int JsonElement::GetArrayLength() const {
-                    if (GetValueKind() != JsonValueKind::Array) throw std::runtime_error("JsonElement is not an array.");
+                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl->lstArray.GetCount();
                 }
 
                 JsonElement JsonElement::GetArrayElement(int iIndex) const {
-                    if (GetValueKind() != JsonValueKind::Array) throw std::runtime_error("JsonElement is not an array.");
+                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl->lstArray[iIndex];
                 }
 
                 void JsonElement::AddArrayElement(const JsonElement& objElement) {
-                    if (GetValueKind() != JsonValueKind::Array) throw std::runtime_error("JsonElement is not an array.");
+                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     m_pImpl->lstArray.Add(objElement);
                 }
 
@@ -380,7 +382,7 @@ namespace DotNetDupe {
                 }
 
                 void JsonElement::SetProperty(const String& sPropertyName, const JsonElement& objValue) {
-                    if (GetValueKind() != JsonValueKind::Object) throw std::runtime_error("JsonElement is not an object.");
+                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     if (m_pImpl->dictObject.ContainsKey(sPropertyName)) {
                         m_pImpl->dictObject[sPropertyName] = objValue;
                     } else {
@@ -389,7 +391,7 @@ namespace DotNetDupe {
                 }
 
                 Array<String> JsonElement::GetPropertyNames() const {
-                    if (GetValueKind() != JsonValueKind::Object) throw std::runtime_error("JsonElement is not an object.");
+                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     return m_pImpl->dictObject.GetKeys();
                 }
 

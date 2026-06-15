@@ -57,7 +57,6 @@ namespace DotNetDupe {
                         m_bActive = false;
                         if (!m_pListenerSocket.IsNull()) {
                             m_pListenerSocket->Close();
-                            m_pListenerSocket = nullptr;
                         }
                     }
                 }
@@ -66,7 +65,8 @@ namespace DotNetDupe {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
                         throw SocketException("TcpListener is not started.");
                     }
-                    SmartPointer<Socket> clientSocket = m_pListenerSocket->Accept();
+                    SmartPointer<Socket> listenerSocket = m_pListenerSocket;
+                    SmartPointer<Socket> clientSocket = listenerSocket->Accept();
                     return SmartPointer<TcpClient>(new TcpClient(clientSocket));
                 }
 
@@ -74,7 +74,8 @@ namespace DotNetDupe {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
                         throw SocketException("TcpListener is not started.");
                     }
-                    return m_pListenerSocket->Accept();
+                    SmartPointer<Socket> listenerSocket = m_pListenerSocket;
+                    return listenerSocket->Accept();
                 }
 
                 bool TcpListener::Pending() {

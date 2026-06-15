@@ -386,6 +386,14 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
 
+### Namespace: `DotNetDupe::System::Net`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Dns](docs/HttpClient.md) | Provides simple domain name resolution functionality. |
+
 ### Namespace: `DotNetDupe::System::Net::Sockets`
 
 **Classes**
@@ -397,6 +405,36 @@ For detailed information on the available classes, methods, and their usage, ple
 | [TcpClient](docs/Sockets.md) | Provides client connections for TCP network services. |
 | [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
 | [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
+
+### Namespace: `DotNetDupe::System::Net::Http`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
+| [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
+| [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
+| [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |
+| [StringContent](docs/HttpClient.md) | Provides HTTP content based on a string. |
+| [ByteArrayContent](docs/HttpClient.md) | Provides HTTP content based on a byte array. |
+| [HttpMethod](docs/HttpClient.md) | Represents an HTTP method. |
+
+### Namespace: `DotNetDupe::System::Security::Cryptography`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HMACSHA256](docs/JWTToken.md) | Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function. |
+
+### Namespace: `DotNetDupe::System::IdentityModel::Tokens::Jwt`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [JWTToken](docs/JWTToken.md) | Represents a JSON Web Token containing a header block, claims, and signature. |
 
 ### Namespace: `DotNetDupe::System::Threading`
 

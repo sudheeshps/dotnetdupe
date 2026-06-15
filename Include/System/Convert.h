@@ -116,6 +116,10 @@ namespace DotNetDupe {
             DOTNETDUPE_API static String ToString(unsigned long long value);
             DOTNETDUPE_API static String ToString(int value, int toBase);
             DOTNETDUPE_API static String ToString(long long value, int toBase);
+
+            // Base64
+            DOTNETDUPE_API static String ToBase64String(const Array<char>& inArray);
+            DOTNETDUPE_API static Array<char> FromBase64String(const String& s);
         };
     }
 }

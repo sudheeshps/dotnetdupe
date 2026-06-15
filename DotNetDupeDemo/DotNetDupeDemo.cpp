@@ -19,11 +19,18 @@
 #include "System/Threading/Tasks/Task.h"
 #include "System/Text/StringBuilder.h"
 #include "System/Text/Json/JsonSerializer.h"
+#include "System/InvalidOperationException.h"
 #include "System/Net/Sockets/Socket.h"
 #include "System/Net/Sockets/NetworkStream.h"
 #include "System/Net/Sockets/TcpClient.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include "System/Net/Sockets/UdpClient.h"
+#include "System/Net/Dns.h"
+#include "System/Net/Http/HttpClient.h"
+#include "System/Net/Http/HttpRequestMessage.h"
+#include "System/Net/Http/HttpResponseMessage.h"
+#include "System/Net/Http/HttpContent.h"
+#include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Guid.h"
@@ -578,7 +585,7 @@ namespace DotNetDupe {
 
                     static ::DemoPerson Read(const JsonElement& element) {
                         if (element.GetValueKind() != JsonValueKind::Object) {
-                            throw std::runtime_error("Expected a JSON object");
+                            throw InvalidOperationException("Expected a JSON object");
                         }
                         ::DemoPerson p;
                         JsonElement prop;
@@ -700,6 +707,123 @@ void DemonstrateSockets() {
     Console::WriteLine("TcpListener stopped.");
 }
 
+void DemonstrateHttp() {
+    Console::WriteLine("\n=== Demonstrate HTTP Client ===");
+    int port = 19091;
+
+    Console::WriteLine("Starting mock HTTP server on 127.0.0.1:19091...");
+    TcpListener listener("127.0.0.1", port);
+    listener.Start();
+
+    Thread serverThread([&listener]() {
+        try {
+            auto serverClient = listener.AcceptTcpClient();
+            Console::WriteLine("  [Server] Accepted client HTTP connection!");
+            auto stream = serverClient->GetStream();
+
+            // Simple request reader (read until headers end)
+            char c;
+            std::string reqLine;
+            while (stream->Read(&c, 0, 1) > 0) {
+                if (c == '\n') {
+                    if (reqLine == "\r" || reqLine.empty()) break;
+                    reqLine.clear();
+                } else {
+                    reqLine += c;
+                }
+            }
+
+            // Send back a mock HTTP response
+            std::string response = 
+                "HTTP/1.1 200 OK\r\n"
+                "Content-Type: text/plain; charset=utf-8\r\n"
+                "Content-Length: 35\r\n"
+                "Server: DotNetDupeMockServer/1.0\r\n"
+                "\r\n"
+                "Hello from DotNetDupe HTTP Server!";
+            stream->Write(response.c_str(), 0, static_cast<int>(response.length()));
+            serverClient->Close();
+        } catch (const std::exception& ex) {
+            Console::Write("  [Server] Exception: ");
+            Console::WriteLine(ex.what());
+        }
+    });
+
+    serverThread.Start();
+    Thread::Sleep(100);
+
+    try {
+        using namespace DotNetDupe::System::Net::Http;
+        HttpClient client;
+        client.GetDefaultRequestHeaders().Add("User-Agent", "DotNetDupeClient/1.0");
+
+        Console::WriteLine("Connecting HttpClient to http://127.0.0.1:19091/...");
+        auto response = client.Get("http://127.0.0.1:19091/");
+
+        response->EnsureSuccessStatusCode();
+
+        Console::Write("Response Status Code: ");
+        Console::WriteLine(static_cast<int>(response->GetStatusCode()));
+
+        Console::Write("Server header: ");
+        Console::WriteLine(response->GetHeaders()["Server"]);
+
+        auto content = response->GetContent();
+        if (!content.IsNull()) {
+            Console::Write("Response body: '");
+            Console::Write(content->ReadAsString());
+            Console::WriteLine("'");
+        }
+    } catch (const BasicException<char>& ex) {
+        Console::Write("  [Client] HTTP Exception: ");
+        Console::WriteLine(ex.What());
+    }
+
+    serverThread.Join();
+    listener.Stop();
+    Console::WriteLine("Mock HTTP server stopped.");
+}
+
+void DemonstrateJwt() {
+    Console::WriteLine("\n=== Demonstrate JWT Token ===");
+    try {
+        using namespace DotNetDupe::System::IdentityModel::Tokens::Jwt;
+
+        // 1. Create token
+        JWTToken token;
+        token.GetPayload().Add("iss", "dot-net-dupe-auth");
+        token.GetPayload().Add("sub", "user_98765");
+        token.GetPayload().Add("scope", "read write");
+
+        String secret = "secure-signature-secret-key";
+
+        Console::WriteLine("Generating signed JWT token...");
+        String tokenStr = token.CreateToken(secret);
+        Console::Write("JWT Token string: ");
+        Console::WriteLine(tokenStr);
+
+        // 2. Parse token
+        Console::WriteLine("Parsing token...");
+        auto parsedToken = JWTToken::Parse(tokenStr);
+        
+        Console::Write("  Subject claim: ");
+        Console::WriteLine(parsedToken->GetPayload()["sub"]);
+        Console::Write("  Scope claim:   ");
+        Console::WriteLine(parsedToken->GetPayload()["scope"]);
+
+        // 3. Verify signature
+        Console::Write("Verifying signature with correct key:   ");
+        Console::WriteLine(parsedToken->Verify(secret) ? "VALID" : "INVALID");
+
+        Console::Write("Verifying signature with incorrect key: ");
+        Console::WriteLine(parsedToken->Verify("some-other-secret-key") ? "VALID" : "INVALID");
+
+    } catch (const BasicException<char>& ex) {
+        Console::Write("Error during JWT demonstration: ");
+        Console::WriteLine(ex.What());
+    }
+}
+
 int main() {
     DemonstrateConsole();
     DemonstrateString();
@@ -722,6 +846,8 @@ int main() {
     DemonstrateTask();
     DemonstrateJson();
     DemonstrateSockets();
+    DemonstrateHttp();
+    DemonstrateJwt();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");
