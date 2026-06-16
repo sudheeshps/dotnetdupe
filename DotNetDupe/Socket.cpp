@@ -154,6 +154,14 @@ namespace DotNetDupe {
 #endif
                     }
 
+                    // Set SO_REUSEADDR to avoid EADDRINUSE on rapid restarts
+                    int optval = 1;
+#if defined(_WIN32)
+                    setsockopt(m_pImpl->hSocket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval));
+#else
+                    ::setsockopt(m_pImpl->hSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+#endif
+
                     if (bind(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
                         throw SocketException("Failed to bind socket.", GetLastErrorCode());
                     }
@@ -338,6 +346,19 @@ namespace DotNetDupe {
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
                         return false;
                     }
+
+                    // Check if the socket is actually connected (and not listening, closed, or never connected)
+                    sockaddr_in peerAddr;
+                    SockLen peerLen = sizeof(peerAddr);
+#if defined(_WIN32)
+                    if (getpeername(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&peerAddr), &peerLen) == SOCKET_ERROR) {
+                        return false;
+                    }
+#else
+                    if (::getpeername(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&peerAddr), &peerLen) == SOCKET_ERROR) {
+                        return false;
+                    }
+#endif
 
                     // Check readability with select (timeout 0) to ensure recv won't block
                     fd_set fds;

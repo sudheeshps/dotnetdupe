@@ -24,6 +24,8 @@
 #include "System/Net/Sockets/NetworkStream.h"
 #include "System/Net/Sockets/TcpClient.h"
 #include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/SocketException.h"
+#include "System/Net/Http/HttpRequestException.h"
 #include "System/Net/Sockets/UdpClient.h"
 #include "System/Net/Dns.h"
 #include "System/Net/Http/HttpClient.h"
@@ -644,144 +646,187 @@ void DemonstrateSockets() {
     Console::WriteLine("\n--- Sockets Demonstration ---");
     int port = 19090;
 
-    Console::WriteLine("Starting TcpListener on 127.0.0.1:19090...");
-    TcpListener listener("127.0.0.1", port);
-    listener.Start();
+    try {
+        Console::WriteLine("Starting TcpListener on 127.0.0.1:19090...");
+        TcpListener listener("127.0.0.1", port);
+        listener.Start();
 
-    Thread serverThread([&listener]() {
+        Thread serverThread([&listener]() {
+            try {
+                auto serverClient = listener.AcceptTcpClient();
+                Console::WriteLine("  [Server] Accepted client connection!");
+                auto stream = serverClient->GetStream();
+
+                char buffer[128] = {0};
+                int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+                if (bytesRead > 0) {
+                    Console::Write("  [Server] Received: '");
+                    Console::Write(buffer);
+                    Console::WriteLine("'");
+                }
+
+                String response = "World";
+                stream->Write(response.GetRawString(), 0, response.GetLength());
+                serverClient->Close();
+            } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+                Console::Write("  [Server] SocketException: ");
+                Console::WriteLine(ex.What());
+            } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                Console::Write("  [Server] BasicException: ");
+                Console::WriteLine(ex.What());
+            } catch (const std::exception& ex) {
+                Console::Write("  [Server] std::exception: ");
+                Console::WriteLine(ex.what());
+            }
+        });
+
+        serverThread.Start();
+        Thread::Sleep(100);
+
         try {
-            auto serverClient = listener.AcceptTcpClient();
-            Console::WriteLine("  [Server] Accepted client connection!");
-            auto stream = serverClient->GetStream();
+            Console::WriteLine("Connecting TcpClient to 127.0.0.1:19090...");
+            TcpClient client;
+            client.Connect("127.0.0.1", port);
+
+            auto stream = client.GetStream();
+            String msg = "Hello";
+            stream->Write(msg.GetRawString(), 0, msg.GetLength());
 
             char buffer[128] = {0};
             int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
             if (bytesRead > 0) {
-                Console::Write("  [Server] Received: '");
+                Console::Write("  [Client] Received back: '");
                 Console::Write(buffer);
                 Console::WriteLine("'");
             }
-
-            String response = "World";
-            stream->Write(response.GetRawString(), 0, response.GetLength());
-            serverClient->Close();
-        } catch (const DotNetDupe::System::SystemException& ex) {
-            Console::Write("  [Server] SystemException: ");
+            client.Close();
+        } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+            Console::Write("  [Client] SocketException: ");
+            Console::WriteLine(ex.What());
+        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+            Console::Write("  [Client] BasicException: ");
             Console::WriteLine(ex.What());
         } catch (const std::exception& ex) {
-            Console::Write("  [Server] std::exception: ");
+            Console::Write("  [Client] std::exception: ");
             Console::WriteLine(ex.what());
         }
-    });
 
-    serverThread.Start();
-    Thread::Sleep(100);
-
-    try {
-        Console::WriteLine("Connecting TcpClient to 127.0.0.1:19090...");
-        TcpClient client;
-        client.Connect("127.0.0.1", port);
-
-        auto stream = client.GetStream();
-        String msg = "Hello";
-        stream->Write(msg.GetRawString(), 0, msg.GetLength());
-
-        char buffer[128] = {0};
-        int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
-        if (bytesRead > 0) {
-            Console::Write("  [Client] Received back: '");
-            Console::Write(buffer);
-            Console::WriteLine("'");
-        }
-        client.Close();
-    } catch (const DotNetDupe::System::SystemException& ex) {
-        Console::Write("  [Client] SystemException: ");
+        serverThread.Join();
+        listener.Stop();
+        Console::WriteLine("TcpListener stopped.");
+    } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+        Console::Write("  [Demo] SocketException: ");
+        Console::WriteLine(ex.What());
+    } catch (const DotNetDupe::System::BasicException<char>& ex) {
+        Console::Write("  [Demo] BasicException: ");
         Console::WriteLine(ex.What());
     } catch (const std::exception& ex) {
-        Console::Write("  [Client] std::exception: ");
+        Console::Write("  [Demo] std::exception: ");
         Console::WriteLine(ex.what());
     }
-
-    serverThread.Join();
-    listener.Stop();
-    Console::WriteLine("TcpListener stopped.");
 }
 
 void DemonstrateHttp() {
     Console::WriteLine("\n=== Demonstrate HTTP Client ===");
     int port = 19091;
 
-    Console::WriteLine("Starting mock HTTP server on 127.0.0.1:19091...");
-    TcpListener listener("127.0.0.1", port);
-    listener.Start();
-
-    Thread serverThread([&listener]() {
-        try {
-            auto serverClient = listener.AcceptTcpClient();
-            Console::WriteLine("  [Server] Accepted client HTTP connection!");
-            auto stream = serverClient->GetStream();
-
-            // Simple request reader (read until headers end)
-            char c;
-            std::string reqLine;
-            while (stream->Read(&c, 0, 1) > 0) {
-                if (c == '\n') {
-                    if (reqLine == "\r" || reqLine.empty()) break;
-                    reqLine.clear();
-                } else {
-                    reqLine += c;
-                }
-            }
-
-            // Send back a mock HTTP response
-            std::string response = 
-                "HTTP/1.1 200 OK\r\n"
-                "Content-Type: text/plain; charset=utf-8\r\n"
-                "Content-Length: 35\r\n"
-                "Server: DotNetDupeMockServer/1.0\r\n"
-                "\r\n"
-                "Hello from DotNetDupe HTTP Server!";
-            stream->Write(response.c_str(), 0, static_cast<int>(response.length()));
-            serverClient->Close();
-        } catch (const std::exception& ex) {
-            Console::Write("  [Server] Exception: ");
-            Console::WriteLine(ex.what());
-        }
-    });
-
-    serverThread.Start();
-    Thread::Sleep(100);
-
     try {
-        using namespace DotNetDupe::System::Net::Http;
-        HttpClient client;
-        client.GetDefaultRequestHeaders().Add("User-Agent", "DotNetDupeClient/1.0");
+        Console::WriteLine("Starting mock HTTP server on 127.0.0.1:19091...");
+        TcpListener listener("127.0.0.1", port);
+        listener.Start();
 
-        Console::WriteLine("Connecting HttpClient to http://127.0.0.1:19091/...");
-        auto response = client.Get("http://127.0.0.1:19091/");
+        Thread serverThread([&listener]() {
+            try {
+                auto serverClient = listener.AcceptTcpClient();
+                Console::WriteLine("  [Server] Accepted client HTTP connection!");
+                auto stream = serverClient->GetStream();
 
-        response->EnsureSuccessStatusCode();
+                // Simple request reader (read until headers end)
+                char c;
+                std::string reqLine;
+                while (stream->Read(&c, 0, 1) > 0) {
+                    if (c == '\n') {
+                        if (reqLine == "\r" || reqLine.empty()) break;
+                        reqLine.clear();
+                    } else {
+                        reqLine += c;
+                    }
+                }
 
-        Console::Write("Response Status Code: ");
-        Console::WriteLine(static_cast<int>(response->GetStatusCode()));
+                // Send back a mock HTTP response
+                std::string response = 
+                    "HTTP/1.1 200 OK\r\n"
+                    "Content-Type: text/plain; charset=utf-8\r\n"
+                    "Content-Length: 34\r\n"
+                    "Server: DotNetDupeMockServer/1.0\r\n"
+                    "\r\n"
+                    "Hello from DotNetDupe HTTP Server!";
+                stream->Write(response.c_str(), 0, static_cast<int>(response.length()));
+                serverClient->Close();
+            } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+                Console::Write("  [Server] SocketException: ");
+                Console::WriteLine(ex.What());
+            } catch (const BasicException<char>& ex) {
+                Console::Write("  [Server] BasicException: ");
+                Console::WriteLine(ex.What());
+            } catch (const std::exception& ex) {
+                Console::Write("  [Server] Exception: ");
+                Console::WriteLine(ex.what());
+            }
+        });
 
-        Console::Write("Server header: ");
-        Console::WriteLine(response->GetHeaders()["Server"]);
+        serverThread.Start();
+        Thread::Sleep(100);
 
-        auto content = response->GetContent();
-        if (!content.IsNull()) {
-            Console::Write("Response body: '");
-            Console::Write(content->ReadAsString());
-            Console::WriteLine("'");
+        try {
+            using namespace DotNetDupe::System::Net::Http;
+            HttpClient client;
+            client.GetDefaultRequestHeaders().Add("User-Agent", "DotNetDupeClient/1.0");
+
+            Console::WriteLine("Connecting HttpClient to http://127.0.0.1:19091/...");
+            auto response = client.Get("http://127.0.0.1:19091/");
+
+            response->EnsureSuccessStatusCode();
+
+            Console::Write("Response Status Code: ");
+            Console::WriteLine(static_cast<int>(response->GetStatusCode()));
+
+            Console::Write("Server header: ");
+            Console::WriteLine(response->GetHeaders()["Server"]);
+
+            auto content = response->GetContent();
+            if (!content.IsNull()) {
+                Console::Write("Response body: '");
+                Console::Write(content->ReadAsString());
+                Console::WriteLine("'");
+            }
+        } catch (const DotNetDupe::System::Net::Http::HttpRequestException& ex) {
+            Console::Write("  [Client] HTTP RequestException: ");
+            Console::WriteLine(ex.What());
+        } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+            Console::Write("  [Client] HTTP SocketException: ");
+            Console::WriteLine(ex.What());
+        } catch (const BasicException<char>& ex) {
+            Console::Write("  [Client] HTTP Exception: ");
+            Console::WriteLine(ex.What());
         }
-    } catch (const BasicException<char>& ex) {
-        Console::Write("  [Client] HTTP Exception: ");
-        Console::WriteLine(ex.What());
-    }
 
-    serverThread.Join();
-    listener.Stop();
-    Console::WriteLine("Mock HTTP server stopped.");
+        serverThread.Join();
+        listener.Stop();
+        Console::WriteLine("Mock HTTP server stopped.");
+    } catch (const DotNetDupe::System::Net::Http::HttpRequestException& ex) {
+        Console::Write("  [Demo] HTTP RequestException: ");
+        Console::WriteLine(ex.What());
+    } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
+        Console::Write("  [Demo] HTTP SocketException: ");
+        Console::WriteLine(ex.What());
+    } catch (const BasicException<char>& ex) {
+        Console::Write("  [Demo] HTTP Exception: ");
+        Console::WriteLine(ex.What());
+    } catch (const std::exception& ex) {
+        Console::Write("  [Demo] std::exception: ");
+        Console::WriteLine(ex.what());
+    }
 }
 
 void DemonstrateJwt() {

@@ -3,6 +3,7 @@
 #include "System/Net/Http/HttpRequestException.h"
 #include "System/Net/Dns.h"
 #include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/NetworkStream.h"
 #include "System/Net/Sockets/SocketException.h"
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentException.h"
@@ -108,6 +109,205 @@ namespace DotNetDupe {
                     return m_defaultRequestHeaders;
                 }
 
+                String HttpClient::ResolveHost(const Uri& uri, int& riPort) {
+                    String sHost = uri.GetHost();
+                    riPort = uri.GetPort();
+                    if (riPort <= 0) {
+                        riPort = 80;
+                    }
+
+                    // Resolve hostname to IP Address
+                    Array<String> arrIpAddresses = Dns::GetHostAddresses(sHost);
+                    if (arrIpAddresses.GetLength() == 0) {
+                        throw HttpRequestException("Could not resolve host.");
+                    }
+                    return arrIpAddresses[0];
+                }
+
+                std::string HttpClient::PrepareHeaders(const SmartPointer<HttpRequestMessage>& spRequest, const Uri& uri) {
+                    String sHost = uri.GetHost();
+                    String sPath = uri.GetAbsolutePath();
+                    if (sPath.IsEmpty()) {
+                        sPath = "/";
+                    }
+                    String sQuery = uri.GetQuery();
+                    std::string sRequestPath = sPath.GetRawString();
+                    if (!sQuery.IsEmpty()) {
+                        sRequestPath += "?";
+                        sRequestPath += sQuery.GetRawString();
+                    }
+
+                    // Write HTTP request headers
+                    std::ostringstream ssHeadersStream;
+                    ssHeadersStream << spRequest->GetMethod().GetMethod().GetRawString() << " " << sRequestPath << " HTTP/1.1\r\n";
+                    
+                    // Host header
+                    ssHeadersStream << "Host: " << sHost.GetRawString();
+                    if (uri.GetPort() != 80 && uri.GetPort() > 0) {
+                        ssHeadersStream << ":" << uri.GetPort();
+                    }
+                    ssHeadersStream << "\r\n";
+
+                    // Default request headers
+                    auto arrDefaultHeadersKeys = m_defaultRequestHeaders.GetKeys();
+                    for (int i = 0; i < arrDefaultHeadersKeys.GetLength(); ++i) {
+                        String sKey = arrDefaultHeadersKeys[i];
+                        ssHeadersStream << sKey.GetRawString() << ": " << m_defaultRequestHeaders[sKey].GetRawString() << "\r\n";
+                    }
+
+                    // Request headers
+                    auto arrRequestHeadersKeys = spRequest->GetHeaders().GetKeys();
+                    for (int i = 0; i < arrRequestHeadersKeys.GetLength(); ++i) {
+                        String sKey = arrRequestHeadersKeys[i];
+                        ssHeadersStream << sKey.GetRawString() << ": " << spRequest->GetHeaders()[sKey].GetRawString() << "\r\n";
+                    }
+
+                    // Content headers
+                    auto spContent = spRequest->GetContent();
+                    if (!spContent.IsNull()) {
+                        auto arrContentHeadersKeys = spContent->GetHeaders().GetKeys();
+                        for (int i = 0; i < arrContentHeadersKeys.GetLength(); ++i) {
+                            String sKey = arrContentHeadersKeys[i];
+                            ssHeadersStream << sKey.GetRawString() << ": " << spContent->GetHeaders()[sKey].GetRawString() << "\r\n";
+                        }
+
+                        long lLen = spContent->GetLength();
+                        if (lLen >= 0) {
+                            ssHeadersStream << "Content-Length: " << lLen << "\r\n";
+                        }
+                    }
+
+                    ssHeadersStream << "Connection: close\r\n\r\n";
+
+                    return ssHeadersStream.str();
+                }
+
+                void HttpClient::SendRequest(const SmartPointer<Sockets::NetworkStream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent) {
+                    spStream->Write(sHeaders.data(), 0, static_cast<int>(sHeaders.size()));
+
+                    // Write content
+                    if (!spContent.IsNull()) {
+                        spContent->CopyTo(spStream);
+                    }
+                }
+
+                SmartPointer<HttpResponseMessage> HttpClient::PrepareResponse(const SmartPointer<Sockets::NetworkStream>& spStream) {
+                    // Parse HTTP response
+                    std::string sStatusLine = ReadLine(spStream);
+                    if (sStatusLine.empty()) {
+                        throw HttpRequestException("No response from server.");
+                    }
+
+                    // HTTP/1.1 StatusCode ReasonPhrase
+                    size_t iFirstSpace = sStatusLine.find(' ');
+                    if (iFirstSpace == std::string::npos) {
+                        throw HttpRequestException("Invalid response status line.");
+                    }
+
+                    size_t iSecondSpace = sStatusLine.find(' ', iFirstSpace + 1);
+                    int iStatusCodeVal = 0;
+                    std::string sReasonPhrase;
+                    if (iSecondSpace == std::string::npos) {
+                        iStatusCodeVal = std::atoi(sStatusLine.substr(iFirstSpace + 1).c_str());
+                    } else {
+                        iStatusCodeVal = std::atoi(sStatusLine.substr(iFirstSpace + 1, iSecondSpace - iFirstSpace - 1).c_str());
+                        sReasonPhrase = sStatusLine.substr(iSecondSpace + 1);
+                    }
+
+                    auto spResponse = SmartPointer<HttpResponseMessage>::NewShared(static_cast<HttpStatusCode>(iStatusCodeVal));
+                    spResponse->SetReasonPhrase(String(sReasonPhrase.c_str()));
+
+                    auto& dictRespHeaders = spResponse->GetHeaders();
+                    bool bChunked = false;
+                    long lContentLength = -1;
+                    String sContentType = "text/plain";
+
+                    while (true) {
+                        std::string sHeaderLine = ReadLine(spStream);
+                        if (sHeaderLine.empty()) break;
+
+                        size_t iColon = sHeaderLine.find(':');
+                        if (iColon != std::string::npos) {
+                            std::string sKey = sHeaderLine.substr(0, iColon);
+                            std::string sVal = sHeaderLine.substr(iColon + 1);
+
+                            // trim whitespace
+                            while (!sKey.empty() && std::isspace(static_cast<unsigned char>(sKey.front()))) sKey.erase(sKey.begin());
+                            while (!sKey.empty() && std::isspace(static_cast<unsigned char>(sKey.back()))) sKey.pop_back();
+                            while (!sVal.empty() && std::isspace(static_cast<unsigned char>(sVal.front()))) sVal.erase(sVal.begin());
+                            while (!sVal.empty() && std::isspace(static_cast<unsigned char>(sVal.back()))) sVal.pop_back();
+
+                            String sKeyObj(sKey.c_str());
+                            String sValObj(sVal.c_str());
+                            dictRespHeaders[sKeyObj] = sValObj;
+
+                            if (sKeyObj.ToLower() == "transfer-encoding" && sValObj.ToLower() == "chunked") {
+                                bChunked = true;
+                            } else if (sKeyObj.ToLower() == "content-length") {
+                                lContentLength = std::atol(sVal.c_str());
+                            } else if (sKeyObj.ToLower() == "content-type") {
+                                sContentType = sValObj;
+                            }
+                        }
+                    }
+
+                    // Read body content
+                    std::vector<char> vecBodyData;
+                    if (bChunked) {
+                        while (true) {
+                            std::string sSizeLine = ReadLine(spStream);
+                            if (sSizeLine.empty()) break;
+
+                            long lChunkSize = std::strtol(sSizeLine.c_str(), nullptr, 16);
+                            if (lChunkSize <= 0) {
+                                ReadLine(spStream); // read trailing CRLF of the final chunk
+                                break;
+                            }
+
+                            std::vector<char> vecChunk(lChunkSize);
+                            int iTotalRead = 0;
+                            while (iTotalRead < lChunkSize) {
+                                int iRead = spStream->Read(vecChunk.data() + iTotalRead, 0, static_cast<int>(lChunkSize - iTotalRead));
+                                if (iRead <= 0) {
+                                    throw HttpRequestException("Connection closed prematurely while reading chunk data.");
+                                }
+                                iTotalRead += iRead;
+                            }
+                            vecBodyData.insert(vecBodyData.end(), vecChunk.begin(), vecChunk.end());
+
+                            ReadLine(spStream); // read trailing CRLF of the chunk
+                        }
+                    } else if (lContentLength >= 0) {
+                        vecBodyData.resize(lContentLength);
+                        int iTotalRead = 0;
+                        while (iTotalRead < lContentLength) {
+                            int iRead = spStream->Read(vecBodyData.data() + iTotalRead, 0, static_cast<int>(lContentLength - iTotalRead));
+                            if (iRead <= 0) {
+                                throw HttpRequestException("Connection closed prematurely while reading content.");
+                            }
+                            iTotalRead += iRead;
+                        }
+                    } else {
+                        // Read until EOF
+                        char arrBuffer[4096];
+                        int iBytesRead = 0;
+                        while ((iBytesRead = spStream->Read(arrBuffer, 0, sizeof(arrBuffer))) > 0) {
+                            vecBodyData.insert(vecBodyData.end(), arrBuffer, arrBuffer + iBytesRead);
+                        }
+                    }
+
+                    Array<char> arrData(static_cast<int>(vecBodyData.size()));
+                    if (!vecBodyData.empty()) {
+                        std::memcpy(arrData.GetData(), vecBodyData.data(), vecBodyData.size());
+                    }
+
+                    auto spResponseContent = SmartPointer<HttpContent>(new ByteArrayContent(arrData), true);
+                    spResponseContent->GetHeaders()["Content-Type"] = sContentType;
+                    spResponse->SetContent(spResponseContent);
+
+                    return spResponse;
+                }
+
                 SmartPointer<HttpResponseMessage> HttpClient::Send(const SmartPointer<HttpRequestMessage>& request) {
                     if (request.IsNull()) {
                         throw ArgumentNullException("request");
@@ -119,203 +319,24 @@ namespace DotNetDupe {
                         throw ArgumentException("Only 'http' scheme is supported.");
                     }
 
-                    String host = uri.GetHost();
-                    int port = uri.GetPort();
-                    if (port <= 0) port = 80;
-
-                    // Resolve hostname to IP Address
-                    Array<String> ipAddresses = Dns::GetHostAddresses(host);
-                    if (ipAddresses.GetLength() == 0) {
-                        throw HttpRequestException("Could not resolve host.");
-                    }
-                    String resolvedIp = ipAddresses[0];
+                    int iPort = 80;
+                    String sResolvedIp = ResolveHost(uri, iPort);
 
                     // Connect
                     Sockets::TcpClient tcpClient;
                     try {
-                        tcpClient.Connect(resolvedIp, port);
+                        tcpClient.Connect(sResolvedIp, iPort);
                     } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
                         throw HttpRequestException(ex.What());
                     }
 
-                    auto stream = tcpClient.GetStream();
+                    auto spStream = tcpClient.GetStream();
 
-                    // Format path and query
-                    String path = uri.GetAbsolutePath();
-                    if (path.IsEmpty()) {
-                        path = "/";
-                    }
-                    String query = uri.GetQuery();
-                    std::string requestPath = path.GetRawString();
-                    if (!query.IsEmpty()) {
-                        requestPath += "?";
-                        requestPath += query.GetRawString();
-                    }
+                    std::string sHeaders = PrepareHeaders(request, uri);
 
-                    // Write HTTP request headers
-                    std::ostringstream requestHeadersStream;
-                    requestHeadersStream << request->GetMethod().GetMethod().GetRawString() << " " << requestPath << " HTTP/1.1\r\n";
-                    
-                    // Host header
-                    requestHeadersStream << "Host: " << host.GetRawString();
-                    if (uri.GetPort() != 80 && uri.GetPort() > 0) {
-                        requestHeadersStream << ":" << uri.GetPort();
-                    }
-                    requestHeadersStream << "\r\n";
+                    SendRequest(spStream, sHeaders, request->GetContent());
 
-                    // Default request headers
-                    auto defaultHeadersKeys = m_defaultRequestHeaders.GetKeys();
-                    for (int i = 0; i < defaultHeadersKeys.GetLength(); ++i) {
-                        String key = defaultHeadersKeys[i];
-                        requestHeadersStream << key.GetRawString() << ": " << m_defaultRequestHeaders[key].GetRawString() << "\r\n";
-                    }
-
-                    // Request headers
-                    auto requestHeadersKeys = request->GetHeaders().GetKeys();
-                    for (int i = 0; i < requestHeadersKeys.GetLength(); ++i) {
-                        String key = requestHeadersKeys[i];
-                        requestHeadersStream << key.GetRawString() << ": " << request->GetHeaders()[key].GetRawString() << "\r\n";
-                    }
-
-                    // Content headers
-                    auto content = request->GetContent();
-                    if (!content.IsNull()) {
-                        auto contentHeadersKeys = content->GetHeaders().GetKeys();
-                        for (int i = 0; i < contentHeadersKeys.GetLength(); ++i) {
-                            String key = contentHeadersKeys[i];
-                            requestHeadersStream << key.GetRawString() << ": " << content->GetHeaders()[key].GetRawString() << "\r\n";
-                        }
-
-                        long len = content->GetLength();
-                        if (len >= 0) {
-                            requestHeadersStream << "Content-Length: " << len << "\r\n";
-                        }
-                    }
-
-                    requestHeadersStream << "Connection: close\r\n\r\n";
-
-                    std::string headersStr = requestHeadersStream.str();
-                    stream->Write(headersStr.data(), 0, static_cast<int>(headersStr.size()));
-
-                    // Write content
-                    if (!content.IsNull()) {
-                        content->CopyTo(stream);
-                    }
-
-                    // Parse HTTP response
-                    std::string statusLine = ReadLine(stream);
-                    if (statusLine.empty()) {
-                        throw HttpRequestException("No response from server.");
-                    }
-
-                    // HTTP/1.1 StatusCode ReasonPhrase
-                    size_t firstSpace = statusLine.find(' ');
-                    if (firstSpace == std::string::npos) {
-                        throw HttpRequestException("Invalid response status line.");
-                    }
-
-                    size_t secondSpace = statusLine.find(' ', firstSpace + 1);
-                    int statusCodeVal = 0;
-                    std::string reasonPhrase;
-                    if (secondSpace == std::string::npos) {
-                        statusCodeVal = std::atoi(statusLine.substr(firstSpace + 1).c_str());
-                    } else {
-                        statusCodeVal = std::atoi(statusLine.substr(firstSpace + 1, secondSpace - firstSpace - 1).c_str());
-                        reasonPhrase = statusLine.substr(secondSpace + 1);
-                    }
-
-                    auto response = SmartPointer<HttpResponseMessage>::NewShared(static_cast<HttpStatusCode>(statusCodeVal));
-                    response->SetReasonPhrase(String(reasonPhrase.c_str()));
-
-                    auto& respHeaders = response->GetHeaders();
-                    bool chunked = false;
-                    long contentLength = -1;
-                    String contentType = "text/plain";
-
-                    while (true) {
-                        std::string headerLine = ReadLine(stream);
-                        if (headerLine.empty()) break;
-
-                        size_t colon = headerLine.find(':');
-                        if (colon != std::string::npos) {
-                            std::string key = headerLine.substr(0, colon);
-                            std::string val = headerLine.substr(colon + 1);
-
-                            // trim whitespace
-                            while (!key.empty() && std::isspace(static_cast<unsigned char>(key.front()))) key.erase(key.begin());
-                            while (!key.empty() && std::isspace(static_cast<unsigned char>(key.back()))) key.pop_back();
-                            while (!val.empty() && std::isspace(static_cast<unsigned char>(val.front()))) val.erase(val.begin());
-                            while (!val.empty() && std::isspace(static_cast<unsigned char>(val.back()))) val.pop_back();
-
-                            String sKey(key.c_str());
-                            String sVal(val.c_str());
-                            respHeaders[sKey] = sVal;
-
-                            if (sKey.ToLower() == "transfer-encoding" && sVal.ToLower() == "chunked") {
-                                chunked = true;
-                            } else if (sKey.ToLower() == "content-length") {
-                                contentLength = std::atol(val.c_str());
-                            } else if (sKey.ToLower() == "content-type") {
-                                contentType = sVal;
-                            }
-                        }
-                    }
-
-                    // Read body content
-                    std::vector<char> bodyData;
-                    if (chunked) {
-                        while (true) {
-                            std::string sizeLine = ReadLine(stream);
-                            if (sizeLine.empty()) break;
-
-                            long chunkSize = std::strtol(sizeLine.c_str(), nullptr, 16);
-                            if (chunkSize <= 0) {
-                                ReadLine(stream); // read trailing CRLF of the final chunk
-                                break;
-                            }
-
-                            std::vector<char> chunk(chunkSize);
-                            int totalRead = 0;
-                            while (totalRead < chunkSize) {
-                                int read = stream->Read(chunk.data() + totalRead, 0, static_cast<int>(chunkSize - totalRead));
-                                if (read <= 0) {
-                                    throw HttpRequestException("Connection closed prematurely while reading chunk data.");
-                                }
-                                totalRead += read;
-                            }
-                            bodyData.insert(bodyData.end(), chunk.begin(), chunk.end());
-
-                            ReadLine(stream); // read trailing CRLF of the chunk
-                        }
-                    } else if (contentLength >= 0) {
-                        bodyData.resize(contentLength);
-                        int totalRead = 0;
-                        while (totalRead < contentLength) {
-                            int read = stream->Read(bodyData.data() + totalRead, 0, static_cast<int>(contentLength - totalRead));
-                            if (read <= 0) {
-                                throw HttpRequestException("Connection closed prematurely while reading content.");
-                            }
-                            totalRead += read;
-                        }
-                    } else {
-                        // Read until EOF
-                        char buffer[4096];
-                        int bytesRead = 0;
-                        while ((bytesRead = stream->Read(buffer, 0, sizeof(buffer))) > 0) {
-                            bodyData.insert(bodyData.end(), buffer, buffer + bytesRead);
-                        }
-                    }
-
-                    Array<char> arrData(static_cast<int>(bodyData.size()));
-                    if (!bodyData.empty()) {
-                        std::memcpy(arrData.GetData(), bodyData.data(), bodyData.size());
-                    }
-
-                    auto responseContent = SmartPointer<HttpContent>(new ByteArrayContent(arrData), true);
-                    responseContent->GetHeaders()["Content-Type"] = contentType;
-                    response->SetContent(responseContent);
-
-                    return response;
+                    return PrepareResponse(spStream);
                 }
 
             }

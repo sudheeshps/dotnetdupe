@@ -8,10 +8,15 @@
 #include "System/Net/Http/HttpResponseMessage.h"
 #include "System/Net/Http/HttpContent.h"
 #include "System/Collections/Generic/Dictionary.h"
+#include <string>
 
 namespace DotNetDupe {
     namespace System {
         namespace Net {
+            namespace Sockets {
+                class NetworkStream;
+            }
+
             namespace Http {
 
                 class HttpClient : public Object {
@@ -44,9 +49,15 @@ namespace DotNetDupe {
 
                 private:
                     Collections::Generic::Dictionary<String, String> m_defaultRequestHeaders;
+
+                    String ResolveHost(const Uri& uri, int& riPort);
+                    std::string PrepareHeaders(const SmartPointer<HttpRequestMessage>& spRequest, const Uri& uri);
+                    void SendRequest(const SmartPointer<Sockets::NetworkStream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent);
+                    SmartPointer<HttpResponseMessage> PrepareResponse(const SmartPointer<Sockets::NetworkStream>& spStream);
                 };
 
             }
         }
     }
 }
+
