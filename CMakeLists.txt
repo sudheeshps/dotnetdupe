@@ -43,7 +43,7 @@ else()
     target_link_libraries(DotNetDupe PRIVATE OpenSSL::SSL OpenSSL::Crypto dl pthread)
 endif()
 
-# Demo Application
+# Demo Application (Force reconfigure to pick up newly added split demo files)
 file(GLOB DEMO_SOURCES "DotNetDupeDemo/*.cpp")
 add_executable(DotNetDupeDemo ${DEMO_SOURCES})
 target_link_libraries(DotNetDupeDemo PRIVATE DotNetDupe)

@@ -154,6 +154,34 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="DotNetDupeDemo.cpp" />
+    <ClCompile Include="BitConverterDemo.cpp" />
+    <ClCompile Include="CollectionsDemo.cpp" />
+    <ClCompile Include="ConsoleDemo.cpp" />
+    <ClCompile Include="ConvertDemo.cpp" />
+    <ClCompile Include="DependencyInjectionDemo.cpp" />
+    <ClCompile Include="EnvironmentDemo.cpp" />
+    <ClCompile Include="FileAttributesDemo.cpp" />
+    <ClCompile Include="GuidDemo.cpp" />
+    <ClCompile Include="HttpDemo.cpp" />
+    <ClCompile Include="HttpsDemo.cpp" />
+    <ClCompile Include="JsonDemo.cpp" />
+    <ClCompile Include="JwtDemo.cpp" />
+    <ClCompile Include="LockRAIIDemo.cpp" />
+    <ClCompile Include="ProcessDemo.cpp" />
+    <ClCompile Include="SocketsDemo.cpp" />
+    <ClCompile Include="StopwatchDemo.cpp" />
+    <ClCompile Include="StringBuilderDemo.cpp" />
+    <ClCompile Include="StringDemo.cpp" />
+    <ClCompile Include="SynchronizationDemo.cpp" />
+    <ClCompile Include="TaskDemo.cpp" />
+    <ClCompile Include="TextIODemo.cpp" />
+    <ClCompile Include="ThreadPoolDemo.cpp" />
+    <ClCompile Include="ThreadingDemo.cpp" />
+    <ClCompile Include="TimeProviderDemo.cpp" />
+    <ClCompile Include="TimeZoneDemo.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Demos.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

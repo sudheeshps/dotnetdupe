@@ -1,0 +1,27 @@
+#pragma once
+
+void DemonstrateConsole();
+void DemonstrateString();
+void DemonstrateBitConverter();
+void DemonstrateConvert();
+void DemonstrateTimeProvider();
+void DemonstrateStopwatch();
+void DemonstrateStringBuilder();
+void DemonstrateCollections();
+void DemonstrateGuid();
+void DemonstrateEnvironment();
+void DemonstrateTimeZone();
+void DemonstrateTextIO();
+void DemonstrateThreading();
+void DemonstrateSynchronization();
+void DemonstrateLockRAII();
+void DemonstrateFileAttributes();
+void DemonstrateProcess();
+void DemonstrateThreadPool();
+void DemonstrateTask();
+void DemonstrateJson();
+void DemonstrateSockets();
+void DemonstrateHttp();
+void DemonstrateHttps();
+void DemonstrateJwt();
+void DemonstrateDependencyInjection();
