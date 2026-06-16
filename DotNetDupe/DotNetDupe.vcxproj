@@ -211,6 +211,14 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="..\Include\System\NotImplementedException.h" />
     <ClInclude Include="..\Include\System\Object.h" />
+    <ClInclude Include="..\Include\System\IServiceProvider.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceLifetime.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceDescriptor.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceCollection.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceCollection.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceScope.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceScopeFactory.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceProvider.h" />
     <ClInclude Include="..\Include\System\OperatingSystem.h" />
     <ClInclude Include="..\Include\System\OverflowException.h" />
     <ClInclude Include="..\Include\System\Path.h" />
@@ -368,6 +376,8 @@
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="Interlocked.cpp" />
     <ClCompile Include="SslStream.cpp" />
+    <ClCompile Include="ServiceProvider.cpp" />
+    <ClCompile Include="ServiceCollection.cpp" />
     <ClCompile Include="X509Certificate2.cpp" />
   </ItemGroup>
   <ItemGroup>

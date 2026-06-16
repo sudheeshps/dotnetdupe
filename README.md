@@ -323,6 +323,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [IComparable](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
 | [IComparable<T>](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
 | [IFormatProvider<T>](docs/Interfaces.md) | Provides a mechanism for retrieving a formatting service for a specified type. |
+| [IServiceProvider](docs/DependencyInjection.md) | Defines a mechanism for retrieving a service object (type-safe dependency resolution). |
 
 ### Namespace: `DotNetDupe::System::Collections::Generic`
 
@@ -482,6 +483,25 @@ For detailed information on the available classes, methods, and their usage, ple
 | [AbandonedMutexException](docs/Exceptions.md) | The exception that is thrown when one thread acquires a Mutex object that another thread has abandoned by exiting without releasing it. |
 | [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | The exception that is thrown when an attempt is made to open a system mutex, semaphore, or event wait handle that does not exist. |
 | [SemaphoreFullException](docs/Exceptions.md) | The exception that is thrown when the Release method is called on a semaphore whose count is already at the maximum. |
+
+### Namespace: `DotNetDupe::Extensions::DependencyInjection`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ServiceCollection](docs/DependencyInjection.md) | Accumulates service descriptors and builds the service provider. |
+| [ServiceProvider](docs/DependencyInjection.md) | The concrete implementation of the dependency injection container. |
+| [ServiceScope](docs/DependencyInjection.md) | Represents a lifetime scope for scoped services. |
+| [ServiceScopeFactory](docs/DependencyInjection.md) | Creates instances of `ServiceScope`, which are used to resolve scoped dependencies. |
+
+**Interfaces**
+
+| Interface | Description |
+|---|---|
+| [IServiceCollection](docs/DependencyInjection.md) | A collection of service descriptors. |
+| [IServiceScope](docs/DependencyInjection.md) | Represents the lifetime of a scoped service. |
+| [IServiceScopeFactory](docs/DependencyInjection.md) | Defines a factory for creating service scopes. |
 
 ## Project Status 🚧
 

@@ -175,6 +175,7 @@
     <ClCompile Include="HttpTests.cpp" />
     <ClCompile Include="JWTTokenTests.cpp" />
     <ClCompile Include="SslStreamTests.cpp" />
+    <ClCompile Include="DependencyInjectionTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

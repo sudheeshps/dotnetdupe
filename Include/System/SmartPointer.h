@@ -266,6 +266,23 @@ namespace DotNetDupe {
             bool IsNull() const { return m_pObject == nullptr; }
 
             /**
+             * @brief Dynamically casts the managed pointer to another type U and returns a new SmartPointer<U> sharing ownership.
+             */
+            template <typename U>
+            SmartPointer<U> DynamicCast() const {
+                U* pCast = dynamic_cast<U*>(m_pObject);
+                if (!pCast) return SmartPointer<U>(nullptr);
+                
+                SmartPointer<U> spRet(nullptr);
+                spRet.m_pObject = pCast;
+                spRet.m_pnRefCount = m_pnRefCount;
+                if (m_pnRefCount != nullptr) {
+                    (*m_pnRefCount)++;
+                }
+                return spRet;
+            }
+
+            /**
              * @brief Gets the current reference count. Returns 0 for Unique or Null pointers.
              */
             int GetRefCount() const {
