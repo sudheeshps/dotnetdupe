@@ -406,6 +406,14 @@ For detailed information on the available classes, methods, and their usage, ple
 | [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
 | [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
 
+### Namespace: `DotNetDupe::System::Net::Security`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [SslStream](docs/SslStream.md) | Provides a stream that uses the SSL/TLS security protocol to secure communication. |
+
 ### Namespace: `DotNetDupe::System::Net::Http`
 
 **Classes**
@@ -427,6 +435,14 @@ For detailed information on the available classes, methods, and their usage, ple
 | Class | Description |
 |---|---|
 | [HMACSHA256](docs/JWTToken.md) | Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function. |
+
+### Namespace: `DotNetDupe::System::Security::Cryptography::X509Certificates`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [X509Certificate2](docs/X509Certificate2.md) | Represents an X.509 certificate and private key loaded from PEM files. |
 
 ### Namespace: `DotNetDupe::System::IdentityModel::Tokens::Jwt`
 

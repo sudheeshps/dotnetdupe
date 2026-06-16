@@ -18,12 +18,29 @@ if(NOT WIN32)
     list(REMOVE_ITEM LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/DotNetDupe/dllmain.cpp")
 endif()
 
+if(WIN32)
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
+    set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl")
+else()
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libssl.a")
+        set(OPENSSL_USE_STATIC_LIBS TRUE)
+        set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl")
+        set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libcrypto.a")
+        set(OPENSSL_SSL_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libssl.a")
+        set(OPENSSL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/include")
+    endif()
+endif()
+
+find_package(OpenSSL REQUIRED)
+
 add_library(DotNetDupe SHARED ${LIB_SOURCES})
 
 target_compile_definitions(DotNetDupe PRIVATE DOTNETDUPE_EXPORTS)
 
 if(WIN32)
-    target_link_libraries(DotNetDupe PRIVATE shlwapi)
+    target_link_libraries(DotNetDupe PRIVATE shlwapi OpenSSL::SSL OpenSSL::Crypto crypt32 ws2_32)
+else()
+    target_link_libraries(DotNetDupe PRIVATE OpenSSL::SSL OpenSSL::Crypto dl pthread)
 endif()
 
 # Demo Application

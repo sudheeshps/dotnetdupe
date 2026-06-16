@@ -4,6 +4,7 @@
 #include "System/String.h"
 #include "System/Uri.h"
 #include "System/SmartPointer.h"
+#include "System/IO/Stream.h"
 #include "System/Net/Http/HttpRequestMessage.h"
 #include "System/Net/Http/HttpResponseMessage.h"
 #include "System/Net/Http/HttpContent.h"
@@ -13,10 +14,6 @@
 namespace DotNetDupe {
     namespace System {
         namespace Net {
-            namespace Sockets {
-                class NetworkStream;
-            }
-
             namespace Http {
 
                 class HttpClient : public Object {
@@ -52,12 +49,13 @@ namespace DotNetDupe {
 
                     String ResolveHost(const Uri& uri, int& riPort);
                     std::string PrepareHeaders(const SmartPointer<HttpRequestMessage>& spRequest, const Uri& uri);
-                    void SendRequest(const SmartPointer<Sockets::NetworkStream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent);
-                    SmartPointer<HttpResponseMessage> PrepareResponse(const SmartPointer<Sockets::NetworkStream>& spStream);
+                    void SendRequest(const SmartPointer<IO::Stream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent);
+                    SmartPointer<HttpResponseMessage> PrepareResponse(const SmartPointer<IO::Stream>& spStream);
                 };
 
             }
         }
     }
 }
+
 

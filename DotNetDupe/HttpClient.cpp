@@ -5,6 +5,7 @@
 #include "System/Net/Sockets/TcpClient.h"
 #include "System/Net/Sockets/NetworkStream.h"
 #include "System/Net/Sockets/SocketException.h"
+#include "System/Net/Security/SslStream.h"
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentException.h"
 #include "System/IO/MemoryStream.h"
@@ -19,7 +20,7 @@ namespace DotNetDupe {
         namespace Net {
             namespace Http {
 
-                static std::string ReadLine(const SmartPointer<Sockets::NetworkStream>& stream) {
+                static std::string ReadLine(const SmartPointer<IO::Stream>& stream) {
                     std::string line;
                     char c;
                     while (true) {
@@ -182,7 +183,7 @@ namespace DotNetDupe {
                     return ssHeadersStream.str();
                 }
 
-                void HttpClient::SendRequest(const SmartPointer<Sockets::NetworkStream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent) {
+                void HttpClient::SendRequest(const SmartPointer<IO::Stream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent) {
                     spStream->Write(sHeaders.data(), 0, static_cast<int>(sHeaders.size()));
 
                     // Write content
@@ -191,7 +192,7 @@ namespace DotNetDupe {
                     }
                 }
 
-                SmartPointer<HttpResponseMessage> HttpClient::PrepareResponse(const SmartPointer<Sockets::NetworkStream>& spStream) {
+                SmartPointer<HttpResponseMessage> HttpClient::PrepareResponse(const SmartPointer<IO::Stream>& spStream) {
                     // Parse HTTP response
                     std::string sStatusLine = ReadLine(spStream);
                     if (sStatusLine.empty()) {
@@ -314,12 +315,15 @@ namespace DotNetDupe {
                     }
 
                     Uri uri = request->GetRequestUri();
-                    String scheme = uri.GetScheme();
-                    if (scheme.ToLower() != "http") {
-                        throw ArgumentException("Only 'http' scheme is supported.");
+                    String scheme = uri.GetScheme().ToLower();
+                    if (scheme != "http" && scheme != "https") {
+                        throw ArgumentException("Only 'http' and 'https' schemes are supported.");
                     }
 
-                    int iPort = 80;
+                    int iPort = uri.GetPort();
+                    if (iPort <= 0) {
+                        iPort = (scheme == "https") ? 443 : 80;
+                    }
                     String sResolvedIp = ResolveHost(uri, iPort);
 
                     // Connect
@@ -330,7 +334,17 @@ namespace DotNetDupe {
                         throw HttpRequestException(ex.What());
                     }
 
-                    auto spStream = tcpClient.GetStream();
+                    SmartPointer<IO::Stream> spStream = tcpClient.GetStream();
+
+                    if (scheme == "https") {
+                        auto spSslStream = SmartPointer<Net::Security::SslStream>::NewShared(spStream, false);
+                        try {
+                            spSslStream->AuthenticateAsClient(uri.GetHost());
+                        } catch (const BasicException<char>& ex) {
+                            throw HttpRequestException(ex.What());
+                        }
+                        spStream = spSslStream;
+                    }
 
                     std::string sHeaders = PrepareHeaders(request, uri);
 
