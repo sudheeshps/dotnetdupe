@@ -179,6 +179,7 @@
     <ClCompile Include="ThreadingDemo.cpp" />
     <ClCompile Include="TimeProviderDemo.cpp" />
     <ClCompile Include="TimeZoneDemo.cpp" />
+    <ClCompile Include="WebApplicationDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

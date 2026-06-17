@@ -34,6 +34,7 @@ int main() {
     DemonstrateHttps();
     DemonstrateJwt();
     DemonstrateDependencyInjection();
+    DemonstrateWebApplication();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

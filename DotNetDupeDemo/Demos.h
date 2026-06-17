@@ -25,3 +25,4 @@ void DemonstrateHttp();
 void DemonstrateHttps();
 void DemonstrateJwt();
 void DemonstrateDependencyInjection();
+void DemonstrateWebApplication();

@@ -9,7 +9,7 @@ include_directories(Include)
 include_directories(DotNetDupe)
 
 # Library sources
-# Force re-configure to pick up new files (like Process.cpp, ThreadPool.cpp, Task.cpp)
+# Force re-configure to pick up new files (like Process.cpp, WebApplication.cpp, etc.)
 file(GLOB LIB_SOURCES "DotNetDupe/*.cpp")
 
 # Remove dllmain.cpp from non-Windows builds if necessary, 
@@ -43,7 +43,7 @@ else()
     target_link_libraries(DotNetDupe PRIVATE OpenSSL::SSL OpenSSL::Crypto dl pthread)
 endif()
 
-# Demo Application (Force reconfigure to pick up newly added split demo files)
+# Demo Application (Force reconfigure to pick up WebApplicationDemo.cpp and split demo files)
 file(GLOB DEMO_SOURCES "DotNetDupeDemo/*.cpp")
 add_executable(DotNetDupeDemo ${DEMO_SOURCES})
 target_link_libraries(DotNetDupeDemo PRIVATE DotNetDupe)

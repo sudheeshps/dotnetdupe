@@ -305,6 +305,9 @@
     <ClInclude Include="..\Include\System\Threading\SemaphoreFullException.h" />
     <ClInclude Include="..\Include\System\Net\Security\SslStream.h" />
     <ClInclude Include="..\Include\System\Security\Cryptography\X509Certificates\X509Certificate2.h" />
+    <ClInclude Include="..\Include\WebAppCore\Http\HttpContext.h" />
+    <ClInclude Include="..\Include\WebAppCore\Builder\WebApplication.h" />
+    <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -379,6 +382,8 @@
     <ClCompile Include="ServiceProvider.cpp" />
     <ClCompile Include="ServiceCollection.cpp" />
     <ClCompile Include="X509Certificate2.cpp" />
+    <ClCompile Include="WebApplication.cpp" />
+    <ClCompile Include="WebApplicationBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

@@ -268,6 +268,25 @@ The repository includes `DotNetDupeDemo` (a sample console application) and `Dot
 
 For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class.
 
+### Namespace: `DotNetDupe::WebAppCore::Builder`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [WebApplicationBuilder](docs/WebApplication.md) | Configures services and builds the web application host. |
+| [WebApplication](docs/WebApplication.md) | Configures routing endpoints and hosts the HTTP listener. |
+
+### Namespace: `DotNetDupe::WebAppCore::Http`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HttpContext](docs/WebApplication.md) | Encapsulates all HTTP-specific information about an individual HTTP request. |
+| [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
+| [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
+
 ### Namespace: `DotNetDupe::System`
 
 **Classes**
