@@ -35,6 +35,10 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [3. Build & Test in WSL](#3-build--test-in-wsl)
   - [Building and Running with NuGet in WSL 🐧📦](#building-and-running-with-nuget-in-wsl-)
   - [Usage 💻](#usage-)
+  - [Web API & Database Integration Guide 🌐🗄️](#web-api--database-integration-guide-️)
+    - [1. Hosting REST API Controllers](#1-hosting-rest-api-controllers)
+    - [2. Consuming REST APIs](#2-consuming-rest-apis)
+    - [3. Using the Database Layer](#3-using-the-database-layer)
   - [STL vs DotNetDupe Comparison ⚖️](#stl-vs-dotnetdupe-comparison-️)
   - [API Reference 📖](#api-reference-)
   - [Project Status 🚧](#project-status-)
@@ -246,6 +250,214 @@ int main() {
     }
 
     return 0;
+}
+```
+
+## Web API & Database Integration Guide 🌐🗄️
+
+This section provides comprehensive examples and recommended practices for hosting web services, consuming them, and using the database storage layer.
+
+### 1. Hosting REST API Controllers
+
+DotNetDupe provides an ASP.NET-like hosting model with dependency injection and controller-based routing in the `WebAppCore` namespaces.
+
+#### Defining and Hosting a Controller
+
+1. Declare your data structure.
+2. Specialize the `JsonConverter<T>` for the structure to enable automatic serialization and deserialization.
+3. Inherit from `ControllerBase` and define your action methods.
+4. Bind routes using `ControllerRouteBuilder` and map them in the application host.
+
+```cpp
+#include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/Controllers/ControllerBase.h"
+#include "System/Collections/Generic/List.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::WebAppCore::Builder;
+using namespace DotNetDupe::WebAppCore::Controllers;
+
+// 1. Declare the data model
+struct ProductItem {
+    String Name;
+    int Price = 0;
+};
+
+// 2. Specialize JsonConverter for serialization/deserialization
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+            namespace Json {
+                template <>
+                struct JsonConverter<ProductItem> {
+                    static JsonElement Write(const ProductItem& value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        obj.SetProperty("name", JsonElement(value.Name));
+                        obj.SetProperty("price", JsonElement(static_cast<double>(value.Price)));
+                        return obj;
+                    }
+                    static ProductItem Read(const JsonElement& element) {
+                        ProductItem p;
+                        JsonElement prop;
+                        if (element.TryGetProperty("name", prop)) p.Name = prop.GetString();
+                        if (element.TryGetProperty("price", prop)) p.Price = prop.GetInt32();
+                        return p;
+                    }
+                };
+            }
+        }
+    }
+}
+
+// 3. Define the controller
+class ProductsController : public ControllerBase {
+public:
+    // GET /api/products
+    Collections::Generic::List<ProductItem> GetProducts() {
+        Collections::Generic::List<ProductItem> list;
+        list.Add(ProductItem{"Espresso Machine", 299});
+        list.Add(ProductItem{"Coffee Grinder", 89});
+        return list;
+    }
+
+    // POST /api/products
+    String CreateProduct(const ProductItem& product) {
+        return Created(String("Added ") + product.Name);
+    }
+};
+
+int main() {
+    auto builder = WebApplication::CreateBuilder();
+
+    // 4. Register and configure routes on the controller
+    builder->AddController<ProductsController>("/api/products")
+        .MapGet("", &ProductsController::GetProducts)
+        .MapPost("", &ProductsController::CreateProduct);
+
+    auto app = builder->Build();
+    app->MapControllers(); // Applies the registered mappings
+
+    app->Run("http://127.0.0.1:5000");
+}
+```
+
+---
+
+### 2. Consuming REST APIs
+
+DotNetDupe makes client-side web requests simple. You can query endpoints using a low-level HTTP client or a strongly-typed REST resource client.
+
+#### Option A: Low-level HTTP Client (`HttpClient`)
+
+Best for general, raw request handling, sending custom headers, or performing authentication (like setting Bearer tokens).
+
+```cpp
+#include "System/Net/Http/HttpClient.h"
+#include "System/Console.h"
+
+void GetRawData() {
+    using namespace DotNetDupe::System::Net::Http;
+    
+    HttpClient client;
+    
+    // Add default headers (e.g. JWT Auth token)
+    client.GetDefaultRequestHeaders().Add("Authorization", "Bearer your_token_here");
+    
+    auto response = client.Get("http://127.0.0.1:5000/api/products");
+    if (response->GetStatusCode() == 200) {
+        DotNetDupe::System::String json = response->GetContent()->ReadAsString();
+        DotNetDupe::System::Console::WriteLine(json);
+    }
+}
+```
+
+#### Option B: Strongly-Typed Client (`RestClient<T>`) - *Recommended*
+
+Best for standard RESTful resources. It handles payload serialization/deserialization to your model structures automatically.
+
+```cpp
+#include "System/Net/Http/RestClient.h"
+#include "System/Console.h"
+
+void SyncProducts() {
+    using namespace DotNetDupe::System::Net::Http;
+    
+    // Point the RestClient to your resource endpoint
+    RestClient<ProductItem> client("http://127.0.0.1:5000/api/products");
+    
+    // GET all resources automatically parsed into List<T>
+    auto products = client.GetAll();
+    
+    // POST new resource automatically serialized to JSON
+    ProductItem newProduct{"Milk Frother", 35};
+    DotNetDupe::System::String reply = client.Post(newProduct);
+}
+```
+
+---
+
+### 3. Using the Database Layer
+
+DotNetDupe emulates C# ADO.NET (`SqlConnection`, `SqlCommand`, `SqlDataReader`) for SQL execution.
+
+#### Recommended Usage Patterns
+
+1. **Routing and Engine Fallback via Connection String**:
+   * **In-Memory Emulation (Default)**: Use `Engine=InMemory;` for unit testing or when you don't want server/file dependencies. This runs an in-memory SQL parsing engine.
+   * **Persistent SQLite**: Use `Engine=SQLite; Data Source=my_db.db;` when you need actual SQLite file persistence. *Note: Requires compilation with the `DOTNETDUPE_USE_SQLITE` flag defined.*
+2. **Always Parameterize Queries**: Use `AddWithValue` parameters to protect queries against parsing issues and SQL syntax injections.
+3. **Use RAII and Smart Pointers**: Wrap database commands and readers in smart pointers to guarantee resource cleanup.
+
+```cpp
+#include "System/Data/SqlClient/SqlConnection.h"
+#include "System/Data/SqlClient/SqlCommand.h"
+#include "System/Console.h"
+
+void AccessDatabase() {
+    using namespace DotNetDupe::System;
+    using namespace DotNetDupe::System::Data::SqlClient;
+
+    try {
+        // Connect. Uses default In-Memory emulation engine if SQLite is not compiled.
+        SqlConnection conn("Data Source=InventoryDb;Engine=InMemory;");
+        conn.Open();
+
+        // 1. Create table schema
+        auto cmdCreate = conn.CreateCommand();
+        cmdCreate->SetCommandText("CREATE TABLE Items (Id INT, Name VARCHAR, Price INT)");
+        cmdCreate->ExecuteNonQuery();
+
+        // 2. Parameterized Insert (Recommended)
+        auto cmdInsert = conn.CreateCommand();
+        cmdInsert->SetCommandText("INSERT INTO Items (Id, Name, Price) VALUES (@id, @name, @price)");
+        cmdInsert->GetParameters()->AddWithValue("@id", 101);
+        cmdInsert->GetParameters()->AddWithValue("@name", "Bean Grinder");
+        cmdInsert->GetParameters()->AddWithValue("@price", 75);
+        cmdInsert->ExecuteNonQuery();
+
+        // 3. Querying rows
+        auto cmdSelect = conn.CreateCommand();
+        cmdSelect->SetCommandText("SELECT Id, Name, Price FROM Items WHERE Price < @maxPrice");
+        cmdSelect->GetParameters()->AddWithValue("@maxPrice", 100);
+
+        auto reader = cmdSelect->ExecuteReader();
+        while (reader->Read()) {
+            int id = reader->GetInt32(0);
+            String name = reader->GetString(1);
+            int price = reader->GetInt32(2);
+
+            Console::Write("Item: ");
+            Console::Write(name);
+            Console::Write(" costs $");
+            Console::WriteLine(price);
+        }
+
+        conn.Close();
+    } catch (const BasicException<char>& ex) {
+        Console::Write("Database Error: ");
+        Console::WriteLine(ex.What());
+    }
 }
 ```
 
