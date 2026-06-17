@@ -483,6 +483,17 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [JWTToken](docs/JWTToken.md) | Represents a JSON Web Token containing a header block, claims, and signature. |
 
+### Namespace: `DotNetDupe::System::Data::SqlClient`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [SqlConnection](docs/Database.md) | Represents an open connection to a database. |
+| [SqlCommand](docs/Database.md) | Represents an SQL statement to execute against a database. |
+| [SqlDataReader](docs/Database.md) | Provides a way of reading a forward-only stream of rows from a database. |
+| [SqlParameter](docs/Database.md) | Represents a parameter for an SQL command. |
+
 ### Namespace: `DotNetDupe::System::Threading`
 
 **Classes**

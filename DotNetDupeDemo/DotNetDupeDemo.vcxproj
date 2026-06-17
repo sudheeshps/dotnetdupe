@@ -180,6 +180,7 @@
     <ClCompile Include="TimeProviderDemo.cpp" />
     <ClCompile Include="TimeZoneDemo.cpp" />
     <ClCompile Include="WebApplicationDemo.cpp" />
+    <ClCompile Include="DatabaseDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />
