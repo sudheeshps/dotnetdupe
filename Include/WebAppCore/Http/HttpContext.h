@@ -6,6 +6,8 @@
 #include "System/SmartPointer.h"
 #include "System/Collections/Generic/Dictionary.h"
 
+#include "System/Net/HttpStatusCode.h"
+
 namespace DotNetDupe {
     namespace WebAppCore {
         namespace Http {
@@ -49,6 +51,8 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API int GetStatusCode() const { return m_nStatusCode; }
                 DOTNETDUPE_API void SetStatusCode(int code) { m_nStatusCode = code; }
+                DOTNETDUPE_API void SetStatusCode(DotNetDupe::System::Net::HttpStatusCode code) { m_nStatusCode = static_cast<int>(code); }
+                DOTNETDUPE_API DotNetDupe::System::Net::HttpStatusCode GetStatusCodeEnum() const { return static_cast<DotNetDupe::System::Net::HttpStatusCode>(m_nStatusCode); }
 
                 DOTNETDUPE_API DotNetDupe::System::String GetContentType() const { return m_sContentType; }
                 DOTNETDUPE_API void SetContentType(const DotNetDupe::System::String& type) { m_sContentType = type; }

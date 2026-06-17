@@ -256,6 +256,7 @@ DotNetDupe is designed to be more intuitive and less verbose than the standard C
 *   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
 *   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
 *   **[Process Management Comparison Guide](docs/ProcessComparison.md)**: Comparison of process execution and management.
+*   **[Authentication & Authorization Guide](docs/Auth.md)**: Covers client-side and server-side JWT authentication and authorization.
 
 ### Sample Client and Test Code 🧪
 

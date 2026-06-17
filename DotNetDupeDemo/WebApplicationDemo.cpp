@@ -12,6 +12,7 @@
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
 #include "System/Text/Json/JsonSerializer.h"
 #include "System/Text/StringBuilder.h"
+#include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
 #include "Demos.h"
 
 using namespace DotNetDupe::System;
@@ -141,24 +142,50 @@ void DemonstrateWebApplication() {
         String id;
         if (context->GetRequest()->GetRouteValues().TryGetValue("id", id)) {
             String body = context->GetRequest()->GetBody();
-            context->GetResponse()->SetStatusCode(200);
+            context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::OK);
             return String("Successfully updated user ") + id + " with content: " + body;
         }
-        context->GetResponse()->SetStatusCode(400);
+        context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::BadRequest);
         return String("Bad Request");
     });
 
     app->MapDelete("/api/users/{id}", [](SmartPointer<HttpContext> context) {
         String id;
         if (context->GetRequest()->GetRouteValues().TryGetValue("id", id)) {
-            context->GetResponse()->SetStatusCode(204); // No Content
+            context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::NoContent);
             return String("");
         }
-        context->GetResponse()->SetStatusCode(400);
+        context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::BadRequest);
         return String("Bad Request");
     });
 
-    // 3b. Setup Web API Controllers (Option B ControllerBase + RouteBuilder)
+    // 3b. JWT Authenticated Minimal API Endpoint
+    app->MapGet("/api/secure", [](SmartPointer<HttpContext> context) {
+        String authHeader;
+        if (!context->GetRequest()->GetHeaders().TryGetValue("authorization", authHeader)) {
+            context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
+            return String("{\"error\":\"Unauthorized - Missing Authorization header\"}");
+        }
+        if (!authHeader.StartsWith("Bearer ", false)) {
+            context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
+            return String("{\"error\":\"Unauthorized - Invalid scheme\"}");
+        }
+        String tokenStr = authHeader.Substring(7);
+        try {
+            auto jwt = DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::Parse(tokenStr);
+            if (jwt.IsNull() || !jwt->Verify("demo-secret-key-999")) {
+                context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
+                return String("{\"error\":\"Unauthorized - Invalid signature\"}");
+            }
+            String user = jwt->GetPayload()["sub"];
+            return String("Authorized Access granted for ") + user;
+        } catch (...) {
+            context->GetResponse()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
+            return String("{\"error\":\"Unauthorized - Parsing failed\"}");
+        }
+    });
+
+    // 3c. Setup Web API Controllers (Option B ControllerBase + RouteBuilder)
     app->MapControllers();
 
     // 4. Start the server asynchronously in a background Thread
@@ -281,6 +308,37 @@ void DemonstrateWebApplication() {
         StringBuilder sbPost;
         sbPost.Append("[RestClient] POST Response: ").AppendLine(postResult);
         Console::Write(sbPost.ToString());
+
+        // Test JWT Authentication using RestClient and HttpClient
+        Console::WriteLine("\n[Client] Testing JWT Authentication on '/api/secure'...");
+        HttpClient authClient;
+
+        // 1. Try request without token (expect 401)
+        auto authResp1 = authClient.Get("http://127.0.0.1:19099/api/secure");
+        Console::Write("[Client] (No Token) Status: ");
+        Console::WriteLine((int)authResp1->GetStatusCode());
+
+        // 2. Generate valid JWT Token
+        DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken jwt;
+        jwt.GetPayload().Add("sub", "Alice");
+        String signedToken = jwt.CreateToken("demo-secret-key-999");
+
+        // 3. Try request with valid token (expect 200)
+        authClient.GetDefaultRequestHeaders().Add("Authorization", String("Bearer ") + signedToken);
+        auto authResp2 = authClient.Get("http://127.0.0.1:19099/api/secure");
+        Console::Write("[Client] (Valid Token) Status: ");
+        Console::WriteLine((int)authResp2->GetStatusCode());
+        Console::Write("[Client] (Valid Token) Body: '");
+        Console::Write(authResp2->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        // 4. Try request with invalid secret token (expect 401)
+        HttpClient invalidClient;
+        String invalidToken = jwt.CreateToken("wrong-secret-key");
+        invalidClient.GetDefaultRequestHeaders().Add("Authorization", String("Bearer ") + invalidToken);
+        auto authResp3 = invalidClient.Get("http://127.0.0.1:19099/api/secure");
+        Console::Write("[Client] (Invalid Secret Token) Status: ");
+        Console::WriteLine((int)authResp3->GetStatusCode());
 
     } catch (const BasicException<char>& ex) {
         Console::Write("[Client Exception] Error: ");

@@ -8,6 +8,7 @@
 #include "System/Threading/ThreadPool.h"
 #include "System/Convert.h"
 #include "System/BasicException.h"
+#include "System/Net/HttpStatusCode.h"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -401,11 +402,11 @@ namespace DotNetDupe {
                             System::Console::WriteLine("[Server] GET handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::BasicException<char>& ex) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
                         } catch (...) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = "500 Internal Server Error";
                             bMatched = true;
                         }
@@ -418,11 +419,11 @@ namespace DotNetDupe {
                             System::Console::WriteLine("[Server] POST handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::BasicException<char>& ex) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
                         } catch (...) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = "500 Internal Server Error";
                             bMatched = true;
                         }
@@ -435,11 +436,11 @@ namespace DotNetDupe {
                             System::Console::WriteLine("[Server] PUT handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::BasicException<char>& ex) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
                         } catch (...) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = "500 Internal Server Error";
                             bMatched = true;
                         }
@@ -452,11 +453,11 @@ namespace DotNetDupe {
                             System::Console::WriteLine("[Server] DELETE handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::BasicException<char>& ex) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
                         } catch (...) {
-                            spResponse->SetStatusCode(500);
+                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = "500 Internal Server Error";
                             bMatched = true;
                         }
@@ -465,7 +466,7 @@ namespace DotNetDupe {
 
                 if (!bMatched) {
                     System::Console::WriteLine("[Server] Route not matched!");
-                    spResponse->SetStatusCode(404);
+                    spResponse->SetStatusCode(System::Net::HttpStatusCode::NotFound);
                     sBodyResult = "404 Not Found";
                 }
 

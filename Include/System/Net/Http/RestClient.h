@@ -8,6 +8,8 @@
 #include "System/Net/Http/HttpClient.h"
 #include "System/Text/Json/JsonSerializer.h"
 
+#include "System/Convert.h"
+
 namespace DotNetDupe {
     namespace System {
         namespace Net {
@@ -25,6 +27,49 @@ namespace DotNetDupe {
                     }
 
                     ~RestClient() override = default;
+
+                    // Sets a Bearer token for HTTP Authorization header
+                    void SetBearerToken(const DotNetDupe::System::String& sToken) {
+                        auto& headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                        headers.Add("Authorization", DotNetDupe::System::String("Bearer ") + sToken);
+                    }
+
+                    // Sets Basic Authentication (username:password) for HTTP Authorization header
+                    void SetBasicAuthentication(const DotNetDupe::System::String& sUsername, const DotNetDupe::System::String& sPassword) {
+                        DotNetDupe::System::String credentials = sUsername + ":" + sPassword;
+                        int len = credentials.GetLength();
+                        DotNetDupe::System::Array<char> arr(len);
+                        for (int i = 0; i < len; ++i) {
+                            arr[i] = credentials[i];
+                        }
+                        DotNetDupe::System::String base64 = DotNetDupe::System::Convert::ToBase64String(arr);
+                        
+                        auto& headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                        headers.Add("Authorization", DotNetDupe::System::String("Basic ") + base64);
+                    }
+
+                    // Clears custom authentication headers
+                    void ClearAuthentication() {
+                        auto& headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                    }
+
+                    // Adds custom default request headers
+                    void AddDefaultRequestHeader(const DotNetDupe::System::String& sName, const DotNetDupe::System::String& sValue) {
+                        auto& headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove(sName);
+                        headers.Add(sName, sValue);
+                    }
+
+                    // Removes custom default request headers
+                    void RemoveDefaultRequestHeader(const DotNetDupe::System::String& sName) {
+                        m_client.GetDefaultRequestHeaders().Remove(sName);
+                    }
 
                     // Gets all resources: GET /api/resource
                     DotNetDupe::System::Collections::Generic::List<TResource> GetAll() {

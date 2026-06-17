@@ -8,11 +8,14 @@
 #include "System/Convert.h"
 #include "System/BasicException.h"
 #include "System/Net/Http/HttpRequestException.h"
+#include "System/Net/HttpStatusCode.h"
 #include "WebAppCore/Controllers/ControllerBase.h"
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
 #include "System/Text/Json/JsonSerializer.h"
+#include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
 
 using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Net;
 using namespace DotNetDupe::System::Net::Http;
 using namespace DotNetDupe::System::Threading;
 using namespace DotNetDupe::WebAppCore::Builder;
@@ -73,6 +76,32 @@ namespace WebApplicationTests {
             return NotFound("Cannot delete unknown product");
         }
     };
+
+    struct AuthResponse {
+        String Message;
+    };
+
+    class SecureController : public ControllerBase {
+    public:
+        SecureController() = default;
+        ~SecureController() override = default;
+
+        String GetSecretData() {
+            Collections::Generic::Dictionary<String, String> claims;
+            if (!Authorize("secure-key-123", claims)) {
+                return "";
+            }
+            return Ok(AuthResponse{String("SecretData:") + claims["sub"]});
+        }
+
+        String GetAdminData() {
+            Collections::Generic::Dictionary<String, String> claims;
+            if (!Authorize("secure-key-123", "role", "admin", claims)) {
+                return "";
+            }
+            return Ok(AuthResponse{String("AdminData:") + claims["sub"]});
+        }
+    };
 }
 
 namespace DotNetDupe {
@@ -96,6 +125,22 @@ namespace DotNetDupe {
                         if (element.TryGetProperty("name", prop)) p.Name = prop.GetString();
                         if (element.TryGetProperty("price", prop)) p.Price = prop.GetInt32();
                         return p;
+                    }
+                };
+
+                template <>
+                struct JsonConverter<WebApplicationTests::AuthResponse> {
+                    static JsonElement Write(const WebApplicationTests::AuthResponse& value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        obj.SetProperty("message", JsonElement(value.Message));
+                        return obj;
+                    }
+
+                    static WebApplicationTests::AuthResponse Read(const JsonElement& element) {
+                        WebApplicationTests::AuthResponse r;
+                        JsonElement prop;
+                        if (element.TryGetProperty("message", prop)) r.Message = prop.GetString();
+                        return r;
                     }
                 };
             }
@@ -160,7 +205,7 @@ namespace WebApplicationTests {
 
             app->MapPost("/echo", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> context) {
                 String body = context->GetRequest()->GetBody();
-                context->GetResponse()->SetStatusCode(201);
+                context->GetResponse()->SetStatusCode(HttpStatusCode::Created);
                 return body;
             });
 
@@ -196,11 +241,11 @@ namespace WebApplicationTests {
 
             // Then
             ASSERT_FALSE(resp1.IsNull());
-            ASSERT_EQ((int)resp1->GetStatusCode(), 200);
+            ASSERT_EQ(resp1->GetStatusCode(), HttpStatusCode::OK);
             ASSERT_EQ(resp1->GetContent()->ReadAsString(), "Hello World");
 
             ASSERT_FALSE(resp2.IsNull());
-            ASSERT_EQ((int)resp2->GetStatusCode(), 200);
+            ASSERT_EQ(resp2->GetStatusCode(), HttpStatusCode::OK);
             ASSERT_EQ(resp2->GetContent()->ReadAsString(), "Hello from DI Service!");
 
         } catch (const BasicException<char>& ex) {
@@ -233,7 +278,7 @@ namespace WebApplicationTests {
                 String id;
                 bool hasId = context->GetRequest()->GetRouteValues().TryGetValue("id", id);
                 String body = context->GetRequest()->GetBody();
-                context->GetResponse()->SetStatusCode(200);
+                context->GetResponse()->SetStatusCode(HttpStatusCode::OK);
                 if (hasId) {
                     return String("Updated User ") + id + " with data: " + body;
                 }
@@ -245,10 +290,10 @@ namespace WebApplicationTests {
                 String id;
                 bool hasId = context->GetRequest()->GetRouteValues().TryGetValue("id", id);
                 if (hasId) {
-                    context->GetResponse()->SetStatusCode(204); // No Content
+                    context->GetResponse()->SetStatusCode(HttpStatusCode::NoContent);
                     return String("");
                 }
-                context->GetResponse()->SetStatusCode(400);
+                context->GetResponse()->SetStatusCode(HttpStatusCode::BadRequest);
                 return String("Delete Failed");
             });
 
@@ -444,6 +489,76 @@ namespace WebApplicationTests {
 
             ASSERT_TRUE(postResult.Contains("Created product: Tablet for 500"));
             ASSERT_TRUE(putResult.Contains("Updated product 10 to Keyboard"));
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenAuthUsed_ValidatesJwtTokensCorrectly) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            builder->AddController<SecureController>("/api/secure")
+                .MapGet("/secret", &SecureController::GetSecretData)
+                .MapGet("/admin", &SecureController::GetAdminData);
+
+            auto app = builder->Build();
+            app->MapControllers();
+
+            // Run the server in a background thread
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28084");
+            });
+            serverThread.Start();
+            
+            // Register RAII guard
+            ServerScopeGuard guard(app, serverThread);
+            
+            Thread::Sleep(200); // Allow server to start
+
+            // Generate valid token for normal user
+            DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken userToken;
+            userToken.GetPayload().Add("sub", "john_doe");
+            userToken.GetPayload().Add("role", "user");
+            String userTokenStr = userToken.CreateToken("secure-key-123");
+
+            // Generate valid token for admin
+            DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken adminToken;
+            adminToken.GetPayload().Add("sub", "admin_user");
+            adminToken.GetPayload().Add("role", "admin");
+            String adminTokenStr = adminToken.CreateToken("secure-key-123");
+
+            // 1. Unauthenticated Request (Expect 401)
+            RestClient<AuthResponse> client("http://127.0.0.1:28084/api/secure");
+            try {
+                client.Get("secret");
+                FAIL() << "Should have thrown HttpRequestException for 401";
+            } catch (const HttpRequestException&) {
+                // Success
+            }
+
+            // 2. Authenticated Request as normal user (Expect 200)
+            client.SetBearerToken(userTokenStr);
+            auto secretRes = client.Get("secret");
+            ASSERT_EQ(secretRes.Message, "SecretData:john_doe");
+
+            // 3. Request admin endpoint as normal user (Expect 403)
+            try {
+                client.Get("admin");
+                FAIL() << "Should have thrown HttpRequestException for 403";
+            } catch (const HttpRequestException&) {
+                // Success
+            }
+
+            // 4. Request admin endpoint as admin user (Expect 200)
+            client.SetBearerToken(adminTokenStr);
+            auto adminRes = client.Get("admin");
+            ASSERT_EQ(adminRes.Message, "AdminData:admin_user");
 
         } catch (const BasicException<char>& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
