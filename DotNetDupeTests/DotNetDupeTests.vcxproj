@@ -172,6 +172,12 @@
     <ClCompile Include="TaskTests.cpp" />
     <ClCompile Include="JsonSerializerTests.cpp" />
     <ClCompile Include="SocketsTests.cpp" />
+    <ClCompile Include="HttpTests.cpp" />
+    <ClCompile Include="JWTTokenTests.cpp" />
+    <ClCompile Include="SslStreamTests.cpp" />
+    <ClCompile Include="DependencyInjectionTests.cpp" />
+    <ClCompile Include="WebApplicationTests.cpp" />
+    <ClCompile Include="DatabaseTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

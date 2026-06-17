@@ -3,6 +3,7 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
+#include "System/ArgumentException.h"
 #include <unordered_map>
 #include <stdexcept>
 
@@ -34,7 +35,7 @@ namespace DotNetDupe {
                     }
 
                     void Add(const TKey& key, const TValue& value) {
-                        if (ContainsKey(key)) throw std::runtime_error("An item with the same key has already been added.");
+                        if (ContainsKey(key)) throw System::ArgumentException("An item with the same key has already been added.");
                         m_uMap[key] = value;
                     }
 

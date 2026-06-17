@@ -191,6 +191,7 @@ namespace SystemTests {
             EXPECT_TRUE(Path::GetFileNameWithoutExtension("") == "");
         }
         TEST(PathTest, GetFullPath_Should_Return_Absoulte_Path_When_File_Name_Passed) {
+            auto pathOriginal = fs::current_path();
 #if defined(_WIN32)
             fs::current_path("C:\\Windows\\System32");
             EXPECT_TRUE(Path::GetFullPath("notepad.exe") == "C:\\Windows\\System32\\notepad.exe");
@@ -198,8 +199,10 @@ namespace SystemTests {
             fs::current_path("/usr/bin");
             EXPECT_TRUE(Path::GetFullPath("ls") == "/usr/bin/ls");
 #endif
+            fs::current_path(pathOriginal);
         }
         TEST(PathTest, GetFullPath_Should_Return_Absoulte_Path_When_Folder_Name_Passed) {
+            auto pathOriginal = fs::current_path();
 #if defined(_WIN32)
             fs::current_path("C:\\Windows");
             EXPECT_TRUE(Path::GetFullPath("System32") == "C:\\Windows\\System32");
@@ -207,6 +210,7 @@ namespace SystemTests {
             fs::current_path("/usr");
             EXPECT_TRUE(Path::GetFullPath("bin") == "/usr/bin");
 #endif
+            fs::current_path(pathOriginal);
         }
         TEST(PathTest, GetInvalidFileNameChars_Should_Return_Vector_Of_Correct_Size) {
             auto invalidChars = Path::GetInvalidFileNameChars();

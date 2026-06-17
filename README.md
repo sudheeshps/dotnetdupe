@@ -256,6 +256,7 @@ DotNetDupe is designed to be more intuitive and less verbose than the standard C
 *   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
 *   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
 *   **[Process Management Comparison Guide](docs/ProcessComparison.md)**: Comparison of process execution and management.
+*   **[Authentication & Authorization Guide](docs/Auth.md)**: Covers client-side and server-side JWT authentication and authorization.
 
 ### Sample Client and Test Code 🧪
 
@@ -267,6 +268,34 @@ The repository includes `DotNetDupeDemo` (a sample console application) and `Dot
 ## API Reference 📖
 
 For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class.
+
+### Namespace: `DotNetDupe::WebAppCore::Builder`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [WebApplicationBuilder](docs/WebApplication.md) | Configures services and builds the web application host. |
+| [WebApplication](docs/WebApplication.md) | Configures routing endpoints and hosts the HTTP listener. |
+
+### Namespace: `DotNetDupe::WebAppCore::Http`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HttpContext](docs/WebApplication.md) | Encapsulates all HTTP-specific information about an individual HTTP request. |
+| [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
+| [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
+
+### Namespace: `DotNetDupe::WebAppCore::Controllers`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ControllerBase](docs/WebApplication.md) | Base class for MVC/Web API style controllers. |
+| [ControllerRouteBuilder<T>](docs/WebApplication.md) | Maps controller actions and automates JSON payload serialization. |
 
 ### Namespace: `DotNetDupe::System`
 
@@ -323,6 +352,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [IComparable](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
 | [IComparable<T>](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
 | [IFormatProvider<T>](docs/Interfaces.md) | Provides a mechanism for retrieving a formatting service for a specified type. |
+| [IServiceProvider](docs/DependencyInjection.md) | Defines a mechanism for retrieving a service object (type-safe dependency resolution). |
 
 ### Namespace: `DotNetDupe::System::Collections::Generic`
 
@@ -386,6 +416,14 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
 
+### Namespace: `DotNetDupe::System::Net`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Dns](docs/HttpClient.md) | Provides simple domain name resolution functionality. |
+
 ### Namespace: `DotNetDupe::System::Net::Sockets`
 
 **Classes**
@@ -397,6 +435,64 @@ For detailed information on the available classes, methods, and their usage, ple
 | [TcpClient](docs/Sockets.md) | Provides client connections for TCP network services. |
 | [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
 | [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
+
+### Namespace: `DotNetDupe::System::Net::Security`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [SslStream](docs/SslStream.md) | Provides a stream that uses the SSL/TLS security protocol to secure communication. |
+
+### Namespace: `DotNetDupe::System::Net::Http`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
+| [RestClient](docs/RestClient.md) | Represents a strongly-typed REST client that simplifies resource-oriented Web API interactions by automatically serializing/deserializing payloads to and from C++ structures. |
+| [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
+| [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
+| [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |
+| [StringContent](docs/HttpClient.md) | Provides HTTP content based on a string. |
+| [ByteArrayContent](docs/HttpClient.md) | Provides HTTP content based on a byte array. |
+| [HttpMethod](docs/HttpClient.md) | Represents an HTTP method. |
+
+### Namespace: `DotNetDupe::System::Security::Cryptography`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [HMACSHA256](docs/JWTToken.md) | Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function. |
+
+### Namespace: `DotNetDupe::System::Security::Cryptography::X509Certificates`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [X509Certificate2](docs/X509Certificate2.md) | Represents an X.509 certificate and private key loaded from PEM files. |
+
+### Namespace: `DotNetDupe::System::IdentityModel::Tokens::Jwt`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [JWTToken](docs/JWTToken.md) | Represents a JSON Web Token containing a header block, claims, and signature. |
+
+### Namespace: `DotNetDupe::System::Data::SqlClient`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [SqlConnection](docs/Database.md) | Represents an open connection to a database. |
+| [SqlCommand](docs/Database.md) | Represents an SQL statement to execute against a database. |
+| [SqlDataReader](docs/Database.md) | Provides a way of reading a forward-only stream of rows from a database. |
+| [SqlParameter](docs/Database.md) | Represents a parameter for an SQL command. |
 
 ### Namespace: `DotNetDupe::System::Threading`
 
@@ -428,6 +524,25 @@ For detailed information on the available classes, methods, and their usage, ple
 | [AbandonedMutexException](docs/Exceptions.md) | The exception that is thrown when one thread acquires a Mutex object that another thread has abandoned by exiting without releasing it. |
 | [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | The exception that is thrown when an attempt is made to open a system mutex, semaphore, or event wait handle that does not exist. |
 | [SemaphoreFullException](docs/Exceptions.md) | The exception that is thrown when the Release method is called on a semaphore whose count is already at the maximum. |
+
+### Namespace: `DotNetDupe::Extensions::DependencyInjection`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ServiceCollection](docs/DependencyInjection.md) | Accumulates service descriptors and builds the service provider. |
+| [ServiceProvider](docs/DependencyInjection.md) | The concrete implementation of the dependency injection container. |
+| [ServiceScope](docs/DependencyInjection.md) | Represents a lifetime scope for scoped services. |
+| [ServiceScopeFactory](docs/DependencyInjection.md) | Creates instances of `ServiceScope`, which are used to resolve scoped dependencies. |
+
+**Interfaces**
+
+| Interface | Description |
+|---|---|
+| [IServiceCollection](docs/DependencyInjection.md) | A collection of service descriptors. |
+| [IServiceScope](docs/DependencyInjection.md) | Represents the lifetime of a scoped service. |
+| [IServiceScopeFactory](docs/DependencyInjection.md) | Defines a factory for creating service scopes. |
 
 ## Project Status 🚧
 

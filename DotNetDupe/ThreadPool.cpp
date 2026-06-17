@@ -71,7 +71,7 @@ namespace DotNetDupe {
 
                     for (int i = 0; i < m_vWorkerThreads.GetCount(); ++i) {
                         SmartPointer<Thread> pWorker = m_vWorkerThreads[i];
-                        if (!pWorker.IsNull() && pWorker->IsAlive()) {
+                        if (!pWorker.IsNull()) {
                             pWorker->Join();
                         }
                     }

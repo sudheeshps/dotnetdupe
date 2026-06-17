@@ -99,13 +99,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -119,7 +120,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -127,6 +128,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -138,13 +141,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,7 +162,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -166,7 +170,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -206,6 +211,14 @@
     <ClInclude Include="framework.h" />
     <ClInclude Include="..\Include\System\NotImplementedException.h" />
     <ClInclude Include="..\Include\System\Object.h" />
+    <ClInclude Include="..\Include\System\IServiceProvider.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceLifetime.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceDescriptor.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceCollection.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceCollection.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceScope.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\IServiceScopeFactory.h" />
+    <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceProvider.h" />
     <ClInclude Include="..\Include\System\OperatingSystem.h" />
     <ClInclude Include="..\Include\System\OverflowException.h" />
     <ClInclude Include="..\Include\System\Path.h" />
@@ -216,12 +229,25 @@
     <ClInclude Include="..\Include\System\Text\StringBuilder.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonElement.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonSerializer.h" />
+    <ClInclude Include="..\Include\System\Text\Json\JsonException.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\Socket.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\NetworkStream.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\TcpClient.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\TcpListener.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\UdpClient.h" />
     <ClInclude Include="..\Include\System\Net\Sockets\SocketException.h" />
+    <ClInclude Include="..\Include\System\Security\Cryptography\HMACSHA256.h" />
+    <ClInclude Include="..\Include\System\IdentityModel\Tokens\Jwt\JWTToken.h" />
+    <ClInclude Include="..\Include\System\Net\HttpStatusCode.h" />
+    <ClInclude Include="..\Include\System\Net\Dns.h" />
+    <ClInclude Include="..\Include\System\IO\MemoryStream.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpMethod.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpContent.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpRequestException.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpRequestMessage.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpResponseMessage.h" />
+    <ClInclude Include="..\Include\System\Net\Http\HttpClient.h" />
+    <ClInclude Include="..\Include\System\Net\Http\RestClient.h" />
     <ClInclude Include="..\Include\System\Uri.h" />
     <ClInclude Include="..\Include\System\UriBuilder.h" />
     <ClInclude Include="..\Include\System\Utils.h" />
@@ -240,6 +266,8 @@
     <ClInclude Include="..\Include\System\TimeSpan.h" />
     <ClInclude Include="..\Include\System\FormatException.h" />
     <ClInclude Include="..\Include\System\BasicFormatException.h" />
+    <ClInclude Include="..\Include\System\BasicInvalidOperationException.h" />
+    <ClInclude Include="..\Include\System\InvalidOperationException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
     <ClInclude Include="..\Include\System\DaylightTime.h" />
     <ClInclude Include="..\Include\System\TimeZone.h" />
@@ -276,6 +304,17 @@
     <ClInclude Include="..\Include\System\Threading\AbandonedMutexException.h" />
     <ClInclude Include="..\Include\System\Threading\WaitHandleCannotBeOpenedException.h" />
     <ClInclude Include="..\Include\System\Threading\SemaphoreFullException.h" />
+    <ClInclude Include="..\Include\System\Net\Security\SslStream.h" />
+    <ClInclude Include="..\Include\System\Security\Cryptography\X509Certificates\X509Certificate2.h" />
+    <ClInclude Include="..\Include\WebAppCore\Http\HttpContext.h" />
+    <ClInclude Include="..\Include\WebAppCore\Builder\WebApplication.h" />
+    <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
+    <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerBase.h" />
+    <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerRouteBuilder.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlCommand.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlConnection.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlDataReader.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlParameter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -299,6 +338,15 @@
     <ClCompile Include="TcpClient.cpp" />
     <ClCompile Include="TcpListener.cpp" />
     <ClCompile Include="UdpClient.cpp" />
+    <ClCompile Include="HMACSHA256.cpp" />
+    <ClCompile Include="JWTToken.cpp" />
+    <ClCompile Include="Dns.cpp" />
+    <ClCompile Include="MemoryStream.cpp" />
+    <ClCompile Include="HttpMethod.cpp" />
+    <ClCompile Include="HttpContent.cpp" />
+    <ClCompile Include="HttpRequestMessage.cpp" />
+    <ClCompile Include="HttpResponseMessage.cpp" />
+    <ClCompile Include="HttpClient.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
     <ClCompile Include="Uri.cpp" />
     <ClCompile Include="UriBuilder.cpp" />
@@ -337,6 +385,17 @@
     <ClCompile Include="SemaphoreSlim.cpp" />
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="Interlocked.cpp" />
+    <ClCompile Include="SslStream.cpp" />
+    <ClCompile Include="ServiceProvider.cpp" />
+    <ClCompile Include="ServiceCollection.cpp" />
+    <ClCompile Include="X509Certificate2.cpp" />
+    <ClCompile Include="WebApplication.cpp" />
+    <ClCompile Include="WebApplicationBuilder.cpp" />
+    <ClCompile Include="SqlCommand.cpp" />
+    <ClCompile Include="SqlConnection.cpp" />
+    <ClCompile Include="DatabaseEngine.cpp" />
+    <ClCompile Include="InMemoryDatabaseBackend.cpp" />
+    <ClCompile Include="SqliteDatabaseBackend.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

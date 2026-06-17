@@ -137,9 +137,9 @@ namespace DotNetDupe {
             BasicString<CharT> Replace(CharT chOriginalChar, CharT chReplaceChar);
             BasicString<CharT> Replace(const BasicString<CharT>& sOriginalStr,
                                        const BasicString<CharT>& sReplaceStr);
-            Array<BasicString<CharT>> Split(CharT chSeparator);
+            Array<BasicString<CharT>> Split(CharT chSeparator) const;
             Array<BasicString<CharT>> Split(BasicString<CharT> sSeparator[], int iCount,
-                                                  StringSplitOptions eOptions);
+                                                  StringSplitOptions eOptions) const;
             bool StartsWith(const BasicString<CharT>& sPrefix, bool bIgnoreCase) const;
             BasicString<CharT> Substring(int iStartIndex) const;
             BasicString<CharT> Substring(int iStartIndex, int iLength) const;
@@ -548,7 +548,7 @@ namespace DotNetDupe {
             return BasicString<CharT>(sRet.c_str());
         }
         template<class CharT>
-        inline Array<BasicString<CharT>> BasicString<CharT>::Split(CharT chSeparator)
+        inline Array<BasicString<CharT>> BasicString<CharT>::Split(CharT chSeparator) const
         {
             std::vector<BasicString<CharT>> vTempResult;
             std::basic_stringstream<CharT> ss(m_str);
@@ -565,7 +565,7 @@ namespace DotNetDupe {
 
         template<class CharT>
         inline Array<BasicString<CharT>> BasicString<CharT>::Split(BasicString<CharT> sSeparator[], int iCount,
-                                                                         StringSplitOptions eOptions) {
+                                                                         StringSplitOptions eOptions) const {
             std::vector<BasicString<CharT>> vTempResult;
             std::set<CharT> charSet;
             for (int i = 0; i < iCount; ++i) {

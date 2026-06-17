@@ -8,6 +8,13 @@
 
 namespace DotNetDupe {
     namespace System {
+        // Helper trait to check if a type is complete at compile time
+        template <typename T, typename = void>
+        struct IsComplete : std::false_type {};
+
+        template <typename T>
+        struct IsComplete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
+
         /**
          * @brief A unified Smart Pointer that supports both unique and shared ownership semantics.
          * 
@@ -18,6 +25,8 @@ namespace DotNetDupe {
          */
         template <typename T>
         class SmartPointer {
+            template <typename U>
+            friend class SmartPointer;
         public:
             // --- Auto-Allocating Constructors ---
 
@@ -26,21 +35,41 @@ namespace DotNetDupe {
              * For concrete types: Automatically allocates a new instance of T.
              * For abstract types: Initializes to nullptr.
              */
-            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U> && std::is_default_constructible_v<U>, int> = 0>
-            SmartPointer() : m_pObject(new T()), m_pnRefCount(nullptr) {}
-
-            template <typename U = T, typename std::enable_if_t<std::is_abstract_v<U> || !std::is_default_constructible_v<U>, int> = 0>
-            SmartPointer() : m_pObject(nullptr), m_pnRefCount(nullptr) {}
+            SmartPointer() {
+                if constexpr (IsComplete<T>::value) {
+                    if constexpr (!std::is_abstract_v<T> && std::is_default_constructible_v<T>) {
+                        m_pObject = new T();
+                        m_pnRefCount = nullptr;
+                    } else {
+                        m_pObject = nullptr;
+                        m_pnRefCount = nullptr;
+                    }
+                } else {
+                    m_pObject = nullptr;
+                    m_pnRefCount = nullptr;
+                }
+            }
 
             /**
              * @brief Constructor with ownership mode flag.
              * Automatically allocates a new instance of T.
              * @param bIsShared If true, enables reference counting (Shared mode).
              */
-            template <typename U = T, typename std::enable_if_t<!std::is_abstract_v<U> && std::is_default_constructible_v<U>, int> = 0>
-            explicit SmartPointer(bool bIsShared) : m_pObject(new T()), m_pnRefCount(nullptr) {
-                if (bIsShared) {
-                    m_pnRefCount = new int(1);
+            explicit SmartPointer(bool bIsShared) {
+                if constexpr (IsComplete<T>::value) {
+                    if constexpr (!std::is_abstract_v<T> && std::is_default_constructible_v<T>) {
+                        m_pObject = new T();
+                        m_pnRefCount = nullptr;
+                        if (bIsShared) {
+                            m_pnRefCount = new int(1);
+                        }
+                    } else {
+                        m_pObject = nullptr;
+                        m_pnRefCount = nullptr;
+                    }
+                } else {
+                    m_pObject = nullptr;
+                    m_pnRefCount = nullptr;
                 }
             }
 
@@ -92,6 +121,16 @@ namespace DotNetDupe {
                 }
             }
 
+            template <typename U>
+            SmartPointer(const SmartPointer<U>& objOther) : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {
+                if (objOther.m_pnRefCount == nullptr && objOther.m_pObject != nullptr) {
+                    throw SystemException("Cannot copy a Unique SmartPointer. Use Move semantics or initialize as Shared.");
+                }
+                if (m_pnRefCount != nullptr) {
+                    (*m_pnRefCount)++;
+                }
+            }
+
             /**
              * @brief Copy assignment operator. Only permitted if the source is in Shared mode.
              */
@@ -110,12 +149,33 @@ namespace DotNetDupe {
                 return *this;
             }
 
+            template <typename U>
+            SmartPointer& operator=(const SmartPointer<U>& objOther) {
+                if (objOther.m_pnRefCount == nullptr && objOther.m_pObject != nullptr) {
+                    throw SystemException("Cannot copy a Unique SmartPointer.");
+                }
+                InternalCleanup();
+                m_pObject = objOther.m_pObject;
+                m_pnRefCount = objOther.m_pnRefCount;
+                if (m_pnRefCount != nullptr) {
+                    (*m_pnRefCount)++;
+                }
+                return *this;
+            }
+
             // --- Move Semantics ---
 
             /**
              * @brief Move constructor. Transfers ownership from the source.
              */
             SmartPointer(SmartPointer&& objOther) noexcept 
+                : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {
+                objOther.m_pObject = nullptr;
+                objOther.m_pnRefCount = nullptr;
+            }
+
+            template <typename U>
+            SmartPointer(SmartPointer<U>&& objOther) noexcept 
                 : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {
                 objOther.m_pObject = nullptr;
                 objOther.m_pnRefCount = nullptr;
@@ -132,6 +192,16 @@ namespace DotNetDupe {
                     objOther.m_pObject = nullptr;
                     objOther.m_pnRefCount = nullptr;
                 }
+                return *this;
+            }
+
+            template <typename U>
+            SmartPointer& operator=(SmartPointer<U>&& objOther) noexcept {
+                InternalCleanup();
+                m_pObject = objOther.m_pObject;
+                m_pnRefCount = objOther.m_pnRefCount;
+                objOther.m_pObject = nullptr;
+                objOther.m_pnRefCount = nullptr;
                 return *this;
             }
 
@@ -194,6 +264,23 @@ namespace DotNetDupe {
              * @brief Checks if the SmartPointer is null.
              */
             bool IsNull() const { return m_pObject == nullptr; }
+
+            /**
+             * @brief Dynamically casts the managed pointer to another type U and returns a new SmartPointer<U> sharing ownership.
+             */
+            template <typename U>
+            SmartPointer<U> DynamicCast() const {
+                U* pCast = dynamic_cast<U*>(m_pObject);
+                if (!pCast) return SmartPointer<U>(nullptr);
+                
+                SmartPointer<U> spRet(nullptr);
+                spRet.m_pObject = pCast;
+                spRet.m_pnRefCount = m_pnRefCount;
+                if (m_pnRefCount != nullptr) {
+                    (*m_pnRefCount)++;
+                }
+                return spRet;
+            }
 
             /**
              * @brief Gets the current reference count. Returns 0 for Unique or Null pointers.

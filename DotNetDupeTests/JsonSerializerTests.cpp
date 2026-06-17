@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "gtest/gtest.h"
 #include "System/Text/Json/JsonSerializer.h"
+#include "System/Text/Json/JsonException.h"
+#include "System/InvalidOperationException.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 
@@ -39,7 +41,7 @@ namespace DotNetDupe {
 
                     static DotNetDupeTests::TestPerson Read(const JsonElement& element) {
                         if (element.GetValueKind() != JsonValueKind::Object) {
-                            throw std::runtime_error("Expected a JSON object");
+                            throw InvalidOperationException("Expected a JSON object");
                         }
                         DotNetDupeTests::TestPerson p;
                         JsonElement prop;
@@ -275,7 +277,7 @@ namespace DotNetDupeTests {
         String invalidJson = "{ \"Name\": \"Alice\", "; // Unclosed object
 
         // When & Then
-        EXPECT_THROW(JsonSerializer::Deserialize<TestPerson>(invalidJson), std::runtime_error);
+        EXPECT_THROW(JsonSerializer::Deserialize<TestPerson>(invalidJson), JsonException);
     }
 
     TEST(JsonSerializerTests, GivenMismatchJsonType_WhenDeserialized_ThenThrowsException) {
@@ -283,7 +285,7 @@ namespace DotNetDupeTests {
         String mismatchedJson = "[1, 2, 3]"; // Array instead of object
 
         // When & Then
-        EXPECT_THROW(JsonSerializer::Deserialize<TestPerson>(mismatchedJson), std::runtime_error);
+        EXPECT_THROW(JsonSerializer::Deserialize<TestPerson>(mismatchedJson), InvalidOperationException);
     }
 
 }
