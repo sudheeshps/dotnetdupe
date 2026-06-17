@@ -300,6 +300,26 @@ Concatenates the elements of a collection, using the specified separator string 
 String result = String::Join(", ", { "apple", "orange", "banana" });
 ```
 
+##### `BasicString<CharT> static Format(const BasicString<CharT>& format, const Args&... args)`
+
+Replaces one or more format items in a specified string with the string representation of a specified object.
+
+**Parameters:**
+- `format`: A composite format string.
+- `args`: A parameter pack of arguments to format.
+
+**Returns:**
+- A copy of `format` in which the format items have been replaced by the string representation of the corresponding arguments.
+
+**Exceptions:**
+- `FormatException`: The number of placeholders exceeds the number of supplied arguments, or the format string is invalid.
+
+**Usage:**
+```cpp
+String s = String::Format("Hello {0}, you have {1} messages.", "Alice", 5);
+// "Hello Alice, you have 5 messages."
+```
+
 ##### `BasicString<CharT> PadLeft(int totalWidth, CharT ch)`
 
 Returns a new string that right-aligns the characters in this instance by padding them on the left with a specified character, for a specified total length.
@@ -500,6 +520,11 @@ int main() {
         Console::Write("Trimmed: '");
         Console::Write(sTrimmed);
         Console::WriteLine("'");
+
+        // Format
+        String sFormatted = String::Format("System Status: {0} ({1} active jobs, Admin: {2})", "Running", 5, true);
+        Console::Write("Formatted: ");
+        Console::WriteLine(sFormatted);
 
         // Substring
         String sSub = sTrimmed.Substring(11, 10);

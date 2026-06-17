@@ -51,6 +51,9 @@ namespace DotNetDupe {
                     std::string PrepareHeaders(const SmartPointer<HttpRequestMessage>& spRequest, const Uri& uri);
                     void SendRequest(const SmartPointer<IO::Stream>& spStream, const std::string& sHeaders, const SmartPointer<HttpContent>& spContent);
                     SmartPointer<HttpResponseMessage> PrepareResponse(const SmartPointer<IO::Stream>& spStream);
+                    SmartPointer<HttpResponseMessage> ParseStatusLine(const SmartPointer<IO::Stream>& spStream);
+                    void ParseHeaders(const SmartPointer<IO::Stream>& spStream, const SmartPointer<HttpResponseMessage>& spResponse, bool& rbChunked, long& rlContentLength, String& rsContentType);
+                    Array<char> ReadResponseBody(const SmartPointer<IO::Stream>& spStream, bool bChunked, long lContentLength);
                 };
 
             }

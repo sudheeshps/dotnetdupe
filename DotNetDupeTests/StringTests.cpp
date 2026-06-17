@@ -7,6 +7,7 @@
 
 #include "System/String.h"
 #include "System/ArgumentException.h"
+#include "System/FormatException.h"
 
 //<MethodName>_Should_<ExpectedBehavior>_When_<StateUnderTest>
 
@@ -429,6 +430,58 @@ namespace SystemTests {
         TEST(StringTest, Replace_Returns_Replaced_New_String_When_String_To_Be_Replaced_Found) {
             String str("Hello World World");
             ASSERT_TRUE(str.Replace("World", "My World") == "Hello My World My World");
+        }
+
+        TEST(StringTest, Format_Should_ReturnFormattedString_When_SimplePlaceholdersSpecified) {
+            // Given
+            String formatStr = "Hello {0}, welcome to {1}!";
+            
+            // When
+            String result = String::Format(formatStr, "John", 2024);
+            
+            // Then
+            ASSERT_EQ(result, "Hello John, welcome to 2024!");
+        }
+
+        TEST(StringTest, Format_Should_ReturnOriginalString_When_NoPlaceholdersSpecified) {
+            // Given
+            String formatStr = "Hello World";
+            
+            // When
+            String result = String::Format(formatStr);
+            
+            // Then
+            ASSERT_EQ(result, "Hello World");
+        }
+
+        TEST(StringTest, Format_Should_HandleEscapedBraces_When_DoubleBracesSpecified) {
+            // Given
+            String formatStr = "{{hello}} {0} {{0}}";
+            
+            // When
+            String result = String::Format(formatStr, "world");
+            
+            // Then
+            ASSERT_EQ(result, "{hello} world {0}");
+        }
+
+        TEST(StringTest, Format_Should_FormatVariousTypes_When_VariousTypesPassed) {
+            // Given
+            String formatStr = "{0} - {1} - {2} - {3}";
+            
+            // When
+            String result = String::Format(formatStr, true, 3.14, nullptr, "Alice");
+            
+            // Then
+            ASSERT_EQ(result, "True - 3.14 -  - Alice");
+        }
+
+        TEST(StringTest, Format_Should_ThrowFormatException_When_PlaceholderIndexOutOfRange) {
+            // Given
+            String formatStr = "Hello {1}";
+            
+            // When/Then
+            ASSERT_THROW(String::Format(formatStr, "world"), FormatException);
         }
     }
 }
