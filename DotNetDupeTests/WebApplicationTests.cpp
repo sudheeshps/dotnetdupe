@@ -3,14 +3,21 @@
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Builder/WebApplicationBuilder.h"
 #include "System/Net/Http/HttpClient.h"
+#include "System/Net/Http/RestClient.h"
 #include "System/Threading/Thread.h"
+#include "System/Convert.h"
 #include "System/BasicException.h"
 #include "System/Net/Http/HttpRequestException.h"
+#include "WebAppCore/Controllers/ControllerBase.h"
+#include "WebAppCore/Controllers/ControllerRouteBuilder.h"
+#include "System/Text/Json/JsonSerializer.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Net::Http;
 using namespace DotNetDupe::System::Threading;
 using namespace DotNetDupe::WebAppCore::Builder;
+using namespace DotNetDupe::WebAppCore::Controllers;
+using namespace DotNetDupe::System::Text::Json;
 
 namespace WebApplicationTests {
 
@@ -26,6 +33,77 @@ namespace WebApplicationTests {
             return "Hello from DI Service!";
         }
     };
+
+    struct TestProduct {
+        String Name;
+        int Price = 0;
+    };
+
+    class ProductsController : public ControllerBase {
+    public:
+        ProductsController() = default;
+        ~ProductsController() override = default;
+
+        Collections::Generic::List<TestProduct> GetProducts() {
+            Collections::Generic::List<TestProduct> list;
+            list.Add(TestProduct{"Laptop", 1200});
+            list.Add(TestProduct{"Phone", 800});
+            return list;
+        }
+
+        String GetProductById(const String& id) {
+            if (id == "1") {
+                return Ok(TestProduct{"Laptop", 1200});
+            }
+            return NotFound("Product not found");
+        }
+
+        String CreateProduct(const TestProduct& product) {
+            return Created(String("Created product: ") + product.Name + " for " + Convert::ToString(product.Price));
+        }
+
+        String UpdateProduct(const String& id, const TestProduct& product) {
+            return Ok(String("Updated product ") + id + " to " + product.Name);
+        }
+
+        String DeleteProduct(const String& id) {
+            if (id == "1") {
+                return NoContent();
+            }
+            return NotFound("Cannot delete unknown product");
+        }
+    };
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+            namespace Json {
+                template <>
+                struct JsonConverter<WebApplicationTests::TestProduct> {
+                    static JsonElement Write(const WebApplicationTests::TestProduct& value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        JsonElement nameVal(value.Name);
+                        JsonElement priceVal(static_cast<double>(value.Price));
+                        obj.SetProperty("name", nameVal);
+                        obj.SetProperty("price", priceVal);
+                        return obj;
+                    }
+
+                    static WebApplicationTests::TestProduct Read(const JsonElement& element) {
+                        WebApplicationTests::TestProduct p;
+                        JsonElement prop;
+                        if (element.TryGetProperty("name", prop)) p.Name = prop.GetString();
+                        if (element.TryGetProperty("price", prop)) p.Price = prop.GetInt32();
+                        return p;
+                    }
+                };
+            }
+        }
+    }
+}
+
+namespace WebApplicationTests {
 
     // RAII guard to guarantee thread join and server stop on test exit/failure
     struct ServerScopeGuard {
@@ -210,6 +288,162 @@ namespace WebApplicationTests {
             ASSERT_FALSE(respDelete.IsNull());
             ASSERT_EQ((int)respDelete->GetStatusCode(), 204);
             ASSERT_TRUE(respDelete->GetContent()->ReadAsString().IsEmpty());
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenControllerRouted_InvokesActionsAndSerializesCorrectly) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            // Register Controller and configure routes using the fluent builder API
+            builder->AddController<ProductsController>("/api/products")
+                .MapGet("", &ProductsController::GetProducts)
+                .MapGet("/{id}", &ProductsController::GetProductById)
+                .MapPost("", &ProductsController::CreateProduct)
+                .MapPut("/{id}", &ProductsController::UpdateProduct)
+                .MapDelete("/{id}", &ProductsController::DeleteProduct);
+
+            auto app = builder->Build();
+
+            // Maps controllers automatically under the hood, hiding the plumbing code
+            app->MapControllers();
+
+            // Run the server in a background thread on a high port
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28082");
+            });
+            serverThread.Start();
+            
+            // Register RAII guard
+            ServerScopeGuard guard(app, serverThread);
+            
+            Thread::Sleep(200); // Allow server to start
+
+            // When
+            HttpClient client;
+            
+            // 1. Test GET all
+            auto respGetAll = client.Get("http://127.0.0.1:28082/api/products");
+            
+            // 2. Test GET by ID (Product 1 exists)
+            auto respGet1 = client.Get("http://127.0.0.1:28082/api/products/1");
+
+            // 3. Test GET by ID (Product 2 does not exist -> 404)
+            auto respGet2 = client.Get("http://127.0.0.1:28082/api/products/2");
+
+            // 4. Test POST product (JSON body binding)
+            auto postContent = SmartPointer<StringContent>::NewShared("{\"name\":\"Tablet\",\"price\":500}");
+            auto respPost = client.Post("http://127.0.0.1:28082/api/products", postContent);
+
+            // 5. Test PUT product (path + JSON body binding)
+            auto putContent = SmartPointer<StringContent>::NewShared("{\"name\":\"Keyboard\",\"price\":100}");
+            auto respPut = client.Put("http://127.0.0.1:28082/api/products/10", putContent);
+
+            // 6. Test DELETE product (Product 1 delete -> 204)
+            auto respDelete1 = client.Delete("http://127.0.0.1:28082/api/products/1");
+
+            // 7. Test DELETE product (Product 2 delete -> 404)
+            auto respDelete2 = client.Delete("http://127.0.0.1:28082/api/products/2");
+
+            // Then
+            ASSERT_FALSE(respGetAll.IsNull());
+            ASSERT_EQ((int)respGetAll->GetStatusCode(), 200);
+            ASSERT_TRUE(respGetAll->GetContent()->ReadAsString().Contains("Laptop"));
+            ASSERT_TRUE(respGetAll->GetContent()->ReadAsString().Contains("Phone"));
+
+            ASSERT_FALSE(respGet1.IsNull());
+            ASSERT_EQ((int)respGet1->GetStatusCode(), 200);
+            ASSERT_TRUE(respGet1->GetContent()->ReadAsString().Contains("Laptop"));
+
+            ASSERT_FALSE(respGet2.IsNull());
+            ASSERT_EQ((int)respGet2->GetStatusCode(), 404);
+            ASSERT_TRUE(respGet2->GetContent()->ReadAsString().Contains("Product not found"));
+
+            ASSERT_FALSE(respPost.IsNull());
+            ASSERT_EQ((int)respPost->GetStatusCode(), 201);
+            ASSERT_TRUE(respPost->GetContent()->ReadAsString().Contains("Created product: Tablet for 500"));
+
+            ASSERT_FALSE(respPut.IsNull());
+            ASSERT_EQ((int)respPut->GetStatusCode(), 200);
+            ASSERT_TRUE(respPut->GetContent()->ReadAsString().Contains("Updated product 10 to Keyboard"));
+
+            ASSERT_FALSE(respDelete1.IsNull());
+            ASSERT_EQ((int)respDelete1->GetStatusCode(), 204);
+
+            ASSERT_FALSE(respDelete2.IsNull());
+            ASSERT_EQ((int)respDelete2->GetStatusCode(), 404);
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenRestClientUsed_PerformsTypedCrudOperations) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            builder->AddController<ProductsController>("/api/products")
+                .MapGet("", &ProductsController::GetProducts)
+                .MapGet("/{id}", &ProductsController::GetProductById)
+                .MapPost("", &ProductsController::CreateProduct)
+                .MapPut("/{id}", &ProductsController::UpdateProduct)
+                .MapDelete("/{id}", &ProductsController::DeleteProduct);
+
+            auto app = builder->Build();
+            app->MapControllers();
+
+            // Run the server in a background thread on a high port
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28083");
+            });
+            serverThread.Start();
+            
+            // Register RAII guard
+            ServerScopeGuard guard(app, serverThread);
+            
+            Thread::Sleep(200); // Allow server to start
+
+            // When
+            RestClient<TestProduct> client("http://127.0.0.1:28083/api/products");
+
+            // 1. GetAll
+            auto list = client.GetAll();
+            
+            // 2. Get by ID
+            auto prod1 = client.Get("1");
+
+            // 3. Post (Create)
+            TestProduct newProd{"Tablet", 500};
+            String postResult = client.Post(newProd);
+
+            // 4. Put (Update)
+            TestProduct updatedProd{"Keyboard", 100};
+            String putResult = client.Put("10", updatedProd);
+
+            // 5. Delete
+            client.Delete("1");
+
+            // Then
+            ASSERT_EQ(list.GetCount(), 2);
+            ASSERT_EQ(list[0].Name, "Laptop");
+            ASSERT_EQ(list[1].Name, "Phone");
+
+            ASSERT_EQ(prod1.Name, "Laptop");
+            ASSERT_EQ(prod1.Price, 1200);
+
+            ASSERT_TRUE(postResult.Contains("Created product: Tablet for 500"));
+            ASSERT_TRUE(putResult.Contains("Updated product 10 to Keyboard"));
 
         } catch (const BasicException<char>& ex) {
             FAIL() << "BasicException thrown: " << ex.What();

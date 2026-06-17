@@ -10,6 +10,8 @@
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include <atomic>
+#include <vector>
+#include <functional>
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -36,6 +38,16 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void MapPut(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
 
+                DOTNETDUPE_API void SetControllerRegistrars(std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> registrars) {
+                    m_controllerRegistrars = std::move(registrars);
+                }
+
+                DOTNETDUPE_API void SetSelfPointer(const DotNetDupe::System::SmartPointer<WebApplication>& spSelf) {
+                    m_spSelf = spSelf;
+                }
+
+                DOTNETDUPE_API void MapControllers();
+
                 DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000");
                 DOTNETDUPE_API void Stop();
 
@@ -53,6 +65,8 @@ namespace DotNetDupe {
                 std::atomic<bool> m_bRunning;
                 DotNetDupe::System::String m_sHost;
                 int m_nPort;
+                std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> m_controllerRegistrars;
+                DotNetDupe::System::SmartPointer<WebApplication> m_spSelf;
             };
 
         }

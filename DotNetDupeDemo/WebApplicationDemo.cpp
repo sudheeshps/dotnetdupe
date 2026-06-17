@@ -1,11 +1,17 @@
 #include "System/Console.h"
 #include "System/SmartPointer.h"
 #include "System/Func.h"
+#include "System/Convert.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Builder/WebApplicationBuilder.h"
 #include "System/Net/Http/HttpClient.h"
+#include "System/Net/Http/RestClient.h"
 #include "System/Net/Http/HttpRequestException.h"
 #include "System/Threading/Thread.h"
+#include "WebAppCore/Controllers/ControllerBase.h"
+#include "WebAppCore/Controllers/ControllerRouteBuilder.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/Text/StringBuilder.h"
 #include "Demos.h"
 
 using namespace DotNetDupe::System;
@@ -13,6 +19,9 @@ using namespace DotNetDupe::System::Net::Http;
 using namespace DotNetDupe::System::Threading;
 using namespace DotNetDupe::WebAppCore::Builder;
 using namespace DotNetDupe::WebAppCore::Http;
+using namespace DotNetDupe::WebAppCore::Controllers;
+using namespace DotNetDupe::System::Text::Json;
+using namespace DotNetDupe::System::Text;
 
 namespace {
     class IInfoService : public virtual Object {
@@ -27,6 +36,71 @@ namespace {
             return "DotNetDupe Web Host v1.0";
         }
     };
+
+    struct DemoProduct {
+        String Name;
+        int Price = 0;
+    };
+
+    class DemoProductsController : public ControllerBase {
+    public:
+        DemoProductsController() = default;
+        ~DemoProductsController() override = default;
+
+        // Returns strongly typed List directly, utilizing automatic JSON serialization
+        Collections::Generic::List<DemoProduct> GetProducts() {
+            Collections::Generic::List<DemoProduct> list;
+            list.Add(DemoProduct{"Coffee Maker", 85});
+            list.Add(DemoProduct{"Toaster", 45});
+            return list;
+        }
+
+        // Returns strongly typed single DemoProduct directly (automatic JSON serialization)
+        DemoProduct GetDefaultProduct() {
+            return DemoProduct{"Coffee Maker", 85};
+        }
+
+        // Returns String using Ok() / NotFound() helpers for conditional logic
+        String GetProductById(const String& id) {
+            if (id == "1") {
+                return Ok(DemoProduct{"Coffee Maker", 85});
+            }
+            return NotFound("Product not found");
+        }
+
+        // Accepts strongly typed payload and returns String via Created() helper
+        String CreateProduct(const DemoProduct& product) {
+            return Created(String("Created ") + product.Name + " at price $" + Convert::ToString(product.Price));
+        }
+    };
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+            namespace Json {
+                template <>
+                struct JsonConverter<DemoProduct> {
+                    static JsonElement Write(const DemoProduct& value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        JsonElement nameVal(value.Name);
+                        JsonElement priceVal(static_cast<double>(value.Price));
+                        obj.SetProperty("name", nameVal);
+                        obj.SetProperty("price", priceVal);
+                        return obj;
+                    }
+
+                    static DemoProduct Read(const JsonElement& element) {
+                        DemoProduct p;
+                        JsonElement prop;
+                        if (element.TryGetProperty("name", prop)) p.Name = prop.GetString();
+                        if (element.TryGetProperty("price", prop)) p.Price = prop.GetInt32();
+                        return p;
+                    }
+                };
+            }
+        }
+    }
 }
 
 void DemonstrateWebApplication() {
@@ -35,6 +109,11 @@ void DemonstrateWebApplication() {
     // 1. Create Builder & Register Service
     auto builder = WebApplication::CreateBuilder();
     builder->GetServices().AddSingleton<IInfoService, InfoService>();
+    builder->AddController<DemoProductsController>("/api/products")
+        .MapGet("", &DemoProductsController::GetProducts)
+        .MapGet("/default", &DemoProductsController::GetDefaultProduct)
+        .MapGet("/{id}", &DemoProductsController::GetProductById)
+        .MapPost("", &DemoProductsController::CreateProduct);
 
     // 2. Build the App
     auto app = builder->Build();
@@ -78,6 +157,9 @@ void DemonstrateWebApplication() {
         context->GetResponse()->SetStatusCode(400);
         return String("Bad Request");
     });
+
+    // 3b. Setup Web API Controllers (Option B ControllerBase + RouteBuilder)
+    app->MapControllers();
 
     // 4. Start the server asynchronously in a background Thread
     Console::WriteLine("Starting WebApplication on http://127.0.0.1:19099...");
@@ -134,12 +216,78 @@ void DemonstrateWebApplication() {
         Console::Write(resp5->GetContent()->ReadAsString());
         Console::WriteLine("' (Expected empty for 204)");
 
+        // 6. Test Web API Controller endpoints
+        Console::WriteLine("\n[Client] Sending GET request to '/api/products' (Controller List)...");
+        auto resp6 = client.Get("http://127.0.0.1:19099/api/products");
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp6->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp6->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending GET request to '/api/products/default' (Controller Strongly Typed Single)...");
+        auto respDefault = client.Get("http://127.0.0.1:19099/api/products/default");
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)respDefault->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(respDefault->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending GET request to '/api/products/1' (Controller Item)...");
+        auto resp7 = client.Get("http://127.0.0.1:19099/api/products/1");
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp7->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp7->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending POST request to '/api/products' (Controller Deserialization)...");
+        auto productContent = SmartPointer<StringContent>::NewShared("{\"name\":\"Coffee Mug\",\"price\":15}");
+        auto resp8 = client.Post("http://127.0.0.1:19099/api/products", productContent);
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp8->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp8->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        // 6b. Test strongly-typed RestClient
+        Console::WriteLine("\n[Client] Testing strongly-typed RestClient<DemoProduct>...");
+        RestClient<DemoProduct> restClient("http://127.0.0.1:19099/api/products");
+
+        // Test GET all
+        Console::WriteLine("[RestClient] Fetching all products...");
+        auto products = restClient.GetAll();
+        
+        StringBuilder sbProducts;
+        sbProducts.Append("[RestClient] Number of products: ").Append(products.GetCount()).AppendLine();
+        for (int i = 0; i < products.GetCount(); ++i) {
+            sbProducts.Append("[RestClient]  - ").Append(products[i].Name).Append(" ($").Append(products[i].Price).AppendLine(")");
+        }
+        Console::Write(sbProducts.ToString());
+
+        // Test GET by ID
+        Console::WriteLine("\n[RestClient] Fetching product with ID '1'...");
+        auto prod1 = restClient.Get("1");
+        
+        StringBuilder sbProd;
+        sbProd.Append("[RestClient] Retrieved: ").Append(prod1.Name).Append(" ($").Append(prod1.Price).AppendLine(")");
+        Console::Write(sbProd.ToString());
+
+        // Test POST new resource
+        Console::WriteLine("\n[RestClient] POSTing a new product...");
+        DemoProduct newProd{"Toaster Oven", 120};
+        String postResult = restClient.Post(newProd);
+        
+        StringBuilder sbPost;
+        sbPost.Append("[RestClient] POST Response: ").AppendLine(postResult);
+        Console::Write(sbPost.ToString());
+
     } catch (const BasicException<char>& ex) {
         Console::Write("[Client Exception] Error: ");
         Console::WriteLine(ex.What());
     }
 
-    // 6. Shut down the server cleanly
+    // 7. Shut down the server cleanly
     Console::WriteLine("\nStopping WebApplication...");
     app->Stop();
     serverThread.Join();

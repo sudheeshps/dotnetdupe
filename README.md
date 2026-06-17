@@ -287,6 +287,15 @@ For detailed information on the available classes, methods, and their usage, ple
 | [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
 | [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
 
+### Namespace: `DotNetDupe::WebAppCore::Controllers`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ControllerBase](docs/WebApplication.md) | Base class for MVC/Web API style controllers. |
+| [ControllerRouteBuilder<T>](docs/WebApplication.md) | Maps controller actions and automates JSON payload serialization. |
+
 ### Namespace: `DotNetDupe::System`
 
 **Classes**
@@ -441,6 +450,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | Class | Description |
 |---|---|
 | [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
+| [RestClient](docs/RestClient.md) | Represents a strongly-typed REST client that simplifies resource-oriented Web API interactions by automatically serializing/deserializing payloads to and from C++ structures. |
 | [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
 | [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
 | [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |

@@ -15,7 +15,8 @@ Used to configure application services and build the web application host.
 
 ##### Methods
 - `Extensions::DependencyInjection::ServiceCollection& GetServices()`: Gets the DI service collection for registering application dependencies.
-- `SmartPointer<WebApplication> Build()`: Compiles the service provider and returns the configured `WebApplication` instance.
+- `template <typename TController> WebAppCore::Controllers::ControllerRouteBuilder<TController>& AddController(const String& prefix)`: Registers the controller in the DI service collection and returns a reference to its route builder for fluent mapping.
+- `SmartPointer<WebApplication> Build()`: Compiles the service provider and returns the configured `WebApplication` instance, transferring any queued controller routes.
 
 ---
 
@@ -29,6 +30,7 @@ The central HTTP server host. Handles endpoint mapping and listens for incoming 
 - `void MapPost(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a POST request endpoint to a route handler.
 - `void MapPut(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a PUT request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
 - `void MapDelete(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a DELETE request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
+- `void MapControllers()`: Iterates through all registered controllers and hooks up their route callbacks automatically.
 - `void Run(const String& url = "http://127.0.0.1:5000")`: Starts listening on the specified URL (blocking loop).
 - `void Stop()`: Halts the web server.
 
@@ -66,6 +68,42 @@ Represents the outgoing side of an HTTP response.
 - `void SetContentType(const String& type)`: Sets the media type (e.g. `"application/json"`).
 - `void Write(const String& text)`: Appends text to the response body.
 - `Dictionary<String, String>& GetHeaders()`: Allows setting custom outgoing HTTP headers.
+
+---
+
+#### `class ControllerBase`
+Base class for MVC/Web API style controllers, providing access to HttpContext and helpers for standard HTTP responses.
+
+##### Methods
+- `void Initialize(const SmartPointer<HttpContext>& context)`: Binds the HTTP context to the controller.
+- `SmartPointer<HttpRequest> Request() const`: Returns the incoming HTTP request.
+- `SmartPointer<HttpResponse> Response() const`: Returns the outgoing HTTP response.
+- `template <typename U> String Ok(const U& value)`: Automatically serializes the C++ object/collection `value` to JSON, sets `Content-Type: application/json`, and returns it with status 200 OK.
+- `String Ok(const String& body)`: Returns status 200 OK with raw body.
+- `template <typename U> String Created(const U& value)`: Automatically serializes the C++ object/collection `value` to JSON, sets `Content-Type: application/json`, and returns it with status 201 Created.
+- `String Created(const String& body)`: Returns status 201 Created with raw body.
+- `String NoContent()`: Returns status 204 No Content.
+- `String NotFound(const String& error)`: Returns status 404 Not Found with JSON error payload.
+- `String BadRequest(const String& error)`: Returns status 400 Bad Request with JSON error payload.
+- `String Unauthorized(const String& error)`: Returns status 401 Unauthorized with JSON error payload.
+
+---
+
+#### `template <typename TController> class ControllerRouteBuilder`
+A templated mapping registrar that maps controller member functions (actions) to WebApplication routes, automating JSON serialization and deserialization and supporting fluent route registration. It allows action methods to return strongly typed resources directly (e.g., custom structures, `List<T>`) which are automatically serialized to JSON.
+
+##### Methods
+- `ControllerRouteBuilder(const String& prefix)`: Binds a builder to a specific route prefix (e.g. `/api/users`).
+- `ControllerRouteBuilder& MapGet(const String& subPath, String (TController::*action)())`: Maps a GET request returning a raw string or response helper.
+- `template <typename TResult> ControllerRouteBuilder& MapGet(const String& subPath, TResult (TController::*action)())`: Maps a GET request returning a strongly typed object/list, which is automatically serialized to JSON.
+- `ControllerRouteBuilder& MapGet(const String& subPath, String (TController::*action)(const String&))`: Maps a GET request taking a path parameter and returning a raw string.
+- `template <typename TResult> ControllerRouteBuilder& MapGet(const String& subPath, TResult (TController::*action)(const String&))`: Maps a GET request taking a path parameter and returning a strongly typed object, which is automatically serialized to JSON.
+- `template <typename TResource> ControllerRouteBuilder& MapPost(const String& subPath, String (TController::*action)(const TResource&))`: Maps a POST request taking an automatically deserialized request body, returning a raw string.
+- `template <typename TResult, typename TResource> ControllerRouteBuilder& MapPost(const String& subPath, TResult (TController::*action)(const TResource&))`: Maps a POST request taking an automatically deserialized request body, returning a strongly typed object which is automatically serialized to JSON.
+- `template <typename TResource> ControllerRouteBuilder& MapPut(const String& subPath, String (TController::*action)(const String&, const TResource&))`: Maps a PUT request taking a path parameter and an automatically deserialized request body, returning a raw string.
+- `template <typename TResult, typename TResource> ControllerRouteBuilder& MapPut(const String& subPath, TResult (TController::*action)(const String&, const TResource&))`: Maps a PUT request taking a path parameter and an automatically deserialized request body, returning a strongly typed object which is automatically serialized to JSON.
+- `ControllerRouteBuilder& MapDelete(const String& subPath, String (TController::*action)(const String&))`: Maps a DELETE request with a path parameter, returning a raw string.
+- `template <typename TResult> ControllerRouteBuilder& MapDelete(const String& subPath, TResult (TController::*action)(const String&))`: Maps a DELETE request with a path parameter, returning a strongly typed object which is automatically serialized to JSON.
 
 ---
 

@@ -247,6 +247,7 @@
     <ClInclude Include="..\Include\System\Net\Http\HttpRequestMessage.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpResponseMessage.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpClient.h" />
+    <ClInclude Include="..\Include\System\Net\Http\RestClient.h" />
     <ClInclude Include="..\Include\System\Uri.h" />
     <ClInclude Include="..\Include\System\UriBuilder.h" />
     <ClInclude Include="..\Include\System\Utils.h" />
@@ -308,6 +309,8 @@
     <ClInclude Include="..\Include\WebAppCore\Http\HttpContext.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplication.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
+    <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerBase.h" />
+    <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerRouteBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />

@@ -73,7 +73,8 @@ namespace DotNetDupe {
                   m_pListener(std::move(other.m_pListener)),
                   m_bRunning(other.m_bRunning.load()),
                   m_sHost(std::move(other.m_sHost)),
-                  m_nPort(other.m_nPort) {}
+                  m_nPort(other.m_nPort),
+                  m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}
 
             WebApplication& WebApplication::operator=(WebApplication&& other) noexcept {
                 if (this != &other) {
@@ -86,6 +87,7 @@ namespace DotNetDupe {
                     m_bRunning = other.m_bRunning.load();
                     m_sHost = std::move(other.m_sHost);
                     m_nPort = other.m_nPort;
+                    m_controllerRegistrars = std::move(other.m_controllerRegistrars);
                 }
                 return *this;
             }
@@ -108,6 +110,12 @@ namespace DotNetDupe {
 
             void WebApplication::MapDelete(const System::String& pattern, System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler) {
                 m_deleteHandlers.Add(pattern, handler);
+            }
+
+            void WebApplication::MapControllers() {
+                for (auto& registerRoutes : m_controllerRegistrars) {
+                    registerRoutes(m_spSelf);
+                }
             }
 
             void WebApplication::Run(const System::String& url) {
@@ -229,6 +237,9 @@ namespace DotNetDupe {
                 } catch (...) {
                     System::Console::WriteLine("[Server Exception] Dummy connection failed unknown");
                 }
+
+                // Break the reference cycle
+                m_spSelf = nullptr;
             }
 
             void WebApplication::HandleConnection(System::SmartPointer<System::Net::Sockets::TcpClient> spClient) {
