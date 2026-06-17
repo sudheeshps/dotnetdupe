@@ -16,6 +16,47 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Builder {
 
+            namespace {
+                std::vector<std::string> GetPathSegments(const std::string& path) {
+                    std::vector<std::string> segments;
+                    std::string segment;
+                    for (char c : path) {
+                        if (c == '/') {
+                            if (!segment.empty()) {
+                                segments.push_back(segment);
+                                segment.clear();
+                            }
+                        } else {
+                            segment += c;
+                        }
+                    }
+                    if (!segment.empty()) {
+                        segments.push_back(segment);
+                    }
+                    return segments;
+                }
+
+                bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams) {
+                    if (patternSegs.size() != pathSegs.size()) {
+                        return false;
+                    }
+                    for (size_t i = 0; i < patternSegs.size(); ++i) {
+                        const std::string& patternSeg = patternSegs[i];
+                        const std::string& pathSeg = pathSegs[i];
+                        
+                        if (patternSeg.length() >= 2 && patternSeg.front() == '{' && patternSeg.back() == '}') {
+                            std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
+                            extractedParams.push_back({paramName, pathSeg});
+                        } else {
+                            if (patternSeg != pathSeg) {
+                                return false;
+                            }
+                        }
+                    }
+                    return true;
+                }
+            }
+
             WebApplication::WebApplication(const System::SmartPointer<System::IServiceProvider>& spServices)
                 : m_spServices(spServices), m_bRunning(false), m_nPort(0) {}
 
@@ -27,6 +68,8 @@ namespace DotNetDupe {
                 : m_spServices(std::move(other.m_spServices)),
                   m_getHandlers(std::move(other.m_getHandlers)),
                   m_postHandlers(std::move(other.m_postHandlers)),
+                  m_putHandlers(std::move(other.m_putHandlers)),
+                  m_deleteHandlers(std::move(other.m_deleteHandlers)),
                   m_pListener(std::move(other.m_pListener)),
                   m_bRunning(other.m_bRunning.load()),
                   m_sHost(std::move(other.m_sHost)),
@@ -37,6 +80,8 @@ namespace DotNetDupe {
                     m_spServices = std::move(other.m_spServices);
                     m_getHandlers = std::move(other.m_getHandlers);
                     m_postHandlers = std::move(other.m_postHandlers);
+                    m_putHandlers = std::move(other.m_putHandlers);
+                    m_deleteHandlers = std::move(other.m_deleteHandlers);
                     m_pListener = std::move(other.m_pListener);
                     m_bRunning = other.m_bRunning.load();
                     m_sHost = std::move(other.m_sHost);
@@ -55,6 +100,14 @@ namespace DotNetDupe {
 
             void WebApplication::MapPost(const System::String& pattern, System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler) {
                 m_postHandlers.Add(pattern, handler);
+            }
+
+            void WebApplication::MapPut(const System::String& pattern, System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler) {
+                m_putHandlers.Add(pattern, handler);
+            }
+
+            void WebApplication::MapDelete(const System::String& pattern, System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler) {
+                m_deleteHandlers.Add(pattern, handler);
             }
 
             void WebApplication::Run(const System::String& url) {
@@ -302,8 +355,35 @@ namespace DotNetDupe {
                 System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler;
 
                 System::Console::WriteLine("[Server] Matching handler...");
+                std::string reqPathStr = spRequest->GetPath().GetRawString();
+                std::vector<std::string> pathSegs = GetPathSegments(reqPathStr);
+
+                auto findHandler = [&](auto& handlersMap) -> bool {
+                    // Try exact match first
+                    if (handlersMap.TryGetValue(spRequest->GetPath(), handler)) {
+                        return true;
+                    }
+                    // Try pattern match
+                    auto keys = handlersMap.GetKeys();
+                    for (int i = 0; i < keys.GetLength(); ++i) {
+                        System::String pattern = keys[i];
+                        std::vector<std::string> patternSegs = GetPathSegments(pattern.GetRawString());
+                        std::vector<std::pair<std::string, std::string>> extractedParams;
+                        if (MatchRoute(patternSegs, pathSegs, extractedParams)) {
+                            // Found a match! Extract parameters into GetRouteValues()
+                            for (const auto& pair : extractedParams) {
+                                spRequest->GetRouteValues().Add(System::String(pair.first.c_str()), System::String(pair.second.c_str()));
+                            }
+                            if (handlersMap.TryGetValue(pattern, handler)) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                };
+
                 if (method == "GET") {
-                    if (m_getHandlers.TryGetValue(spRequest->GetPath(), handler)) {
+                    if (findHandler(m_getHandlers)) {
                         try {
                             System::Console::WriteLine("[Server] Found GET handler, invoking...");
                             sBodyResult = handler(spContext);
@@ -320,11 +400,45 @@ namespace DotNetDupe {
                         }
                     }
                 } else if (method == "POST") {
-                    if (m_postHandlers.TryGetValue(spRequest->GetPath(), handler)) {
+                    if (findHandler(m_postHandlers)) {
                         try {
                             System::Console::WriteLine("[Server] Found POST handler, invoking...");
                             sBodyResult = handler(spContext);
                             System::Console::WriteLine("[Server] POST handler invoked successfully.");
+                            bMatched = true;
+                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                            spResponse->SetStatusCode(500);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse->SetStatusCode(500);
+                            sBodyResult = "500 Internal Server Error";
+                            bMatched = true;
+                        }
+                    }
+                } else if (method == "PUT") {
+                    if (findHandler(m_putHandlers)) {
+                        try {
+                            System::Console::WriteLine("[Server] Found PUT handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] PUT handler invoked successfully.");
+                            bMatched = true;
+                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                            spResponse->SetStatusCode(500);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse->SetStatusCode(500);
+                            sBodyResult = "500 Internal Server Error";
+                            bMatched = true;
+                        }
+                    }
+                } else if (method == "DELETE") {
+                    if (findHandler(m_deleteHandlers)) {
+                        try {
+                            System::Console::WriteLine("[Server] Found DELETE handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] DELETE handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::BasicException<char>& ex) {
                             spResponse->SetStatusCode(500);
@@ -355,7 +469,9 @@ namespace DotNetDupe {
                 if (code == 404) statusMsg = "Not Found";
                 else if (code == 500) statusMsg = "Internal Server Error";
                 else if (code == 201) statusMsg = "Created";
+                else if (code == 204) statusMsg = "No Content";
                 else if (code == 400) statusMsg = "Bad Request";
+                else if (code == 401) statusMsg = "Unauthorized";
 
                 std::string responseString = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\n";
                 responseString += "Content-Type: " + std::string(spResponse->GetContentType().GetRawString()) + "\r\n";

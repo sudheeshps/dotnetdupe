@@ -133,4 +133,90 @@ namespace WebApplicationTests {
             FAIL() << "Unknown exception thrown";
         }
     }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenRouterExtended_MatchesPutDeleteAndPathParameters) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            // Register GET route with dynamic parameter
+            app->MapGet("/api/users/{id}", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> context) {
+                String id;
+                bool hasId = context->GetRequest()->GetRouteValues().TryGetValue("id", id);
+                if (hasId) {
+                    return String("User ID: ") + id;
+                }
+                return String("No ID");
+            });
+
+            // Register PUT route with dynamic parameter
+            app->MapPut("/api/users/{id}", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> context) {
+                String id;
+                bool hasId = context->GetRequest()->GetRouteValues().TryGetValue("id", id);
+                String body = context->GetRequest()->GetBody();
+                context->GetResponse()->SetStatusCode(200);
+                if (hasId) {
+                    return String("Updated User ") + id + " with data: " + body;
+                }
+                return String("Update Failed");
+            });
+
+            // Register DELETE route with dynamic parameter
+            app->MapDelete("/api/users/{id}", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> context) {
+                String id;
+                bool hasId = context->GetRequest()->GetRouteValues().TryGetValue("id", id);
+                if (hasId) {
+                    context->GetResponse()->SetStatusCode(204); // No Content
+                    return String("");
+                }
+                context->GetResponse()->SetStatusCode(400);
+                return String("Delete Failed");
+            });
+
+            // Run the server in a background thread on a high port
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28081");
+            });
+            serverThread.Start();
+            
+            // Register RAII guard
+            ServerScopeGuard guard(app, serverThread);
+            
+            Thread::Sleep(200); // Allow server to start
+
+            // When
+            HttpClient client;
+            
+            // 1. Test GET with dynamic path parameter
+            auto respGet = client.Get("http://127.0.0.1:28081/api/users/456");
+            
+            // 2. Test PUT with dynamic path parameter and body
+            auto content = SmartPointer<StringContent>::NewShared("Alice");
+            auto respPut = client.Put("http://127.0.0.1:28081/api/users/789", content);
+
+            // 3. Test DELETE with dynamic path parameter
+            auto respDelete = client.Delete("http://127.0.0.1:28081/api/users/999");
+
+            // Then
+            ASSERT_FALSE(respGet.IsNull());
+            ASSERT_EQ((int)respGet->GetStatusCode(), 200);
+            ASSERT_EQ(respGet->GetContent()->ReadAsString(), "User ID: 456");
+
+            ASSERT_FALSE(respPut.IsNull());
+            ASSERT_EQ((int)respPut->GetStatusCode(), 200);
+            ASSERT_EQ(respPut->GetContent()->ReadAsString(), "Updated User 789 with data: Alice");
+
+            ASSERT_FALSE(respDelete.IsNull());
+            ASSERT_EQ((int)respDelete->GetStatusCode(), 204);
+            ASSERT_TRUE(respDelete->GetContent()->ReadAsString().IsEmpty());
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
 }

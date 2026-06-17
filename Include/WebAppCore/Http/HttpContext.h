@@ -30,12 +30,16 @@ namespace DotNetDupe {
                 DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() { return m_query; }
                 DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() const { return m_query; }
 
+                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() { return m_routeValues; }
+                DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() const { return m_routeValues; }
+
             private:
                 DotNetDupe::System::String m_sMethod;
                 DotNetDupe::System::String m_sPath;
                 DotNetDupe::System::String m_sBody;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_headers;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_query;
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_routeValues;
             };
 
             class HttpResponse : public virtual DotNetDupe::System::Object {

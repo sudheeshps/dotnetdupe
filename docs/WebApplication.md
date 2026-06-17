@@ -25,8 +25,10 @@ The central HTTP server host. Handles endpoint mapping and listens for incoming 
 ##### Methods
 - `static SmartPointer<WebApplicationBuilder> CreateBuilder()`: Initializes a new builder instance.
 - `SmartPointer<IServiceProvider> GetServices() const`: Gets the built dependency injection provider.
-- `void MapGet(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a GET request endpoint to a route handler.
+- `void MapGet(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a GET request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
 - `void MapPost(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a POST request endpoint to a route handler.
+- `void MapPut(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a PUT request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
+- `void MapDelete(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a DELETE request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
 - `void Run(const String& url = "http://127.0.0.1:5000")`: Starts listening on the specified URL (blocking loop).
 - `void Stop()`: Halts the web server.
 
@@ -45,11 +47,12 @@ Encapsulates all HTTP-specific information about an individual HTTP request.
 Represents the incoming side of an HTTP request.
 
 ##### Methods
-- `String GetMethod() const`: Gets the HTTP method (e.g. `"GET"`, `"POST"`).
+- `String GetMethod() const`: Gets the HTTP method (e.g. `"GET"`, `"POST"`, `"PUT"`, `"DELETE"`).
 - `String GetPath() const`: Gets the request path (e.g. `"/hello"`).
 - `String GetBody() const`: Gets the raw request body.
 - `Dictionary<String, String>& GetHeaders()`: Returns the HTTP headers dictionary (casing is converted to lowercase during parsing).
 - `Dictionary<String, String>& GetQuery()`: Returns parsed query string parameters.
+- `Dictionary<String, String>& GetRouteValues()`: Returns the route parameter values extracted from path parameter templates.
 
 ---
 

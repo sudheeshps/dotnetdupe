@@ -33,6 +33,8 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API void MapGet(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapPost(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+                DOTNETDUPE_API void MapPut(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+                DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
 
                 DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000");
                 DOTNETDUPE_API void Stop();
@@ -44,6 +46,8 @@ namespace DotNetDupe {
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> m_spServices;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_getHandlers;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_postHandlers;
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_putHandlers;
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_deleteHandlers;
                 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpListener> m_pListener;
                 std::atomic<bool> m_bRunning;

@@ -49,6 +49,36 @@ void DemonstrateWebApplication() {
         return infoSvc->GetInfo();
     });
 
+    // Dynamic Route Parameter demonstration
+    app->MapGet("/api/users/{id}", [](SmartPointer<HttpContext> context) {
+        String id;
+        if (context->GetRequest()->GetRouteValues().TryGetValue("id", id)) {
+            return String("Fetched User Profile for ID: ") + id;
+        }
+        return String("User ID not provided");
+    });
+
+    app->MapPut("/api/users/{id}", [](SmartPointer<HttpContext> context) {
+        String id;
+        if (context->GetRequest()->GetRouteValues().TryGetValue("id", id)) {
+            String body = context->GetRequest()->GetBody();
+            context->GetResponse()->SetStatusCode(200);
+            return String("Successfully updated user ") + id + " with content: " + body;
+        }
+        context->GetResponse()->SetStatusCode(400);
+        return String("Bad Request");
+    });
+
+    app->MapDelete("/api/users/{id}", [](SmartPointer<HttpContext> context) {
+        String id;
+        if (context->GetRequest()->GetRouteValues().TryGetValue("id", id)) {
+            context->GetResponse()->SetStatusCode(204); // No Content
+            return String("");
+        }
+        context->GetResponse()->SetStatusCode(400);
+        return String("Bad Request");
+    });
+
     // 4. Start the server asynchronously in a background Thread
     Console::WriteLine("Starting WebApplication on http://127.0.0.1:19099...");
     Thread serverThread([app]() {
@@ -78,6 +108,31 @@ void DemonstrateWebApplication() {
         Console::Write("[Client] Response Body: '");
         Console::Write(resp2->GetContent()->ReadAsString());
         Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending GET request to '/api/users/12345' (Dynamic Path Parameter)...");
+        auto resp3 = client.Get("http://127.0.0.1:19099/api/users/12345");
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp3->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp3->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending PUT request to '/api/users/12345' (Update)...");
+        auto content = SmartPointer<StringContent>::NewShared("{\"name\": \"Alice\"}");
+        auto resp4 = client.Put("http://127.0.0.1:19099/api/users/12345", content);
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp4->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp4->GetContent()->ReadAsString());
+        Console::WriteLine("'");
+
+        Console::WriteLine("\n[Client] Sending DELETE request to '/api/users/12345'...");
+        auto resp5 = client.Delete("http://127.0.0.1:19099/api/users/12345");
+        Console::Write("[Client] Response Status: ");
+        Console::WriteLine((int)resp5->GetStatusCode());
+        Console::Write("[Client] Response Body: '");
+        Console::Write(resp5->GetContent()->ReadAsString());
+        Console::WriteLine("' (Expected empty for 204)");
 
     } catch (const BasicException<char>& ex) {
         Console::Write("[Client Exception] Error: ");
