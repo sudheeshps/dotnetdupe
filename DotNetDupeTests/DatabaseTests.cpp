@@ -4,6 +4,7 @@
 #include "System/Data/SqlClient/SqlCommand.h"
 #include "System/Data/SqlClient/SqlDataReader.h"
 #include "System/Data/Internal/DatabaseEngine.h"
+#include "System/InvalidOperationException.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Data::SqlClient;
@@ -129,4 +130,35 @@ namespace DatabaseTests {
         }
     }
 
+    TEST(DatabaseTests, GivenInMemoryEngineConnection_WhenOpenCalled_Succeeds) {
+        // Given
+        SqlConnection conn("Data Source=TestShopDb2;Engine=InMemory;");
+        
+        // When
+        conn.Open();
+        
+        // Then
+        ASSERT_TRUE(conn.IsOpen());
+        
+        // We can verify that we can execute database commands on this connection
+        auto cmd = conn.CreateCommand();
+        cmd->SetCommandText("CREATE TABLE Items (Id INT)");
+        ASSERT_NO_THROW(cmd->ExecuteNonQuery());
+        
+        conn.Close();
+    }
+
+    TEST(DatabaseTests, GivenSQLiteEngineConnectionWithoutBuildFlag_WhenOpenCalled_ThrowsInvalidOperationException) {
+        // Given
+        SqlConnection conn("Data Source=TestShopDb3;Engine=SQLite;");
+        
+        // When & Then
+#if defined(DOTNETDUPE_USE_SQLITE)
+        (void)conn;
+#else
+        ASSERT_THROW(conn.Open(), InvalidOperationException);
+#endif
+    }
+
 }
+

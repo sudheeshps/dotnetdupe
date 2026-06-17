@@ -393,6 +393,9 @@
     <ClCompile Include="WebApplicationBuilder.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
     <ClCompile Include="SqlConnection.cpp" />
+    <ClCompile Include="DatabaseEngine.cpp" />
+    <ClCompile Include="InMemoryDatabaseBackend.cpp" />
+    <ClCompile Include="SqliteDatabaseBackend.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
