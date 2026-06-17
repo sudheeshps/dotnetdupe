@@ -311,6 +311,10 @@
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerBase.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerRouteBuilder.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlCommand.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlConnection.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlDataReader.h" />
+    <ClInclude Include="..\Include\System\Data\SqlClient\SqlParameter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -387,6 +391,8 @@
     <ClCompile Include="X509Certificate2.cpp" />
     <ClCompile Include="WebApplication.cpp" />
     <ClCompile Include="WebApplicationBuilder.cpp" />
+    <ClCompile Include="SqlCommand.cpp" />
+    <ClCompile Include="SqlConnection.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
