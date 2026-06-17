@@ -323,6 +323,7 @@
     <ClInclude Include="..\Include\Extensions\Logging\ConsoleLogger.h" />
     <ClInclude Include="..\Include\Extensions\Logging\FileLoggerProvider.h" />
     <ClInclude Include="..\Include\Extensions\Logging\FileLogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\LoggerBase.h" />
     <ClInclude Include="..\Include\Extensions\Logging\AggregateLogger.h" />
   </ItemGroup>
   <ItemGroup>
@@ -410,6 +411,7 @@
     <ClCompile Include="FileLoggerProvider.cpp" />
     <ClCompile Include="ConsoleLogger.cpp" />
     <ClCompile Include="FileLogger.cpp" />
+    <ClCompile Include="LoggerBase.cpp" />
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
   </ItemGroup>

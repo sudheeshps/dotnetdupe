@@ -4,10 +4,12 @@
 #include "System/ArgumentOutOfRangeException.h"
 #include "System/NotImplementedException.h"
 #include "System/OverflowException.h"
+#include "System/BasicFormatException.h"
 #include "Utils.h"
 
 #include "System/Array.h"
 #include <algorithm>
+#include <type_traits>
 #include <iomanip>
 #include <memory>
 #include <regex>
@@ -39,6 +41,44 @@ namespace DotNetDupe {
             static bool Equals(wchar_t c1, wchar_t c2) {
                 return std::towlower(c1) == std::towlower(c2);
             }
+        };
+
+        // Helper to check if T has a ToString() method
+        template<typename T, typename = void>
+        struct has_ToString : std::false_type {};
+
+        template<typename T>
+        struct has_ToString<T, std::void_t<decltype(std::declval<const T&>().ToString())>> : std::true_type {};
+
+        template<typename T>
+        inline constexpr bool has_ToString_v = has_ToString<T>::value;
+
+        template<typename CharT>
+        struct BoolRepresentation;
+
+        template<>
+        struct BoolRepresentation<char> {
+            static constexpr const char* True = "True";
+            static constexpr const char* False = "False";
+        };
+
+        template<>
+        struct BoolRepresentation<wchar_t> {
+            static constexpr const wchar_t* True = L"True";
+            static constexpr const wchar_t* False = L"False";
+        };
+
+        template<typename CharT>
+        struct FormatExceptionMessage;
+
+        template<>
+        struct FormatExceptionMessage<char> {
+            static constexpr const char* Message = "Input string was not in a correct format.";
+        };
+
+        template<>
+        struct FormatExceptionMessage<wchar_t> {
+            static constexpr const wchar_t* Message = L"Input string was not in a correct format.";
         };
 
         template <class CharT>
@@ -165,6 +205,9 @@ namespace DotNetDupe {
                 std::initializer_list<BasicString<CharT>> sStrings, int iStartIndex,
                 int iCount);
 
+            template <class... Args>
+            static BasicString<CharT> Format(const BasicString<CharT>& sFormat, const Args&... args);
+
             int LastIndexOf(const BasicString<CharT>& sStr, bool bIgnoreCase);
             int LastIndexOfAny(int iStartIndex, std::initializer_list<CharT> chChars,
                                bool bIgnoreCase);
@@ -193,6 +236,9 @@ namespace DotNetDupe {
             BasicString<CharT> TrimStart() const;
             BasicString<CharT> TrimEnd() const;
         private:
+            template<typename T>
+            static BasicString<CharT> ToStringHelper(const T& val);
+
             std::basic_string<CharT> m_str;
         };
 
@@ -744,6 +790,108 @@ namespace DotNetDupe {
             CharT buf[2] = { ch, 0 };
             BasicString<CharT> newStr(buf);
             return newStr + sStr;
+        }
+
+        template <class CharT>
+        template <typename T>
+        inline BasicString<CharT> BasicString<CharT>::ToStringHelper(const T& val) {
+            using DecayedT = std::decay_t<T>;
+            if constexpr (std::is_same_v<DecayedT, BasicString<CharT>>) {
+                return val;
+            } else if constexpr (std::is_same_v<DecayedT, std::basic_string<CharT>>) {
+                return BasicString<CharT>(val.c_str());
+            } else if constexpr (std::is_same_v<DecayedT, std::nullptr_t>) {
+                return BasicString<CharT>("");
+            } else if constexpr (std::is_same_v<DecayedT, bool>) {
+                return val ? BoolRepresentation<CharT>::True : BoolRepresentation<CharT>::False;
+            } else if constexpr (std::is_constructible_v<BasicString<CharT>, DecayedT>) {
+                return BasicString<CharT>(val);
+            } else if constexpr (has_ToString_v<DecayedT>) {
+                return val.ToString();
+            } else {
+                std::basic_ostringstream<CharT> ss;
+                ss << val;
+                return BasicString<CharT>(ss.str().c_str());
+            }
+        }
+
+        template <class CharT>
+        template <class... Args>
+        inline BasicString<CharT> BasicString<CharT>::Format(const BasicString<CharT>& sFormat, const Args&... args) {
+            std::vector<BasicString<CharT>> formattedArgs = { ToStringHelper(args)... };
+            
+            std::basic_string<CharT> resultStr;
+            size_t len = sFormat.GetLength();
+            const CharT* pStr = sFormat.GetRawString();
+            
+            for (size_t i = 0; i < len; ++i) {
+                if (pStr[i] == static_cast<CharT>('{')) {
+                    // Check if it's an escaped brace: {{
+                    if (i + 1 < len && pStr[i + 1] == static_cast<CharT>('{')) {
+                        resultStr.push_back(static_cast<CharT>('{'));
+                        ++i; // skip the second '{'
+                        continue;
+                    }
+                    
+                    // Parse placeholder index
+                    size_t j = i + 1;
+                    if (j < len && pStr[j] >= static_cast<CharT>('0') && pStr[j] <= static_cast<CharT>('9')) {
+                        long long index = 0;
+                        while (j < len && pStr[j] >= static_cast<CharT>('0') && pStr[j] <= static_cast<CharT>('9')) {
+                            index = index * 10 + (pStr[j] - static_cast<CharT>('0'));
+                            ++j;
+                        }
+                        
+                        // Skip alignment and format specifier if present
+                        if (j < len && pStr[j] == static_cast<CharT>(',')) {
+                            ++j;
+                            // Skip alignment (digits, possibly negative)
+                            if (j < len && pStr[j] == static_cast<CharT>('-')) {
+                                ++j;
+                            }
+                            while (j < len && pStr[j] >= static_cast<CharT>('0') && pStr[j] <= static_cast<CharT>('9')) {
+                                ++j;
+                            }
+                        }
+                        
+                        if (j < len && pStr[j] == static_cast<CharT>( ':')) {
+                            ++j;
+                            while (j < len && pStr[j] != static_cast<CharT>('}')) {
+                                ++j;
+                            }
+                        }
+                        
+                        if (j < len && pStr[j] == static_cast<CharT>('}')) {
+                            // Valid placeholder!
+                            if (index >= static_cast<long long>(formattedArgs.size())) {
+                                throw BasicFormatException<CharT>(FormatExceptionMessage<CharT>::Message);
+                            }
+                            resultStr.append(formattedArgs[index].m_str);
+                            i = j; // Advance outer loop past the '}'
+                            continue;
+                        }
+                    }
+                    
+                    // If it's not a valid placeholder, throw format exception
+                    throw BasicFormatException<CharT>(FormatExceptionMessage<CharT>::Message);
+                }
+                else if (pStr[i] == static_cast<CharT>('}')) {
+                    // Check if it's an escaped brace: }}
+                    if (i + 1 < len && pStr[i + 1] == static_cast<CharT>('}')) {
+                        resultStr.push_back(static_cast<CharT>('}'));
+                        ++i; // skip the second '}'
+                        continue;
+                    }
+                    
+                    // Unescaped closing brace is a format error
+                    throw BasicFormatException<CharT>(FormatExceptionMessage<CharT>::Message);
+                }
+                else {
+                    resultStr.push_back(pStr[i]);
+                }
+            }
+            
+            return BasicString<CharT>(resultStr.c_str());
         }
     }  // namespace System
 }  // namespace DotNetDupe

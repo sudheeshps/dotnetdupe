@@ -36,4 +36,18 @@ void DemonstrateString() {
         Console::Write("  - ");
         Console::WriteLine(sPart);
     }
+
+    // String::Format Demonstration
+    Console::WriteLine("\nString::Format Demonstration:");
+    String sName = "Alice";
+    int iAge = 30;
+    double dScore = 95.5;
+    bool bActive = true;
+    
+    String sFormatted = String::Format("User Profile: Name={0}, Age={1}, Score={2}, Active={3}", sName, iAge, dScore, bActive);
+    Console::WriteLine(sFormatted);
+
+    // Escaped Braces
+    String sEscaped = String::Format("Position placeholder format uses {{0}}, formatted value is {0}", 42);
+    Console::WriteLine(sEscaped);
 }

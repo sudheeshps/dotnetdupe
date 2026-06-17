@@ -192,8 +192,7 @@ namespace DotNetDupe {
                     }
                 }
 
-                SmartPointer<HttpResponseMessage> HttpClient::PrepareResponse(const SmartPointer<IO::Stream>& spStream) {
-                    // Parse HTTP response
+                SmartPointer<HttpResponseMessage> HttpClient::ParseStatusLine(const SmartPointer<IO::Stream>& spStream) {
                     std::string sStatusLine = ReadLine(spStream);
                     if (sStatusLine.empty()) {
                         throw HttpRequestException("No response from server.");
@@ -217,12 +216,11 @@ namespace DotNetDupe {
 
                     auto spResponse = SmartPointer<HttpResponseMessage>::NewShared(static_cast<HttpStatusCode>(iStatusCodeVal));
                     spResponse->SetReasonPhrase(String(sReasonPhrase.c_str()));
+                    return spResponse;
+                }
 
+                void HttpClient::ParseHeaders(const SmartPointer<IO::Stream>& spStream, const SmartPointer<HttpResponseMessage>& spResponse, bool& rbChunked, long& rlContentLength, String& rsContentType) {
                     auto& dictRespHeaders = spResponse->GetHeaders();
-                    bool bChunked = false;
-                    long lContentLength = -1;
-                    String sContentType = "text/plain";
-
                     while (true) {
                         std::string sHeaderLine = ReadLine(spStream);
                         if (sHeaderLine.empty()) break;
@@ -243,16 +241,17 @@ namespace DotNetDupe {
                             dictRespHeaders[sKeyObj] = sValObj;
 
                             if (sKeyObj.ToLower() == "transfer-encoding" && sValObj.ToLower() == "chunked") {
-                                bChunked = true;
+                                rbChunked = true;
                             } else if (sKeyObj.ToLower() == "content-length") {
-                                lContentLength = std::atol(sVal.c_str());
+                                rlContentLength = std::atol(sVal.c_str());
                             } else if (sKeyObj.ToLower() == "content-type") {
-                                sContentType = sValObj;
+                                rsContentType = sValObj;
                             }
                         }
                     }
+                }
 
-                    // Read body content
+                Array<char> HttpClient::ReadResponseBody(const SmartPointer<IO::Stream>& spStream, bool bChunked, long lContentLength) {
                     std::vector<char> vecBodyData;
                     if (bChunked) {
                         while (true) {
@@ -301,6 +300,18 @@ namespace DotNetDupe {
                     if (!vecBodyData.empty()) {
                         std::memcpy(arrData.GetData(), vecBodyData.data(), vecBodyData.size());
                     }
+                    return arrData;
+                }
+
+                SmartPointer<HttpResponseMessage> HttpClient::PrepareResponse(const SmartPointer<IO::Stream>& spStream) {
+                    auto spResponse = ParseStatusLine(spStream);
+
+                    bool bChunked = false;
+                    long lContentLength = -1;
+                    String sContentType = "text/plain";
+                    ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+
+                    Array<char> arrData = ReadResponseBody(spStream, bChunked, lContentLength);
 
                     auto spResponseContent = SmartPointer<HttpContent>(new ByteArrayContent(arrData), true);
                     spResponseContent->GetHeaders()["Content-Type"] = sContentType;
