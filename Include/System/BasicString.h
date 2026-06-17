@@ -81,6 +81,49 @@ namespace DotNetDupe {
                                bool bIgnoreCase);
             int CompareTo(const BasicString<CharT>& sStr) const;
             BasicString<CharT> operator+(const BasicString<CharT>& sStr) const;
+
+            BasicString<CharT> operator+(const CharT* pStr) const {
+                BasicString<CharT> sNewStr = *this;
+                if (pStr) {
+                    sNewStr.m_str.append(pStr);
+                }
+                return sNewStr;
+            }
+
+            BasicString<CharT> operator+(CharT ch) const {
+                BasicString<CharT> sNewStr = *this;
+                sNewStr.m_str.push_back(ch);
+                return sNewStr;
+            }
+
+            BasicString<CharT>& operator+=(const BasicString<CharT>& sStr) {
+                m_str.append(sStr.GetRawString());
+                return *this;
+            }
+
+            BasicString<CharT>& operator+=(const CharT* pStr) {
+                if (pStr) {
+                    m_str.append(pStr);
+                }
+                return *this;
+            }
+
+            BasicString<CharT>& operator+=(CharT ch) {
+                m_str.push_back(ch);
+                return *this;
+            }
+
+            friend BasicString<CharT> operator+(const CharT* pStr, const BasicString<CharT>& sStr) {
+                BasicString<CharT> newStr(pStr ? pStr : "");
+                return newStr + sStr;
+            }
+
+            friend BasicString<CharT> operator+(CharT ch, const BasicString<CharT>& sStr) {
+                CharT buf[2] = { ch, 0 };
+                BasicString<CharT> newStr(buf);
+                return newStr + sStr;
+            }
+
             BasicString<CharT> Concat(
                 const std::initializer_list<BasicString<CharT>> sStrs) const;
 
@@ -688,6 +731,19 @@ namespace DotNetDupe {
             });
             if (it == m_str.rend()) return L"";
             return BasicString<wchar_t>(m_str.substr(0, m_str.length() - std::distance(m_str.rbegin(), it)).c_str());
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> operator+(const CharT* pStr, const BasicString<CharT>& sStr) {
+            BasicString<CharT> newStr(pStr ? pStr : "");
+            return newStr + sStr;
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> operator+(CharT ch, const BasicString<CharT>& sStr) {
+            CharT buf[2] = { ch, 0 };
+            BasicString<CharT> newStr(buf);
+            return newStr + sStr;
         }
     }  // namespace System
 }  // namespace DotNetDupe

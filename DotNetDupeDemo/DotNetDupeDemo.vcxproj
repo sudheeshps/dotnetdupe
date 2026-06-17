@@ -181,6 +181,7 @@
     <ClCompile Include="TimeZoneDemo.cpp" />
     <ClCompile Include="WebApplicationDemo.cpp" />
     <ClCompile Include="DatabaseDemo.cpp" />
+    <ClCompile Include="LoggingDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

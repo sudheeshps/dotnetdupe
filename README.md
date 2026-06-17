@@ -756,6 +756,26 @@ For detailed information on the available classes, methods, and their usage, ple
 | [IServiceScope](docs/DependencyInjection.md) | Represents the lifetime of a scoped service. |
 | [IServiceScopeFactory](docs/DependencyInjection.md) | Defines a factory for creating service scopes. |
 
+### Namespace: `DotNetDupe::Extensions::Logging`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [LoggerFactory](docs/Logging.md) | The concrete implementation of the logging factory. |
+| [Logger<T>](docs/Logging.md) | A generic template wrapper for class-specific category logging. |
+| [ConsoleLoggerProvider](docs/Logging.md) | Renders structured console outputs (Plain or JSON format). |
+| [FileLoggerProvider](docs/Logging.md) | Writes structured log records thread-safely to a file. |
+
+**Interfaces**
+
+| Interface | Description |
+|---|---|
+| [ILogger](docs/Logging.md) | Defines the entry interface for logging messages. |
+| [ILoggerOf<T>](docs/Logging.md) | Represents a template logging category interface. |
+| [ILoggerProvider](docs/Logging.md) | Defines a provider factory for creating loggers. |
+| [ILoggerFactory](docs/Logging.md) | Manages logging providers and creates category loggers. |
+
 ## Project Status 🚧
 
 DotNetDupe is currently **under active development**. We are continuously working on expanding the API coverage and improving stability.

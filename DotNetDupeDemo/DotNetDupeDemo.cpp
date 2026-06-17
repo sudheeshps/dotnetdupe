@@ -36,6 +36,7 @@ int main() {
     DemonstrateDependencyInjection();
     DemonstrateWebApplication();
     DemonstrateDatabase();
+    DemonstrateLogging();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

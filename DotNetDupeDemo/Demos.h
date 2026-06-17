@@ -27,3 +27,4 @@ void DemonstrateJwt();
 void DemonstrateDependencyInjection();
 void DemonstrateWebApplication();
 void DemonstrateDatabase();
+void DemonstrateLogging();

@@ -315,6 +315,15 @@
     <ClInclude Include="..\Include\System\Data\SqlClient\SqlConnection.h" />
     <ClInclude Include="..\Include\System\Data\SqlClient\SqlDataReader.h" />
     <ClInclude Include="..\Include\System\Data\SqlClient\SqlParameter.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\ILogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\Logger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging/LoggerConfiguration.h" />
+    <ClInclude Include="..\Include\Extensions/Logging\LoggerFactory.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\ConsoleLoggerProvider.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\ConsoleLogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\FileLoggerProvider.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\FileLogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\AggregateLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -396,6 +405,13 @@
     <ClCompile Include="DatabaseEngine.cpp" />
     <ClCompile Include="InMemoryDatabaseBackend.cpp" />
     <ClCompile Include="SqliteDatabaseBackend.cpp" />
+    <ClCompile Include="LoggerFactory.cpp" />
+    <ClCompile Include="ConsoleLoggerProvider.cpp" />
+    <ClCompile Include="FileLoggerProvider.cpp" />
+    <ClCompile Include="ConsoleLogger.cpp" />
+    <ClCompile Include="FileLogger.cpp" />
+    <ClCompile Include="AggregateLogger.cpp" />
+    <ClCompile Include="LoggerConfiguration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
