@@ -38,6 +38,31 @@ namespace SystemTests {
             // When / Then
             ASSERT_THROW(str = pNullStr, ArgumentException);
         }
+        TEST(StringTest, CopyConstructor_Should_CopyValue_When_ValidStringPassed) {
+            // Given
+            String original("Hello World");
+
+            // When
+            String copy(original);
+
+            // Then
+            ASSERT_EQ(copy, "Hello World");
+            ASSERT_EQ(original, "Hello World");
+        }
+
+        TEST(StringTest, CopyAssignmentOperator_Should_AssignValue_When_ValidStringPassed) {
+            // Given
+            String original("Hello World");
+            String assigned("Initial");
+
+            // When
+            assigned = original;
+
+            // Then
+            ASSERT_EQ(assigned, "Hello World");
+            ASSERT_EQ(original, "Hello World");
+        }
+
         TEST(StringTest, GetLength_Should_Return_ActualLength_When_A_GoodString_Specified) {
             String str("Hello");
             ASSERT_TRUE(str.GetLength() == 5);

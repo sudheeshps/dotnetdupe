@@ -37,6 +37,7 @@ int main() {
     DemonstrateWebApplication();
     DemonstrateDatabase();
     DemonstrateLogging();
+    RunWebAppServerDemo();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

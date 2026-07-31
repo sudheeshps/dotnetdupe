@@ -38,6 +38,32 @@ namespace DotNetDupe {
                 }
 
                 bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams) {
+                    // Check for catch-all parameter in patternSegs (e.g. {*filepath})
+                    if (!patternSegs.empty() && patternSegs.back().length() >= 3 && patternSegs.back().front() == '{' && patternSegs.back()[1] == '*' && patternSegs.back().back() == '}') {
+                        size_t fixedCount = patternSegs.size() - 1;
+                        if (pathSegs.size() < fixedCount) return false;
+
+                        for (size_t i = 0; i < fixedCount; ++i) {
+                            const std::string& patternSeg = patternSegs[i];
+                            const std::string& pathSeg = pathSegs[i];
+                            if (patternSeg.length() >= 2 && patternSeg.front() == '{' && patternSeg.back() == '}') {
+                                std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
+                                extractedParams.push_back({paramName, pathSeg});
+                            } else if (patternSeg != pathSeg) {
+                                return false;
+                            }
+                        }
+
+                        std::string catchAllName = patternSegs.back().substr(2, patternSegs.back().length() - 3);
+                        std::string restPath;
+                        for (size_t i = fixedCount; i < pathSegs.size(); ++i) {
+                            if (!restPath.empty()) restPath += "/";
+                            restPath += pathSegs[i];
+                        }
+                        extractedParams.push_back({catchAllName, restPath});
+                        return true;
+                    }
+
                     if (patternSegs.size() != pathSegs.size()) {
                         return false;
                     }
@@ -474,7 +500,7 @@ namespace DotNetDupe {
                     spResponse->SetBody(sBodyResult);
                 }
 
-                std::string respBody = spResponse->GetBody().GetRawString();
+                std::string respBody = spResponse->GetBody().GetString();
 
                 std::string statusMsg = "OK";
                 int code = spResponse->GetStatusCode();
@@ -486,21 +512,23 @@ namespace DotNetDupe {
                 else if (code == 401) statusMsg = "Unauthorized";
 
                 std::string responseString = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\n";
-                responseString += "Content-Type: " + std::string(spResponse->GetContentType().GetRawString()) + "\r\n";
+                responseString += "Content-Type: " + spResponse->GetContentType().GetString() + "\r\n";
                 responseString += "Content-Length: " + std::to_string(respBody.length()) + "\r\n";
+                responseString += "Connection: close\r\n";
                 responseString += "Server: DotNetDupeWebApplication/1.0\r\n";
 
                 auto keys = spResponse->GetHeaders().GetKeys();
                 auto values = spResponse->GetHeaders().GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
-                    responseString += std::string(keys[i].GetRawString()) + ": " + std::string(values[i].GetRawString()) + "\r\n";
+                    responseString += keys[i].GetString() + ": " + values[i].GetString() + "\r\n";
                 }
 
                 responseString += "\r\n";
-                responseString += respBody;
-
-                System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)responseString.length()));
-                stream->Write(responseString.c_str(), 0, static_cast<int>(responseString.length()));
+                System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)(responseString.length() + respBody.length())));
+                stream->Write(responseString.data(), 0, static_cast<int>(responseString.length()));
+                if (!respBody.empty()) {
+                    stream->Write(respBody.data(), 0, static_cast<int>(respBody.length()));
+                }
                 spClient->Close();
                 System::Console::WriteLine("[Server] Client closed.");
             }

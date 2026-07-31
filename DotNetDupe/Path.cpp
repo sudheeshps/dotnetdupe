@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "System/Path.h"
+#include "System/IO/Path.h"
 #include "System/IOException.h"
 #include <filesystem>
 #include <random>
@@ -99,9 +99,7 @@ namespace DotNetDupe {
                     return String("");
 
                 fs::path path = ToFsPath(sFilePath);
-                auto sExt = FromFsPath(path.extension());
-                if (sExt.IsEmpty()) return String("");
-                return sExt.Substring(1);
+                return FromFsPath(path.extension());
             }
 
             String Path::GetFileNameWithoutExtension(const String& sFilePath) {

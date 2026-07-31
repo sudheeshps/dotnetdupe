@@ -233,7 +233,7 @@
     <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceProvider.h" />
     <ClInclude Include="..\Include\System\OperatingSystem.h" />
     <ClInclude Include="..\Include\System\OverflowException.h" />
-    <ClInclude Include="..\Include\System\Path.h" />
+    <ClInclude Include="..\Include\System\IO\Path.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
@@ -321,6 +321,7 @@
     <ClInclude Include="..\Include\WebAppCore\Http\HttpContext.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplication.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
+    <ClInclude Include="..\Include\WebAppCore\Server\WebAppServer.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerBase.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerRouteBuilder.h" />
     <ClInclude Include="..\Include\System\Data\SqlClient\SqlCommand.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="X509Certificate2.cpp" />
     <ClCompile Include="WebApplication.cpp" />
     <ClCompile Include="WebApplicationBuilder.cpp" />
+    <ClCompile Include="WebAppServer.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
     <ClCompile Include="SqlConnection.cpp" />
     <ClCompile Include="DatabaseEngine.cpp" />
@@ -429,23 +431,9 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DotNetDupe.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="packages.config" />
   </ItemGroup>
-  <PropertyGroup>
-    <RestorePackages>true</RestorePackages>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets" Condition="Exists('..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets')" />
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets'))" />
-  </Target>
 </Project>

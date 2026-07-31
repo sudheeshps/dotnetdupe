@@ -81,12 +81,11 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     cd DotNetDupe
     ```
 2.  **Build the solution and generate NuGet package:**
-    Open a Developer Command Prompt for Visual Studio and navigate to the project root.
-    ```bash
-    msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
-    nuget pack DotNetDupe.nuspec -OutputDirectory nuget_packages
+    Run the automated build script from PowerShell:
+    ```powershell
+    .\BuildAndPack.ps1
     ```
-    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.3.0.0.nupkg) in the nuget_packages directory at the solution root.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.0.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -489,6 +488,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [WebApplicationBuilder](docs/WebApplication.md) | Configures services and builds the web application host. |
 | [WebApplication](docs/WebApplication.md) | Configures routing endpoints and hosts the HTTP listener. |
+| [WebAppServer](docs/WebAppServer.md) | Web server hosting static website content (HTML, CSS, images) and REST APIs. |
 
 ### Namespace: `DotNetDupe::WebAppCore::Http`
 

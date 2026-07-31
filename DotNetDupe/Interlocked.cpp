@@ -48,28 +48,63 @@ namespace DotNetDupe {
 
             long long InterlockedInternal::Increment64(volatile long long* location) {
 #if defined(_WIN32)
+#if defined(_M_IX86)
+                long long oldVal, newVal;
+                do {
+                    oldVal = *location;
+                    newVal = oldVal + 1;
+                } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
+                return newVal;
+#else
                 return _InterlockedIncrement64(location);
+#endif
 #else
                 return __sync_add_and_fetch(location, 1);
 #endif
             }
             long long InterlockedInternal::Decrement64(volatile long long* location) {
 #if defined(_WIN32)
+#if defined(_M_IX86)
+                long long oldVal, newVal;
+                do {
+                    oldVal = *location;
+                    newVal = oldVal - 1;
+                } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
+                return newVal;
+#else
                 return _InterlockedDecrement64(location);
+#endif
 #else
                 return __sync_sub_and_fetch(location, 1);
 #endif
             }
             long long InterlockedInternal::Add64(volatile long long* location, long long value) {
 #if defined(_WIN32)
+#if defined(_M_IX86)
+                long long oldVal, newVal;
+                do {
+                    oldVal = *location;
+                    newVal = oldVal + value;
+                } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
+                return newVal;
+#else
                 return _InterlockedExchangeAdd64(location, value) + value;
+#endif
 #else
                 return __sync_add_and_fetch(location, value);
 #endif
             }
             long long InterlockedInternal::Exchange64(volatile long long* location, long long value) {
 #if defined(_WIN32)
+#if defined(_M_IX86)
+                long long oldVal;
+                do {
+                    oldVal = *location;
+                } while (_InterlockedCompareExchange64(location, value, oldVal) != oldVal);
+                return oldVal;
+#else
                 return _InterlockedExchange64(location, value);
+#endif
 #else
                 return __sync_lock_test_and_set(location, value);
 #endif

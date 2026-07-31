@@ -38,6 +38,19 @@ namespace SystemTests {
 			ASSERT_TRUE(outputs [0] == message);
 		}
 
+		TEST(ConsoleTest, WriteLine_Should_FormatAndOutputString_When_CharPointerFormatPassed) {
+			// Given
+			Console::Clear();
+
+			// When
+			Console::WriteLine("Hello {0}, age {1}", "Alice", 30);
+
+			// Then
+			auto outputs = Console::GetOutputs();
+			ASSERT_EQ(outputs.GetLength(), 1);
+			ASSERT_EQ(outputs[0], "Hello Alice, age 30");
+		}
+
 		TEST(ConsoleTest, Write_Should_AccumulateOutput_When_MultipleCallsMade) {
 			// Given
 			Console::Clear();

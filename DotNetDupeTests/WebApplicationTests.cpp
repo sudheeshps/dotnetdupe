@@ -11,6 +11,12 @@
 #include "System/Net/HttpStatusCode.h"
 #include "WebAppCore/Controllers/ControllerBase.h"
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
+#include "WebAppCore/Server/WebAppServer.h"
+#include "System/IO/File.h"
+#include "System/IO/Path.h"
+#if defined(_WIN32)
+#include <windows.h>
+#endif
 #include "System/Text/Json/JsonSerializer.h"
 #include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
 
@@ -559,6 +565,87 @@ namespace WebApplicationTests {
             client.SetBearerToken(adminTokenStr);
             auto adminRes = client.Get("admin");
             ASSERT_EQ(adminRes.Message, "AdminData:admin_user");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenController_WhenQueryParameterProvided_ExtractsQueryParameter) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            builder->AddController<ProductsController>("/api/test")
+                .MapGet("/item", &ProductsController::GetProductById);
+
+            auto app = builder->Build();
+            app->MapControllers();
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28085");
+            });
+            serverThread.Start();
+            
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(200);
+
+            // When
+            RestClient<TestProduct> client("http://127.0.0.1:28085/api/test");
+            auto product = client.Get("item?id=1");
+
+            // Then
+            ASSERT_EQ(product.Name, "Laptop");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebAppServer_WhenStaticFileRequested_ServesHtmlAndAssets) {
+        try {
+            // Given: Create temporary wwwroot test directory & index.html
+            String testWebRoot = "test_wwwroot";
+#if defined(_WIN32)
+            CreateDirectoryA(testWebRoot.GetRawString(), NULL);
+#endif
+            DotNetDupe::System::IO::File::WriteAllText(DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"}), "<html><body>Hello WebServer</body></html>");
+            DotNetDupe::System::IO::File::WriteAllText(DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"}), "body { color: red; }");
+
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer> server = 
+                DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer>::NewShared(app, testWebRoot);
+
+            Thread serverThread([server]() {
+                server->Run("http://127.0.0.1:28086");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(200);
+
+            HttpClient client;
+
+            // 1. Request root '/' -> should serve index.html
+            String htmlRes = client.GetString("http://127.0.0.1:28086/");
+            ASSERT_EQ(htmlRes, "<html><body>Hello WebServer</body></html>");
+
+            // 2. Request '/site.css' -> should serve CSS
+            String cssRes = client.GetString("http://127.0.0.1:28086/site.css");
+            ASSERT_EQ(cssRes, "body { color: red; }");
+
+            // Clean up test files
+            DotNetDupe::System::IO::File::Delete(DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"}));
+            DotNetDupe::System::IO::File::Delete(DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"}));
 
         } catch (const BasicException<char>& ex) {
             FAIL() << "BasicException thrown: " << ex.What();

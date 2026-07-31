@@ -27,6 +27,15 @@ jobs:
     - name: Restore NuGet packages
       run: nuget restore DotNetDupe.sln
 
+    - name: Update Version Build Timestamp
+      shell: powershell
+      run: |
+        $utc = [DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm:ssZ')
+        $local = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss K')
+        $rc = Get-Content 'DotNetDupe\DotNetDupe.rc' -Raw
+        $updatedRc = $rc -replace 'VALUE "BuildTime",\s*".*"', ("VALUE `"BuildTime`", `"" + $utc + " (Local: " + $local + ")\0`"")
+        Set-Content -Path 'DotNetDupe\DotNetDupe.rc' -Value $updatedRc -NoNewline
+
     - name: Build Windows
       run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64
 

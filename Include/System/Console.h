@@ -48,7 +48,7 @@ namespace DotNetDupe {
 
             template <class... Args>
             static void Write(const char* sFormat, const Args&... args) {
-                Write(String::Format(String(sFormat), args...));
+                Write(String::Format(sFormat, args...));
             }
 
             // WriteLine methods
@@ -65,6 +65,11 @@ namespace DotNetDupe {
 
             template <class... Args>
             static void WriteLine(const String& sFormat, const Args&... args) {
+                WriteLine(String::Format(sFormat, args...));
+            }
+
+            template <class... Args>
+            static void WriteLine(const char* sFormat, const Args&... args) {
                 WriteLine(String::Format(sFormat, args...));
             }
 

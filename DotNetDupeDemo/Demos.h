@@ -28,3 +28,4 @@ void DemonstrateDependencyInjection();
 void DemonstrateWebApplication();
 void DemonstrateDatabase();
 void DemonstrateLogging();
+void RunWebAppServerDemo();

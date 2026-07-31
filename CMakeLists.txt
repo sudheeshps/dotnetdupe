@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(DotNetDupe)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+else()
+    find_package(Microsoft.GSL CONFIG QUIET)
+endif()
 
 # Include directories
 include_directories(Include)
@@ -47,6 +53,15 @@ else()
     target_link_libraries(DotNetDupe PRIVATE OpenSSL::SSL OpenSSL::Crypto dl pthread)
 endif()
 
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    target_include_directories(DotNetDupe PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    target_include_directories(DotNetDupeDemo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+endif()
+
+if(Microsoft.GSL_FOUND)
+    target_link_libraries(DotNetDupe PRIVATE Microsoft.GSL::GSL)
+endif()
+
 # Demo Application (Force reconfigure to pick up WebApplicationDemo.cpp and split demo files)
 file(GLOB DEMO_SOURCES "DotNetDupeDemo/*.cpp")
 add_executable(DotNetDupeDemo ${DEMO_SOURCES})
@@ -72,5 +87,4 @@ list(REMOVE_ITEM TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/DotNetDupeTests/pch.c
 add_executable(DotNetDupeTests ${TEST_SOURCES})
 target_link_libraries(DotNetDupeTests PRIVATE DotNetDupe gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(DotNetDupeTests)
+add_test(NAME DotNetDupeTests COMMAND DotNetDupeTests)

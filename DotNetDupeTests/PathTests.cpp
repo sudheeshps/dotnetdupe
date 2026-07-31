@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
 #include "System/String.h"
-#include "System/Path.h"
+#include "System/IO/Path.h"
 #include <filesystem>
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;

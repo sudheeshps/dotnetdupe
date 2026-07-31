@@ -87,16 +87,17 @@ namespace DotNetDupe {
         public:
             BasicString() = default;
             BasicString(const CharT* pStr);
-            BasicString(const BasicString<CharT>& sStr) = default;
-            BasicString<CharT>& operator=(const BasicString<CharT>& sStr) = default;
+            BasicString(const std::basic_string<CharT>& str) : m_str(str) {}
+            BasicString(const BasicString<CharT>& sStr);
+            BasicString<CharT>& operator=(const BasicString<CharT>& sStr);
             BasicString<CharT>(const BasicString<CharT>&& sStr) noexcept;
             BasicString<CharT>& operator=(const BasicString<CharT>&& sStr) noexcept;
             BasicString<CharT>& operator=(const CharT* pStr);
             const CharT* GetRawString() const;
             operator const CharT* () const { return GetRawString(); }
             int GetLength() const;
-            std::basic_string<CharT>& GetString();
-            const std::basic_string<CharT>& GetString() const;
+            std::basic_string<CharT>& GetString() { return m_str; }
+            const std::basic_string<CharT>& GetString() const { return m_str; }
             BasicString<CharT> Clone() const;
 
             friend std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const BasicString<CharT>& sStr) {
@@ -210,6 +211,8 @@ namespace DotNetDupe {
 
             template <class... Args>
             static BasicString<CharT> Format(const BasicString<CharT>& sFormat, const Args&... args);
+            template <class... Args>
+            static BasicString<CharT> Format(const CharT* pFormat, const Args&... args);
 
             int LastIndexOf(const BasicString<CharT>& sStr, bool bIgnoreCase);
             int LastIndexOfAny(int iStartIndex, std::initializer_list<CharT> chChars,
@@ -251,6 +254,17 @@ namespace DotNetDupe {
             m_str = pStr;
         }
 
+        template <class CharT>
+        inline BasicString<CharT>::BasicString(const BasicString<CharT>& sStr) : m_str(sStr.m_str) { }
+
+        template <class CharT>
+        inline BasicString<CharT>& BasicString<CharT>::operator=(const BasicString<CharT>& sStr) {
+            if (this != &sStr) {
+                m_str = sStr.m_str;
+            }
+            return *this;
+        }
+
         template<class CharT>
         inline BasicString<CharT>::BasicString(const BasicString<CharT>&& sStr) noexcept : m_str(std::move(sStr.m_str)) { }
         template<class CharT>
@@ -273,11 +287,6 @@ namespace DotNetDupe {
         template <class CharT>
         inline int BasicString<CharT>::GetLength() const {
             return static_cast<int>(m_str.length());
-        }
-
-        template <class CharT>
-        inline std::basic_string<CharT>& BasicString<CharT>::GetString() {
-            return m_str;
         }
 
         template <class CharT>
@@ -390,14 +399,14 @@ namespace DotNetDupe {
         template <class CharT>
         inline bool BasicString<CharT>::EndsWith(const BasicString<CharT>& sSuffix,
                                                  bool bIgnoreCase) const {
-            auto iLen = m_str.length();
-            auto iSuffixLen = sSuffix.GetLength();
+            int iLen = GetLength();
+            int iSuffixLen = sSuffix.GetLength();
             if (iSuffixLen > iLen) return false;
 
             if (bIgnoreCase) {
-                return Compare(*this, (int)(iLen - iSuffixLen), sSuffix, 0, (int)iSuffixLen, true) == 0;
+                return Compare(*this, iLen - iSuffixLen, sSuffix, 0, iSuffixLen, true) == 0;
             }
-            return m_str.compare(iLen - iSuffixLen, iSuffixLen, sSuffix.m_str) == 0;
+            return m_str.compare(static_cast<size_t>(iLen - iSuffixLen), static_cast<size_t>(iSuffixLen), sSuffix.m_str) == 0;
         }
         template <class CharT>
         inline bool BasicString<CharT>::Equals(const BasicString<CharT>& sStr1,
@@ -824,22 +833,19 @@ namespace DotNetDupe {
             }
         }
 
-        template <class CharT>
-        inline const std::basic_string<CharT>& BasicString<CharT>::GetString() const {
-            return m_str;
-        }
-
         template <class CharT, typename T>
         inline auto FormatArgHelper(const T& val) {
             using DecayedT = std::decay_t<T>;
             if constexpr (std::is_same_v<DecayedT, BasicString<CharT>>) {
-                return val.GetString();
+                return val.GetRawString();
             } else if constexpr (std::is_same_v<DecayedT, std::nullptr_t>) {
-                return std::basic_string<CharT>();
+                if constexpr (std::is_same_v<CharT, char>) {
+                    return "";
+                } else {
+                    return L"";
+                }
             } else if constexpr (std::is_same_v<DecayedT, bool>) {
-                return std::basic_string<CharT>(val ? BoolRepresentation<CharT>::True : BoolRepresentation<CharT>::False);
-            } else if constexpr (has_ToString_v<DecayedT>) {
-                return val.ToString().GetString();
+                return val ? BoolRepresentation<CharT>::True : BoolRepresentation<CharT>::False;
             } else {
                 return val;
             }
@@ -848,16 +854,25 @@ namespace DotNetDupe {
         template <class CharT>
         template <class... Args>
         inline BasicString<CharT> BasicString<CharT>::Format(const BasicString<CharT>& sFormat, const Args&... args) {
+            return Format(sFormat.GetRawString(), args...);
+        }
+
+        template <class CharT>
+        template <class... Args>
+        inline BasicString<CharT> BasicString<CharT>::Format(const CharT* pFormat, const Args&... args) {
+            if (pFormat == nullptr) {
+                throw ArgumentException("Invalid format string pointer");
+            }
             try {
                 if constexpr (sizeof...(Args) == 0) {
-                    return sFormat;
+                    return BasicString<CharT>(pFormat);
                 } else {
-                    auto argsTuple = std::make_tuple(FormatArgHelper<CharT>(args)...);
+                    auto argsTuple = std::make_tuple(args...);
                     std::basic_string<CharT> resultStr = std::apply([&](const auto&... formattedArgs) {
                         if constexpr (std::is_same_v<CharT, char>) {
-                            return std::vformat(sFormat.GetString(), std::make_format_args(formattedArgs...));
+                            return std::vformat(std::string_view(pFormat), std::make_format_args(formattedArgs...));
                         } else {
-                            return std::vformat(sFormat.GetString(), std::make_wformat_args(formattedArgs...));
+                            return std::vformat(std::wstring_view(pFormat), std::make_wformat_args(formattedArgs...));
                         }
                     }, argsTuple);
                     return BasicString<CharT>(resultStr.c_str());
@@ -874,6 +889,15 @@ namespace std {
     struct hash<DotNetDupe::System::BasicString<CharT>> {
         size_t operator()(const DotNetDupe::System::BasicString<CharT>& s) const {
             return hash<basic_string<CharT>>()(s.GetRawString());
+        }
+    };
+
+    template<class CharT>
+    struct formatter<DotNetDupe::System::BasicString<CharT>, CharT> : formatter<basic_string_view<CharT>, CharT> {
+        template<typename FormatContext>
+        auto format(const DotNetDupe::System::BasicString<CharT>& s, FormatContext& ctx) const {
+            return formatter<basic_string_view<CharT>, CharT>::format(
+                basic_string_view<CharT>(s.GetRawString(), static_cast<size_t>(s.GetLength())), ctx);
         }
     };
 }
