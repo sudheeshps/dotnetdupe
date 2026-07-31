@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
+    <!-- Enable automatic NuGet package restore -->
+    <RestorePackages>true</RestorePackages>
+    <RestoreAutomatic>true</RestoreAutomatic>
     <!-- Ensure each project uses a separate intermediate folder to avoid MSB8028 warnings -->
     <IntDir Condition="'$(IntDir)' == ''">$(SolutionDir)Intermediate\$(MSBuildProjectName)\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
+
 </Project>

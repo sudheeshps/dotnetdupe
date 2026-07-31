@@ -9,7 +9,12 @@ namespace DotNetDupe {
         namespace DependencyInjection {
             class IServiceCollection : public DotNetDupe::System::Collections::Generic::List<ServiceDescriptor> {
             public:
+                IServiceCollection() = default;
                 virtual ~IServiceCollection() = default;
+                IServiceCollection(const IServiceCollection&) = default;
+                IServiceCollection& operator=(const IServiceCollection&) = default;
+                IServiceCollection(IServiceCollection&&) noexcept = default;
+                IServiceCollection& operator=(IServiceCollection&&) noexcept = default;
 
                 // Singleton
                 template <typename TService, typename TImplementation>

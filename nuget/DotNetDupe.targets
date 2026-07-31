@@ -20,9 +20,11 @@
     </Link>
   </ItemDefinitionGroup>
 
-  <!-- Copy DLL to output for Windows -->
+  <!-- Copy DLLs to output for Windows -->
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\DotNetDupe.dll" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\libssl*.dll" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\libcrypto*.dll" />
   </ItemGroup>
 
   <!-- Linux/iOS support for MSBuild (e.g. via .NET MAUI or mono) would go here -->

@@ -21,6 +21,9 @@ void DemonstrateConsole() {
     // Clear mock input so subsequent ReadLine calls wait for actual stdin
     Console::ClearInputs(); 
 
+    // Demonstrate parameter interpolation
+    Console::WriteLine("Interpolated Output: Hello {0}, welcome to {1}!", sName, "DotNetDupe");
+
     Console::WriteLine("Available Colors:");
     Console::SetForegroundColor(ConsoleColor::Green);
     Console::WriteLine("  This is Green text");

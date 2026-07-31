@@ -17,6 +17,27 @@ namespace SystemTests {
         TEST(StringTest, Constructor_Should_Throw_Exception_When_NullPointer_Specified) {
             ASSERT_THROW(String str(nullptr), ArgumentException);
         }
+
+        TEST(StringTest, AssignmentOperator_Should_AssignValue_When_ValidCharPointerPassed) {
+            // Given
+            String str("Initial");
+            const char* pNewStr = "Updated String";
+
+            // When
+            str = pNewStr;
+
+            // Then
+            ASSERT_EQ(str, "Updated String");
+        }
+
+        TEST(StringTest, AssignmentOperator_Should_ThrowArgumentException_When_NullPointerPassed) {
+            // Given
+            String str("Initial");
+            const char* pNullStr = nullptr;
+
+            // When / Then
+            ASSERT_THROW(str = pNullStr, ArgumentException);
+        }
         TEST(StringTest, GetLength_Should_Return_ActualLength_When_A_GoodString_Specified) {
             String str("Hello");
             ASSERT_TRUE(str.GetLength() == 5);
