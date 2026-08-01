@@ -18,6 +18,8 @@
 #include "System/Console.h"
 #if defined(_WIN32)
 #include <windows.h>
+#else
+#include <sys/stat.h>
 #endif
 #include "System/Text/Json/JsonSerializer.h"
 #include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
@@ -615,7 +617,11 @@ namespace WebApplicationTests {
         try {
             // Given: Create temporary wwwroot test directory & index.html
             String testWebRoot = DotNetDupe::System::IO::Path::GetFullPath("test_wwwroot");
-            std::filesystem::create_directory(testWebRoot.GetRawString());
+#if defined(_WIN32)
+            CreateDirectoryA(testWebRoot.GetRawString(), NULL);
+#else
+            ::mkdir(testWebRoot.GetRawString(), 0755);
+#endif
             String htmlPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"});
             String cssPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"});
 

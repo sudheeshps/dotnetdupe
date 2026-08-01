@@ -88,3 +88,14 @@ add_executable(DotNetDupeTests ${TEST_SOURCES})
 target_link_libraries(DotNetDupeTests PRIVATE DotNetDupe gtest_main)
 
 add_test(NAME DotNetDupeTests COMMAND DotNetDupeTests)
+
+if(WIN32)
+    # Copy OpenSSL runtime DLLs to output directories on Windows
+    add_custom_command(TARGET DotNetDupe POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/bin/libssl-4-x64.dll"
+            "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/bin/libcrypto-4-x64.dll"
+            $<TARGET_FILE_DIR:DotNetDupe>
+        COMMENT "Copying OpenSSL runtime DLLs to output directory"
+    )
+endif()

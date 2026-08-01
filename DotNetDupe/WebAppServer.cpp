@@ -1,4 +1,3 @@
-#include <filesystem>
 #include "pch.h"
 #include "WebAppCore/Server/WebAppServer.h"
 #include "System/IO/File.h"
@@ -8,6 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <filesystem>
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -93,8 +93,9 @@ namespace DotNetDupe {
 
                         DotNetDupe::System::String targetFilePath = DotNetDupe::System::IO::Path::Combine({m_sWebRoot, DotNetDupe::System::String(relPathStr.c_str())});
 
-                        std::error_code ec;
-                        if (std::filesystem::is_directory(targetFilePath.GetRawString(), ec)) {
+                        DotNetDupe::System::IO::FileAttributes attr;
+                        if (DotNetDupe::System::IO::File::GetAttributes(targetFilePath, attr) &&
+                            (static_cast<int>(attr) & static_cast<int>(DotNetDupe::System::IO::FileAttributes::Directory)) != 0) {
                             targetFilePath = DotNetDupe::System::IO::Path::Combine({targetFilePath, m_sDefaultDocument});
                         }
 
