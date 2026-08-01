@@ -90,8 +90,8 @@ namespace DotNetDupe {
             BasicString(const std::basic_string<CharT>& str) : m_str(str) {}
             BasicString(const BasicString<CharT>& sStr);
             BasicString<CharT>& operator=(const BasicString<CharT>& sStr);
-            BasicString<CharT>(const BasicString<CharT>&& sStr) noexcept;
-            BasicString<CharT>& operator=(const BasicString<CharT>&& sStr) noexcept;
+            BasicString(BasicString<CharT>&& sStr) noexcept;
+            BasicString<CharT>& operator=(BasicString<CharT>&& sStr) noexcept;
             BasicString<CharT>& operator=(const CharT* pStr);
             const CharT* GetRawString() const;
             operator const CharT* () const { return GetRawString(); }
@@ -266,9 +266,9 @@ namespace DotNetDupe {
         }
 
         template<class CharT>
-        inline BasicString<CharT>::BasicString(const BasicString<CharT>&& sStr) noexcept : m_str(std::move(sStr.m_str)) { }
+        inline BasicString<CharT>::BasicString(BasicString<CharT>&& sStr) noexcept : m_str(std::move(sStr.m_str)) { }
         template<class CharT>
-        inline BasicString<CharT>& BasicString<CharT>::operator=(const BasicString<CharT>&& sStr) noexcept {
+        inline BasicString<CharT>& BasicString<CharT>::operator=(BasicString<CharT>&& sStr) noexcept {
             if (this != &sStr) {
                 m_str = std::move(sStr.m_str);
             }
