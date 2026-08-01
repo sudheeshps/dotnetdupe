@@ -410,7 +410,7 @@ namespace DotNetDupe {
                         if (MatchRoute(patternSegs, pathSegs, extractedParams)) {
                             // Found a match! Extract parameters into GetRouteValues()
                             for (const auto& pair : extractedParams) {
-                                spRequest->GetRouteValues().Add(System::String(pair.first.c_str()), System::String(pair.second.c_str()));
+                                spRequest->GetRouteValues()[System::String(pair.first.c_str())] = System::String(pair.second.c_str());
                             }
                             if (handlersMap.TryGetValue(pattern, handler)) {
                                 return true;
@@ -496,7 +496,7 @@ namespace DotNetDupe {
                     sBodyResult = "404 Not Found";
                 }
 
-                if (spResponse->GetBody().IsEmpty() && !sBodyResult.IsEmpty()) {
+                if (!sBodyResult.IsEmpty()) {
                     spResponse->SetBody(sBodyResult);
                 }
 

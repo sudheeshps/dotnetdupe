@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "pch.h"
 #include "WebAppCore/Server/WebAppServer.h"
 #include "System/IO/File.h"
@@ -92,8 +93,8 @@ namespace DotNetDupe {
 
                         DotNetDupe::System::String targetFilePath = DotNetDupe::System::IO::Path::Combine({m_sWebRoot, DotNetDupe::System::String(relPathStr.c_str())});
 
-                        DotNetDupe::System::IO::FileAttributes attr;
-                        if (DotNetDupe::System::IO::File::GetAttributes(targetFilePath, attr) && attr == DotNetDupe::System::IO::FileAttributes::Directory) {
+                        std::error_code ec;
+                        if (std::filesystem::is_directory(targetFilePath.GetRawString(), ec)) {
                             targetFilePath = DotNetDupe::System::IO::Path::Combine({targetFilePath, m_sDefaultDocument});
                         }
 
@@ -106,24 +107,21 @@ namespace DotNetDupe {
                             return "404 Not Found";
                         }
 
-                        // Read binary contents of file
-                        std::ifstream file(targetFilePath.GetRawString(), std::ios::binary);
-                        if (!file.is_open()) {
+                        DotNetDupe::System::String contentStr;
+                        try {
+                            contentStr = DotNetDupe::System::IO::File::ReadAllText(targetFilePath);
+                        } catch (...) {
                             ctx->GetResponse()->SetStatusCode(500);
                             ctx->GetResponse()->SetContentType("text/plain");
                             return "500 Internal Server Error: Unable to open file";
                         }
-
-                        std::ostringstream ss;
-                        ss << file.rdbuf();
-                        std::string content = ss.str();
 
                         // Set Content-Type, Content-Disposition (inline rendering), and Status 200
                         ctx->GetResponse()->SetStatusCode(200);
                         ctx->GetResponse()->SetContentType(GetMimeType(targetFilePath));
                         ctx->GetResponse()->GetHeaders()[DotNetDupe::System::String("Content-Disposition")] = DotNetDupe::System::String("inline");
 
-                        return DotNetDupe::System::String(content);
+                        return contentStr;
                     });
                 }
 

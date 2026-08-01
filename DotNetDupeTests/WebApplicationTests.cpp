@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "pch.h"
 #include "gtest/gtest.h"
 #include "WebAppCore/Builder/WebApplication.h"
@@ -14,6 +15,7 @@
 #include "WebAppCore/Server/WebAppServer.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
+#include "System/Console.h"
 #if defined(_WIN32)
 #include <windows.h>
 #endif
@@ -612,18 +614,20 @@ namespace WebApplicationTests {
     TEST(WebApplicationTests, GivenWebAppServer_WhenStaticFileRequested_ServesHtmlAndAssets) {
         try {
             // Given: Create temporary wwwroot test directory & index.html
-            String testWebRoot = "test_wwwroot";
-#if defined(_WIN32)
-            CreateDirectoryA(testWebRoot.GetRawString(), NULL);
-#endif
-            DotNetDupe::System::IO::File::WriteAllText(DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"}), "<html><body>Hello WebServer</body></html>");
-            DotNetDupe::System::IO::File::WriteAllText(DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"}), "body { color: red; }");
+            String testWebRoot = DotNetDupe::System::IO::Path::GetFullPath("test_wwwroot");
+            std::filesystem::create_directory(testWebRoot.GetRawString());
+            String htmlPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"});
+            String cssPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"});
+
+            DotNetDupe::System::IO::File::WriteAllText(htmlPath, "<html><body>Hello WebServer</body></html>");
+            DotNetDupe::System::IO::File::WriteAllText(cssPath, "body { color: red; }");
 
             auto builder = WebApplication::CreateBuilder();
             auto app = builder->Build();
 
             DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer> server = 
                 DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer>::NewShared(app, testWebRoot);
+            server->EnableStaticFiles("index.html");
 
             Thread serverThread([server]() {
                 server->Run("http://127.0.0.1:28086");
@@ -631,7 +635,7 @@ namespace WebApplicationTests {
             serverThread.Start();
 
             ServerScopeGuard guard(app, serverThread);
-            Thread::Sleep(200);
+            Thread::Sleep(500);
 
             HttpClient client;
 
@@ -644,8 +648,8 @@ namespace WebApplicationTests {
             ASSERT_EQ(cssRes, "body { color: red; }");
 
             // Clean up test files
-            DotNetDupe::System::IO::File::Delete(DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"}));
-            DotNetDupe::System::IO::File::Delete(DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"}));
+            DotNetDupe::System::IO::File::Delete(htmlPath);
+            DotNetDupe::System::IO::File::Delete(cssPath);
 
         } catch (const BasicException<char>& ex) {
             FAIL() << "BasicException thrown: " << ex.What();

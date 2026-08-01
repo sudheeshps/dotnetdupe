@@ -161,9 +161,9 @@ namespace SystemTests {
         }
         TEST(PathTest, GetExtension_Should_Return_Extension_When_File_Path_Passed) {
 #if defined(_WIN32)
-            EXPECT_TRUE(Path::GetExtension("C:\\Test\\file.txt") == "txt");
+            EXPECT_TRUE(Path::GetExtension("C:\\Test\\file.txt") == ".txt");
 #else
-            EXPECT_TRUE(Path::GetExtension("/tmp/Test/file.txt") == "txt");
+            EXPECT_TRUE(Path::GetExtension("/tmp/Test/file.txt") == ".txt");
 #endif
         }
         TEST(PathTest, GetExtension_Should_Return_Same_String_When_Folder_Path_Passed) {

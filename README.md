@@ -33,7 +33,10 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [1. Install WSL](#1-install-wsl)
     - [2. Environment Provisioning](#2-environment-provisioning)
     - [3. Build & Test in WSL](#3-build--test-in-wsl)
-  - [Building and Running with NuGet in WSL 🐧📦](#building-and-running-with-nuget-in-wsl-)
+  - [Developing Cross-Platform Applications 🌐💻](#developing-cross-platform-applications-)
+    - [1. Cross-Platform Project Architecture](#1-cross-platform-project-architecture)
+    - [2. Integrating via NuGet Package](#2-integrating-via-nuget-package)
+    - [3. Building a Web Application with Static Files & REST APIs](#3-building-a-web-application-with-static-files--rest-apis)
   - [Usage 💻](#usage-)
   - [Web API & Database Integration Guide 🌐🗄️](#web-api--database-integration-guide-️)
     - [1. Hosting REST API Controllers](#1-hosting-rest-api-controllers)
@@ -145,10 +148,10 @@ wsl --install -d Ubuntu
 ```
 
 ### 2. Environment Provisioning
-Inside your WSL terminal, install the C++ build chain:
+Inside your WSL terminal, install the C++ build chain and OpenSSL development headers:
 ```bash
 sudo apt-get update
-sudo apt-get install -y build-essential cmake
+sudo apt-get install -y build-essential cmake libssl-dev pkg-config
 ```
 
 ### 3. Build & Test in WSL
@@ -188,32 +191,145 @@ wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeTests"
 wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeDemo"
 ```
 
-## Building and Running with NuGet in WSL 🐧📦
+## Developing Cross-Platform Applications 🌐💻
 
-This section describes how to use the pre-compiled NuGet package to build and run the `DotNetDupeDemo` application in a WSL environment.
+DotNetDupe enables unified, cross-platform C++20 development across Windows (MSVC / MSBuild) and Linux (GCC/Clang via CMake or WSL).
 
-### 1. Extract the NuGet Package
-The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
+---
+
+### 1. Cross-Platform Project Architecture
+
+When building a cross-platform application with DotNetDupe:
+- Use **UTF-8 character encoding** for cross-platform portability.
+- Rely on **`DotNetDupe::System::SmartPointer<T>`** for memory and resource cleanup.
+- Avoid platform-specific raw syscalls; use DotNetDupe abstractions like `System::IO::Path`, `System::IO::File`, `System::Threading::Thread`, and `System::Net::Sockets::TcpClient`.
+
+---
+
+### 2. Integrating via NuGet Package
+
+You can package and consume DotNetDupe via NuGet across Windows and Linux (WSL / CMake) projects.
+
+#### A. Generating the NuGet Package
+Run the automated build script from PowerShell:
 ```powershell
-Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+.\BuildAndPack.ps1
+```
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.0.nupkg` inside the `nuget_packages/` directory.
+
+#### B. Consuming NuGet Package in Visual Studio (Windows)
+1. Add the local `nuget_packages` folder as a NuGet Package Source:
+   ```bash
+   nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\DotNetDupe\nuget_packages"
+   ```
+2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
+
+#### C. Consuming NuGet Package on Linux / CMake (WSL)
+1. Extract `DotNetDupe.3.0.0.nupkg` (ZIP format) to a local directory:
+   ```powershell
+   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   ```
+2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
+   ```bash
+   cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH="./DotNetDupe_NuGet"
+   cmake --build build
+   ```
+
+---
+
+### 3. Building a Web Application with Static Files & REST APIs
+
+The **`WebAppServer`** class serves static website assets (`index.html`, CSS, JavaScript, images) alongside mapped REST endpoints.
+
+#### Project Directory Layout
+```text
+MyWebApp/
+├── wwwroot/
+│   ├── index.html
+│   └── site.css
+└── main.cpp
 ```
 
-### 2. Configure and Build in WSL
-Use CMake with the `USE_NUGET` option enabled and point `NUGET_PATH` to the extracted directory. WSL automatically handles the path mapping for Windows drives.
+#### Step 1: Create `wwwroot/index.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DotNetDupe Web App</title>
+    <link rel="stylesheet" href="site.css">
+</head>
+<body>
+    <h1>DotNetDupe Web Application Server</h1>
+    <p>Serving static assets and REST API endpoints simultaneously!</p>
+    <button onclick="fetchWelcomeMessage()">Hit Welcome Endpoint</button>
+    <p id="welcome-output"></p>
 
-```powershell
-# Configure
-wsl cmake -S . -B build-wsl -DUSE_NUGET=ON -DNUGET_PATH="./DotNetDupe_NuGet"
-
-# Build the Demo Application
-wsl cmake --build build-wsl --target DotNetDupeDemo
+    <script>
+        async function fetchWelcomeMessage() {
+            const response = await fetch('/api/welcome?name=Developer');
+            const data = await response.json();
+            document.getElementById('welcome-output').innerText = data.message;
+        }
+    </script>
+</body>
+</html>
 ```
 
-### 3. Execute in WSL
-Run the demo application directly from PowerShell via `wsl`:
-```powershell
-wsl ./build-wsl/DotNetDupeDemo
+#### Step 2: C++ Application (`main.cpp`)
+Here is a complete, compile-ready web application hosting `index.html` and responding with a welcome message on hitting `/api/welcome`:
+
+```cpp
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+#include "System/IO/File.h"
+#include "System/IO/Path.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "WebAppCore/Server/WebAppServer.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::WebAppCore::Builder;
+using namespace DotNetDupe::WebAppCore::Server;
+using namespace DotNetDupe::WebAppCore::Http;
+
+int main() {
+    Console::WriteLine("=============================================");
+    Console::WriteLine(" Starting DotNetDupe Cross-Platform Web Server");
+    Console::WriteLine("=============================================");
+
+    String webRoot = "wwwroot";
+
+    // 1. Initialize WebApplication Host
+    auto builder = WebApplication::CreateBuilder();
+    auto app = builder->Build();
+
+    // 2. Map REST Endpoint (/api/welcome?name=...)
+    app->MapGet("/api/welcome", [](SmartPointer<HttpContext> ctx) -> String {
+        String name = "Guest";
+        if (ctx->GetRequest()->GetQuery().ContainsKey("name")) {
+            name = ctx->GetRequest()->GetQuery()["name"];
+        }
+
+        ctx->GetResponse()->SetContentType("application/json");
+        return String("{\"status\":\"Success\",\"message\":\"Welcome to DotNetDupe Web Server, ") + name + "!\"}";
+    });
+
+    // 3. Initialize WebAppServer to serve website content (index.html & assets)
+    WebAppServer server(app, webRoot);
+    server.EnableStaticFiles("index.html");
+
+    Console::WriteLine("Server running at: http://localhost:8080/index.html");
+    Console::WriteLine("Welcome Endpoint at: http://localhost:8080/api/welcome?name=Developer");
+
+    // 4. Start Server
+    server.Run("http://localhost:8080/index.html");
+
+    return 0;
+}
 ```
+
+---
 
 ## Usage 💻
 

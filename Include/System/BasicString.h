@@ -112,13 +112,33 @@ namespace DotNetDupe {
                 return is;
             }
 
+            friend void PrintTo(const BasicString<CharT>& sStr, ::std::ostream* os) {
+                if (os) {
+                    *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
+                }
+            }
+
             bool operator<(const BasicString<CharT>& sStr) const;
-            bool operator==(const BasicString<CharT>& sStr) const { return m_str.compare(sStr.m_str) == 0; }
-            bool operator==(const CharT* pStr) const { return m_str.compare(pStr) == 0; }
-            friend bool operator==(const CharT* pStr1, const BasicString<CharT>& sStr2) { return sStr2 == pStr1; }
-            bool operator!=(const BasicString<CharT>& sStr) const { return !(*this == sStr); }
-            bool operator!=(const CharT* pStr) const { return !(*this == pStr); }
-            friend bool operator!=(const CharT* pStr1, const BasicString<CharT>& sStr2) { return !(sStr2 == pStr1); }
+
+            friend bool operator==(const BasicString<CharT>& sStr1, const BasicString<CharT>& sStr2) {
+                return sStr1.m_str.compare(sStr2.m_str) == 0;
+            }
+            friend bool operator==(const BasicString<CharT>& sStr1, const CharT* pStr2) {
+                return pStr2 ? sStr1.m_str.compare(pStr2) == 0 : sStr1.m_str.empty();
+            }
+            friend bool operator==(const CharT* pStr1, const BasicString<CharT>& sStr2) {
+                return pStr1 ? sStr2.m_str.compare(pStr1) == 0 : sStr2.m_str.empty();
+            }
+
+            friend bool operator!=(const BasicString<CharT>& sStr1, const BasicString<CharT>& sStr2) {
+                return !(sStr1 == sStr2);
+            }
+            friend bool operator!=(const BasicString<CharT>& sStr1, const CharT* pStr2) {
+                return !(sStr1 == pStr2);
+            }
+            friend bool operator!=(const CharT* pStr1, const BasicString<CharT>& sStr2) {
+                return !(pStr1 == sStr2);
+            }
             CharT operator[](int iIndex) const;
             static int Compare(const BasicString<CharT>& sStr1, int iIndex1,
                                const BasicString<CharT>& sStr2, int iIndex2, int iLength,
@@ -838,11 +858,16 @@ namespace DotNetDupe {
             using DecayedT = std::decay_t<T>;
             if constexpr (std::is_same_v<DecayedT, BasicString<CharT>>) {
                 return val.GetRawString();
-            } else if constexpr (std::is_same_v<DecayedT, std::nullptr_t>) {
-                if constexpr (std::is_same_v<CharT, char>) {
-                    return "";
+            } else if constexpr (std::is_same_v<DecayedT, std::nullptr_t> || std::is_same_v<DecayedT, const char*> || std::is_same_v<DecayedT, const wchar_t*> || std::is_same_v<DecayedT, char*> || std::is_same_v<DecayedT, wchar_t*>) {
+                if constexpr (std::is_same_v<DecayedT, std::nullptr_t>) {
+                    if constexpr (std::is_same_v<CharT, char>) return "";
+                    else return L"";
                 } else {
-                    return L"";
+                    if (val == nullptr) {
+                        if constexpr (std::is_same_v<CharT, char>) return "";
+                        else return L"";
+                    }
+                    return val;
                 }
             } else if constexpr (std::is_same_v<DecayedT, bool>) {
                 return val ? BoolRepresentation<CharT>::True : BoolRepresentation<CharT>::False;
@@ -867,7 +892,7 @@ namespace DotNetDupe {
                 if constexpr (sizeof...(Args) == 0) {
                     return BasicString<CharT>(pFormat);
                 } else {
-                    auto argsTuple = std::make_tuple(args...);
+                    auto argsTuple = std::make_tuple(FormatArgHelper<CharT>(args)...);
                     std::basic_string<CharT> resultStr = std::apply([&](const auto&... formattedArgs) {
                         if constexpr (std::is_same_v<CharT, char>) {
                             return std::vformat(std::string_view(pFormat), std::make_format_args(formattedArgs...));
@@ -881,8 +906,21 @@ namespace DotNetDupe {
                 throw BasicFormatException<CharT>(FormatExceptionMessage<CharT>::Message);
             }
         }
+        template <class CharT>
+        inline void PrintTo(const BasicString<CharT>& sStr, ::std::ostream* os) {
+            if (os) {
+                *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
+            }
+        }
     }  // namespace System
 }  // namespace DotNetDupe
+
+template <class CharT>
+inline void PrintTo(const DotNetDupe::System::BasicString<CharT>& sStr, ::std::ostream* os) {
+    if (os) {
+        *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
+    }
+}
 
 namespace std {
     template<class CharT>

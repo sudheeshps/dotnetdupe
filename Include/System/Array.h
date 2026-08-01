@@ -23,7 +23,9 @@ namespace DotNetDupe {
 
         public:
             // Constructors
+            Array() = default;
             Array(int iLength) : m_vItems(iLength) { }
+            Array(const T* pData, int iLength) : m_vItems(pData ? pData : pData + 0, pData ? pData + iLength : pData + 0) { }
             Array(const std::initializer_list<T>& vItems) : m_vItems(vItems) { }
 
             // Properties
