@@ -168,6 +168,9 @@
     <ClCompile Include="JwtDemo.cpp" />
     <ClCompile Include="LockRAIIDemo.cpp" />
     <ClCompile Include="ProcessDemo.cpp" />
+    <ClCompile Include="EventLogDemo.cpp" />
+    <ClCompile Include="EtwLogReaderDemo.cpp" />
+    <ClCompile Include="RealtimeTelemetryDemo.cpp" />
     <ClCompile Include="SocketsDemo.cpp" />
     <ClCompile Include="StopwatchDemo.cpp" />
     <ClCompile Include="StringBuilderDemo.cpp" />

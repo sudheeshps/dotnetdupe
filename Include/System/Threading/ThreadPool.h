@@ -34,6 +34,13 @@ namespace DotNetDupe {
                  */
                 DOTNETDUPE_API static bool QueueUserWorkItem(WaitCallback callback, Object* pState);
 
+                /**
+                 * @brief Sets the minimum number of threads the thread pool creates on demand as new requests are made.
+                 * @param iMinThreads The minimum number of worker threads.
+                 * @return true if the minimum thread count was successfully set.
+                 */
+                DOTNETDUPE_API static bool SetMinThreads(int iMinThreads);
+
             private:
                 // Strictly static class
                 ThreadPool() = delete;

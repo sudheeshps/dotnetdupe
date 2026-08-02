@@ -28,4 +28,7 @@ void DemonstrateDependencyInjection();
 void DemonstrateWebApplication();
 void DemonstrateDatabase();
 void DemonstrateLogging();
+void DemonstrateEventLog();
+void DemonstrateEtwLogReader();
+void DemonstrateRealtimeTelemetry();
 void RunWebAppServerDemo();

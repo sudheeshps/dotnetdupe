@@ -58,6 +58,7 @@ The project is configured to generate a NuGet package on build (as specified in 
 - **UTF-8 Portability**: Use UTF-8 character encoding for all string operations to ensure cross-platform portability across Windows, Linux, and other environments.
 - **Precompiled Headers**: Implementation files in the `DotNetDupe/` directory should `#include "pch.h"`.
 - **Memory Management**: **SmartPointer shall be used in all places and no direct pointer manipulation (e.g., raw `new`, `delete`, or raw pointers for ownership) is allowed.** Always follow RAII patterns. Many classes (like `FileStream`, `WaitHandle`) implement `.NET`-like patterns but rely on C++ destructors for resource cleanup.
+- **Function Length Limit**: **No function can have more than 15 lines of code.** Break down complex methods into helper functions to enforce clean, modular design.
 - **Exceptions**: DotNetDupe classes shall not throw standard C++ exceptions (such as `std::runtime_error`, `std::invalid_argument`). Instead, throw the library's custom exception types inheriting from `BasicException` (such as `SystemException`, `ArgumentException`, `InvalidOperationException`, `JsonException`, `IOException`, `SocketException`) to match `.NET` behavior and ensure unified exception handling.
 
 ### Testing

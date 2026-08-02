@@ -48,7 +48,7 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API void MapControllers();
 
-                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000");
+                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000", int threadCount = 10);
                 DOTNETDUPE_API void Stop();
 
             private:

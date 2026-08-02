@@ -17,7 +17,7 @@
 - **`void SetWebRoot(const String& webRoot)`**: Configures the directory path serving static assets.
 - **`String GetWebRoot() const`**: Returns the configured web root directory.
 - **`static String GetMimeType(const String& filePath)`**: Resolves MIME content types based on file extension.
-- **`void Run(const String& url = "http://127.0.0.1:5000")`**: Starts listening for incoming HTTP requests.
+- **`void Run(const String& url = "http://127.0.0.1:5000", int threadCount = 10)`**: Starts listening for incoming HTTP requests and dispatches client connections across a multi-threaded `ThreadPool` with the specified minimum thread count (default: 10).
 - **`void Stop()`**: Stops the server loop.
 
 ---

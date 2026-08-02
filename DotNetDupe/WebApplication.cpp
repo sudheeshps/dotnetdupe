@@ -145,7 +145,10 @@ namespace DotNetDupe {
                 }
             }
 
-            void WebApplication::Run(const System::String& url) {
+            void WebApplication::Run(const System::String& url, int threadCount) {
+                if (threadCount > 0) {
+                    System::Threading::ThreadPool::SetMinThreads(threadCount);
+                }
                 std::string sUrl(url.GetRawString());
                 std::string host = "127.0.0.1";
                 int port = 5000;

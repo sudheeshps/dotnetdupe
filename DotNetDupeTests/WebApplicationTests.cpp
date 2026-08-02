@@ -665,4 +665,34 @@ namespace WebApplicationTests {
             FAIL() << "Unknown exception thrown";
         }
     }
+
+    TEST(WebApplicationTests, GivenWebAppServer_WhenRunParametricThreadCount_ThenServesRequestsConcurrently) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            app->MapGet("/api/hello", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> ctx) -> String {
+                return "Hello Multithreaded";
+            });
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28087", 12);
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            String sRes = client.GetString("http://127.0.0.1:28087/api/hello");
+            ASSERT_EQ(sRes, "Hello Multithreaded");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
 }

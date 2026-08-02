@@ -35,7 +35,7 @@ void RunWebAppServerDemo() {
     WebAppServer server(app, webRoot);
     server.EnableStaticFiles("index.html");
 
-    Console::WriteLine(String("WebAppServer serving static website from '") + webRoot + "'...");
+    Console::WriteLine(String("WebAppServer serving static website from '") + webRoot + "' with 16 ThreadPool worker threads...");
     Console::WriteLine("Root URL: http://localhost:8080/index.html");
     Console::WriteLine("Demo finished setup cleanly.");
 }

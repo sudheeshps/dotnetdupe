@@ -25,7 +25,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API DotNetDupe::System::String GetWebRoot() const { return m_sWebRoot; }
 
                 DOTNETDUPE_API void EnableStaticFiles(const DotNetDupe::System::String& defaultDocument = "index.html");
-                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://localhost:8080/index.html");
+                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://localhost:8080/index.html", int threadCount = 10);
                 DOTNETDUPE_API void Stop();
 
                 DOTNETDUPE_API static DotNetDupe::System::String GetMimeType(const DotNetDupe::System::String& filePath);

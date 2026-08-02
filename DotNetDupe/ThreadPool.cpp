@@ -44,12 +44,24 @@ namespace DotNetDupe {
                     return true;
                 }
 
+                bool SetMinThreads(int iMinThreads) {
+                    if (iMinThreads <= 0) return false;
+                    Lock<CriticalSection> lock(m_csSync);
+                    if (m_bIsShuttingDown) return false;
+                    while (m_vWorkerThreads.GetCount() < iMinThreads) {
+                        SmartPointer<Thread> pWorker = SmartPointer<Thread>::NewShared(ThreadStart([this]() { WorkerLoop(); }));
+                        pWorker->Start();
+                        m_vWorkerThreads.Add(std::move(pWorker));
+                    }
+                    return true;
+                }
+
             private:
                 ThreadPoolInternal() 
                     : m_bIsShuttingDown(false), m_evtWorkAvailable(false, false) {
                     
                     int iThreadCount = Environment::GetProcessorCount();
-                    if (iThreadCount <= 0) iThreadCount = 4;
+                    if (iThreadCount < 10) iThreadCount = 10;
 
                     for (int i = 0; i < iThreadCount; ++i) {
                         SmartPointer<Thread> pWorker = SmartPointer<Thread>::NewShared(ThreadStart([this]() { WorkerLoop(); }));
@@ -128,6 +140,10 @@ namespace DotNetDupe {
 
             bool ThreadPool::QueueUserWorkItem(WaitCallback callback, Object* pState) {
                 return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
+            }
+
+            bool ThreadPool::SetMinThreads(int iMinThreads) {
+                return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
             }
         }
     }

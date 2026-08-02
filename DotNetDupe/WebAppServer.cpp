@@ -64,7 +64,7 @@ namespace DotNetDupe {
                 return "application/octet-stream";
             }
 
-            void WebAppServer::Run(const DotNetDupe::System::String& url) {
+            void WebAppServer::Run(const DotNetDupe::System::String& url, int threadCount) {
                 if (m_bStaticFilesEnabled) {
                     // Register fallback handler for GET requests to serve static files
                     m_spApp->MapGet("/{*filepath}", [this](DotNetDupe::System::SmartPointer<Http::HttpContext> ctx) -> DotNetDupe::System::String {
@@ -126,7 +126,7 @@ namespace DotNetDupe {
                     });
                 }
 
-                m_spApp->Run(url);
+                m_spApp->Run(url, threadCount);
             }
 
             void WebAppServer::Stop() {

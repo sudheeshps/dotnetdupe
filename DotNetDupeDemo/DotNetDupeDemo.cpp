@@ -37,6 +37,9 @@ int main() {
     DemonstrateWebApplication();
     DemonstrateDatabase();
     DemonstrateLogging();
+    DemonstrateEventLog();
+    DemonstrateEtwLogReader();
+    DemonstrateRealtimeTelemetry();
     RunWebAppServerDemo();
     
     Console::WriteLine("\n--- Demonstration Complete ---");

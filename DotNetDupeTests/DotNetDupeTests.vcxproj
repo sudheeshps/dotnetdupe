@@ -180,6 +180,9 @@
     <ClCompile Include="WebApplicationTests.cpp" />
     <ClCompile Include="DatabaseTests.cpp" />
     <ClCompile Include="LoggingTests.cpp" />
+    <ClCompile Include="EventLogTests.cpp" />
+    <ClCompile Include="EtwLogReaderTests.cpp" />
+    <ClCompile Include="RealtimeTelemetryTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

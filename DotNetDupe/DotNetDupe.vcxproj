@@ -106,7 +106,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x86\bin\*.dll" "$(OutDir)"</Command>
@@ -132,7 +132,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x86\bin\*.dll" "$(OutDir)"</Command>
@@ -154,7 +154,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x64\bin\*.dll" "$(OutDir)"</Command>
@@ -180,7 +180,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x64\bin\*.dll" "$(OutDir)"</Command>
@@ -268,6 +268,10 @@
     <ClInclude Include="..\Include\System\Func.h" />
     <ClInclude Include="..\Include\System\Predicate.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Process.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\EventLog.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\EtwLogReader.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\SystemMetrics.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\ActiveUserSession.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Stopwatch.h" />
     <ClInclude Include="..\Include\System\Random.h" />
     <ClInclude Include="..\Include\System\UriParser.h" />
@@ -385,6 +389,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="EventLog.cpp" />
+    <ClCompile Include="EtwLogReader.cpp" />
+    <ClCompile Include="SystemMetrics.cpp" />
+    <ClCompile Include="ActiveUserSession.cpp" />
+    <ClCompile Include="DateTimeOffset.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TextEncoding.cpp" />

@@ -44,6 +44,8 @@ namespace DotNetDupe {
             }
         };
 
+        class DateTimeOffset;
+
         // Helper to check if T has a ToString() method
         template<typename T, typename = void>
         struct has_ToString : std::false_type {};
@@ -98,6 +100,10 @@ namespace DotNetDupe {
             int GetLength() const;
             std::basic_string<CharT>& GetString() { return m_str; }
             const std::basic_string<CharT>& GetString() const { return m_str; }
+            auto begin() { return m_str.begin(); }
+            auto end() { return m_str.end(); }
+            auto begin() const { return m_str.begin(); }
+            auto end() const { return m_str.end(); }
             BasicString<CharT> Clone() const;
 
             friend std::basic_ostream<CharT>& operator<<(std::basic_ostream<CharT>& os, const BasicString<CharT>& sStr) {
@@ -118,7 +124,9 @@ namespace DotNetDupe {
                 }
             }
 
-            bool operator<(const BasicString<CharT>& sStr) const;
+            bool operator<(const BasicString<CharT>& sStr) const {
+                return m_str < sStr.m_str;
+            }
 
             friend bool operator==(const BasicString<CharT>& sStr1, const BasicString<CharT>& sStr2) {
                 return sStr1.m_str.compare(sStr2.m_str) == 0;
@@ -313,11 +321,7 @@ namespace DotNetDupe {
         inline BasicString<CharT> BasicString<CharT>::Clone() const {
             return BasicString(GetRawString());
         }
-        template <class CharT>
-        inline bool BasicString<CharT>::operator<(
-            const BasicString<CharT>& sStr) const {
-            return m_str < sStr.m_str;
-        }
+
 
         template<class CharT>
         inline CharT BasicString<CharT>::operator[](int iIndex) const {
