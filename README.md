@@ -615,6 +615,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [HttpContext](docs/WebApplication.md) | Encapsulates all HTTP-specific information about an individual HTTP request. |
 | [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
 | [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
+| [Push Notifications (SSE & WebSockets)](docs/PushNotifications.md) | Server-Sent Events (SSE) streaming and WebSocket push notification support. |
 
 ### Namespace: `DotNetDupe::WebAppCore::Controllers`
 
