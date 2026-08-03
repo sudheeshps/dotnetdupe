@@ -156,6 +156,8 @@
     <ClCompile Include="DotNetDupeDemo.cpp" />
     <ClCompile Include="BitConverterDemo.cpp" />
     <ClCompile Include="CollectionsDemo.cpp" />
+    <ClCompile Include="ConcurrentCollectionsDemo.cpp" />
+    <ClCompile Include="GenericCollectionsDemo.cpp" />
     <ClCompile Include="ConsoleDemo.cpp" />
     <ClCompile Include="ConvertDemo.cpp" />
     <ClCompile Include="DependencyInjectionDemo.cpp" />

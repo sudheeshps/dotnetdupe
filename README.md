@@ -714,6 +714,34 @@ For detailed information on the available classes, methods, and their usage, ple
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
 
+### Namespace: `DotNetDupe::System::Collections::Generic`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [List](docs/GenericCollections.md) | Represents a strongly typed list of objects that can be accessed by index. |
+| [Dictionary](docs/GenericCollections.md) | Represents a collection of keys and values. |
+| [Queue](docs/GenericCollections.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
+| [Stack](docs/GenericCollections.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
+| [HashSet](docs/GenericCollections.md) | Represents a set of unique values using a hash table. |
+| [SortedDictionary](docs/GenericCollections.md) | Represents a collection of key/value pairs that are sorted on the key. |
+| [SortedSet](docs/GenericCollections.md) | Represents a collection of objects that is maintained in sorted order. |
+| [LinkedList](docs/GenericCollections.md) | Represents a doubly linked list. |
+| [PriorityQueue](docs/GenericCollections.md) | Represents a collection of items that have a value and a priority. |
+
+### Namespace: `DotNetDupe::System::Collections::Concurrent`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ConcurrentDictionary](docs/ConcurrentCollections.md) | Thread-safe key-value collection for concurrent operations. |
+| [ConcurrentQueue](docs/ConcurrentCollections.md) | Thread-safe First-In-First-Out (FIFO) collection. |
+| [ConcurrentStack](docs/ConcurrentCollections.md) | Thread-safe Last-In-First-Out (LIFO) collection. |
+| [ConcurrentBag](docs/ConcurrentCollections.md) | Thread-safe unordered collection of objects. |
+| [BlockingCollection](docs/ConcurrentCollections.md) | Thread-safe collection for blocking producer-consumer workflows. |
+
 ### Namespace: `DotNetDupe::System::Text::Json`
 
 **Classes**

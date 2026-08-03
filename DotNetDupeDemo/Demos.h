@@ -34,3 +34,5 @@ void DemonstrateRealtimeTelemetry();
 void RunWebAppServerDemo();
 void DemonstratePushNotifications();
 void RunUserPrincipalDemo();
+void RunConcurrentCollectionsDemo();
+void RunGenericCollectionsDemo();

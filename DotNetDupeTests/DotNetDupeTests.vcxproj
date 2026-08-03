@@ -135,6 +135,8 @@
     <ClCompile Include="BitConverterTests.cpp" />
     <ClCompile Include="BufferTests.cpp" />
     <ClCompile Include="CharTest.cpp" />
+    <ClCompile Include="ConcurrentCollectionsTests.cpp" />
+    <ClCompile Include="GenericCollectionsTests.cpp" />
     <ClCompile Include="EnvironmentTests.cpp" />
     <ClCompile Include="FileStreamTests.cpp" />
     <ClCompile Include="FileTests.cpp" />

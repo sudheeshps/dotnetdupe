@@ -43,6 +43,8 @@ int main() {
     RunWebAppServerDemo();
     DemonstratePushNotifications();
     RunUserPrincipalDemo();
+    RunConcurrentCollectionsDemo();
+    RunGenericCollectionsDemo();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");
