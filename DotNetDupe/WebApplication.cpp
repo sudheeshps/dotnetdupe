@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "System/Net/WebSockets/WebSocket.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
 #include "System/Console.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include "System/Net/Sockets/TcpClient.h"
@@ -137,6 +139,10 @@ namespace DotNetDupe {
 
             void WebApplication::MapDelete(const System::String& pattern, System::Func<System::String, System::SmartPointer<Http::HttpContext>> handler) {
                 m_deleteHandlers.Add(pattern, handler);
+            }
+
+            void WebApplication::MapWebSocket(const System::String& pattern, System::SmartPointer<WebSockets::IWebSocketHandler> handler) {
+                m_wsHandlers.Add(pattern, handler);
             }
 
             void WebApplication::MapControllers() {
@@ -423,6 +429,42 @@ namespace DotNetDupe {
                     return false;
                 };
 
+                spResponse->BindStream(stream);
+
+                // Check for WebSocket Upgrade request
+                System::String sUpgrade, sSecKey;
+                if (spRequest->GetHeaders().TryGetValue(System::String("upgrade"), sUpgrade) &&
+                    sUpgrade.GetString() == "websocket" &&
+                    spRequest->GetHeaders().TryGetValue(System::String("sec-websocket-key"), sSecKey)) {
+
+                    System::SmartPointer<WebSockets::IWebSocketHandler> wsHandler;
+                    if (m_wsHandlers.TryGetValue(spRequest->GetPath(), wsHandler) && !wsHandler.IsNull()) {
+                        System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
+                        std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\n"
+                                                 "Upgrade: websocket\r\n"
+                                                 "Connection: Upgrade\r\n"
+                                                 "Sec-WebSocket-Accept: " + sAcceptKey.GetString() + "\r\n\r\n";
+                        stream->Write(hsResponse.data(), 0, static_cast<int>(hsResponse.length()));
+
+                        auto pWebSocket = System::SmartPointer<System::Net::WebSockets::WebSocket>::NewShared(stream);
+                        auto pWsContext = System::SmartPointer<WebSockets::WebSocketContext>::NewShared(spContext, pWebSocket);
+
+                        try {
+                            wsHandler->OnConnected(pWsContext);
+                            System::String msg;
+                            while (pWebSocket->GetState() == System::Net::WebSockets::WebSocketState::Open && pWebSocket->ReceiveText(msg)) {
+                                wsHandler->OnMessage(pWsContext, msg);
+                            }
+                        } catch (...) {}
+                        try {
+                            wsHandler->OnDisconnected(pWsContext);
+                        } catch (...) {}
+
+                        spClient->Close();
+                        return;
+                    }
+                }
+
                 if (method == "GET") {
                     if (findHandler(m_getHandlers)) {
                         try {
@@ -497,6 +539,13 @@ namespace DotNetDupe {
                     System::Console::WriteLine("[Server] Route not matched!");
                     spResponse->SetStatusCode(System::Net::HttpStatusCode::NotFound);
                     sBodyResult = "404 Not Found";
+                }
+
+                // Handle streaming / headers-already-sent responses (e.g. SSE or chunked transfer)
+                if (spResponse->IsHeadersSent()) {
+                    spResponse->Flush();
+                    spClient->Close();
+                    return;
                 }
 
                 if (!sBodyResult.IsEmpty()) {

@@ -5,35 +5,35 @@
 #include "System/String.h"
 #include "System/SmartPointer.h"
 #include "System/Collections/Generic/Dictionary.h"
-
+#include "System/Net/Sockets/NetworkStream.h"
 #include "System/Net/HttpStatusCode.h"
 
 namespace DotNetDupe {
     namespace WebAppCore {
         namespace Http {
 
-            class HttpRequest : public virtual DotNetDupe::System::Object {
+            class DOTNETDUPE_API HttpRequest : public virtual DotNetDupe::System::Object {
             public:
-                DOTNETDUPE_API HttpRequest() = default;
-                DOTNETDUPE_API ~HttpRequest() override = default;
+                HttpRequest() = default;
+                ~HttpRequest() override = default;
 
-                DOTNETDUPE_API DotNetDupe::System::String GetMethod() const { return m_sMethod; }
-                DOTNETDUPE_API void SetMethod(const DotNetDupe::System::String& method) { m_sMethod = method; }
+                DotNetDupe::System::String GetMethod() const { return m_sMethod; }
+                void SetMethod(const DotNetDupe::System::String& method) { m_sMethod = method; }
 
-                DOTNETDUPE_API DotNetDupe::System::String GetPath() const { return m_sPath; }
-                DOTNETDUPE_API void SetPath(const DotNetDupe::System::String& path) { m_sPath = path; }
+                DotNetDupe::System::String GetPath() const { return m_sPath; }
+                void SetPath(const DotNetDupe::System::String& path) { m_sPath = path; }
 
-                DOTNETDUPE_API DotNetDupe::System::String GetBody() const { return m_sBody; }
-                DOTNETDUPE_API void SetBody(const DotNetDupe::System::String& body) { m_sBody = body; }
+                DotNetDupe::System::String GetBody() const { return m_sBody; }
+                void SetBody(const DotNetDupe::System::String& body) { m_sBody = body; }
 
-                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() { return m_headers; }
-                DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() const { return m_headers; }
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() { return m_headers; }
+                const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() const { return m_headers; }
 
-                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() { return m_query; }
-                DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() const { return m_query; }
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() { return m_query; }
+                const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetQuery() const { return m_query; }
 
-                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() { return m_routeValues; }
-                DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() const { return m_routeValues; }
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() { return m_routeValues; }
+                const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetRouteValues() const { return m_routeValues; }
 
             private:
                 DotNetDupe::System::String m_sMethod;
@@ -44,44 +44,56 @@ namespace DotNetDupe {
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_routeValues;
             };
 
-            class HttpResponse : public virtual DotNetDupe::System::Object {
+            class DOTNETDUPE_API HttpResponse : public virtual DotNetDupe::System::Object {
             public:
-                DOTNETDUPE_API HttpResponse() : m_nStatusCode(200), m_sContentType("text/plain") {}
-                DOTNETDUPE_API ~HttpResponse() override = default;
+                HttpResponse() : m_nStatusCode(200), m_sContentType("text/plain"), m_bHeadersSent(false), m_bChunked(false) {}
+                ~HttpResponse() override = default;
 
-                DOTNETDUPE_API int GetStatusCode() const { return m_nStatusCode; }
-                DOTNETDUPE_API void SetStatusCode(int code) { m_nStatusCode = code; }
-                DOTNETDUPE_API void SetStatusCode(DotNetDupe::System::Net::HttpStatusCode code) { m_nStatusCode = static_cast<int>(code); }
-                DOTNETDUPE_API DotNetDupe::System::Net::HttpStatusCode GetStatusCodeEnum() const { return static_cast<DotNetDupe::System::Net::HttpStatusCode>(m_nStatusCode); }
+                int GetStatusCode() const { return m_nStatusCode; }
+                void SetStatusCode(int code) { m_nStatusCode = code; }
+                void SetStatusCode(DotNetDupe::System::Net::HttpStatusCode code) { m_nStatusCode = static_cast<int>(code); }
+                DotNetDupe::System::Net::HttpStatusCode GetStatusCodeEnum() const { return static_cast<DotNetDupe::System::Net::HttpStatusCode>(m_nStatusCode); }
 
-                DOTNETDUPE_API DotNetDupe::System::String GetContentType() const { return m_sContentType; }
-                DOTNETDUPE_API void SetContentType(const DotNetDupe::System::String& type) { m_sContentType = type; }
+                DotNetDupe::System::String GetContentType() const { return m_sContentType; }
+                void SetContentType(const DotNetDupe::System::String& type) { m_sContentType = type; }
 
-                DOTNETDUPE_API DotNetDupe::System::String GetBody() const { return m_sBody; }
-                DOTNETDUPE_API void SetBody(const DotNetDupe::System::String& body) { m_sBody = body; }
+                DotNetDupe::System::String GetBody() const { return m_sBody; }
+                void SetBody(const DotNetDupe::System::String& body) { m_sBody = body; }
 
-                DOTNETDUPE_API void Write(const DotNetDupe::System::String& text) { m_sBody = m_sBody + text; }
+                void Write(const DotNetDupe::System::String& text) { m_sBody = m_sBody + text; }
 
-                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() { return m_headers; }
-                DOTNETDUPE_API const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() const { return m_headers; }
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() { return m_headers; }
+                const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& GetHeaders() const { return m_headers; }
+
+                void BindStream(DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::NetworkStream> pStream) { m_pStream = pStream; }
+                bool IsHeadersSent() const { return m_bHeadersSent; }
+                bool IsChunked() const { return m_bChunked; }
+                void SetChunked(bool bChunked) { m_bChunked = bChunked; }
+
+                void FlushHeaders();
+                void WriteChunk(const DotNetDupe::System::String& data);
+                void Flush();
 
             private:
                 int m_nStatusCode;
                 DotNetDupe::System::String m_sContentType;
                 DotNetDupe::System::String m_sBody;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_headers;
+                DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::NetworkStream> m_pStream;
+                bool m_bHeadersSent;
+                bool m_bChunked;
             };
 
-            class HttpContext : public virtual DotNetDupe::System::Object {
+            class DOTNETDUPE_API HttpContext : public virtual DotNetDupe::System::Object {
             public:
-                DOTNETDUPE_API HttpContext() {
+                HttpContext() {
                     m_spRequest = DotNetDupe::System::SmartPointer<HttpRequest>::NewShared();
                     m_spResponse = DotNetDupe::System::SmartPointer<HttpResponse>::NewShared();
                 }
-                DOTNETDUPE_API ~HttpContext() override = default;
+                ~HttpContext() override = default;
 
-                DOTNETDUPE_API DotNetDupe::System::SmartPointer<HttpRequest> GetRequest() const { return m_spRequest; }
-                DOTNETDUPE_API DotNetDupe::System::SmartPointer<HttpResponse> GetResponse() const { return m_spResponse; }
+                DotNetDupe::System::SmartPointer<HttpRequest> GetRequest() const { return m_spRequest; }
+                DotNetDupe::System::SmartPointer<HttpResponse> GetResponse() const { return m_spResponse; }
 
             private:
                 DotNetDupe::System::SmartPointer<HttpRequest> m_spRequest;

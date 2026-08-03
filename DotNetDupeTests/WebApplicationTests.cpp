@@ -695,4 +695,40 @@ namespace WebApplicationTests {
             FAIL() << "Unknown exception thrown";
         }
     }
+
+    TEST(WebApplicationTests, GivenHttpResponse_WhenStreamingChunkedEvents_ThenFlushesChunksSuccessfully) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            app->MapGet("/events", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> ctx) -> String {
+                auto resp = ctx->GetResponse();
+                resp->SetContentType("text/event-stream");
+                resp->WriteChunk("data: event1\n\n");
+                resp->WriteChunk("data: event2\n\n");
+                resp->Flush();
+                return "";
+            });
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28088");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            String sStreamRes = client.GetString("http://127.0.0.1:28088/events");
+            EXPECT_TRUE(sStreamRes.Contains("data: event1"));
+            EXPECT_TRUE(sStreamRes.Contains("data: event2"));
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
 }

@@ -32,3 +32,4 @@ void DemonstrateEventLog();
 void DemonstrateEtwLogReader();
 void DemonstrateRealtimeTelemetry();
 void RunWebAppServerDemo();
+void DemonstratePushNotifications();
