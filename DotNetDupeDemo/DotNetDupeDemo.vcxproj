@@ -187,6 +187,7 @@
     <ClCompile Include="LoggingDemo.cpp" />
     <ClCompile Include="WebAppServerDemo.cpp" />
     <ClCompile Include="PushNotificationsDemo.cpp" />
+    <ClCompile Include="UserPrincipalDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

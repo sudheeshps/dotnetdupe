@@ -260,9 +260,19 @@ namespace DotNetDupe {
             Array<BasicString<CharT>> Split(CharT chSeparator) const;
             Array<BasicString<CharT>> Split(BasicString<CharT> sSeparator[], int iCount,
                                                   StringSplitOptions eOptions) const;
+            bool StartsWith(const BasicString<CharT>& sPrefix) const;
             bool StartsWith(const BasicString<CharT>& sPrefix, bool bIgnoreCase) const;
             BasicString<CharT> Substring(int iStartIndex) const;
             BasicString<CharT> Substring(int iStartIndex, int iLength) const;
+
+            static BasicString<CharT> FromInt(int iValue);
+            static BasicString<CharT> ValueOf(int iValue);
+            static BasicString<CharT> ValueOf(long long llValue);
+            static BasicString<CharT> ValueOf(double dValue);
+            static BasicString<CharT> ToString(int iValue);
+            static BasicString<CharT> ToString(long long llValue);
+            static BasicString<CharT> ToString(double dValue);
+            static BasicString<CharT> ToString(bool bValue);
 
             BasicString<CharT> ToLower() const;
             BasicString<CharT> ToUpper() const;
@@ -728,6 +738,11 @@ namespace DotNetDupe {
         }
 
         template <class CharT>
+        inline bool BasicString<CharT>::StartsWith(const BasicString<CharT>& sPrefix) const {
+            return StartsWith(sPrefix, false);
+        }
+
+        template <class CharT>
         inline bool BasicString<CharT>::StartsWith(const BasicString<CharT>& sPrefix, bool bIgnoreCase) const {
             if (sPrefix.GetLength() > GetLength()) return false;
             
@@ -736,6 +751,46 @@ namespace DotNetDupe {
             }
 
             return Compare(*this, 0, sPrefix, 0, sPrefix.GetLength(), true) == 0;
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::FromInt(int iValue) {
+            return ValueOf(iValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ValueOf(int iValue) {
+            return ToStringHelper(iValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ValueOf(long long llValue) {
+            return ToStringHelper(llValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ValueOf(double dValue) {
+            return ToStringHelper(dValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToString(int iValue) {
+            return ToStringHelper(iValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToString(long long llValue) {
+            return ToStringHelper(llValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToString(double dValue) {
+            return ToStringHelper(dValue);
+        }
+
+        template <class CharT>
+        inline BasicString<CharT> BasicString<CharT>::ToString(bool bValue) {
+            return ToStringHelper(bValue);
         }
 
         template <class CharT>

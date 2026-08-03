@@ -48,6 +48,8 @@ namespace DotNetDupe {
                     void InitializeOpenSSL();
                     void ProcessHandshake();
                     void FlushOutboundBio();
+                    void* CreateSslContext(bool isServer);
+                    void ConfigureServerCert(void* ctx, const SmartPointer<::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2>& certificate);
                 };
 
             }

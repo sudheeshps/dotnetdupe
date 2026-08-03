@@ -19,71 +19,10 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Builder {
 
-            namespace {
-                std::vector<std::string> GetPathSegments(const std::string& path) {
-                    std::vector<std::string> segments;
-                    std::string segment;
-                    for (char c : path) {
-                        if (c == '/') {
-                            if (!segment.empty()) {
-                                segments.push_back(segment);
-                                segment.clear();
-                            }
-                        } else {
-                            segment += c;
-                        }
-                    }
-                    if (!segment.empty()) {
-                        segments.push_back(segment);
-                    }
-                    return segments;
-                }
-
-                bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams) {
-                    // Check for catch-all parameter in patternSegs (e.g. {*filepath})
-                    if (!patternSegs.empty() && patternSegs.back().length() >= 3 && patternSegs.back().front() == '{' && patternSegs.back()[1] == '*' && patternSegs.back().back() == '}') {
-                        size_t fixedCount = patternSegs.size() - 1;
-                        if (pathSegs.size() < fixedCount) return false;
-
-                        for (size_t i = 0; i < fixedCount; ++i) {
-                            const std::string& patternSeg = patternSegs[i];
-                            const std::string& pathSeg = pathSegs[i];
-                            if (patternSeg.length() >= 2 && patternSeg.front() == '{' && patternSeg.back() == '}') {
-                                std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
-                                extractedParams.push_back({paramName, pathSeg});
-                            } else if (patternSeg != pathSeg) {
-                                return false;
-                            }
-                        }
-
-                        std::string catchAllName = patternSegs.back().substr(2, patternSegs.back().length() - 3);
-                        std::string restPath;
-                        for (size_t i = fixedCount; i < pathSegs.size(); ++i) {
-                            if (!restPath.empty()) restPath += "/";
-                            restPath += pathSegs[i];
-                        }
-                        extractedParams.push_back({catchAllName, restPath});
-                        return true;
-                    }
-
-                    if (patternSegs.size() != pathSegs.size()) {
-                        return false;
-                    }
-                    for (size_t i = 0; i < patternSegs.size(); ++i) {
-                        const std::string& patternSeg = patternSegs[i];
-                        const std::string& pathSeg = pathSegs[i];
-                        
-                        if (patternSeg.length() >= 2 && patternSeg.front() == '{' && patternSeg.back() == '}') {
-                            std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
-                            extractedParams.push_back({paramName, pathSeg});
-                        } else {
-                            if (patternSeg != pathSeg) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
+            namespace Internal {
+                std::vector<std::string> GetPathSegments(const std::string& path);
+                bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams);
+                void ParseServerUrl(const std::string& sUrl, std::string& host, int& port);
             }
 
             WebApplication::WebApplication(const System::SmartPointer<System::IServiceProvider>& spServices)
@@ -155,46 +94,14 @@ namespace DotNetDupe {
                 if (threadCount > 0) {
                     System::Threading::ThreadPool::SetMinThreads(threadCount);
                 }
-                std::string sUrl(url.GetRawString());
-                std::string host = "127.0.0.1";
+
+                std::string host;
                 int port = 5000;
-
-                size_t protocolPos = sUrl.find("://");
-                std::string hostPort = sUrl;
-                if (protocolPos != std::string::npos) {
-                    hostPort = sUrl.substr(protocolPos + 3);
-                }
-
-                size_t colonPos = hostPort.find(':');
-                if (colonPos != std::string::npos) {
-                    host = hostPort.substr(0, colonPos);
-                    std::string sPort = hostPort.substr(colonPos + 1);
-                    size_t slashPos = sPort.find('/');
-                    if (slashPos != std::string::npos) {
-                        sPort = sPort.substr(0, slashPos);
-                    }
-                    try {
-                        port = std::stoi(sPort);
-                    } catch (...) {
-                        port = 5000;
-                    }
-                } else {
-                    size_t slashPos = hostPort.find('/');
-                    if (slashPos != std::string::npos) {
-                        host = hostPort.substr(0, slashPos);
-                    } else {
-                        host = hostPort;
-                    }
-                }
-
-                if (host == "localhost") {
-                    host = "127.0.0.1";
-                }
+                Internal::ParseServerUrl(url.GetRawString(), host, port);
 
                 m_sHost = System::String(host.c_str());
                 m_nPort = port;
-
-                m_pListener = System::SmartPointer<System::Net::Sockets::TcpListener>::NewShared(System::String(host.c_str()), port);
+                m_pListener = System::SmartPointer<System::Net::Sockets::TcpListener>::NewShared(m_sHost, port);
                 m_pListener->Start();
 
                 System::Console::WriteLine(System::String("[Server] Started listener on host: ") + m_sHost + " port: " + System::Convert::ToString(port));
@@ -403,7 +310,7 @@ namespace DotNetDupe {
 
                 System::Console::WriteLine("[Server] Matching handler...");
                 std::string reqPathStr = spRequest->GetPath().GetRawString();
-                std::vector<std::string> pathSegs = GetPathSegments(reqPathStr);
+                std::vector<std::string> pathSegs = Internal::GetPathSegments(reqPathStr);
 
                 auto findHandler = [&](auto& handlersMap) -> bool {
                     // Try exact match first
@@ -414,9 +321,9 @@ namespace DotNetDupe {
                     auto keys = handlersMap.GetKeys();
                     for (int i = 0; i < keys.GetLength(); ++i) {
                         System::String pattern = keys[i];
-                        std::vector<std::string> patternSegs = GetPathSegments(pattern.GetRawString());
+                        std::vector<std::string> patternSegs = Internal::GetPathSegments(pattern.GetRawString());
                         std::vector<std::pair<std::string, std::string>> extractedParams;
-                        if (MatchRoute(patternSegs, pathSegs, extractedParams)) {
+                        if (Internal::MatchRoute(patternSegs, pathSegs, extractedParams)) {
                             // Found a match! Extract parameters into GetRouteValues()
                             for (const auto& pair : extractedParams) {
                                 spRequest->GetRouteValues()[System::String(pair.first.c_str())] = System::String(pair.second.c_str());

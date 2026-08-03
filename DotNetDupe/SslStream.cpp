@@ -62,18 +62,40 @@ namespace DotNetDupe {
                     Dispose();
                 }
 
+                void* SslStream::CreateSslContext(bool isServer) {
+                    SSL_CTX* ctx = SSL_CTX_new(isServer ? TLS_server_method() : TLS_client_method());
+                    if (!ctx) {
+                        throw IO::IOException("Failed to create SSL context.");
+                    }
+
+                    SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
+                    return ctx;
+                }
+
+                void SslStream::ConfigureServerCert(void* rawCtx, const SmartPointer<::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2>& certificate) {
+                    SSL_CTX* ctx = static_cast<SSL_CTX*>(rawCtx);
+                    X509* cert = static_cast<X509*>(certificate->GetInternalCert());
+                    EVP_PKEY* pkey = static_cast<EVP_PKEY*>(certificate->GetInternalKey());
+
+                    if (SSL_CTX_use_certificate(ctx, cert) <= 0) {
+                        SSL_CTX_free(ctx);
+                        m_pSslCtx = nullptr;
+                        throw ArgumentException("Failed to configure certificate in SSL context.");
+                    }
+
+                    if (SSL_CTX_use_PrivateKey(ctx, pkey) <= 0) {
+                        SSL_CTX_free(ctx);
+                        m_pSslCtx = nullptr;
+                        throw ArgumentException("Failed to configure private key in SSL context.");
+                    }
+                }
+
                 void SslStream::AuthenticateAsClient(const String& targetHost) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");
 
-                    SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
-                    if (!ctx) {
-                        throw IO::IOException("Failed to create SSL context.");
-                    }
+                    SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(false));
                     m_pSslCtx = ctx;
-
-                    // Support TLS 1.2 and 1.3 by default
-                    SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
 
                     SSL* ssl = SSL_new(ctx);
                     if (!ssl) {
@@ -81,9 +103,8 @@ namespace DotNetDupe {
                         m_pSslCtx = nullptr;
                         throw IO::IOException("Failed to create SSL handle.");
                     }
-                    m_pSsl = ssl;
 
-                    // Set SNI
+                    m_pSsl = ssl;
                     SSL_set_tlsext_host_name(ssl, targetHost.GetRawString());
 
                     BIO* bioIn = BIO_new(BIO_s_mem());
@@ -100,32 +121,12 @@ namespace DotNetDupe {
                 void SslStream::AuthenticateAsServer(const SmartPointer<::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2>& certificate) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");
-                    if (certificate.IsNull()) {
-                        throw ArgumentNullException("certificate cannot be null.");
-                    }
+                    if (certificate.IsNull()) throw ArgumentNullException("certificate cannot be null.");
 
-                    SSL_CTX* ctx = SSL_CTX_new(TLS_server_method());
-                    if (!ctx) {
-                        throw IO::IOException("Failed to create SSL context.");
-                    }
+                    SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(true));
                     m_pSslCtx = ctx;
 
-                    SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
-
-                    X509* cert = static_cast<X509*>(certificate->GetInternalCert());
-                    EVP_PKEY* pkey = static_cast<EVP_PKEY*>(certificate->GetInternalKey());
-
-                    if (SSL_CTX_use_certificate(ctx, cert) <= 0) {
-                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw ArgumentException("Failed to configure certificate in SSL context.");
-                    }
-
-                    if (SSL_CTX_use_PrivateKey(ctx, pkey) <= 0) {
-                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw ArgumentException("Failed to configure private key in SSL context.");
-                    }
+                    ConfigureServerCert(ctx, certificate);
 
                     SSL* ssl = SSL_new(ctx);
                     if (!ssl) {
@@ -133,6 +134,7 @@ namespace DotNetDupe {
                         m_pSslCtx = nullptr;
                         throw IO::IOException("Failed to create SSL handle.");
                     }
+
                     m_pSsl = ssl;
 
                     BIO* bioIn = BIO_new(BIO_s_mem());

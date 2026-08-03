@@ -792,6 +792,14 @@ For detailed information on the available classes, methods, and their usage, ple
 | [ByteArrayContent](docs/HttpClient.md) | Provides HTTP content based on a byte array. |
 | [HttpMethod](docs/HttpClient.md) | Represents an HTTP method. |
 
+### Namespace: `DotNetDupe::System::Security::Principal`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [UserPrincipal](docs/UserPrincipal.md) | Enumerates system user accounts (Windows/Linux) and inspects user classification, groups, and security permissions. |
+
 ### Namespace: `DotNetDupe::System::Security::Cryptography`
 
 **Classes**

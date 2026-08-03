@@ -422,6 +422,7 @@
     <ClCompile Include="ServiceCollection.cpp" />
     <ClCompile Include="X509Certificate2.cpp" />
     <ClCompile Include="WebApplication.cpp" />
+    <ClCompile Include="WebApplicationRouting.cpp" />
     <ClCompile Include="WebApplicationBuilder.cpp" />
     <ClCompile Include="WebAppServer.cpp" />
     <ClCompile Include="HttpResponse.cpp" />
@@ -439,6 +440,7 @@
     <ClCompile Include="LoggerBase.cpp" />
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
+    <ClCompile Include="UserPrincipal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DotNetDupe.rc" />

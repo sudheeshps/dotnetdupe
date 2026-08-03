@@ -42,6 +42,7 @@ int main() {
     DemonstrateRealtimeTelemetry();
     RunWebAppServerDemo();
     DemonstratePushNotifications();
+    RunUserPrincipalDemo();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

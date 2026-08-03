@@ -78,10 +78,52 @@ namespace DotNetDupe {
                 ::EvtClose(hEnum);
             }
 
+            static void FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent& evt) {
+                DWORD dwUsed = 0, dwProps = 0;
+                WCHAR wXmlBuffer[4096] = { 0 };
+
+                if (::EvtRender(NULL, hEvt, EvtRenderEventXml, 4096, wXmlBuffer, &dwUsed, &dwProps)) {
+                    std::wstring wXml(wXmlBuffer);
+                    std::string sNarrowXml;
+                    for (wchar_t wc : wXml) { sNarrowXml += static_cast<char>(wc); }
+                    evt.sRawXml = String(sNarrowXml.c_str());
+                } else {
+                    evt.sRawXml = "<Event><System><EventID>100</EventID></System></Event>";
+                }
+            }
+
+            static void FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent& evt) {
+                DWORD dwUsed = 0;
+                WCHAR wMsgBuf[2048] = { 0 };
+
+                if (::EvtFormatMessage(NULL, hEvt, 0, 0, NULL, EvtFormatMessageEvent, 2048, wMsgBuf, &dwUsed) && dwUsed > 0) {
+                    std::wstring wMsg(wMsgBuf);
+                    std::string sNarrowMsg;
+                    for (wchar_t wc : wMsg) { sNarrowMsg += static_cast<char>(wc); }
+                    evt.sMessage = String(sNarrowMsg.c_str());
+                } else {
+                    evt.sMessage = evt.sRawXml.IsEmpty() ? String("ETW System Event") : evt.sRawXml;
+                }
+            }
+
+            static EtwEvent ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex) {
+                EtwEvent evt;
+                evt.sChannelName = sChannelName;
+                evt.iEventId = 100 + iIndex;
+                evt.iLevel = 4;
+                evt.sProviderName = "Windows-ETW-Provider";
+                evt.dtTimeCreated = DateTimeOffset::Now();
+
+                FormatEtwEventXml(hEvt, evt);
+                FormatEtwEventMessage(hEvt, evt);
+                return evt;
+            }
+
             static void ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
+
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), L"*", dwFlags);
                 if (hResults == NULL) return;
 
@@ -92,43 +134,19 @@ namespace DotNetDupe {
                 EVT_HANDLE hEvents[10];
                 DWORD dwReturned = 0;
                 int iCount = 0;
+
                 while (::EvtNext(hResults, 10, hEvents, INFINITE, 0, &dwReturned)) {
                     for (DWORD idx = 0; idx < dwReturned; idx++) {
-                        EtwEvent evt;
-                        evt.sChannelName = sChannelName;
-                        evt.iEventId = 100 + iCount;
-                        evt.iLevel = 4;
-                        evt.sProviderName = "Windows-ETW-Provider";
-                        evt.dtTimeCreated = DateTimeOffset::Now();
-                        
-                        DWORD dwUsed = 0, dwProps = 0;
-                        WCHAR wXmlBuffer[4096] = { 0 };
-                        if (::EvtRender(NULL, hEvents[idx], EvtRenderEventXml, 4096, wXmlBuffer, &dwUsed, &dwProps)) {
-                            std::wstring wXml(wXmlBuffer);
-                            std::string sNarrowXml;
-                            for (wchar_t wc : wXml) { sNarrowXml += static_cast<char>(wc); }
-                            evt.sRawXml = String(sNarrowXml.c_str());
-                        } else {
-                            evt.sRawXml = "<Event><System><EventID>100</EventID></System></Event>";
-                        }
-
-                        WCHAR wMsgBuf[2048] = { 0 };
-                        if (::EvtFormatMessage(NULL, hEvents[idx], 0, 0, NULL, EvtFormatMessageEvent, 2048, wMsgBuf, &dwUsed) && dwUsed > 0) {
-                            std::wstring wMsg(wMsgBuf);
-                            std::string sNarrowMsg;
-                            for (wchar_t wc : wMsg) { sNarrowMsg += static_cast<char>(wc); }
-                            evt.sMessage = String(sNarrowMsg.c_str());
-                        } else {
-                            evt.sMessage = evt.sRawXml.IsEmpty() ? String("ETW System Event") : evt.sRawXml;
-                        }
-
+                        EtwEvent evt = ProcessSingleEtwEvent(hEvents[idx], sChannelName, iCount);
                         lstEvents.Add(evt);
                         ::EvtClose(hEvents[idx]);
+
                         iCount++;
                         if (iMaxEvents > 0 && iCount >= iMaxEvents) break;
                     }
                     if (iMaxEvents > 0 && iCount >= iMaxEvents) break;
                 }
+
                 ::EvtClose(hResults);
             }
 #endif

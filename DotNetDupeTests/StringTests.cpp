@@ -50,6 +50,20 @@ namespace SystemTests {
             ASSERT_EQ(original, "Hello World");
         }
 
+        TEST(StringTest, StartsWith_SingleArgument_ReturnsTrueWhenMatchingPrefix) {
+            String str("Hello World");
+            EXPECT_TRUE(str.StartsWith("Hello"));
+            EXPECT_FALSE(str.StartsWith("world"));
+        }
+
+        TEST(StringTest, FromInt_ValueOf_And_StaticToString_ReturnFormattedString) {
+            EXPECT_TRUE(String::FromInt(42).Equals("42"));
+            EXPECT_TRUE(String::ValueOf(100).Equals("100"));
+            EXPECT_TRUE(String::ValueOf(3.14).Equals("3.14"));
+            EXPECT_TRUE(String::ToString(1234).Equals("1234"));
+            EXPECT_TRUE(String::ToString(true).Equals("True"));
+        }
+
         TEST(StringTest, CopyAssignmentOperator_Should_AssignValue_When_ValidStringPassed) {
             // Given
             String original("Hello World");

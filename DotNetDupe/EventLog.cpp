@@ -77,34 +77,40 @@ namespace DotNetDupe {
                 return EventLogEntryType::Information;
             }
 
+            static EventLogEntry ParseWin32Record(const PEVENTLOGRECORD pRec) {
+                EventLogEntryType eType = MapWin32EventType(pRec->EventType);
+                std::wstring wSrc((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
+                String sMsg = "";
+                if (pRec->NumStrings > 0) {
+                    std::wstring wMsg((wchar_t*)((BYTE*)pRec + pRec->StringOffset));
+                    std::string sNarrowMsg;
+                    for (wchar_t wc : wMsg) { sNarrowMsg += static_cast<char>(wc); }
+                    sMsg = String(sNarrowMsg.c_str());
+                }
+                int64_t iTicks = ((int64_t)pRec->TimeGenerated + 62135596800LL) * 10000000LL;
+                std::string sNarrowSrc;
+                for (wchar_t wc : wSrc) { sNarrowSrc += static_cast<char>(wc); }
+                return EventLogEntry(sMsg, eType, (int)pRec->EventID, String(sNarrowSrc.c_str()), DateTimeOffset(iTicks));
+            }
+
+            static void ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries) {
+                DWORD dwOffset = 0;
+                while (dwOffset < dwBytesRead) {
+                    PEVENTLOGRECORD pRec = (PEVENTLOGRECORD)&buffer[dwOffset];
+                    lstEntries.Add(ParseWin32Record(pRec));
+                    dwOffset += pRec->Length;
+                }
+            }
+
             static void ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
                 std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
                 HANDLE hEventLog = ::OpenEventLogW(NULL, wLogName.c_str());
                 if (hEventLog == NULL) return;
-
                 DWORD dwBytesRead = 0, dwNeeded = 0;
                 BYTE buffer[0x10000];
                 while (::ReadEventLogW(hEventLog, EVENTLOG_SEQUENTIAL_READ | EVENTLOG_BACKWARDS_READ, 0, buffer, sizeof(buffer), &dwBytesRead, &dwNeeded)) {
-                    DWORD dwOffset = 0;
-                    while (dwOffset < dwBytesRead) {
-                        PEVENTLOGRECORD pRec = (PEVENTLOGRECORD)&buffer[dwOffset];
-                        EventLogEntryType eType = MapWin32EventType(pRec->EventType);
-                        std::wstring wSrc((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
-                        String sMsg = "";
-                        if (pRec->NumStrings > 0) {
-                            std::wstring wMsg((wchar_t*)((BYTE*)pRec + pRec->StringOffset));
-                            std::string sNarrowMsg;
-                            for (wchar_t wc : wMsg) { sNarrowMsg += static_cast<char>(wc); }
-                            sMsg = String(sNarrowMsg.c_str());
-                        }
-                        int64_t iTicks = ((int64_t)pRec->TimeGenerated + 62135596800LL) * 10000000LL;
-                        std::string sNarrowSrc;
-                        for (wchar_t wc : wSrc) { sNarrowSrc += static_cast<char>(wc); }
-                        String sSrcStr(sNarrowSrc.c_str());
-                        lstEntries.Add(EventLogEntry(sMsg, eType, (int)pRec->EventID, sSrcStr, DateTimeOffset(iTicks)));
-                        dwOffset += pRec->Length;
-                    }
+                    ProcessWin32EventBuffer(buffer, dwBytesRead, lstEntries);
                 }
                 ::CloseEventLog(hEventLog);
             }
@@ -177,22 +183,32 @@ namespace DotNetDupe {
                 closelog();
             }
 
+            static EventLogEntry ParseSyslogLine(const std::string& line) {
+                EventLogEntryType eType = EventLogEntryType::Information;
+
+                if (line.find("error") != std::string::npos || line.find("ERR") != std::string::npos || line.find("err") != std::string::npos || line.find("Error") != std::string::npos) {
+                    eType = EventLogEntryType::Error;
+                } else if (line.find("warn") != std::string::npos || line.find("WARN") != std::string::npos || line.find("Warn") != std::string::npos) {
+                    eType = EventLogEntryType::Warning;
+                }
+
+                int iEventId = 0;
+                size_t posId = line.find("[EventID ");
+                if (posId != std::string::npos) {
+                    iEventId = std::atoi(line.c_str() + posId + 9);
+                }
+
+                return EventLogEntry(String(line.c_str()), eType, iEventId, "syslog", DateTimeOffset::Now());
+            }
+
             static void ReadLinuxSyslogFile(const std::string& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries) {
                 std::ifstream infile(sFilePath);
                 if (!infile.is_open()) return;
+
                 std::string line;
                 while (std::getline(infile, line)) {
                     if (line.empty()) continue;
-                    EventLogEntryType eType = EventLogEntryType::Information;
-                    if (line.find("error") != std::string::npos || line.find("ERR") != std::string::npos || line.find("err") != std::string::npos || line.find("Error") != std::string::npos) eType = EventLogEntryType::Error;
-                    else if (line.find("warn") != std::string::npos || line.find("WARN") != std::string::npos || line.find("Warn") != std::string::npos) eType = EventLogEntryType::Warning;
-                    
-                    int iEventId = 0;
-                    size_t posId = line.find("[EventID ");
-                    if (posId != std::string::npos) {
-                        iEventId = std::atoi(line.c_str() + posId + 9);
-                    }
-                    lstEntries.Add(EventLogEntry(String(line.c_str()), eType, iEventId, "syslog", DateTimeOffset::Now()));
+                    lstEntries.Add(ParseSyslogLine(line));
                 }
             }
 
