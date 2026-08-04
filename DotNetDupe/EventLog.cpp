@@ -50,19 +50,19 @@ namespace DotNetDupe {
 
             EventLog::EventLog(const String& sLogName)
                 : m_sLogName(sLogName), m_sMachineName("."), m_sSource("") {
-                if (m_sLogName.IsEmpty()) m_sLogName = String("Application");
+                if (m_sLogName.IsEmpty()) m_sLogName = "Application";
             }
 
             EventLog::EventLog(const String& sLogName, const String& sMachineName)
                 : m_sLogName(sLogName), m_sMachineName(sMachineName), m_sSource("") {
-                if (m_sLogName.IsEmpty()) m_sLogName = String("Application");
-                if (m_sMachineName.IsEmpty()) m_sMachineName = String(".");
+                if (m_sLogName.IsEmpty()) m_sLogName = "Application";
+                if (m_sMachineName.IsEmpty()) m_sMachineName = ".";
             }
 
             EventLog::EventLog(const String& sLogName, const String& sMachineName, const String& sSource)
                 : m_sLogName(sLogName), m_sMachineName(sMachineName), m_sSource(sSource) {
-                if (m_sLogName.IsEmpty()) m_sLogName = String("Application");
-                if (m_sMachineName.IsEmpty()) m_sMachineName = String(".");
+                if (m_sLogName.IsEmpty()) m_sLogName = "Application";
+                if (m_sMachineName.IsEmpty()) m_sMachineName = ".";
             }
 
             EventLog::~EventLog() {

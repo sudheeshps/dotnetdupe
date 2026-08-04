@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 
 #include "System/String.h"
+#include "System/Utils/StringConvert.h"
 #include "System/ArgumentException.h"
 #include "System/FormatException.h"
 
@@ -542,6 +543,57 @@ namespace SystemTests {
             
             // When/Then
             ASSERT_THROW(String::Format(formatStr, "world"), FormatException);
+        }
+
+        TEST(StringConvertTest, WCharToUtf8_Should_ConvertWideStringToUtf8_When_ValidWideStringPassed) {
+            // Given
+            const wchar_t* pwszInput = L"DotNetDupe Wide String";
+
+            // When
+            std::string sUtf8 = Utils::StringConvert::WCharToUtf8(pwszInput);
+
+            // Then
+            ASSERT_EQ(sUtf8, "DotNetDupe Wide String");
+        }
+
+        TEST(StringConvertTest, Utf8ToWChar_Should_ConvertUtf8ToWideString_When_ValidUtf8StringPassed) {
+            // Given
+            const char* pszInput = "DotNetDupe UTF8 String";
+
+            // When
+            std::wstring sWide = Utils::StringConvert::Utf8ToWChar(pszInput);
+
+            // Then
+            ASSERT_TRUE(sWide == L"DotNetDupe UTF8 String");
+        }
+
+        TEST(StringConvertTest, ConversionMethods_Should_ReturnEmptyString_When_NullPointerPassed) {
+            // Given / When / Then
+            ASSERT_EQ(Utils::StringConvert::WCharToUtf8(nullptr), "");
+            ASSERT_TRUE(Utils::StringConvert::Utf8ToWChar(nullptr) == L"");
+        }
+
+        TEST(StringTest, Constructor_Should_ConvertWideString_When_WideCharPointerPassed) {
+            // Given
+            const wchar_t* pwszWide = L"Wide String Test";
+
+            // When
+            String str(pwszWide);
+
+            // Then
+            ASSERT_EQ(str, "Wide String Test");
+        }
+
+        TEST(StringTest, AssignmentOperator_Should_ConvertWideString_When_WideCharPointerPassed) {
+            // Given
+            String str;
+            const wchar_t* pwszWide = L"Assigned Wide String";
+
+            // When
+            str = pwszWide;
+
+            // Then
+            ASSERT_EQ(str, "Assigned Wide String");
         }
     }
 }

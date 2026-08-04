@@ -702,6 +702,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [EtwLogReader](docs/EtwLogReader.md) | Provides Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, reading, and subscription listening. |
 | [SystemMetrics](docs/RealtimeTelemetry.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
 | [ActiveUserSession](docs/RealtimeTelemetry.md) | Enumerates active and terminal user sessions across the system. |
+| [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
 | [Process](docs/Process.md) | Provides access to local processes and enables you to start and stop local system processes. |
 | [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
 
@@ -713,6 +714,14 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
+
+### Namespace: `DotNetDupe::System::Utils`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [StringConvert](docs/StringConvert.md) | Provides static utility methods for converting strings between UTF-8 and UTF-16 representations. |
 
 ### Namespace: `DotNetDupe::System::Collections::Generic`
 

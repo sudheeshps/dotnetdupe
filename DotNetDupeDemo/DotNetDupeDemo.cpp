@@ -43,6 +43,7 @@ int main() {
     RunWebAppServerDemo();
     DemonstratePushNotifications();
     RunUserPrincipalDemo();
+    DemonstrateTerminalSession();
     RunConcurrentCollectionsDemo();
     RunGenericCollectionsDemo();
     

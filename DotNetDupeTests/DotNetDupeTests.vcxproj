@@ -186,6 +186,7 @@
     <ClCompile Include="EtwLogReaderTests.cpp" />
     <ClCompile Include="RealtimeTelemetryTests.cpp" />
     <ClCompile Include="UserPrincipalTests.cpp" />
+    <ClCompile Include="TerminalSessionTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

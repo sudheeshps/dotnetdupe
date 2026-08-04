@@ -42,9 +42,10 @@ namespace DotNetDupe {
                     if (::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&pGroups, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries) == NERR_Success) {
                         for (DWORD i = 0; i < dwEntriesRead; i++) {
                             std::wstring wGroup(pGroups[i].grui0_name);
-                            std::string sGroup(wGroup.begin(), wGroup.end());
-                            lstGroups.Add(String(sGroup.c_str()));
-                            lstPermissions.Add(String(("GroupMember:" + sGroup).c_str()));
+                            std::string sGroup;
+                            for (wchar_t wc : wGroup) { sGroup.push_back(static_cast<char>(wc)); }
+                            lstPermissions.Add(String("GroupMember:") + String(sGroup));
+                            lstGroups.Add(String(std::move(sGroup)));
                         }
                         ::NetApiBufferFree(pGroups);
                     }
@@ -53,8 +54,10 @@ namespace DotNetDupe {
                 static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
                     UserInfo info;
                     std::wstring wName(pUi->usri1_name);
-                    std::string sName(wName.begin(), wName.end());
-                    info.sUsername = String(sName.c_str());
+                    std::string sName;
+                    sName.reserve(wName.length());
+                    for (wchar_t wc : wName) { sName.push_back(static_cast<char>(wc)); }
+                    info.sUsername = String(std::move(sName));
 
                     info.sDomain = "LOCAL";
                     info.sSidOrUid = "S-1-5-21-USER";

@@ -358,6 +358,7 @@ namespace WebApplicationTests {
             // Given
             auto builder = WebApplication::CreateBuilder();
             // Register Controller and configure routes using the fluent builder API
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
             builder->AddController<ProductsController>("/api/products")
                 .MapGet("", &ProductsController::GetProducts)
                 .MapGet("/{id}", &ProductsController::GetProductById)
@@ -448,6 +449,7 @@ namespace WebApplicationTests {
         try {
             // Given
             auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
             builder->AddController<ProductsController>("/api/products")
                 .MapGet("", &ProductsController::GetProducts)
                 .MapGet("/{id}", &ProductsController::GetProductById)
@@ -513,6 +515,7 @@ namespace WebApplicationTests {
         try {
             // Given
             auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<SecureController, SecureController>();
             builder->AddController<SecureController>("/api/secure")
                 .MapGet("/secret", &SecureController::GetSecretData)
                 .MapGet("/admin", &SecureController::GetAdminData);
@@ -583,6 +586,7 @@ namespace WebApplicationTests {
         try {
             // Given
             auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
             builder->AddController<ProductsController>("/api/test")
                 .MapGet("/item", &ProductsController::GetProductById);
 

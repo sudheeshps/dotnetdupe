@@ -1,5 +1,6 @@
 #include "System/Array.h"
 #include "System/String.h"
+#include "System/Utils/StringConvert.h"
 
 #include "System/Console.h"
 #include <iostream>
@@ -50,4 +51,10 @@ void DemonstrateString() {
     // Escaped Braces
     String sEscaped = String::Format("Position placeholder format uses {{0}}, formatted value is {0}", 42);
     Console::WriteLine(sEscaped);
+
+    // StringConvert Demonstration
+    Console::WriteLine("\nStringConvert Demonstration:");
+    const wchar_t* pwszWide = L"Wide-character string to UTF8 conversion";
+    String sUtf8 = Utils::StringConvert::WCharToUtf8(pwszWide);
+    Console::WriteLine(sUtf8);
 }

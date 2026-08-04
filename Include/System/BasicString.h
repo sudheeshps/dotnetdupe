@@ -90,11 +90,25 @@ namespace DotNetDupe {
             BasicString() = default;
             BasicString(const CharT* pStr);
             BasicString(const std::basic_string<CharT>& str) : m_str(str) {}
+            BasicString(std::basic_string<CharT>&& str) noexcept : m_str(std::move(str)) {}
             BasicString(const BasicString<CharT>& sStr);
             BasicString<CharT>& operator=(const BasicString<CharT>& sStr);
             BasicString(BasicString<CharT>&& sStr) noexcept;
             BasicString<CharT>& operator=(BasicString<CharT>&& sStr) noexcept;
             BasicString<CharT>& operator=(const CharT* pStr);
+
+            // Converting constructor & assignment for opposite character pointer type
+            using OppositeCharT = std::conditional_t<std::is_same_v<CharT, char>, wchar_t, char>;
+            BasicString(const OppositeCharT* pStr);
+            BasicString<CharT>& operator=(const OppositeCharT* pStr);
+
+            // std::nullptr_t & int (0/NULL) constructors & assignments to throw ArgumentException
+            BasicString(std::nullptr_t) { throw ArgumentException("Invalid input pointer"); }
+            BasicString<CharT>& operator=(std::nullptr_t) { throw ArgumentException("Invalid input pointer"); }
+            BasicString(int nNull) {
+                if (nNull == 0) throw ArgumentException("Invalid input pointer");
+                throw ArgumentException("Invalid input integer");
+            }
             const CharT* GetRawString() const;
             operator const CharT* () const { return GetRawString(); }
             int GetLength() const;
@@ -120,7 +134,11 @@ namespace DotNetDupe {
 
             friend void PrintTo(const BasicString<CharT>& sStr, ::std::ostream* os) {
                 if (os) {
-                    *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
+                    if constexpr (std::is_same_v<CharT, wchar_t>) {
+                        *os << "\"" << (sStr.GetRawString() ? "wchar_t string" : "") << "\"";
+                    } else {
+                        *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
+                    }
                 }
             }
 
@@ -186,8 +204,13 @@ namespace DotNetDupe {
             }
 
             friend BasicString<CharT> operator+(const CharT* pStr, const BasicString<CharT>& sStr) {
-                BasicString<CharT> newStr(pStr ? pStr : "");
-                return newStr + sStr;
+                if constexpr (std::is_same_v<CharT, char>) {
+                    BasicString<CharT> newStr(pStr ? pStr : "");
+                    return newStr + sStr;
+                } else {
+                    BasicString<CharT> newStr(pStr ? pStr : L"");
+                    return newStr + sStr;
+                }
             }
 
             friend BasicString<CharT> operator+(CharT ch, const BasicString<CharT>& sStr) {
@@ -200,7 +223,7 @@ namespace DotNetDupe {
                 const std::initializer_list<BasicString<CharT>> sStrs) const;
 
             bool Contains(CharT ch) const;
-            bool Contains(const BasicString<CharT>& sStr);
+            bool Contains(const BasicString<CharT>& sStr) const;
 
             void CopyTo(int iSourceIndex, CharT* pDestination, int iDestinationIndex,
                         int iDestArraySize, int iCount) const;
@@ -283,6 +306,9 @@ namespace DotNetDupe {
             template<typename T>
             static BasicString<CharT> ToStringHelper(const T& val);
 
+            DOTNETDUPE_API static std::string TranscodeWCharToUtf8(const wchar_t* pWStr);
+            DOTNETDUPE_API static std::wstring TranscodeUtf8ToWChar(const char* pUtf8Str);
+
             std::basic_string<CharT> m_str;
         };
 
@@ -312,6 +338,27 @@ namespace DotNetDupe {
             }
             return *this;
         }
+        template<class CharT>
+        inline BasicString<CharT>::BasicString(const OppositeCharT* pStr) {
+            if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+            if constexpr (std::is_same_v<CharT, char>) {
+                m_str = TranscodeWCharToUtf8(pStr);
+            } else {
+                m_str = TranscodeUtf8ToWChar(pStr);
+            }
+        }
+
+        template<class CharT>
+        inline BasicString<CharT>& BasicString<CharT>::operator=(const OppositeCharT* pStr) {
+            if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+            if constexpr (std::is_same_v<CharT, char>) {
+                m_str = TranscodeWCharToUtf8(pStr);
+            } else {
+                m_str = TranscodeUtf8ToWChar(pStr);
+            }
+            return *this;
+        }
+
         template<class CharT>
         inline BasicString<CharT>& BasicString<CharT>::operator=(const CharT* pStr) {
             if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
@@ -350,10 +397,15 @@ namespace DotNetDupe {
 
             auto s1 = sStr1.m_str.substr(iIndex1, iLength);
             auto s2 = sStr2.m_str.substr(iIndex2, iLength);
-            std::transform(s1.begin(), s1.end(), s1.begin(),
-                           [](CharT ch) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(ch))); });
-            std::transform(s2.begin(), s2.end(), s2.begin(),
-                           [](CharT ch) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(ch))); });
+            auto transform_char = [](CharT ch) -> CharT {
+                if constexpr (std::is_same_v<CharT, wchar_t>) {
+                    return static_cast<wchar_t>(std::towlower(ch));
+                } else {
+                    return static_cast<CharT>(std::tolower(static_cast<unsigned char>(ch)));
+                }
+            };
+            std::transform(s1.begin(), s1.end(), s1.begin(), transform_char);
+            std::transform(s2.begin(), s2.end(), s2.begin(), transform_char);
             return s1.compare(s2);
         }
 
@@ -400,7 +452,7 @@ namespace DotNetDupe {
             return m_str.find(ch) != std::basic_string<CharT>::npos;
         }
         template <class CharT>
-        inline bool BasicString<CharT>::Contains(const BasicString<CharT>& sStr) {
+        inline bool BasicString<CharT>::Contains(const BasicString<CharT>& sStr) const {
             return m_str.find(sStr.m_str) != std::basic_string<CharT>::npos;
         }
 
@@ -770,7 +822,9 @@ namespace DotNetDupe {
 
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::ValueOf(double dValue) {
-            return ToStringHelper(dValue);
+            std::basic_ostringstream<CharT> ss;
+            ss << dValue;
+            return BasicString<CharT>(ss.str());
         }
 
         template <class CharT>
@@ -810,7 +864,13 @@ namespace DotNetDupe {
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::ToLower() const {
             std::basic_string<CharT> sRet = m_str;
-            std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](CharT ch) { return static_cast<CharT>(std::tolower(static_cast<unsigned char>(ch))); });
+            std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](CharT ch) -> CharT {
+                if constexpr (std::is_same_v<CharT, wchar_t>) {
+                    return static_cast<wchar_t>(std::towlower(ch));
+                } else {
+                    return static_cast<CharT>(std::tolower(static_cast<unsigned char>(ch)));
+                }
+            });
             return BasicString<CharT>(sRet.c_str());
         }
 
@@ -824,7 +884,13 @@ namespace DotNetDupe {
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::ToUpper() const {
             std::basic_string<CharT> sRet = m_str;
-            std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](CharT ch) { return static_cast<CharT>(std::toupper(static_cast<unsigned char>(ch))); });
+            std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](CharT ch) -> CharT {
+                if constexpr (std::is_same_v<CharT, wchar_t>) {
+                    return static_cast<wchar_t>(std::towupper(ch));
+                } else {
+                    return static_cast<CharT>(std::toupper(static_cast<unsigned char>(ch)));
+                }
+            });
             return BasicString<CharT>(sRet.c_str());
         }
 
@@ -843,9 +909,16 @@ namespace DotNetDupe {
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::TrimStart() const {
             auto it = std::find_if(m_str.begin(), m_str.end(), [](CharT ch) {
-                return !std::isspace(static_cast<unsigned char>(ch));
+                if constexpr (std::is_same_v<CharT, wchar_t>) {
+                    return !std::iswspace(ch);
+                } else {
+                    return !std::isspace(static_cast<unsigned char>(ch));
+                }
             });
-            if (it == m_str.end()) return "";
+            if (it == m_str.end()) {
+                if constexpr (std::is_same_v<CharT, char>) return "";
+                else return L"";
+            }
             return BasicString<CharT>(m_str.substr(std::distance(m_str.begin(), it)).c_str());
         }
 
@@ -861,9 +934,16 @@ namespace DotNetDupe {
         template <class CharT>
         inline BasicString<CharT> BasicString<CharT>::TrimEnd() const {
             auto it = std::find_if(m_str.rbegin(), m_str.rend(), [](CharT ch) {
-                return !std::isspace(static_cast<unsigned char>(ch));
+                if constexpr (std::is_same_v<CharT, wchar_t>) {
+                    return !std::iswspace(ch);
+                } else {
+                    return !std::isspace(static_cast<unsigned char>(ch));
+                }
             });
-            if (it == m_str.rend()) return "";
+            if (it == m_str.rend()) {
+                if constexpr (std::is_same_v<CharT, char>) return "";
+                else return L"";
+            }
             return BasicString<CharT>(m_str.substr(0, m_str.length() - std::distance(m_str.rbegin(), it)).c_str());
         }
 
@@ -878,8 +958,13 @@ namespace DotNetDupe {
 
         template <class CharT>
         inline BasicString<CharT> operator+(const CharT* pStr, const BasicString<CharT>& sStr) {
-            BasicString<CharT> newStr(pStr ? pStr : "");
-            return newStr + sStr;
+            if constexpr (std::is_same_v<CharT, char>) {
+                BasicString<CharT> newStr(pStr ? pStr : "");
+                return newStr + sStr;
+            } else {
+                BasicString<CharT> newStr(pStr ? pStr : L"");
+                return newStr + sStr;
+            }
         }
 
         template <class CharT>
@@ -898,17 +983,19 @@ namespace DotNetDupe {
             } else if constexpr (std::is_same_v<DecayedT, std::basic_string<CharT>>) {
                 return BasicString<CharT>(val.c_str());
             } else if constexpr (std::is_same_v<DecayedT, std::nullptr_t>) {
-                return BasicString<CharT>("");
+                if constexpr (std::is_same_v<CharT, char>) {
+                    return BasicString<CharT>("");
+                } else {
+                    return BasicString<CharT>(L"");
+                }
             } else if constexpr (std::is_same_v<DecayedT, bool>) {
                 return val ? BoolRepresentation<CharT>::True : BoolRepresentation<CharT>::False;
-            } else if constexpr (std::is_constructible_v<BasicString<CharT>, DecayedT>) {
-                return BasicString<CharT>(val);
             } else if constexpr (has_ToString_v<DecayedT>) {
                 return val.ToString();
             } else {
                 std::basic_ostringstream<CharT> ss;
                 ss << val;
-                return BasicString<CharT>(ss.str().c_str());
+                return BasicString<CharT>(ss.str());
             }
         }
 

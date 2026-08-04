@@ -128,7 +128,10 @@ namespace DotNetDupe {
                         }
                     }
 
-                    outMessage = String(std::string(payload.begin(), payload.end()).c_str());
+                    std::string sPayload;
+                    sPayload.reserve(payload.size());
+                    for (uint8_t b : payload) { sPayload.push_back(static_cast<char>(b)); }
+                    outMessage = String(std::move(sPayload));
                     return true;
                 }
 

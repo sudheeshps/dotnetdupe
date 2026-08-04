@@ -237,7 +237,9 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
+    <ClInclude Include="InternalStringConvert.h" />
     <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
+    <ClInclude Include="..\Include\System\Utils\StringConvert.h" />
     <ClInclude Include="..\Include\System\Text\StringBuilder.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonElement.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonSerializer.h" />
@@ -272,6 +274,7 @@
     <ClInclude Include="..\Include\System\Diagnostics\EtwLogReader.h" />
     <ClInclude Include="..\Include\System\Diagnostics\SystemMetrics.h" />
     <ClInclude Include="..\Include\System\Diagnostics\ActiveUserSession.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\TerminalSession.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Stopwatch.h" />
     <ClInclude Include="..\Include\System\Random.h" />
     <ClInclude Include="..\Include\System\UriParser.h" />
@@ -358,6 +361,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringBuilder.cpp" />
+    <ClCompile Include="InternalStringConvert.cpp" />
+    <ClCompile Include="BasicStringTranscode.cpp" />
+    <ClCompile Include="System\Utils\StringConvert.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -441,6 +447,7 @@
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
     <ClCompile Include="UserPrincipal.cpp" />
+    <ClCompile Include="TerminalSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DotNetDupe.rc" />

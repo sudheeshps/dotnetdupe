@@ -12,7 +12,7 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Http {
 
-            class DOTNETDUPE_API HttpRequest : public virtual DotNetDupe::System::Object {
+            class HttpRequest : public virtual DotNetDupe::System::Object {
             public:
                 HttpRequest() = default;
                 ~HttpRequest() override = default;
@@ -44,7 +44,7 @@ namespace DotNetDupe {
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String> m_routeValues;
             };
 
-            class DOTNETDUPE_API HttpResponse : public virtual DotNetDupe::System::Object {
+            class HttpResponse : public virtual DotNetDupe::System::Object {
             public:
                 HttpResponse() : m_nStatusCode(200), m_sContentType("text/plain"), m_bHeadersSent(false), m_bChunked(false) {}
                 ~HttpResponse() override = default;
@@ -70,9 +70,9 @@ namespace DotNetDupe {
                 bool IsChunked() const { return m_bChunked; }
                 void SetChunked(bool bChunked) { m_bChunked = bChunked; }
 
-                void FlushHeaders();
-                void WriteChunk(const DotNetDupe::System::String& data);
-                void Flush();
+                DOTNETDUPE_API void FlushHeaders();
+                DOTNETDUPE_API void WriteChunk(const DotNetDupe::System::String& data);
+                DOTNETDUPE_API void Flush();
 
             private:
                 int m_nStatusCode;
@@ -84,7 +84,7 @@ namespace DotNetDupe {
                 bool m_bChunked;
             };
 
-            class DOTNETDUPE_API HttpContext : public virtual DotNetDupe::System::Object {
+            class HttpContext : public virtual DotNetDupe::System::Object {
             public:
                 HttpContext() {
                     m_spRequest = DotNetDupe::System::SmartPointer<HttpRequest>::NewShared();
