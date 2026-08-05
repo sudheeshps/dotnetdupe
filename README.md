@@ -2,7 +2,7 @@
 
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions)
-[![Latest Release](https://img.shields.io/github/v/release/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/releases)
+[![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
 [![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://github.com/sudheeshps/DotNetDupe/actions)
@@ -13,7 +13,12 @@ Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While th
 Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨
 
 > [!IMPORTANT]
-> **Major Update (v3.0.0):** DotNetDupe is now fully cross-platform! 🌐 We've introduced official support for Linux (tested via Ubuntu on WSL) alongside Windows, applied C++ Core Coding Guidelines for better reliability, and introduced the `SmartPointer` utility for unified resource management.
+> **Major Update ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe is now fully cross-platform! 🌐 Key highlights in this release include:
+> - 🌐 **Mini WebAppServer:** Built-in web application server capabilities.
+> - 📊 **System Metrics Collector:** Comprehensive hardware and process resource monitoring.
+> - 🖥️ **Active Session Enumerator:** Enumerate active user and system sessions.
+> - 👥 **System User Enumeration:** Enumerate local system users.
+> - 🔒 **Named Synchronization:** Enhanced sync primitives with cross-process named support (`Mutex`, `EventWaitHandle`, etc.).
 
 We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
 
