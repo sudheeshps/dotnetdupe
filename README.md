@@ -14,6 +14,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Major Update ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe is now fully cross-platform! 🌐 Key highlights in this release include:
+> - ⚡ **C++ Standard:** Language version upgraded to C++20.
 > - 🌐 **Mini WebAppServer:** Built-in web application server capabilities.
 > - 📊 **System Metrics Collector:** Comprehensive hardware and process resource monitoring.
 > - 🖥️ **Active Session Enumerator:** Enumerate active user and system sessions.
