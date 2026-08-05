@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>3.0.2</version>
+    <version>3.0.4</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>Added database support, authentication/authorization, secure HTTP (SSL) and JWT token handling, a dependency injection framework, WebApplication and RestClient (supporting PUT/DELETE), a Logger, enhanced WSL NuGet documentation, and added usage samples to the class API documentation.</releaseNotes>
+    <releaseNotes>Upgraded language standard to C++20. Added Mini WebAppServer, System metrics collector, Active session enumerator, System user enumeration, and enhanced synchronization classes with cross-process name support.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/sudheeshps/dotnetdupe</projectUrl>
     <license type="expression">MIT</license>
