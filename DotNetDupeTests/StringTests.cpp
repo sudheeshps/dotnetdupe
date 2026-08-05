@@ -6,6 +6,7 @@
 #include "gtest/gtest.h"
 
 #include "System/String.h"
+#include "System/Utils/StringConvert.h"
 #include "System/ArgumentException.h"
 #include "System/FormatException.h"
 
@@ -17,6 +18,66 @@ namespace SystemTests {
         TEST(StringTest, Constructor_Should_Throw_Exception_When_NullPointer_Specified) {
             ASSERT_THROW(String str(nullptr), ArgumentException);
         }
+
+        TEST(StringTest, AssignmentOperator_Should_AssignValue_When_ValidCharPointerPassed) {
+            // Given
+            String str("Initial");
+            const char* pNewStr = "Updated String";
+
+            // When
+            str = pNewStr;
+
+            // Then
+            ASSERT_EQ(str, "Updated String");
+        }
+
+        TEST(StringTest, AssignmentOperator_Should_ThrowArgumentException_When_NullPointerPassed) {
+            // Given
+            String str("Initial");
+            const char* pNullStr = nullptr;
+
+            // When / Then
+            ASSERT_THROW(str = pNullStr, ArgumentException);
+        }
+        TEST(StringTest, CopyConstructor_Should_CopyValue_When_ValidStringPassed) {
+            // Given
+            String original("Hello World");
+
+            // When
+            String copy(original);
+
+            // Then
+            ASSERT_EQ(copy, "Hello World");
+            ASSERT_EQ(original, "Hello World");
+        }
+
+        TEST(StringTest, StartsWith_SingleArgument_ReturnsTrueWhenMatchingPrefix) {
+            String str("Hello World");
+            EXPECT_TRUE(str.StartsWith("Hello"));
+            EXPECT_FALSE(str.StartsWith("world"));
+        }
+
+        TEST(StringTest, FromInt_ValueOf_And_StaticToString_ReturnFormattedString) {
+            EXPECT_TRUE(String::FromInt(42).Equals("42"));
+            EXPECT_TRUE(String::ValueOf(100).Equals("100"));
+            EXPECT_TRUE(String::ValueOf(3.14).Equals("3.14"));
+            EXPECT_TRUE(String::ToString(1234).Equals("1234"));
+            EXPECT_TRUE(String::ToString(true).Equals("True"));
+        }
+
+        TEST(StringTest, CopyAssignmentOperator_Should_AssignValue_When_ValidStringPassed) {
+            // Given
+            String original("Hello World");
+            String assigned("Initial");
+
+            // When
+            assigned = original;
+
+            // Then
+            ASSERT_EQ(assigned, "Hello World");
+            ASSERT_EQ(original, "Hello World");
+        }
+
         TEST(StringTest, GetLength_Should_Return_ActualLength_When_A_GoodString_Specified) {
             String str("Hello");
             ASSERT_TRUE(str.GetLength() == 5);
@@ -482,6 +543,57 @@ namespace SystemTests {
             
             // When/Then
             ASSERT_THROW(String::Format(formatStr, "world"), FormatException);
+        }
+
+        TEST(StringConvertTest, WCharToUtf8_Should_ConvertWideStringToUtf8_When_ValidWideStringPassed) {
+            // Given
+            const wchar_t* pwszInput = L"DotNetDupe Wide String";
+
+            // When
+            std::string sUtf8 = Utils::StringConvert::WCharToUtf8(pwszInput);
+
+            // Then
+            ASSERT_EQ(sUtf8, "DotNetDupe Wide String");
+        }
+
+        TEST(StringConvertTest, Utf8ToWChar_Should_ConvertUtf8ToWideString_When_ValidUtf8StringPassed) {
+            // Given
+            const char* pszInput = "DotNetDupe UTF8 String";
+
+            // When
+            std::wstring sWide = Utils::StringConvert::Utf8ToWChar(pszInput);
+
+            // Then
+            ASSERT_TRUE(sWide == L"DotNetDupe UTF8 String");
+        }
+
+        TEST(StringConvertTest, ConversionMethods_Should_ReturnEmptyString_When_NullPointerPassed) {
+            // Given / When / Then
+            ASSERT_EQ(Utils::StringConvert::WCharToUtf8(nullptr), "");
+            ASSERT_TRUE(Utils::StringConvert::Utf8ToWChar(nullptr) == L"");
+        }
+
+        TEST(StringTest, Constructor_Should_ConvertWideString_When_WideCharPointerPassed) {
+            // Given
+            const wchar_t* pwszWide = L"Wide String Test";
+
+            // When
+            String str(pwszWide);
+
+            // Then
+            ASSERT_EQ(str, "Wide String Test");
+        }
+
+        TEST(StringTest, AssignmentOperator_Should_ConvertWideString_When_WideCharPointerPassed) {
+            // Given
+            String str;
+            const wchar_t* pwszWide = L"Assigned Wide String";
+
+            // When
+            str = pwszWide;
+
+            // Then
+            ASSERT_EQ(str, "Assigned Wide String");
         }
     }
 }

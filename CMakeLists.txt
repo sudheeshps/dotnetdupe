@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(DotNetDupe)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+else()
+    find_package(Microsoft.GSL CONFIG QUIET)
+endif()
 
 # Include directories
 include_directories(Include)
@@ -10,7 +16,7 @@ include_directories(DotNetDupe)
 
 # Library sources
 # Force re-configure to pick up new files (like Process.cpp, WebApplication.cpp, etc.)
-file(GLOB LIB_SOURCES "DotNetDupe/*.cpp")
+file(GLOB_RECURSE LIB_SOURCES "DotNetDupe/*.cpp")
 
 # Remove dllmain.cpp from non-Windows builds if necessary, 
 # but for now we'll keep it as it's often empty or has simple entry points.
@@ -19,19 +25,23 @@ if(NOT WIN32)
 endif()
 
 if(WIN32)
-    set(OPENSSL_USE_STATIC_LIBS TRUE)
-    set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl")
+    set(OPENSSL_USE_STATIC_LIBS FALSE)
+    set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64")
 else()
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libssl.a")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libssl.a")
         set(OPENSSL_USE_STATIC_LIBS TRUE)
-        set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl")
-        set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libcrypto.a")
-        set(OPENSSL_SSL_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/lib/linux/libssl.a")
-        set(OPENSSL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl/include")
+        set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64")
+        set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libcrypto.a")
+        set(OPENSSL_SSL_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libssl.a")
+        set(OPENSSL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/include")
     endif()
 endif()
 
 find_package(OpenSSL REQUIRED)
+
+if(WIN32)
+    list(APPEND LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/DotNetDupe/DotNetDupe.rc")
+endif()
 
 add_library(DotNetDupe SHARED ${LIB_SOURCES})
 
@@ -41,6 +51,15 @@ if(WIN32)
     target_link_libraries(DotNetDupe PRIVATE shlwapi OpenSSL::SSL OpenSSL::Crypto crypt32 ws2_32)
 else()
     target_link_libraries(DotNetDupe PRIVATE OpenSSL::SSL OpenSSL::Crypto dl pthread)
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    target_include_directories(DotNetDupe PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+    target_include_directories(DotNetDupeDemo PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/packages/Microsoft.Gsl.0.1.2.1/build/native/include")
+endif()
+
+if(Microsoft.GSL_FOUND)
+    target_link_libraries(DotNetDupe PRIVATE Microsoft.GSL::GSL)
 endif()
 
 # Demo Application (Force reconfigure to pick up WebApplicationDemo.cpp and split demo files)
@@ -68,5 +87,15 @@ list(REMOVE_ITEM TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/DotNetDupeTests/pch.c
 add_executable(DotNetDupeTests ${TEST_SOURCES})
 target_link_libraries(DotNetDupeTests PRIVATE DotNetDupe gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(DotNetDupeTests)
+add_test(NAME DotNetDupeTests COMMAND DotNetDupeTests)
+
+if(WIN32)
+    # Copy OpenSSL runtime DLLs to output directories on Windows
+    add_custom_command(TARGET DotNetDupe POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/bin/libssl-4-x64.dll"
+            "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/bin/libcrypto-4-x64.dll"
+            $<TARGET_FILE_DIR:DotNetDupe>
+        COMMENT "Copying OpenSSL runtime DLLs to output directory"
+    )
+endif()

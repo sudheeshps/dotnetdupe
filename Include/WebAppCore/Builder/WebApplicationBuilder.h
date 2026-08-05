@@ -27,9 +27,6 @@ namespace DotNetDupe {
 
                 template <typename TController>
                 DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder<TController>& AddController(const DotNetDupe::System::String& prefix) {
-                    // Register the controller class in the DI container
-                    m_services.AddTransient<TController, TController>();
-
                     // Create route builder
                     auto routeBuilder = DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder<TController>>::NewShared(prefix);
                     auto& ref = *routeBuilder;

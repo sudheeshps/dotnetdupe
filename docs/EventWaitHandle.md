@@ -7,6 +7,18 @@ Represents a thread synchronization event.
 ### `EventWaitHandle(bool initialState, bool manualReset)`
 Initializes a new instance of the `EventWaitHandle` class, specifying whether the wait handle is initially signaled, and whether it resets automatically or manually.
 
+### `EventWaitHandle(bool initialState, bool manualReset, const String& sName)`
+Initializes a new instance of the `EventWaitHandle` class with a system-wide or process-registered name.
+
+### `EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool& bCreatedNew)`
+Initializes a new instance of the `EventWaitHandle` class with a specified name, setting `bCreatedNew` to `true` if a new kernel object was created.
+
+### `static EventWaitHandle* OpenExisting(const String& sName)`
+Opens an existing named `EventWaitHandle`. Throws `WaitHandleCannotBeOpenedException` if the named handle does not exist.
+
+### `static bool TryOpenExisting(const String& sName, EventWaitHandle*& pResult)`
+Attempts to open an existing named `EventWaitHandle`, returning `true` if successful.
+
 ### `bool Set()`
 Sets the state of the event to signaled, allowing one or more waiting threads to proceed.
 

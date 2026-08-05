@@ -1,3 +1,4 @@
+#include <filesystem>
 #include "pch.h"
 #include "gtest/gtest.h"
 #include "WebAppCore/Builder/WebApplication.h"
@@ -11,6 +12,15 @@
 #include "System/Net/HttpStatusCode.h"
 #include "WebAppCore/Controllers/ControllerBase.h"
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
+#include "WebAppCore/Server/WebAppServer.h"
+#include "System/IO/File.h"
+#include "System/IO/Path.h"
+#include "System/Console.h"
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <sys/stat.h>
+#endif
 #include "System/Text/Json/JsonSerializer.h"
 #include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
 
@@ -348,6 +358,7 @@ namespace WebApplicationTests {
             // Given
             auto builder = WebApplication::CreateBuilder();
             // Register Controller and configure routes using the fluent builder API
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
             builder->AddController<ProductsController>("/api/products")
                 .MapGet("", &ProductsController::GetProducts)
                 .MapGet("/{id}", &ProductsController::GetProductById)
@@ -438,6 +449,7 @@ namespace WebApplicationTests {
         try {
             // Given
             auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
             builder->AddController<ProductsController>("/api/products")
                 .MapGet("", &ProductsController::GetProducts)
                 .MapGet("/{id}", &ProductsController::GetProductById)
@@ -503,6 +515,7 @@ namespace WebApplicationTests {
         try {
             // Given
             auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<SecureController, SecureController>();
             builder->AddController<SecureController>("/api/secure")
                 .MapGet("/secret", &SecureController::GetSecretData)
                 .MapGet("/admin", &SecureController::GetAdminData);
@@ -559,6 +572,187 @@ namespace WebApplicationTests {
             client.SetBearerToken(adminTokenStr);
             auto adminRes = client.Get("admin");
             ASSERT_EQ(adminRes.Message, "AdminData:admin_user");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenController_WhenQueryParameterProvided_ExtractsQueryParameter) {
+        try {
+            // Given
+            auto builder = WebApplication::CreateBuilder();
+            builder->GetServices().AddTransient<ProductsController, ProductsController>();
+            builder->AddController<ProductsController>("/api/test")
+                .MapGet("/item", &ProductsController::GetProductById);
+
+            auto app = builder->Build();
+            app->MapControllers();
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28085");
+            });
+            serverThread.Start();
+            
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(200);
+
+            // When
+            RestClient<TestProduct> client("http://127.0.0.1:28085/api/test");
+            auto product = client.Get("item?id=1");
+
+            // Then
+            ASSERT_EQ(product.Name, "Laptop");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebAppServer_WhenStaticFileRequested_ServesHtmlAndAssets) {
+        try {
+            // Given: Create temporary wwwroot test directory & index.html
+            String testWebRoot = DotNetDupe::System::IO::Path::GetFullPath("test_wwwroot");
+#if defined(_WIN32)
+            CreateDirectoryA(testWebRoot.GetRawString(), NULL);
+#else
+            ::mkdir(testWebRoot.GetRawString(), 0755);
+#endif
+            String htmlPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "index.html"});
+            String cssPath = DotNetDupe::System::IO::Path::Combine({testWebRoot, "site.css"});
+
+            DotNetDupe::System::IO::File::WriteAllText(htmlPath, "<html><body>Hello WebServer</body></html>");
+            DotNetDupe::System::IO::File::WriteAllText(cssPath, "body { color: red; }");
+
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer> server = 
+                DotNetDupe::System::SmartPointer<DotNetDupe::WebAppCore::Server::WebAppServer>::NewShared(app, testWebRoot);
+            server->EnableStaticFiles("index.html");
+
+            Thread serverThread([server]() {
+                server->Run("http://127.0.0.1:28086");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+
+            // 1. Request root '/' -> should serve index.html
+            String htmlRes = client.GetString("http://127.0.0.1:28086/");
+            ASSERT_EQ(htmlRes, "<html><body>Hello WebServer</body></html>");
+
+            // 2. Request '/site.css' -> should serve CSS
+            String cssRes = client.GetString("http://127.0.0.1:28086/site.css");
+            ASSERT_EQ(cssRes, "body { color: red; }");
+
+            // Clean up test files
+            DotNetDupe::System::IO::File::Delete(htmlPath);
+            DotNetDupe::System::IO::File::Delete(cssPath);
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebAppServer_WhenRunParametricThreadCount_ThenServesRequestsConcurrently) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            app->MapGet("/api/hello", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> ctx) -> String {
+                return "Hello Multithreaded";
+            });
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28087", 12);
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            String sRes = client.GetString("http://127.0.0.1:28087/api/hello");
+            ASSERT_EQ(sRes, "Hello Multithreaded");
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenHttpResponse_WhenStreamingChunkedEvents_ThenFlushesChunksSuccessfully) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            app->MapGet("/events", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> ctx) -> String {
+                auto resp = ctx->GetResponse();
+                resp->SetContentType("text/event-stream");
+                resp->WriteChunk("data: event1\n\n");
+                resp->WriteChunk("data: event2\n\n");
+                resp->Flush();
+                return "";
+            });
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28088");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            String sStreamRes = client.GetString("http://127.0.0.1:28088/events");
+            EXPECT_TRUE(sStreamRes.Contains("data: event1"));
+            EXPECT_TRUE(sStreamRes.Contains("data: event2"));
+
+        } catch (const BasicException<char>& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenNonExistentRouteRequested_Returns404NotFound) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28089");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            auto resp = client.Get("http://127.0.0.1:28089/nonexistent_path");
+            ASSERT_FALSE(resp.IsNull());
+            EXPECT_EQ((int)resp->GetStatusCode(), 404);
 
         } catch (const BasicException<char>& ex) {
             FAIL() << "BasicException thrown: " << ex.What();

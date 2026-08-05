@@ -37,6 +37,15 @@ int main() {
     DemonstrateWebApplication();
     DemonstrateDatabase();
     DemonstrateLogging();
+    DemonstrateEventLog();
+    DemonstrateEtwLogReader();
+    DemonstrateRealtimeTelemetry();
+    RunWebAppServerDemo();
+    DemonstratePushNotifications();
+    RunUserPrincipalDemo();
+    DemonstrateTerminalSession();
+    RunConcurrentCollectionsDemo();
+    RunGenericCollectionsDemo();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

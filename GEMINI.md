@@ -54,15 +54,20 @@ The project is configured to generate a NuGet package on build (as specified in 
   - Follow the [C++ Core Guidelines](https://learn.microsoft.com/en-us/cpp/code-quality/using-the-cpp-core-guidelines-checkers?view=msvc-170) for all new code.
   - Use the [GSL (Guidelines Support Library)](https://github.com/microsoft/GSL) for runtime safety (e.g., `gsl::span`, `gsl::not_null`, `gsl::finally`).
   - Ensure portability across platforms (Windows, POSIX) when generating new code or updating existing code. Use conditional compilation (`#if defined(_WIN32)`) only when necessary.
-- **DLL Exports**: Use the `DOTNETDUPE_API` macro (defined in `Include/Common.h`) for any classes or functions that need to be exported from the library DLL.
+- **DLL Exports**: Use the `DOTNETDUPE_API` macro (defined in `Include/Common.h`) for any member methods or free functions that need to be exported from the library DLL. **`DOTNETDUPE_API` shall strictly be applied at the function/method level and NOT at the class level.**
 - **UTF-8 Portability**: Use UTF-8 character encoding for all string operations to ensure cross-platform portability across Windows, Linux, and other environments.
 - **Precompiled Headers**: Implementation files in the `DotNetDupe/` directory should `#include "pch.h"`.
 - **Memory Management**: **SmartPointer shall be used in all places and no direct pointer manipulation (e.g., raw `new`, `delete`, or raw pointers for ownership) is allowed.** Always follow RAII patterns. Many classes (like `FileStream`, `WaitHandle`) implement `.NET`-like patterns but rely on C++ destructors for resource cleanup.
+- **Function Length Limit**: **No function (member method, free function, or static helper function) can have more than 15 logical lines of code (LLOC).** (LLOC excludes blank lines, single-line braces `{` / `}`, and standalone comment lines). Break down complex methods or static helpers into focused subroutines or helper utility classes to enforce clean, modular design.
+- **Class Length Limit**: **No single class or source file implementation can have more than 500 logical lines of code (LLOC).** Split multi-responsibility classes into smaller, focused helper classes or components.
+- **File Length Limit**: **No single `.cpp` file can have more than 600 logical lines of code (LLOC).** Split larger implementation files across logical module files or component source files.
+- **Code Readability & Grouping**: **Add necessary blank lines inside functions to separate logical blocks** (e.g., parameter validation, initialization, main execution, return preparation) for improved code readability and maintainability.
 - **Exceptions**: DotNetDupe classes shall not throw standard C++ exceptions (such as `std::runtime_error`, `std::invalid_argument`). Instead, throw the library's custom exception types inheriting from `BasicException` (such as `SystemException`, `ArgumentException`, `InvalidOperationException`, `JsonException`, `IOException`, `SocketException`) to match `.NET` behavior and ensure unified exception handling.
 
 ### Testing
 - All new functionality should include corresponding unit tests in the `DotNetDupeTests/` project.
 - Tests should follow the naming convention `ClassTests.cpp`.
+- **Test Integrity**: **Existing unit tests shall not be modified or deleted during refactoring.** All tests must continue to pass cleanly without modification.
 
 ## Class Generation Instructions
 When generating a new class, the following instructions must be strictly followed:

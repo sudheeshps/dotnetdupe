@@ -6,27 +6,31 @@ Provides methods for reading from and writing to the standard input, output, and
 
 ##### `void static Write(...)`
 
-Writes the text representation of the specified value to the standard output stream. Overloads are available for various types.
+Writes the text representation of the specified value or formatted string to the standard output stream. Overloads are available for primitives as well as parameter interpolation using `{0}`, `{1}`, etc.
 
 **Parameters:**
-- `value`: The value to write (bool, Char, double, int, long, long long, float, String, or const TCHAR*).
+- `sFormat` / `value`: The format string or value to write.
+- `args...`: Variadic arguments to format into placeholders `{0}`, `{1}`, etc.
 
 **Usage:**
 ```cpp
 Console::Write("The answer is ");
 Console::Write(42);
+Console::Write("Items: {0}, Total: {1}", 5, 99.99);
 ```
 
 ##### `void static WriteLine(...)`
 
-Writes the text representation of the specified value, followed by the current line terminator, to the standard output stream. Overloads are available for various types.
+Writes the text representation of the specified value or formatted string, followed by the current line terminator, to the standard output stream. Overloads are available for primitives as well as parameter interpolation using `{0}`, `{1}`, etc.
 
 **Parameters:**
-- `value`: (Optional) The value to write (bool, Char, double, int, long, float, String, or const TCHAR*).
+- `sFormat` / `value`: (Optional) The format string or value to write.
+- `args...`: Variadic arguments to format into placeholders `{0}`, `{1}`, etc.
 
 **Usage:**
 ```cpp
 Console::WriteLine("Hello World");
+Console::WriteLine("Hello {0}, your score is {1}!", "Alice", 100);
 Console::WriteLine(true);
 ```
 

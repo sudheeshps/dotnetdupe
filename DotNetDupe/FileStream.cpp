@@ -162,6 +162,9 @@ namespace DotNetDupe {
                 if (m_fsFileStream.is_open()) {
                     m_fsFileStream.close();
                 }
+                m_bCanRead = false;
+                m_bCanWrite = false;
+                m_bCanSeek = false;
             }
         }
     }

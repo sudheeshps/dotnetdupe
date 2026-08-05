@@ -446,21 +446,51 @@ String s("apple,orange,banana");
 auto parts = s.Split(',');
 ```
 
-##### `bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const`
+##### `bool StartsWith(const BasicString<CharT>& prefix) const`
 
-Determines whether the beginning of this string instance matches the specified string.
-
-**Parameters:**
-- `prefix`: The string to compare.
-- `ignoreCase`: `true` to ignore case during the comparison; otherwise, `false`.
-
-**Returns:**
-- `true` if `prefix` matches the beginning of this string; otherwise, `false`.
+Determines whether the beginning of this string instance matches the specified string (case-sensitive by default).
 
 **Usage:**
 ```cpp
 String s("Hello World");
-bool result = s.StartsWith("Hello", false); // true
+bool bMatch = s.StartsWith("Hello"); // true
+```
+
+##### `bool StartsWith(const BasicString<CharT>& prefix, bool ignoreCase) const`
+
+Determines whether the beginning of this string instance matches the specified string.
+
+**Usage:**
+```cpp
+String s("Hello World");
+bool result = s.StartsWith("hello", true); // true
+```
+
+##### `static BasicString<CharT> FromInt(int value)`
+
+Converts an integer value to its string representation.
+
+**Usage:**
+```cpp
+String s = String::FromInt(42); // "42"
+```
+
+##### `static BasicString<CharT> ValueOf(int value)`
+
+Converts a primitive value to its string representation.
+
+**Usage:**
+```cpp
+String s = String::ValueOf(100); // "100"
+```
+
+##### `static BasicString<CharT> ToString(int value)`
+
+Converts primitive values directly to their string representation without needing `System/Convert.h`.
+
+**Usage:**
+```cpp
+String s = String::ToString(1234); // "1234"
 ```
 
 ##### `BasicString<CharT> Substring(int startIndex) const`

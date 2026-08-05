@@ -19,6 +19,19 @@ namespace DotNetDupe {
                     List(int iCapacity) { m_vItems.reserve(iCapacity); }
                     List(const std::initializer_list<T>& vCollection) : m_vItems(vCollection) {}
 
+                    // Copy semantics
+                    List(const List& lstOther) = default;
+                    List& operator=(const List& lstOther) = default;
+
+                    // Move semantics
+                    List(List&& lstOther) noexcept : m_vItems(std::move(lstOther.m_vItems)) {}
+                    List& operator=(List&& lstOther) noexcept {
+                        if (this != &lstOther) {
+                            m_vItems = std::move(lstOther.m_vItems);
+                        }
+                        return *this;
+                    }
+
                     int GetCount() const { return (int)m_vItems.size(); }
                     int GetCapacity() const { return (int)m_vItems.capacity(); }
                     void SetCapacity(int iValue) { m_vItems.reserve(iValue); }

@@ -41,6 +41,16 @@ namespace DotNetDupe {
             DOTNETDUPE_API static void Write(const String& sValue);
             DOTNETDUPE_API static void Write(const char* sValue);
 
+            template <class... Args>
+            static void Write(const String& sFormat, const Args&... args) {
+                Write(String::Format(sFormat, args...));
+            }
+
+            template <class... Args>
+            static void Write(const char* sFormat, const Args&... args) {
+                Write(String::Format(sFormat, args...));
+            }
+
             // WriteLine methods
             DOTNETDUPE_API static void WriteLine();
             DOTNETDUPE_API static void WriteLine(bool bValue);
@@ -52,6 +62,16 @@ namespace DotNetDupe {
             DOTNETDUPE_API static void WriteLine(float fValue);
             DOTNETDUPE_API static void WriteLine(const String& sValue);
             DOTNETDUPE_API static void WriteLine(const char* sValue);
+
+            template <class... Args>
+            static void WriteLine(const String& sFormat, const Args&... args) {
+                WriteLine(String::Format(sFormat, args...));
+            }
+
+            template <class... Args>
+            static void WriteLine(const char* sFormat, const Args&... args) {
+                WriteLine(String::Format(sFormat, args...));
+            }
 
             // Reading methods
             DOTNETDUPE_API static int Read();

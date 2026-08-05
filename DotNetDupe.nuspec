@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
     <releaseNotes>Added database support, authentication/authorization, secure HTTP (SSL) and JWT token handling, a dependency injection framework, WebApplication and RestClient (supporting PUT/DELETE), a Logger, enhanced WSL NuGet documentation, and added usage samples to the class API documentation.</releaseNotes>
@@ -17,7 +17,10 @@
     </contentFiles>
   </metadata>
   <files>
-    <file src="README.md" target="" />
+    <file src="README.md" target="README.md" />
+    <file src="LICENSE" target="LICENSE" />
+    <file src="external\openssl-4.0.1\LICENSE.txt" target="licenses\OPENSSL_LICENSE.txt" />
+    <file src="external\openssl-4.0.1\version.txt" target="OPENSSL_VERSION.txt" />
     <!-- Build targets -->
     <file src="nuget\DotNetDupe.targets" target="build\native\DotNetDupe.targets" />
 
@@ -28,11 +31,14 @@
     <file src="docs\*.md" target="docs" />
 
     <!-- Multi-platform Binaries -->
-    <!-- Windows -->
+    <!-- Windows x64 -->
     <file src="bin\x64\Release\DotNetDupe.dll" target="runtimes\win-x64\native\DotNetDupe.dll" />
     <file src="bin\x64\Release\DotNetDupe.lib" target="runtimes\win-x64\native\DotNetDupe.lib" />
+    <file src="external\openssl-4.0.1\x64\bin\libssl-4-x64.dll" target="runtimes\win-x64\native\libssl-4-x64.dll" />
+    <file src="external\openssl-4.0.1\x64\bin\libcrypto-4-x64.dll" target="runtimes\win-x64\native\libcrypto-4-x64.dll" />
     
-    <!-- Linux -->
-    <file src="build-wsl\libDotNetDupe.so" target="runtimes\linux-x64\native\libDotNetDupe.so" />
+    <!-- Windows x86 -->
+    <file src="external\openssl-4.0.1\x86\bin\libssl-4.dll" target="runtimes\win-x86\native\libssl-4.dll" />
+    <file src="external\openssl-4.0.1\x86\bin\libcrypto-4.dll" target="runtimes\win-x86\native\libcrypto-4.dll" />
   </files>
 </package>

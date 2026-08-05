@@ -192,5 +192,30 @@ namespace SystemTests {
             EXPECT_FALSE(fs.CanSeek());
             EXPECT_THROW(fs.Seek(10, 0), IOException);
         }
+
+        TEST_F(FileStreamTest, DisposedStream_Should_ReturnFalseForCapabilities) {
+            FileStream fs(testFilePath, 0); // FileMode::CreateNew
+            fs.Dispose();
+            
+            EXPECT_FALSE(fs.CanRead());
+            EXPECT_FALSE(fs.CanWrite());
+            EXPECT_FALSE(fs.CanSeek());
+            EXPECT_THROW(fs.SetPosition(0), IOException);
+            EXPECT_THROW(fs.GetPosition(), IOException);
+            EXPECT_THROW(fs.GetLength(), IOException);
+        }
+
+        TEST_F(FileStreamTest, FileStream_SetLength_And_Position_EdgeCases) {
+            FileStream fs(testFilePath, 0);
+            Array<char> data = { 'A', 'B', 'C', 'D', 'E' };
+            fs.Write(data.GetData(), 0, 5);
+            
+            EXPECT_THROW(fs.SetLength(3), IOException);
+            
+            fs.SetPosition(1);
+            EXPECT_EQ(1, fs.GetPosition());
+            
+            fs.Dispose();
+        }
     }
 }

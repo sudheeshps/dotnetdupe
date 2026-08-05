@@ -92,4 +92,33 @@ namespace DotNetDupeTests {
         // Then
         EXPECT_EQ(sum, 60);
     }
+
+    TEST(ListTest, MoveConstructor_Given_List_When_Moved_Then_TransfersOwnership) {
+        // Given
+        List<int> source = { 1, 2, 3 };
+
+        // When
+        List<int> destination(std::move(source));
+
+        // Then
+        EXPECT_EQ(destination.GetCount(), 3);
+        EXPECT_EQ(destination[0], 1);
+        EXPECT_EQ(destination[2], 3);
+        EXPECT_EQ(source.GetCount(), 0);
+    }
+
+    TEST(ListTest, MoveAssignment_Given_List_When_MoveAssigned_Then_TransfersOwnership) {
+        // Given
+        List<int> source = { 10, 20, 30 };
+        List<int> destination;
+
+        // When
+        destination = std::move(source);
+
+        // Then
+        EXPECT_EQ(destination.GetCount(), 3);
+        EXPECT_EQ(destination[0], 10);
+        EXPECT_EQ(destination[2], 30);
+        EXPECT_EQ(source.GetCount(), 0);
+    }
 }

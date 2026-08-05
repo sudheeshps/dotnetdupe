@@ -89,7 +89,7 @@ namespace DotNetDupe {
             }
 
             String StringBuilder::ToString() const {
-                return String(m_strBuffer.c_str());
+                return String(m_strBuffer);
             }
         }
     }

@@ -150,5 +150,50 @@ namespace SystemTests {
                 EXPECT_EQ(0x7F, bytes [3]);
             }
         }
+
+        TEST(BitConverterTest, Given_AllPrimitiveTypes_When_GetBytesAndConvertedBack_Then_Matches) {
+            char c = 'A';
+            Array<byte> bChar = BitConverter::GetBytes(c);
+            EXPECT_EQ('A', BitConverter::ToChar(bChar, 0));
+
+            short s = 1234;
+            Array<byte> bShort = BitConverter::GetBytes(s);
+            EXPECT_EQ(1234, BitConverter::ToInt16(bShort, 0));
+
+            unsigned short us = 5678;
+            Array<byte> bUShort = BitConverter::GetBytes(us);
+            EXPECT_EQ(5678, BitConverter::ToUInt16(bUShort, 0));
+
+            unsigned int ui = 99999;
+            Array<byte> bUInt = BitConverter::GetBytes(ui);
+            EXPECT_EQ(99999u, BitConverter::ToUInt32(bUInt, 0));
+
+            long long ll = 123456789012345LL;
+            Array<byte> bLL = BitConverter::GetBytes(ll);
+            EXPECT_EQ(123456789012345LL, BitConverter::ToInt64(bLL, 0));
+
+            unsigned long long ull = 987654321098765ULL;
+            Array<byte> bULL = BitConverter::GetBytes(ull);
+            EXPECT_EQ(987654321098765ULL, BitConverter::ToUInt64(bULL, 0));
+
+            float f = 3.14f;
+            Array<byte> bFloat = BitConverter::GetBytes(f);
+            EXPECT_FLOAT_EQ(3.14f, BitConverter::ToSingle(bFloat, 0));
+
+            double d = 2.718281828;
+            Array<byte> bDouble = BitConverter::GetBytes(d);
+            EXPECT_DOUBLE_EQ(2.718281828, BitConverter::ToDouble(bDouble, 0));
+
+            bool b = false;
+            Array<byte> bBool = BitConverter::GetBytes(b);
+            EXPECT_FALSE(BitConverter::ToBoolean(bBool, 0));
+        }
+
+        TEST(BitConverterTest, Given_SingleFloat_When_SingleToInt32BitsCalled_Then_ReturnsBits) {
+            float f = 1.0f;
+            int bits = BitConverter::SingleToInt32Bits(f);
+            float f2 = BitConverter::Int32BitsToSingle(bits);
+            EXPECT_FLOAT_EQ(f, f2);
+        }
     }
 }

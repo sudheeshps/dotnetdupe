@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <RestorePackages Condition=" '$(RestorePackages)' == '' ">true</RestorePackages>
+        <RequireRestoreConsent Condition=" '$(RequireRestoreConsent)' == '' ">false</RequireRestoreConsent>
+        <DownloadNuGetExe Condition=" '$(DownloadNuGetExe)' == '' ">true</DownloadNuGetExe>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+        <NuGetToolsPath Condition=" '$(NuGetToolsPath)' == '' ">$(MSBuildThisFileDirectory)</NuGetToolsPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+        <NuGetToolsPath Condition=" '$(NuGetToolsPath)' == '' ">$(MSBuildThisFileDirectory)</NuGetToolsPath>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <PackagesProjectConfig Condition=" '$(PackagesProjectConfig)' == '' ">$(MSBuildProjectDirectory)\packages.config</PackagesProjectConfig>
+        <NuGetExePath Condition=" '$(NuGetExePath)' == '' ">$(NuGetToolsPath)\nuget.exe</NuGetExePath>
+        <PackagesDir Condition=" '$(PackagesDir)' == '' ">$(SolutionDir)packages</PackagesDir>
+    </PropertyGroup>
+
+    <Target Name="CheckPrerequisites">
+        <!-- Download nuget.exe if missing -->
+        <DownloadNuGet OutputFilename="$(NuGetExePath)" Condition=" '$(DownloadNuGetExe)' == 'true' AND !Exists('$(NuGetExePath)') " />
+    </Target>
+
+    <Target Name="RestorePackages" BeforeTargets="EnsureNuGetPackageBuildImports;PrepareForBuild">
+        <Exec Command="nuget restore &quot;$(SolutionDir)DotNetDupe.sln&quot; -Source &quot;https://api.nuget.org/v3/index.json&quot;" Condition="Exists('$(PackagesProjectConfig)') AND (!Exists('$(PackagesDir)\Microsoft.Gsl.0.1.2.1') OR !Exists('$(PackagesDir)\Microsoft.googletest.v140.windesktop.msvcstl.static.rt-dyn.1.8.1.8'))" ContinueOnError="true" />
+    </Target>
+
+    <UsingTask TaskName="DownloadNuGet" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" Condition=" '$(OS)' == 'Windows_NT' ">
+        <ParameterGroup>
+            <OutputFilename ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+        <Task>
+            <Reference Include="System.Net" />
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
+                try {
+                    OutputFilename = System.IO.Path.GetFullPath(OutputFilename);
+                    var dir = System.IO.Path.GetDirectoryName(OutputFilename);
+                    if (!System.IO.Directory.Exists(dir)) {
+                        System.IO.Directory.CreateDirectory(dir);
+                    }
+                    var webClient = new System.Net.WebClient();
+                    webClient.DownloadFile("https://dist.nuget.org/win-x86-commandline/latest/nuget.exe", OutputFilename);
+                } catch (System.Exception ex) {
+                    Console.WriteLine("Error downloading nuget.exe: " + ex.Message);
+                }
+                ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+</Project>

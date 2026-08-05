@@ -98,16 +98,19 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl-4.0.1\x86\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x86\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -119,8 +122,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl-4.0.1\x86\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -128,9 +131,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x86\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x86\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -140,16 +146,19 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl-4.0.1\x64\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x64\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -161,8 +170,8 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Include;$(ProjectDir)..\external\openssl-4.0.1\x64\include;$(ProjectDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,9 +179,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)..\external\openssl-4.0.1\x64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>shlwapi.lib;libssl.lib;libcrypto.lib;crypt32.lib;ws2_32.lib;wevtapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>xcopy /y /d "$(ProjectDir)..\external\openssl-4.0.1\x64\bin\*.dll" "$(OutDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\System\ArgumentException.h" />
@@ -221,11 +233,13 @@
     <ClInclude Include="..\Include\Extensions\DependencyInjection\ServiceProvider.h" />
     <ClInclude Include="..\Include\System\OperatingSystem.h" />
     <ClInclude Include="..\Include\System\OverflowException.h" />
-    <ClInclude Include="..\Include\System\Path.h" />
+    <ClInclude Include="..\Include\System\IO\Path.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
+    <ClInclude Include="InternalStringConvert.h" />
     <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
+    <ClInclude Include="..\Include\System\Utils\StringConvert.h" />
     <ClInclude Include="..\Include\System\Text\StringBuilder.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonElement.h" />
     <ClInclude Include="..\Include\System\Text\Json\JsonSerializer.h" />
@@ -256,6 +270,11 @@
     <ClInclude Include="..\Include\System\Func.h" />
     <ClInclude Include="..\Include\System\Predicate.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Process.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\EventLog.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\EtwLogReader.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\SystemMetrics.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\ActiveUserSession.h" />
+    <ClInclude Include="..\Include\System\Diagnostics\TerminalSession.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Stopwatch.h" />
     <ClInclude Include="..\Include\System\Random.h" />
     <ClInclude Include="..\Include\System\UriParser.h" />
@@ -309,6 +328,7 @@
     <ClInclude Include="..\Include\WebAppCore\Http\HttpContext.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplication.h" />
     <ClInclude Include="..\Include\WebAppCore\Builder\WebApplicationBuilder.h" />
+    <ClInclude Include="..\Include\WebAppCore\Server\WebAppServer.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerBase.h" />
     <ClInclude Include="..\Include\WebAppCore\Controllers\ControllerRouteBuilder.h" />
     <ClInclude Include="..\Include\System\Data\SqlClient\SqlCommand.h" />
@@ -341,6 +361,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StringBuilder.cpp" />
+    <ClCompile Include="InternalStringConvert.cpp" />
+    <ClCompile Include="BasicStringTranscode.cpp" />
+    <ClCompile Include="System\Utils\StringConvert.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -372,6 +395,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Process.cpp" />
+    <ClCompile Include="EventLog.cpp" />
+    <ClCompile Include="EtwLogReader.cpp" />
+    <ClCompile Include="SystemMetrics.cpp" />
+    <ClCompile Include="ActiveUserSession.cpp" />
+    <ClCompile Include="DateTimeOffset.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="Stopwatch.cpp" />
     <ClCompile Include="TextEncoding.cpp" />
@@ -400,7 +428,11 @@
     <ClCompile Include="ServiceCollection.cpp" />
     <ClCompile Include="X509Certificate2.cpp" />
     <ClCompile Include="WebApplication.cpp" />
+    <ClCompile Include="WebApplicationRouting.cpp" />
     <ClCompile Include="WebApplicationBuilder.cpp" />
+    <ClCompile Include="WebAppServer.cpp" />
+    <ClCompile Include="HttpResponse.cpp" />
+    <ClCompile Include="WebSocket.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
     <ClCompile Include="SqlConnection.cpp" />
     <ClCompile Include="DatabaseEngine.cpp" />
@@ -414,19 +446,14 @@
     <ClCompile Include="LoggerBase.cpp" />
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
+    <ClCompile Include="UserPrincipal.cpp" />
+    <ClCompile Include="TerminalSession.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ResourceCompile Include="DotNetDupe.rc" />
     <None Include="cpp.hint" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets" Condition="Exists('..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets')" />
-  </ImportGroup>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Gsl.0.1.2.1\build\native\Microsoft.Gsl.targets'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>

@@ -46,11 +46,8 @@ namespace DotNetDupe {
 
                 Array<char> StringContent::ReadAsByteArray() {
                     int len = m_sContent.GetLength();
-                    Array<char> arr(len);
-                    if (len > 0) {
-                        std::memcpy(arr.GetData(), m_sContent.GetRawString(), len);
-                    }
-                    return arr;
+                    if (len <= 0) return Array<char>(0);
+                    return Array<char>(m_sContent.GetRawString(), len);
                 }
 
                 SmartPointer<IO::Stream> StringContent::ReadAsStream() {

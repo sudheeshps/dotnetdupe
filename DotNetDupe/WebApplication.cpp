@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "System/Net/WebSockets/WebSocket.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
 #include "System/Console.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include "System/Net/Sockets/TcpClient.h"
@@ -17,45 +19,10 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Builder {
 
-            namespace {
-                std::vector<std::string> GetPathSegments(const std::string& path) {
-                    std::vector<std::string> segments;
-                    std::string segment;
-                    for (char c : path) {
-                        if (c == '/') {
-                            if (!segment.empty()) {
-                                segments.push_back(segment);
-                                segment.clear();
-                            }
-                        } else {
-                            segment += c;
-                        }
-                    }
-                    if (!segment.empty()) {
-                        segments.push_back(segment);
-                    }
-                    return segments;
-                }
-
-                bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams) {
-                    if (patternSegs.size() != pathSegs.size()) {
-                        return false;
-                    }
-                    for (size_t i = 0; i < patternSegs.size(); ++i) {
-                        const std::string& patternSeg = patternSegs[i];
-                        const std::string& pathSeg = pathSegs[i];
-                        
-                        if (patternSeg.length() >= 2 && patternSeg.front() == '{' && patternSeg.back() == '}') {
-                            std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
-                            extractedParams.push_back({paramName, pathSeg});
-                        } else {
-                            if (patternSeg != pathSeg) {
-                                return false;
-                            }
-                        }
-                    }
-                    return true;
-                }
+            namespace Internal {
+                std::vector<std::string> GetPathSegments(const std::string& path);
+                bool MatchRoute(const std::vector<std::string>& patternSegs, const std::vector<std::string>& pathSegs, std::vector<std::pair<std::string, std::string>>& extractedParams);
+                void ParseServerUrl(const std::string& sUrl, std::string& host, int& port);
             }
 
             WebApplication::WebApplication(const System::SmartPointer<System::IServiceProvider>& spServices)
@@ -113,53 +80,28 @@ namespace DotNetDupe {
                 m_deleteHandlers.Add(pattern, handler);
             }
 
+            void WebApplication::MapWebSocket(const System::String& pattern, System::SmartPointer<WebSockets::IWebSocketHandler> handler) {
+                m_wsHandlers.Add(pattern, handler);
+            }
+
             void WebApplication::MapControllers() {
                 for (auto& registerRoutes : m_controllerRegistrars) {
                     registerRoutes(m_spSelf);
                 }
             }
 
-            void WebApplication::Run(const System::String& url) {
-                std::string sUrl(url.GetRawString());
-                std::string host = "127.0.0.1";
+            void WebApplication::Run(const System::String& url, int threadCount) {
+                if (threadCount > 0) {
+                    System::Threading::ThreadPool::SetMinThreads(threadCount);
+                }
+
+                std::string host;
                 int port = 5000;
-
-                size_t protocolPos = sUrl.find("://");
-                std::string hostPort = sUrl;
-                if (protocolPos != std::string::npos) {
-                    hostPort = sUrl.substr(protocolPos + 3);
-                }
-
-                size_t colonPos = hostPort.find(':');
-                if (colonPos != std::string::npos) {
-                    host = hostPort.substr(0, colonPos);
-                    std::string sPort = hostPort.substr(colonPos + 1);
-                    size_t slashPos = sPort.find('/');
-                    if (slashPos != std::string::npos) {
-                        sPort = sPort.substr(0, slashPos);
-                    }
-                    try {
-                        port = std::stoi(sPort);
-                    } catch (...) {
-                        port = 5000;
-                    }
-                } else {
-                    size_t slashPos = hostPort.find('/');
-                    if (slashPos != std::string::npos) {
-                        host = hostPort.substr(0, slashPos);
-                    } else {
-                        host = hostPort;
-                    }
-                }
-
-                if (host == "localhost") {
-                    host = "127.0.0.1";
-                }
+                Internal::ParseServerUrl(url.GetRawString(), host, port);
 
                 m_sHost = System::String(host.c_str());
                 m_nPort = port;
-
-                m_pListener = System::SmartPointer<System::Net::Sockets::TcpListener>::NewShared(System::String(host.c_str()), port);
+                m_pListener = System::SmartPointer<System::Net::Sockets::TcpListener>::NewShared(m_sHost, port);
                 m_pListener->Start();
 
                 System::Console::WriteLine(System::String("[Server] Started listener on host: ") + m_sHost + " port: " + System::Convert::ToString(port));
@@ -368,7 +310,7 @@ namespace DotNetDupe {
 
                 System::Console::WriteLine("[Server] Matching handler...");
                 std::string reqPathStr = spRequest->GetPath().GetRawString();
-                std::vector<std::string> pathSegs = GetPathSegments(reqPathStr);
+                std::vector<std::string> pathSegs = Internal::GetPathSegments(reqPathStr);
 
                 auto findHandler = [&](auto& handlersMap) -> bool {
                     // Try exact match first
@@ -379,12 +321,12 @@ namespace DotNetDupe {
                     auto keys = handlersMap.GetKeys();
                     for (int i = 0; i < keys.GetLength(); ++i) {
                         System::String pattern = keys[i];
-                        std::vector<std::string> patternSegs = GetPathSegments(pattern.GetRawString());
+                        std::vector<std::string> patternSegs = Internal::GetPathSegments(pattern.GetRawString());
                         std::vector<std::pair<std::string, std::string>> extractedParams;
-                        if (MatchRoute(patternSegs, pathSegs, extractedParams)) {
+                        if (Internal::MatchRoute(patternSegs, pathSegs, extractedParams)) {
                             // Found a match! Extract parameters into GetRouteValues()
                             for (const auto& pair : extractedParams) {
-                                spRequest->GetRouteValues().Add(System::String(pair.first.c_str()), System::String(pair.second.c_str()));
+                                spRequest->GetRouteValues()[System::String(pair.first.c_str())] = System::String(pair.second.c_str());
                             }
                             if (handlersMap.TryGetValue(pattern, handler)) {
                                 return true;
@@ -393,6 +335,42 @@ namespace DotNetDupe {
                     }
                     return false;
                 };
+
+                spResponse->BindStream(stream);
+
+                // Check for WebSocket Upgrade request
+                System::String sUpgrade, sSecKey;
+                if (spRequest->GetHeaders().TryGetValue(System::String("upgrade"), sUpgrade) &&
+                    sUpgrade.GetString() == "websocket" &&
+                    spRequest->GetHeaders().TryGetValue(System::String("sec-websocket-key"), sSecKey)) {
+
+                    System::SmartPointer<WebSockets::IWebSocketHandler> wsHandler;
+                    if (m_wsHandlers.TryGetValue(spRequest->GetPath(), wsHandler) && !wsHandler.IsNull()) {
+                        System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
+                        std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\n"
+                                                 "Upgrade: websocket\r\n"
+                                                 "Connection: Upgrade\r\n"
+                                                 "Sec-WebSocket-Accept: " + sAcceptKey.GetString() + "\r\n\r\n";
+                        stream->Write(hsResponse.data(), 0, static_cast<int>(hsResponse.length()));
+
+                        auto pWebSocket = System::SmartPointer<System::Net::WebSockets::WebSocket>::NewShared(stream);
+                        auto pWsContext = System::SmartPointer<WebSockets::WebSocketContext>::NewShared(spContext, pWebSocket);
+
+                        try {
+                            wsHandler->OnConnected(pWsContext);
+                            System::String msg;
+                            while (pWebSocket->GetState() == System::Net::WebSockets::WebSocketState::Open && pWebSocket->ReceiveText(msg)) {
+                                wsHandler->OnMessage(pWsContext, msg);
+                            }
+                        } catch (...) {}
+                        try {
+                            wsHandler->OnDisconnected(pWsContext);
+                        } catch (...) {}
+
+                        spClient->Close();
+                        return;
+                    }
+                }
 
                 if (method == "GET") {
                     if (findHandler(m_getHandlers)) {
@@ -470,11 +448,18 @@ namespace DotNetDupe {
                     sBodyResult = "404 Not Found";
                 }
 
-                if (spResponse->GetBody().IsEmpty() && !sBodyResult.IsEmpty()) {
+                // Handle streaming / headers-already-sent responses (e.g. SSE or chunked transfer)
+                if (spResponse->IsHeadersSent()) {
+                    spResponse->Flush();
+                    spClient->Close();
+                    return;
+                }
+
+                if (!sBodyResult.IsEmpty()) {
                     spResponse->SetBody(sBodyResult);
                 }
 
-                std::string respBody = spResponse->GetBody().GetRawString();
+                std::string respBody = spResponse->GetBody().GetString();
 
                 std::string statusMsg = "OK";
                 int code = spResponse->GetStatusCode();
@@ -486,21 +471,23 @@ namespace DotNetDupe {
                 else if (code == 401) statusMsg = "Unauthorized";
 
                 std::string responseString = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\n";
-                responseString += "Content-Type: " + std::string(spResponse->GetContentType().GetRawString()) + "\r\n";
+                responseString += "Content-Type: " + spResponse->GetContentType().GetString() + "\r\n";
                 responseString += "Content-Length: " + std::to_string(respBody.length()) + "\r\n";
+                responseString += "Connection: close\r\n";
                 responseString += "Server: DotNetDupeWebApplication/1.0\r\n";
 
                 auto keys = spResponse->GetHeaders().GetKeys();
                 auto values = spResponse->GetHeaders().GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
-                    responseString += std::string(keys[i].GetRawString()) + ": " + std::string(values[i].GetRawString()) + "\r\n";
+                    responseString += keys[i].GetString() + ": " + values[i].GetString() + "\r\n";
                 }
 
                 responseString += "\r\n";
-                responseString += respBody;
-
-                System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)responseString.length()));
-                stream->Write(responseString.c_str(), 0, static_cast<int>(responseString.length()));
+                System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)(responseString.length() + respBody.length())));
+                stream->Write(responseString.data(), 0, static_cast<int>(responseString.length()));
+                if (!respBody.empty()) {
+                    stream->Write(respBody.data(), 0, static_cast<int>(respBody.length()));
+                }
                 spClient->Close();
                 System::Console::WriteLine("[Server] Client closed.");
             }

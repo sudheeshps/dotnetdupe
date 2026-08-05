@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "System/Path.h"
+#include "System/IO/Path.h"
 #include "System/IOException.h"
 #include <filesystem>
 #include <random>
@@ -81,7 +81,7 @@ namespace DotNetDupe {
 
             String Path::GetDirectoryName(const String& sFilePath) {
                 if (sFilePath.IsEmpty())
-                    return String("");
+                    return "";
 
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.parent_path());
@@ -89,24 +89,22 @@ namespace DotNetDupe {
 
             String Path::GetFileName(const String& sFilePath) {
                 if (sFilePath.IsEmpty())
-                    return String("");
+                    return "";
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.filename());
             }
 
             String Path::GetExtension(const String& sFilePath) {
                 if (sFilePath.IsEmpty())
-                    return String("");
+                    return "";
 
                 fs::path path = ToFsPath(sFilePath);
-                auto sExt = FromFsPath(path.extension());
-                if (sExt.IsEmpty()) return String("");
-                return sExt.Substring(1);
+                return FromFsPath(path.extension());
             }
 
             String Path::GetFileNameWithoutExtension(const String& sFilePath) {
                 if (sFilePath.IsEmpty())
-                    return String("");
+                    return "";
 
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.stem());
@@ -114,7 +112,7 @@ namespace DotNetDupe {
 
             String Path::GetFullPath(const String& sPath) {
                 if (sPath.IsEmpty())
-                    return String("");
+                    return "";
 
                 return FromFsPath(fs::absolute(ToFsPath(sPath)));
             }
@@ -166,18 +164,18 @@ namespace DotNetDupe {
             String Path::GetPathRoot(const String& sPath)
             {
                 if (sPath.IsEmpty())
-                    return String("");
+                    return "";
 
-                if (sPath.StartsWith(String("\\"), false))
+                if (sPath.StartsWith("\\", false))
                 {
                     // UNC path like \\server\share
                     int nLen = sPath.GetLength();
                     if (nLen > 2)
                     {
-                        int iIdx = sPath.IndexOf(String("\\"), 2, false);
+                        int iIdx = sPath.IndexOf("\\", 2, false);
                         if (iIdx != -1)
                         {
-                            iIdx = sPath.IndexOf(String("\\"), iIdx + 1, false);
+                            iIdx = sPath.IndexOf("\\", iIdx + 1, false);
                             if (iIdx != -1)
                                 return sPath.Substring(0, iIdx);
                         }

@@ -1,8 +1,12 @@
 # DotNetDupe 🚀
 
-<!-- Badges (Example - replace with actual badges if available) -->
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://example.com/your-build-status)
+<!-- Dynamic Repository Badges -->
+[![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions)
+[![Latest Release](https://img.shields.io/github/v/release/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/releases)
+[![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
+[![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
+[![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://github.com/sudheeshps/DotNetDupe/actions)
+[![License](https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&color=orange)](LICENSE)
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
 
@@ -33,7 +37,10 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [1. Install WSL](#1-install-wsl)
     - [2. Environment Provisioning](#2-environment-provisioning)
     - [3. Build & Test in WSL](#3-build--test-in-wsl)
-  - [Building and Running with NuGet in WSL 🐧📦](#building-and-running-with-nuget-in-wsl-)
+  - [Developing Cross-Platform Applications 🌐💻](#developing-cross-platform-applications-)
+    - [1. Cross-Platform Project Architecture](#1-cross-platform-project-architecture)
+    - [2. Integrating via NuGet Package](#2-integrating-via-nuget-package)
+    - [3. Building a Web Application with Static Files & REST APIs](#3-building-a-web-application-with-static-files--rest-apis)
   - [Usage 💻](#usage-)
   - [Web API & Database Integration Guide 🌐🗄️](#web-api--database-integration-guide-️)
     - [1. Hosting REST API Controllers](#1-hosting-rest-api-controllers)
@@ -81,12 +88,11 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     cd DotNetDupe
     ```
 2.  **Build the solution and generate NuGet package:**
-    Open a Developer Command Prompt for Visual Studio and navigate to the project root.
-    ```bash
-    msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
-    nuget pack DotNetDupe.nuspec -OutputDirectory nuget_packages
+    Run the automated build script from PowerShell:
+    ```powershell
+    .\BuildAndPack.ps1
     ```
-    This will build the DotNetDupe library and automatically create a NuGet package (DotNetDupe.3.0.0.nupkg) in the nuget_packages directory at the solution root.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.0.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -146,10 +152,10 @@ wsl --install -d Ubuntu
 ```
 
 ### 2. Environment Provisioning
-Inside your WSL terminal, install the C++ build chain:
+Inside your WSL terminal, install the C++ build chain and OpenSSL development headers:
 ```bash
 sudo apt-get update
-sudo apt-get install -y build-essential cmake
+sudo apt-get install -y build-essential cmake libssl-dev pkg-config
 ```
 
 ### 3. Build & Test in WSL
@@ -189,32 +195,145 @@ wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeTests"
 wsl -d Ubuntu -- bash -c "cd build-wsl && ./DotNetDupeDemo"
 ```
 
-## Building and Running with NuGet in WSL 🐧📦
+## Developing Cross-Platform Applications 🌐💻
 
-This section describes how to use the pre-compiled NuGet package to build and run the `DotNetDupeDemo` application in a WSL environment.
+DotNetDupe enables unified, cross-platform C++20 development across Windows (MSVC / MSBuild) and Linux (GCC/Clang via CMake or WSL).
 
-### 1. Extract the NuGet Package
-The `.nupkg` file is a ZIP archive. Extract it to a local directory (e.g., `DotNetDupe_NuGet`) using PowerShell:
+---
+
+### 1. Cross-Platform Project Architecture
+
+When building a cross-platform application with DotNetDupe:
+- Use **UTF-8 character encoding** for cross-platform portability.
+- Rely on **`DotNetDupe::System::SmartPointer<T>`** for memory and resource cleanup.
+- Avoid platform-specific raw syscalls; use DotNetDupe abstractions like `System::IO::Path`, `System::IO::File`, `System::Threading::Thread`, and `System::Net::Sockets::TcpClient`.
+
+---
+
+### 2. Integrating via NuGet Package
+
+You can package and consume DotNetDupe via NuGet across Windows and Linux (WSL / CMake) projects.
+
+#### A. Generating the NuGet Package
+Run the automated build script from PowerShell:
 ```powershell
-Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+.\BuildAndPack.ps1
+```
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.0.nupkg` inside the `nuget_packages/` directory.
+
+#### B. Consuming NuGet Package in Visual Studio (Windows)
+1. Add the local `nuget_packages` folder as a NuGet Package Source:
+   ```bash
+   nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\DotNetDupe\nuget_packages"
+   ```
+2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
+
+#### C. Consuming NuGet Package on Linux / CMake (WSL)
+1. Extract `DotNetDupe.3.0.0.nupkg` (ZIP format) to a local directory:
+   ```powershell
+   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   ```
+2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
+   ```bash
+   cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH="./DotNetDupe_NuGet"
+   cmake --build build
+   ```
+
+---
+
+### 3. Building a Web Application with Static Files & REST APIs
+
+The **`WebAppServer`** class serves static website assets (`index.html`, CSS, JavaScript, images) alongside mapped REST endpoints.
+
+#### Project Directory Layout
+```text
+MyWebApp/
+├── wwwroot/
+│   ├── index.html
+│   └── site.css
+└── main.cpp
 ```
 
-### 2. Configure and Build in WSL
-Use CMake with the `USE_NUGET` option enabled and point `NUGET_PATH` to the extracted directory. WSL automatically handles the path mapping for Windows drives.
+#### Step 1: Create `wwwroot/index.html`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DotNetDupe Web App</title>
+    <link rel="stylesheet" href="site.css">
+</head>
+<body>
+    <h1>DotNetDupe Web Application Server</h1>
+    <p>Serving static assets and REST API endpoints simultaneously!</p>
+    <button onclick="fetchWelcomeMessage()">Hit Welcome Endpoint</button>
+    <p id="welcome-output"></p>
 
-```powershell
-# Configure
-wsl cmake -S . -B build-wsl -DUSE_NUGET=ON -DNUGET_PATH="./DotNetDupe_NuGet"
-
-# Build the Demo Application
-wsl cmake --build build-wsl --target DotNetDupeDemo
+    <script>
+        async function fetchWelcomeMessage() {
+            const response = await fetch('/api/welcome?name=Developer');
+            const data = await response.json();
+            document.getElementById('welcome-output').innerText = data.message;
+        }
+    </script>
+</body>
+</html>
 ```
 
-### 3. Execute in WSL
-Run the demo application directly from PowerShell via `wsl`:
-```powershell
-wsl ./build-wsl/DotNetDupeDemo
+#### Step 2: C++ Application (`main.cpp`)
+Here is a complete, compile-ready web application hosting `index.html` and responding with a welcome message on hitting `/api/welcome`:
+
+```cpp
+#include "System/Console.h"
+#include "System/SmartPointer.h"
+#include "System/IO/File.h"
+#include "System/IO/Path.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "WebAppCore/Server/WebAppServer.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::WebAppCore::Builder;
+using namespace DotNetDupe::WebAppCore::Server;
+using namespace DotNetDupe::WebAppCore::Http;
+
+int main() {
+    Console::WriteLine("=============================================");
+    Console::WriteLine(" Starting DotNetDupe Cross-Platform Web Server");
+    Console::WriteLine("=============================================");
+
+    String webRoot = "wwwroot";
+
+    // 1. Initialize WebApplication Host
+    auto builder = WebApplication::CreateBuilder();
+    auto app = builder->Build();
+
+    // 2. Map REST Endpoint (/api/welcome?name=...)
+    app->MapGet("/api/welcome", [](SmartPointer<HttpContext> ctx) -> String {
+        String name = "Guest";
+        if (ctx->GetRequest()->GetQuery().ContainsKey("name")) {
+            name = ctx->GetRequest()->GetQuery()["name"];
+        }
+
+        ctx->GetResponse()->SetContentType("application/json");
+        return String("{\"status\":\"Success\",\"message\":\"Welcome to DotNetDupe Web Server, ") + name + "!\"}";
+    });
+
+    // 3. Initialize WebAppServer to serve website content (index.html & assets)
+    WebAppServer server(app, webRoot);
+    server.EnableStaticFiles("index.html");
+
+    Console::WriteLine("Server running at: http://localhost:8080/index.html");
+    Console::WriteLine("Welcome Endpoint at: http://localhost:8080/api/welcome?name=Developer");
+
+    // 4. Start Server
+    server.Run("http://localhost:8080/index.html");
+
+    return 0;
+}
 ```
+
+---
 
 ## Usage 💻
 
@@ -489,6 +608,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [WebApplicationBuilder](docs/WebApplication.md) | Configures services and builds the web application host. |
 | [WebApplication](docs/WebApplication.md) | Configures routing endpoints and hosts the HTTP listener. |
+| [WebAppServer](docs/WebAppServer.md) | Web server hosting static website content (HTML, CSS, images) and REST APIs. |
 
 ### Namespace: `DotNetDupe::WebAppCore::Http`
 
@@ -499,6 +619,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [HttpContext](docs/WebApplication.md) | Encapsulates all HTTP-specific information about an individual HTTP request. |
 | [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
 | [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
+| [Push Notifications (SSE & WebSockets)](docs/PushNotifications.md) | Server-Sent Events (SSE) streaming and WebSocket push notification support. |
 
 ### Namespace: `DotNetDupe::WebAppCore::Controllers`
 
@@ -581,6 +702,11 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
+| [EventLog](docs/EventLog.md) | Provides interaction with system event logs and writing diagnostic entries. |
+| [EtwLogReader](docs/EtwLogReader.md) | Provides Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, reading, and subscription listening. |
+| [SystemMetrics](docs/RealtimeTelemetry.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
+| [ActiveUserSession](docs/RealtimeTelemetry.md) | Enumerates active and terminal user sessions across the system. |
+| [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
 | [Process](docs/Process.md) | Provides access to local processes and enables you to start and stop local system processes. |
 | [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
 
@@ -592,6 +718,42 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
 | [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
+
+### Namespace: `DotNetDupe::System::Utils`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [StringConvert](docs/StringConvert.md) | Provides static utility methods for converting strings between UTF-8 and UTF-16 representations. |
+
+### Namespace: `DotNetDupe::System::Collections::Generic`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [List](docs/GenericCollections.md) | Represents a strongly typed list of objects that can be accessed by index. |
+| [Dictionary](docs/GenericCollections.md) | Represents a collection of keys and values. |
+| [Queue](docs/GenericCollections.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
+| [Stack](docs/GenericCollections.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
+| [HashSet](docs/GenericCollections.md) | Represents a set of unique values using a hash table. |
+| [SortedDictionary](docs/GenericCollections.md) | Represents a collection of key/value pairs that are sorted on the key. |
+| [SortedSet](docs/GenericCollections.md) | Represents a collection of objects that is maintained in sorted order. |
+| [LinkedList](docs/GenericCollections.md) | Represents a doubly linked list. |
+| [PriorityQueue](docs/GenericCollections.md) | Represents a collection of items that have a value and a priority. |
+
+### Namespace: `DotNetDupe::System::Collections::Concurrent`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [ConcurrentDictionary](docs/ConcurrentCollections.md) | Thread-safe key-value collection for concurrent operations. |
+| [ConcurrentQueue](docs/ConcurrentCollections.md) | Thread-safe First-In-First-Out (FIFO) collection. |
+| [ConcurrentStack](docs/ConcurrentCollections.md) | Thread-safe Last-In-First-Out (LIFO) collection. |
+| [ConcurrentBag](docs/ConcurrentCollections.md) | Thread-safe unordered collection of objects. |
+| [BlockingCollection](docs/ConcurrentCollections.md) | Thread-safe collection for blocking producer-consumer workflows. |
 
 ### Namespace: `DotNetDupe::System::Text::Json`
 
@@ -670,6 +832,14 @@ For detailed information on the available classes, methods, and their usage, ple
 | [StringContent](docs/HttpClient.md) | Provides HTTP content based on a string. |
 | [ByteArrayContent](docs/HttpClient.md) | Provides HTTP content based on a byte array. |
 | [HttpMethod](docs/HttpClient.md) | Represents an HTTP method. |
+
+### Namespace: `DotNetDupe::System::Security::Principal`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [UserPrincipal](docs/UserPrincipal.md) | Enumerates system user accounts (Windows/Linux) and inspects user classification, groups, and security permissions. |
 
 ### Namespace: `DotNetDupe::System::Security::Cryptography`
 

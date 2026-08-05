@@ -36,9 +36,9 @@ namespace DotNetDupe {
 #else
             char buffer[HOST_NAME_MAX + 1];
             if (gethostname(buffer, sizeof(buffer)) == 0) {
-                return String(buffer);
+                return buffer;
             }
-            return String("");
+            return "";
 #endif
         }
 
@@ -47,14 +47,14 @@ namespace DotNetDupe {
             wchar_t buffer [256];
             DWORD nSize = 256;
             ::GetUserNameW(buffer, &nSize);
-            return String(WCharToUtf8(buffer).c_str());
+            return String(buffer);
 #else
             struct passwd *pPw = getpwuid(getuid());
             if (pPw) {
-                return String(pPw->pw_name);
+                return pPw->pw_name;
             }
             const char* pUser = getenv("USER");
-            return pUser ? String(pUser) : String("");
+            return pUser ? pUser : "";
 #endif
         }
 
@@ -70,9 +70,9 @@ namespace DotNetDupe {
 
         String Environment::GetNewLine() {
 #if defined(_WIN32)
-            return String("\r\n");
+            return "\r\n";
 #else
-            return String("\n");
+            return "\n";
 #endif
         }
 

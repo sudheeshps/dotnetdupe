@@ -5,8 +5,11 @@ namespace DotNetDupe {
         template <class CharT> class BasicFormatException : public BasicException<CharT> {
         public:
             BasicFormatException(const CharT* pchMessage);
+            BasicFormatException(const BasicString<CharT>& sMessage);
         };
         template <class CharT>
         inline BasicFormatException<CharT>::BasicFormatException(const CharT* pchMessage) : BasicException<CharT>(pchMessage) { }
+        template <class CharT>
+        inline BasicFormatException<CharT>::BasicFormatException(const BasicString<CharT>& sMessage) : BasicException<CharT>(sMessage) { }
     }
 }

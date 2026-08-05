@@ -127,4 +127,29 @@ void DemonstrateSynchronization() {
         Console::WriteLine(ex.What());
     }
     pThread4.Join(); // Clean up
+
+    // 6. Named Synchronization Objects
+    Console::WriteLine("\nDemonstrating Named Synchronization Objects...");
+    bool bCreatedNewEvent = false;
+    ManualResetEvent objNamedEvent(false, "GlobalDemoEvent", true, bCreatedNewEvent);
+    Console::Write("  Created named ManualResetEvent (bCreatedNew=");
+    Console::Write(bCreatedNewEvent ? "true" : "false");
+    Console::WriteLine(")");
+
+    ManualResetEvent* pOpenedEvent = ManualResetEvent::OpenExisting("GlobalDemoEvent");
+    if (pOpenedEvent != nullptr) {
+        Console::WriteLine("  Successfully opened existing named ManualResetEvent via OpenExisting.");
+    }
+
+    bool bCreatedNewMutex = false;
+    Mutex objNamedMutex(false, "GlobalDemoMutex", true, bCreatedNewMutex);
+    Console::Write("  Created named Mutex (bCreatedNew=");
+    Console::Write(bCreatedNewMutex ? "true" : "false");
+    Console::WriteLine(")");
+
+    bool bCreatedNewSem = false;
+    Semaphore objNamedSem(1, 1, "GlobalDemoSemaphore", true, bCreatedNewSem);
+    Console::Write("  Created named Semaphore (bCreatedNew=");
+    Console::Write(bCreatedNewSem ? "true" : "false");
+    Console::WriteLine(")");
 }

@@ -49,21 +49,21 @@ void InternalWriteLine(const String& sValue) {
     s_accumulator = s_accumulator + sValue;
     s_outputs.push_back(s_accumulator);
     std::cout << sValue.GetRawString() << std::endl;
-    s_accumulator = String("");
+    s_accumulator = "";
 }
 
-void Console::Write(bool value) { InternalWrite(value ? String("True") : String("False")); }
-void Console::Write(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWrite(String(buf)); }
+void Console::Write(bool value) { InternalWrite(value ? "True" : "False"); }
+void Console::Write(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWrite(buf); }
 void Console::Write(double value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(int value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(long value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(long long value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(float value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(const String& value) { InternalWrite(value); }
-void Console::Write(const char* value) { InternalWrite(String(value)); }
+void Console::Write(const char* value) { InternalWrite(value); }
 
-void Console::WriteLine() { InternalWriteLine(String("")); }
-void Console::WriteLine(bool value) { InternalWriteLine(value ? String("True") : String("False")); }
+void Console::WriteLine() { InternalWriteLine(""); }
+void Console::WriteLine(bool value) { InternalWriteLine(value ? "True" : "False"); }
 void Console::WriteLine(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWriteLine(String(buf)); }
 void Console::WriteLine(double value) { InternalWriteLine(String(std::to_string(value).c_str())); }
 void Console::WriteLine(int value) { InternalWriteLine(String(std::to_string(value).c_str())); }

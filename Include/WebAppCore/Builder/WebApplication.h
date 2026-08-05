@@ -7,6 +7,7 @@
 #include "System/Func.h"
 #include "System/IServiceProvider.h"
 #include "WebAppCore/Http/HttpContext.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include <atomic>
@@ -37,6 +38,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void MapPost(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapPut(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+                DOTNETDUPE_API void MapWebSocket(const DotNetDupe::System::String& pattern, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler> handler);
 
                 DOTNETDUPE_API void SetControllerRegistrars(std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> registrars) {
                     m_controllerRegistrars = std::move(registrars);
@@ -48,7 +50,7 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API void MapControllers();
 
-                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000");
+                DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000", int threadCount = 10);
                 DOTNETDUPE_API void Stop();
 
             private:
@@ -60,6 +62,7 @@ namespace DotNetDupe {
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_postHandlers;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_putHandlers;
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>>> m_deleteHandlers;
+                DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler>> m_wsHandlers;
                 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpListener> m_pListener;
                 std::atomic<bool> m_bRunning;

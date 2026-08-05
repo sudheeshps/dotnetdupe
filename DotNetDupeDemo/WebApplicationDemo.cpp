@@ -110,6 +110,7 @@ void DemonstrateWebApplication() {
     // 1. Create Builder & Register Service
     auto builder = WebApplication::CreateBuilder();
     builder->GetServices().AddSingleton<IInfoService, InfoService>();
+    builder->GetServices().AddSingleton<DemoProductsController, DemoProductsController>();
     builder->AddController<DemoProductsController>("/api/products")
         .MapGet("", &DemoProductsController::GetProducts)
         .MapGet("/default", &DemoProductsController::GetDefaultProduct)

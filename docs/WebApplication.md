@@ -31,7 +31,7 @@ The central HTTP server host. Handles endpoint mapping and listens for incoming 
 - `void MapPut(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a PUT request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
 - `void MapDelete(const String& pattern, Func<String, SmartPointer<Http::HttpContext>> handler)`: Maps a DELETE request endpoint to a route handler. Supports path-parameter templates like `/api/users/{id}`.
 - `void MapControllers()`: Iterates through all registered controllers and hooks up their route callbacks automatically.
-- `void Run(const String& url = "http://127.0.0.1:5000")`: Starts listening on the specified URL (blocking loop).
+- `void Run(const String& url = "http://127.0.0.1:5000", int threadCount = 10)`: Starts listening on the specified URL (blocking loop) and dispatches incoming client connections across a multi-threaded `ThreadPool` with the specified minimum thread count (default: 10).
 - `void Stop()`: Halts the web server.
 
 ---

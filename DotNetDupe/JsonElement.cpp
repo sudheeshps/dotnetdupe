@@ -161,20 +161,45 @@ namespace DotNetDupe {
                         return arr;
                     }
 
+                    static void ParseUnicodeEscape(const std::string& s, size_t& index, std::string& res) {
+                        if (index + 4 > s.length()) {
+                            throw JsonException("Invalid unicode escape sequence");
+                        }
+
+                        std::string hexStr = s.substr(index, 4);
+                        index += 4;
+                        unsigned int codePoint = std::stoul(hexStr, nullptr, 16);
+
+                        if (codePoint <= 0x7f) {
+                            res += static_cast<char>(codePoint);
+                        } else if (codePoint <= 0x7ff) {
+                            res += static_cast<char>(0xc0 | ((codePoint >> 6) & 0x1f));
+                            res += static_cast<char>(0x80 | (codePoint & 0x3f));
+                        } else {
+                            res += static_cast<char>(0xe0 | ((codePoint >> 12) & 0x0f));
+                            res += static_cast<char>(0x80 | ((codePoint >> 6) & 0x3f));
+                            res += static_cast<char>(0x80 | (codePoint & 0x3f));
+                        }
+                    }
+
                     static JsonElement ParseString(const std::string& s, size_t& index) {
                         index++; // Skip starting '\"'
                         std::string res;
+
                         while (index < s.length()) {
                             char c = s[index];
                             if (c == '\"') {
-                                index++; // Skip ending '\"'
+                                index++;
                                 return JsonElement(String(res.c_str()));
-                            } else if (c == '\\') {
+                            }
+
+                            if (c == '\\') {
                                 if (index + 1 >= s.length()) {
                                     throw JsonException("Unterminated escape sequence in string");
                                 }
                                 char escaped = s[index + 1];
                                 index += 2;
+
                                 switch (escaped) {
                                     case '\"': res += '\"'; break;
                                     case '\\': res += '\\'; break;
@@ -184,25 +209,7 @@ namespace DotNetDupe {
                                     case 'n': res += '\n'; break;
                                     case 'r': res += '\r'; break;
                                     case 't': res += '\t'; break;
-                                    case 'u': {
-                                        if (index + 4 > s.length()) {
-                                            throw JsonException("Invalid unicode escape sequence");
-                                        }
-                                        std::string hexStr = s.substr(index, 4);
-                                        index += 4;
-                                        unsigned int codePoint = std::stoul(hexStr, nullptr, 16);
-                                        if (codePoint <= 0x7f) {
-                                            res += static_cast<char>(codePoint);
-                                        } else if (codePoint <= 0x7ff) {
-                                            res += static_cast<char>(0xc0 | ((codePoint >> 6) & 0x1f));
-                                            res += static_cast<char>(0x80 | (codePoint & 0x3f));
-                                        } else {
-                                            res += static_cast<char>(0xe0 | ((codePoint >> 12) & 0x0f));
-                                            res += static_cast<char>(0x80 | ((codePoint >> 6) & 0x3f));
-                                            res += static_cast<char>(0x80 | (codePoint & 0x3f));
-                                        }
-                                        break;
-                                    }
+                                    case 'u': ParseUnicodeEscape(s, index, res); break;
                                     default:
                                         throw JsonException((std::string("Unknown escape sequence: \\") + escaped).c_str());
                                 }
@@ -211,7 +218,8 @@ namespace DotNetDupe {
                                 index++;
                             }
                         }
-                        throw JsonException("Unterminated string in JSON");
+
+                        throw JsonException("Unterminated string");
                     }
 
                     static JsonElement ParseBool(const std::string& s, size_t& index) {
