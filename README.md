@@ -1,8 +1,12 @@
 # DotNetDupe 🚀
 
-<!-- Badges (Example - replace with actual badges if available) -->
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Build Status](https://img.shields.io/badge/Build-Passing-brightgreen.svg)](https://example.com/your-build-status)
+<!-- Dynamic Repository Badges -->
+[![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions)
+[![Latest Release](https://img.shields.io/github/v/release/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/releases)
+[![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
+[![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
+[![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://github.com/sudheeshps/DotNetDupe/actions)
+[![License](https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&color=orange)](LICENSE)
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
 

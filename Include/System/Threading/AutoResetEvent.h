@@ -6,6 +6,12 @@ namespace DotNetDupe {
             class AutoResetEvent : public EventWaitHandle {
             public:
                 DOTNETDUPE_API AutoResetEvent(bool initialState);
+                DOTNETDUPE_API AutoResetEvent(const String& sName, bool initialState = false, bool openAlways = true);
+                DOTNETDUPE_API AutoResetEvent(bool initialState, const String& sName, bool openAlways = true);
+                DOTNETDUPE_API AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew);
+
+                DOTNETDUPE_API static AutoResetEvent* OpenExisting(const String& sName);
+                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, AutoResetEvent*& pResult);
             };
         }
     }

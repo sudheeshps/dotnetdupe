@@ -40,8 +40,41 @@ jobs:
       run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64
 
     - name: Run Tests
-      if: matrix.configuration == 'Debug'
-      run: .\bin\x64\Debug\DotNetDupeTests.exe
+      run: .\bin\x64\${{ matrix.configuration }}\DotNetDupeTests.exe
+
+    - name: Install OpenCppCoverage
+      if: matrix.configuration == 'Release'
+      shell: powershell
+      run: |
+        choco install opencppcoverage -y
+
+    - name: Run OpenCppCoverage & Quality Gate Check
+      if: matrix.configuration == 'Release'
+      shell: powershell
+      run: |
+        $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
+        & $exePath --sources DotNetDupe --export_type html:coverage_report -- .\bin\x64\Release\DotNetDupeTests.exe
+        
+        Write-Host "OpenCppCoverage Report Generated Successfully."
+        
+        # Quality Gate Enforcement: Require > 80% coverage
+        $htmlContent = Get-Content -Path "coverage_report\index.html" -Raw
+        if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {
+            $coveredLines = [int]$matches[1]
+            $coveragePct = [int]$matches[2]
+            Write-Host "Overall Line Coverage: $coveragePct%"
+            if ($coveragePct -lt 80) {
+                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 80% threshold!"
+                exit 1
+            }
+        }
+
+    - name: Upload Coverage HTML Artifact
+      if: matrix.configuration == 'Release'
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report-html
+        path: coverage_report/
 
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4

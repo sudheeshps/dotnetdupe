@@ -379,3 +379,4 @@ FodyWeavers.xsd
 /update_chars.ps1
 /port-plan.md
 /DotNetDupeDemo/DotNetDupeDemo.vcxproj.filters
+/coverage_report/

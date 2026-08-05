@@ -7,6 +7,18 @@ Limits the number of threads that can access a resource or pool of resources con
 ### `Semaphore(int initialCount, int maximumCount)`
 Initializes a new instance of the `Semaphore` class, specifying the initial number of entries and the maximum number of concurrent entries.
 
+### `Semaphore(int initialCount, int maximumCount, const String& sName)`
+Initializes a new instance of the `Semaphore` class with a specified name.
+
+### `Semaphore(int initialCount, int maximumCount, const String& sName, bool& bCreatedNew)`
+Initializes a new instance of the `Semaphore` class with a specified name, returning whether a new handle was created.
+
+### `static Semaphore* OpenExisting(const String& sName)`
+Opens an existing named `Semaphore`. Throws `WaitHandleCannotBeOpenedException` if the named handle does not exist.
+
+### `static bool TryOpenExisting(const String& sName, Semaphore*& pResult)`
+Attempts to open an existing named `Semaphore`, returning `true` if successful.
+
 ### `bool WaitOne()`
 Blocks the current thread until it can enter the `Semaphore`.
 

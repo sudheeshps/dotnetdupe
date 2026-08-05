@@ -7,6 +7,24 @@ A synchronization primitive that can also be used for inter-process synchronizat
 ### `Mutex()`
 Initializes a new instance of the `Mutex` class with default settings.
 
+### `Mutex(bool bInitiallyOwned)`
+Initializes a new instance of the `Mutex` class with an option to own it initially.
+
+### `Mutex(bool bInitiallyOwned, const String& sName)`
+Initializes a new instance of the `Mutex` class with a specified name.
+
+### `Mutex(bool bInitiallyOwned, const String& sName, bool& bCreatedNew)`
+Initializes a new instance of the `Mutex` class with a specified name and returns whether a new instance was created.
+
+### `Mutex(const String& sName, bool openExisting = true)`
+Opens an existing named `Mutex` using system `OpenMutex`. If `openExisting` is set to `false`, throws `WaitHandleCannotBeOpenedException`.
+
+### `static Mutex* OpenExisting(const String& sName)`
+Opens an existing named `Mutex`. Throws `WaitHandleCannotBeOpenedException` if the named handle does not exist.
+
+### `static bool TryOpenExisting(const String& sName, Mutex*& pResult)`
+Attempts to open an existing named `Mutex`, returning `true` if successful.
+
 ### `bool WaitOne()`
 Blocks the current thread until the current `Mutex` is acquired.
 
