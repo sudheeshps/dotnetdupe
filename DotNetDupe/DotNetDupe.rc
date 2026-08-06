@@ -27,7 +27,7 @@ BEGIN
             VALUE "OriginalFilename", "DotNetDupe.dll\0"
             VALUE "ProductName",      "DotNetDupe\0"
             VALUE "ProductVersion",   VER_PRODUCTVERSION_STR
-            VALUE "BuildTime", "2026-07-31 14:15:20Z (Local: 2026-07-31 19:45:20 +05:30)\0"
+            VALUE "BuildTime", "2026-08-06 05:16:02Z (Local: 2026-08-06 10:46:02 +05:30)\0"
         END
     END
     BLOCK "VarFileInfo"

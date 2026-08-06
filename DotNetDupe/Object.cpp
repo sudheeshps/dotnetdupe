@@ -6,20 +6,20 @@ namespace DotNetDupe {
             return this == &obj;
         }
 
-        bool Object::Equals(const Object& obj) {
+        bool Object::Equals(const Object& obj) const {
             return *this == obj;
         }
 
         bool Object::Equals(const Object& obj1, const Object& obj2) {
             return obj1 == obj2;
         }
-        int Object::GetHashCode() {
+        int Object::GetHashCode() const {
             return 0;
         }
-        wchar_t* Object::ToStringW() {
+        wchar_t* Object::ToStringW() const {
             return nullptr;
         }
-        char* Object::ToStringA() {
+        char* Object::ToStringA() const {
             return nullptr;
         }
     }

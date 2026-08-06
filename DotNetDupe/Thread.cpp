@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Threading/Thread.h"
 #include "System/TimeoutException.h"
+#include "System/SmartPointer.h"
 #include <chrono>
 
 namespace DotNetDupe {
@@ -8,7 +9,7 @@ namespace DotNetDupe {
         namespace Threading {
 
             thread_local Thread* Thread::_currentThread = nullptr;
-            static thread_local std::unique_ptr<Thread> _currentThreadStorage;
+            static thread_local SmartPointer<Thread> _currentThreadStorage(nullptr);
 
             Thread::Thread(ThreadStart start)
                 : _start(start), _isAlive(false), _completed(false) {
@@ -24,7 +25,7 @@ namespace DotNetDupe {
 
             Thread::~Thread() {
                 if (_internalThread && _internalThread->joinable()) {
-                    _internalThread->detach();
+                    _internalThread->join();
                 }
             }
 
@@ -78,10 +79,14 @@ namespace DotNetDupe {
 
             Thread* Thread::GetCurrentThread() {
                 if (_currentThread == nullptr) {
-                    _currentThreadStorage = std::unique_ptr<Thread>(new Thread());
-                    _currentThread = _currentThreadStorage.get();
+                    _currentThreadStorage = CreateCurrentThreadWrapper();
+                    _currentThread = _currentThreadStorage.Get();
                 }
                 return _currentThread;
+            }
+
+            SmartPointer<Thread> Thread::CreateCurrentThreadWrapper() {
+                return SmartPointer<Thread>(new Thread());
             }
 
             void Thread::ThreadMain(Object* parameter) {

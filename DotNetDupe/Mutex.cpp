@@ -4,6 +4,7 @@
 #include "System/TimeoutException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
 #include <chrono>
 
 #if defined(_WIN32)
@@ -87,10 +88,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    Mutex* pM = new Mutex();
-                    pM->_name = sName;
-                    pM->_hHandle = h;
-                    pResult = pM;
+                    SmartPointer<Mutex> spM = SmartPointer<Mutex>::New();
+                    spM->_name = sName;
+                    spM->_hHandle = h;
+                    pResult = spM.Detach();
                     return true;
                 }
                 return false;

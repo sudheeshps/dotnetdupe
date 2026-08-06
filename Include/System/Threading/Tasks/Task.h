@@ -49,22 +49,22 @@ namespace DotNetDupe {
                     /**
                      * @brief Gets the TaskStatus of this task.
                      */
-                    DOTNETDUPE_API TaskStatus GetStatus();
+                    DOTNETDUPE_API TaskStatus GetStatus() const;
 
                     /**
                      * @brief Gets whether this Task has completed.
                      */
-                    DOTNETDUPE_API bool GetIsCompleted();
+                    DOTNETDUPE_API bool GetIsCompleted() const;
 
                     /**
                      * @brief Gets whether the Task completed due to an unhandled exception.
                      */
-                    DOTNETDUPE_API bool GetIsFaulted();
+                    DOTNETDUPE_API bool GetIsFaulted() const;
 
                     /**
                      * @brief Gets whether this Task instance has completed execution due to being canceled.
                      */
-                    DOTNETDUPE_API bool GetIsCanceled();
+                    DOTNETDUPE_API bool GetIsCanceled() const;
 
                     /**
                      * @brief Queues the specified work to run on the ThreadPool and returns a Task object that represents that work.
@@ -77,9 +77,9 @@ namespace DotNetDupe {
                     Action<> m_objAction;
                     TaskStatus m_eStatus;
                     SmartPointer<ManualResetEvent> m_pCompletionEvent = nullptr;
-                    CriticalSection m_csSync;
+                    mutable CriticalSection m_csSync;
 
-                    DOTNETDUPE_API void Execute();
+                    void Execute();
                     static void ThreadPoolCallback(Object* pState);
                     
                     static void RetainTask(SmartPointer<Task> pTask);

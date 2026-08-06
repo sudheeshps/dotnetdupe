@@ -6,11 +6,11 @@ namespace DotNetDupe {
         public:
             DOTNETDUPE_API virtual ~Object() = default;
             DOTNETDUPE_API bool operator == (const Object& obj) const;
-            DOTNETDUPE_API virtual bool Equals(const Object& obj);
+            DOTNETDUPE_API virtual bool Equals(const Object& obj) const;
             DOTNETDUPE_API static bool Equals(const Object& obj1, const Object& obj2);
-            DOTNETDUPE_API int GetHashCode();
-            DOTNETDUPE_API wchar_t* ToStringW();
-            DOTNETDUPE_API char* ToStringA();
+            DOTNETDUPE_API int GetHashCode() const;
+            DOTNETDUPE_API wchar_t* ToStringW() const;
+            DOTNETDUPE_API char* ToStringA() const;
         };
     }
 }

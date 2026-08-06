@@ -107,9 +107,10 @@ namespace DotNetDupe {
                 DWORD dwSize = 0;
 
                 if (::GetIfTable(NULL, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
-                    MIB_IFTABLE* pIfTable = (MIB_IFTABLE*)malloc(dwSize);
+                    std::vector<uint8_t> ifTableBuffer(dwSize, 0);
+                    MIB_IFTABLE* pIfTable = reinterpret_cast<MIB_IFTABLE*>(ifTableBuffer.data());
 
-                    if (pIfTable && ::GetIfTable(pIfTable, &dwSize, FALSE) == NO_ERROR) {
+                    if (::GetIfTable(pIfTable, &dwSize, FALSE) == NO_ERROR) {
                         uint64_t totalOctets = 0;
 
                         for (DWORD i = 0; i < pIfTable->dwNumEntries; ++i) {
@@ -128,8 +129,6 @@ namespace DotNetDupe {
                         s_uPrevOctets = totalOctets;
                         s_dwPrevTick = dwNow;
                     }
-
-                    if (pIfTable) free(pIfTable);
                 }
             }
 
@@ -267,9 +266,10 @@ namespace DotNetDupe {
                 DWORD dwSize = 0;
 
                 if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
-                    MIB_TCPTABLE_OWNER_PID* pTcpTable = (MIB_TCPTABLE_OWNER_PID*)malloc(dwSize);
+                    std::vector<uint8_t> tcpTableBuffer(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTcpTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(tcpTableBuffer.data());
 
-                    if (pTcpTable && ::GetExtendedTcpTable(pTcpTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                    if (::GetExtendedTcpTable(pTcpTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
                         for (DWORD i = 0; i < pTcpTable->dwNumEntries; ++i) {
                             if (pTcpTable->table[i].dwOwningPid == static_cast<DWORD>(iProcessId)) {
                                 if (pTcpTable->table[i].dwState == MIB_TCP_STATE_LISTEN) {
@@ -283,8 +283,6 @@ namespace DotNetDupe {
                             }
                         }
                     }
-
-                    if (pTcpTable) free(pTcpTable);
                 }
             }
 

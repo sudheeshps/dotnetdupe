@@ -4,6 +4,7 @@
 #include "System/ArgumentException.h"
 #include <mutex>
 #include <cstring>
+#include <cstdlib>
 
 #if defined(_WIN32)
     #define WIN32_LEAN_AND_MEAN
@@ -79,6 +80,7 @@ namespace DotNetDupe {
                             throw SocketException("WSAStartup failed", GetLastErrorCode());
                         }
                         bInitialized = true;
+                        std::atexit([]() { WSACleanup(); });
                     }
 #endif
                 }

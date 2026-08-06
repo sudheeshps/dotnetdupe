@@ -4,6 +4,7 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/Action.h"
+#include "System/SmartPointer.h"
 #include <memory>
 #include <thread>
 #include <atomic>
@@ -38,6 +39,7 @@ namespace DotNetDupe {
 
             private:
                 Thread(); // For internal use (main thread wrapper)
+                static SmartPointer<Thread> CreateCurrentThreadWrapper();
 
                 std::unique_ptr<std::thread> _internalThread;
                 ThreadStart _start;

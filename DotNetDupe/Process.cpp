@@ -180,7 +180,7 @@ namespace DotNetDupe {
 #endif
             }
 
-            bool Process::GetHasExited() {
+            bool Process::GetHasExited() const {
                 Refresh();
                 return m_bHasExited;
             }
@@ -208,7 +208,7 @@ namespace DotNetDupe {
 #endif
             }
 
-            void Process::Refresh() {
+            void Process::Refresh() const {
                 if (m_bHasExited) return;
                 if (m_pProcessHandle == nullptr) return;
 

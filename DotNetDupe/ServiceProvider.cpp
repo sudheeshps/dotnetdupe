@@ -194,10 +194,8 @@ namespace DotNetDupe {
 
             DotNetDupe::System::SmartPointer<IServiceScope> ServiceScopeFactory::CreateScope() {
                 auto spScopedProvider = DotNetDupe::System::SmartPointer<ServiceProvider>::NewShared(m_pProvider);
-                return DotNetDupe::System::SmartPointer<IServiceScope>(
-                    new ServiceScope(std::move(spScopedProvider)),
-                    true
-                );
+                auto spScope = DotNetDupe::System::SmartPointer<ServiceScope>::NewShared(std::move(spScopedProvider));
+                return DotNetDupe::System::SmartPointer<IServiceScope>(spScope);
             }
         }
     }

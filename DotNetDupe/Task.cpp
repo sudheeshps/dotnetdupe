@@ -47,24 +47,24 @@ namespace DotNetDupe {
                     }
                 }
 
-                TaskStatus Task::GetStatus() {
+                TaskStatus Task::GetStatus() const {
                     Lock<CriticalSection> lock(m_csSync);
                     return m_eStatus;
                 }
 
-                bool Task::GetIsCompleted() {
+                bool Task::GetIsCompleted() const {
                     Lock<CriticalSection> lock(m_csSync);
                     return m_eStatus == TaskStatus::RanToCompletion || 
                            m_eStatus == TaskStatus::Faulted || 
                            m_eStatus == TaskStatus::Canceled;
                 }
 
-                bool Task::GetIsFaulted() {
+                bool Task::GetIsFaulted() const {
                     Lock<CriticalSection> lock(m_csSync);
                     return m_eStatus == TaskStatus::Faulted;
                 }
 
-                bool Task::GetIsCanceled() {
+                bool Task::GetIsCanceled() const {
                     Lock<CriticalSection> lock(m_csSync);
                     return m_eStatus == TaskStatus::Canceled;
                 }
@@ -99,8 +99,22 @@ namespace DotNetDupe {
 
                 void Task::ThreadPoolCallback(Object* pState) {
                     Task* pTask = static_cast<Task*>(pState);
-                    if (pTask != nullptr) {
-                        pTask->Execute();
+                    if (pTask == nullptr) return;
+
+                    // Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute()
+                    SmartPointer<Task> spSelf(nullptr);
+                    {
+                        Lock<CriticalSection> lock(s_csActiveTasks);
+                        for (int i = 0; i < s_vActiveTasks.GetCount(); ++i) {
+                            if (s_vActiveTasks[i].Get() == pTask) {
+                                spSelf = s_vActiveTasks[i];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!spSelf.IsNull()) {
+                        spSelf->Execute();
                     }
                 }
 
