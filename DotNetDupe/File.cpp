@@ -16,7 +16,7 @@ namespace fs = std::filesystem;
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
 #if defined(_WIN32)
-        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
         return fs::path(sPath.GetRawString());
 #endif

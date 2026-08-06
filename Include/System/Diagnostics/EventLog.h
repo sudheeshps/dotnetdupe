@@ -7,6 +7,10 @@
 #include "System/DateTimeOffset.h"
 #include "System/Collections/Generic/List.h"
 
+#if defined(_WIN32)
+#include <windows.h>
+#endif
+
 namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
@@ -89,6 +93,24 @@ namespace DotNetDupe {
                 String m_sLogName;
                 String m_sMachineName;
                 String m_sSource;
+
+#if defined(_WIN32)
+                static EventLogEntryType MapWin32EventType(WORD wType);
+                static EventLogEntry ParseWin32Record(const PEVENTLOGRECORD pRec);
+                static void ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries);
+                static void ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries);
+                static void WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID);
+                static bool CreateWin32EventSource(const String& sSource, const String& sLogName);
+                static bool Win32SourceExists(const String& sSource);
+                static void DeleteWin32EventSource(const String& sSource);
+#else
+                static void WriteLinuxSyslog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID);
+                static EventLogEntry ParseSyslogLine(const std::string& line);
+                static void ReadLinuxSyslogFile(const std::string& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries);
+                static void ReadLinuxSyslog(Collections::Generic::List<EventLogEntry>& lstEntries);
+#endif
+                static void RecordInternalLogEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID);
+                static void PurgeSourcesForLog(const String& sLogName);
             };
 
         }

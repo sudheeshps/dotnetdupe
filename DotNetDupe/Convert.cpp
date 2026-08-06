@@ -271,11 +271,11 @@ namespace DotNetDupe {
                      "abcdefghijklmnopqrstuvwxyz"
                      "0123456789+/";
 
-        static inline bool is_base64(unsigned char c) {
+        bool Convert::IsBase64(unsigned char c) {
             return (isalnum(c) || (c == '+') || (c == '/'));
         }
 
-        static void EncodeBase64Chunk4(const unsigned char* char_array_3, std::string& ret) {
+        void Convert::EncodeBase64Chunk4(const unsigned char* char_array_3, std::string& ret) {
             unsigned char char_array_4[4];
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
             char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
@@ -284,7 +284,7 @@ namespace DotNetDupe {
             for (int i = 0; i < 4; i++) ret += base64_chars[char_array_4[i]];
         }
 
-        static void EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret) {
+        void Convert::EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret) {
             unsigned char char_array_4[4];
             for (int j = i; j < 3; j++) char_array_3[j] = '\0';
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
@@ -309,7 +309,7 @@ namespace DotNetDupe {
             return String(ret.c_str());
         }
 
-        static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded) {
+        void Convert::DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded) {
             for (int k = 0; k < 4; k++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[k]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
@@ -320,7 +320,7 @@ namespace DotNetDupe {
             decoded.push_back(((char_array_4[2] & 0x3) << 6) + char_array_4[3]);
         }
 
-        static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded) {
+        void Convert::DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded) {
             for (int j = 0; j < i; j++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[j]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
@@ -328,23 +328,36 @@ namespace DotNetDupe {
             }
             unsigned char char_array_3[2];
             char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
-            char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
-            for (int j = 0; j < i - 1; j++) decoded.push_back(char_array_3[j]);
+            if (i > 2) {
+                char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+                decoded.push_back(char_array_3[0]);
+                decoded.push_back(char_array_3[1]);
+            } else if (i > 1) {
+                decoded.push_back(char_array_3[0]);
+            }
         }
 
         Array<char> Convert::FromBase64String(const String& s) {
-            std::string str = s.GetRawString();
-            int len = static_cast<int>(str.size()), i = 0, idx = 0;
+            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+            size_t in_len = sInput.size();
+            int i = 0, in_ = 0;
             unsigned char char_array_4[4];
             std::vector<char> decoded;
-            while (len-- && (str[idx] != '=') && is_base64(str[idx])) {
-                char_array_4[i++] = str[idx++];
-                if (i == 4) { DecodeBase64Chunk4(char_array_4, decoded); i = 0; }
+
+            while (in_len-- && (sInput[in_] != '=') && IsBase64(sInput[in_])) {
+                char_array_4[i++] = sInput[in_]; in_++;
+                if (i == 4) {
+                    DecodeBase64Chunk4(char_array_4, decoded);
+                    i = 0;
+                }
             }
             if (i) DecodeBase64Remainder(char_array_4, i, decoded);
-            Array<char> res(static_cast<int>(decoded.size()));
-            if (!decoded.empty()) std::memcpy(res.GetData(), decoded.data(), decoded.size());
-            return res;
+
+            Array<char> result(static_cast<int>(decoded.size()));
+            for (size_t idx = 0; idx < decoded.size(); idx++) {
+                result[static_cast<int>(idx)] = decoded[idx];
+            }
+            return result;
         }
     }
 }

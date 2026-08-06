@@ -51,8 +51,8 @@ namespace DotNetDupe {
                 si.cb = sizeof(si);
                 ZeroMemory(&pi, sizeof(pi));
 
-                std::wstring sWFileName = DotNetDupe::System::Internal::Utf8ToWChar(m_objStartInfo.FileName.GetRawString());
-                std::wstring sWArgs = DotNetDupe::System::Internal::Utf8ToWChar(m_objStartInfo.Arguments.GetRawString());
+                std::wstring sWFileName = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.FileName.GetRawString());
+                std::wstring sWArgs = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.Arguments.GetRawString());
                 std::wstring sWCommandLine = L"\"" + sWFileName + L"\"";
                 if (m_objStartInfo.Arguments.GetLength() > 0) {
                     sWCommandLine += L" " + sWArgs;

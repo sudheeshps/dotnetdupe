@@ -38,7 +38,7 @@ namespace DotNetDupe {
             }
 
 #if defined(_WIN32)
-            static DWORD WINAPI Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
+            DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
                 if (action == EvtSubscribeActionDeliver && pUserContext != nullptr) {
                     auto pCallback = static_cast<std::function<void(const EtwEvent&)>*>(pUserContext);
                     if (pCallback && *pCallback) {
@@ -56,14 +56,14 @@ namespace DotNetDupe {
                 return 0;
             }
 
-            static EVT_HANDLE SubscribeWin32Channel(const String& sChannelName, std::function<void(const EtwEvent&)>* pCallback) {
+            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String& sChannelName, std::function<void(const EtwEvent&)>* pCallback) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
                 return hSub;
             }
 
-            static void EnumerateWin32Channels(Collections::Generic::List<String>& lstChannels) {
+            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List<String>& lstChannels) {
                 EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
                 if (hEnum == NULL) return;
 
@@ -78,7 +78,7 @@ namespace DotNetDupe {
                 ::EvtClose(hEnum);
             }
 
-            static void FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent& evt) {
+            void EtwLogReader::FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent& evt) {
                 DWORD dwUsed = 0, dwProps = 0;
                 WCHAR wXmlBuffer[4096] = { 0 };
 
@@ -92,7 +92,7 @@ namespace DotNetDupe {
                 }
             }
 
-            static void FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent& evt) {
+            void EtwLogReader::FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent& evt) {
                 DWORD dwUsed = 0;
                 WCHAR wMsgBuf[2048] = { 0 };
 
@@ -106,7 +106,7 @@ namespace DotNetDupe {
                 }
             }
 
-            static EtwEvent ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex) {
+            EtwEvent EtwLogReader::ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex) {
                 EtwEvent evt;
                 evt.sChannelName = sChannelName;
                 evt.iEventId = 100 + iIndex;
@@ -119,7 +119,7 @@ namespace DotNetDupe {
                 return evt;
             }
 
-            static void ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents) {
+            void EtwLogReader::ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
@@ -174,7 +174,7 @@ namespace DotNetDupe {
             }
 
 #if defined(_WIN32)
-            static unsigned long long FastQueryLevelCount(const std::wstring& wChannel, const wchar_t* pwszFilter) {
+            unsigned long long EtwLogReader::FastQueryLevelCount(const std::wstring& wChannel, const wchar_t* pwszFilter) {
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), pwszFilter, EvtQueryChannelPath | EvtQueryTolerateQueryErrors);
                 if (hResults == NULL) return 0;
                 EVT_HANDLE hEvents[100];
@@ -188,7 +188,7 @@ namespace DotNetDupe {
                 return uCount;
             }
 
-            static void CountWin32EventsByLevel(const std::wstring& wChannel, EtwEventLevelCounts& counts) {
+            void EtwLogReader::CountWin32EventsByLevel(const std::wstring& wChannel, EtwEventLevelCounts& counts) {
                 counts.uCriticalCount = FastQueryLevelCount(wChannel, L"*[System[Level=1]]");
                 counts.uErrorCount = FastQueryLevelCount(wChannel, L"*[System[Level=2]]");
                 counts.uWarningCount = FastQueryLevelCount(wChannel, L"*[System[Level=3]]");

@@ -9,6 +9,9 @@ namespace DotNetDupe {
             class Dns {
             public:
                 DOTNETDUPE_API static Array<String> GetHostAddresses(const String& hostName);
+
+            private:
+                static void InitializeSockets();
             };
         }
     }

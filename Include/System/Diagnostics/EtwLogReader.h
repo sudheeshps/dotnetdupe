@@ -8,6 +8,11 @@
 #include "System/Collections/Generic/List.h"
 #include "System/Diagnostics/EventLog.h"
 
+#if defined(_WIN32)
+#include <windows.h>
+#include <winevt.h>
+#endif
+
 namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
@@ -57,6 +62,17 @@ namespace DotNetDupe {
                 std::function<void(const EtwEvent&)> m_fnCallback;
 
                 static void RegisterChannelIfNew(const String& sChannelName);
+#if defined(_WIN32)
+                static DWORD WINAPI Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent);
+                static EVT_HANDLE SubscribeWin32Channel(const String& sChannelName, std::function<void(const EtwEvent&)>* pCallback);
+                static void EnumerateWin32Channels(Collections::Generic::List<String>& lstChannels);
+                static void FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent& evt);
+                static void FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent& evt);
+                static EtwEvent ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex);
+                static void ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents);
+                static unsigned long long FastQueryLevelCount(const std::wstring& wChannel, const wchar_t* pwszFilter);
+                static void CountWin32EventsByLevel(const std::wstring& wChannel, EtwEventLevelCounts& counts);
+#endif
             };
 
         }

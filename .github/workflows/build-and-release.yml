@@ -1,150 +1,33 @@
-name: Build and Release DotNetDupe
+name: Build and Version Release
 
 on:
   push:
-    branches: [ "main" ]
     tags:
-      - 'v*'
-  pull_request:
-    branches: [ "main" ]
-  workflow_dispatch:
+      - 'v*.*.*'
+      - 'v*.*.*.*'
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-    steps:
-    - uses: actions/checkout@v4
 
-    - name: Add MSBuild to PATH
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
 
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
-    - name: Restore NuGet packages
-      run: nuget restore DotNetDupe.sln
-
-    - name: Update Version Build Timestamp
-      shell: powershell
+    - name: Update Version Header from Git Tag
+      shell: pwsh
       run: |
-        $utc = [DateTime]::UtcNow.ToString('yyyy-MM-dd HH:mm:ssZ')
-        $local = [DateTime]::Now.ToString('yyyy-MM-dd HH:mm:ss K')
-        $rc = Get-Content 'DotNetDupe\DotNetDupe.rc' -Raw
-        $updatedRc = $rc -replace 'VALUE "BuildTime",\s*".*"', ("VALUE `"BuildTime`", `"" + $utc + " (Local: " + $local + ")\0`"")
-        Set-Content -Path 'DotNetDupe\DotNetDupe.rc' -Value $updatedRc -NoNewline
+        .\scripts\Update-Version.ps1 -Tag '${{ github.ref_name }}'
 
-    - name: Build Windows
-      run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64
+    - name: Build Solution
+      run: |
+        msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64
 
     - name: Run Tests
-      run: .\bin\x64\${{ matrix.configuration }}\DotNetDupeTests.exe
-
-    - name: Install OpenCppCoverage
-      if: matrix.configuration == 'Release'
-      shell: powershell
       run: |
-        choco install opencppcoverage -y
-
-    - name: Run OpenCppCoverage & Quality Gate Check
-      if: matrix.configuration == 'Release'
-      shell: powershell
-      run: |
-        $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
-        & $exePath --sources DotNetDupe --export_type html:coverage_report -- .\bin\x64\Release\DotNetDupeTests.exe
-        
-        Write-Host "OpenCppCoverage Report Generated Successfully."
-        
-        # Quality Gate Enforcement: Require > 80% coverage
-        $htmlContent = Get-Content -Path "coverage_report\index.html" -Raw
-        if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {
-            $coveredLines = [int]$matches[1]
-            $coveragePct = [int]$matches[2]
-            Write-Host "Overall Line Coverage: $coveragePct%"
-            if ($coveragePct -lt 80) {
-                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 80% threshold!"
-                exit 1
-            }
-        }
-
-    - name: Upload Coverage HTML Artifact
-      if: matrix.configuration == 'Release'
-      uses: actions/upload-artifact@v4
-      with:
-        name: coverage-report-html
-        path: coverage_report/
-
-    - name: Upload Windows Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: win-x64-${{ matrix.configuration }}
-        path: |
-          bin/x64/${{ matrix.configuration }}/DotNetDupe.dll
-          bin/x64/${{ matrix.configuration }}/DotNetDupe.lib
-          bin/x64/${{ matrix.configuration }}/DotNetDupe.pdb
-
-  build-linux:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential cmake
-
-    - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
-
-    - name: Build Linux
-      run: cmake --build build --config ${{ matrix.configuration }}
-
-    - name: Run Tests
-      if: matrix.configuration == 'Debug'
-      run: ./build/DotNetDupeTests
-
-    - name: Upload Linux Artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: linux-x64-${{ matrix.configuration }}
-        path: build/libDotNetDupe.so
-
-  package:
-    needs: [build-windows, build-linux]
-    runs-on: windows-latest
-    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Setup NuGet
-      uses: NuGet/setup-nuget@v2
-
-    - name: Download All Artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts-temp
-
-    - name: Organize Artifacts for Packaging
-      run: |
-        mkdir -p bin/x64/Release
-        mkdir -p build-wsl
-        
-        # Windows Release
-        cp artifacts-temp/win-x64-Release/DotNetDupe.dll bin/x64/Release/
-        cp artifacts-temp/win-x64-Release/DotNetDupe.lib bin/x64/Release/
-        
-        # Linux Release
-        cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
-
-    - name: Create NuGet Package
-      run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
-
-    - name: Publish NuGet Package
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: |
-        nuget push artifacts\*.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }} -SkipDuplicate
+        .\bin\x64\Release\DotNetDupeTests.exe

@@ -69,7 +69,7 @@ namespace DotNetDupe {
             }
 
 #if defined(_WIN32)
-            static EventLogEntryType MapWin32EventType(WORD wType) {
+            EventLogEntryType EventLog::MapWin32EventType(WORD wType) {
                 if (wType == EVENTLOG_ERROR_TYPE) return EventLogEntryType::Error;
                 if (wType == EVENTLOG_WARNING_TYPE) return EventLogEntryType::Warning;
                 if (wType == EVENTLOG_AUDIT_SUCCESS) return EventLogEntryType::SuccessAudit;
@@ -77,7 +77,7 @@ namespace DotNetDupe {
                 return EventLogEntryType::Information;
             }
 
-            static EventLogEntry ParseWin32Record(const PEVENTLOGRECORD pRec) {
+            EventLogEntry EventLog::ParseWin32Record(const PEVENTLOGRECORD pRec) {
                 EventLogEntryType eType = MapWin32EventType(pRec->EventType);
                 std::wstring wSrc((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
                 String sMsg = "";
@@ -93,7 +93,7 @@ namespace DotNetDupe {
                 return EventLogEntry(sMsg, eType, (int)pRec->EventID, String(sNarrowSrc.c_str()), DateTimeOffset(iTicks));
             }
 
-            static void ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries) {
+            void EventLog::ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries) {
                 DWORD dwOffset = 0;
                 while (dwOffset < dwBytesRead) {
                     PEVENTLOGRECORD pRec = (PEVENTLOGRECORD)&buffer[dwOffset];
@@ -102,7 +102,7 @@ namespace DotNetDupe {
                 }
             }
 
-            static void ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
+            void EventLog::ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
                 std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
                 HANDLE hEventLog = ::OpenEventLogW(NULL, wLogName.c_str());
@@ -115,7 +115,7 @@ namespace DotNetDupe {
                 ::CloseEventLog(hEventLog);
             }
 
-            static void WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+            void EventLog::WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
                 std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSource(sStdSource.begin(), sStdSource.end());
                 HANDLE hEventLog = ::RegisterEventSourceW(NULL, wSource.c_str());
@@ -132,7 +132,7 @@ namespace DotNetDupe {
                 ::DeregisterEventSource(hEventLog);
             }
 
-            static bool CreateWin32EventSource(const String& sSource, const String& sLogName) {
+            bool EventLog::CreateWin32EventSource(const String& sSource, const String& sLogName) {
                 std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" +
@@ -147,7 +147,7 @@ namespace DotNetDupe {
                 return false;
             }
 
-            static bool Win32SourceExists(const String& sSource) {
+            bool EventLog::Win32SourceExists(const String& sSource) {
                 std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
@@ -161,7 +161,7 @@ namespace DotNetDupe {
                 return false;
             }
 
-            static void DeleteWin32EventSource(const String& sSource) {
+            void EventLog::DeleteWin32EventSource(const String& sSource) {
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.begin(), sSource.end());
@@ -169,7 +169,7 @@ namespace DotNetDupe {
                 }
             }
 #else
-            static void WriteLinuxSyslog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+            void EventLog::WriteLinuxSyslog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
                 int iPriority = LOG_INFO;
                 const char* szLevelStr = "Information";
                 if (eType == EventLogEntryType::Error) { iPriority = LOG_ERR; szLevelStr = "Error"; }
@@ -183,7 +183,7 @@ namespace DotNetDupe {
                 closelog();
             }
 
-            static EventLogEntry ParseSyslogLine(const std::string& line) {
+            EventLogEntry EventLog::ParseSyslogLine(const std::string& line) {
                 EventLogEntryType eType = EventLogEntryType::Information;
 
                 if (line.find("error") != std::string::npos || line.find("ERR") != std::string::npos || line.find("err") != std::string::npos || line.find("Error") != std::string::npos) {
@@ -201,7 +201,7 @@ namespace DotNetDupe {
                 return EventLogEntry(String(line.c_str()), eType, iEventId, "syslog", DateTimeOffset::Now());
             }
 
-            static void ReadLinuxSyslogFile(const std::string& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries) {
+            void EventLog::ReadLinuxSyslogFile(const std::string& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries) {
                 std::ifstream infile(sFilePath);
                 if (!infile.is_open()) return;
 
@@ -212,7 +212,7 @@ namespace DotNetDupe {
                 }
             }
 
-            static void ReadLinuxSyslog(Collections::Generic::List<EventLogEntry>& lstEntries) {
+            void EventLog::ReadLinuxSyslog(Collections::Generic::List<EventLogEntry>& lstEntries) {
                 const char* syslogPaths[] = { "/var/log/syslog", "/var/log/messages" };
                 for (const char* path : syslogPaths) {
                     struct stat st;
@@ -262,7 +262,7 @@ namespace DotNetDupe {
                 WriteEntry(sSource, sMessage, eType, 0);
             }
 
-            static void RecordInternalLogEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+            void EventLog::RecordInternalLogEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
                 String sTargetLog = "Application";
                 auto itSource = s_mapSourceToLog.find(sSource);
                 if (itSource != s_mapSourceToLog.end()) {
@@ -321,7 +321,7 @@ namespace DotNetDupe {
                 Delete(sLogName, ".");
             }
 
-            static void PurgeSourcesForLog(const String& sLogName) {
+            void EventLog::PurgeSourcesForLog(const String& sLogName) {
                 std::vector<String> vSourcesToRemove;
                 for (const auto& pair : s_mapSourceToLog) {
                     if (pair.second == sLogName) vSourcesToRemove.push_back(pair.first);

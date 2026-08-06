@@ -27,6 +27,11 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static Collections::Generic::List<UserSessionInfo> GetActiveSessions();
                 DOTNETDUPE_API static Collections::Generic::List<UserSessionInfo> GetExpiredSessions();
                 DOTNETDUPE_API static Collections::Generic::List<UserSessionInfo> GetAllSessions();
+
+            private:
+#if defined(_WIN32)
+                static void EnumerateWin32Sessions(Collections::Generic::List<UserSessionInfo>& lstSessions);
+#endif
             };
 
         }
