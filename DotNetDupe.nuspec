@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>3.0.5</version>
+    <version>3.0.6</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>v3.0.5: Fixed quality gate issues and removed raw pointer usage in missed places; applied updates as per code generation constraints.</releaseNotes>
+    <releaseNotes>v3.0.6: Automated CI/CD quality gate enforcement script, updated workflow version update steps, treated build warnings as errors, and added live GitHub Pages coverage/quality reporting.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/sudheeshps/dotnetdupe</projectUrl>
     <license type="expression">MIT</license>
