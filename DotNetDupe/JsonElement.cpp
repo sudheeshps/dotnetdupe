@@ -260,14 +260,14 @@ namespace DotNetDupe {
                 };
 
                 JsonElement::JsonElement() 
-                    : m_pImpl(new JsonElementImpl(JsonValueKind::Undefined)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Undefined)) {
                 }
 
                 JsonElement::~JsonElement() {
                 }
 
                 JsonElement::JsonElement(const JsonElement& objOther) 
-                    : m_pImpl(new JsonElementImpl()) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New()) {
                     if (objOther.m_pImpl) {
                         m_pImpl->eKind = objOther.m_pImpl->eKind;
                         m_pImpl->bBoolValue = objOther.m_pImpl->bBoolValue;
@@ -287,7 +287,7 @@ namespace DotNetDupe {
 
                 JsonElement& JsonElement::operator=(const JsonElement& objOther) {
                     if (this != &objOther) {
-                        m_pImpl.Attach(new JsonElementImpl());
+                        m_pImpl = SmartPointer<JsonElementImpl>::New();
                         if (objOther.m_pImpl) {
                             m_pImpl->eKind = objOther.m_pImpl->eKind;
                             m_pImpl->bBoolValue = objOther.m_pImpl->bBoolValue;
@@ -319,26 +319,26 @@ namespace DotNetDupe {
                 }
 
                 JsonElement::JsonElement(JsonValueKind eKind) 
-                    : m_pImpl(new JsonElementImpl(eKind)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(eKind)) {
                 }
 
                 JsonElement::JsonElement(bool bValue) 
-                    : m_pImpl(new JsonElementImpl(bValue ? JsonValueKind::True : JsonValueKind::False)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(bValue ? JsonValueKind::True : JsonValueKind::False)) {
                     m_pImpl->bBoolValue = bValue;
                 }
 
                 JsonElement::JsonElement(double dValue) 
-                    : m_pImpl(new JsonElementImpl(JsonValueKind::Number)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Number)) {
                     m_pImpl->dNumValue = dValue;
                 }
 
                 JsonElement::JsonElement(const String& sValue) 
-                    : m_pImpl(new JsonElementImpl(JsonValueKind::String)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::String)) {
                     m_pImpl->sStrValue = sValue;
                 }
 
                 JsonElement::JsonElement(std::nullptr_t) 
-                    : m_pImpl(new JsonElementImpl(JsonValueKind::Null)) {
+                    : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Null)) {
                 }
 
                 JsonValueKind JsonElement::GetValueKind() const {

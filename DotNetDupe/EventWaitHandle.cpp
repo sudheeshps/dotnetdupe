@@ -4,6 +4,7 @@
 #include "System/TimeoutException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
 #include <chrono>
 
 #if defined(_WIN32)
@@ -76,10 +77,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    EventWaitHandle* pEvt = new EventWaitHandle(false, false);
-                    pEvt->_name = sName;
-                    pEvt->_hHandle = h;
-                    pResult = pEvt;
+                    SmartPointer<EventWaitHandle> spEvt = SmartPointer<EventWaitHandle>::New(false, false);
+                    spEvt->_name = sName;
+                    spEvt->_hHandle = h;
+                    pResult = spEvt.Detach();
                     return true;
                 }
                 return false;

@@ -39,7 +39,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API bool WaitForExit(int iMilliseconds);
 
                 DOTNETDUPE_API int GetExitCode() const { return m_iExitCode; }
-                DOTNETDUPE_API bool GetHasExited();
+                DOTNETDUPE_API bool GetHasExited() const;
                 DOTNETDUPE_API int GetId() const { return m_iId; }
 
                 DOTNETDUPE_API void Kill();
@@ -47,11 +47,11 @@ namespace DotNetDupe {
             private:
                 ProcessStartInfo m_objStartInfo;
                 int m_iId;
-                int m_iExitCode;
-                bool m_bHasExited;
+                mutable int m_iExitCode;
+                mutable bool m_bHasExited;
                 void* m_pProcessHandle;
 
-                void Refresh();
+                void Refresh() const;
             };
         }
     }

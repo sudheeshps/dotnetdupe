@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <vector>
 #include "System/Text/TextEncoding.h"
+#include "System/IOException.h"
 
 #if defined(_WIN32)
 #include "Win32Internal.h"
@@ -16,7 +17,7 @@ namespace fs = std::filesystem;
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
 #if defined(_WIN32)
-        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
         return fs::path(sPath.GetRawString());
 #endif
@@ -32,6 +33,9 @@ namespace DotNetDupe {
 
             String File::ReadAllText(const String& sPath) {
                 std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for reading.");
+                }
                 std::stringstream buffer;
                 buffer << fileStream.rdbuf();
                 std::string charContent = buffer.str();
@@ -45,6 +49,9 @@ namespace DotNetDupe {
                 Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(sContents);
 
                 std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for writing.");
+                }
                 fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
@@ -54,35 +61,41 @@ namespace DotNetDupe {
                 
                 try {
                     fs::copy(ToFsPath(sSourceFileName), ToFsPath(sDestFileName), options);
-                } catch (...) {
-                    // Handle error
+                } catch (const std::exception& ex) {
+                    throw IO::IOException(ex.what());
                 }
             }
 
             void File::Move(const String& sSourceFileName, const String& sDestFileName) {
                 try {
                     fs::rename(ToFsPath(sSourceFileName), ToFsPath(sDestFileName));
-                } catch (...) {
-                    // Handle error
+                } catch (const std::exception& ex) {
+                    throw IO::IOException(ex.what());
                 }
             }
 
             void File::Delete(const String& sPath) {
                 try {
                     fs::remove(ToFsPath(sPath));
-                } catch (...) {
-                    // Handle error
+                } catch (const std::exception& ex) {
+                    throw IO::IOException(ex.what());
                 }
             }
 
             void File::AppendAllText(const String& sPath, const String& sContents) {
                 Array<char> contentBytes = Text::TextEncoding::UTF8()->GetBytes(sContents);
                 std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for writing.");
+                }
                 fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
             }
 
             void File::AppendAllLines(const String& sPath, const Array<String>& sContents) {
                 std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for writing.");
+                }
                 for (int iIdx = 0; iIdx < sContents.GetLength(); iIdx++) {
                     const auto& line = sContents[iIdx];
                     Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
@@ -94,6 +107,9 @@ namespace DotNetDupe {
             Array<String> File::ReadAllLines(const String& sPath) {
                 std::vector<String> tempLines;
                 std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for reading.");
+                }
                 std::string line;
                 while (std::getline(fileStream, line)) {
                     Array<char> lineBytes((int)line.size());
@@ -108,6 +124,9 @@ namespace DotNetDupe {
 
             void File::WriteAllLines(const String& sPath, const Array<String>& sContents) {
                 std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for writing.");
+                }
                 for (int iIdx = 0; iIdx < sContents.GetLength(); iIdx++) {
                     const auto& line = sContents[iIdx];
                     Array<char> lineBytes = Text::TextEncoding::UTF8()->GetBytes(line);
@@ -118,6 +137,9 @@ namespace DotNetDupe {
 
             void File::Create(const String& sPath) {
                 std::ofstream fileStream(ToFsPath(sPath));
+                if (!fileStream.is_open()) {
+                    throw IO::IOException("Failed to open file for writing.");
+                }
             }
 
             bool File::GetAttributes(const String& sPath, FileAttributes& eAttributes) {

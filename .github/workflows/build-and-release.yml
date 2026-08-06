@@ -9,6 +9,9 @@ on:
     branches: [ "main" ]
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   build-windows:
     runs-on: windows-latest
@@ -17,6 +20,16 @@ jobs:
         configuration: [Debug, Release]
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Update Version Header
+      shell: powershell
+      run: .\scripts\Update-Version.ps1
+
+    - name: Run Code Quality Gate Checks
+      shell: powershell
+      run: .\scripts\Check-QualityGates.ps1
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
@@ -37,7 +50,7 @@ jobs:
         Set-Content -Path 'DotNetDupe\DotNetDupe.rc' -Value $updatedRc -NoNewline
 
     - name: Build Windows
-      run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64
+      run: msbuild DotNetDupe.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=x64 /p:TreatWarningsAsAbsoluteErrors=true
 
     - name: Run Tests
       run: .\bin\x64\${{ matrix.configuration }}\DotNetDupeTests.exe
@@ -76,6 +89,13 @@ jobs:
         name: coverage-report-html
         path: coverage_report/
 
+    - name: Deploy Coverage Report to GitHub Pages
+      if: matrix.configuration == 'Release' && github.ref == 'refs/heads/main'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./coverage_report
+
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -92,6 +112,14 @@ jobs:
         configuration: [Debug, Release]
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Update Version Header
+      run: pwsh ./scripts/Update-Version.ps1
+
+    - name: Run Code Quality Gate Checks
+      run: pwsh ./scripts/Check-QualityGates.ps1
 
     - name: Install Dependencies
       run: |

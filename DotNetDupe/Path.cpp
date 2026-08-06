@@ -20,7 +20,7 @@ namespace fs = std::filesystem;
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
 #if defined(_WIN32)
-        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
         return fs::path(sPath.GetRawString());
 #endif
@@ -28,7 +28,7 @@ namespace {
 
     DotNetDupe::System::String FromFsPath(const fs::path& path) {
 #if defined(_WIN32)
-        return DotNetDupe::System::String(DotNetDupe::System::Internal::WCharToUtf8(path.wstring().c_str()).c_str());
+        return DotNetDupe::System::String(DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8(path.wstring().c_str()).c_str());
 #else
         return DotNetDupe::System::String(path.string().c_str());
 #endif
@@ -49,7 +49,7 @@ namespace DotNetDupe {
 
                 fs::path path = ToFsPath(sTempFilePath);
 #if defined(_WIN32)
-                path.replace_extension(DotNetDupe::System::Internal::Utf8ToWChar(sExtension.GetRawString()));
+                path.replace_extension(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sExtension.GetRawString()));
 #else
                 path.replace_extension(sExtension.GetRawString());
 #endif

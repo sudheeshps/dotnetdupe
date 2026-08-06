@@ -2,6 +2,7 @@
 #include "System/Threading/AutoResetEvent.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
 #if defined(_WIN32)
 #include <windows.h>
 #endif
@@ -39,10 +40,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    AutoResetEvent* pEvt = new AutoResetEvent(false);
-                    pEvt->_name = sName;
-                    pEvt->_hHandle = h;
-                    pResult = pEvt;
+                    SmartPointer<AutoResetEvent> spEvt = SmartPointer<AutoResetEvent>::New(false);
+                    spEvt->_name = sName;
+                    spEvt->_hHandle = h;
+                    pResult = spEvt.Detach();
                     return true;
                 }
                 return false;

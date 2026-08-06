@@ -20,7 +20,7 @@ namespace DotNetDupe {
     namespace System {
         namespace Net {
 
-            static void InitializeSockets() {
+            void Dns::InitializeSockets() {
 #if defined(_WIN32)
                 static bool bInitialized = false;
                 static std::mutex mutexInit;

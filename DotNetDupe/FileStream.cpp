@@ -14,7 +14,7 @@ namespace fs = std::filesystem;
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
 #if defined(_WIN32)
-        return fs::path(DotNetDupe::System::Internal::Utf8ToWChar(sPath.GetRawString()));
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
         return fs::path(sPath.GetRawString());
 #endif
@@ -68,7 +68,6 @@ namespace DotNetDupe {
                 if (!m_fsFileStream.is_open()) {
                     throw IOException("Could not open file.");
                 }
-                m_fsFileStream.exceptions(std::fstream::badbit | std::fstream::failbit);
             }
 
             FileStream::~FileStream() {
@@ -116,6 +115,9 @@ namespace DotNetDupe {
 
             void FileStream::Flush() {
                 m_fsFileStream.flush();
+                if (m_fsFileStream.bad()) {
+                    throw IOException("Flush failed.");
+                }
             }
 
             int FileStream::Read(char* pBuffer, int iOffset, int nCount) {
@@ -123,6 +125,9 @@ namespace DotNetDupe {
                     throw IOException("Stream does not support reading.");
                 }
                 m_fsFileStream.read(pBuffer + iOffset, nCount);
+                if (m_fsFileStream.bad()) {
+                    throw IOException("A read error occurred.");
+                }
                 if (m_fsFileStream.eof()) {
                     m_fsFileStream.clear();
                 }
@@ -156,6 +161,9 @@ namespace DotNetDupe {
                     throw IOException("Stream does not support writing.");
                 }
                 m_fsFileStream.write(pBuffer + iOffset, nCount);
+                if (m_fsFileStream.bad() || m_fsFileStream.fail()) {
+                    throw IOException("A write error occurred.");
+                }
             }
 
             void FileStream::Dispose() {

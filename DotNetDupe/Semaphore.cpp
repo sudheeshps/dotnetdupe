@@ -5,6 +5,7 @@
 #include "System/TimeoutException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
 #include <chrono>
 
 #if defined(_WIN32)
@@ -77,10 +78,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    Semaphore* pSem = new Semaphore(0, 1);
-                    pSem->_name = sName;
-                    pSem->_hHandle = h;
-                    pResult = pSem;
+                    SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::New(0, 1);
+                    spSem->_name = sName;
+                    spSem->_hHandle = h;
+                    pResult = spSem.Detach();
                     return true;
                 }
                 return false;

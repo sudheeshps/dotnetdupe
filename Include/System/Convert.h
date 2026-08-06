@@ -120,6 +120,13 @@ namespace DotNetDupe {
             // Base64
             DOTNETDUPE_API static String ToBase64String(const Array<char>& inArray);
             DOTNETDUPE_API static Array<char> FromBase64String(const String& s);
+
+        private:
+            static bool IsBase64(unsigned char c);
+            static void EncodeBase64Chunk4(const unsigned char* char_array_3, std::string& ret);
+            static void EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret);
+            static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded);
+            static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded);
         };
     }
 }

@@ -79,17 +79,26 @@ namespace DotNetDupe {
                 }
 
                 bool WebSocket::ReceiveText(String& outMessage) {
-                    if (m_pStream.IsNull() || m_eState != WebSocketState::Open) return false;
+                    {
+                        Threading::Lock<Threading::CriticalSection> lock(m_csLock);
+                        if (m_pStream.IsNull() || m_eState != WebSocketState::Open) return false;
+                    }
 
                     uint8_t header[2] = { 0 };
                     if (m_pStream->Read(reinterpret_cast<char*>(header), 0, 2) <= 0) {
-                        m_eState = WebSocketState::Closed;
+                        {
+                            Threading::Lock<Threading::CriticalSection> lock(m_csLock);
+                            m_eState = WebSocketState::Closed;
+                        }
                         return false;
                     }
 
                     uint8_t opcode = header[0] & 0x0F;
                     if (opcode == 0x08) { // Close frame
-                        m_eState = WebSocketState::Closed;
+                        {
+                            Threading::Lock<Threading::CriticalSection> lock(m_csLock);
+                            m_eState = WebSocketState::Closed;
+                        }
                         return false;
                     }
 

@@ -16,7 +16,7 @@ namespace DotNetDupe {
             ActiveUserSession::~ActiveUserSession() {}
 
 #if defined(_WIN32)
-            static void EnumerateWin32Sessions(Collections::Generic::List<UserSessionInfo>& lstSessions) {
+            void ActiveUserSession::EnumerateWin32Sessions(Collections::Generic::List<UserSessionInfo>& lstSessions) {
                 WTS_SESSION_INFOW* pSessionInfo = NULL;
                 DWORD dwSessionCount = 0;
                 if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &pSessionInfo, &dwSessionCount) && pSessionInfo) {
