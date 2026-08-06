@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>HttpContent.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Net/Http/HttpContent.h"
+#include "System/IO/MemoryStream.h"
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include &lt;cstring&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Net {
+            namespace Http {
+
+<span style = "background-color:#fdd">                void HttpContent::CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream) {
+                    if (stream.IsNull()) {
+                        throw ArgumentNullException("stream");</span>
+                    }
+<span style = "background-color:#fdd">                    Array&lt;char&gt; data = ReadAsByteArray();
+                    if (data.GetLength() &gt; 0) {
+                        stream-&gt;Write(data.GetData(), 0, data.GetLength());</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#fdd">                long HttpContent::GetLength() const {
+                    return -1;
+                }</span>
+
+                // --- StringContent ---
+
+                StringContent::StringContent(const String&amp; content)
+<span style = "background-color:#dfd">                    : m_sContent(content) {
+                    GetHeaders().Add("Content-Type", "text/plain; charset=utf-8");
+                }</span>
+
+                StringContent::StringContent(const String&amp; content, const String&amp; mediaType)
+<span style = "background-color:#dfd">                    : m_sContent(content) {
+                    String contentType = mediaType;
+                    if (!contentType.Contains("charset")) {
+                        contentType = contentType + "; charset=utf-8";</span>
+                    }
+<span style = "background-color:#dfd">                    GetHeaders().Add("Content-Type", contentType);
+                }</span>
+
+<span style = "background-color:#dfd">                String StringContent::ReadAsString() {
+                    return m_sContent;
+                }</span>
+
+<span style = "background-color:#dfd">                Array&lt;char&gt; StringContent::ReadAsByteArray() {
+                    int len = m_sContent.GetLength();
+                    if (len &lt;= 0) return Array&lt;char&gt;(0);
+                    return Array&lt;char&gt;(m_sContent.GetRawString(), len);
+                }</span>
+
+<span style = "background-color:#fdd">                SmartPointer&lt;IO::Stream&gt; StringContent::ReadAsStream() {
+                    return SmartPointer&lt;IO::Stream&gt;(new IO::MemoryStream(ReadAsByteArray()), true);
+                }</span>
+
+<span style = "background-color:#dfd">                void StringContent::CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream) {
+                    if (stream.IsNull()) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentNullException("stream");</span>
+                    }
+<span style = "background-color:#dfd">                    int len = m_sContent.GetLength();
+                    if (len &gt; 0) {
+                        stream-&gt;Write(m_sContent.GetRawString(), 0, len);</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                long StringContent::GetLength() const {
+                    return m_sContent.GetLength();
+                }</span>
+
+                // --- ByteArrayContent ---
+
+                ByteArrayContent::ByteArrayContent(const Array&lt;char&gt;&amp; content)
+<span style = "background-color:#dfd">                    : m_arrContent(content), m_iOffset(0), m_iCount(content.GetLength()) {
+                    GetHeaders().Add("Content-Type", "application/octet-stream");
+                }</span>
+
+                ByteArrayContent::ByteArrayContent(const Array&lt;char&gt;&amp; content, int offset, int count)
+<span style = "background-color:#dfd">                    : m_arrContent(content), m_iOffset(offset), m_iCount(count) {
+                    if (offset &lt; 0 || count &lt; 0 || offset + count &gt; content.GetLength()) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentOutOfRangeException("Offset or count is out of range.");</span>
+                    }
+<span style = "background-color:#dfd">                    GetHeaders().Add("Content-Type", "application/octet-stream");
+                }</span>
+
+<span style = "background-color:#dfd">                String ByteArrayContent::ReadAsString() {
+                    String s;
+                    if (m_iCount &gt; 0) {
+                        s.GetString().assign(m_arrContent.GetData() + m_iOffset, m_iCount);</span>
+                    }
+                    return s;
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                Array&lt;char&gt; ByteArrayContent::ReadAsByteArray() {
+                    if (m_iOffset == 0 &amp;&amp; m_iCount == m_arrContent.GetLength()) {</span>
+<span style = "background-color:#fdd">                        return m_arrContent;</span>
+                    }
+<span style = "background-color:#dfd">                    Array&lt;char&gt; arr(m_iCount);
+                    if (m_iCount &gt; 0) {
+                        std::memcpy(arr.GetData(), m_arrContent.GetData() + m_iOffset, m_iCount);</span>
+                    }
+<span style = "background-color:#dfd">                    return arr;
+                }</span>
+
+<span style = "background-color:#fdd">                SmartPointer&lt;IO::Stream&gt; ByteArrayContent::ReadAsStream() {
+                    return SmartPointer&lt;IO::Stream&gt;(new IO::MemoryStream(ReadAsByteArray()), true);
+                }</span>
+
+<span style = "background-color:#fdd">                void ByteArrayContent::CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream) {
+                    if (stream.IsNull()) {
+                        throw ArgumentNullException("stream");</span>
+                    }
+<span style = "background-color:#fdd">                    if (m_iCount &gt; 0) {
+                        stream-&gt;Write(m_arrContent.GetData(), m_iOffset, m_iCount);</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                long ByteArrayContent::GetLength() const {
+                    return m_iCount;
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

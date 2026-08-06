@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>EventLogTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include &lt;gtest/gtest.h&gt;
+#include "System/Diagnostics/EventLog.h"
+#include "System/ArgumentException.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Diagnostics;
+
+<span style = "background-color:#dfd">TEST(DateTimeOffsetTests, GivenDateTimeOffset_WhenToStringCalled_ThenReturnsFormattedIsoString) {</span>
+    // Given
+<span style = "background-color:#dfd">    DateTimeOffset dtNow = DateTimeOffset::Now();</span>
+
+    // When
+<span style = "background-color:#dfd">    String sFormatted = dtNow.ToString();</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_FALSE(sFormatted.IsEmpty());
+    EXPECT_GE(sFormatted.GetLength(), 10);
+}</span>
+
+class EventLogTests : public ::testing::Test {
+protected:
+<span style = "background-color:#dfd">    void SetUp() override {
+        if (EventLog::Exists("TestLog")) {
+            EventLog::Delete("TestLog");</span>
+        }
+<span style = "background-color:#dfd">        if (EventLog::SourceExists("TestSource")) {</span>
+<span style = "background-color:#fdd">            EventLog::DeleteEventSource("TestSource");</span>
+        }
+<span style = "background-color:#dfd">    }</span>
+
+<span style = "background-color:#dfd">    void TearDown() override {
+        if (EventLog::Exists("TestLog")) {
+            EventLog::Delete("TestLog");</span>
+        }
+<span style = "background-color:#dfd">        if (EventLog::SourceExists("TestSource")) {</span>
+<span style = "background-color:#fdd">            EventLog::DeleteEventSource("TestSource");</span>
+        }
+<span style = "background-color:#dfd">    }</span>
+};
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenNewEventSource_WhenCreated_ThenSourceExistsReturnsTrue) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sSource = "TestSource";
+    String sLogName = "TestLog";</span>
+
+    // When
+<span style = "background-color:#dfd">    EventLog::CreateEventSource(sSource, sLogName);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_TRUE(EventLog::SourceExists(sSource));
+    EXPECT_TRUE(EventLog::Exists(sLogName));
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenEventLog_WhenWriteEntryExecuted_ThenEntryIsStoredInEntriesList) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sSource = "TestSource";
+    String sLogName = "TestLog";
+    EventLog::CreateEventSource(sSource, sLogName);</span>
+
+<span style = "background-color:#dfd">    EventLog objLog(sLogName, ".", sSource);</span>
+
+    // When
+<span style = "background-color:#dfd">    objLog.WriteEntry("Application started successfully.", EventLogEntryType::Information, 1001);</span>
+
+    // Then
+<span style = "background-color:#dfd">    auto lstEntries = objLog.GetEntries();
+    EXPECT_GT(lstEntries.GetCount(), 0);
+    bool bFound = false;
+    for (int i = 0; i &lt; lstEntries.GetCount(); i++) {
+        if (lstEntries[i].GetMessage().Contains("Application started successfully.")) {
+            bFound = true;
+            EXPECT_EQ(lstEntries[i].GetEntryType(), EventLogEntryType::Information);</span>
+            break;
+        }
+    }
+<span style = "background-color:#dfd">    EXPECT_TRUE(bFound);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenMultipleEntries_WhenClearCalled_ThenEntriesAreRemoved) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sSource = "TestSource";
+    String sLogName = "TestLog";
+    EventLog::CreateEventSource(sSource, sLogName);</span>
+
+<span style = "background-color:#dfd">    EventLog objLog(sLogName, ".", sSource);
+    objLog.WriteEntry("Log 1", EventLogEntryType::Warning, 1);
+    objLog.WriteEntry("Log 2", EventLogEntryType::Error, 2);
+    int iBeforeClearCount = objLog.GetEntries().GetCount();
+    EXPECT_GT(iBeforeClearCount, 0);</span>
+
+    // When
+<span style = "background-color:#dfd">    objLog.Clear();</span>
+
+    // Then
+<span style = "background-color:#dfd">    int iAfterClearCount = objLog.GetEntries().GetCount();
+    EXPECT_LE(iAfterClearCount, iBeforeClearCount);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenStaticWriteEntry_WhenCalledWithSource_ThenLogIsUpdated) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sSource = "TestSource";
+    String sLogName = "TestLog";
+    EventLog::CreateEventSource(sSource, sLogName);</span>
+
+    // When
+<span style = "background-color:#dfd">    EventLog::WriteEntry(sSource, "Static event message", EventLogEntryType::Error, 500);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EventLog objLog(sLogName);
+    auto lstEntries = objLog.GetEntries();
+    EXPECT_GE(lstEntries.GetCount(), 0);
+    bool bFound = false;
+    for (int i = 0; i &lt; lstEntries.GetCount(); i++) {
+        if (lstEntries[i].GetMessage().Contains("Static event message")) {
+            bFound = true;</span>
+            break;
+        }
+    }
+<span style = "background-color:#dfd">    if (lstEntries.GetCount() &gt; 0 &amp;&amp; bFound) {</span>
+        EXPECT_TRUE(bFound);
+    }
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenEmptySource_WhenWriteEntryCalled_ThenThrowsArgumentException) {</span>
+    // Given, When, Then
+<span style = "background-color:#dfd">    EXPECT_THROW(EventLog::WriteEntry("", "Test Message"), ArgumentException);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EventLogTests, GivenExistingEventSource_WhenDeleteEventSourceCalled_ThenSourceNoLongerExists) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sSource = "TestSource";
+    String sLogName = "TestLog";
+    EventLog::CreateEventSource(sSource, sLogName);
+    EXPECT_TRUE(EventLog::SourceExists(sSource));</span>
+
+    // When
+<span style = "background-color:#dfd">    EventLog::DeleteEventSource(sSource);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_FALSE(EventLog::SourceExists(sSource));
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ArrayTests2.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Array.h"
+
+using namespace DotNetDupe::System;
+
+namespace SystemTests {
+    namespace ArrayTests {
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesAnElement_When_ExistsIsCalled_Then_ReturnsTrue) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            bool result = arr.Exists([](int i) { return i == 3; });
+            EXPECT_TRUE(result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatDoesNotMatchAnElement_When_ExistsIsCalled_Then_ReturnsFalse) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            bool result = arr.Exists([](int i) { return i == 6; });
+            EXPECT_FALSE(result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesAnElement_When_FindIsCalled_Then_ReturnsTheFirstMatchingElement) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.Find([](int i) { return i &gt; 2; });
+            EXPECT_EQ(3, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatDoesNotMatchAnElement_When_FindIsCalled_Then_ReturnsDefaultValue) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.Find([](int i) { return i &gt; 5; });
+            EXPECT_EQ(0, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesElements_When_FindAllIsCalled_Then_ReturnsAnArrayWithTheMatchingElements) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            Array&lt;int&gt; result = arr.FindAll([](int i) { return i % 2 != 0; });
+            EXPECT_EQ(3, result.GetLength());
+            EXPECT_EQ(1, result [0]);
+            EXPECT_EQ(3, result [1]);
+            EXPECT_EQ(5, result [2]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesAnElement_When_FindIndexIsCalled_Then_ReturnsTheIndexOfTheFirstMatchingElement) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindIndex([](int i) { return i &gt; 2; });
+            EXPECT_EQ(2, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatDoesNotMatchAnElement_When_FindIndexIsCalled_Then_ReturnsNegativeOne) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindIndex([](int i) { return i &gt; 5; });
+            EXPECT_EQ(-1, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesAnElement_When_FindLastIsCalled_Then_ReturnsTheLastMatchingElement) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindLast([](int i) { return i &lt; 4; });
+            EXPECT_EQ(3, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatDoesNotMatchAnElement_When_FindLastIsCalled_Then_ReturnsDefaultValue) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindLast([](int i) { return i &gt; 5; });
+            EXPECT_EQ(0, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatMatchesAnElement_When_FindLastIndexIsCalled_Then_ReturnsTheIndexOfTheLastMatchingElement) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindLastIndex([](int i) { return i &lt; 4; });
+            EXPECT_EQ(2, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_PredicateThatDoesNotMatchAnElement_When_FindLastIndexIsCalled_Then_ReturnsNegativeOne) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int result = arr.FindLastIndex([](int i) { return i &gt; 5; });
+            EXPECT_EQ(-1, result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_AnAction_When_ForEachIsCalled_Then_TheActionIsPerformedOnEachElement) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            int sum = 0;
+            arr.ForEach([&amp;sum](int i) { sum += i; });
+            EXPECT_EQ(15, sum);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_APredicateThatAllElementsMatch_When_TrueForAllIsCalled_Then_ReturnsTrue) {
+            Array&lt;int&gt; arr = { 2, 4, 6, 8, 10 };
+            bool result = arr.TrueForAll([](int i) { return i % 2 == 0; });
+            EXPECT_TRUE(result);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest2, Given_APredicateThatNotAllElementsMatch_When_TrueForAllIsCalled_Then_ReturnsFalse) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            bool result = arr.TrueForAll([](int i) { return i % 2 == 0; });
+            EXPECT_FALSE(result);
+        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

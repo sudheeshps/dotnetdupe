@@ -1,0 +1,396 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>InMemoryDatabaseBackend.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Data/Internal/InMemoryDatabaseBackend.h"
+#include &lt;algorithm&gt;
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Data {
+            namespace Internal {
+
+<span style = "background-color:#dfd">                InMemoryDatabaseBackend::InMemoryDatabaseBackend() = default;</span>
+<span style = "background-color:#fdd">                InMemoryDatabaseBackend::~InMemoryDatabaseBackend() = default;</span>
+
+<span style = "background-color:#dfd">                void InMemoryDatabaseBackend::ClearDatabase() {
+                    m_tables.clear();</span>
+                }
+
+<span style = "background-color:#dfd">                std::vector&lt;std::string&gt; InMemoryDatabaseBackend::Tokenize(const std::string&amp; s) const {
+                    std::vector&lt;std::string&gt; tokens;
+                    std::string token;
+                    bool inQuotes = false;
+                    for (size_t i = 0; i &lt; s.length(); ++i) {
+                        char c = s[i];
+                        if (c == '\'') {</span>
+<span style = "background-color:#fdd">                            inQuotes = !inQuotes;
+                            token += c;</span>
+<span style = "background-color:#dfd">                        } else if (!inQuotes &amp;&amp; (c == ' ' || c == ',' || c == '(' || c == ')' || c == '=')) {
+                            if (!token.empty()) {
+                                tokens.push_back(token);
+                                token.clear();</span>
+                            }
+<span style = "background-color:#dfd">                            if (c == '(' || c == ')' || c == '=') {
+                                tokens.push_back(std::string(1, c));</span>
+                            }
+<span style = "background-color:#dfd">                        } else {
+                            token += c;</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                    if (!token.empty()) {
+                        tokens.push_back(token);</span>
+                    }
+<span style = "background-color:#dfd">                    return tokens;
+                }</span>
+
+                std::string InMemoryDatabaseBackend::ToUpper(std::string s) const {
+                    std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+                    return s;
+                }
+
+<span style = "background-color:#dfd">                std::string InMemoryDatabaseBackend::ResolveValue(const std::string&amp; val, const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters) const {
+                    if (!val.empty() &amp;&amp; val[0] == '@') {
+                        auto it = parameters.find(val);
+                        if (it != parameters.end()) {
+                            return it-&gt;second;</span>
+                        }
+<span style = "background-color:#fdd">                        return std::string("");</span>
+                    }
+<span style = "background-color:#fdd">                    if (val.length() &gt;= 2 &amp;&amp; val.front() == '\'' &amp;&amp; val.back() == '\'') {
+                        return val.substr(1, val.length() - 2);</span>
+                    }
+<span style = "background-color:#fdd">                    return val;</span>
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                void InMemoryDatabaseBackend::ExecuteCreate(const std::vector&lt;std::string&gt;&amp; tokens) {
+                    if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "TABLE") {
+                        std::string tableName = tokens[2];
+                        Table t;</span>
+                        size_t idx = 3;
+<span style = "background-color:#dfd">                        while (idx &lt; tokens.size()) {
+                            if (tokens[idx] == "(" || tokens[idx] == ")") {
+                                idx++;</span>
+                                continue;
+                            }
+<span style = "background-color:#dfd">                            std::string colName = tokens[idx];
+                            idx++;
+                            if (idx &lt; tokens.size() &amp;&amp; tokens[idx] != "," &amp;&amp; tokens[idx] != ")") {
+                                idx++;</span>
+                            }
+<span style = "background-color:#dfd">                            t.Columns.push_back(colName);
+                            if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == ",") {</span>
+<span style = "background-color:#fdd">                                idx++;</span>
+                            }
+<span style = "background-color:#dfd">                        }
+                        m_tables[tableName] = t;
+                    }
+                }</span>
+
+                void InMemoryDatabaseBackend::ExecuteInsert(const std::vector&lt;std::string&gt;&amp; tokens,
+                                                           const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
+<span style = "background-color:#dfd">                                                           int&amp; rowsAffected) {
+                    if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "INTO") {
+                        std::string tableName = tokens[2];
+                        auto tIt = m_tables.find(tableName);
+                        if (tIt == m_tables.end()) return;</span>
+
+                        Table&amp; t = tIt-&gt;second;
+<span style = "background-color:#dfd">                        std::vector&lt;std::string&gt; cols;
+                        std::vector&lt;std::string&gt; vals;</span>
+
+<span style = "background-color:#dfd">                        size_t idx = 3;
+                        if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "(") {
+                            idx++;
+                            while (idx &lt; tokens.size() &amp;&amp; tokens[idx] != ")") {
+                                cols.push_back(tokens[idx]);
+                                idx++;</span>
+                            }
+<span style = "background-color:#dfd">                            if (idx &lt; tokens.size()) idx++;</span>
+                        }
+
+<span style = "background-color:#dfd">                        if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "VALUES") {
+                            idx++;</span>
+                        }
+
+<span style = "background-color:#dfd">                        if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "(") {
+                            idx++;
+                            while (idx &lt; tokens.size() &amp;&amp; tokens[idx] != ")") {
+                                vals.push_back(ResolveValue(tokens[idx], parameters));
+                                idx++;</span>
+                            }
+                        }
+
+<span style = "background-color:#dfd">                        Row r;
+                        r.Values.resize(t.Columns.size());</span>
+
+<span style = "background-color:#dfd">                        if (cols.empty()) {</span>
+<span style = "background-color:#fdd">                            for (size_t i = 0; i &lt; t.Columns.size() &amp;&amp; i &lt; vals.size(); ++i) {
+                                r.Values[i] = vals[i];</span>
+                            }
+                        } else {
+<span style = "background-color:#dfd">                            for (size_t i = 0; i &lt; cols.size() &amp;&amp; i &lt; vals.size(); ++i) {
+                                auto colName = cols[i];
+                                auto cIt = std::find(t.Columns.begin(), t.Columns.end(), colName);
+                                if (cIt != t.Columns.end()) {
+                                    size_t colIdx = std::distance(t.Columns.begin(), cIt);
+                                    r.Values[colIdx] = vals[i];</span>
+                                }
+<span style = "background-color:#dfd">                            }</span>
+                        }
+<span style = "background-color:#dfd">                        t.Rows.push_back(r);
+                        rowsAffected = 1;
+                    }
+                }</span>
+
+                std::vector&lt;Row&gt; InMemoryDatabaseBackend::ExecuteSelect(const std::vector&lt;std::string&gt;&amp; tokens,
+                                                                       const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
+<span style = "background-color:#dfd">                                                                       std::vector&lt;std::string&gt;&amp; columnNames) {
+                    std::vector&lt;std::string&gt; selectCols;
+                    size_t idx = 1;
+                    while (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) != "FROM") {
+                        selectCols.push_back(tokens[idx]);
+                        idx++;
+                    }</span>
+
+<span style = "background-color:#dfd">                    if (idx &gt;= tokens.size()) return {};
+                    idx++;
+                    if (idx &gt;= tokens.size()) return {};
+                    std::string tableName = tokens[idx];
+                    idx++;</span>
+
+<span style = "background-color:#dfd">                    auto tIt = m_tables.find(tableName);
+                    if (tIt == m_tables.end()) return {};</span>
+
+<span style = "background-color:#dfd">                    Table&amp; t = tIt-&gt;second;</span>
+
+<span style = "background-color:#dfd">                    std::string whereCol;
+                    std::string whereVal;
+                    if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "WHERE") {
+                        idx++;
+                        if (idx &lt; tokens.size()) whereCol = tokens[idx];
+                        idx++;
+                        if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "=") {
+                            idx++;
+                            if (idx &lt; tokens.size()) whereVal = ResolveValue(tokens[idx], parameters);</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    std::vector&lt;size_t&gt; colIndices;
+                    if (selectCols.size() == 1 &amp;&amp; selectCols[0] == "*") {
+                        columnNames = t.Columns;
+                        for (size_t i = 0; i &lt; t.Columns.size(); ++i) colIndices.push_back(i);
+                    } else {
+                        for (auto const&amp; selCol : selectCols) {
+                            auto cIt = std::find(t.Columns.begin(), t.Columns.end(), selCol);
+                            if (cIt != t.Columns.end()) {
+                                columnNames.push_back(selCol);
+                                colIndices.push_back(std::distance(t.Columns.begin(), cIt));</span>
+                            }
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    int whereColIdx = -1;
+                    if (!whereCol.empty()) {
+                        auto cIt = std::find(t.Columns.begin(), t.Columns.end(), whereCol);
+                        if (cIt != t.Columns.end()) {
+                            whereColIdx = static_cast&lt;int&gt;(std::distance(t.Columns.begin(), cIt));</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    std::vector&lt;Row&gt; resultRows;
+                    for (auto const&amp; row : t.Rows) {
+                        if (whereColIdx != -1) {
+                            if (row.Values[whereColIdx] != whereVal) {</span>
+                                continue;
+                            }
+                        }
+<span style = "background-color:#dfd">                        Row newRow;
+                        for (auto index : colIndices) {
+                            newRow.Values.push_back(row.Values[index]);</span>
+                        }
+<span style = "background-color:#dfd">                        resultRows.push_back(newRow);
+                    }
+                    return resultRows;
+                }</span>
+
+                void InMemoryDatabaseBackend::ExecuteUpdate(const std::vector&lt;std::string&gt;&amp; tokens,
+                                                           const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
+<span style = "background-color:#dfd">                                                           int&amp; rowsAffected) {
+                    std::string tableName = tokens[1];
+                    auto tIt = m_tables.find(tableName);
+                    if (tIt == m_tables.end()) return;</span>
+
+                    Table&amp; t = tIt-&gt;second;
+
+                    size_t idx = 2;
+<span style = "background-color:#dfd">                    if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "SET") {</span>
+                        idx++;
+                    }
+
+<span style = "background-color:#dfd">                    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; updates;
+                    while (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) != "WHERE") {
+                        std::string colName = tokens[idx];
+                        idx++;
+                        if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "=") {
+                            idx++;
+                            std::string val = ResolveValue(tokens[idx], parameters);
+                            updates.push_back({colName, val});
+                            idx++;
+                        }
+                    }</span>
+
+<span style = "background-color:#dfd">                    std::string whereCol;
+                    std::string whereVal;
+                    if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "WHERE") {
+                        idx++;
+                        if (idx &lt; tokens.size()) whereCol = tokens[idx];
+                        idx++;
+                        if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "=") {
+                            idx++;
+                            if (idx &lt; tokens.size()) whereVal = ResolveValue(tokens[idx], parameters);</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    int whereColIdx = -1;
+                    if (!whereCol.empty()) {
+                        auto cIt = std::find(t.Columns.begin(), t.Columns.end(), whereCol);
+                        if (cIt != t.Columns.end()) {
+                            whereColIdx = static_cast&lt;int&gt;(std::distance(t.Columns.begin(), cIt));</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    for (auto&amp; row : t.Rows) {
+                        if (whereColIdx != -1) {
+                            if (row.Values[whereColIdx] != whereVal) {</span>
+                                continue;
+                            }
+                        }
+<span style = "background-color:#dfd">                        for (auto const&amp; update : updates) {
+                            auto cIt = std::find(t.Columns.begin(), t.Columns.end(), update.first);
+                            if (cIt != t.Columns.end()) {
+                                size_t updateIdx = std::distance(t.Columns.begin(), cIt);
+                                row.Values[updateIdx] = update.second;</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                        rowsAffected++;</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+                void InMemoryDatabaseBackend::ExecuteDelete(const std::vector&lt;std::string&gt;&amp; tokens,
+                                                           const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
+<span style = "background-color:#dfd">                                                           int&amp; rowsAffected) {
+                    if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "FROM") {
+                        std::string tableName = tokens[2];
+                        auto tIt = m_tables.find(tableName);
+                        if (tIt == m_tables.end()) return;</span>
+
+                        Table&amp; t = tIt-&gt;second;
+
+                        size_t idx = 3;
+<span style = "background-color:#dfd">                        std::string whereCol;
+                        std::string whereVal;
+                        if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "WHERE") {</span>
+                            idx++;
+<span style = "background-color:#dfd">                            if (idx &lt; tokens.size()) whereCol = tokens[idx];</span>
+                            idx++;
+<span style = "background-color:#dfd">                            if (idx &lt; tokens.size() &amp;&amp; tokens[idx] == "=") {</span>
+                                idx++;
+<span style = "background-color:#dfd">                                if (idx &lt; tokens.size()) whereVal = ResolveValue(tokens[idx], parameters);</span>
+                            }
+                        }
+
+<span style = "background-color:#dfd">                        int whereColIdx = -1;
+                        if (!whereCol.empty()) {
+                            auto cIt = std::find(t.Columns.begin(), t.Columns.end(), whereCol);
+                            if (cIt != t.Columns.end()) {
+                                whereColIdx = static_cast&lt;int&gt;(std::distance(t.Columns.begin(), cIt));</span>
+                            }
+                        }
+
+<span style = "background-color:#dfd">                        auto it = t.Rows.begin();
+                        while (it != t.Rows.end()) {
+                            if (whereColIdx != -1) {
+                                if (it-&gt;Values[whereColIdx] == whereVal) {
+                                    it = t.Rows.erase(it);</span>
+                                    rowsAffected++;
+<span style = "background-color:#dfd">                                    continue;</span>
+                                }
+                            } else {
+<span style = "background-color:#fdd">                                it = t.Rows.erase(it);</span>
+                                rowsAffected++;
+                                continue;
+                            }
+<span style = "background-color:#dfd">                            ++it;
+                        }
+                    }
+                }</span>
+
+                std::vector&lt;Row&gt; InMemoryDatabaseBackend::Execute(
+                    const std::string&amp; sql,
+                    const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
+                    std::vector&lt;std::string&gt;&amp; columnNames,
+                    int&amp; rowsAffected
+<span style = "background-color:#dfd">                ) {
+                    rowsAffected = 0;
+                    columnNames.clear();</span>
+
+<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; tokens = Tokenize(sql);
+                    if (tokens.empty()) return {};</span>
+
+<span style = "background-color:#dfd">                    std::string cmd = ToUpper(tokens[0]);</span>
+
+<span style = "background-color:#dfd">                    if (cmd == "CREATE") {
+                        ExecuteCreate(tokens);
+                        return {};</span>
+                    }
+<span style = "background-color:#dfd">                    else if (cmd == "INSERT") {
+                        ExecuteInsert(tokens, parameters, rowsAffected);
+                        return {};</span>
+                    }
+<span style = "background-color:#dfd">                    else if (cmd == "SELECT") {
+                        return ExecuteSelect(tokens, parameters, columnNames);</span>
+                    }
+<span style = "background-color:#dfd">                    else if (cmd == "UPDATE") {
+                        ExecuteUpdate(tokens, parameters, rowsAffected);
+                        return {};</span>
+                    }
+<span style = "background-color:#dfd">                    else if (cmd == "DELETE") {
+                        ExecuteDelete(tokens, parameters, rowsAffected);</span>
+                        return {};
+                    }
+
+                    return {};
+<span style = "background-color:#dfd">                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

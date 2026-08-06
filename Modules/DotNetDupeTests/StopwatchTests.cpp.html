@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>StopwatchTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Diagnostics/Stopwatch.h"
+#include &lt;thread&gt;
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Diagnostics;
+
+namespace DotNetDupeTests {
+
+    class MockTimeProviderForStopwatch : public TimeProvider {
+    public:
+        MockTimeProviderForStopwatch() : _timestamp(0) {}
+
+<span style = "background-color:#fdd">        DateTimeOffset GetUtcNow() const override { return DateTimeOffset(0); }
+        DateTimeOffset GetLocalNow() const override { return DateTimeOffset(0); }</span>
+<span style = "background-color:#dfd">        int64_t GetTimestamp() const override { return _timestamp; }
+        int64_t GetTimestampFrequency() const override { return TimeSpan::TicksPerSecond; }</span>
+
+        void AdvanceTimestamp(int64_t ticks) { _timestamp += ticks; }
+
+    private:
+        int64_t _timestamp;
+    };
+
+    // --- Positive Cases ---
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, StartNew_Should_ReturnRunningStopwatch) {</span>
+        // Given &amp; When
+<span style = "background-color:#dfd">        Stopwatch sw = Stopwatch::StartNew();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(sw.IsRunning());
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, Elapsed_Should_ReturnCorrectDuration_With_Mock) {</span>
+        // Given
+<span style = "background-color:#dfd">        auto mock = std::make_shared&lt;MockTimeProviderForStopwatch&gt;();
+        Stopwatch sw(mock);</span>
+
+        // When
+<span style = "background-color:#dfd">        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond * 2); // 2 seconds
+        sw.Stop();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(sw.Elapsed().GetTotalSeconds(), 2.0);
+        EXPECT_FALSE(sw.IsRunning());
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, Restart_Should_ResetAndStart) {</span>
+        // Given
+<span style = "background-color:#dfd">        auto mock = std::make_shared&lt;MockTimeProviderForStopwatch&gt;();
+        Stopwatch sw(mock);
+        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);
+        sw.Stop();
+        EXPECT_EQ(sw.Elapsed().GetTotalSeconds(), 1.0);</span>
+
+        // When
+<span style = "background-color:#dfd">        sw.Restart();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond * 3);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(sw.IsRunning());
+        EXPECT_EQ(sw.Elapsed().GetTotalSeconds(), 3.0);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, Reset_Should_ClearElapsedAndStop) {</span>
+        // Given
+<span style = "background-color:#dfd">        auto mock = std::make_shared&lt;MockTimeProviderForStopwatch&gt;();
+        Stopwatch sw(mock);
+        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);</span>
+
+        // When
+<span style = "background-color:#dfd">        sw.Reset();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_FALSE(sw.IsRunning());
+        EXPECT_EQ(sw.Elapsed().GetTicks(), 0);
+    }</span>
+
+    // --- Negative / Edge Cases ---
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, Stop_When_AlreadyStopped_Should_HaveNoEffect) {</span>
+        // Given
+<span style = "background-color:#dfd">        auto mock = std::make_shared&lt;MockTimeProviderForStopwatch&gt;();
+        Stopwatch sw(mock);
+        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);
+        sw.Stop();
+        long long elapsed = sw.ElapsedTicks();</span>
+
+        // When
+<span style = "background-color:#dfd">        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);
+        sw.Stop();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(sw.ElapsedTicks(), elapsed);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(StopwatchTest, Start_When_AlreadyRunning_Should_HaveNoEffect) {</span>
+        // Given
+<span style = "background-color:#dfd">        auto mock = std::make_shared&lt;MockTimeProviderForStopwatch&gt;();
+        Stopwatch sw(mock);
+        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);</span>
+        
+        // When
+<span style = "background-color:#dfd">        sw.Start();
+        mock-&gt;AdvanceTimestamp(TimeSpan::TicksPerSecond);
+        sw.Stop();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(sw.Elapsed().GetTotalSeconds(), 2.0);
+    }</span>
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

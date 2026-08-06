@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>JWTToken.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
+#include "System/Security/Cryptography/HMACSHA256.h"
+#include "System/Convert.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/ArgumentException.h"
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IdentityModel {
+            namespace Tokens {
+                namespace Jwt {
+
+<span style = "background-color:#dfd">                    static String Base64ToBase64Url(const String&amp; base64) {
+                        std::string s = base64.GetRawString();
+                        for (char&amp; c : s) {
+                            if (c == '+') c = '-';
+                            else if (c == '/') c = '_';</span>
+                        }
+<span style = "background-color:#dfd">                        while (!s.empty() &amp;&amp; s.back() == '=') {
+                            s.pop_back();</span>
+                        }
+<span style = "background-color:#dfd">                        return String(s.c_str());
+                    }</span>
+
+<span style = "background-color:#dfd">                    static String Base64UrlToBase64(const String&amp; base64Url) {
+                        std::string s = base64Url.GetRawString();
+                        for (char&amp; c : s) {
+                            if (c == '-') c = '+';
+                            else if (c == '_') c = '/';</span>
+                        }
+<span style = "background-color:#dfd">                        while (s.length() % 4 != 0) {
+                            s += '=';</span>
+                        }
+<span style = "background-color:#dfd">                        return String(s.c_str());
+                    }</span>
+
+<span style = "background-color:#dfd">                    JWTToken::JWTToken() {
+                        m_header.Add("alg", "HS256");
+                        m_header.Add("typ", "JWT");
+                    }</span>
+
+<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() {
+                        return m_header;
+                    }</span>
+
+<span style = "background-color:#dfd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() const {
+                        return m_header;
+                    }</span>
+
+<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() {
+                        return m_payload;
+                    }</span>
+
+<span style = "background-color:#dfd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() const {
+                        return m_payload;
+                    }</span>
+
+<span style = "background-color:#fdd">                    String JWTToken::GetSignature() const {
+                        return m_signature;
+                    }</span>
+
+<span style = "background-color:#dfd">                    String JWTToken::CreateToken(const String&amp; secretKey) {</span>
+                        using namespace DotNetDupe::System::Text::Json;
+                        using namespace DotNetDupe::System::Security::Cryptography;
+
+<span style = "background-color:#dfd">                        String headerJson = JsonSerializer::Serialize(m_header);
+                        Array&lt;char&gt; headerBytes(headerJson.GetLength());
+                        std::memcpy(headerBytes.GetData(), headerJson.GetRawString(), headerJson.GetLength());
+                        String headerB64 = Convert::ToBase64String(headerBytes);
+                        String headerB64Url = Base64ToBase64Url(headerB64);</span>
+
+<span style = "background-color:#dfd">                        String payloadJson = JsonSerializer::Serialize(m_payload);
+                        Array&lt;char&gt; payloadBytes(payloadJson.GetLength());
+                        std::memcpy(payloadBytes.GetData(), payloadJson.GetRawString(), payloadJson.GetLength());
+                        String payloadB64 = Convert::ToBase64String(payloadBytes);
+                        String payloadB64Url = Base64ToBase64Url(payloadB64);</span>
+
+<span style = "background-color:#dfd">                        m_rawTokenWithoutSignature = headerB64Url + "." + payloadB64Url;</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; tokenBytes(m_rawTokenWithoutSignature.GetLength());
+                        std::memcpy(tokenBytes.GetData(), m_rawTokenWithoutSignature.GetRawString(), m_rawTokenWithoutSignature.GetLength());</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; keyBytes(secretKey.GetLength());
+                        std::memcpy(keyBytes.GetData(), secretKey.GetRawString(), secretKey.GetLength());</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; signatureHash = HMACSHA256::ComputeHash(tokenBytes, keyBytes);
+                        String signatureB64 = Convert::ToBase64String(signatureHash);
+                        m_signature = Base64ToBase64Url(signatureB64);</span>
+
+<span style = "background-color:#dfd">                        return m_rawTokenWithoutSignature + "." + m_signature;
+                    }</span>
+
+<span style = "background-color:#dfd">                    SmartPointer&lt;JWTToken&gt; JWTToken::Parse(const String&amp; tokenStr) {</span>
+                        using namespace DotNetDupe::System::Text::Json;
+
+<span style = "background-color:#dfd">                        Array&lt;String&gt; parts = tokenStr.Split('.');
+                        if (parts.GetLength() != 3) {</span>
+<span style = "background-color:#fdd">                            throw ArgumentException("Invalid JWT token format.");</span>
+                        }
+
+<span style = "background-color:#dfd">                        auto token = SmartPointer&lt;JWTToken&gt;::NewShared();</span>
+
+<span style = "background-color:#dfd">                        String headerB64 = Base64UrlToBase64(parts[0]);
+                        Array&lt;char&gt; headerBytes = Convert::FromBase64String(headerB64);
+                        String headerJson;
+                        headerJson.GetString().assign(headerBytes.GetData(), headerBytes.GetLength());
+                        token-&gt;m_header = JsonSerializer::Deserialize&lt;Collections::Generic::Dictionary&lt;String, String&gt;&gt;(headerJson);</span>
+
+<span style = "background-color:#dfd">                        String payloadB64 = Base64UrlToBase64(parts[1]);
+                        Array&lt;char&gt; payloadBytes = Convert::FromBase64String(payloadB64);
+                        String payloadJson;
+                        payloadJson.GetString().assign(payloadBytes.GetData(), payloadBytes.GetLength());
+                        token-&gt;m_payload = JsonSerializer::Deserialize&lt;Collections::Generic::Dictionary&lt;String, String&gt;&gt;(payloadJson);</span>
+
+<span style = "background-color:#dfd">                        token-&gt;m_rawTokenWithoutSignature = parts[0] + "." + parts[1];
+                        token-&gt;m_signature = parts[2];</span>
+
+<span style = "background-color:#dfd">                        return token;
+                    }</span>
+
+<span style = "background-color:#dfd">                    bool JWTToken::Verify(const String&amp; secretKey) const {</span>
+                        using namespace DotNetDupe::System::Security::Cryptography;
+
+<span style = "background-color:#dfd">                        if (m_rawTokenWithoutSignature.IsEmpty() || m_signature.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                            return false;</span>
+                        }
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; tokenBytes(m_rawTokenWithoutSignature.GetLength());
+                        std::memcpy(tokenBytes.GetData(), m_rawTokenWithoutSignature.GetRawString(), m_rawTokenWithoutSignature.GetLength());</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; keyBytes(secretKey.GetLength());
+                        std::memcpy(keyBytes.GetData(), secretKey.GetRawString(), secretKey.GetLength());</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; signatureHash = HMACSHA256::ComputeHash(tokenBytes, keyBytes);
+                        String signatureB64 = Convert::ToBase64String(signatureHash);
+                        String expectedSignature = Base64ToBase64Url(signatureB64);</span>
+
+<span style = "background-color:#dfd">                        return m_signature == expectedSignature;
+                    }</span>
+
+                }
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

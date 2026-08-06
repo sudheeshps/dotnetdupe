@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SocketsTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Net/Sockets/Socket.h"
+#include "System/Net/Sockets/NetworkStream.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/UdpClient.h"
+#include "System/Threading/Thread.h"
+#include &lt;thread&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+#include "System/SystemException.h"
+#include "System/Net/Sockets/SocketException.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Net::Sockets;
+using namespace DotNetDupe::System::Threading;
+
+namespace DotNetDupeTests {
+
+    // --- TcpListener &amp; TcpClient Tests ---
+
+<span style = "background-color:#dfd">    TEST(SocketsTests, GivenActiveListener_WhenClientConnects_ThenConnectionSucceedsAndDataTransfers) {</span>
+        try {
+            // Given
+            int port = 18085;
+<span style = "background-color:#dfd">            TcpListener listener("127.0.0.1", port);
+            listener.Start();</span>
+
+<span style = "background-color:#dfd">            std::string serverReceivedData = "";
+            std::string clientReceivedData = "";</span>
+
+            // Start server accept loop in a background thread
+<span style = "background-color:#dfd">            std::thread serverThread([&amp;listener, &amp;serverReceivedData]() {</span>
+                try {
+<span style = "background-color:#dfd">                    auto serverClient = listener.AcceptTcpClient();
+                    auto stream = serverClient-&gt;GetStream();</span>
+
+<span style = "background-color:#dfd">                    char buffer[128] = {0};
+                    int bytesRead = stream-&gt;Read(buffer, 0, sizeof(buffer) - 1);
+                    if (bytesRead &gt; 0) {
+                        serverReceivedData = std::string(buffer, bytesRead);</span>
+                    }
+
+                    // Send echo response back
+<span style = "background-color:#dfd">                    std::string response = "World";
+                    stream-&gt;Write(response.c_str(), 0, static_cast&lt;int&gt;(response.length()));
+                    serverClient-&gt;Close();
+                } catch (...) {</span>
+                    // Fail silently or handle
+<span style = "background-color:#dfd">                }
+            });</span>
+
+            struct TcpGuard {
+                std::thread&amp; t;
+                TcpListener&amp; l;
+<span style = "background-color:#fdd">                ~TcpGuard() {
+                    l.Stop();
+                    if (t.joinable()) {
+                        t.join();</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">            } tcpGuard{serverThread, listener};</span>
+
+            // Give server thread a moment to enter Accept
+<span style = "background-color:#dfd">            Thread::Sleep(100);</span>
+
+            // When
+<span style = "background-color:#dfd">            TcpClient client;
+            client.Connect("127.0.0.1", port);</span>
+
+<span style = "background-color:#dfd">            auto clientStream = client.GetStream();
+            std::string greeting = "Hello";
+            clientStream-&gt;Write(greeting.c_str(), 0, static_cast&lt;int&gt;(greeting.length()));</span>
+
+<span style = "background-color:#dfd">            char clientBuffer[128] = {0};
+            int clientBytesRead = clientStream-&gt;Read(clientBuffer, 0, sizeof(clientBuffer) - 1);
+            if (clientBytesRead &gt; 0) {
+                clientReceivedData = std::string(clientBuffer, clientBytesRead);</span>
+            }
+<span style = "background-color:#dfd">            client.Close();</span>
+
+            // Wait for server thread to finish to avoid data race on serverReceivedData
+<span style = "background-color:#dfd">            if (serverThread.joinable()) {
+                serverThread.join();</span>
+            }
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(serverReceivedData, "Hello");
+            EXPECT_EQ(clientReceivedData, "World");
+        } catch (const DotNetDupe::System::SystemException&amp; ex) {</span>
+<span style = "background-color:#fdd">            FAIL() &lt;&lt; "SystemException: " &lt;&lt; ex.What();
+        } catch (const std::exception&amp; ex) {
+            FAIL() &lt;&lt; "std::exception: " &lt;&lt; ex.what();
+        } catch (...) {
+            FAIL() &lt;&lt; "Unknown exception thrown in test body";</span>
+        }
+<span style = "background-color:#dfd">    }</span>
+
+    // --- UdpClient Tests ---
+
+<span style = "background-color:#dfd">    TEST(SocketsTests, GivenBoundUdpReceiver_WhenSenderSends_ThenDataIsReceivedCorrectly) {</span>
+        try {
+            // Given
+            int port = 18086;
+<span style = "background-color:#dfd">            UdpClient receiver(port);</span>
+
+<span style = "background-color:#dfd">            std::string receivedMsg = "";
+            String senderIp = "";
+            int senderPort = 0;</span>
+
+<span style = "background-color:#dfd">            std::thread receiveThread([&amp;receiver, &amp;receivedMsg, &amp;senderIp, &amp;senderPort]() {</span>
+                try {
+<span style = "background-color:#dfd">                    char buffer[128] = {0};
+                    int bytesReceived = receiver.Receive(buffer, 0, sizeof(buffer) - 1, senderIp, senderPort);
+                    if (bytesReceived &gt; 0) {
+                        receivedMsg = std::string(buffer, bytesReceived);</span>
+                    }
+<span style = "background-color:#dfd">                } catch (...) {
+                }
+            });</span>
+
+            struct UdpGuard {
+                std::thread&amp; t;
+                UdpClient&amp; r;
+<span style = "background-color:#fdd">                ~UdpGuard() {
+                    r.Close();
+                    if (t.joinable()) {
+                        t.join();</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">            } udpGuard{receiveThread, receiver};</span>
+
+<span style = "background-color:#dfd">            Thread::Sleep(100);</span>
+
+            // When
+<span style = "background-color:#dfd">            UdpClient sender;
+            std::string payload = "UdpHello";
+            sender.Send(payload.c_str(), 0, static_cast&lt;int&gt;(payload.length()), "127.0.0.1", port);
+            sender.Close();</span>
+
+            // Wait for receive thread to finish receiving the data
+<span style = "background-color:#dfd">            if (receiveThread.joinable()) {
+                receiveThread.join();</span>
+            }
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(receivedMsg.length(), 8);
+            EXPECT_EQ(receivedMsg, "UdpHello");
+            EXPECT_EQ(senderIp, "127.0.0.1");
+            EXPECT_GT(senderPort, 0);
+        } catch (const DotNetDupe::System::SystemException&amp; ex) {</span>
+<span style = "background-color:#fdd">            FAIL() &lt;&lt; "SystemException: " &lt;&lt; ex.What();
+        } catch (const std::exception&amp; ex) {
+            FAIL() &lt;&lt; "std::exception: " &lt;&lt; ex.what();
+        } catch (...) {
+            FAIL() &lt;&lt; "Unknown exception thrown in test body";</span>
+        }
+<span style = "background-color:#dfd">    }</span>
+
+    // --- Error / Edge Cases Tests ---
+
+<span style = "background-color:#dfd">    TEST(SocketsTests, GivenClosedSocket_WhenOperationsAttempted_ThenThrowsException) {</span>
+        // Given
+<span style = "background-color:#dfd">        Socket socket(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp);
+        socket.Close();</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(socket.Bind("127.0.0.1", 18087), SocketException);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(SocketsTests, GivenStoppedListener_WhenAcceptAttempted_ThenThrowsException) {</span>
+        // Given
+<span style = "background-color:#dfd">        TcpListener listener("127.0.0.1", 18088);</span>
+        // Do not call Start()
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(listener.AcceptTcpClient(), SocketException);
+    }</span>
+
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

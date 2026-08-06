@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>UserPrincipal.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Security/Principal/UserPrincipal.h"
+#include "System/ArgumentException.h"
+
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#include &lt;lm.h&gt;
+#pragma comment(lib, "netapi32.lib")
+#else
+#include &lt;pwd.h&gt;
+#include &lt;grp.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Security {
+            namespace Principal {
+
+<span style = "background-color:#fdd">                UserPrincipal::UserPrincipal() {
+                }</span>
+
+<span style = "background-color:#fdd">                UserPrincipal::~UserPrincipal() {
+                }</span>
+
+#if defined(_WIN32)
+                static UserClass ClassifyWindowsUser(DWORD dwPriv, DWORD dwFlags) {
+                    if (dwFlags &amp; UF_ACCOUNTDISABLE) return UserClass::Guest;
+                    if (dwPriv == USER_PRIV_ADMIN) return UserClass::Admin;
+                    if (dwPriv == USER_PRIV_GUEST) return UserClass::Guest;
+                    return UserClass::Normal;
+                }
+
+<span style = "background-color:#dfd">                static void PopulateWin32UserGroups(LPCWSTR pwszUser, Collections::Generic::List&lt;String&gt;&amp; lstGroups, Collections::Generic::List&lt;String&gt;&amp; lstPermissions) {
+                    LPGROUP_USERS_INFO_0 pGroups = NULL;
+                    DWORD dwEntriesRead = 0, dwTotalEntries = 0;</span>
+
+<span style = "background-color:#dfd">                    if (::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&amp;pGroups, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries) == NERR_Success) {
+                        for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
+                            std::wstring wGroup(pGroups[i].grui0_name);
+                            std::string sGroup;
+                            for (wchar_t wc : wGroup) { sGroup.push_back(static_cast&lt;char&gt;(wc)); }
+                            lstPermissions.Add(String("GroupMember:") + String(sGroup));
+                            lstGroups.Add(String(std::move(sGroup)));
+                        }
+                        ::NetApiBufferFree(pGroups);</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
+                    UserInfo info;
+                    std::wstring wName(pUi-&gt;usri1_name);
+                    std::string sName;
+                    sName.reserve(wName.length());
+                    for (wchar_t wc : wName) { sName.push_back(static_cast&lt;char&gt;(wc)); }
+                    info.sUsername = String(std::move(sName));</span>
+
+<span style = "background-color:#dfd">                    info.sDomain = "LOCAL";
+                    info.sSidOrUid = "S-1-5-21-USER";
+                    info.eUserClass = ClassifyWindowsUser(pUi-&gt;usri1_priv, pUi-&gt;usri1_flags);
+                    info.bIsDisabled = (pUi-&gt;usri1_flags &amp; UF_ACCOUNTDISABLE) != 0;
+                    info.bIsPasswordRequired = (pUi-&gt;usri1_flags &amp; UF_PASSWD_NOTREQD) == 0;
+                    info.bIsAccountLocked = (pUi-&gt;usri1_flags &amp; UF_LOCKOUT) != 0;</span>
+
+<span style = "background-color:#dfd">                    if (info.eUserClass == UserClass::Admin) {
+                        info.lstPermissions.Add("AdministratorRights");
+                        info.lstPermissions.Add("FullControl");
+                    } else {
+                        info.lstPermissions.Add("StandardUserRights");</span>
+                    }
+
+<span style = "background-color:#dfd">                    PopulateWin32UserGroups(pUi-&gt;usri1_name, info.lstGroups, info.lstPermissions);
+                    return info;
+                }</span>
+
+                static void EnumerateWin32Users(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    LPUSER_INFO_1 pBuf = NULL;
+                    DWORD dwEntriesRead = 0, dwTotalEntries = 0, dwResumeHandle = 0;
+
+                    NET_API_STATUS nStatus = ::NetUserEnum(NULL, 1, FILTER_NORMAL_ACCOUNT, (LPBYTE*)&amp;pBuf, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries, &amp;dwResumeHandle);
+                    if (nStatus == NERR_Success || nStatus == ERROR_MORE_DATA) {
+                        for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
+                            lstUsers.Add(BuildWin32UserInfo(&amp;pBuf[i]));
+                        }
+                    }
+
+                    if (pBuf != NULL) {
+                        ::NetApiBufferFree(pBuf);
+                    }
+                }
+#else
+                static UserInfo BuildLinuxUserInfo(const struct passwd* pw) {
+                    UserInfo info;
+                    info.sUsername = String(pw-&gt;pw_name);
+                    info.sDomain = "LOCAL";
+                    info.sSidOrUid = String(std::to_string(pw-&gt;pw_uid).c_str());
+                    info.bIsDisabled = false;
+                    info.bIsPasswordRequired = true;
+                    info.bIsAccountLocked = false;
+
+                    if (pw-&gt;pw_uid == 0) {
+                        info.eUserClass = UserClass::Admin;
+                        info.lstPermissions.Add("RootPrivileges");
+                        info.lstPermissions.Add("FullControl");
+                    } else if (pw-&gt;pw_uid &lt; 1000) {
+                        info.eUserClass = UserClass::System;
+                        info.lstPermissions.Add("SystemDaemonRights");
+                    } else {
+                        info.eUserClass = UserClass::Normal;
+                        info.lstPermissions.Add("StandardUserRights");
+                    }
+
+                    return info;
+                }
+
+                static void EnumerateLinuxUsers(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    setpwent();
+                    struct passwd* pw;
+                    while ((pw = getpwent()) != NULL) {
+                        lstUsers.Add(BuildLinuxUserInfo(pw));
+                    }
+                    endpwent();
+                }
+#endif
+
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;UserInfo&gt; UserPrincipal::EnumerateUsers() {
+                    Collections::Generic::List&lt;UserInfo&gt; lstUsers;</span>
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                    EnumerateWin32Users(lstUsers);</span>
+#else
+                    EnumerateLinuxUsers(lstUsers);
+#endif
+
+                    return lstUsers;
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetUser(const String&amp; sUsername) {
+                    if (sUsername.IsEmpty()) {
+                        throw ArgumentException("Username cannot be empty.");</span>
+                    }
+
+<span style = "background-color:#dfd">                    auto users = EnumerateUsers();
+                    for (int i = 0; i &lt; users.GetCount(); i++) {
+                        if (users[i].sUsername.Equals(sUsername)) {
+                            return users[i];</span>
+                        }
+                    }
+
+<span style = "background-color:#fdd">                    UserInfo fallback;
+                    fallback.sUsername = sUsername;
+                    fallback.sDomain = "LOCAL";
+                    fallback.sSidOrUid = "S-1-5-UNKNOWN";
+                    fallback.eUserClass = UserClass::Normal;
+                    fallback.bIsDisabled = false;</span>
+                    fallback.bIsPasswordRequired = true;
+<span style = "background-color:#fdd">                    fallback.bIsAccountLocked = false;
+                    fallback.lstPermissions.Add("StandardUserRights");
+                    return fallback;</span>
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetCurrent() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                    WCHAR szName[256] = { 0 };
+                    DWORD dwSize = 256;</span>
+
+<span style = "background-color:#dfd">                    if (::GetUserNameW(szName, &amp;dwSize)) {
+                        std::wstring wName(szName);
+                        std::string sName(wName.begin(), wName.end());
+                        return GetUser(String(sName.c_str()));</span>
+                    }
+#else
+                    uid_t uid = getuid();
+                    struct passwd* pw = getpwuid(uid);
+                    if (pw != NULL) {
+                        return GetUser(String(pw-&gt;pw_name));
+                    }
+#endif
+<span style = "background-color:#fdd">                    return GetUser("CurrentSystemUser");</span>
+<span style = "background-color:#dfd">                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

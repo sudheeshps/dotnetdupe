@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>EtwLogReaderTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include &lt;gtest/gtest.h&gt;
+#include "System/Diagnostics/EtwLogReader.h"
+#include "System/ArgumentException.h"
+#include "System/InvalidOperationException.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Diagnostics;
+
+class EtwLogReaderTests : public ::testing::Test {
+protected:
+<span style = "background-color:#dfd">    void SetUp() override {}
+    void TearDown() override {}</span>
+};
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenEtwLogReader_WhenGetEventChannelsCalled_ThenReturnsChannelList) {</span>
+    // Given &amp; When
+<span style = "background-color:#dfd">    auto lstChannels = EtwLogReader::GetEventChannels();</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_GE(lstChannels.GetCount(), 0);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenChannelName_WhenGetChannelEventCountCalled_ThenReturnsCount) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sChannel = "Application";</span>
+
+    // When
+<span style = "background-color:#dfd">    unsigned long long uCount = EtwLogReader::GetChannelEventCount(sChannel);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_GE(uCount, 0ULL);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenChannelName_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sChannel = "Application";</span>
+
+    // When
+<span style = "background-color:#dfd">    auto counts = EtwLogReader::GetChannelEventLevelCounts(sChannel);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_GE(counts.uCriticalCount, 0ULL);
+    EXPECT_GE(counts.uErrorCount, 0ULL);
+    EXPECT_GE(counts.uWarningCount, 0ULL);
+    EXPECT_GE(counts.uInfoCount, 0ULL);
+    EXPECT_GE(counts.uVerboseCount, 0ULL);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenValidChannel_WhenReadEventsCalled_ThenReturnsEvents) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sChannel = "Application";</span>
+
+    // When
+<span style = "background-color:#dfd">    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_GE(lstEvents.GetCount(), 0);
+    if (lstEvents.GetCount() &gt; 0) {
+        EXPECT_FALSE(lstEvents[0].sRawXml.IsEmpty());</span>
+    }
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenEmptyChannelName_WhenReadEventsCalled_ThenThrowsArgumentException) {</span>
+    // Given, When, Then
+<span style = "background-color:#dfd">    EXPECT_THROW(EtwLogReader::ReadEvents(""), ArgumentException);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenPaginationParameters_WhenReadEventsCalled_ThenReturnsEvents) {</span>
+    // Given
+<span style = "background-color:#dfd">    String sChannel = "Application";</span>
+
+    // When
+<span style = "background-color:#dfd">    auto lstForward = EtwLogReader::ReadEvents(sChannel, 5, 0, false);
+    auto lstOffset = EtwLogReader::ReadEvents(sChannel, 5, 1, true);</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_GE(lstForward.GetCount(), 0);
+    EXPECT_GE(lstOffset.GetCount(), 0);
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenEtwLogReader_WhenStartAndStopListening_ThenStateUpdatesCorrectly) {</span>
+    // Given
+<span style = "background-color:#dfd">    EtwLogReader reader;
+    String sChannel = "System";
+    bool bEventReceived = false;</span>
+
+    // When
+<span style = "background-color:#dfd">    reader.StartListening(sChannel, [&amp;bEventReceived](const EtwEvent&amp; evt) {</span>
+        bEventReceived = true;
+    });
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_TRUE(reader.IsListening());
+    EXPECT_EQ(reader.GetListeningChannel(), "System");</span>
+
+    // When
+<span style = "background-color:#dfd">    reader.StopListening();</span>
+
+    // Then
+<span style = "background-color:#dfd">    EXPECT_FALSE(reader.IsListening());
+    EXPECT_EQ(reader.GetListeningChannel(), "");
+}</span>
+
+<span style = "background-color:#dfd">TEST_F(EtwLogReaderTests, GivenAlreadyListeningReader_WhenStartListeningCalled_ThenThrowsInvalidOperationException) {</span>
+    // Given
+<span style = "background-color:#dfd">    EtwLogReader reader;
+    reader.StartListening("Application", [](const EtwEvent&amp;) {});</span>
+
+    // When &amp; Then
+<span style = "background-color:#dfd">    EXPECT_THROW(reader.StartListening("System", [](const EtwEvent&amp;) {}), InvalidOperationException);
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

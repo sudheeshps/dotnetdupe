@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>StringWriter.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/StringWriter.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+            StringWriter::StringWriter()
+<span style = "background-color:#dfd">                : m_pSb(new Text::StringBuilder()), m_bIsOpen(true) {
+            }</span>
+
+            StringWriter::StringWriter(Text::StringBuilder&amp; sbOutput)
+<span style = "background-color:#fdd">                : m_pSb(&amp;sbOutput), m_bIsOpen(true) {
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::Close() {
+                m_bIsOpen = false;
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::Dispose() {
+                m_bIsOpen = false;
+            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::Flush() {</span>
+                // Nothing to flush
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            std::shared_ptr&lt;Text::Encoding&gt; StringWriter::GetEncoding() const {
+                return Text::TextEncoding::UTF8();
+            }</span>
+
+<span style = "background-color:#dfd">            String StringWriter::ToString() const {
+                return m_pSb-&gt;ToString();
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::Write(bool bValue) {
+                TextWriter::Write(bValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void StringWriter::Write(char chValue) {
+                if (!m_bIsOpen) return;
+                m_pSb-&gt;Append(chValue);
+            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::Write(const String&amp; sValue) {
+                if (!m_bIsOpen) return;
+                m_pSb-&gt;Append(sValue);</span>
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::Write(const char* pValue) {
+                if (!m_bIsOpen) return;
+                m_pSb-&gt;Append(pValue);</span>
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::Write(int iValue) {
+                TextWriter::Write(iValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void StringWriter::Write(long long llValue) {
+                TextWriter::Write(llValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void StringWriter::Write(float fValue) {
+                TextWriter::Write(fValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::Write(double dValue) {
+                TextWriter::Write(dValue);
+            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::WriteLine() {
+                TextWriter::WriteLine();
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(bool bValue) {
+                TextWriter::WriteLine(bValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(char chValue) {
+                TextWriter::WriteLine(chValue);
+            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(const char* pValue) {
+                TextWriter::WriteLine(pValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(const String&amp; sValue) {
+                TextWriter::WriteLine(sValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(int iValue) {
+                TextWriter::WriteLine(iValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(long long llValue) {
+                TextWriter::WriteLine(llValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(float fValue) {
+                TextWriter::WriteLine(fValue);
+            }</span>
+
+<span style = "background-color:#fdd">            void StringWriter::WriteLine(double dValue) {
+                TextWriter::WriteLine(dValue);
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

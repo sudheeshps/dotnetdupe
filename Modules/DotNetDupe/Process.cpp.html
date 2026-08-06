@@ -1,0 +1,263 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Process.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Diagnostics/Process.h"
+#include "System/Utils/StringConvert.h"
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#else
+#include &lt;unistd.h&gt;
+#include &lt;sys/wait.h&gt;
+#include &lt;signal.h&gt;
+#include &lt;spawn.h&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
+#include &lt;errno.h&gt;
+extern char** environ;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+            ProcessStartInfo::ProcessStartInfo() 
+<span style = "background-color:#fdd">                : CreateNoWindow(false), UseShellExecute(false) {}</span>
+
+            ProcessStartInfo::ProcessStartInfo(const String&amp; sFileName) 
+<span style = "background-color:#fdd">                : FileName(sFileName), CreateNoWindow(false), UseShellExecute(false) {}</span>
+
+            ProcessStartInfo::ProcessStartInfo(const String&amp; sFileName, const String&amp; sArguments) 
+<span style = "background-color:#fdd">                : FileName(sFileName), Arguments(sArguments), CreateNoWindow(false), UseShellExecute(false) {}</span>
+
+            Process::Process() 
+<span style = "background-color:#fdd">                : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}</span>
+
+<span style = "background-color:#fdd">            Process::~Process() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">                if (m_pProcessHandle != nullptr) {
+                    CloseHandle((HANDLE)m_pProcessHandle);</span>
+                }
+#endif
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            bool Process::Start() {
+                if (m_objStartInfo.FileName.GetLength() == 0) return false;</span>
+
+#if defined(_WIN32)
+                STARTUPINFOW si;
+                PROCESS_INFORMATION pi;
+<span style = "background-color:#dfd">                ZeroMemory(&amp;si, sizeof(si));
+                si.cb = sizeof(si);
+                ZeroMemory(&amp;pi, sizeof(pi));</span>
+
+<span style = "background-color:#dfd">                std::wstring sWFileName = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.FileName.GetRawString());
+                std::wstring sWArgs = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.Arguments.GetRawString());
+                std::wstring sWCommandLine = L"\"" + sWFileName + L"\"";
+                if (m_objStartInfo.Arguments.GetLength() &gt; 0) {
+                    sWCommandLine += L" " + sWArgs;</span>
+                }
+
+                DWORD dwCreationFlags = 0;
+                if (m_objStartInfo.CreateNoWindow) {
+                    dwCreationFlags |= CREATE_NO_WINDOW;
+                }
+
+<span style = "background-color:#dfd">                if (CreateProcessW(NULL, (LPWSTR)sWCommandLine.c_str(), NULL, NULL, FALSE, </span>
+                    dwCreationFlags, NULL, NULL, &amp;si, &amp;pi)) {
+<span style = "background-color:#dfd">                    m_iId = (int)pi.dwProcessId;
+                    m_pProcessHandle = (void*)pi.hProcess;
+                    CloseHandle(pi.hThread);
+                    m_bHasExited = false;</span>
+                    return true;
+                }
+<span style = "background-color:#dfd">                return false;</span>
+#else
+                pid_t pid;
+                std::vector&lt;std::string&gt; argStrings;
+                std::string sFileName = m_objStartInfo.FileName.GetRawString();
+                argStrings.push_back(sFileName);
+
+                std::string sArgs = m_objStartInfo.Arguments.GetRawString();
+                std::string sCurrentArg;
+                bool bInQuotes = false;
+                for (size_t i = 0; i &lt; sArgs.length(); ++i) {
+                    char c = sArgs[i];
+                    if (c == '\"') {
+                        bInQuotes = !bInQuotes;
+                    } else if (c == ' ' &amp;&amp; !bInQuotes) {
+                        if (!sCurrentArg.empty()) {
+                            argStrings.push_back(sCurrentArg);
+                            sCurrentArg.clear();
+                        }
+                    } else {
+                        sCurrentArg += c;
+                    }
+                }
+                if (!sCurrentArg.empty()) {
+                    argStrings.push_back(sCurrentArg);
+                }
+
+                std::vector&lt;char*&gt; argv;
+                for (auto&amp; s : argStrings) {
+                    argv.push_back((char*)s.c_str());
+                }
+                argv.push_back(NULL);
+
+                if (posix_spawn(&amp;pid, sFileName.c_str(), NULL, NULL, argv.data(), environ) == 0) {
+                    m_iId = (int)pid;
+                    m_pProcessHandle = (void*)(intptr_t)pid;
+                    m_bHasExited = false;
+                    return true;
+                }
+                return false;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const String&amp; sFileName) {
+                return Start(ProcessStartInfo(sFileName));
+            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const String&amp; sFileName, const String&amp; sArguments) {
+                return Start(ProcessStartInfo(sFileName, sArguments));
+            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const ProcessStartInfo&amp; objStartInfo) {
+                SmartPointer&lt;Process&gt; pProcess = SmartPointer&lt;Process&gt;::New();
+                pProcess-&gt;SetStartInfo(objStartInfo);
+                if (pProcess-&gt;Start()) {
+                    return pProcess;</span>
+                }
+<span style = "background-color:#dfd">                return SmartPointer&lt;Process&gt;(nullptr);
+            }</span>
+
+<span style = "background-color:#dfd">            void Process::WaitForExit() {
+                WaitForExit(-1);</span>
+            }
+
+<span style = "background-color:#dfd">            bool Process::WaitForExit(int iMilliseconds) {
+                if (m_bHasExited) return true;
+                if (m_pProcessHandle == nullptr) return true;</span>
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                DWORD dwTimeout = (iMilliseconds == -1) ? INFINITE : (DWORD)iMilliseconds;
+                DWORD dwResult = WaitForSingleObject((HANDLE)m_pProcessHandle, dwTimeout);
+                if (dwResult == WAIT_OBJECT_0) {
+                    Refresh();
+                    return true;</span>
+                }
+<span style = "background-color:#dfd">                return false;</span>
+#else
+                int iStatus;
+                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
+                if (iMilliseconds == -1) {
+                    if (waitpid(pid, &amp;iStatus, 0) == pid) {
+                        m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                        m_bHasExited = true;
+                        return true;
+                    }
+                    return false;
+                } else {
+                    int iElapsed = 0;
+                    while (iElapsed &lt; iMilliseconds) {
+                        pid_t res = waitpid(pid, &amp;iStatus, WNOHANG);
+                        if (res == pid) {
+                            m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                            m_bHasExited = true;
+                            return true;
+                        } else if (res == 0) {
+                            usleep(10000); // 10ms
+                            iElapsed += 10;
+                        } else {
+                            if (errno == ECHILD) {
+                                m_bHasExited = true;
+                            }
+                            break;
+                        }
+                    }
+                    return m_bHasExited;
+                }
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool Process::GetHasExited() const {
+                Refresh();
+                return m_bHasExited;
+            }</span>
+
+<span style = "background-color:#dfd">            void Process::Kill() {
+                if (m_bHasExited) return;
+                if (m_pProcessHandle == nullptr) return;</span>
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                TerminateProcess((HANDLE)m_pProcessHandle, 1);
+                Refresh();</span>
+#else
+                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
+                kill(pid, SIGKILL);
+                
+                // Wait for the process to actually be reaped to ensure GetHasExited() 
+                // returns true immediately after Kill()
+                int iStatus;
+                if (waitpid(pid, &amp;iStatus, 0) == pid) {
+                    m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                    m_bHasExited = true;
+                } else if (errno == ECHILD) {
+                    m_bHasExited = true;
+                }
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+            void Process::Refresh() const {
+                if (m_bHasExited) return;
+                if (m_pProcessHandle == nullptr) return;
+
+#if defined(_WIN32)
+                DWORD dwExitCode;
+                if (GetExitCodeProcess((HANDLE)m_pProcessHandle, &amp;dwExitCode)) {
+                    if (dwExitCode != STILL_ACTIVE) {
+                        m_iExitCode = (int)dwExitCode;
+                        m_bHasExited = true;
+                    }
+                }
+#else
+                int iStatus;
+                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
+                pid_t res = waitpid(pid, &amp;iStatus, WNOHANG);
+                if (res == pid) {
+                    m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                    m_bHasExited = true;
+                } else if (res == -1 &amp;&amp; errno == ECHILD) {
+                    m_bHasExited = true;
+                }
+#endif
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

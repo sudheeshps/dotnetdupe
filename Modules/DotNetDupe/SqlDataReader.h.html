@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SqlDataReader.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#pragma once
+#include "System/Data/Common/DbDataReader.h"
+#include "System/Data/Internal/DatabaseEngine.h"
+#include "System/Convert.h"
+#include "System/ArgumentException.h"
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Data {
+            namespace SqlClient {
+
+                class SqlDataReader : public DotNetDupe::System::Data::Common::DbDataReader {
+                private:
+                    std::vector&lt;DotNetDupe::System::Data::Internal::Row&gt; m_rows;
+                    std::vector&lt;std::string&gt; m_columns;
+                    int m_nCurrentIndex = -1;
+
+                public:
+                    SqlDataReader(const std::vector&lt;DotNetDupe::System::Data::Internal::Row&gt;&amp; rows, const std::vector&lt;std::string&gt;&amp; columns)
+                        : m_rows(rows), m_columns(columns) {}
+                    ~SqlDataReader() override = default;
+
+<span style = "background-color:#dfd">                    bool Read() override {
+                        if (m_nCurrentIndex + 1 &lt; static_cast&lt;int&gt;(m_rows.size())) {
+                            m_nCurrentIndex++;
+                            return true;</span>
+                        }
+<span style = "background-color:#dfd">                        return false;
+                    }</span>
+
+<span style = "background-color:#dfd">                    DotNetDupe::System::String GetString(int iOrdinal) override {
+                        if (m_nCurrentIndex &lt; 0 || m_nCurrentIndex &gt;= static_cast&lt;int&gt;(m_rows.size())) {</span>
+<span style = "background-color:#fdd">                            return "";</span>
+                        }
+<span style = "background-color:#dfd">                        if (iOrdinal &lt; 0 || iOrdinal &gt;= static_cast&lt;int&gt;(m_columns.size())) {</span>
+<span style = "background-color:#fdd">                            return "";</span>
+                        }
+<span style = "background-color:#dfd">                        return DotNetDupe::System::String(m_rows[m_nCurrentIndex].Values[iOrdinal].c_str());
+                    }</span>
+
+<span style = "background-color:#dfd">                    int GetInt32(int iOrdinal) override {
+                        return DotNetDupe::System::Convert::ToInt32(GetString(iOrdinal));
+                    }</span>
+
+<span style = "background-color:#fdd">                    double GetDouble(int iOrdinal) override {
+                        return std::stod(GetString(iOrdinal).GetRawString());
+                    }</span>
+
+<span style = "background-color:#fdd">                    bool IsDBNull(int iOrdinal) override {
+                        return GetString(iOrdinal).IsEmpty();
+                    }</span>
+
+<span style = "background-color:#fdd">                    int GetFieldCount() const override {
+                        return static_cast&lt;int&gt;(m_columns.size());
+                    }</span>
+
+<span style = "background-color:#fdd">                    DotNetDupe::System::String GetName(int iOrdinal) override {
+                        if (iOrdinal &lt; 0 || iOrdinal &gt;= static_cast&lt;int&gt;(m_columns.size())) {
+                            return "";</span>
+                        }
+<span style = "background-color:#fdd">                        return DotNetDupe::System::String(m_columns[iOrdinal].c_str());
+                    }</span>
+
+<span style = "background-color:#fdd">                    int GetOrdinal(const DotNetDupe::System::String&amp; sName) override {
+                        std::string target = sName.GetRawString();
+                        for (size_t i = 0; i &lt; m_columns.size(); ++i) {
+                            if (m_columns[i] == target) {</span>
+                                return static_cast&lt;int&gt;(i);
+                            }
+                        }
+<span style = "background-color:#fdd">                        return -1;
+                    }</span>
+
+<span style = "background-color:#fdd">                    DotNetDupe::System::String operator[](const DotNetDupe::System::String&amp; sName) override {
+                        int ord = GetOrdinal(sName);
+                        if (ord == -1) {
+                            throw DotNetDupe::System::ArgumentException(DotNetDupe::System::String("Column not found: ") + sName);</span>
+                        }
+<span style = "background-color:#fdd">                        return GetString(ord);
+                    }</span>
+
+<span style = "background-color:#fdd">                    DotNetDupe::System::String operator[](int iOrdinal) override {
+                        return GetString(iOrdinal);
+                    }</span>
+                };
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

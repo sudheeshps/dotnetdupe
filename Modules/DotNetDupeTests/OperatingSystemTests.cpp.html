@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>OperatingSystemTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/OperatingSystem.h"
+#include "System/Version.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+
+namespace SystemTests {
+    namespace OperatingSystemTests {
+        // Given: A PlatformID and a Version object
+        // When: An OperatingSystem object is constructed
+        // Then: The GetPlatform and GetVersion methods should return the correct values
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, Constructor_Should_Initialize_Properties) {</span>
+            // Given
+<span style = "background-color:#dfd">            const auto expectedPlatform = PlatformID::Win32NT;
+            const Version expectedVersion(10, 0, 22000, 0);</span>
+
+            // When
+<span style = "background-color:#dfd">            const OperatingSystem os(expectedPlatform, expectedVersion);</span>
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(expectedPlatform, os.GetPlatform());
+            EXPECT_EQ(expectedVersion, os.GetVersion());
+        }</span>
+
+        // Given: An OperatingSystem object
+        // When: GetVersionString is called
+        // Then: It should return the string representation of the version
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, GetVersionString_Should_Return_Correct_String) {</span>
+            // Given
+<span style = "background-color:#dfd">            const Version version(6, 1, 7601, 0);
+            const OperatingSystem os(PlatformID::Win32NT, version);
+            const String expectedVersionString = "6.1.7601.0";</span>
+
+            // When
+<span style = "background-color:#dfd">            const auto actualVersionString = os.GetVersionString();</span>
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(expectedVersionString, actualVersionString);
+        }</span>
+
+        // Given: An OperatingSystem object
+        // When: GetPlatform is called
+        // Then: It should return the correct PlatformID
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, GetPlatform_Should_Return_Correct_Platform) {</span>
+            // Given
+<span style = "background-color:#dfd">            const auto expectedPlatform = PlatformID::Unix;
+            const OperatingSystem os(expectedPlatform, Version(5, 1, 0, 0));</span>
+
+            // When
+<span style = "background-color:#dfd">            const auto actualPlatform = os.GetPlatform();</span>
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(expectedPlatform, actualPlatform);
+        }</span>
+
+        // Given: An OperatingSystem object
+        // When: GetVersion is called
+        // Then: It should return the correct Version object
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, GetVersion_Should_Return_Correct_Version) {</span>
+            // Given
+<span style = "background-color:#dfd">            const Version expectedVersion(10, 0, 19041, 0);
+            const OperatingSystem os(PlatformID::Win32NT, expectedVersion);</span>
+
+            // When
+<span style = "background-color:#dfd">            const auto actualVersion = os.GetVersion();</span>
+
+            // Then
+<span style = "background-color:#dfd">            EXPECT_EQ(expectedVersion, actualVersion);
+        }</span>
+
+        // Given: A valid OperatingSystem object
+        // When: GetServicePack is called
+        // Then: A non-empty string should be returned
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, GetServicePack_Should_Return_NonEmpty_String) {</span>
+            // Given
+<span style = "background-color:#dfd">            const OperatingSystem os(PlatformID::Win32NT, Version(10, 0));</span>
+
+            // When
+<span style = "background-color:#dfd">            const auto servicePack = os.GetServicePack();</span>
+
+            // Then
+            // We can't know the exact service pack, but it shouldn't be null.
+            // On modern Windows, this is often an empty string.
+            // So we just check that the call succeeds and we get a String object.
+<span style = "background-color:#dfd">            SUCCEED();
+        }</span>
+
+        // Given: The current operating system
+        // When: IsWindows is called
+        // Then: It should return true if on Windows, false otherwise
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, IsWindows_Should_Return_CorrectValue) {</span>
+            // When
+<span style = "background-color:#dfd">            const bool result = OperatingSystem::IsWindows();</span>
+
+            // Then
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            EXPECT_TRUE(result);</span>
+#else
+            EXPECT_FALSE(result);
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+        // Given: The current operating system
+        // When: IsLinux is called
+        // Then: It should return true if on Linux, false otherwise
+<span style = "background-color:#dfd">        TEST(OperatingSystemTest, IsLinux_Should_Return_CorrectValue) {</span>
+            // When
+<span style = "background-color:#dfd">            const bool result = OperatingSystem::IsLinux();</span>
+
+            // Then
+#if defined(__linux__)
+            EXPECT_TRUE(result);
+#else
+<span style = "background-color:#dfd">            EXPECT_FALSE(result);</span>
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

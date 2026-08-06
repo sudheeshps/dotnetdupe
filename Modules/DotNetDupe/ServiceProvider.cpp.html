@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ServiceProvider.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/DependencyInjection/ServiceProvider.h"
+#include "System/Threading/Lock.h"
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace DependencyInjection {
+
+            // Lightweight proxy class to safely wrap a ServiceProvider pointer
+            // without ownership issues or double deletion.
+            class ServiceProviderProxy : public DotNetDupe::System::IServiceProvider {
+            public:
+                ServiceProviderProxy(ServiceProvider* pProvider) : m_pProvider(pProvider) {}
+                ~ServiceProviderProxy() override = default;
+
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; GetService(const std::type_index&amp; serviceType) override {
+                    return m_pProvider-&gt;GetService(serviceType);
+                }</span>
+
+            private:
+                ServiceProvider* m_pProvider;
+            };
+
+            // --- ServiceProvider Implementation ---
+
+            ServiceProvider::ServiceProvider(const IServiceCollection&amp; collection)
+<span style = "background-color:#dfd">                : m_bIsRoot(true), m_pRootProvider(nullptr) {
+                for (int iIdx = 0; iIdx &lt; collection.GetCount(); ++iIdx) {
+                    const ServiceDescriptor&amp; descriptor = collection[iIdx];
+                    m_mapDescriptors.insert({ descriptor.GetServiceType(), descriptor });</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            ServiceProvider::ServiceProvider(ServiceProvider* pRootProvider)
+<span style = "background-color:#dfd">                : m_bIsRoot(false), m_pRootProvider(pRootProvider) {
+            }</span>
+
+<span style = "background-color:#dfd">            ServiceProvider::~ServiceProvider() {
+                Dispose();
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; ServiceProvider::GetService(const std::type_index&amp; serviceType) {
+                DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);</span>
+
+                // 1. Special services
+<span style = "background-color:#dfd">                if (serviceType == typeid(DotNetDupe::System::IServiceProvider)) {</span>
+<span style = "background-color:#fdd">                    return DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt;(</span>
+                        DotNetDupe::System::SmartPointer&lt;ServiceProviderProxy&gt;::NewShared(this)
+                    );
+                }
+<span style = "background-color:#dfd">                if (serviceType == typeid(IServiceScopeFactory)) {
+                    return DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt;(</span>
+                        DotNetDupe::System::SmartPointer&lt;ServiceScopeFactory&gt;::NewShared(this)
+                    );
+                }
+
+                // 2. Find descriptor
+<span style = "background-color:#dfd">                ServiceProvider* pRoot = m_bIsRoot ? this : m_pRootProvider;
+                auto it = pRoot-&gt;m_mapDescriptors.find(serviceType);
+                if (it == pRoot-&gt;m_mapDescriptors.end()) {
+                    return nullptr;</span>
+                }
+
+<span style = "background-color:#dfd">                return ResolveService(it-&gt;second);
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; ServiceProvider::ResolveService(const ServiceDescriptor&amp; descriptor) {
+                if (descriptor.GetLifetime() == ServiceLifetime::Singleton) {
+                    ServiceProvider* pRoot = m_bIsRoot ? this : m_pRootProvider;
+                    DotNetDupe::System::Threading::CriticalSectionLock lock(pRoot-&gt;m_csLock);</span>
+
+                    // Check cache
+<span style = "background-color:#dfd">                    auto it = pRoot-&gt;m_mapSingletons.find(descriptor.GetServiceType());
+                    if (it != pRoot-&gt;m_mapSingletons.end()) {
+                        return it-&gt;second;</span>
+                    }
+
+                    // Create
+<span style = "background-color:#dfd">                    DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; spInstance;
+                    if (descriptor.GetInstance()) {</span>
+<span style = "background-color:#fdd">                        spInstance = descriptor.GetInstance();</span>
+<span style = "background-color:#dfd">                    } else if (descriptor.GetFactory()) {
+                        auto spProxy = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt;(</span>
+                            DotNetDupe::System::SmartPointer&lt;ServiceProviderProxy&gt;::NewShared(this)
+                        );
+<span style = "background-color:#dfd">                        spInstance = descriptor.GetFactory()(spProxy);
+                    }</span>
+
+<span style = "background-color:#dfd">                    if (!spInstance.IsNull()) {
+                        pRoot-&gt;m_mapSingletons[descriptor.GetServiceType()] = spInstance;</span>
+
+                        // Track IDisposable
+<span style = "background-color:#dfd">                        auto spDisposable = spInstance.DynamicCast&lt;DotNetDupe::System::IO::IDisposable&gt;();
+                        if (!spDisposable.IsNull()) {
+                            pRoot-&gt;m_vDisposables.push_back(spDisposable);</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                    return spInstance;</span>
+                }
+<span style = "background-color:#dfd">                else if (descriptor.GetLifetime() == ServiceLifetime::Scoped) {
+                    if (m_bIsRoot) {
+                        throw DotNetDupe::System::InvalidOperationException("Cannot resolve scoped service from root provider.");</span>
+                    }
+
+<span style = "background-color:#dfd">                    DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);</span>
+
+                    // Check cache
+<span style = "background-color:#dfd">                    auto it = m_mapScoped.find(descriptor.GetServiceType());
+                    if (it != m_mapScoped.end()) {
+                        return it-&gt;second;</span>
+                    }
+
+                    // Create
+<span style = "background-color:#dfd">                    DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; spInstance;
+                    if (descriptor.GetFactory()) {
+                        auto spProxy = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt;(</span>
+                            DotNetDupe::System::SmartPointer&lt;ServiceProviderProxy&gt;::NewShared(this)
+                        );
+<span style = "background-color:#dfd">                        spInstance = descriptor.GetFactory()(spProxy);
+                    }</span>
+
+<span style = "background-color:#dfd">                    if (!spInstance.IsNull()) {
+                        m_mapScoped[descriptor.GetServiceType()] = spInstance;</span>
+
+                        // Track IDisposable
+<span style = "background-color:#dfd">                        auto spDisposable = spInstance.DynamicCast&lt;DotNetDupe::System::IO::IDisposable&gt;();
+                        if (!spDisposable.IsNull()) {
+                            m_vDisposables.push_back(spDisposable);</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                    return spInstance;</span>
+                }
+                else {
+                    // Transient
+<span style = "background-color:#dfd">                    DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt; spInstance;
+                    if (descriptor.GetFactory()) {
+                        auto spProxy = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt;(</span>
+                            DotNetDupe::System::SmartPointer&lt;ServiceProviderProxy&gt;::NewShared(this)
+                        );
+<span style = "background-color:#dfd">                        spInstance = descriptor.GetFactory()(spProxy);
+                    }</span>
+
+<span style = "background-color:#dfd">                    if (!spInstance.IsNull()) {</span>
+                        // Track transient disposables in the resolving provider to clean up on Dispose
+<span style = "background-color:#dfd">                        auto spDisposable = spInstance.DynamicCast&lt;DotNetDupe::System::IO::IDisposable&gt;();
+                        if (!spDisposable.IsNull()) {</span>
+<span style = "background-color:#fdd">                            DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
+                            m_vDisposables.push_back(spDisposable);
+                        }</span>
+<span style = "background-color:#dfd">                    }
+                    return spInstance;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void ServiceProvider::Dispose() {
+                DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);</span>
+
+                // Dispose in reverse order of registration
+<span style = "background-color:#dfd">                for (auto it = m_vDisposables.rbegin(); it != m_vDisposables.rend(); ++it) {
+                    if (!it-&gt;IsNull()) {
+                        (*it)-&gt;Dispose();</span>
+                    }
+                }
+<span style = "background-color:#dfd">                m_vDisposables.clear();</span>
+
+<span style = "background-color:#dfd">                m_mapSingletons.clear();
+                m_mapScoped.clear();
+            }</span>
+
+            // --- ServiceScope Implementation ---
+
+            ServiceScope::ServiceScope(DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt; spProvider)
+<span style = "background-color:#fdd">                : m_spProvider(std::move(spProvider)) {}</span>
+
+<span style = "background-color:#fdd">            ServiceScope::~ServiceScope() {
+                Dispose();
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; ServiceScope::GetServiceProvider() const {
+                return m_spProvider;
+            }</span>
+
+<span style = "background-color:#fdd">            void ServiceScope::Dispose() {
+                if (!m_spProvider.IsNull()) {
+                    m_spProvider-&gt;Dispose();
+                    m_spProvider = nullptr;</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+            // --- ServiceScopeFactory Implementation ---
+
+            ServiceScopeFactory::ServiceScopeFactory(ServiceProvider* pProvider)
+<span style = "background-color:#fdd">                : m_pProvider(pProvider) {}</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;IServiceScope&gt; ServiceScopeFactory::CreateScope() {
+                auto spScopedProvider = DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt;::NewShared(m_pProvider);
+                auto spScope = DotNetDupe::System::SmartPointer&lt;ServiceScope&gt;::NewShared(std::move(spScopedProvider));
+                return DotNetDupe::System::SmartPointer&lt;IServiceScope&gt;(spScope);
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

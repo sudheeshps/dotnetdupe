@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ConvertTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Convert.h"
+#include "System/OverflowException.h"
+#include "System/FormatException.h"
+
+using namespace DotNetDupe::System;
+
+namespace DotNetDupeTests {
+
+    // --- Boolean Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToBoolean_Given_ValidStrings_When_Converted_Then_ReturnsCorrectBool) {</span>
+        // Given
+<span style = "background-color:#dfd">        String trueStr("True");
+        String falseStr("False");</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(Convert::ToBoolean(trueStr));
+        EXPECT_FALSE(Convert::ToBoolean(falseStr));
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToBoolean_Given_NumericValues_When_Converted_Then_ReturnsCorrectBool) {</span>
+        // Given
+        int one = 1;
+        int zero = 0;
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(Convert::ToBoolean(one));
+        EXPECT_FALSE(Convert::ToBoolean(zero));
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToBoolean_Given_InvalidString_When_Converted_Then_ThrowsFormatException) {</span>
+        // Given
+<span style = "background-color:#dfd">        String invalid("not-a-bool");</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToBoolean(invalid), FormatException);
+    }</span>
+
+    // --- Byte Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToByte_Given_ValidNumeric_When_Converted_Then_ReturnsByte) {</span>
+        // Given
+        int val = 255;
+
+        // When
+<span style = "background-color:#dfd">        unsigned char result = Convert::ToByte(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(result, 255);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToByte_Given_OutOfRangeNumeric_When_Converted_Then_ThrowsOverflowException) {</span>
+        // Given
+        int outOfRangeLarge = 256;
+        int outOfRangeSmall = -1;
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToByte(outOfRangeLarge), OverflowException);
+        EXPECT_THROW(Convert::ToByte(outOfRangeSmall), OverflowException);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToByte_Given_StringWithBase_When_Converted_Then_ReturnsCorrectByte) {</span>
+        // Given
+<span style = "background-color:#dfd">        String hex("FF");</span>
+
+        // When
+<span style = "background-color:#dfd">        unsigned char result = Convert::ToByte(hex, 16);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(result, 255);
+    }</span>
+
+    // --- Int32 Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToInt32_Given_ValidString_When_Converted_Then_ReturnsInt) {</span>
+        // Given
+<span style = "background-color:#dfd">        String val("12345");</span>
+
+        // When
+<span style = "background-color:#dfd">        int result = Convert::ToInt32(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(result, 12345);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToInt32_Given_InvalidFormat_When_Converted_Then_ThrowsFormatException) {</span>
+        // Given
+<span style = "background-color:#dfd">        String invalid("abc");</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToInt32(invalid), FormatException);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToInt32_Given_LargeLong_When_Converted_Then_ThrowsOverflowException) {</span>
+        // Given
+        long long outOfRangeLarge = 2147483648LL;
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToInt32(outOfRangeLarge), OverflowException);
+    }</span>
+
+    // --- Double/Single Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToDouble_Given_ValidString_When_Converted_Then_ReturnsDouble) {</span>
+        // Given
+<span style = "background-color:#dfd">        String val("123.45");</span>
+
+        // When
+<span style = "background-color:#dfd">        double result = Convert::ToDouble(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_DOUBLE_EQ(result, 123.45);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToSingle_Given_ValidString_When_Converted_Then_ReturnsFloat) {</span>
+        // Given
+<span style = "background-color:#dfd">        String val("12.34");</span>
+
+        // When
+<span style = "background-color:#dfd">        float result = Convert::ToSingle(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_FLOAT_EQ(result, 12.34f);
+    }</span>
+
+    // --- Char Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToChar_Given_ValidString_When_Converted_Then_ReturnsChar) {</span>
+        // Given
+<span style = "background-color:#dfd">        String val("A");</span>
+
+        // When
+<span style = "background-color:#dfd">        char result = Convert::ToChar(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(result, 'A');
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToChar_Given_InvalidStringLength_When_Converted_Then_ThrowsFormatException) {</span>
+        // Given
+<span style = "background-color:#dfd">        String invalid("ABC");</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToChar(invalid), FormatException);
+    }</span>
+
+    // --- ToString Tests ---
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToString_Given_Numeric_When_Converted_Then_ReturnsCorrectString) {</span>
+        // Given
+        int val = 123;
+
+        // When
+<span style = "background-color:#dfd">        String result = Convert::ToString(val);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(result == "123");
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToString_Given_Int_When_ConvertedWithBase_Then_ReturnsCorrectString) {</span>
+        // Given
+        int val = 255;
+
+        // When
+<span style = "background-color:#dfd">        String hex = Convert::ToString(val, 16);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(hex == "FF");
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ConvertTest, ToString_Given_InvalidBase_When_Converted_Then_ThrowsArgumentException) {</span>
+        // Given
+        int val = 255;
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_THROW(Convert::ToString(val, 3), ArgumentException);
+    }</span>
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,150 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ListTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Collections/Generic/List.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+
+namespace DotNetDupeTests {
+
+<span style = "background-color:#dfd">    TEST(ListTest, Add_Given_Items_When_Called_Then_CountIncreases) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list;</span>
+
+        // When
+<span style = "background-color:#dfd">        list.Add(1);
+        list.Add(2);
+        list.Add(3);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(list.GetCount(), 3);
+        EXPECT_EQ(list[0], 1);
+        EXPECT_EQ(list[2], 3);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, InitializerList_Given_Values_When_Constructed_Then_PopulatesList) {</span>
+        // Given &amp; When
+<span style = "background-color:#dfd">        List&lt;String&gt; list = { "A", "B", "C" };</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(list.GetCount(), 3);
+        EXPECT_TRUE(list[1] == "B");
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, Remove_Given_ExistingItem_When_Called_Then_RemovesItemAndReturnsTrue) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list = { 1, 2, 3 };</span>
+
+        // When
+<span style = "background-color:#dfd">        bool removed = list.Remove(2);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(removed);
+        EXPECT_EQ(list.GetCount(), 2);
+        EXPECT_EQ(list[1], 3);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, Contains_Given_Item_When_Checked_Then_ReturnsCorrectResult) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list = { 1, 2, 3 };</span>
+
+        // When &amp; Then
+<span style = "background-color:#dfd">        EXPECT_TRUE(list.Contains(2));
+        EXPECT_FALSE(list.Contains(4));
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, Sort_Given_UnorderedList_When_Called_Then_SortsItems) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list = { 3, 1, 2 };</span>
+
+        // When
+<span style = "background-color:#dfd">        list.Sort();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(list[0], 1);
+        EXPECT_EQ(list[1], 2);
+        EXPECT_EQ(list[2], 3);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, ToArray_When_Called_Then_ReturnsDotNetArray) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list = { 1, 2, 3 };</span>
+
+        // When
+<span style = "background-color:#dfd">        auto arr = list.ToArray();</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(arr.GetLength(), 3);
+        EXPECT_EQ(arr[1], 2);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, RangeBasedFor_When_Used_Then_IteratesCorrectly) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; list = { 10, 20, 30 };
+        int sum = 0;</span>
+
+        // When
+<span style = "background-color:#dfd">        for (int val : list) {
+            sum += val;</span>
+        }
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(sum, 60);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, MoveConstructor_Given_List_When_Moved_Then_TransfersOwnership) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; source = { 1, 2, 3 };</span>
+
+        // When
+<span style = "background-color:#dfd">        List&lt;int&gt; destination(std::move(source));</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(destination.GetCount(), 3);
+        EXPECT_EQ(destination[0], 1);
+        EXPECT_EQ(destination[2], 3);
+        EXPECT_EQ(source.GetCount(), 0);
+    }</span>
+
+<span style = "background-color:#dfd">    TEST(ListTest, MoveAssignment_Given_List_When_MoveAssigned_Then_TransfersOwnership) {</span>
+        // Given
+<span style = "background-color:#dfd">        List&lt;int&gt; source = { 10, 20, 30 };
+        List&lt;int&gt; destination;</span>
+
+        // When
+<span style = "background-color:#dfd">        destination = std::move(source);</span>
+
+        // Then
+<span style = "background-color:#dfd">        EXPECT_EQ(destination.GetCount(), 3);
+        EXPECT_EQ(destination[0], 10);
+        EXPECT_EQ(destination[2], 30);
+        EXPECT_EQ(source.GetCount(), 0);
+    }</span>
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ConcurrentCollectionsTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Collections/Concurrent/ConcurrentDictionary.h"
+#include "System/Collections/Concurrent/ConcurrentQueue.h"
+#include "System/Collections/Concurrent/ConcurrentStack.h"
+#include "System/Collections/Concurrent/ConcurrentBag.h"
+#include "System/Collections/Concurrent/BlockingCollection.h"
+#include "System/Threading/Thread.h"
+#include "System/String.h"
+#include &lt;vector&gt;
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Concurrent;
+using namespace DotNetDupe::System::Threading;
+
+namespace SystemTests {
+    namespace ConcurrentCollectionsTestCases {
+
+<span style = "background-color:#dfd">        TEST(ConcurrentDictionaryTest, TryAdd_TryGetValue_TryRemove_WorkCorrectly) {
+            ConcurrentDictionary&lt;String, int&gt; dict;
+            EXPECT_TRUE(dict.TryAdd("Key1", 100));
+            EXPECT_FALSE(dict.TryAdd("Key1", 200));</span>
+
+<span style = "background-color:#dfd">            int iVal = 0;
+            EXPECT_TRUE(dict.TryGetValue("Key1", iVal));
+            EXPECT_EQ(iVal, 100);</span>
+
+<span style = "background-color:#dfd">            EXPECT_TRUE(dict.TryRemove("Key1", iVal));
+            EXPECT_EQ(iVal, 100);
+            EXPECT_FALSE(dict.TryGetValue("Key1", iVal));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ConcurrentDictionaryTest, Multithreaded_AddAndGet_IsThreadSafe) {
+            ConcurrentDictionary&lt;int, int&gt; dict;</span>
+            const int iThreadCount = 4;
+            const int iItemsPerThread = 250;
+
+<span style = "background-color:#dfd">            std::vector&lt;Thread*&gt; vThreads;
+            for (int t = 0; t &lt; iThreadCount; t++) {
+                vThreads.push_back(new Thread([&amp;dict, t, iItemsPerThread]() {</span>
+                    for (int i = 0; i &lt; iItemsPerThread; i++) {
+                        dict.TryAdd(t * iItemsPerThread + i, i);
+                    }
+                }));
+            }
+
+<span style = "background-color:#dfd">            for (auto pThread : vThreads) {
+                pThread-&gt;Start();</span>
+            }
+<span style = "background-color:#dfd">            for (auto pThread : vThreads) {
+                pThread-&gt;Join();
+                delete pThread;</span>
+            }
+
+<span style = "background-color:#dfd">            EXPECT_EQ(dict.GetCount(), iThreadCount * iItemsPerThread);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ConcurrentQueueTest, Enqueue_TryDequeue_TryPeek_WorkCorrectly) {
+            ConcurrentQueue&lt;int&gt; queue;
+            queue.Enqueue(10);
+            queue.Enqueue(20);</span>
+
+<span style = "background-color:#dfd">            int iPeek = 0;
+            EXPECT_TRUE(queue.TryPeek(iPeek));
+            EXPECT_EQ(iPeek, 10);</span>
+
+<span style = "background-color:#dfd">            int iVal = 0;
+            EXPECT_TRUE(queue.TryDequeue(iVal));
+            EXPECT_EQ(iVal, 10);
+            EXPECT_TRUE(queue.TryDequeue(iVal));
+            EXPECT_EQ(iVal, 20);
+            EXPECT_FALSE(queue.TryDequeue(iVal));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ConcurrentStackTest, Push_TryPop_TryPeek_WorkCorrectly) {
+            ConcurrentStack&lt;int&gt; stack;
+            stack.Push(10);
+            stack.Push(20);</span>
+
+<span style = "background-color:#dfd">            int iPeek = 0;
+            EXPECT_TRUE(stack.TryPeek(iPeek));
+            EXPECT_EQ(iPeek, 20);</span>
+
+<span style = "background-color:#dfd">            int iVal = 0;
+            EXPECT_TRUE(stack.TryPop(iVal));
+            EXPECT_EQ(iVal, 20);
+            EXPECT_TRUE(stack.TryPop(iVal));
+            EXPECT_EQ(iVal, 10);
+            EXPECT_FALSE(stack.TryPop(iVal));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ConcurrentBagTest, Add_TryTake_WorkCorrectly) {
+            ConcurrentBag&lt;int&gt; bag;
+            bag.Add(1);
+            bag.Add(2);
+            EXPECT_EQ(bag.GetCount(), 2);</span>
+
+            int iVal = 0;
+<span style = "background-color:#dfd">            EXPECT_TRUE(bag.TryTake(iVal));
+            EXPECT_TRUE(bag.TryTake(iVal));
+            EXPECT_FALSE(bag.TryTake(iVal));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(BlockingCollectionTest, Add_Take_ProducerConsumer_WorksCorrectly) {
+            BlockingCollection&lt;int&gt; collection(5);</span>
+
+<span style = "background-color:#dfd">            Thread producer([&amp;collection]() {</span>
+                for (int i = 1; i &lt;= 10; i++) {
+                    collection.Add(i);
+                }
+                collection.CompleteAdding();
+            });
+
+<span style = "background-color:#dfd">            producer.Start();</span>
+
+<span style = "background-color:#dfd">            int iSum = 0;</span>
+            int iVal = 0;
+<span style = "background-color:#dfd">            while (collection.TryTake(iVal, -1)) {
+                iSum += iVal;</span>
+            }
+
+<span style = "background-color:#dfd">            producer.Join();</span>
+
+<span style = "background-color:#dfd">            EXPECT_EQ(iSum, 55);
+            EXPECT_TRUE(collection.IsCompleted());
+        }</span>
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

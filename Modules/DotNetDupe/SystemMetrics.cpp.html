@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SystemMetrics.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Diagnostics/SystemMetrics.h"
+#include "System/Utils/StringConvert.h"
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+
+#if defined(_WIN32)
+#include &lt;winsock2.h&gt;
+#include &lt;ws2tcpip.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;winternl.h&gt;
+#include &lt;tlhelp32.h&gt;
+#include &lt;psapi.h&gt;
+#include &lt;iphlpapi.h&gt;
+#include &lt;pdh.h&gt;
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "psapi.lib")
+#pragma comment(lib, "pdh.lib")
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+<span style = "background-color:#fdd">            SystemMetrics::SystemMetrics() {}
+            SystemMetrics::~SystemMetrics() {}</span>
+
+#if defined(_WIN32)
+            struct ProcessCpuSample {
+                uint64_t uProcessTime;
+                uint64_t uSystemTime;
+            };
+<span style = "background-color:#dfd">            static std::map&lt;int, ProcessCpuSample&gt; s_mapProcessCpuSamples;</span>
+
+            void SystemMetrics::ReadWin32Memory(RealTimeSystemInfo&amp; data) {
+                MEMORYSTATUSEX memStatus;
+                memStatus.dwLength = sizeof(MEMORYSTATUSEX);
+
+                if (::GlobalMemoryStatusEx(&amp;memStatus)) {
+                    data.dMemoryUsagePercent = static_cast&lt;double&gt;(memStatus.dwMemoryLoad);
+                    data.uMemoryTotalBytes = static_cast&lt;unsigned long long&gt;(memStatus.ullTotalPhys);
+                    data.uMemoryUsedBytes = static_cast&lt;unsigned long long&gt;(memStatus.ullTotalPhys - memStatus.ullAvailPhys);
+                }
+            }
+
+            void SystemMetrics::ReadWin32Cpu(RealTimeSystemInfo&amp; data) {
+                static uint64_t s_uPrevIdle = 0, s_uPrevTotal = 0;
+                FILETIME ftIdle, ftKernel, ftUser;
+
+                if (::GetSystemTimes(&amp;ftIdle, &amp;ftKernel, &amp;ftUser)) {
+                    uint64_t uIdle = (static_cast&lt;uint64_t&gt;(ftIdle.dwHighDateTime) &lt;&lt; 32) | ftIdle.dwLowDateTime;
+                    uint64_t uKernel = (static_cast&lt;uint64_t&gt;(ftKernel.dwHighDateTime) &lt;&lt; 32) | ftKernel.dwLowDateTime;
+                    uint64_t uUser = (static_cast&lt;uint64_t&gt;(ftUser.dwHighDateTime) &lt;&lt; 32) | ftUser.dwLowDateTime;
+                    uint64_t uTotal = uKernel + uUser;
+
+                    if (s_uPrevTotal &gt; 0 &amp;&amp; uTotal &gt; s_uPrevTotal) {
+                        uint64_t uTotalDiff = uTotal - s_uPrevTotal;
+                        uint64_t uIdleDiff = uIdle - s_uPrevIdle;
+                        data.dCpuUsagePercent = static_cast&lt;double&gt;((uTotalDiff - uIdleDiff) * 100.0 / uTotalDiff);
+                    } else if (uTotal &gt; 0) {
+                        data.dCpuUsagePercent = static_cast&lt;double&gt;((uTotal - uIdle) * 100.0 / uTotal);
+                    }
+
+                    if (data.dCpuUsagePercent &lt; 0.0) data.dCpuUsagePercent = 0.0;
+                    if (data.dCpuUsagePercent &gt; 100.0) data.dCpuUsagePercent = 100.0;
+
+                    s_uPrevIdle = uIdle;
+                    s_uPrevTotal = uTotal;
+                }
+            }
+
+            void SystemMetrics::ReadWin32Disk(RealTimeSystemInfo&amp; data) {
+                data.uDiskReadBytes = 0;
+                data.uDiskWriteBytes = 0;
+                static HQUERY s_hQuery = NULL;
+                static HCOUNTER s_hCounterRead = NULL;
+                static HCOUNTER s_hCounterWrite = NULL;
+                static bool s_bPdhInitialized = false;
+
+                if (!s_bPdhInitialized) {
+                    if (::PdhOpenQueryW(NULL, 0, &amp;s_hQuery) == ERROR_SUCCESS) {
+                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec", 0, &amp;s_hCounterRead);
+                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec", 0, &amp;s_hCounterWrite);
+                        ::PdhCollectQueryData(s_hQuery);
+                        s_bPdhInitialized = true;
+                    }
+                }
+
+                if (s_bPdhInitialized &amp;&amp; s_hQuery != NULL) {
+                    if (::PdhCollectQueryData(s_hQuery) == ERROR_SUCCESS) {
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+                        if (::PdhGetFormattedCounterValue(s_hCounterRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)
+                            data.uDiskReadBytes = static_cast&lt;unsigned long long&gt;(fmtRead.largeValue);
+
+                        if (::PdhGetFormattedCounterValue(s_hCounterWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)
+                            data.uDiskWriteBytes = static_cast&lt;unsigned long long&gt;(fmtWrite.largeValue);
+                    }
+                }
+            }
+
+            void SystemMetrics::ReadWin32Network(RealTimeSystemInfo&amp; data) {
+                static uint64_t s_uPrevOctets = 0;
+                static DWORD s_dwPrevTick = 0;
+                DWORD dwSize = 0;
+
+                if (::GetIfTable(NULL, &amp;dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
+                    std::vector&lt;uint8_t&gt; ifTableBuffer(dwSize, 0);
+                    MIB_IFTABLE* pIfTable = reinterpret_cast&lt;MIB_IFTABLE*&gt;(ifTableBuffer.data());
+
+                    if (::GetIfTable(pIfTable, &amp;dwSize, FALSE) == NO_ERROR) {
+                        uint64_t totalOctets = 0;
+
+                        for (DWORD i = 0; i &lt; pIfTable-&gt;dwNumEntries; ++i) {
+                            if (pIfTable-&gt;table[i].dwType != IF_TYPE_SOFTWARE_LOOPBACK &amp;&amp; pIfTable-&gt;table[i].dwOperStatus == IF_OPER_STATUS_OPERATIONAL)
+                                totalOctets += pIfTable-&gt;table[i].dwInOctets + pIfTable-&gt;table[i].dwOutOctets;
+                        }
+
+                        DWORD dwNow = ::GetTickCount();
+
+                        if (s_dwPrevTick &gt; 0 &amp;&amp; dwNow &gt; s_dwPrevTick &amp;&amp; totalOctets &gt;= s_uPrevOctets) {
+                            double dElapsedSec = (dwNow - s_dwPrevTick) / 1000.0;
+                            double dBytesPerSec = (totalOctets - s_uPrevOctets) / dElapsedSec;
+                            data.dNetworkUsageMbps = (dBytesPerSec * 8.0) / 1000000.0;
+                        }
+
+                        s_uPrevOctets = totalOctets;
+                        s_dwPrevTick = dwNow;
+                    }
+                }
+            }
+
+<span style = "background-color:#dfd">            void SystemMetrics::ReadProcessCommandLine(void* hProc, void* pPebBaseAddress, ProcessResourceInfo&amp; proc, bool&amp; bCmdRead) {</span>
+                typedef NTSTATUS(NTAPI* pfnNtQueryInformationProcess)(HANDLE, ULONG, PVOID, ULONG, PULONG);
+<span style = "background-color:#dfd">                HMODULE hNtDll = ::GetModuleHandleW(L"ntdll.dll");
+                pfnNtQueryInformationProcess fnNtQuery = hNtDll ? (pfnNtQueryInformationProcess)::GetProcAddress(hNtDll, "NtQueryInformationProcess") : NULL;</span>
+
+<span style = "background-color:#dfd">                if (fnNtQuery) {</span>
+                    PROCESS_BASIC_INFORMATION pbi;
+<span style = "background-color:#dfd">                    DWORD dwLen = 0;</span>
+
+<span style = "background-color:#dfd">                    if (fnNtQuery(static_cast&lt;HANDLE&gt;(hProc), 0, &amp;pbi, sizeof(pbi), &amp;dwLen) == 0 &amp;&amp; pbi.PebBaseAddress) {</span>
+                        PEB peb;
+<span style = "background-color:#dfd">                        SIZE_T bytesRead = 0;</span>
+
+<span style = "background-color:#dfd">                        if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), pbi.PebBaseAddress, &amp;peb, sizeof(peb), &amp;bytesRead)) {</span>
+                            RTL_USER_PROCESS_PARAMETERS upp;
+
+<span style = "background-color:#dfd">                            if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), peb.ProcessParameters, &amp;upp, sizeof(upp), &amp;bytesRead) &amp;&amp; upp.CommandLine.Buffer &amp;&amp; upp.CommandLine.Length &gt; 0) {
+                                std::vector&lt;wchar_t&gt; wCmd(upp.CommandLine.Length / sizeof(wchar_t) + 1, 0);</span>
+
+<span style = "background-color:#dfd">                                if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), upp.CommandLine.Buffer, wCmd.data(), upp.CommandLine.Length, &amp;bytesRead)) {
+                                    proc.sCommandLine = String(wCmd.data());
+                                    bCmdRead = true;</span>
+                                }
+<span style = "background-color:#dfd">                            }</span>
+                        }
+                    }
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::ReadProcessIoAndTimes(void* hProc, ProcessResourceInfo&amp; proc) {
+                std::string sStdProc(proc.sName.GetRawString() ? proc.sName.GetRawString() : "");
+                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
+                size_t nExtPos = wProcName.rfind(L'.');</span>
+
+<span style = "background-color:#dfd">                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);</span>
+
+<span style = "background-color:#dfd">                std::wstring wReadCounterPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
+                std::wstring wWriteCounterPath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";</span>
+
+<span style = "background-color:#dfd">                HQUERY hProcQuery = NULL;
+                HCOUNTER hProcRead = NULL, hProcWrite = NULL;</span>
+
+<span style = "background-color:#dfd">                if (::PdhOpenQueryW(NULL, 0, &amp;hProcQuery) == ERROR_SUCCESS) {
+                    bool bReadOk = (::PdhAddEnglishCounterW(hProcQuery, wReadCounterPath.c_str(), 0, &amp;hProcRead) == ERROR_SUCCESS);
+                    bool bWriteOk = (::PdhAddEnglishCounterW(hProcQuery, wWriteCounterPath.c_str(), 0, &amp;hProcWrite) == ERROR_SUCCESS);</span>
+
+<span style = "background-color:#dfd">                    if (::PdhCollectQueryData(hProcQuery) == ERROR_SUCCESS) {</span>
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+<span style = "background-color:#dfd">                        if (bReadOk &amp;&amp; ::PdhGetFormattedCounterValue(hProcRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            proc.lDiskReadBytes = static_cast&lt;long long&gt;(fmtRead.largeValue);</span>
+
+<span style = "background-color:#dfd">                        if (bWriteOk &amp;&amp; ::PdhGetFormattedCounterValue(hProcWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            proc.lDiskWriteBytes = static_cast&lt;long long&gt;(fmtWrite.largeValue);</span>
+                    }
+
+<span style = "background-color:#dfd">                    ::PdhCloseQuery(hProcQuery);</span>
+                }
+
+<span style = "background-color:#dfd">                if (proc.lDiskReadBytes == -1 || proc.lDiskWriteBytes == -1) {</span>
+                    IO_COUNTERS io;
+
+<span style = "background-color:#dfd">                    if (::GetProcessIoCounters(static_cast&lt;HANDLE&gt;(hProc), &amp;io)) {
+                        if (proc.lDiskReadBytes == -1) proc.lDiskReadBytes = static_cast&lt;long long&gt;(io.ReadTransferCount);
+                        if (proc.lDiskWriteBytes == -1) proc.lDiskWriteBytes = static_cast&lt;long long&gt;(io.WriteTransferCount);</span>
+                    }
+                }
+
+                FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser;
+
+<span style = "background-color:#dfd">                if (::GetProcessTimes(static_cast&lt;HANDLE&gt;(hProc), &amp;ftCreate, &amp;ftExit, &amp;ftKernel, &amp;ftUser) &amp;&amp; ::GetSystemTimes(&amp;ftSysIdle, &amp;ftSysKernel, &amp;ftSysUser)) {
+                    uint64_t uProcTime = ((static_cast&lt;uint64_t&gt;(ftKernel.dwHighDateTime) &lt;&lt; 32) | ftKernel.dwLowDateTime) +</span>
+                                         ((static_cast&lt;uint64_t&gt;(ftUser.dwHighDateTime) &lt;&lt; 32) | ftUser.dwLowDateTime);
+<span style = "background-color:#dfd">                    uint64_t uSysTime = ((static_cast&lt;uint64_t&gt;(ftSysKernel.dwHighDateTime) &lt;&lt; 32) | ftSysKernel.dwLowDateTime) +</span>
+                                        ((static_cast&lt;uint64_t&gt;(ftSysUser.dwHighDateTime) &lt;&lt; 32) | ftSysUser.dwLowDateTime);
+
+<span style = "background-color:#dfd">                    auto it = s_mapProcessCpuSamples.find(proc.iProcessId);</span>
+
+<span style = "background-color:#dfd">                    if (it != s_mapProcessCpuSamples.end() &amp;&amp; uSysTime &gt; it-&gt;second.uSystemTime &amp;&amp; uProcTime &gt;= it-&gt;second.uProcessTime) {</span>
+<span style = "background-color:#fdd">                        uint64_t uProcDiff = uProcTime - it-&gt;second.uProcessTime;
+                        uint64_t uSysDiff = uSysTime - it-&gt;second.uSystemTime;
+                        double dCpu = (static_cast&lt;double&gt;(uProcDiff) * 100.0 / static_cast&lt;double&gt;(uSysDiff));</span>
+
+<span style = "background-color:#fdd">                        if (dCpu &gt; 100.0) dCpu = 100.0;
+                        if (dCpu &lt; 0.0) dCpu = 0.0;</span>
+
+                        proc.dCpuUsagePercent = dCpu;
+<span style = "background-color:#fdd">                    } else {</span>
+                        proc.dCpuUsagePercent = 0.0;
+                    }
+
+<span style = "background-color:#dfd">                    s_mapProcessCpuSamples[proc.iProcessId] = { uProcTime, uSysTime };</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::ReadProcessNetwork(void* hProc, ProcessResourceInfo&amp; proc) {
+                proc.lNetworkReadBytes = -1;
+                proc.lNetworkWriteBytes = -1;</span>
+
+<span style = "background-color:#dfd">                std::string sStdProc(proc.sName.GetRawString() ? proc.sName.GetRawString() : "");
+                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
+                size_t nExtPos = wProcName.rfind(L'.');</span>
+
+<span style = "background-color:#dfd">                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);</span>
+
+<span style = "background-color:#dfd">                std::wstring wReadPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
+                std::wstring wWritePath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";</span>
+
+<span style = "background-color:#dfd">                HQUERY hQuery = NULL;
+                HCOUNTER hCounterRead = NULL, hCounterWrite = NULL;</span>
+
+<span style = "background-color:#dfd">                if (::PdhOpenQueryW(NULL, 0, &amp;hQuery) == ERROR_SUCCESS) {
+                    bool bReadOk = (::PdhAddEnglishCounterW(hQuery, wReadPath.c_str(), 0, &amp;hCounterRead) == ERROR_SUCCESS);
+                    bool bWriteOk = (::PdhAddEnglishCounterW(hQuery, wWritePath.c_str(), 0, &amp;hCounterWrite) == ERROR_SUCCESS);</span>
+
+<span style = "background-color:#dfd">                    if (::PdhCollectQueryData(hQuery) == ERROR_SUCCESS) {</span>
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+<span style = "background-color:#dfd">                        if (bReadOk &amp;&amp; ::PdhGetFormattedCounterValue(hCounterRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            proc.lNetworkReadBytes = static_cast&lt;long long&gt;(fmtRead.largeValue);</span>
+
+<span style = "background-color:#dfd">                        if (bWriteOk &amp;&amp; ::PdhGetFormattedCounterValue(hCounterWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            proc.lNetworkWriteBytes = static_cast&lt;long long&gt;(fmtWrite.largeValue);</span>
+                    }
+
+<span style = "background-color:#dfd">                    ::PdhCloseQuery(hQuery);</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::ReadProcessPortsAndConnections(int iProcessId, ProcessResourceInfo&amp; proc) {
+                proc.bHasEstablishedInboundConnection = false;
+                DWORD dwSize = 0;</span>
+
+<span style = "background-color:#dfd">                if (::GetExtendedTcpTable(NULL, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
+                    std::vector&lt;uint8_t&gt; tcpTableBuffer(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTcpTable = reinterpret_cast&lt;MIB_TCPTABLE_OWNER_PID*&gt;(tcpTableBuffer.data());</span>
+
+<span style = "background-color:#dfd">                    if (::GetExtendedTcpTable(pTcpTable, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                        for (DWORD i = 0; i &lt; pTcpTable-&gt;dwNumEntries; ++i) {
+                            if (pTcpTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iProcessId)) {
+                                if (pTcpTable-&gt;table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                                    int iPort = ntohs(static_cast&lt;u_short&gt;(pTcpTable-&gt;table[i].dwLocalPort));
+                                    if (!proc.lstOpenPorts.Contains(iPort)) {
+                                        proc.lstOpenPorts.Add(iPort);
+                                    }
+                                } else if (pTcpTable-&gt;table[i].dwState == MIB_TCP_STATE_ESTAB) {
+                                    proc.bHasEstablishedInboundConnection = true;</span>
+                                }
+                            }
+                        }
+                    }
+<span style = "background-color:#dfd">                }
+            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessResourceInfo&amp; proc) {</span>
+                PROCESSENTRY32W* pe32 = static_cast&lt;PROCESSENTRY32W*&gt;(pEntry32);
+<span style = "background-color:#dfd">                proc.iProcessId = pe32-&gt;th32ProcessID;
+                proc.dCpuUsagePercent = -1.0;
+                proc.lMemoryUsageBytes = -1;
+                proc.lDiskReadBytes = -1;
+                proc.lDiskWriteBytes = -1;
+                proc.lNetworkReadBytes = -1;
+                proc.lNetworkWriteBytes = -1;
+                proc.bHasEstablishedInboundConnection = false;
+                proc.sName = String(pe32-&gt;szExeFile);</span>
+
+<span style = "background-color:#dfd">                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32-&gt;th32ProcessID);</span>
+
+<span style = "background-color:#dfd">                if (hProc != NULL) {
+                    WCHAR szPath[MAX_PATH] = { 0 };
+                    DWORD dwPathLen = MAX_PATH;</span>
+
+<span style = "background-color:#dfd">                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwPathLen)) {
+                        proc.sPath = String(szPath);</span>
+                    }
+
+<span style = "background-color:#dfd">                    bool bCmdRead = false;
+                    ReadProcessCommandLine(hProc, NULL, proc, bCmdRead);</span>
+
+<span style = "background-color:#dfd">                    if (!bCmdRead) proc.sCommandLine = proc.sPath;</span>
+
+                    PROCESS_MEMORY_COUNTERS pmc;
+
+<span style = "background-color:#dfd">                    if (::GetProcessMemoryInfo(hProc, &amp;pmc, sizeof(pmc)))
+                        proc.lMemoryUsageBytes = static_cast&lt;long long&gt;(pmc.WorkingSetSize);</span>
+
+<span style = "background-color:#dfd">                    ReadProcessIoAndTimes(hProc, proc);
+                    ReadProcessNetwork(hProc, proc);</span>
+
+<span style = "background-color:#dfd">                    ::CloseHandle(hProc);</span>
+                }
+
+<span style = "background-color:#dfd">                ReadProcessPortsAndConnections(proc.iProcessId, proc);
+            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::ReadWin32TopProcesses(RealTimeSystemInfo&amp; data) {
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);</span>
+
+<span style = "background-color:#dfd">                if (hSnapshot == INVALID_HANDLE_VALUE) return;</span>
+
+                PROCESSENTRY32W pe32;
+<span style = "background-color:#dfd">                pe32.dwSize = sizeof(PROCESSENTRY32W);</span>
+
+<span style = "background-color:#dfd">                if (::Process32FirstW(hSnapshot, &amp;pe32)) {
+                    std::vector&lt;ProcessResourceInfo&gt; tempProcList;</span>
+
+                    do {
+<span style = "background-color:#dfd">                        ProcessResourceInfo proc;
+                        PopulateProcessInfo(&amp;pe32, proc);
+                        tempProcList.push_back(proc);
+                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
+
+<span style = "background-color:#dfd">                    std::sort(tempProcList.begin(), tempProcList.end(), [](const ProcessResourceInfo&amp; a, const ProcessResourceInfo&amp; b) {</span>
+                        return a.dCpuUsagePercent &gt; b.dCpuUsagePercent;
+                    });
+
+<span style = "background-color:#dfd">                    for (size_t i = 0; i &lt; tempProcList.size() &amp;&amp; i &lt; 8; ++i)
+                        data.lstTopProcesses.Add(tempProcList[i]);
+                }</span>
+
+<span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);
+            }</span>
+#endif
+
+<span style = "background-color:#dfd">            RealTimeSystemInfo SystemMetrics::GetSystemMetrics() {
+                RealTimeSystemInfo data;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                ReadWin32Memory(data);
+                ReadWin32Cpu(data);
+                ReadWin32Disk(data);
+                ReadWin32Network(data);
+                ReadWin32TopProcesses(data);</span>
+#endif
+<span style = "background-color:#dfd">                return data;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

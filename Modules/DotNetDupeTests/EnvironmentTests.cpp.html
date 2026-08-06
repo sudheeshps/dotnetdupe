@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>EnvironmentTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Environment.h"
+
+using namespace DotNetDupe::System;
+namespace SystemTests {
+    namespace EnvironmentTests {
+<span style = "background-color:#dfd">        TEST(Environment, GetCurrentDirectory_WhenCalled_ReturnsCurrentDirectory) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto currentDirectory = Environment::GetCurrentDirectory();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(currentDirectory.IsEmpty());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetSystemDirectory_WhenCalled_ReturnsSystemDirectory) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto systemDirectory = Environment::GetSystemDirectory();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(systemDirectory.IsEmpty());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetOSVersion_WhenCalled_ReturnsOSVersion) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto osVersion = Environment::GetOSVersion();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(osVersion.IsEmpty());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetUserDomainName_WhenCalled_ReturnsUserDomainName) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto userDomainName = Environment::GetUserDomainName();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(userDomainName.IsEmpty());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetWorkingSet_WhenCalled_ReturnsWorkingSet) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto workingSet = Environment::GetWorkingSet();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_GT(workingSet, 0);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, ExpandEnvironmentVariables_WhenCalled_ExpandsVariables) {</span>
+            // Given
+#if defined(_WIN32)
+            auto variable = "PATH";
+            auto pattern = "%PATH%";
+#else
+            auto variable = "HOME";
+            auto pattern = "%HOME%";
+#endif
+<span style = "background-color:#dfd">            auto expected = Environment::GetEnvironmentVariable(variable);</span>
+
+            // When
+<span style = "background-color:#dfd">            auto expanded = Environment::ExpandEnvironmentVariables(pattern);</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_EQ(expected, expanded);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetCommandLineArgs_WhenCalled_ReturnsCommandLineArgs) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto commandLineArgs = Environment::GetCommandLineArgs();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(commandLineArgs.IsNull());
+            ASSERT_GT(commandLineArgs.GetLength(), 0);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetEnvironmentVariable_WhenCalled_ReturnsEnvironmentVariable) {</span>
+            // Given
+            auto variable = "DotNetDupe_TestVar";
+<span style = "background-color:#dfd">            auto value = "TestValue";
+            Environment::SetEnvironmentVariable(variable, value);</span>
+
+            // When
+<span style = "background-color:#dfd">            auto result = Environment::GetEnvironmentVariable(variable);</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_EQ(result, value);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetEnvironmentVariables_WhenCalled_ReturnsEnvironmentVariables) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto envVars = Environment::GetEnvironmentVariables();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_GT(envVars.GetCount(), 0);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetFolderPath_WhenCalled_ReturnsFolderPath) {</span>
+            // Given
+#if defined(_WIN32)
+            auto folder = Environment::SpecialFolder::System;
+#else
+            auto folder = Environment::SpecialFolder::UserProfile;
+#endif
+
+            // When
+<span style = "background-color:#dfd">            auto folderPath = Environment::GetFolderPath(folder);</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(folderPath.IsEmpty());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetLogicalDrives_WhenCalled_ReturnsLogicalDrives) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto logicalDrives = Environment::GetLogicalDrives();</span>
+
+            // Then
+<span style = "background-color:#dfd">            ASSERT_FALSE(logicalDrives.IsNull());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, SetEnvironmentVariable_WhenCalled_SetsEnvironmentVariable) {</span>
+            // Given
+            auto variable = "TestVar";
+<span style = "background-color:#dfd">            auto value = "TestValue";</span>
+
+            // When
+<span style = "background-color:#dfd">            Environment::SetEnvironmentVariable(variable, value);</span>
+
+            // Then
+<span style = "background-color:#dfd">            auto result = Environment::GetEnvironmentVariable(variable);
+            ASSERT_EQ(result, value);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(Environment, GetOperatingSystem_WhenCalled_ReturnsOperatingSystem) {</span>
+            // Given
+
+            // When
+<span style = "background-color:#dfd">            auto os = Environment::GetOperatingSystem();</span>
+
+            // Then
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            ASSERT_EQ(os.GetPlatform(), PlatformID::Win32NT);</span>
+#else
+            ASSERT_EQ(os.GetPlatform(), PlatformID::Unix);
+#endif
+<span style = "background-color:#dfd">            ASSERT_TRUE(os.GetVersion().GetMajor() &gt;= 0);
+        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Semaphore.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Threading/Semaphore.h"
+#include "System/Threading/SemaphoreFullException.h"
+#include "System/Threading/WaitHandleCannotBeOpenedException.h"
+#include "System/TimeoutException.h"
+#include "System/Char.h"
+#include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
+#include &lt;chrono&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Threading {
+            Semaphore::Semaphore(int initialCount, int maximumCount)
+<span style = "background-color:#dfd">                : _count(initialCount), _maxCount(maximumCount), _name(""), _hHandle(nullptr) {}</span>
+
+            static bool s_semDummyCreatedNew = false;
+            Semaphore::Semaphore(const String&amp; sName, int initialCount, int maximumCount, bool openAlways)
+<span style = "background-color:#fdd">                : Semaphore(initialCount, maximumCount, sName, openAlways, s_semDummyCreatedNew) {}</span>
+
+            Semaphore::Semaphore(int initialCount, int maximumCount, const String&amp; sName, bool openAlways)
+<span style = "background-color:#dfd">                : Semaphore(initialCount, maximumCount, sName, openAlways, s_semDummyCreatedNew) {}</span>
+
+            Semaphore::Semaphore(int initialCount, int maximumCount, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
+<span style = "background-color:#dfd">                : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
+                    std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
+                    _hHandle = ::CreateSemaphoreW(NULL, initialCount, maximumCount, wsName.c_str());
+                    if (_hHandle != NULL) {
+                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);</span>
+                    } else {
+<span style = "background-color:#fdd">                        bCreatedNew = false;
+                        if (openAlways) {
+                            _hHandle = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                            if (_hHandle == NULL) {
+                                throw WaitHandleCannotBeOpenedException("Failed to open existing semaphore with SYNCHRONIZE access.");</span>
+                            }
+                        } else {
+<span style = "background-color:#fdd">                            throw WaitHandleCannotBeOpenedException("Semaphore creation returned null handle and openAlways is false.");</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                } else {</span>
+<span style = "background-color:#fdd">                    bCreatedNew = true;</span>
+                }
+#else
+                bCreatedNew = true;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Semaphore::~Semaphore() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    ::CloseHandle((HANDLE)_hHandle);
+                    _hHandle = nullptr;</span>
+                }
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Semaphore* Semaphore::OpenExisting(const String&amp; sName) {</span>
+                Semaphore* pResult = nullptr;
+<span style = "background-color:#dfd">                if (TryOpenExisting(sName, pResult)) {
+                    return pResult;</span>
+                }
+<span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No semaphore handle of the given name exists.");
+            }</span>
+
+<span style = "background-color:#dfd">            bool Semaphore::TryOpenExisting(const String&amp; sName, Semaphore*&amp; pResult) {
+                pResult = nullptr;
+                if (sName.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    return false;</span>
+                }
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
+                HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                if (h != NULL) {
+                    SmartPointer&lt;Semaphore&gt; spSem = SmartPointer&lt;Semaphore&gt;::New(0, 1);
+                    spSem-&gt;_name = sName;
+                    spSem-&gt;_hHandle = h;
+                    pResult = spSem.Detach();</span>
+                    return true;
+                }
+<span style = "background-color:#dfd">                return false;</span>
+#else
+                return false;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool Semaphore::WaitOne() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {</span>
+<span style = "background-color:#fdd">                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
+                    return (dwWaitResult == WAIT_OBJECT_0);</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
+                _cv.wait(lock, [this]() { return _count &gt; 0; });
+                --_count;
+                return true;
+            }</span>
+
+<span style = "background-color:#dfd">            bool Semaphore::WaitOne(int millisecondsTimeout) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);
+                    if (dwWaitResult == WAIT_TIMEOUT) {
+                        throw TimeoutException("The wait operation timed out.");</span>
+                    }
+<span style = "background-color:#dfd">                    return (dwWaitResult == WAIT_OBJECT_0);</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
+                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count &gt; 0; });
+                if (result) {
+                    --_count;</span>
+                } else {
+<span style = "background-color:#dfd">                    throw TimeoutException("The wait operation timed out.");</span>
+                }
+<span style = "background-color:#dfd">                return result;
+            }</span>
+
+<span style = "background-color:#dfd">            int Semaphore::Release(int releaseCount) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    LONG previousCount = 0;
+                    if (!::ReleaseSemaphore((HANDLE)_hHandle, releaseCount, &amp;previousCount)) {
+                        throw SemaphoreFullException("Semaphore count exceeded maximum count.");</span>
+                    }
+<span style = "background-color:#dfd">                    return (int)previousCount;</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(_mutex);
+                if (_count + releaseCount &gt; _maxCount) {
+                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");</span>
+                }
+                int prev = _count;
+<span style = "background-color:#dfd">                _count += releaseCount;
+                for (int i = 0; i &lt; releaseCount; ++i) _cv.notify_one();
+                return prev;
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,152 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ArrayTests.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "gtest/gtest.h"
+#include "System/Array.h"
+
+using namespace DotNetDupe::System;
+
+namespace SystemTests {
+    namespace ArrayTests {
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_Length_When_Constructed_Then_ReturnsCorrectLength) {
+            Array&lt;int&gt; arr(5);
+            EXPECT_EQ(5, arr.GetLength());
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_InitializerList_When_Constructed_Then_ReturnsCorrectLengthAndValues) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            EXPECT_EQ(5, arr.GetLength());
+            EXPECT_EQ(1, arr [0]);
+            EXPECT_EQ(5, arr [4]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_Array_When_IndexerUsed_Then_SetsAndGetsValue) {
+            Array&lt;int&gt; arr = { 1, 2, 3 };
+            arr [1] = 10;
+            EXPECT_EQ(10, arr [1]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_ArrayWithValues_When_IndexOfCalledWithValueInArray_Then_ReturnsCorrectIndex) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            EXPECT_EQ(2, arr.IndexOf(3));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_ArrayWithValues_When_IndexOfCalledWithUnavailableValue_Then_ReturnsCorrectIndex) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            EXPECT_EQ(-1, arr.IndexOf(10));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_ArrayWithValues_When_LastIndexOfCalledWithValueInArray_Then_ReturnsCorrectIndex) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 2, 1 };
+            EXPECT_EQ(3, arr.LastIndexOf(2));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_ArrayWithValues_When_LastIndexOfCalledWithUnavailableValue_Then_ReturnsCorrectIndex) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            EXPECT_EQ(-1, arr.LastIndexOf(10));
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_UnsortedArray_When_Sort_Then_ArrayIsSorted) {
+            Array&lt;int&gt; arr = { 5, 2, 4, 1, 3 };
+            arr.Sort();
+            EXPECT_EQ(1, arr [0]);
+            EXPECT_EQ(2, arr [1]);
+            EXPECT_EQ(3, arr [2]);
+            EXPECT_EQ(4, arr [3]);
+            EXPECT_EQ(5, arr [4]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_Array_When_ReverseCalled_Then_ArrayIsReversed) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            arr.Reverse();
+            EXPECT_EQ(5, arr [0]);
+            EXPECT_EQ(4, arr [1]);
+            EXPECT_EQ(3, arr [2]);
+            EXPECT_EQ(2, arr [3]);
+            EXPECT_EQ(1, arr [4]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_ArrayWithValues_When_Clear_Then_AllElementsAreSetToDefault) {
+            Array&lt;int&gt; arr = { 1, 2, 3, 4, 5 };
+            arr.Clear();
+            for (int i = 0; i &lt; arr.GetLength(); ++i) {
+                EXPECT_EQ(0, arr [i]);</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_SourceAndDestinationArrays_When_CopyToCalled_Then_ElementsAreCopied) {
+            Array&lt;int&gt; source = { 1, 2, 3 };
+            Array&lt;int&gt; destination(5);
+            source.CopyTo(destination, 1);
+            EXPECT_EQ(0, destination [0]);
+            EXPECT_EQ(1, destination [1]);
+            EXPECT_EQ(2, destination [2]);
+            EXPECT_EQ(3, destination [3]);
+            EXPECT_EQ(0, destination [4]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_InvalidIndex_When_CopyToCalled_Then_ThrowsArgumentOutOfRangeException) {
+            Array&lt;int&gt; source = { 1, 2, 3 };
+            Array&lt;int&gt; destination(5);
+            EXPECT_THROW(source.CopyTo(destination, -1), ArgumentOutOfRangeException);
+        }
+        TEST(ArrayTest, Given_InvalidDestinationIndex_When_CopyToCalled_Then_ThrowsArgumentException) {
+            Array&lt;int&gt; source = { 1, 2, 3 };
+            Array&lt;int&gt; destination(3);
+            EXPECT_THROW(source.CopyTo(destination, 1), ArgumentException);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_SourceAndDestinationArrays_When_CopyCalled_Then_ElementsAreCopied) {
+            Array&lt;int&gt; source = { 1, 2, 3, 4, 5 };
+            Array&lt;int&gt; destination(5);
+            Array&lt;int&gt;::Copy(source, destination, 3);
+            EXPECT_EQ(1, destination [0]);
+            EXPECT_EQ(2, destination [1]);
+            EXPECT_EQ(3, destination [2]);
+            EXPECT_EQ(0, destination [3]);
+            EXPECT_EQ(0, destination [4]);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_InvalidLength_When_CopyCalled_Then_ThrowsArgumentOutOfRangeException) {
+            Array&lt;int&gt; source = { 1, 2, 3 };
+            Array&lt;int&gt; destination(3);
+            EXPECT_THROW(Array&lt;int&gt;::Copy(source, destination, -1), ArgumentOutOfRangeException);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_SourceArraySmallerThanLength_When_CopyCalled_Then_ThrowsArgumentException) {
+            Array&lt;int&gt; source = { 1, 2, 3 };
+            Array&lt;int&gt; destination(5);
+            EXPECT_THROW(Array&lt;int&gt;::Copy(source, destination, 4), ArgumentException);
+        }</span>
+
+<span style = "background-color:#dfd">        TEST(ArrayTest, Given_DestinationArraySmallerThanLength_When_CopyCalled_Then_ThrowsArgumentException) {
+            Array&lt;int&gt; source = { 1, 2, 3, 4, 5 };
+            Array&lt;int&gt; destination(3);
+            EXPECT_THROW(Array&lt;int&gt;::Copy(source, destination, 4), ArgumentException);
+        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>RestClient.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#pragma once
+
+#include "Common.h"
+#include "System/Object.h"
+#include "System/String.h"
+#include "System/SmartPointer.h"
+#include "System/Collections/Generic/List.h"
+#include "System/Net/Http/HttpClient.h"
+#include "System/Text/Json/JsonSerializer.h"
+
+#include "System/Convert.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Net {
+            namespace Http {
+
+                template &lt;typename TResource&gt;
+                class RestClient : public virtual DotNetDupe::System::Object {
+                private:
+                    DotNetDupe::System::String m_sBaseUrl;
+                    HttpClient m_client;
+
+                public:
+<span style = "background-color:#dfd">                    RestClient(const DotNetDupe::System::String&amp; sBaseUrl) : m_sBaseUrl(sBaseUrl) {
+                        m_client.GetDefaultRequestHeaders().Add("accept", "application/json");
+                    }</span>
+
+<span style = "background-color:#dfd">                    ~RestClient() override = default;</span>
+
+                    // Sets a Bearer token for HTTP Authorization header
+<span style = "background-color:#dfd">                    void SetBearerToken(const DotNetDupe::System::String&amp; sToken) {
+                        auto&amp; headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                        headers.Add("Authorization", DotNetDupe::System::String("Bearer ") + sToken);
+                    }</span>
+
+                    // Sets Basic Authentication (username:password) for HTTP Authorization header
+                    void SetBasicAuthentication(const DotNetDupe::System::String&amp; sUsername, const DotNetDupe::System::String&amp; sPassword) {
+                        DotNetDupe::System::String credentials = sUsername + ":" + sPassword;
+                        int len = credentials.GetLength();
+                        DotNetDupe::System::Array&lt;char&gt; arr(len);
+                        for (int i = 0; i &lt; len; ++i) {
+                            arr[i] = credentials[i];
+                        }
+                        DotNetDupe::System::String base64 = DotNetDupe::System::Convert::ToBase64String(arr);
+                        
+                        auto&amp; headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                        headers.Add("Authorization", DotNetDupe::System::String("Basic ") + base64);
+                    }
+
+                    // Clears custom authentication headers
+                    void ClearAuthentication() {
+                        auto&amp; headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove("Authorization");
+                        headers.Remove("authorization");
+                    }
+
+                    // Adds custom default request headers
+                    void AddDefaultRequestHeader(const DotNetDupe::System::String&amp; sName, const DotNetDupe::System::String&amp; sValue) {
+                        auto&amp; headers = m_client.GetDefaultRequestHeaders();
+                        headers.Remove(sName);
+                        headers.Add(sName, sValue);
+                    }
+
+                    // Removes custom default request headers
+                    void RemoveDefaultRequestHeader(const DotNetDupe::System::String&amp; sName) {
+                        m_client.GetDefaultRequestHeaders().Remove(sName);
+                    }
+
+                    // Gets all resources: GET /api/resource
+<span style = "background-color:#dfd">                    DotNetDupe::System::Collections::Generic::List&lt;TResource&gt; GetAll() {
+                        auto resp = m_client.Get(m_sBaseUrl);
+                        resp-&gt;EnsureSuccessStatusCode();
+                        DotNetDupe::System::String body = resp-&gt;GetContent()-&gt;ReadAsString();
+                        return DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize&lt;DotNetDupe::System::Collections::Generic::List&lt;TResource&gt;&gt;(body);
+                    }</span>
+
+                    // Gets a resource by ID: GET /api/resource/{id}
+<span style = "background-color:#dfd">                    TResource Get(const DotNetDupe::System::String&amp; sId) {
+                        DotNetDupe::System::String url = m_sBaseUrl;
+                        if (!url.EndsWith('/', false)) {
+                            url = url + "/";</span>
+                        }
+<span style = "background-color:#dfd">                        url = url + sId;
+                        auto resp = m_client.Get(url);
+                        resp-&gt;EnsureSuccessStatusCode();
+                        DotNetDupe::System::String body = resp-&gt;GetContent()-&gt;ReadAsString();
+                        return DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize&lt;TResource&gt;(body);
+                    }</span>
+
+                    // POST: POST /api/resource (Sends resource, returns raw string response e.g., Created status)
+<span style = "background-color:#dfd">                    DotNetDupe::System::String Post(const TResource&amp; resource) {
+                        DotNetDupe::System::String json = DotNetDupe::System::Text::Json::JsonSerializer::Serialize(resource);
+                        auto content = DotNetDupe::System::SmartPointer&lt;StringContent&gt;::NewShared(json, "application/json");
+                        auto resp = m_client.Post(m_sBaseUrl, content);
+                        resp-&gt;EnsureSuccessStatusCode();
+                        return resp-&gt;GetContent()-&gt;ReadAsString();
+                    }</span>
+
+                    // POST and returns deserialized response: POST /api/resource
+                    template &lt;typename TResult = TResource&gt;
+                    TResult PostAndReturn(const TResource&amp; resource) {
+                        DotNetDupe::System::String json = DotNetDupe::System::Text::Json::JsonSerializer::Serialize(resource);
+                        auto content = DotNetDupe::System::SmartPointer&lt;StringContent&gt;::NewShared(json, "application/json");
+                        auto resp = m_client.Post(m_sBaseUrl, content);
+                        resp-&gt;EnsureSuccessStatusCode();
+                        DotNetDupe::System::String body = resp-&gt;GetContent()-&gt;ReadAsString();
+                        return DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize&lt;TResult&gt;(body);
+                    }
+
+                    // PUT: PUT /api/resource/{id} (Sends resource, returns raw string response)
+<span style = "background-color:#dfd">                    DotNetDupe::System::String Put(const DotNetDupe::System::String&amp; sId, const TResource&amp; resource) {
+                        DotNetDupe::System::String url = m_sBaseUrl;
+                        if (!url.EndsWith('/', false)) {
+                            url = url + "/";</span>
+                        }
+<span style = "background-color:#dfd">                        url = url + sId;
+                        DotNetDupe::System::String json = DotNetDupe::System::Text::Json::JsonSerializer::Serialize(resource);
+                        auto content = DotNetDupe::System::SmartPointer&lt;StringContent&gt;::NewShared(json, "application/json");
+                        auto resp = m_client.Put(url, content);
+                        resp-&gt;EnsureSuccessStatusCode();
+                        return resp-&gt;GetContent()-&gt;ReadAsString();
+                    }</span>
+
+                    // DELETE: DELETE /api/resource/{id}
+<span style = "background-color:#dfd">                    void Delete(const DotNetDupe::System::String&amp; sId) {
+                        DotNetDupe::System::String url = m_sBaseUrl;
+                        if (!url.EndsWith('/', false)) {
+                            url = url + "/";</span>
+                        }
+<span style = "background-color:#dfd">                        url = url + sId;
+                        auto resp = m_client.Delete(url);
+                        resp-&gt;EnsureSuccessStatusCode();
+                    }</span>
+                };
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

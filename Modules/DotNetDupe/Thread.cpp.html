@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Thread.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Threading/Thread.h"
+#include "System/TimeoutException.h"
+#include "System/SmartPointer.h"
+#include &lt;chrono&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Threading {
+
+            thread_local Thread* Thread::_currentThread = nullptr;
+<span style = "background-color:#dfd">            static thread_local SmartPointer&lt;Thread&gt; _currentThreadStorage(nullptr);</span>
+
+<span style = "background-color:#dfd">            Thread::Thread(ThreadStart start)
+                : _start(start), _isAlive(false), _completed(false) {
+            }</span>
+
+<span style = "background-color:#dfd">            Thread::Thread(ParameterizedThreadStart start)
+                : _parameterizedStart(start), _isAlive(false), _completed(false) {
+            }</span>
+
+            Thread::Thread()
+                : _isAlive(true), _completed(false) {
+            }
+
+<span style = "background-color:#dfd">            Thread::~Thread() {
+                if (_internalThread &amp;&amp; _internalThread-&gt;joinable()) {</span>
+<span style = "background-color:#fdd">                    _internalThread-&gt;join();</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void Thread::Start() {
+                Start(nullptr);</span>
+            }
+
+<span style = "background-color:#dfd">            void Thread::Start(Object* parameter) {
+                if (_isAlive) return;
+                _isAlive = true;
+                _completed = false;
+                _internalThread = std::make_unique&lt;std::thread&gt;(&amp;Thread::ThreadMain, this, parameter);
+            }</span>
+
+<span style = "background-color:#dfd">            void Thread::Join() {
+                if (_internalThread &amp;&amp; _internalThread-&gt;joinable()) {
+                    _internalThread-&gt;join();</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            bool Thread::Join(int millisecondsTimeout) {
+                if (!_isAlive &amp;&amp; _completed) return true;
+                if (!_internalThread) return true;</span>
+
+<span style = "background-color:#fdd">                std::unique_lock&lt;std::mutex&gt; lock(_joinMutex);
+                if (_joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _completed; })) {
+                    if (_internalThread-&gt;joinable()) {
+                        _internalThread-&gt;join();</span>
+                    }
+<span style = "background-color:#fdd">                    return true;</span>
+                }
+                
+<span style = "background-color:#fdd">                throw TimeoutException("The thread did not terminate within the allotted time.");
+            }</span>
+
+<span style = "background-color:#dfd">            void Thread::Sleep(int millisecondsTimeout) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(millisecondsTimeout));
+            }</span>
+
+<span style = "background-color:#dfd">            bool Thread::IsAlive() const {
+                return _isAlive;
+            }</span>
+
+<span style = "background-color:#dfd">            String Thread::GetName() const {
+                return _name;
+            }</span>
+
+<span style = "background-color:#dfd">            void Thread::SetName(const String&amp; name) {
+                _name = name;</span>
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            Thread* Thread::GetCurrentThread() {
+                if (_currentThread == nullptr) {
+                    _currentThreadStorage = CreateCurrentThreadWrapper();
+                    _currentThread = _currentThreadStorage.Get();</span>
+                }
+                return _currentThread;
+<span style = "background-color:#dfd">            }</span>
+
+            SmartPointer&lt;Thread&gt; Thread::CreateCurrentThreadWrapper() {
+                return SmartPointer&lt;Thread&gt;(new Thread());
+            }
+
+<span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {
+                _currentThread = this;</span>
+                try {
+<span style = "background-color:#dfd">                    if (_start) {
+                        _start();
+                    }
+                    else if (_parameterizedStart) {
+                        _parameterizedStart(parameter);</span>
+                    }
+<span style = "background-color:#dfd">                } catch (...) {</span>
+                    // Silently absorb or handle thread-level exceptions if needed
+<span style = "background-color:#dfd">                }</span>
+
+                {
+<span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(_joinMutex);
+                    _completed = true;
+                    _isAlive = false;
+                }
+                _joinCv.notify_all();
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
