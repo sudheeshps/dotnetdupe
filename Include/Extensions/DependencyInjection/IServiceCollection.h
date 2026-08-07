@@ -30,8 +30,8 @@ namespace DotNetDupe {
                 }
 
                 template <typename TService>
-                IServiceCollection& AddSingleton(DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> spInstance) {
-                    this->Add(ServiceDescriptor(typeid(TService), std::move(spInstance)));
+                IServiceCollection& AddSingleton(DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> pInstance) {
+                    this->Add(ServiceDescriptor(typeid(TService), std::move(pInstance)));
                     return *this;
                 }
 

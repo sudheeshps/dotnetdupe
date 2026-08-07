@@ -6,14 +6,93 @@
 #include "Extensions/Logging/ConsoleLoggerProvider.h"
 #include "Extensions/Logging/FileLoggerProvider.h"
 #include "System/IO/File.h"
+#include "System/IO/Path.h"
 #include "System/IOException.h"
 #include "System/ArgumentException.h"
 #include "Extensions/Logging/LoggerConfiguration.h"
+#include "Extensions/Logging/LogManager.h"
+#include "Extensions/Logging/LoggerTextWriter.h"
+#include "System/Console.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::Extensions::Logging;
 
 namespace LoggingTests {
+
+    class TestLogService {};
+
+    TEST(LoggingTests, GivenCategoryName_WhenLogManagerGetLogger_ReturnsValidLogger) {
+        // Given
+        LogManager::Reset();
+        String category = "OrderService";
+
+        // When
+        auto logger = LogManager::GetLogger(category);
+
+        // Then
+        ASSERT_FALSE(logger.IsNull());
+        
+        // Caching verification
+        auto loggerCached = LogManager::GetLogger(category);
+        ASSERT_TRUE(logger == loggerCached);
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenTypeT_WhenLogManagerGetLoggerTyped_ReturnsTypedLoggerInstance) {
+        // Given
+        LogManager::Reset();
+
+        // When
+        auto typedLogger = LogManager::GetLogger<TestLogService>();
+
+        // Then
+        ASSERT_FALSE(typedLogger.IsNull());
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenCategory_WhenGetConsoleLogger_ReturnsDedicatedConsoleLogger) {
+        // Given
+        LogManager::Reset();
+        LoggerConfiguration config;
+        config.MinLevel = LogLevel::Debug;
+        LogManager::Configure(config);
+
+        // When
+        auto consoleLogger = LogManager::GetConsoleLogger("UIEvents");
+
+        // Then
+        ASSERT_FALSE(consoleLogger.IsNull());
+        ASSERT_TRUE(consoleLogger->IsEnabled(LogLevel::Debug));
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenCategory_WhenGetFileLogger_ReturnsDedicatedFileLogger) {
+        // Given
+        LogManager::Reset();
+        String filePath = "logmanager_file_test.log";
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.MinLevel = LogLevel::Information;
+        LogManager::Configure(config);
+
+        // When
+        auto fileLogger = LogManager::GetFileLogger("AuditCategory");
+
+        // Then
+        ASSERT_FALSE(fileLogger.IsNull());
+        fileLogger->Log(LogLevel::Information, "LogManager direct file test");
+
+        ASSERT_TRUE(IO::File::Exists(filePath));
+
+        // Cleanup
+        LogManager::Reset();
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+    }
 
     TEST(LoggingTests, GivenLoggerFactory_WhenProviderAdded_LogsSuccessfully) {
         String logFilePath = "test_output.log";
@@ -228,7 +307,7 @@ namespace LoggingTests {
         String resolvedPath = provider->GetFilePath();
 
         // Then
-        ASSERT_TRUE(resolvedPath.EndsWith("logs/app.log") || resolvedPath.EndsWith("logs\\app.log"));
+        ASSERT_TRUE(resolvedPath.EndsWith("logs/app.log", false) || resolvedPath.EndsWith("logs\\app.log", false));
         ASSERT_TRUE(IO::File::Exists(resolvedPath));
 
         // Cleanup
@@ -253,6 +332,54 @@ namespace LoggingTests {
         if (IO::File::Exists(resolvedPath)) {
             IO::File::Delete(resolvedPath);
         }
+    }
+
+    TEST(LoggingTests, GivenDefaultConstructor_WhenFileLoggerProviderCreated_InheritsLogManagerConfiguration) {
+        // Given
+        LogManager::Reset();
+        LoggerConfiguration config;
+        config.FilePath = "inherited_provider.log";
+        config.MinLevel = LogLevel::Warning;
+        LogManager::Configure(config);
+
+        if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+
+        // When
+        auto provider = SmartPointer<FileLoggerProvider>::NewShared();
+        auto logger = provider->CreateLogger("InheritedCategory");
+
+        // Then
+        ASSERT_FALSE(logger->IsEnabled(LogLevel::Information));
+        ASSERT_TRUE(logger->IsEnabled(LogLevel::Warning));
+
+        // Cleanup
+        LogManager::Reset();
+        if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+    }
+
+    TEST(LoggingTests, GivenLoggerTextWriter_WhenConsoleSetOut_RedirectsToLogger) {
+        // Given
+        LogManager::Reset();
+        String filePath = "redirect_textwriter_test.log";
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        LogManager::Configure(config);
+
+        auto redirector = SmartPointer<LoggerTextWriter>::NewShared("Redirector", LogLevel::Information);
+        Console::SetOut(redirector);
+
+        // When
+        Console::WriteLine("Redirected message test");
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+
+        // Cleanup
+        Console::SetOut(nullptr);
+        LogManager::Reset();
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
     }
 }
 

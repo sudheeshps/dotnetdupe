@@ -21,7 +21,7 @@ namespace {
     static std::vector<String> s_outputs;
     static std::vector<String> s_inputs;
     static String s_accumulator = String("");
-    static std::mutex s_mutex;
+    static std::recursive_mutex s_mutex;
     static ConsoleColor s_defaultFore = ConsoleColor::Gray;
     static ConsoleColor s_defaultBack = ConsoleColor::Black;
     static bool s_colorsInitialized = false;
@@ -44,25 +44,34 @@ namespace {
 }
 
 void InternalWrite(const String& sValue) {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + sValue;
-    if (s_pOutWriter) {
-        s_pOutWriter->Write(sValue);
-    } else {
-        std::cout << sValue.GetRawString() << std::flush;
+    SmartPointer<IO::TextWriter> pWriter = nullptr;
+    {
+        std::lock_guard<std::recursive_mutex> lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout << sValue.GetRawString() << std::flush;
+            return;
+        }
     }
+    pWriter->Write(sValue);
 }
 
 void InternalWriteLine(const String& sValue) {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + sValue;
-    s_outputs.push_back(s_accumulator);
-    if (s_pOutWriter) {
-        s_pOutWriter->WriteLine(sValue);
-    } else {
-        std::cout << sValue.GetRawString() << std::endl;
+    SmartPointer<IO::TextWriter> pWriter = nullptr;
+    {
+        std::lock_guard<std::recursive_mutex> lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        s_outputs.push_back(s_accumulator);
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout << sValue.GetRawString() << std::endl;
+            s_accumulator = "";
+            return;
+        }
+        s_accumulator = "";
     }
-    s_accumulator = "";
+    pWriter->WriteLine(sValue);
 }
 
 void Console::Write(bool value) { InternalWrite(value ? "True" : "False"); }
@@ -87,7 +96,7 @@ void Console::WriteLine(const String& value) { InternalWriteLine(value); }
 void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }
 
 int Console::Read() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     if (s_pInReader) {
         return s_pInReader->Read();
     }
@@ -95,7 +104,7 @@ int Console::Read() {
 }
 
 String Console::ReadLine() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     if (s_pInReader) {
         return s_pInReader->ReadLine();
     }
@@ -309,7 +318,7 @@ void Console::Beep() {
 }
 
 void Console::Clear() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_outputs.clear();
     s_inputs.clear();
     s_accumulator = String("");
@@ -338,47 +347,47 @@ void Console::Clear() {
 }
 
 void Console::SetOut(const SmartPointer<IO::TextWriter>& pOutWriter) {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_pOutWriter = pOutWriter;
 }
 
 void Console::SetError(const SmartPointer<IO::TextWriter>& pErrorWriter) {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_pErrorWriter = pErrorWriter;
 }
 
 void Console::SetIn(const SmartPointer<IO::TextReader>& pInReader) {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_pInReader = pInReader;
 }
 
 SmartPointer<IO::TextWriter> Console::Out() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     return s_pOutWriter;
 }
 
 SmartPointer<IO::TextWriter> Console::Error() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     return s_pErrorWriter;
 }
 
 SmartPointer<IO::TextReader> Console::In() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     return s_pInReader;
 }
 
 void Console::SetIn(const String& value) {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_inputs.push_back(value);
 }
 
 void Console::ClearInputs() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_inputs.clear();
 }
 
 Array<String> Console::GetOutputs() {
-    std::lock_guard<std::mutex> lock(s_mutex);
+    std::lock_guard<std::recursive_mutex> lock(s_mutex);
     Array<String> result((int)s_outputs.size());
     for (int i = 0; i < (int)s_outputs.size(); i++) result[i] = s_outputs[i];
     return result;

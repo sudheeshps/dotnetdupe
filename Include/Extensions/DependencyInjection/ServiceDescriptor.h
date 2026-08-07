@@ -20,7 +20,7 @@ namespace DotNetDupe {
                       m_implementationType(typeid(void)), 
                       m_eLifetime(ServiceLifetime::Transient), 
                       m_fnFactory(nullptr), 
-                      m_spInstance(nullptr) {}
+                      m_pInstance(nullptr) {}
 
                 ServiceDescriptor(
                     const std::type_index& serviceType,
@@ -30,7 +30,7 @@ namespace DotNetDupe {
                     m_implementationType(implementationType),
                     m_eLifetime(eLifetime),
                     m_fnFactory(nullptr),
-                    m_spInstance(nullptr) {}
+                    m_pInstance(nullptr) {}
 
                 ServiceDescriptor(
                     const std::type_index& serviceType,
@@ -40,23 +40,23 @@ namespace DotNetDupe {
                     m_implementationType(serviceType),
                     m_eLifetime(eLifetime),
                     m_fnFactory(std::move(fnFactory)),
-                    m_spInstance(nullptr) {}
+                    m_pInstance(nullptr) {}
 
                 ServiceDescriptor(
                     const std::type_index& serviceType,
-                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> spInstance
+                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> pInstance
                 ) : m_serviceType(serviceType),
                     m_implementationType(serviceType),
                     m_eLifetime(ServiceLifetime::Singleton),
                     m_fnFactory(nullptr),
-                    m_spInstance(std::move(spInstance)) {}
+                    m_pInstance(std::move(pInstance)) {}
 
                 // Getters
                 std::type_index GetServiceType() const { return m_serviceType; }
                 std::type_index GetImplementationType() const { return m_implementationType; }
                 ServiceLifetime GetLifetime() const { return m_eLifetime; }
                 const FactoryType& GetFactory() const { return m_fnFactory; }
-                const DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>& GetInstance() const { return m_spInstance; }
+                const DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>& GetInstance() const { return m_pInstance; }
 
                 // Describe static helpers
                 static ServiceDescriptor Describe(
@@ -91,7 +91,7 @@ namespace DotNetDupe {
                 std::type_index m_implementationType;
                 ServiceLifetime m_eLifetime;
                 FactoryType m_fnFactory;
-                DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> m_spInstance;
+                DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> m_pInstance;
             };
         }
     }

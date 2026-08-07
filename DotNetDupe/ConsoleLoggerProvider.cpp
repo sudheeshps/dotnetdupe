@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "Extensions/Logging/ConsoleLoggerProvider.h"
 #include "Extensions/Logging/ConsoleLogger.h"
+#include "Extensions/Logging/LogManager.h"
 
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
+
+            ConsoleLoggerProvider::ConsoleLoggerProvider()
+                : ConsoleLoggerProvider(LogManager::GetConfiguration()) {}
 
             ConsoleLoggerProvider::ConsoleLoggerProvider(const LoggerConfiguration& config)
                 : m_config(config) {}

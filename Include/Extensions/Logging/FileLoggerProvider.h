@@ -17,8 +17,9 @@ namespace DotNetDupe {
                 std::shared_ptr<std::mutex> m_fileMutex;
 
             public:
+                DOTNETDUPE_API FileLoggerProvider();
                 DOTNETDUPE_API FileLoggerProvider(const LoggerConfiguration& config);
-                DOTNETDUPE_API FileLoggerProvider(const DotNetDupe::System::String& filePath = "", bool isJsonFormat = false, LogLevel minLevel = LogLevel::Information);
+                DOTNETDUPE_API FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat = false, LogLevel minLevel = LogLevel::Information);
                 DOTNETDUPE_API ~FileLoggerProvider() override = default;
 
                 DOTNETDUPE_API const DotNetDupe::System::String& GetFilePath() const { return m_config.FilePath; }

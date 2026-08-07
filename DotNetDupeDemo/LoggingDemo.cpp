@@ -6,6 +6,8 @@
 #include "Extensions/Logging/LoggerFactory.h"
 #include "Extensions/Logging/ConsoleLoggerProvider.h"
 #include "Extensions/Logging/FileLoggerProvider.h"
+#include "Extensions/Logging/LogManager.h"
+#include "Extensions/Logging/LoggerTextWriter.h"
 #include "System/IO/File.h"
 #include "Demos.h"
 
@@ -98,7 +100,22 @@ void DemonstrateLogging() {
     properties.Add("destination", "http://127.0.0.1:19099");
     genericLogger.Log(LogLevel::Error, "Remote service call failed.", properties);
 
-    // 10. Display contents of the structured log file
+    // 10. Demonstrate LogManager (Option A Global Logging)
+    Console::WriteLine("\n--- Demonstrating LogManager Global Category Logging ---");
+    auto mgrLogger = LogManager::GetLogger("OrderService");
+    mgrLogger->Log(LogLevel::Information, "OrderService initialized via LogManager::GetLogger(\"OrderService\")");
+
+    auto typedMgrLogger = LogManager::GetLogger<DemoService>();
+    typedMgrLogger->Log(LogLevel::Information, "Logged via LogManager::GetLogger<DemoService>()");
+
+    // Demonstrate LoggerTextWriter log redirector
+    Console::WriteLine("\n--- Demonstrating LoggerTextWriter Redirector ---");
+    auto loggerWriter = SmartPointer<LoggerTextWriter>::NewShared("RedirectedCategory", LogLevel::Information);
+    Console::SetOut(loggerWriter);
+    Console::WriteLine("Console message redirected via LoggerTextWriter to LogManager logger");
+    Console::SetOut(nullptr);
+
+    // 11. Display contents of the structured log file
     Console::WriteLine("\n--- Displaying Contents of 'app_structured.log' ---");
     if (IO::File::Exists(logFilePath)) {
         String fileText = IO::File::ReadAllText(logFilePath);

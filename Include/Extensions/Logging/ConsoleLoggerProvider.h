@@ -12,8 +12,9 @@ namespace DotNetDupe {
                 LoggerConfiguration m_config;
 
             public:
+                DOTNETDUPE_API ConsoleLoggerProvider();
                 DOTNETDUPE_API ConsoleLoggerProvider(const LoggerConfiguration& config);
-                DOTNETDUPE_API ConsoleLoggerProvider(bool isJsonFormat = false, LogLevel minLevel = LogLevel::Information);
+                DOTNETDUPE_API ConsoleLoggerProvider(bool isJsonFormat, LogLevel minLevel);
                 DOTNETDUPE_API ~ConsoleLoggerProvider() override = default;
 
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer<ILogger> CreateLogger(const DotNetDupe::System::String& categoryName) override;

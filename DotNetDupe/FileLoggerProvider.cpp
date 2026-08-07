@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Extensions/Logging/FileLoggerProvider.h"
 #include "Extensions/Logging/FileLogger.h"
+#include "Extensions/Logging/LogManager.h"
 #include "System/IO/Path.h"
 #include "System/IO/Directory.h"
 #include "System/IOException.h"
@@ -8,6 +9,10 @@
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
+
+            FileLoggerProvider::FileLoggerProvider()
+                : FileLoggerProvider(LogManager::GetConfiguration()) {
+            }
 
             static DotNetDupe::System::String ResolveAndPrepareLogPath(const DotNetDupe::System::String& rawFilePath) {
                 using namespace DotNetDupe::System::IO;

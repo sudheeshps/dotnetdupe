@@ -6,6 +6,8 @@
 #include "System/Char.h"
 #include "System/Array.h"
 #include "System/SmartPointer.h"
+#include "System/IO/TextWriter.h"
+#include "System/IO/TextReader.h"
 #include <memory>
 
 namespace DotNetDupe {

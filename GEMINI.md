@@ -44,8 +44,9 @@ The project is configured to generate a NuGet package on build (as specified in 
 - **Methods**: PascalCase (e.g., `GetLength()`, `ToString()`).
 - **Variables**: Follow [Microsoft C++ coding standards](https://learn.microsoft.com/en-us/visualstudio/ide/editorconfig-naming-conventions?view=vs-2022).
   - **Local Variables & Parameters**: Hungarian notation with type-based prefixes (e.g., `sSourceFileName`, `iIndex`, `pBuffer`).
-  - **Private Members**: Prefixed with `m_` followed by type-based prefix (e.g., `m_nItems`, `m_hHandle`).
-  - **Static Fields**: Prefixed with `s_` (e.g., `s_defaultInstance`).
+  - **SmartPointer Variables**: **All `SmartPointer` variables shall be prefixed with `p` to indicate a pointer** (e.g., local/parameter: `pLogger`, `pStream`; member: `m_pLogger`, `m_pWriter`; static: `s_pFactory`, `s_pLogger`).
+  - **Private Members**: Prefixed with `m_` followed by type-based prefix (e.g., `m_nItems`, `m_hHandle`, `m_pStream`).
+  - **Static Fields**: Prefixed with `s_` (e.g., `s_defaultInstance`, `s_pFactory`).
 - **Headers**: Use `#pragma once` and include files relative to the `Include/` directory.
 
 ### Code Patterns

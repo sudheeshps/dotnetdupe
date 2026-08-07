@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>3.0.6</version>
+    <version>3.0.7</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
-    <releaseNotes>v3.0.6: Automated CI/CD quality gate enforcement script, updated workflow version update steps, treated build warnings as errors, and added live GitHub Pages coverage/quality reporting.</releaseNotes>
+    <releaseNotes>v3.0.7: Added Console I/O redirection APIs (SetOut, SetError, SetIn using SmartPointer), enhanced FileLoggerProvider to resolve relative paths and auto-create missing log directories via Directory::CreateDirectory(path, recursive), introduced global LogManager for category-based logging, added LoggerTextWriter stream redirector, and refactored SmartPointer naming conventions across codebase.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://github.com/sudheeshps/dotnetdupe</projectUrl>
     <license type="expression">MIT</license>

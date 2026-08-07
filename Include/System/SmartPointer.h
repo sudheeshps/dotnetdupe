@@ -295,6 +295,16 @@ namespace DotNetDupe {
             T* operator->() const { return m_pObject; }
             explicit operator bool() const { return m_pObject != nullptr; }
 
+            template <typename U>
+            bool operator==(const SmartPointer<U>& other) const {
+                return m_pObject == other.Get();
+            }
+
+            template <typename U>
+            bool operator!=(const SmartPointer<U>& other) const {
+                return m_pObject != other.Get();
+            }
+
         private:
             void InternalCleanup() {
                 if (m_pObject != nullptr) {

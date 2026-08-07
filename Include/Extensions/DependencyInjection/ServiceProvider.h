@@ -38,14 +38,14 @@ namespace DotNetDupe {
 
             class ServiceScope : public IServiceScope {
             public:
-                DOTNETDUPE_API ServiceScope(DotNetDupe::System::SmartPointer<ServiceProvider> spProvider);
+                DOTNETDUPE_API ServiceScope(DotNetDupe::System::SmartPointer<ServiceProvider> pProvider);
                 DOTNETDUPE_API ~ServiceScope() override;
 
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> GetServiceProvider() const override;
                 DOTNETDUPE_API void Dispose() override;
 
             private:
-                DotNetDupe::System::SmartPointer<ServiceProvider> m_spProvider;
+                DotNetDupe::System::SmartPointer<ServiceProvider> m_pProvider;
             };
 
             class ServiceScopeFactory : public IServiceScopeFactory {

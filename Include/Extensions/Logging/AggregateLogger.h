@@ -9,10 +9,10 @@ namespace DotNetDupe {
 
             class AggregateLogger : public ILogger {
             private:
-                std::vector<DotNetDupe::System::SmartPointer<ILogger>> m_loggers;
+                std::vector<DotNetDupe::System::SmartPointer<ILogger>> m_pLoggers;
 
             public:
-                DOTNETDUPE_API AggregateLogger(const std::vector<DotNetDupe::System::SmartPointer<ILogger>>& loggers);
+                DOTNETDUPE_API AggregateLogger(const std::vector<DotNetDupe::System::SmartPointer<ILogger>>& pLoggers);
                 DOTNETDUPE_API ~AggregateLogger() override = default;
 
                 DOTNETDUPE_API void Log(LogLevel logLevel, const DotNetDupe::System::String& message) override;

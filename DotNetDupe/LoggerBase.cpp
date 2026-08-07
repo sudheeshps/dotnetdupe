@@ -30,8 +30,9 @@ namespace DotNetDupe {
 #else
                 localtime_r(&time, &buf);
 #endif
-                char timeStr[100];
-                size_t written = std::strftime(timeStr, sizeof(timeStr), formatFmt.c_str(), &buf);
+                std::string fmt = formatFmt.empty() ? "%Y-%m-%d %H:%M:%S" : formatFmt;
+                char timeStr[255] = { 0 };
+                size_t written = std::strftime(timeStr, sizeof(timeStr), fmt.c_str(), &buf);
                 if (written > 0) {
                     return std::string(timeStr);
                 }

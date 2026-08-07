@@ -10,14 +10,14 @@ namespace DotNetDupe {
 
             class LoggerFactory : public ILoggerFactory {
             private:
-                std::vector<DotNetDupe::System::SmartPointer<ILoggerProvider>> m_providers;
+                std::vector<DotNetDupe::System::SmartPointer<ILoggerProvider>> m_pProviders;
                 std::mutex m_mutex;
 
             public:
                 DOTNETDUPE_API LoggerFactory() = default;
                 DOTNETDUPE_API ~LoggerFactory() override = default;
 
-                DOTNETDUPE_API void AddProvider(const DotNetDupe::System::SmartPointer<ILoggerProvider>& provider) override;
+                DOTNETDUPE_API void AddProvider(const DotNetDupe::System::SmartPointer<ILoggerProvider>& pProvider) override;
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer<ILogger> CreateLogger(const DotNetDupe::System::String& categoryName) override;
             };
 

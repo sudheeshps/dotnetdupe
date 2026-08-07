@@ -8,7 +8,9 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <lm.h>
+#include "Win32Internal.h"
 #pragma comment(lib, "netapi32.lib")
+using namespace DotNetDupe::System::Internal;
 #else
 #include <pwd.h>
 #include <grp.h>
@@ -41,9 +43,7 @@ namespace DotNetDupe {
 
                     if (::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&pGroups, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries) == NERR_Success) {
                         for (DWORD i = 0; i < dwEntriesRead; i++) {
-                            std::wstring wGroup(pGroups[i].grui0_name);
-                            std::string sGroup;
-                            for (wchar_t wc : wGroup) { sGroup.push_back(static_cast<char>(wc)); }
+                            std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
                             lstPermissions.Add(String("GroupMember:") + String(sGroup));
                             lstGroups.Add(String(std::move(sGroup)));
                         }
@@ -53,10 +53,7 @@ namespace DotNetDupe {
 
                 static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
                     UserInfo info;
-                    std::wstring wName(pUi->usri1_name);
-                    std::string sName;
-                    sName.reserve(wName.length());
-                    for (wchar_t wc : wName) { sName.push_back(static_cast<char>(wc)); }
+                    std::string sName = StringConvertInternal::WCharToUtf8(pUi->usri1_name);
                     info.sUsername = String(std::move(sName));
 
                     info.sDomain = "LOCAL";
@@ -169,9 +166,7 @@ namespace DotNetDupe {
                     DWORD dwSize = 256;
 
                     if (::GetUserNameW(szName, &dwSize)) {
-                        std::wstring wName(szName);
-                        std::string sName(wName.begin(), wName.end());
-                        return GetUser(String(sName.c_str()));
+                        return GetUser(String(StringConvertInternal::WCharToUtf8(szName).c_str()));
                     }
 #else
                     uid_t uid = getuid();

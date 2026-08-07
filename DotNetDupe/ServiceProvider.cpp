@@ -76,26 +76,26 @@ namespace DotNetDupe {
                     }
 
                     // Create
-                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> spInstance;
+                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> pInstance;
                     if (descriptor.GetInstance()) {
-                        spInstance = descriptor.GetInstance();
+                        pInstance = descriptor.GetInstance();
                     } else if (descriptor.GetFactory()) {
-                        auto spProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
+                        auto pProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
                             DotNetDupe::System::SmartPointer<ServiceProviderProxy>::NewShared(this)
                         );
-                        spInstance = descriptor.GetFactory()(spProxy);
+                        pInstance = descriptor.GetFactory()(pProxy);
                     }
 
-                    if (!spInstance.IsNull()) {
-                        pRoot->m_mapSingletons[descriptor.GetServiceType()] = spInstance;
+                    if (!pInstance.IsNull()) {
+                        pRoot->m_mapSingletons[descriptor.GetServiceType()] = pInstance;
 
                         // Track IDisposable
-                        auto spDisposable = spInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
-                        if (!spDisposable.IsNull()) {
-                            pRoot->m_vDisposables.push_back(spDisposable);
+                        auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
+                        if (!pDisposable.IsNull()) {
+                            pRoot->m_vDisposables.push_back(pDisposable);
                         }
                     }
-                    return spInstance;
+                    return pInstance;
                 }
                 else if (descriptor.GetLifetime() == ServiceLifetime::Scoped) {
                     if (m_bIsRoot) {
@@ -111,44 +111,44 @@ namespace DotNetDupe {
                     }
 
                     // Create
-                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> spInstance;
+                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> pInstance;
                     if (descriptor.GetFactory()) {
-                        auto spProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
+                        auto pProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
                             DotNetDupe::System::SmartPointer<ServiceProviderProxy>::NewShared(this)
                         );
-                        spInstance = descriptor.GetFactory()(spProxy);
+                        pInstance = descriptor.GetFactory()(pProxy);
                     }
 
-                    if (!spInstance.IsNull()) {
-                        m_mapScoped[descriptor.GetServiceType()] = spInstance;
+                    if (!pInstance.IsNull()) {
+                        m_mapScoped[descriptor.GetServiceType()] = pInstance;
 
                         // Track IDisposable
-                        auto spDisposable = spInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
-                        if (!spDisposable.IsNull()) {
-                            m_vDisposables.push_back(spDisposable);
+                        auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
+                        if (!pDisposable.IsNull()) {
+                            m_vDisposables.push_back(pDisposable);
                         }
                     }
-                    return spInstance;
+                    return pInstance;
                 }
                 else {
                     // Transient
-                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> spInstance;
+                    DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> pInstance;
                     if (descriptor.GetFactory()) {
-                        auto spProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
+                        auto pProxy = DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>(
                             DotNetDupe::System::SmartPointer<ServiceProviderProxy>::NewShared(this)
                         );
-                        spInstance = descriptor.GetFactory()(spProxy);
+                        pInstance = descriptor.GetFactory()(pProxy);
                     }
 
-                    if (!spInstance.IsNull()) {
+                    if (!pInstance.IsNull()) {
                         // Track transient disposables in the resolving provider to clean up on Dispose
-                        auto spDisposable = spInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
-                        if (!spDisposable.IsNull()) {
+                        auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
+                        if (!pDisposable.IsNull()) {
                             DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
-                            m_vDisposables.push_back(spDisposable);
+                            m_vDisposables.push_back(pDisposable);
                         }
                     }
-                    return spInstance;
+                    return pInstance;
                 }
             }
 
@@ -169,21 +169,21 @@ namespace DotNetDupe {
 
             // --- ServiceScope Implementation ---
 
-            ServiceScope::ServiceScope(DotNetDupe::System::SmartPointer<ServiceProvider> spProvider)
-                : m_spProvider(std::move(spProvider)) {}
+            ServiceScope::ServiceScope(DotNetDupe::System::SmartPointer<ServiceProvider> pProvider)
+                : m_pProvider(std::move(pProvider)) {}
 
             ServiceScope::~ServiceScope() {
                 Dispose();
             }
 
             DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> ServiceScope::GetServiceProvider() const {
-                return m_spProvider;
+                return m_pProvider;
             }
 
             void ServiceScope::Dispose() {
-                if (!m_spProvider.IsNull()) {
-                    m_spProvider->Dispose();
-                    m_spProvider = nullptr;
+                if (!m_pProvider.IsNull()) {
+                    m_pProvider->Dispose();
+                    m_pProvider = nullptr;
                 }
             }
 

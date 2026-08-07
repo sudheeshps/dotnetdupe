@@ -346,6 +346,8 @@
     <ClInclude Include="..\Include\Extensions\Logging\FileLogger.h" />
     <ClInclude Include="..\Include\Extensions\Logging\LoggerBase.h" />
     <ClInclude Include="..\Include\Extensions\Logging\AggregateLogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\LogManager.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\LoggerTextWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -448,6 +450,8 @@
     <ClCompile Include="LoggerBase.cpp" />
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
+    <ClCompile Include="LogManager.cpp" />
+    <ClCompile Include="LoggerTextWriter.cpp" />
     <ClCompile Include="UserPrincipal.cpp" />
     <ClCompile Include="TerminalSession.cpp" />
   </ItemGroup>
