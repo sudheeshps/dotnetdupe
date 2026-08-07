@@ -5,8 +5,8 @@
 [![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
-[![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://sudheeshps.github.io/DotNetDupe/)
-[![Quality Gate](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&label=Quality%20Gate&logo=github)](https://sudheeshps.github.io/DotNetDupe/)
+[![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://sudheeshps.github.io/dotnetdupe/)
+[![Quality Gate](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&label=Quality%20Gate&logo=github)](https://sudheeshps.github.io/dotnetdupe/)
 [![License](https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&color=orange)](LICENSE)
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
@@ -99,7 +99,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.5.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.6.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -226,7 +226,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.5.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.6.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -236,9 +236,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.3.0.5.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.3.0.6.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.5.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.6.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
