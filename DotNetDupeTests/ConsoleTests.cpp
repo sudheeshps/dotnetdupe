@@ -3,6 +3,8 @@
 #include "System/Console.h"
 #include "System/String.h"
 #include "System/ArgumentException.h"
+#include "System/IO/StringWriter.h"
+#include "System/IO/StringReader.h"
 #include <limits>
 
 #if defined(_WIN32)
@@ -288,6 +290,55 @@ namespace SystemTests {
 			auto outputs = Console::GetOutputs();
 			ASSERT_TRUE(outputs.GetLength() == 1);
 			ASSERT_TRUE(outputs[0] == "Value: 42");
+		}
+
+		TEST(ConsoleTest, SetOut_Should_RedirectOutput_When_StringWriterProvided) {
+			// Given
+			Console::Clear();
+			SmartPointer<DotNetDupe::System::IO::StringWriter> writer(true);
+			Console::SetOut(writer);
+
+			// When
+			Console::WriteLine("Redirected message");
+
+			// Then
+			ASSERT_TRUE(Console::Out() == writer);
+			ASSERT_EQ(writer->ToString(), "Redirected message\r\n");
+
+			// Cleanup
+			Console::Clear();
+		}
+
+		TEST(ConsoleTest, SetIn_Should_RedirectInput_When_StringReaderProvided) {
+			// Given
+			Console::Clear();
+			SmartPointer<DotNetDupe::System::IO::StringReader> reader(new DotNetDupe::System::IO::StringReader("Custom input line"));
+			Console::SetIn(reader);
+
+			// When
+			String inputLine = Console::ReadLine();
+
+			// Then
+			ASSERT_TRUE(Console::In() == reader);
+			ASSERT_EQ(inputLine, "Custom input line");
+
+			// Cleanup
+			Console::Clear();
+		}
+
+		TEST(ConsoleTest, SetError_Should_StoreErrorWriter_When_WriterProvided) {
+			// Given
+			Console::Clear();
+			SmartPointer<DotNetDupe::System::IO::StringWriter> writer(true);
+
+			// When
+			Console::SetError(writer);
+
+			// Then
+			ASSERT_TRUE(Console::Error() == writer);
+
+			// Cleanup
+			Console::Clear();
 		}
 	}
 }

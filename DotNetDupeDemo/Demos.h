@@ -37,3 +37,4 @@ void RunUserPrincipalDemo();
 void DemonstrateTerminalSession();
 void RunConcurrentCollectionsDemo();
 void RunGenericCollectionsDemo();
+void DemonstrateDirectory();

@@ -778,6 +778,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [Path](docs/Path.md) | A class for path-related operations. |
 | [File](docs/File.md) | Provides static methods for the creation, copying, deletion, moving, and opening of a single file. |
+| [Directory](docs/Directory.md) | Exposes static methods for creating, moving, deleting, and enumerating directories and files. |
 | [FileStream](docs/FileStream.md) | Provides a `Stream` for a file, supporting both synchronous and asynchronous read and write operations. |
 | [Stream](docs/Stream.md) | Provides a generic view of a sequence of bytes. |
 | [TextReader](docs/TextReader.md) | Represents a reader that can read a sequential series of characters. |

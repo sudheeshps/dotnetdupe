@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "System/Console.h"
+#include "System/IO/TextWriter.h"
+#include "System/IO/TextReader.h"
 #include <mutex>
 #include <iostream>
 #include <string>
@@ -36,19 +38,30 @@ namespace {
             s_colorsInitialized = true;
         }
     }
+    static SmartPointer<IO::TextWriter> s_pOutWriter = nullptr;
+    static SmartPointer<IO::TextWriter> s_pErrorWriter = nullptr;
+    static SmartPointer<IO::TextReader> s_pInReader = nullptr;
 }
 
 void InternalWrite(const String& sValue) {
     std::lock_guard<std::mutex> lk(s_mutex);
     s_accumulator = s_accumulator + sValue;
-    std::cout << sValue.GetRawString() << std::flush;
+    if (s_pOutWriter) {
+        s_pOutWriter->Write(sValue);
+    } else {
+        std::cout << sValue.GetRawString() << std::flush;
+    }
 }
 
 void InternalWriteLine(const String& sValue) {
     std::lock_guard<std::mutex> lk(s_mutex);
     s_accumulator = s_accumulator + sValue;
     s_outputs.push_back(s_accumulator);
-    std::cout << sValue.GetRawString() << std::endl;
+    if (s_pOutWriter) {
+        s_pOutWriter->WriteLine(sValue);
+    } else {
+        std::cout << sValue.GetRawString() << std::endl;
+    }
     s_accumulator = "";
 }
 
@@ -74,11 +87,18 @@ void Console::WriteLine(const String& value) { InternalWriteLine(value); }
 void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }
 
 int Console::Read() {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader->Read();
+    }
     return std::cin.get();
 }
 
 String Console::ReadLine() {
     std::lock_guard<std::mutex> lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader->ReadLine();
+    }
     if (!s_inputs.empty()) {
         String v = s_inputs.front();
         s_inputs.erase(s_inputs.begin());
@@ -293,6 +313,9 @@ void Console::Clear() {
     s_outputs.clear();
     s_inputs.clear();
     s_accumulator = String("");
+    s_pOutWriter = nullptr;
+    s_pErrorWriter = nullptr;
+    s_pInReader = nullptr;
 
 #if defined(_WIN32)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -312,6 +335,36 @@ void Console::Clear() {
 #else
     std::cout << "\033[2J\033[1;1H" << std::flush;
 #endif
+}
+
+void Console::SetOut(const SmartPointer<IO::TextWriter>& pOutWriter) {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    s_pOutWriter = pOutWriter;
+}
+
+void Console::SetError(const SmartPointer<IO::TextWriter>& pErrorWriter) {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    s_pErrorWriter = pErrorWriter;
+}
+
+void Console::SetIn(const SmartPointer<IO::TextReader>& pInReader) {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    s_pInReader = pInReader;
+}
+
+SmartPointer<IO::TextWriter> Console::Out() {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    return s_pOutWriter;
+}
+
+SmartPointer<IO::TextWriter> Console::Error() {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    return s_pErrorWriter;
+}
+
+SmartPointer<IO::TextReader> Console::In() {
+    std::lock_guard<std::mutex> lk(s_mutex);
+    return s_pInReader;
 }
 
 void Console::SetIn(const String& value) {

@@ -149,6 +149,43 @@ Gets a value indicating whether the CAPS LOCK keyboard light is on.
 
 Gets a value indicating whether the NUM LOCK keyboard light is on.
 
+#### Stream Redirection APIs
+
+##### `void static SetOut(const SmartPointer<IO::TextWriter>& pOutWriter) / SmartPointer<IO::TextWriter> static Out()`
+
+Sets or gets the standard output writer stream for log output redirection.
+
+**Usage:**
+```cpp
+SmartPointer<StringWriter> writer(true);
+Console::SetOut(writer);
+Console::WriteLine("Output redirected!");
+auto currentOut = Console::Out();
+```
+
+##### `void static SetError(const SmartPointer<IO::TextWriter>& pErrorWriter) / SmartPointer<IO::TextWriter> static Error()`
+
+Sets or gets the standard error writer stream for error log output redirection.
+
+**Usage:**
+```cpp
+SmartPointer<StringWriter> errorWriter(true);
+Console::SetError(errorWriter);
+auto currentError = Console::Error();
+```
+
+##### `void static SetIn(const SmartPointer<IO::TextReader>& pInReader) / SmartPointer<IO::TextReader> static In()`
+
+Sets or gets the standard input reader stream for input redirection.
+
+**Usage:**
+```cpp
+SmartPointer<StringReader> reader(new StringReader("Redirection Line"));
+Console::SetIn(reader);
+String line = Console::ReadLine();
+auto currentIn = Console::In();
+```
+
 #### Test Helpers
 
 ##### `void static SetIn(const String& value)`
@@ -161,14 +198,18 @@ Returns the accumulated outputs (from `WriteLine` calls) since the last `Clear`.
 
 ## Code Example
 
-Below is a complete, compile-ready example demonstrating the usage of `Console`.
+Below is a complete, compile-ready example demonstrating the usage of `Console` and console redirection APIs.
 
 ```cpp
 #include "System/Console.h"
 #include "System/String.h"
+#include "System/SmartPointer.h"
+#include "System/IO/StringWriter.h"
+#include "System/IO/StringReader.h"
 #include "System/Exception.h"
 
 using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
 
 int main() {
     try {
@@ -177,20 +218,18 @@ int main() {
         Console::WriteLine("--- Console API Demonstration ---");
         Console::ResetColor();
 
-        Console::Write("Using Console::Write without newline: ");
-        Console::WriteLine("Followed by WriteLine");
+        // Standard Output Redirection
+        SmartPointer<StringWriter> customWriter(true);
+        Console::SetOut(customWriter);
+        Console::WriteLine("This message is redirected to StringWriter.");
 
-        // Console title
-        Console::SetTitle("DotNetDupe Console Demo");
-        Console::Write("Console Title has been set to: ");
-        Console::WriteLine(Console::GetTitle());
+        // Standard Input Redirection
+        SmartPointer<StringReader> customReader(new StringReader("Redirected Input Data"));
+        Console::SetIn(customReader);
+        String inputData = Console::ReadLine();
 
-        // Test Helper functionality
-        Console::WriteLine("Mocking input for testing:");
-        Console::SetIn("Hello from Mock Input!");
-        String mockedInput = Console::ReadLine();
-        Console::Write("Mocked input read: ");
-        Console::WriteLine(mockedInput);
+        // Restore / Reset
+        Console::Clear();
 
     } catch (const Exception& ex) {
         Console::Write("Error: ");

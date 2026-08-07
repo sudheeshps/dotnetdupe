@@ -140,6 +140,7 @@
     <ClCompile Include="EnvironmentTests.cpp" />
     <ClCompile Include="FileStreamTests.cpp" />
     <ClCompile Include="FileTests.cpp" />
+    <ClCompile Include="DirectoryTests.cpp" />
     <ClCompile Include="OperatingSystemTests.cpp" />
     <ClCompile Include="PathTests.cpp" />
     <ClCompile Include="ProcessTests.cpp" />
