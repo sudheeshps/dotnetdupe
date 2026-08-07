@@ -215,6 +215,7 @@
     <ClInclude Include="..\Include\System\Exception.h" />
     <ClInclude Include="..\Include\System\IOException.h" />
     <ClInclude Include="..\Include\System\IO\File.h" />
+    <ClInclude Include="..\Include\System\IO\Directory.h" />
     <ClInclude Include="..\Include\System\IO\FileStream.h" />
     <ClInclude Include="..\Include\System\IO\IDisposable.h" />
     <ClInclude Include="..\Include\System\IO\Stream.h" />
@@ -353,6 +354,7 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Directory.cpp" />
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

@@ -218,5 +218,41 @@ namespace LoggingTests {
             ParseLogLevel("invalid_log_level_value");
         }, DotNetDupe::System::ArgumentException);
     }
+
+    TEST(LoggingTests, GivenEmptyFilePath_WhenFileLoggerProviderCreated_AutoGeneratesPathAndDirectory) {
+        // Given
+        String emptyPath = "";
+
+        // When
+        auto provider = SmartPointer<FileLoggerProvider>::NewShared(emptyPath);
+        String resolvedPath = provider->GetFilePath();
+
+        // Then
+        ASSERT_TRUE(resolvedPath.EndsWith("logs/app.log") || resolvedPath.EndsWith("logs\\app.log"));
+        ASSERT_TRUE(IO::File::Exists(resolvedPath));
+
+        // Cleanup
+        if (IO::File::Exists(resolvedPath)) {
+            IO::File::Delete(resolvedPath);
+        }
+    }
+
+    TEST(LoggingTests, GivenRelativeFilePath_WhenFileLoggerProviderCreated_ResolvesFullPathAndCreatesDirectory) {
+        // Given
+        String relativePath = "custom_dir/test_relative.log";
+
+        // When
+        auto provider = SmartPointer<FileLoggerProvider>::NewShared(relativePath);
+        String resolvedPath = provider->GetFilePath();
+
+        // Then
+        ASSERT_TRUE(IO::Path::IsPathFullyQualified(resolvedPath));
+        ASSERT_TRUE(IO::File::Exists(resolvedPath));
+
+        // Cleanup
+        if (IO::File::Exists(resolvedPath)) {
+            IO::File::Delete(resolvedPath);
+        }
+    }
 }
 

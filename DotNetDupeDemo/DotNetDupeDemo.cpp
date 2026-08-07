@@ -46,6 +46,7 @@ int main() {
     DemonstrateTerminalSession();
     RunConcurrentCollectionsDemo();
     RunGenericCollectionsDemo();
+    DemonstrateDirectory();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");
