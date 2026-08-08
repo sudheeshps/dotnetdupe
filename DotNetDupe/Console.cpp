@@ -357,6 +357,9 @@ void Console::SetError(const SmartPointer<IO::TextWriter>& pErrorWriter) {
 }
 
 void Console::SetIn(const SmartPointer<IO::TextReader>& pInReader) {
+    if (!pInReader) {
+        throw ArgumentException("pInReader cannot be null.");
+    }
     std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_pInReader = pInReader;
 }

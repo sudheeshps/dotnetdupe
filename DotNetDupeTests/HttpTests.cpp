@@ -295,4 +295,12 @@ namespace DotNetDupeTests {
         // When/Then
         EXPECT_THROW(client.Get("ftp://example.com"), ArgumentException);
     }
+
+    TEST(HttpTests, GivenHttpClient_WhenHttpResponseCreated_ThenBehavesAsExpected) {
+        HttpResponseMessage resp(HttpStatusCode::NotFound);
+        EXPECT_FALSE(resp.IsSuccessStatusCode());
+        EXPECT_EQ(resp.GetStatusCode(), HttpStatusCode::NotFound);
+
+        EXPECT_THROW(resp.EnsureSuccessStatusCode(), HttpRequestException);
+    }
 }

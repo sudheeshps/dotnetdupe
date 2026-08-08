@@ -17,7 +17,7 @@ namespace DotNetDupe {
             // {
             //   "MinLevel": "Information",        // Can be a string (case-insensitive) or integer (0-6)
             //   "IsJsonFormat": false,
-            //   "PlainTextFormat": "{Timestamp} [{Level}] [{Category}] {Message}",
+            //   "PlainTextFormat": "{Timestamp} [{ProcessId}] [{ThreadId}] [{Level}] [{Category}] {Message}",
             //   "TimestampFormat": "%Y-%m-%d %H:%M:%S",
             //   "FilePath": "app.log",
             //   "Rollover": {
@@ -30,7 +30,7 @@ namespace DotNetDupe {
                 LogLevel MinLevel = LogLevel::Information;
                 bool IsJsonFormat = false;
                 
-                // Plain text formatting template: e.g. "{Timestamp} [{Level}] [{Category}] {Message}"
+                // Plain text formatting template: e.g. "{Timestamp} [{ProcessId}:{ThreadId}] [{Level}] [{Category}] {Message}"
                 DotNetDupe::System::String PlainTextFormat = "{Timestamp} [{Level}] [{Category}] {Message}";
                 
                 // Timestamp formatting template using strftime syntax: e.g. "%Y-%m-%d %H:%M:%S"

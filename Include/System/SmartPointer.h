@@ -212,7 +212,7 @@ namespace DotNetDupe {
              */
             template <typename... Args>
             static SmartPointer<T> New(Args&&... args) {
-                return SmartPointer<T>(new T(std::forward<Args>(args)...));
+                return SmartPointer<T>(new T(std::forward<Args>(args)...), false);
             }
 
             /**

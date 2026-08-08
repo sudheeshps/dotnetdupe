@@ -14,7 +14,7 @@ namespace DotNetDupe {
                 DotNetDupe::System::String m_categoryName;
                 LoggerConfiguration m_config;
 
-                std::string FormatLogLine(const std::string& fmt, const std::string& timestamp, const std::string& level, const std::string& category, const std::string& message, const std::string& properties) const;
+                std::string FormatLogLine(const std::string& fmt, const std::string& timestamp, const std::string& level, const std::string& category, const std::string& message, const std::string& properties, const std::string& processId, const std::string& threadId) const;
                 std::string GetFormattedTimestamp(const std::string& formatFmt) const;
                 const char* LogLevelToString(LogLevel level) const;
 

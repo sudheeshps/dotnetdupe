@@ -208,6 +208,14 @@ namespace DotNetDupe {
 #endif
             }
 
+            int Process::GetCurrentProcessId() {
+#if defined(_WIN32)
+                return static_cast<int>(::GetCurrentProcessId());
+#else
+                return static_cast<int>(getpid());
+#endif
+            }
+
             void Process::Refresh() const {
                 if (m_bHasExited) return;
                 if (m_pProcessHandle == nullptr) return;

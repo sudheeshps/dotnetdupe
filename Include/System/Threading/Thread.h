@@ -36,6 +36,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void SetName(const String& name);
                 
                 DOTNETDUPE_API static Thread* GetCurrentThread();
+                DOTNETDUPE_API static int GetCurrentThreadId();
 
             private:
                 Thread(); // For internal use (main thread wrapper)

@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Extensions/Logging/LoggerBase.h"
+#include "System/Diagnostics/Process.h"
+#include "System/Threading/Thread.h"
 #include <chrono>
 #include <iomanip>
 #include <sstream>
@@ -51,7 +53,7 @@ namespace DotNetDupe {
                 }
             }
 
-            std::string LoggerBase::FormatLogLine(const std::string& fmt, const std::string& timestamp, const std::string& level, const std::string& category, const std::string& message, const std::string& properties) const {
+            std::string LoggerBase::FormatLogLine(const std::string& fmt, const std::string& timestamp, const std::string& level, const std::string& category, const std::string& message, const std::string& properties, const std::string& processId, const std::string& threadId) const {
                 std::string res = fmt;
                 auto replace = [](std::string& str, const std::string& from, const std::string& to) {
                     size_t start_pos = 0;
@@ -65,6 +67,8 @@ namespace DotNetDupe {
                 replace(res, "{Category}", category);
                 replace(res, "{Message}", message);
                 replace(res, "{Properties}", properties);
+                replace(res, "{ProcessId}", processId);
+                replace(res, "{ThreadId}", threadId);
                 return res;
             }
 
@@ -72,6 +76,8 @@ namespace DotNetDupe {
                                                     const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) const {
                 std::string timestamp = GetFormattedTimestamp(m_config.TimestampFormat.GetRawString());
                 const char* levelStr = LogLevelToString(logLevel);
+                std::string procId = std::to_string(DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId());
+                std::string threadId = std::to_string(DotNetDupe::System::Threading::Thread::GetCurrentThreadId());
 
                 std::stringstream logLine;
 
@@ -79,7 +85,9 @@ namespace DotNetDupe {
                     logLine << "{\"timestamp\":\"" << timestamp 
                             << "\",\"level\":\"" << levelStr 
                             << "\",\"category\":\"" << m_categoryName.GetRawString() 
-                            << "\",\"message\":\"" << message.GetRawString() << "\"";
+                            << "\",\"processId\":" << procId
+                            << ",\"threadId\":" << threadId
+                            << ",\"message\":\"" << message.GetRawString() << "\"";
 
                     if (properties.GetCount() > 0) {
                         logLine << ",\"properties\":{";
@@ -115,7 +123,9 @@ namespace DotNetDupe {
                         levelStr,
                         m_categoryName.GetRawString(),
                         message.GetRawString(),
-                        propsStr
+                        propsStr,
+                        procId,
+                        threadId
                     );
                     logLine << formatted;
                 }

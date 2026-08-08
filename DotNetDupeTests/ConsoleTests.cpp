@@ -312,14 +312,15 @@ namespace SystemTests {
 		TEST(ConsoleTest, SetIn_Should_RedirectInput_When_StringReaderProvided) {
 			// Given
 			Console::Clear();
-			SmartPointer<DotNetDupe::System::IO::StringReader> reader(new DotNetDupe::System::IO::StringReader("Custom input line"));
+			DotNetDupe::System::IO::StringReader* pReaderRaw = new DotNetDupe::System::IO::StringReader("Custom input line");
+			SmartPointer<DotNetDupe::System::IO::TextReader> reader(pReaderRaw, true);
 			Console::SetIn(reader);
 
 			// When
 			String inputLine = Console::ReadLine();
 
 			// Then
-			ASSERT_TRUE(Console::In() == reader);
+			ASSERT_TRUE(Console::In().Get() == pReaderRaw);
 			ASSERT_EQ(inputLine, "Custom input line");
 
 			// Cleanup

@@ -41,6 +41,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API int GetExitCode() const { return m_iExitCode; }
                 DOTNETDUPE_API bool GetHasExited() const;
                 DOTNETDUPE_API int GetId() const { return m_iId; }
+                DOTNETDUPE_API static int GetCurrentProcessId();
 
                 DOTNETDUPE_API void Kill();
 

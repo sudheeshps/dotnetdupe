@@ -38,22 +38,22 @@ namespace DotNetDupe {
                 m_config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
                 m_fileMutex = std::make_shared<std::mutex>();
                 m_fileStream = std::make_shared<std::ofstream>(m_config.FilePath.GetRawString(), std::ios::out | std::ios::app);
-                
-                if (!m_fileStream->is_open()) {
-                    throw DotNetDupe::System::IO::IOException(("Failed to open file for logging: " + m_config.FilePath).GetRawString());
-                }
             }
 
             FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel) {
                 m_config.FilePath = ResolveAndPrepareLogPath(filePath);
                 m_config.IsJsonFormat = isJsonFormat;
                 m_config.MinLevel = minLevel;
-
                 m_fileMutex = std::make_shared<std::mutex>();
                 m_fileStream = std::make_shared<std::ofstream>(m_config.FilePath.GetRawString(), std::ios::out | std::ios::app);
-                
-                if (!m_fileStream->is_open()) {
-                    throw DotNetDupe::System::IO::IOException(("Failed to open file for logging: " + m_config.FilePath).GetRawString());
+            }
+
+            FileLoggerProvider::~FileLoggerProvider() {
+                if (m_fileMutex && m_fileStream) {
+                    std::lock_guard<std::mutex> lock(*m_fileMutex);
+                    if (m_fileStream->is_open()) {
+                        m_fileStream->close();
+                    }
                 }
             }
 

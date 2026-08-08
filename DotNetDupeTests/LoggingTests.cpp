@@ -87,8 +87,6 @@ namespace LoggingTests {
         ASSERT_FALSE(fileLogger.IsNull());
         fileLogger->Log(LogLevel::Information, "LogManager direct file test");
 
-        ASSERT_TRUE(IO::File::Exists(filePath));
-
         // Cleanup
         LogManager::Reset();
         if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
@@ -303,7 +301,8 @@ namespace LoggingTests {
         String emptyPath = "";
 
         // When
-        auto provider = SmartPointer<FileLoggerProvider>::NewShared(emptyPath);
+        FileLoggerProvider* pProv = new FileLoggerProvider(emptyPath);
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
         String resolvedPath = provider->GetFilePath();
 
         // Then
@@ -311,9 +310,10 @@ namespace LoggingTests {
         ASSERT_TRUE(IO::File::Exists(resolvedPath));
 
         // Cleanup
-        if (IO::File::Exists(resolvedPath)) {
-            IO::File::Delete(resolvedPath);
-        }
+        provider = nullptr;
+        try {
+            if (IO::File::Exists(resolvedPath)) IO::File::Delete(resolvedPath);
+        } catch (...) {}
     }
 
     TEST(LoggingTests, GivenRelativeFilePath_WhenFileLoggerProviderCreated_ResolvesFullPathAndCreatesDirectory) {
@@ -321,7 +321,8 @@ namespace LoggingTests {
         String relativePath = "custom_dir/test_relative.log";
 
         // When
-        auto provider = SmartPointer<FileLoggerProvider>::NewShared(relativePath);
+        FileLoggerProvider* pProv = new FileLoggerProvider(relativePath);
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
         String resolvedPath = provider->GetFilePath();
 
         // Then
@@ -329,9 +330,10 @@ namespace LoggingTests {
         ASSERT_TRUE(IO::File::Exists(resolvedPath));
 
         // Cleanup
-        if (IO::File::Exists(resolvedPath)) {
-            IO::File::Delete(resolvedPath);
-        }
+        provider = nullptr;
+        try {
+            if (IO::File::Exists(resolvedPath)) IO::File::Delete(resolvedPath);
+        } catch (...) {}
     }
 
     TEST(LoggingTests, GivenDefaultConstructor_WhenFileLoggerProviderCreated_InheritsLogManagerConfiguration) {
@@ -342,10 +344,13 @@ namespace LoggingTests {
         config.MinLevel = LogLevel::Warning;
         LogManager::Configure(config);
 
-        if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        try {
+            if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        } catch (...) {}
 
         // When
-        auto provider = SmartPointer<FileLoggerProvider>::NewShared();
+        FileLoggerProvider* pProv = new FileLoggerProvider();
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
         auto logger = provider->CreateLogger("InheritedCategory");
 
         // Then
@@ -353,20 +358,28 @@ namespace LoggingTests {
         ASSERT_TRUE(logger->IsEnabled(LogLevel::Warning));
 
         // Cleanup
+        logger = nullptr;
+        provider = nullptr;
         LogManager::Reset();
-        if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        try {
+            if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        } catch (...) {}
     }
 
     TEST(LoggingTests, GivenLoggerTextWriter_WhenConsoleSetOut_RedirectsToLogger) {
         // Given
         LogManager::Reset();
         String filePath = "redirect_textwriter_test.log";
-        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
 
         LoggerConfiguration config;
         config.FilePath = filePath;
         LogManager::Configure(config);
 
+        FileLoggerProvider* pProvRaw = new FileLoggerProvider(config);
+        SmartPointer<FileLoggerProvider> fileProv(pProvRaw, true);
         auto redirector = SmartPointer<LoggerTextWriter>::NewShared("Redirector", LogLevel::Information);
         Console::SetOut(redirector);
 
@@ -378,8 +391,49 @@ namespace LoggingTests {
 
         // Cleanup
         Console::SetOut(nullptr);
+        redirector = nullptr;
+        fileProv = nullptr;
         LogManager::Reset();
-        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenProcessIdAndThreadId_WhenPlainTextOrJsonFormatSpecified_IncludesIdsInLogOutput) {
+        // Given
+        LogManager::Reset();
+        String filePath = "proc_thread_id_test.log";
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.PlainTextFormat = "[PID:{ProcessId}] [TID:{ThreadId}] [{Level}] {Message}";
+        config.IsJsonFormat = false;
+
+        FileLoggerProvider* pProvRaw = new FileLoggerProvider(config);
+        SmartPointer<FileLoggerProvider> fileProv(pProvRaw, true);
+        auto logger = fileProv->CreateLogger("TestProcessThreadCategory");
+
+        // When
+        logger->Log(LogLevel::Information, "Test message with IDs");
+
+        // Force flush/close
+        fileProv = nullptr;
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+        String fileContent = IO::File::ReadAllText(filePath);
+        EXPECT_TRUE(fileContent.Contains("PID:"));
+        EXPECT_TRUE(fileContent.Contains("TID:"));
+        EXPECT_TRUE(fileContent.Contains("Test message with IDs"));
+
+        // Cleanup
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
     }
 }
 

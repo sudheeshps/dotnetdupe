@@ -4,6 +4,13 @@
 #include "System/SmartPointer.h"
 #include <chrono>
 
+#if defined(_WIN32)
+#include <windows.h>
+#else
+#include <unistd.h>
+#include <sys/syscall.h>
+#endif
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
@@ -83,6 +90,14 @@ namespace DotNetDupe {
                     _currentThread = _currentThreadStorage.Get();
                 }
                 return _currentThread;
+            }
+
+            int Thread::GetCurrentThreadId() {
+#if defined(_WIN32)
+                return static_cast<int>(::GetCurrentThreadId());
+#else
+                return static_cast<int>(::syscall(__NR_gettid));
+#endif
             }
 
             SmartPointer<Thread> Thread::CreateCurrentThreadWrapper() {

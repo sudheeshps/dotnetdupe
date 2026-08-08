@@ -68,12 +68,13 @@ The project is configured to generate a NuGet package on build (as specified in 
 ### Testing
 - All new functionality should include corresponding unit tests in the `DotNetDupeTests/` project.
 - Tests should follow the naming convention `ClassTests.cpp`.
+- **Test Coverage**: **100% unit test coverage is strictly required for all added/modified classes and APIs.** Test suites must cover positive paths, negative paths, invalid inputs, edge cases, exceptions, and mocked streams/interfaces.
 - **Test Integrity**: **Existing unit tests shall not be modified or deleted during refactoring.** All tests must continue to pass cleanly without modification.
 
 ## Class Generation Instructions
 When generating a new class, the following instructions must be strictly followed:
 1. **Strictly follow the development guidelines** defined in this document (naming, style, code patterns, etc.).
-2. **Add tests in GivenWhenThen format** covering positive, negative, and edge cases to ensure robust functionality.
+2. **Ensure 100% unit test coverage**: Add tests in GivenWhenThen format covering positive, negative, null/empty parameters, boundary conditions, custom exceptions, and mocked streams/dependencies to ensure 100% coverage.
 3. **Add documentation following documentation guidelines** in the `docs/` directory, referring to existing documentation (e.g., `docs/String.md`, `docs/Process.md`) for style and structure. **Each API documentation file must include clear, complete, and compilation-ready sample code usage showing real-world application of the API.**
 4. **Link the documentation to README.md** under the appropriate namespace section to ensure discoverability.
 5. **Add demo code** in the `DotNetDupeDemo` project showing clear, compile-ready usage of the new class, and call it from its `main()` entrypoint.
