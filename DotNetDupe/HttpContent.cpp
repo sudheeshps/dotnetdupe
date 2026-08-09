@@ -119,6 +119,67 @@ namespace DotNetDupe {
                     return m_iCount;
                 }
 
+                // --- StreamContent ---
+
+                StreamContent::StreamContent(const SmartPointer<IO::Stream>& stream)
+                    : m_pStream(stream) {
+                    if (stream.IsNull()) {
+                        throw ArgumentNullException("stream");
+                    }
+                    GetHeaders().Add("Content-Type", "application/octet-stream");
+                }
+
+                String StreamContent::ReadAsString() {
+                    Array<char> bytes = ReadAsByteArray();
+                    String s;
+                    if (bytes.GetLength() > 0) {
+                        s.GetString().assign(bytes.GetData(), bytes.GetLength());
+                    }
+                    return s;
+                }
+
+                Array<char> StreamContent::ReadAsByteArray() {
+                    if (m_pStream.IsNull()) return Array<char>(0);
+                    std::vector<char> vecData;
+                    char buf[4096];
+                    int iRead = 0;
+                    while ((iRead = m_pStream->Read(buf, 0, sizeof(buf))) > 0) {
+                        vecData.insert(vecData.end(), buf, buf + iRead);
+                    }
+                    Array<char> arr(static_cast<int>(vecData.size()));
+                    if (!vecData.empty()) {
+                        std::memcpy(arr.GetData(), vecData.data(), vecData.size());
+                    }
+                    return arr;
+                }
+
+                SmartPointer<IO::Stream> StreamContent::ReadAsStream() {
+                    return m_pStream;
+                }
+
+                void StreamContent::CopyTo(const SmartPointer<IO::Stream>& stream) {
+                    if (stream.IsNull()) {
+                        throw ArgumentNullException("stream");
+                    }
+                    if (m_pStream.IsNull()) return;
+                    char buf[4096];
+                    int iRead = 0;
+                    while ((iRead = m_pStream->Read(buf, 0, sizeof(buf))) > 0) {
+                        stream->Write(buf, 0, iRead);
+                    }
+                }
+
+                long StreamContent::GetLength() const {
+                    if (!m_pStream.IsNull() && m_pStream->CanSeek()) {
+                        try {
+                            return m_pStream->GetLength();
+                        } catch (...) {
+                            return -1;
+                        }
+                    }
+                    return -1;
+                }
+
             }
         }
     }

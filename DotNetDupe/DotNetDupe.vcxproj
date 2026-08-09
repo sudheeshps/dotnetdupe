@@ -255,6 +255,7 @@
     <ClInclude Include="..\Include\System\IdentityModel\Tokens\Jwt\JWTToken.h" />
     <ClInclude Include="..\Include\System\Net\HttpStatusCode.h" />
     <ClInclude Include="..\Include\System\Net\Dns.h" />
+    <ClInclude Include="..\Include\System\Net\Http\FileDownloader.h" />
     <ClInclude Include="..\Include\System\IO\MemoryStream.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpMethod.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpContent.h" />
@@ -384,6 +385,7 @@
     <ClCompile Include="HttpRequestMessage.cpp" />
     <ClCompile Include="HttpResponseMessage.cpp" />
     <ClCompile Include="HttpClient.cpp" />
+    <ClCompile Include="FileDownloader.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
     <ClCompile Include="Uri.cpp" />
     <ClCompile Include="UriBuilder.cpp" />

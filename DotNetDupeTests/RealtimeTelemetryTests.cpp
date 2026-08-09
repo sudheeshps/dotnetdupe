@@ -45,6 +45,9 @@ TEST_F(RealtimeTelemetryTests, GivenSystemMetrics_WhenSystemMetricsCalled_ThenRe
 
     auto lstServices = SystemMetrics::GetAllServices();
     EXPECT_GE(lstServices.GetCount(), 0);
+    for (int i = 0; i < lstServices.GetCount(); ++i) {
+        EXPECT_FALSE(lstServices[i].sStartType.IsEmpty());
+    }
 }
 
 TEST_F(RealtimeTelemetryTests, GivenActiveUserSession_WhenGetAllSessionsCalled_ThenReturnsSessionsList) {

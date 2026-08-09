@@ -9,6 +9,7 @@
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentException.h"
 #include "System/IO/MemoryStream.h"
+#include "System/Convert.h"
 #include <sstream>
 #include <vector>
 #include <cctype>
@@ -22,17 +23,13 @@ namespace DotNetDupe {
 
                 static std::string ReadLine(const SmartPointer<IO::Stream>& stream) {
                     std::string line;
-                    char c;
+                    char c = 0;
                     while (true) {
-                        try {
-                            int read = stream->Read(&c, 0, 1);
-                            if (read <= 0) break;
-                            if (c == '\n') break;
-                            if (c != '\r') {
-                                line += c;
-                            }
-                        } catch (...) {
-                            break;
+                        int read = stream->Read(&c, 0, 1);
+                        if (read <= 0) break;
+                        if (c == '\n') break;
+                        if (c != '\r') {
+                            line += c;
                         }
                     }
                     return line;
@@ -144,7 +141,7 @@ namespace DotNetDupe {
                     
                     // Host header
                     ssHeadersStream << "Host: " << sHost.GetRawString();
-                    if (uri.GetPort() != 80 && uri.GetPort() > 0) {
+                    if (!uri.IsDefaultPort() && uri.GetPort() > 0) {
                         ssHeadersStream << ":" << uri.GetPort();
                     }
                     ssHeadersStream << "\r\n";
@@ -321,6 +318,10 @@ namespace DotNetDupe {
                 }
 
                 SmartPointer<HttpResponseMessage> HttpClient::Send(const SmartPointer<HttpRequestMessage>& request) {
+                    return Send(request, HttpCompletionOption::ResponseContentRead);
+                }
+
+                SmartPointer<HttpResponseMessage> HttpClient::Send(const SmartPointer<HttpRequestMessage>& request, HttpCompletionOption completionOption) {
                     if (request.IsNull()) {
                         throw ArgumentNullException("request");
                     }
@@ -337,15 +338,14 @@ namespace DotNetDupe {
                     }
                     String sResolvedIp = ResolveHost(uri, iPort);
 
-                    // Connect
-                    Sockets::TcpClient tcpClient;
+                    m_pLastTcpClient = SmartPointer<Sockets::TcpClient>::NewShared();
                     try {
-                        tcpClient.Connect(sResolvedIp, iPort);
+                        m_pLastTcpClient->Connect(sResolvedIp, iPort);
                     } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
                         throw HttpRequestException(ex.What());
                     }
 
-                    SmartPointer<IO::Stream> spStream = tcpClient.GetStream();
+                    SmartPointer<IO::Stream> spStream = m_pLastTcpClient->GetStream();
 
                     if (scheme == "https") {
                         auto spSslStream = SmartPointer<Net::Security::SslStream>::NewShared(spStream, false);
@@ -358,8 +358,22 @@ namespace DotNetDupe {
                     }
 
                     std::string sHeaders = PrepareHeaders(request, uri);
-
                     SendRequest(spStream, sHeaders, request->GetContent());
+
+                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) {
+                        auto spResponse = ParseStatusLine(spStream);
+                        bool bChunked = false;
+                        long lContentLength = -1;
+                        String sContentType = "text/plain";
+                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+                        auto spResponseContent = SmartPointer<HttpContent>(new StreamContent(spStream), true);
+                        spResponseContent->GetHeaders()["Content-Type"] = sContentType;
+                        if (lContentLength >= 0) {
+                            spResponseContent->GetHeaders()["Content-Length"] = Convert::ToString(static_cast<long long>(lContentLength));
+                        }
+                        spResponse->SetContent(spResponseContent);
+                        return spResponse;
+                    }
 
                     return PrepareResponse(spStream);
                 }

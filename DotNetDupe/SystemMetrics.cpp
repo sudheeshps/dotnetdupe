@@ -537,6 +537,27 @@ namespace DotNetDupe {
                 return lstResult;
             }
 
+            static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
+                SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
+                if (hService == NULL) return String("Manual");
+                BYTE buffer[1024];
+                DWORD dwBytesNeeded = 0;
+                QUERY_SERVICE_CONFIGW* pConfig = reinterpret_cast<QUERY_SERVICE_CONFIGW*>(buffer);
+                String sStartType = String("Manual");
+                if (::QueryServiceConfigW(hService, pConfig, sizeof(buffer), &dwBytesNeeded)) {
+                    switch (pConfig->dwStartType) {
+                    case SERVICE_AUTO_START: sStartType = String("Automatic"); break;
+                    case SERVICE_DEMAND_START: sStartType = String("Manual"); break;
+                    case SERVICE_DISABLED: sStartType = String("Disabled"); break;
+                    case SERVICE_BOOT_START: sStartType = String("Boot"); break;
+                    case SERVICE_SYSTEM_START: sStartType = String("System"); break;
+                    default: sStartType = String("Manual"); break;
+                    }
+                }
+                ::CloseServiceHandle(hService);
+                return sStartType;
+            }
+
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
                 Collections::Generic::List<ServiceInfo> lstServices;
                 SC_HANDLE hSCM = ::OpenSCManagerW(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
@@ -545,7 +566,6 @@ namespace DotNetDupe {
                 DWORD dwBytesNeeded = 0;
                 DWORD dwServicesReturned = 0;
                 DWORD dwResumeHandle = 0;
-
                 ::EnumServicesStatusExW(hSCM, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_STATE_ALL,
                                         NULL, 0, &dwBytesNeeded, &dwServicesReturned, &dwResumeHandle, NULL);
 
@@ -572,7 +592,7 @@ namespace DotNetDupe {
                             default: svc.sStatus = String("Unknown"); break;
                             }
 
-                            svc.sStartType = String("Manual");
+                            svc.sStartType = GetServiceStartType(hSCM, pServices[i].lpServiceName);
                             lstServices.Add(svc);
                         }
                     }

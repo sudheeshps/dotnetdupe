@@ -38,3 +38,4 @@ void DemonstrateTerminalSession();
 void RunConcurrentCollectionsDemo();
 void RunGenericCollectionsDemo();
 void DemonstrateDirectory();
+void DemonstrateFileDownloader();

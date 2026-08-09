@@ -879,6 +879,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
 | [RestClient](docs/RestClient.md) | Represents a strongly-typed REST client that simplifies resource-oriented Web API interactions by automatically serializing/deserializing payloads to and from C++ structures. |
+| [FileDownloader](docs/FileDownloader.md) | Provides HTTP/HTTPS file downloading with pause/resume support, auto-resumption of partial downloads, and real-time speed/progress tracking built upon `HttpClient`. |
 | [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
 | [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
 | [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |

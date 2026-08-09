@@ -85,7 +85,7 @@ namespace DotNetDupe {
                     _port = std::stoi(authorityStr.substr(portStart + 1));
                 } else {
                     _host = String(authorityStr.c_str());
-                    _port = 80; // Default
+                    _port = (_scheme.ToLower() == "https") ? 443 : 80;
                 }
             }
         }

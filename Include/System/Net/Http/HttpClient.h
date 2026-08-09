@@ -8,13 +8,22 @@
 #include "System/Net/Http/HttpRequestMessage.h"
 #include "System/Net/Http/HttpResponseMessage.h"
 #include "System/Net/Http/HttpContent.h"
+#include "System/Net/Sockets/TcpClient.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include <string>
 
 namespace DotNetDupe {
     namespace System {
         namespace Net {
+            namespace Sockets {
+                class TcpClient;
+            }
             namespace Http {
+
+                enum class HttpCompletionOption {
+                    ResponseContentRead,
+                    ResponseHeadersRead
+                };
 
                 class HttpClient : public Object {
                 public:
@@ -34,6 +43,7 @@ namespace DotNetDupe {
                     DOTNETDUPE_API SmartPointer<HttpResponseMessage> Delete(const Uri& requestUri);
 
                     DOTNETDUPE_API SmartPointer<HttpResponseMessage> Send(const SmartPointer<HttpRequestMessage>& request);
+                    DOTNETDUPE_API SmartPointer<HttpResponseMessage> Send(const SmartPointer<HttpRequestMessage>& request, HttpCompletionOption completionOption);
 
                     DOTNETDUPE_API String GetString(const String& requestUri);
                     DOTNETDUPE_API String GetString(const Uri& requestUri);
@@ -46,6 +56,7 @@ namespace DotNetDupe {
 
                 private:
                     Collections::Generic::Dictionary<String, String> m_defaultRequestHeaders;
+                    SmartPointer<Sockets::TcpClient> m_pLastTcpClient;
 
                     String ResolveHost(const Uri& uri, int& riPort);
                     std::string PrepareHeaders(const SmartPointer<HttpRequestMessage>& spRequest, const Uri& uri);
