@@ -28,9 +28,9 @@ namespace DotNetDupe {
                 auto time = std::chrono::system_clock::to_time_t(now);
                 struct tm buf;
 #if defined(_WIN32)
-                localtime_s(&buf, &time);
+                gmtime_s(&buf, &time);
 #else
-                localtime_r(&time, &buf);
+                gmtime_r(&time, &buf);
 #endif
                 std::string fmt = formatFmt.empty() ? "%Y-%m-%d %H:%M:%S" : formatFmt;
                 char timeStr[255] = { 0 };

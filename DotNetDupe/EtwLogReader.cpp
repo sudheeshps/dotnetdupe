@@ -110,21 +110,67 @@ namespace DotNetDupe {
                 EtwEvent evt;
                 evt.sChannelName = sChannelName;
                 evt.iEventId = 100 + iIndex;
-                evt.iLevel = 4;
+                evt.iLevel = 0;
                 evt.sProviderName = "Windows-ETW-Provider";
                 evt.dtTimeCreated = DateTimeOffset::Now();
 
                 FormatEtwEventXml(hEvt, evt);
                 FormatEtwEventMessage(hEvt, evt);
+
+                // Parse XML to extract real properties
+                if (!evt.sRawXml.IsEmpty()) {
+                    std::string sXml(evt.sRawXml.GetRawString() ? evt.sRawXml.GetRawString() : "");
+                    
+                    size_t levelStart = sXml.find("<Level>");
+                    if (levelStart != std::string::npos) {
+                        size_t levelEnd = sXml.find("</Level>", levelStart);
+                        if (levelEnd != std::string::npos) {
+                            try {
+                                evt.iLevel = std::stoi(sXml.substr(levelStart + 7, levelEnd - levelStart - 7));
+                            } catch (...) {}
+                        }
+                    }
+
+                    size_t idStart = sXml.find("<EventID>");
+                    if (idStart != std::string::npos) {
+                        size_t idEnd = sXml.find("</EventID>", idStart);
+                        if (idEnd != std::string::npos) {
+                            try {
+                                evt.iEventId = std::stoi(sXml.substr(idStart + 9, idEnd - idStart - 9));
+                            } catch (...) {}
+                        }
+                    }
+
+                    size_t provStart = sXml.find("Provider Name=\"");
+                    if (provStart != std::string::npos) {
+                        size_t provEnd = sXml.find("\"", provStart + 15);
+                        if (provEnd != std::string::npos) {
+                            evt.sProviderName = String(sXml.substr(provStart + 15, provEnd - provStart - 15).c_str());
+                        }
+                    }
+                }
+
+                // ETW commonly uses 0 (LogAlways) to represent generic Info events, map it back to 4 (Info)
+                if (evt.iLevel == 0) {
+                    evt.iLevel = 4;
+                }
+
                 return evt;
             }
 
-            void EtwLogReader::ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents) {
+            void EtwLogReader::ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List<EtwEvent>& lstEvents) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
 
-                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), L"*", dwFlags);
+                std::wstring wQuery = L"*";
+                if (level == EtwEventLevel::Critical) wQuery = L"*[System[Level=1]]";
+                else if (level == EtwEventLevel::Error) wQuery = L"*[System[Level=2]]";
+                else if (level == EtwEventLevel::Warning) wQuery = L"*[System[Level=3]]";
+                else if (level == EtwEventLevel::Info) wQuery = L"*[System[Level=4 or Level=0 or not(Level)]]";
+                else if (level == EtwEventLevel::Verbose) wQuery = L"*[System[Level=5]]";
+
+                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), wQuery.c_str(), dwFlags);
                 if (hResults == NULL) return;
 
                 if (iStartIndex > 0) {
@@ -228,31 +274,43 @@ namespace DotNetDupe {
             }
 
             Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName) {
-                return ReadEvents(sChannelName, 0, 0, true);
+                return ReadEvents(sChannelName, 0, 0, true, EtwEventLevel::All);
             }
 
             Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents) {
-                return ReadEvents(sChannelName, iMaxEvents, 0, true);
+                return ReadEvents(sChannelName, iMaxEvents, 0, true, EtwEventLevel::All);
             }
 
             Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex) {
-                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, true);
+                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, true, EtwEventLevel::All);
             }
 
             Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) {
+                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, EtwEventLevel::All);
+            }
+
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 std::lock_guard<std::mutex> lock(s_mtxEtw);
                 RegisterChannelIfNew(sChannelName);
                 Collections::Generic::List<EtwEvent> lstEvents;
 
 #if defined(_WIN32)
-                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, lstEvents);
+                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, level, lstEvents);
 #endif
 
                 auto it = s_mapChannelEvents.find(sChannelName);
                 if (it != s_mapChannelEvents.end()) {
                     int iSkipped = 0;
                     for (const auto& evt : it->second) {
+                        if (level != EtwEventLevel::All) {
+                            if (level == EtwEventLevel::Critical && evt.iLevel != 1) continue;
+                            if (level == EtwEventLevel::Error && evt.iLevel != 2) continue;
+                            if (level == EtwEventLevel::Warning && evt.iLevel != 3) continue;
+                            if (level == EtwEventLevel::Info && evt.iLevel != 4 && evt.iLevel != 0) continue;
+                            if (level == EtwEventLevel::Verbose && evt.iLevel != 5) continue;
+                        }
+
                         if (iStartIndex > 0 && iSkipped < iStartIndex) {
                             iSkipped++;
                             continue;
