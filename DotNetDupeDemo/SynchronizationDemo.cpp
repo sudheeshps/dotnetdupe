@@ -136,11 +136,12 @@ void DemonstrateSynchronization() {
     Console::Write(bCreatedNewEvent ? "true" : "false");
     Console::WriteLine(")");
 
-    ManualResetEvent* pOpenedEvent = ManualResetEvent::OpenExisting("GlobalDemoEvent");
-    if (pOpenedEvent != nullptr) {
-        Console::WriteLine("  Successfully opened existing named ManualResetEvent via OpenExisting.");
+    SmartPointer<ManualResetEvent> mre3 = ManualResetEvent::OpenExisting("Global\\DemoManualResetEvent");
+    if (mre3.Get() != nullptr) {
+        Console::WriteLine("Successfully opened existing ManualResetEvent.");
+        mre3->WaitOne();
     }
-
+    
     bool bCreatedNewMutex = false;
     Mutex objNamedMutex(false, "GlobalDemoMutex", true, bCreatedNewMutex);
     Console::Write("  Created named Mutex (bCreatedNew=");

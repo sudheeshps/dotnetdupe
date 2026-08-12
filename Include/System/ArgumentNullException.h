@@ -1,12 +1,14 @@
 #pragma once
-
-#include "System/BasicArgumentException.h"
+#include "System/ArgumentException.h"
 
 namespace DotNetDupe {
     namespace System {
-        class ArgumentNullException : public BasicArgumentException<char> {
+
+        class ArgumentNullException : public ArgumentException {
         public:
-            ArgumentNullException(const char* message) : BasicArgumentException<char>(message) { }
+            ArgumentNullException(const char* pchMessage) : ArgumentException(pchMessage) {}
+            ArgumentNullException(const String& sMessage) : ArgumentException(sMessage) {}
         };
+
     }
 }

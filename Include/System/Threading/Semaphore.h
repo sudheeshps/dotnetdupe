@@ -1,6 +1,8 @@
 #pragma once
 #include "System/Threading/WaitHandle.h"
+#include "System/SmartPointer.h"
 #include "System/String.h"
+#include "System/SmartPointer.h"
 #include <mutex>
 #include <condition_variable>
 namespace DotNetDupe {
@@ -17,8 +19,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API bool WaitOne(int millisecondsTimeout) override;
                 DOTNETDUPE_API int Release(int releaseCount = 1) override;
 
-                DOTNETDUPE_API static Semaphore* OpenExisting(const String& sName);
-                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, Semaphore*& pResult);
+                DOTNETDUPE_API static SmartPointer<Semaphore> OpenExisting(const String& sName);
+                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult);
             private:
                 int _count;
                 int _maxCount;

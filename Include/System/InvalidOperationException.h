@@ -1,7 +1,14 @@
 #pragma once
-#include "System/BasicInvalidOperationException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicInvalidOperationException<char> InvalidOperationException;
+
+        class InvalidOperationException : public SystemException {
+        public:
+            InvalidOperationException(const char* pchMessage) : SystemException(pchMessage) {}
+            InvalidOperationException(const String& sMessage) : SystemException(sMessage) {}
+        };
+
     }
 }

@@ -1,9 +1,16 @@
 #pragma once
-#include "System/Threading/BasicSynchronizationLockException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-            typedef BasicSynchronizationLockException<char> SynchronizationLockException;
+
+        class SynchronizationLockException : public SystemException {
+        public:
+            SynchronizationLockException(const char* pchMessage) : SystemException(pchMessage) {}
+            SynchronizationLockException(const String& sMessage) : SystemException(sMessage) {}
+        };
         }
+
     }
 }

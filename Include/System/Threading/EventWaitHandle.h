@@ -1,8 +1,11 @@
 #pragma once
 #include "System/Threading/WaitHandle.h"
+#include "System/SmartPointer.h"
 #include "System/String.h"
+#include "System/SmartPointer.h"
 #include <mutex>
 #include <condition_variable>
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
@@ -18,8 +21,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API bool WaitOne() override;
                 DOTNETDUPE_API bool WaitOne(int millisecondsTimeout) override;
 
-                DOTNETDUPE_API static EventWaitHandle* OpenExisting(const String& sName);
-                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, EventWaitHandle*& pResult);
+                DOTNETDUPE_API static SmartPointer<EventWaitHandle> OpenExisting(const String& sName);
+                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult);
             protected:
                 bool _state;
                 bool _manualReset;

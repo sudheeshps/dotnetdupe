@@ -23,16 +23,16 @@ namespace DotNetDupe {
             AutoResetEvent::AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)
                 : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {}
 
-            AutoResetEvent* AutoResetEvent::OpenExisting(const String& sName) {
-                AutoResetEvent* pResult = nullptr;
+            SmartPointer<AutoResetEvent> AutoResetEvent::OpenExisting(const String& sName) {
+                SmartPointer<AutoResetEvent> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No AutoResetEvent handle of the given name exists.");
             }
 
-            bool AutoResetEvent::TryOpenExisting(const String& sName, AutoResetEvent*& pResult) {
-                pResult = nullptr;
+            bool AutoResetEvent::TryOpenExisting(const String& sName, SmartPointer<AutoResetEvent>& pResult) {
+                pResult = SmartPointer<AutoResetEvent>();
                 if (sName.IsEmpty()) {
                     return false;
                 }
@@ -40,10 +40,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    SmartPointer<AutoResetEvent> spEvt = SmartPointer<AutoResetEvent>::New(false);
+                    SmartPointer<AutoResetEvent> spEvt = SmartPointer<AutoResetEvent>::NewShared(false);
                     spEvt->_name = sName;
                     spEvt->_hHandle = h;
-                    pResult = spEvt.Detach();
+                    pResult = std::move(spEvt);
                     return true;
                 }
                 return false;

@@ -1,8 +1,14 @@
 #pragma once
-#include "System/BasicOverflowException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicOverflowException<char> OverflowException;
+
+        class OverflowException : public SystemException {
+        public:
+            OverflowException(const char* pchMessage) : SystemException(pchMessage) {}
+            OverflowException(const String& sMessage) : SystemException(sMessage) {}
+        };
+
     }
 }
-

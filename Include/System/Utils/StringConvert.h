@@ -6,7 +6,7 @@
 namespace DotNetDupe {
     namespace System {
         template <class CharT> class BasicString;
-        typedef BasicString<char> String;
+        typedef String String;
 
         namespace Utils {
             class StringConvert {

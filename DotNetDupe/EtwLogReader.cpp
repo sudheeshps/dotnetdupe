@@ -60,6 +60,12 @@ namespace DotNetDupe {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
+                if (!hSub) {
+                    DWORD err = ::GetLastError();
+                    char buf[256];
+                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
+                    throw SystemException(buf);
+                }
                 return hSub;
             }
 
@@ -171,7 +177,13 @@ namespace DotNetDupe {
                 else if (level == EtwEventLevel::Verbose) wQuery = L"*[System[Level=5]]";
 
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), wQuery.c_str(), dwFlags);
-                if (hResults == NULL) return;
+                if (hResults == NULL) {
+                    DWORD err = ::GetLastError();
+                    if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;
+                    char buf[256];
+                    snprintf(buf, sizeof(buf), "EvtQuery failed with error code %lu", err);
+                    throw SystemException(buf);
+                }
 
                 if (iStartIndex > 0) {
                     ::EvtSeek(hResults, iStartIndex, NULL, 0, EvtSeekRelativeToFirst);

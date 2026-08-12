@@ -71,16 +71,16 @@ namespace DotNetDupe {
 #endif
             }
 
-            Mutex* Mutex::OpenExisting(const String& sName) {
-                Mutex* pResult = nullptr;
+            SmartPointer<Mutex> Mutex::OpenExisting(const String& sName) {
+                SmartPointer<Mutex> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No mutex handle of the given name exists.");
             }
 
-            bool Mutex::TryOpenExisting(const String& sName, Mutex*& pResult) {
-                pResult = nullptr;
+            bool Mutex::TryOpenExisting(const String& sName, SmartPointer<Mutex>& pResult) {
+                pResult = SmartPointer<Mutex>();
                 if (sName.IsEmpty()) {
                     return false;
                 }
@@ -88,10 +88,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    SmartPointer<Mutex> spM = SmartPointer<Mutex>::New();
+                    SmartPointer<Mutex> spM = SmartPointer<Mutex>::NewShared();
                     spM->_name = sName;
                     spM->_hHandle = h;
-                    pResult = spM.Detach();
+                    pResult = std::move(spM);
                     return true;
                 }
                 return false;

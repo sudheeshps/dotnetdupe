@@ -61,16 +61,16 @@ namespace DotNetDupe {
 #endif
             }
 
-            Semaphore* Semaphore::OpenExisting(const String& sName) {
-                Semaphore* pResult = nullptr;
+            SmartPointer<Semaphore> Semaphore::OpenExisting(const String& sName) {
+                SmartPointer<Semaphore> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No semaphore handle of the given name exists.");
             }
 
-            bool Semaphore::TryOpenExisting(const String& sName, Semaphore*& pResult) {
-                pResult = nullptr;
+            bool Semaphore::TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult) {
+                pResult = SmartPointer<Semaphore>();
                 if (sName.IsEmpty()) {
                     return false;
                 }
@@ -78,10 +78,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::New(0, 1);
+                    SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::NewShared(0, 1);
                     spSem->_name = sName;
                     spSem->_hHandle = h;
-                    pResult = spSem.Detach();
+                    pResult = std::move(spSem);
                     return true;
                 }
                 return false;

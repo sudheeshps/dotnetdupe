@@ -1,8 +1,15 @@
 #pragma once
-#include "System/BasicException.h"
+#include <exception>
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicException<char> Exception;
+        class String;
+
+        class Exception : public std::exception {
+        public:
+            Exception(const char* pchMessage) : std::exception(pchMessage ? pchMessage : "") {}
+            Exception(const String& sMessage);
+            const char* What() const { return what(); }
+        };
     }
 }
-

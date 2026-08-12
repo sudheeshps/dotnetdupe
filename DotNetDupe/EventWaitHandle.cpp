@@ -60,16 +60,16 @@ namespace DotNetDupe {
 #endif
             }
 
-            EventWaitHandle* EventWaitHandle::OpenExisting(const String& sName) {
-                EventWaitHandle* pResult = nullptr;
+            SmartPointer<EventWaitHandle> EventWaitHandle::OpenExisting(const String& sName) {
+                SmartPointer<EventWaitHandle> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No event handle of the given name exists.");
             }
 
-            bool EventWaitHandle::TryOpenExisting(const String& sName, EventWaitHandle*& pResult) {
-                pResult = nullptr;
+            bool EventWaitHandle::TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult) {
+                pResult = SmartPointer<EventWaitHandle>();
                 if (sName.IsEmpty()) {
                     return false;
                 }
@@ -77,10 +77,10 @@ namespace DotNetDupe {
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h != NULL) {
-                    SmartPointer<EventWaitHandle> spEvt = SmartPointer<EventWaitHandle>::New(false, false);
+                    SmartPointer<EventWaitHandle> spEvt = SmartPointer<EventWaitHandle>::NewShared(false, false);
                     spEvt->_name = sName;
                     spEvt->_hHandle = h;
-                    pResult = spEvt.Detach();
+                    pResult = std::move(spEvt);
                     return true;
                 }
                 return false;
