@@ -164,7 +164,7 @@ namespace DotNetDupe {
             void EventLog::DeleteWin32EventSource(const String& sSource) {
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
-                    std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.begin(), sSource.end());
+                    std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
                     ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
                 }
             }

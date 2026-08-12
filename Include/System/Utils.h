@@ -1,4 +1,5 @@
 #pragma once
+#include <initializer_list>
 template <class T>
 struct _init_list_with_indexer {
     const std::initializer_list<T>& list;

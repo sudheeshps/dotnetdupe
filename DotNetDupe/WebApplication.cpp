@@ -9,7 +9,7 @@
 #include "System/Net/Sockets/SocketException.h"
 #include "System/Threading/ThreadPool.h"
 #include "System/Convert.h"
-#include "System/BasicException.h"
+
 #include "System/Net/HttpStatusCode.h"
 #include <string>
 #include <vector>
@@ -136,7 +136,7 @@ namespace DotNetDupe {
                                     System::Console::WriteLine("[Server] Calling HandleConnection...");
                                     spState->App->HandleConnection(std::move(spState->Client));
                                     System::Console::WriteLine("[Server] HandleConnection finished!");
-                                } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                                } catch (const DotNetDupe::System::SystemException& ex) {
                                     System::Console::WriteLine(System::String("[Server Exception] HandleConnection: ") + ex.What());
                                 } catch (...) {
                                     System::Console::WriteLine("[Server Exception] HandleConnection unknown");
@@ -148,7 +148,7 @@ namespace DotNetDupe {
                     }
                 } catch (const System::Net::Sockets::SocketException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] AcceptTcpClient: ") + ex.What());
-                } catch (const System::BasicException<char>& ex) {
+                } catch (const System::SystemException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] Run loop: ") + ex.What());
                 } catch (...) {
                     System::Console::WriteLine("[Server Exception] Run loop unknown");
@@ -175,7 +175,7 @@ namespace DotNetDupe {
                     dummy.Connect(m_sHost, m_nPort);
                     dummy.Close();
                     System::Console::WriteLine("[Server] Dummy connection sent successfully.");
-                } catch (const System::BasicException<char>& ex) {
+                } catch (const System::SystemException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] Dummy connection failed: ") + ex.What());
                 } catch (...) {
                     System::Console::WriteLine("[Server Exception] Dummy connection failed unknown");
@@ -341,7 +341,7 @@ namespace DotNetDupe {
                 // Check for WebSocket Upgrade request
                 System::String sUpgrade, sSecKey;
                 if (spRequest->GetHeaders().TryGetValue(System::String("upgrade"), sUpgrade) &&
-                    sUpgrade.GetString() == "websocket" &&
+                    sUpgrade.GetRawString() == "websocket" &&
                     spRequest->GetHeaders().TryGetValue(System::String("sec-websocket-key"), sSecKey)) {
 
                     System::SmartPointer<WebSockets::IWebSocketHandler> wsHandler;
@@ -350,7 +350,7 @@ namespace DotNetDupe {
                         std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\n"
                                                  "Upgrade: websocket\r\n"
                                                  "Connection: Upgrade\r\n"
-                                                 "Sec-WebSocket-Accept: " + sAcceptKey.GetString() + "\r\n\r\n";
+                                                 "Sec-WebSocket-Accept: " + std::string(sAcceptKey.GetRawString() ? sAcceptKey.GetRawString() : "") + "\r\n\r\n";
                         stream->Write(hsResponse.data(), 0, static_cast<int>(hsResponse.length()));
 
                         auto pWebSocket = System::SmartPointer<System::Net::WebSockets::WebSocket>::NewShared(stream);
@@ -379,7 +379,7 @@ namespace DotNetDupe {
                             sBodyResult = handler(spContext);
                             System::Console::WriteLine("[Server] GET handler invoked successfully.");
                             bMatched = true;
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
@@ -396,7 +396,7 @@ namespace DotNetDupe {
                             sBodyResult = handler(spContext);
                             System::Console::WriteLine("[Server] POST handler invoked successfully.");
                             bMatched = true;
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
@@ -413,7 +413,7 @@ namespace DotNetDupe {
                             sBodyResult = handler(spContext);
                             System::Console::WriteLine("[Server] PUT handler invoked successfully.");
                             bMatched = true;
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
@@ -430,7 +430,7 @@ namespace DotNetDupe {
                             sBodyResult = handler(spContext);
                             System::Console::WriteLine("[Server] DELETE handler invoked successfully.");
                             bMatched = true;
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
                             sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
                             bMatched = true;
@@ -459,7 +459,7 @@ namespace DotNetDupe {
                     spResponse->SetBody(sBodyResult);
                 }
 
-                std::string respBody = spResponse->GetBody().GetString();
+                std::string respBody = spResponse->GetBody().GetRawString();
 
                 std::string statusMsg = "OK";
                 int code = spResponse->GetStatusCode();
@@ -471,7 +471,7 @@ namespace DotNetDupe {
                 else if (code == 401) statusMsg = "Unauthorized";
 
                 std::string responseString = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\n";
-                responseString += "Content-Type: " + spResponse->GetContentType().GetString() + "\r\n";
+                responseString += "Content-Type: " + std::string(spResponse->GetContentType().GetRawString() ? spResponse->GetContentType().GetRawString() : "") + "\r\n";
                 responseString += "Content-Length: " + std::to_string(respBody.length()) + "\r\n";
                 responseString += "Connection: close\r\n";
                 responseString += "Server: DotNetDupeWebApplication/1.0\r\n";
@@ -479,7 +479,7 @@ namespace DotNetDupe {
                 auto keys = spResponse->GetHeaders().GetKeys();
                 auto values = spResponse->GetHeaders().GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
-                    responseString += keys[i].GetString() + ": " + values[i].GetString() + "\r\n";
+                    responseString += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";
                 }
 
                 responseString += "\r\n";

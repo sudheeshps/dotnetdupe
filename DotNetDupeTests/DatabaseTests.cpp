@@ -121,7 +121,7 @@ namespace DatabaseTests {
             conn.Close();
             ASSERT_FALSE(conn.IsOpen());
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();

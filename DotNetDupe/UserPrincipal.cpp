@@ -44,8 +44,8 @@ namespace DotNetDupe {
                     if (::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&pGroups, MAX_PREFERRED_LENGTH, &dwEntriesRead, &dwTotalEntries) == NERR_Success) {
                         for (DWORD i = 0; i < dwEntriesRead; i++) {
                             std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
-                            lstPermissions.Add(String("GroupMember:") + String(sGroup));
-                            lstGroups.Add(String(std::move(sGroup)));
+                            lstPermissions.Add(String("GroupMember:") + String(sGroup.c_str()));
+                            lstGroups.Add(String(sGroup.c_str()));
                         }
                         ::NetApiBufferFree(pGroups);
                     }
@@ -54,7 +54,7 @@ namespace DotNetDupe {
                 static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
                     UserInfo info;
                     std::string sName = StringConvertInternal::WCharToUtf8(pUi->usri1_name);
-                    info.sUsername = String(std::move(sName));
+                    info.sUsername = String(sName.c_str());
 
                     info.sDomain = "LOCAL";
                     info.sSidOrUid = "S-1-5-21-USER";

@@ -86,7 +86,8 @@ namespace DotNetDupe {
                 String ByteArrayContent::ReadAsString() {
                     String s;
                     if (m_iCount > 0) {
-                        s.GetString().assign(m_arrContent.GetData() + m_iOffset, m_iCount);
+                        std::string temp(m_arrContent.GetData() + m_iOffset, m_iCount);
+                        s = String(temp.c_str());
                     }
                     return s;
                 }
@@ -133,7 +134,8 @@ namespace DotNetDupe {
                     Array<char> bytes = ReadAsByteArray();
                     String s;
                     if (bytes.GetLength() > 0) {
-                        s.GetString().assign(bytes.GetData(), bytes.GetLength());
+                        std::string temp(bytes.GetData(), bytes.GetLength());
+                        s = String(temp.c_str());
                     }
                     return s;
                 }

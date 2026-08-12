@@ -3,7 +3,7 @@
 #include "System/Data/SqlClient/SqlConnection.h"
 #include "System/Data/SqlClient/SqlCommand.h"
 #include "System/Data/SqlClient/SqlDataReader.h"
-#include "System/BasicException.h"
+#include "System/Exception.h"
 #include "Demos.h"
 
 using namespace DotNetDupe::System;
@@ -94,7 +94,7 @@ void DemonstrateDatabase() {
         conn.Close();
         Console::WriteLine("\nConnection state: CLOSED");
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("[Database Exception] Error: ");
         Console::WriteLine(ex.What());
     } catch (const std::exception& ex) {

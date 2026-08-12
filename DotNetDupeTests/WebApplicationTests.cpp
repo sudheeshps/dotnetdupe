@@ -7,7 +7,7 @@
 #include "System/Net/Http/RestClient.h"
 #include "System/Threading/Thread.h"
 #include "System/Convert.h"
-#include "System/BasicException.h"
+#include "System/Exception.h"
 #include "System/Net/Http/HttpRequestException.h"
 #include "System/Net/HttpStatusCode.h"
 #include "WebAppCore/Controllers/ControllerBase.h"
@@ -187,7 +187,7 @@ namespace WebApplicationTests {
             auto spService = app->GetServices()->GetService<ITestService>();
             ASSERT_FALSE(spService.IsNull());
             ASSERT_EQ(spService->GetMessage(), "Hello from DI Service!");
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -240,7 +240,7 @@ namespace WebApplicationTests {
                 try {
                     resp1 = client.Get("http://127.0.0.1:28080/hello");
                     break;
-                } catch (const BasicException<char>&) {
+                } catch (const SystemException&) {
                     retries--;
                     if (retries == 0) throw;
                     Thread::Sleep(200);
@@ -258,7 +258,7 @@ namespace WebApplicationTests {
             ASSERT_EQ(resp2->GetStatusCode(), HttpStatusCode::OK);
             ASSERT_EQ(resp2->GetContent()->ReadAsString(), "Hello from DI Service!");
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -344,7 +344,7 @@ namespace WebApplicationTests {
             ASSERT_EQ((int)respDelete->GetStatusCode(), 204);
             ASSERT_TRUE(respDelete->GetContent()->ReadAsString().IsEmpty());
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -436,7 +436,7 @@ namespace WebApplicationTests {
             ASSERT_FALSE(respDelete2.IsNull());
             ASSERT_EQ((int)respDelete2->GetStatusCode(), 404);
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -502,7 +502,7 @@ namespace WebApplicationTests {
             ASSERT_TRUE(postResult.Contains("Created product: Tablet for 500"));
             ASSERT_TRUE(putResult.Contains("Updated product 10 to Keyboard"));
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -573,7 +573,7 @@ namespace WebApplicationTests {
             auto adminRes = client.Get("admin");
             ASSERT_EQ(adminRes.Message, "AdminData:admin_user");
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -608,7 +608,7 @@ namespace WebApplicationTests {
             // Then
             ASSERT_EQ(product.Name, "Laptop");
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -661,7 +661,7 @@ namespace WebApplicationTests {
             DotNetDupe::System::IO::File::Delete(htmlPath);
             DotNetDupe::System::IO::File::Delete(cssPath);
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -691,7 +691,7 @@ namespace WebApplicationTests {
             String sRes = client.GetString("http://127.0.0.1:28087/api/hello");
             ASSERT_EQ(sRes, "Hello Multithreaded");
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -727,7 +727,7 @@ namespace WebApplicationTests {
             EXPECT_TRUE(sStreamRes.Contains("data: event1"));
             EXPECT_TRUE(sStreamRes.Contains("data: event2"));
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();
@@ -754,7 +754,7 @@ namespace WebApplicationTests {
             ASSERT_FALSE(resp.IsNull());
             EXPECT_EQ((int)resp->GetStatusCode(), 404);
 
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception thrown: " << ex.what();

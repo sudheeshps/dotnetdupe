@@ -100,7 +100,7 @@ void DemonstrateFileDownloader() {
 
         if (IO::File::Exists(sDest)) IO::File::Delete(sDest);
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("FileDownloader Demo Exception: ");
         Console::WriteLine(ex.What());
     }

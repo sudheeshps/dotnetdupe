@@ -17,23 +17,6 @@
 
 namespace DotNetDupe {
 	namespace System {
-        DOTNETDUPE_API std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& sStr) {
-            os << (sStr.GetRawString() ? sStr.GetRawString() : "");
-            return os;
-        }
-
-        DOTNETDUPE_API std::basic_istream<char>& operator>>(std::basic_istream<char>& is, String& sStr) {
-            std::string s;
-            is >> s;
-            sStr = s.c_str();
-            return is;
-        }
-
-        DOTNETDUPE_API void PrintTo(const String& sStr, ::std::ostream* os) {
-            if (os) {
-                *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
-            }
-        }
 
 		class StringImpl {
 		public:
@@ -94,30 +77,6 @@ namespace DotNetDupe {
 
 		void String::operator delete[](void* p) {
 			::operator delete[](p);
-		}
-
-		bool String::operator<(const String& sStr) const {
-			return StringImpl::Get(this) < StringImpl::Get(sStr);
-		}
-
-		bool operator==(const String& sStr1, const String& sStr2) {
-			return StringImpl::Get(sStr1).compare(StringImpl::Get(sStr2)) == 0;
-		}
-		bool operator==(const String& sStr1, const char* pStr2) {
-			return pStr2 ? StringImpl::Get(sStr1).compare(pStr2) == 0 : false;
-		}
-		bool operator==(const char* pStr1, const String& sStr2) {
-			return pStr1 ? StringImpl::Get(sStr2).compare(pStr1) == 0 : false;
-		}
-
-		bool operator!=(const String& sStr1, const String& sStr2) {
-			return !(sStr1 == sStr2);
-		}
-		bool operator!=(const String& sStr1, const char* pStr2) {
-			return !(sStr1 == pStr2);
-		}
-		bool operator!=(const char* pStr1, const String& sStr2) {
-			return !(pStr1 == sStr2);
 		}
 
 		String String::operator+(const char* pStr) const {
@@ -347,19 +306,7 @@ namespace DotNetDupe {
 		}
 
 
-		String::String(std::nullptr_t) {
-			throw ArgumentException("Invalid input pointer");
-		}
 
-		String& String::operator=(std::nullptr_t) {
-			throw ArgumentException("Invalid input pointer");
-			return *this;
-		}
-
-		String::String(int nNull) {
-			if (nNull == 0) throw ArgumentException("Invalid input pointer");
-			throw ArgumentException("Invalid input integer");
-		}
 		String& String::Append(const char ch) {
 			StringImpl::Get(this) += ch;
 			return *this;
@@ -522,14 +469,14 @@ namespace DotNetDupe {
 			return String(sRet.c_str());
 		}
 		String String::Replace(char chOriginalChar,
-							   char chReplaceChar) {
+							   char chReplaceChar) const {
 			std::string sRet = StringImpl::Get(this);
 			std::replace(sRet.begin(), sRet.end(), chOriginalChar, chReplaceChar);
 			return String(sRet.c_str());
 		}
 		String String::Replace(
 			const String& sOriginalStr,
-			const String& sReplaceStr) {
+			const String& sReplaceStr) const {
 			if (sOriginalStr.IsEmpty()) return *this;
 
 			std::string sRet = StringImpl::Get(this);

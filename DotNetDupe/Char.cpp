@@ -77,6 +77,8 @@ namespace DotNetDupe {
         }
 
         bool Char::IsControl(char32_t c) {
+            if (c <= 0x1F || (c >= 0x7F && c <= 0x9F)) return true;
+            if (c >= 0xFFFFFF7F && c <= 0xFFFFFF9F) return true; // Handling signed char cast
             if (c <= 0xFFFF) return std::iswcntrl(static_cast<wint_t>(c)) != 0;
             return (c >= 0xE0000 && c <= 0xE007F);
         }
@@ -102,7 +104,13 @@ namespace DotNetDupe {
         }
 
         char32_t Char::ToLower(char32_t c) {
-            if (c <= 0xFFFF) return static_cast<char32_t>(std::towlower(static_cast<wint_t>(c)));
+            if (c >= 'A' && c <= 'Z') return c + 0x20;
+            if (c >= 0xC0 && c <= 0xD6) return c + 0x20;
+            if (c >= 0xD8 && c <= 0xDE) return c + 0x20;
+            if (c <= 0xFFFF) {
+                wint_t lower = std::towlower(static_cast<wint_t>(c));
+                if (lower != static_cast<wint_t>(c)) return static_cast<char32_t>(lower);
+            }
             if (c >= 0x10400 && c <= 0x10427) return c + 0x28;
             return c;
         }
@@ -111,8 +119,5 @@ namespace DotNetDupe {
             return IsDigit(c);
         }
 
-        char32_t Char::GetChar() const {
-            return m_c;
-        }
     }
 }

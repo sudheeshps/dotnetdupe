@@ -46,7 +46,7 @@ namespace DotNetDupe {
 
                 SmartPointer<NetworkStream> TcpClient::GetStream() {
                     if (m_pClientSocket.IsNull() || !m_pClientSocket->Connected()) {
-                        throw SocketException("TcpClient is not connected.");
+                        throw SocketException(-1, String("TcpClient is not connected."));
                     }
                     if (m_pNetworkStream.IsNull()) {
                         m_pNetworkStream.Attach(new NetworkStream(m_pClientSocket, true), true);

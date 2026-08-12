@@ -4,6 +4,7 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include <new>
+#include <initializer_list>
 #include <utility>
 
 namespace DotNetDupe {
@@ -25,7 +26,7 @@ namespace DotNetDupe {
 
                         T* pNewData = (T*)AllocateCollectionBuffer(newCapacity * sizeof(T));
                         for (int i = 0; i < m_iCount; ++i) {
-                            new (&pNewData[i]) T(std::move(m_pData[i]));
+                            ::new ((void*)&pNewData[i]) T(std::move(m_pData[i]));
                             m_pData[i].~T();
                         }
                         if (m_pData) {
@@ -91,7 +92,7 @@ namespace DotNetDupe {
                     bool Add(const T& item) {
                         if (Contains(item)) return false;
                         EnsureCapacity(m_iCount + 1);
-                        new (&m_pData[m_iCount]) T(item);
+                        ::new ((void*)&m_pData[m_iCount]) T(item);
                         m_iCount++;
                         return true;
                     }
@@ -101,7 +102,7 @@ namespace DotNetDupe {
                             if (m_pData[i] == item) {
                                 m_pData[i].~T();
                                 for (int j = i; j < m_iCount - 1; ++j) {
-                                    new (&m_pData[j]) T(std::move(m_pData[j + 1]));
+                                    ::new ((void*)&m_pData[j]) T(std::move(m_pData[j + 1]));
                                     m_pData[j + 1].~T();
                                 }
                                 m_iCount--;

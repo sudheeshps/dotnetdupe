@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "System/String.h"
 #include "System/Net/Dns.h"
 #include "System/ArgumentException.h"
 #include "System/Net/Sockets/SocketException.h"
@@ -50,7 +51,7 @@ namespace DotNetDupe {
                 struct addrinfo* result = nullptr;
                 int res = getaddrinfo(hostName.GetRawString(), nullptr, &hints, &result);
                 if (res != 0) {
-                    throw Sockets::SocketException("Failed to resolve host.", res);
+                    throw Sockets::SocketException(res, "Failed to resolve host.");
                 }
 
                 std::vector<String> addresses;
@@ -66,7 +67,7 @@ namespace DotNetDupe {
                 freeaddrinfo(result);
 
                 if (addresses.empty()) {
-                    throw Sockets::SocketException("No addresses found for host.");
+                    throw Sockets::SocketException(-1, String("No addresses found for host."));
                 }
 
                 Array<String> arrAddresses(static_cast<int>(addresses.size()));

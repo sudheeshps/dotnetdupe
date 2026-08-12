@@ -106,7 +106,7 @@ void DemonstrateDependencyInjection() {
             spRepo->SaveData("User3");
         } // Scope 2 disposed, SqlDatabaseConnection should be disposed
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("Error during Dependency Injection demonstration: ");
         Console::WriteLine(ex.What());
     }

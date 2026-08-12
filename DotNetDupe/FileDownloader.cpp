@@ -96,7 +96,7 @@ namespace DotNetDupe {
                     } catch (const IO::IOException& ex) {
                         Console::WriteLine(String("[FileDownloader] Error checking file size: ") + ex.What());
                         return 0;
-                    } catch (const BasicException<char>& ex) {
+                    } catch (const SystemException& ex) {
                         Console::WriteLine(String("[FileDownloader] System Exception checking file: ") + ex.What());
                         return 0;
                     }
@@ -139,7 +139,7 @@ namespace DotNetDupe {
                     } catch (const Sockets::SocketException& ex) {
                         Console::WriteLine(String("[FileDownloader] Socket error on HEAD request: ") + ex.What());
                         return -1;
-                    } catch (const BasicException<char>& ex) {
+                    } catch (const SystemException& ex) {
                         Console::WriteLine(String("[FileDownloader] HEAD Exception: ") + ex.What());
                         return -1;
                     }
@@ -192,7 +192,7 @@ namespace DotNetDupe {
                     } catch (const IO::IOException& ex) {
                         Console::WriteLine(String("[FileDownloader] Stream I/O error during download: ") + ex.What());
                         return false;
-                    } catch (const BasicException<char>& ex) {
+                    } catch (const SystemException& ex) {
                         Console::WriteLine(String("[FileDownloader] Error reading response stream: ") + ex.What());
                         return false;
                     }
@@ -221,7 +221,7 @@ namespace DotNetDupe {
                     } catch (const Sockets::SocketException& ex) {
                         Console::WriteLine(String("[FileDownloader] Socket connection failed: ") + ex.What());
                         return NotifyStateChange(DownloadStatus::Failed);
-                    } catch (const BasicException<char>& ex) {
+                    } catch (const SystemException& ex) {
                         Console::WriteLine(String("[FileDownloader] HTTP client exception: ") + ex.What());
                         return NotifyStateChange(DownloadStatus::Failed);
                     }
@@ -277,7 +277,7 @@ namespace DotNetDupe {
 
                     try {
                         ExecuteDownload(llExistingBytes);
-                    } catch (const BasicException<char>& ex) {
+                    } catch (const SystemException& ex) {
                         Console::WriteLine(String("[FileDownloader] Download loop failed with DotNetDupe exception: ") + ex.What());
                         NotifyStateChange(DownloadStatus::Failed);
                     } catch (...) {

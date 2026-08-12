@@ -165,7 +165,7 @@ namespace DotNetDupeTests {
             auto content = response->GetContent();
             ASSERT_FALSE(content.IsNull());
             EXPECT_EQ(content->ReadAsString(), "Hello Client");
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "Exception: " << ex.What();
         }
     }
@@ -230,7 +230,7 @@ namespace DotNetDupeTests {
             EXPECT_TRUE(response->IsSuccessStatusCode());
             EXPECT_EQ(response->GetStatusCode(), HttpStatusCode::Created);
             EXPECT_EQ(requestBody, "PostPayloadData");
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "Exception: " << ex.What();
         }
     }
@@ -283,7 +283,7 @@ namespace DotNetDupeTests {
             auto content = response->GetContent();
             ASSERT_FALSE(content.IsNull());
             EXPECT_EQ(content->ReadAsString(), "Wikipedia in \r\nchunks.");
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "Exception: " << ex.What();
         }
     }

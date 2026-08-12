@@ -341,7 +341,7 @@ void DemonstrateWebApplication() {
         Console::Write("[Client] (Invalid Secret Token) Status: ");
         Console::WriteLine((int)authResp3->GetStatusCode());
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("[Client Exception] Error: ");
         Console::WriteLine(ex.What());
     }

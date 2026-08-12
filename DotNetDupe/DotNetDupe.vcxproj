@@ -193,17 +193,17 @@
     <ClInclude Include="..\Include\System\ArithmeticException.h" />
     <ClInclude Include="..\Include\System\BitConverter.h" />
     <ClInclude Include="..\Include\System\Array.h" />
-    <ClInclude Include="..\Include\System\BasicArgumentException.h" />
-    <ClInclude Include="..\Include\System\BasicArgumentOutOfRangeException.h" />
-    <ClInclude Include="..\Include\System\BasicArithmeticException.h" />
-    <ClInclude Include="..\Include\System\BasicException.h" />
-    <ClInclude Include="..\Include\System\BasicNotImplementedException.h" />
-    <ClInclude Include="..\Include\System\BasicOverflowException.h" />
-    <ClInclude Include="..\Include\System\BasicString.h" />
-    <ClInclude Include="..\Include\System\BasicSystemException.h" />
+    
+    
+    
+    
+    
+    
+    
+    
     <ClInclude Include="..\Include\System\Buffer.h" />
     <ClInclude Include="..\Include\System\Char.h" />
-    <ClInclude Include="..\Include\System\BasicChar.h" />
+    
     <ClInclude Include="..\Include\System\CharUnicodeInfo.h" />
     <ClInclude Include="..\Include\System\Clonable.h" />
     <ClInclude Include="Common.h" />
@@ -286,8 +286,8 @@
     <ClInclude Include="..\Include\System\TimeProvider.h" />
     <ClInclude Include="..\Include\System\TimeSpan.h" />
     <ClInclude Include="..\Include\System\FormatException.h" />
-    <ClInclude Include="..\Include\System\BasicFormatException.h" />
-    <ClInclude Include="..\Include\System\BasicInvalidOperationException.h" />
+    
+    
     <ClInclude Include="..\Include\System\InvalidOperationException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
     <ClInclude Include="..\Include\System\DaylightTime.h" />
@@ -298,7 +298,7 @@
     <ClInclude Include="..\Include\System\IO\StringReader.h" />
     <ClInclude Include="..\Include\System\IO\StringWriter.h" />
     <ClInclude Include="..\Include\System\Threading\Thread.h" />
-    <ClInclude Include="..\Include\System\BasicTimeoutException.h" />
+    
     <ClInclude Include="..\Include\System\TimeoutException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadPool.h" />
     <ClInclude Include="..\Include\System\Threading\Tasks\TaskStatus.h" />
@@ -367,7 +367,10 @@
     </ClCompile>
     <ClCompile Include="StringBuilder.cpp" />
     <ClCompile Include="InternalStringConvert.cpp" />
-    <ClCompile Include="BasicStringTranscode.cpp" />
+    <ClCompile Include="String.cpp" />
+    <ClCompile Include="Char.cpp" />
+    <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="SocketException.cpp" />
     <ClCompile Include="System\Utils\StringConvert.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />

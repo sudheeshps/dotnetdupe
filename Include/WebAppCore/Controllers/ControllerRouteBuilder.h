@@ -186,7 +186,7 @@ namespace DotNetDupe {
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -208,7 +208,7 @@ namespace DotNetDupe {
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -232,7 +232,7 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -256,7 +256,7 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -281,7 +281,7 @@ namespace DotNetDupe {
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(id, payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -304,7 +304,7 @@ namespace DotNetDupe {
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(id, payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -329,7 +329,7 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(id, payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
@@ -354,7 +354,7 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(id, payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::SystemException& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";

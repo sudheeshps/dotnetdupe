@@ -87,9 +87,9 @@ namespace SystemTests {
             ASSERT_FALSE(Char::IsBetween('0', 'A', 'Z'));
         }
         TEST(CharTest, IsControl) {
-            ASSERT_TRUE(Char::IsControl(static_cast<char>(0x0006)));
+            ASSERT_TRUE(Char::IsControl(static_cast<char32_t>(0x0006)));
             ASSERT_FALSE(Char::IsControl('A'));
-            ASSERT_TRUE(Char::IsControl(static_cast<char>(0x009F)));
+            ASSERT_TRUE(Char::IsControl(static_cast<char32_t>(0x009F)));
         }
         TEST(CharTest, IsLowerTest) {
             ASSERT_TRUE(Char::IsLower('a'));
@@ -104,11 +104,23 @@ namespace SystemTests {
             ASSERT_FALSE(Char::IsLetter('9'));
             ASSERT_FALSE(Char::IsLetter('+'));
             ASSERT_FALSE(Char::IsLetter(' '));
+            ASSERT_TRUE(Char::IsLetter(U'\x00E9')); // e acute
+            ASSERT_TRUE(Char::IsLetter(U'\x20000')); // CJK Ext B
+            ASSERT_FALSE(Char::IsLetter(U'\x1F600')); // Emoji
+        }
+        TEST(CharTest, IsDigitTest) {
+            ASSERT_TRUE(Char::IsDigit('0'));
+            ASSERT_TRUE(Char::IsDigit('9'));
+            ASSERT_FALSE(Char::IsDigit('A'));
+            ASSERT_TRUE(Char::IsDigit(U'\x1D7CE')); // Mathematical bold digit 0
+            ASSERT_FALSE(Char::IsDigit(U'\x20000'));
         }
         TEST(CharTest, ToLowerTest) {
             ASSERT_TRUE(Char::ToLower('A') == 'a');
             ASSERT_TRUE(Char::ToLower('0') == '0');
             ASSERT_FALSE(Char::ToLower('A') == 'A');
+            ASSERT_TRUE(Char::ToLower(U'\x00C9') == U'\x00E9'); // E acute to e acute
+            ASSERT_TRUE(Char::ToLower(U'\x10400') == U'\x10428'); // Deseret uppercase to lowercase
         }
         TEST(CharTest, Gechar) {
             ASSERT_TRUE(Char('A').GetChar() == 'A');

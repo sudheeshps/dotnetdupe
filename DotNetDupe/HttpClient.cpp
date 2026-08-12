@@ -351,7 +351,7 @@ namespace DotNetDupe {
                         auto spSslStream = SmartPointer<Net::Security::SslStream>::NewShared(spStream, false);
                         try {
                             spSslStream->AuthenticateAsClient(uri.GetHost());
-                        } catch (const BasicException<char>& ex) {
+                        } catch (const SystemException& ex) {
                             throw HttpRequestException(ex.What());
                         }
                         spStream = spSslStream;

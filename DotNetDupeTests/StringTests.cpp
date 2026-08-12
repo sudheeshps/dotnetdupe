@@ -534,6 +534,7 @@ namespace SystemTests {
             String result = String::Format(formatStr, true, 3.14, nullptr, "Alice");
             
             // Then
+            
             ASSERT_EQ(result, "True - 3.14 -  - Alice");
         }
 

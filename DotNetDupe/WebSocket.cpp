@@ -16,7 +16,7 @@ namespace DotNetDupe {
                 }
 
                 String WebSocket::ComputeSecWebSocketAccept(const String& secWebSocketKey) {
-                    std::string key = secWebSocketKey.GetString();
+                    std::string key = secWebSocketKey.GetRawString();
                     std::string magic = key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
                     unsigned char hash[SHA_DIGEST_LENGTH];
@@ -28,7 +28,7 @@ namespace DotNetDupe {
                 }
 
                 bool WebSocket::SendAsync(const String& message) {
-                    std::string text = message.GetString();
+                    std::string text = message.GetRawString();
                     std::vector<uint8_t> frame;
                     frame.push_back(0x81); // FIN bit set + Text frame opcode (0x1)
 
@@ -140,7 +140,7 @@ namespace DotNetDupe {
                     std::string sPayload;
                     sPayload.reserve(payload.size());
                     for (uint8_t b : payload) { sPayload.push_back(static_cast<char>(b)); }
-                    outMessage = String(std::move(sPayload));
+                    outMessage = String(std::move(sPayload.c_str()));
                     return true;
                 }
 

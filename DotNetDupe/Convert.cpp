@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/Convert.h"
+#include "System/Array.h"
 #include "System/OverflowException.h"
 #include "System/FormatException.h"
 #include <string>
@@ -361,3 +362,5 @@ namespace DotNetDupe {
         }
     }
 }
+
+

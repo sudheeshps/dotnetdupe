@@ -24,3 +24,9 @@ namespace DotNetDupe {
         }
     }
 }
+
+namespace DotNetDupe::System {
+    DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size) { return ::operator new(size); }
+    DOTNETDUPE_API void FreeCollectionBuffer(void* p) { ::operator delete(p); }
+}
+

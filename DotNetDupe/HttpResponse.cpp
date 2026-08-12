@@ -27,7 +27,7 @@ namespace DotNetDupe {
                 else if (m_nStatusCode == 401) statusMsg = "Unauthorized";
 
                 std::string headerString = "HTTP/1.1 " + std::to_string(m_nStatusCode) + " " + statusMsg + "\r\n";
-                headerString += "Content-Type: " + m_sContentType.GetString() + "\r\n";
+                headerString += "Content-Type: " + std::string(m_sContentType.GetRawString() ? m_sContentType.GetRawString() : "") + "\r\n";
                 if (m_bChunked) {
                     headerString += "Transfer-Encoding: chunked\r\n";
                 }
@@ -37,7 +37,7 @@ namespace DotNetDupe {
                 auto keys = m_headers.GetKeys();
                 auto values = m_headers.GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
-                    headerString += keys[i].GetString() + ": " + values[i].GetString() + "\r\n";
+                    headerString += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";
                 }
                 headerString += "\r\n";
 
@@ -45,7 +45,7 @@ namespace DotNetDupe {
             }
 
             void HttpResponse::WriteChunk(const System::String& data) {
-                std::string rawData = data.GetString();
+                std::string rawData = std::string(data.GetRawString() ? data.GetRawString() : "");
                 if (rawData.empty()) return;
                 if (!m_bHeadersSent) {
                     m_bChunked = true;
@@ -65,7 +65,7 @@ namespace DotNetDupe {
                 if (m_bChunked) {
                     WriteRaw(m_pStream, "0\r\n\r\n");
                 } else {
-                    std::string body = m_sBody.GetString();
+                    std::string body = std::string(m_sBody.GetRawString() ? m_sBody.GetRawString() : "");
                     if (!body.empty()) {
                         WriteRaw(m_pStream, body);
                     }

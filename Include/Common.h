@@ -1,4 +1,7 @@
 #pragma once
+
+typedef unsigned char byte;
+
 #if defined(_WIN32)
     #pragma warning(disable: 4251) // dll-interface warning for private template members
     #pragma warning(disable: 4275) // non dll-interface class used as base for dll-interface class

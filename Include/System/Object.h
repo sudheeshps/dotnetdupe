@@ -12,5 +12,8 @@ namespace DotNetDupe {
             DOTNETDUPE_API wchar_t* ToStringW() const;
             DOTNETDUPE_API char* ToStringA() const;
         };
+
+        DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size);
+        DOTNETDUPE_API void FreeCollectionBuffer(void* p);
     }
 }

@@ -63,7 +63,7 @@ namespace DotNetDupe {
 
                 SmartPointer<TcpClient> TcpListener::AcceptTcpClient() {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
-                        throw SocketException("TcpListener is not started.");
+                        throw SocketException(-1, String("TcpListener is not started."));
                     }
                     SmartPointer<Socket> listenerSocket = m_pListenerSocket;
                     SmartPointer<Socket> clientSocket = listenerSocket->Accept();
@@ -72,7 +72,7 @@ namespace DotNetDupe {
 
                 SmartPointer<Socket> TcpListener::AcceptSocket() {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
-                        throw SocketException("TcpListener is not started.");
+                        throw SocketException(-1, String("TcpListener is not started."));
                     }
                     SmartPointer<Socket> listenerSocket = m_pListenerSocket;
                     return listenerSocket->Accept();

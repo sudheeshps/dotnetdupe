@@ -106,13 +106,15 @@ namespace DotNetDupe {
                         String headerB64 = Base64UrlToBase64(parts[0]);
                         Array<char> headerBytes = Convert::FromBase64String(headerB64);
                         String headerJson;
-                        headerJson.GetString().assign(headerBytes.GetData(), headerBytes.GetLength());
+                        std::string tempHeader(headerBytes.GetData(), headerBytes.GetLength());
+                        headerJson = String(tempHeader.c_str());
                         token->m_header = JsonSerializer::Deserialize<Collections::Generic::Dictionary<String, String>>(headerJson);
 
                         String payloadB64 = Base64UrlToBase64(parts[1]);
                         Array<char> payloadBytes = Convert::FromBase64String(payloadB64);
                         String payloadJson;
-                        payloadJson.GetString().assign(payloadBytes.GetData(), payloadBytes.GetLength());
+                        std::string tempPayload(payloadBytes.GetData(), payloadBytes.GetLength());
+                        payloadJson = String(tempPayload.c_str());
                         token->m_payload = JsonSerializer::Deserialize<Collections::Generic::Dictionary<String, String>>(payloadJson);
 
                         token->m_rawTokenWithoutSignature = parts[0] + "." + parts[1];
