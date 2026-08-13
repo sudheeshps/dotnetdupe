@@ -193,17 +193,8 @@
     <ClInclude Include="..\Include\System\ArithmeticException.h" />
     <ClInclude Include="..\Include\System\BitConverter.h" />
     <ClInclude Include="..\Include\System\Array.h" />
-    
-    
-    
-    
-    
-    
-    
-    
     <ClInclude Include="..\Include\System\Buffer.h" />
     <ClInclude Include="..\Include\System\Char.h" />
-    
     <ClInclude Include="..\Include\System\CharUnicodeInfo.h" />
     <ClInclude Include="..\Include\System\Clonable.h" />
     <ClInclude Include="Common.h" />
@@ -286,8 +277,6 @@
     <ClInclude Include="..\Include\System\TimeProvider.h" />
     <ClInclude Include="..\Include\System\TimeSpan.h" />
     <ClInclude Include="..\Include\System\FormatException.h" />
-    
-    
     <ClInclude Include="..\Include\System\InvalidOperationException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
     <ClInclude Include="..\Include\System\DaylightTime.h" />
@@ -298,7 +287,6 @@
     <ClInclude Include="..\Include\System\IO\StringReader.h" />
     <ClInclude Include="..\Include\System\IO\StringWriter.h" />
     <ClInclude Include="..\Include\System\Threading\Thread.h" />
-    
     <ClInclude Include="..\Include\System\TimeoutException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadPool.h" />
     <ClInclude Include="..\Include\System\Threading\Tasks\TaskStatus.h" />
@@ -313,12 +301,6 @@
     <ClInclude Include="..\Include\System\Threading\CriticalSection.h" />
     <ClInclude Include="..\Include\System\Threading\Interlocked.h" />
     <ClInclude Include="..\Include\System\Threading\Lock.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicThreadStateException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicThreadInterruptedException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicSynchronizationLockException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicAbandonedMutexException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicWaitHandleCannotBeOpenedException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicSemaphoreFullException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadStateException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadInterruptedException.h" />
     <ClInclude Include="..\Include\System\Threading\SynchronizationLockException.h" />

@@ -23,40 +23,58 @@ namespace DotNetDupe {
 
             const bool Stopwatch::IsHighResolution = true;
 
+            struct Stopwatch::Impl {
+                TimeProviderPtr timeProvider;
+                long long elapsedTicks;
+                long long startTimeStamp;
+                bool isRunning;
+            };
+
             Stopwatch::Stopwatch() : Stopwatch(TimeProvider::GetSystem()) {}
 
             Stopwatch::Stopwatch(const TimeProviderPtr& timeProvider)
-                : _timeProvider(timeProvider), _elapsedTicks(0), _startTimeStamp(0), _isRunning(false) {}
+                : m_pImpl(SmartPointer<Impl>::NewShared()) {
+                m_pImpl->timeProvider = timeProvider;
+                m_pImpl->elapsedTicks = 0;
+                m_pImpl->startTimeStamp = 0;
+                m_pImpl->isRunning = false;
+            }
+
+            Stopwatch::~Stopwatch() = default;
 
             void Stopwatch::Start() {
-                if (!_isRunning) {
-                    _startTimeStamp = _timeProvider->GetTimestamp();
-                    _isRunning = true;
+                if (!m_pImpl->isRunning) {
+                    m_pImpl->startTimeStamp = m_pImpl->timeProvider->GetTimestamp();
+                    m_pImpl->isRunning = true;
                 }
             }
 
             void Stopwatch::Stop() {
-                if (_isRunning) {
-                    long long endTimeStamp = _timeProvider->GetTimestamp();
-                    _elapsedTicks += (endTimeStamp - _startTimeStamp);
-                    _isRunning = false;
+                if (m_pImpl->isRunning) {
+                    long long endTimeStamp = m_pImpl->timeProvider->GetTimestamp();
+                    m_pImpl->elapsedTicks += (endTimeStamp - m_pImpl->startTimeStamp);
+                    m_pImpl->isRunning = false;
                 }
             }
 
             void Stopwatch::Reset() {
-                _elapsedTicks = 0;
-                _isRunning = false;
-                _startTimeStamp = 0;
+                m_pImpl->elapsedTicks = 0;
+                m_pImpl->isRunning = false;
+                m_pImpl->startTimeStamp = 0;
             }
 
             void Stopwatch::Restart() {
-                _elapsedTicks = 0;
-                _startTimeStamp = _timeProvider->GetTimestamp();
-                _isRunning = true;
+                m_pImpl->elapsedTicks = 0;
+                m_pImpl->startTimeStamp = m_pImpl->timeProvider->GetTimestamp();
+                m_pImpl->isRunning = true;
+            }
+
+            bool Stopwatch::IsRunning() const {
+                return m_pImpl->isRunning;
             }
 
             TimeSpan Stopwatch::Elapsed() const {
-                return _timeProvider->GetElapsedTime(0, GetRawElapsedTicks());
+                return m_pImpl->timeProvider->GetElapsedTime(0, GetRawElapsedTicks());
             }
 
             long long Stopwatch::ElapsedMilliseconds() const {
@@ -68,9 +86,9 @@ namespace DotNetDupe {
             }
 
             long long Stopwatch::GetRawElapsedTicks() const {
-                long long elapsed = _elapsedTicks;
-                if (_isRunning) {
-                    elapsed += (_timeProvider->GetTimestamp() - _startTimeStamp);
+                long long elapsed = m_pImpl->elapsedTicks;
+                if (m_pImpl->isRunning) {
+                    elapsed += (m_pImpl->timeProvider->GetTimestamp() - m_pImpl->startTimeStamp);
                 }
                 return elapsed;
             }

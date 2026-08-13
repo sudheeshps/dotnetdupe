@@ -23,7 +23,7 @@ namespace DotNetDupe {
                 Log(logLevel, message, emptyProps);
             }
 
-            std::string LoggerBase::GetFormattedTimestamp(const std::string& formatFmt) const {
+            DotNetDupe::System::String LoggerBase::GetFormattedTimestamp(const DotNetDupe::System::String& formatFmt) const {
                 auto now = std::chrono::system_clock::now();
                 auto time = std::chrono::system_clock::to_time_t(now);
                 struct tm buf;
@@ -32,13 +32,13 @@ namespace DotNetDupe {
 #else
                 gmtime_r(&time, &buf);
 #endif
-                std::string fmt = formatFmt.empty() ? "%Y-%m-%d %H:%M:%S" : formatFmt;
+                std::string fmt = formatFmt.IsEmpty() ? "%Y-%m-%d %H:%M:%S" : formatFmt.GetRawString();
                 char timeStr[255] = { 0 };
                 size_t written = std::strftime(timeStr, sizeof(timeStr), fmt.c_str(), &buf);
                 if (written > 0) {
-                    return std::string(timeStr);
+                    return DotNetDupe::System::String(timeStr);
                 }
-                return "time_error";
+                return DotNetDupe::System::String("time_error");
             }
 
             const char* LoggerBase::LogLevelToString(LogLevel level) const {
@@ -53,8 +53,8 @@ namespace DotNetDupe {
                 }
             }
 
-            std::string LoggerBase::FormatLogLine(const std::string& fmt, const std::string& timestamp, const std::string& level, const std::string& category, const std::string& message, const std::string& properties, const std::string& processId, const std::string& threadId) const {
-                std::string res = fmt;
+            DotNetDupe::System::String LoggerBase::FormatLogLine(const DotNetDupe::System::String& fmt, const DotNetDupe::System::String& timestamp, const DotNetDupe::System::String& level, const DotNetDupe::System::String& category, const DotNetDupe::System::String& message, const DotNetDupe::System::String& properties, const DotNetDupe::System::String& processId, const DotNetDupe::System::String& threadId) const {
+                std::string res = fmt.GetRawString();
                 auto replace = [](std::string& str, const std::string& from, const std::string& to) {
                     size_t start_pos = 0;
                     while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
@@ -62,19 +62,19 @@ namespace DotNetDupe {
                         start_pos += to.length();
                     }
                 };
-                replace(res, "{Timestamp}", timestamp);
-                replace(res, "{Level}", level);
-                replace(res, "{Category}", category);
-                replace(res, "{Message}", message);
-                replace(res, "{Properties}", properties);
-                replace(res, "{ProcessId}", processId);
-                replace(res, "{ThreadId}", threadId);
-                return res;
+                replace(res, "{Timestamp}", timestamp.GetRawString());
+                replace(res, "{Level}", level.GetRawString());
+                replace(res, "{Category}", category.GetRawString());
+                replace(res, "{Message}", message.GetRawString());
+                replace(res, "{Properties}", properties.GetRawString());
+                replace(res, "{ProcessId}", processId.GetRawString());
+                replace(res, "{ThreadId}", threadId.GetRawString());
+                return DotNetDupe::System::String(res.c_str());
             }
 
-            std::string LoggerBase::BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String& message, 
+            DotNetDupe::System::String LoggerBase::BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String& message, 
                                                     const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) const {
-                std::string timestamp = GetFormattedTimestamp(m_config.TimestampFormat.GetRawString());
+                DotNetDupe::System::String timestamp = GetFormattedTimestamp(m_config.TimestampFormat);
                 const char* levelStr = LogLevelToString(logLevel);
                 std::string procId = std::to_string(DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId());
                 std::string threadId = std::to_string(DotNetDupe::System::Threading::Thread::GetCurrentThreadId());
@@ -82,7 +82,7 @@ namespace DotNetDupe {
                 std::stringstream logLine;
 
                 if (m_config.IsJsonFormat) {
-                    logLine << "{\"timestamp\":\"" << timestamp 
+                    logLine << "{\"timestamp\":\"" << timestamp.GetRawString() 
                             << "\",\"level\":\"" << levelStr 
                             << "\",\"category\":\"" << m_categoryName.GetRawString() 
                             << "\",\"processId\":" << procId
@@ -117,20 +117,20 @@ namespace DotNetDupe {
                         propsStr = ss.str();
                     }
 
-                    std::string formatted = FormatLogLine(
-                        m_config.PlainTextFormat.GetRawString(),
+                    DotNetDupe::System::String formatted = FormatLogLine(
+                        m_config.PlainTextFormat,
                         timestamp,
-                        levelStr,
-                        m_categoryName.GetRawString(),
-                        message.GetRawString(),
-                        propsStr,
-                        procId,
-                        threadId
+                        DotNetDupe::System::String(levelStr),
+                        m_categoryName,
+                        message,
+                        DotNetDupe::System::String(propsStr.c_str()),
+                        DotNetDupe::System::String(procId.c_str()),
+                        DotNetDupe::System::String(threadId.c_str())
                     );
-                    logLine << formatted;
+                    logLine << formatted.GetRawString();
                 }
 
-                return logLine.str();
+                return DotNetDupe::System::String(logLine.str().c_str());
             }
 
         }

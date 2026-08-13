@@ -7,8 +7,7 @@
 #include "Extensions/DependencyInjection/ServiceDescriptor.h"
 #include "Extensions/DependencyInjection/IServiceScopeFactory.h"
 #include <typeindex>
-#include <unordered_map>
-#include <vector>
+#include <typeindex>
 
 namespace DotNetDupe {
     namespace Extensions {
@@ -29,11 +28,8 @@ namespace DotNetDupe {
                 bool m_bIsRoot;
                 ServiceProvider* m_pRootProvider;
                 
-                std::unordered_map<std::type_index, ServiceDescriptor> m_mapDescriptors;
-                std::unordered_map<std::type_index, DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>> m_mapSingletons;
-                std::unordered_map<std::type_index, DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>> m_mapScoped;
-                std::vector<DotNetDupe::System::SmartPointer<DotNetDupe::System::IO::IDisposable>> m_vDisposables;
-                DotNetDupe::System::Threading::CriticalSection m_csLock;
+                struct Impl;
+                DotNetDupe::System::SmartPointer<Impl> m_pImpl;
             };
 
             class ServiceScope : public IServiceScope {

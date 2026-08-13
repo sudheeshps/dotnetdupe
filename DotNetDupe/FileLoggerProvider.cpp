@@ -5,6 +5,7 @@
 #include "System/IO/Path.h"
 #include "System/IO/Directory.h"
 #include "System/IOException.h"
+#include "FileLoggerContext.h"
 
 namespace DotNetDupe {
     namespace Extensions {
@@ -32,33 +33,45 @@ namespace DotNetDupe {
                 return fullPath;
             }
 
+            struct FileLoggerProvider::Impl {
+                LoggerConfiguration config;
+                DotNetDupe::System::SmartPointer<FileLoggerContext> context;
+            };
+
             FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration& config)
-                : m_config(config) {
-                
-                m_config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
-                m_fileMutex = std::make_shared<std::mutex>();
-                m_fileStream = std::make_shared<std::ofstream>(m_config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+                : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                m_pImpl->config = config;
+                m_pImpl->config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
+                m_pImpl->context = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->context->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->context->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }
 
-            FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel) {
-                m_config.FilePath = ResolveAndPrepareLogPath(filePath);
-                m_config.IsJsonFormat = isJsonFormat;
-                m_config.MinLevel = minLevel;
-                m_fileMutex = std::make_shared<std::mutex>();
-                m_fileStream = std::make_shared<std::ofstream>(m_config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+            FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel)
+                : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                m_pImpl->config.FilePath = ResolveAndPrepareLogPath(filePath);
+                m_pImpl->config.IsJsonFormat = isJsonFormat;
+                m_pImpl->config.MinLevel = minLevel;
+                m_pImpl->context = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->context->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->context->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }
 
             FileLoggerProvider::~FileLoggerProvider() {
-                if (m_fileMutex && m_fileStream) {
-                    std::lock_guard<std::mutex> lock(*m_fileMutex);
-                    if (m_fileStream->is_open()) {
-                        m_fileStream->close();
+                if (m_pImpl && m_pImpl->context && m_pImpl->context->fileMutex && m_pImpl->context->fileStream) {
+                    std::lock_guard<std::mutex> lock(*(m_pImpl->context->fileMutex));
+                    if (m_pImpl->context->fileStream->is_open()) {
+                        m_pImpl->context->fileStream->close();
                     }
                 }
             }
+            
+            const DotNetDupe::System::String& FileLoggerProvider::GetFilePath() const {
+                return m_pImpl->config.FilePath;
+            }
 
             DotNetDupe::System::SmartPointer<ILogger> FileLoggerProvider::CreateLogger(const DotNetDupe::System::String& categoryName) {
-                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_config, m_fileStream, m_fileMutex);
+                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_pImpl->config, m_pImpl->context);
             }
 
         }

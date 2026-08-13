@@ -22,17 +22,25 @@ namespace DotNetDupe {
             };
 
             // --- ServiceProvider Implementation ---
+            
+            struct ServiceProvider::Impl {
+                std::unordered_map<std::type_index, ServiceDescriptor> mapDescriptors;
+                std::unordered_map<std::type_index, DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>> mapSingletons;
+                std::unordered_map<std::type_index, DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>> mapScoped;
+                std::vector<DotNetDupe::System::SmartPointer<DotNetDupe::System::IO::IDisposable>> vDisposables;
+                DotNetDupe::System::Threading::CriticalSection csLock;
+            };
 
             ServiceProvider::ServiceProvider(const IServiceCollection& collection)
-                : m_bIsRoot(true), m_pRootProvider(nullptr) {
+                : m_bIsRoot(true), m_pRootProvider(nullptr), m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
                 for (int iIdx = 0; iIdx < collection.GetCount(); ++iIdx) {
                     const ServiceDescriptor& descriptor = collection[iIdx];
-                    m_mapDescriptors.insert({ descriptor.GetServiceType(), descriptor });
+                    m_pImpl->mapDescriptors.insert({ descriptor.GetServiceType(), descriptor });
                 }
             }
 
             ServiceProvider::ServiceProvider(ServiceProvider* pRootProvider)
-                : m_bIsRoot(false), m_pRootProvider(pRootProvider) {
+                : m_bIsRoot(false), m_pRootProvider(pRootProvider), m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
             }
 
             ServiceProvider::~ServiceProvider() {
@@ -40,7 +48,7 @@ namespace DotNetDupe {
             }
 
             DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> ServiceProvider::GetService(const std::type_index& serviceType) {
-                DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
+                DotNetDupe::System::Threading::CriticalSectionLock lock(m_pImpl->csLock);
 
                 // 1. Special services
                 if (serviceType == typeid(DotNetDupe::System::IServiceProvider)) {
@@ -56,8 +64,8 @@ namespace DotNetDupe {
 
                 // 2. Find descriptor
                 ServiceProvider* pRoot = m_bIsRoot ? this : m_pRootProvider;
-                auto it = pRoot->m_mapDescriptors.find(serviceType);
-                if (it == pRoot->m_mapDescriptors.end()) {
+                auto it = pRoot->m_pImpl->mapDescriptors.find(serviceType);
+                if (it == pRoot->m_pImpl->mapDescriptors.end()) {
                     return nullptr;
                 }
 
@@ -67,11 +75,11 @@ namespace DotNetDupe {
             DotNetDupe::System::SmartPointer<DotNetDupe::System::Object> ServiceProvider::ResolveService(const ServiceDescriptor& descriptor) {
                 if (descriptor.GetLifetime() == ServiceLifetime::Singleton) {
                     ServiceProvider* pRoot = m_bIsRoot ? this : m_pRootProvider;
-                    DotNetDupe::System::Threading::CriticalSectionLock lock(pRoot->m_csLock);
+                    DotNetDupe::System::Threading::CriticalSectionLock lock(pRoot->m_pImpl->csLock);
 
                     // Check cache
-                    auto it = pRoot->m_mapSingletons.find(descriptor.GetServiceType());
-                    if (it != pRoot->m_mapSingletons.end()) {
+                    auto it = pRoot->m_pImpl->mapSingletons.find(descriptor.GetServiceType());
+                    if (it != pRoot->m_pImpl->mapSingletons.end()) {
                         return it->second;
                     }
 
@@ -87,12 +95,12 @@ namespace DotNetDupe {
                     }
 
                     if (!pInstance.IsNull()) {
-                        pRoot->m_mapSingletons[descriptor.GetServiceType()] = pInstance;
+                        pRoot->m_pImpl->mapSingletons[descriptor.GetServiceType()] = pInstance;
 
                         // Track IDisposable
                         auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
                         if (!pDisposable.IsNull()) {
-                            pRoot->m_vDisposables.push_back(pDisposable);
+                            pRoot->m_pImpl->vDisposables.push_back(pDisposable);
                         }
                     }
                     return pInstance;
@@ -102,11 +110,11 @@ namespace DotNetDupe {
                         throw DotNetDupe::System::InvalidOperationException("Cannot resolve scoped service from root provider.");
                     }
 
-                    DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
+                    DotNetDupe::System::Threading::CriticalSectionLock lock(m_pImpl->csLock);
 
                     // Check cache
-                    auto it = m_mapScoped.find(descriptor.GetServiceType());
-                    if (it != m_mapScoped.end()) {
+                    auto it = m_pImpl->mapScoped.find(descriptor.GetServiceType());
+                    if (it != m_pImpl->mapScoped.end()) {
                         return it->second;
                     }
 
@@ -120,12 +128,12 @@ namespace DotNetDupe {
                     }
 
                     if (!pInstance.IsNull()) {
-                        m_mapScoped[descriptor.GetServiceType()] = pInstance;
+                        m_pImpl->mapScoped[descriptor.GetServiceType()] = pInstance;
 
                         // Track IDisposable
                         auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
                         if (!pDisposable.IsNull()) {
-                            m_vDisposables.push_back(pDisposable);
+                            m_pImpl->vDisposables.push_back(pDisposable);
                         }
                     }
                     return pInstance;
@@ -144,8 +152,8 @@ namespace DotNetDupe {
                         // Track transient disposables in the resolving provider to clean up on Dispose
                         auto pDisposable = pInstance.DynamicCast<DotNetDupe::System::IO::IDisposable>();
                         if (!pDisposable.IsNull()) {
-                            DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
-                            m_vDisposables.push_back(pDisposable);
+                            DotNetDupe::System::Threading::CriticalSectionLock lock(m_pImpl->csLock);
+                            m_pImpl->vDisposables.push_back(pDisposable);
                         }
                     }
                     return pInstance;
@@ -153,18 +161,19 @@ namespace DotNetDupe {
             }
 
             void ServiceProvider::Dispose() {
-                DotNetDupe::System::Threading::CriticalSectionLock lock(m_csLock);
+                if (m_pImpl.IsNull()) return;
+                DotNetDupe::System::Threading::CriticalSectionLock lock(m_pImpl->csLock);
 
                 // Dispose in reverse order of registration
-                for (auto it = m_vDisposables.rbegin(); it != m_vDisposables.rend(); ++it) {
+                for (auto it = m_pImpl->vDisposables.rbegin(); it != m_pImpl->vDisposables.rend(); ++it) {
                     if (!it->IsNull()) {
                         (*it)->Dispose();
                     }
                 }
-                m_vDisposables.clear();
+                m_pImpl->vDisposables.clear();
 
-                m_mapSingletons.clear();
-                m_mapScoped.clear();
+                m_pImpl->mapSingletons.clear();
+                m_pImpl->mapScoped.clear();
             }
 
             // --- ServiceScope Implementation ---

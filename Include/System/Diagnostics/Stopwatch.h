@@ -14,13 +14,14 @@ namespace DotNetDupe {
             public:
                 DOTNETDUPE_API Stopwatch();
                 DOTNETDUPE_API Stopwatch(const TimeProviderPtr& timeProvider);
+                DOTNETDUPE_API ~Stopwatch() override;
 
                 DOTNETDUPE_API void Start();
                 DOTNETDUPE_API void Stop();
                 DOTNETDUPE_API void Reset();
                 DOTNETDUPE_API void Restart();
 
-                DOTNETDUPE_API bool IsRunning() const { return _isRunning; }
+                DOTNETDUPE_API bool IsRunning() const;
                 DOTNETDUPE_API TimeSpan Elapsed() const;
                 DOTNETDUPE_API long long ElapsedMilliseconds() const;
                 DOTNETDUPE_API long long ElapsedTicks() const;
@@ -32,10 +33,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static const bool IsHighResolution;
 
             private:
-                TimeProviderPtr _timeProvider;
-                long long _elapsedTicks;
-                long long _startTimeStamp;
-                bool _isRunning;
+                struct Impl;
+                DotNetDupe::System::SmartPointer<Impl> m_pImpl;
 
                 long long GetRawElapsedTicks() const;
             };

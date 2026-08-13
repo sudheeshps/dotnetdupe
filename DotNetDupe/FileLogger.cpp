@@ -1,14 +1,23 @@
 #include "pch.h"
 #include "Extensions/Logging/FileLogger.h"
 #include <cstdio>
+#include "FileLoggerContext.h"
 
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
 
+            struct FileLogger::Impl {
+                DotNetDupe::System::SmartPointer<FileLoggerContext> context;
+            };
+
             FileLogger::FileLogger(const DotNetDupe::System::String& categoryName, const LoggerConfiguration& config, 
-                                   std::shared_ptr<std::ofstream> fileStream, std::shared_ptr<std::mutex> fileMutex)
-                : LoggerBase(categoryName, config), m_fileStream(fileStream), m_fileMutex(fileMutex) {}
+                                   const DotNetDupe::System::SmartPointer<FileLoggerContext>& context)
+                : LoggerBase(categoryName, config), m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                m_pImpl->context = context;
+            }
+
+            FileLogger::~FileLogger() = default;
 
             void FileLogger::Log(LogLevel logLevel, const DotNetDupe::System::String& message) {
                 LoggerBase::Log(logLevel, message);
@@ -17,20 +26,20 @@ namespace DotNetDupe {
             void FileLogger::Log(LogLevel logLevel, const DotNetDupe::System::String& message, 
                                  const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
                 if (!IsEnabled(logLevel)) return;
-                if (!m_fileStream || !m_fileStream->is_open()) return;
+                if (!m_pImpl->context || !m_pImpl->context->fileStream || !m_pImpl->context->fileStream->is_open()) return;
 
-                std::string line = BuildLogMessage(logLevel, message, properties);
+                DotNetDupe::System::String line = BuildLogMessage(logLevel, message, properties);
 
                 // Write thread-safely to file
-                std::lock_guard<std::mutex> lock(*m_fileMutex);
+                std::lock_guard<std::mutex> lock(*(m_pImpl->context->fileMutex));
 
-                if (m_config.Rollover.EnableRollover && m_fileStream && m_fileStream->is_open()) {
-                    auto currentPos = m_fileStream->tellp();
+                if (m_config.Rollover.EnableRollover && m_pImpl->context->fileStream && m_pImpl->context->fileStream->is_open()) {
+                    auto currentPos = m_pImpl->context->fileStream->tellp();
                     if (currentPos != std::streampos(-1)) {
                         long long currentSize = static_cast<long long>(currentPos);
-                        if (currentSize + static_cast<long long>(line.length()) >= m_config.Rollover.MaxFileSizeInBytes) {
+                        if (currentSize + static_cast<long long>(line.GetLength()) >= m_config.Rollover.MaxFileSizeInBytes) {
                             // Close current stream
-                            m_fileStream->close();
+                            m_pImpl->context->fileStream->close();
 
                             std::string baseName = m_config.FilePath.GetRawString();
 
@@ -48,13 +57,13 @@ namespace DotNetDupe {
                             std::rename(baseName.c_str(), firstBackup.c_str());
 
                             // Re-open fresh file
-                            m_fileStream->open(baseName, std::ios::out | std::ios::app);
+                            m_pImpl->context->fileStream->open(baseName, std::ios::out | std::ios::app);
                         }
                     }
                 }
 
-                if (m_fileStream && m_fileStream->is_open()) {
-                    (*m_fileStream) << line << std::endl;
+                if (m_pImpl->context->fileStream && m_pImpl->context->fileStream->is_open()) {
+                    (*(m_pImpl->context->fileStream)) << line.GetRawString() << std::endl;
                 }
             }
 
