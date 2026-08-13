@@ -75,12 +75,12 @@ namespace DotNetDupe {
                     return ServiceDescriptor(serviceType, std::move(fnFactory), eLifetime);
                 }
 
-                template <typename TService, typename TImplementation>
+                template <typename TService, typename TImplementation, typename... TArgs>
                 static ServiceDescriptor Describe(ServiceLifetime eLifetime) {
                     return ServiceDescriptor(
                         typeid(TService),
-                        [](const DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>&) {
-                            return DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>(DotNetDupe::System::SmartPointer<TImplementation>::NewShared());
+                        [](const DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>& sp) {
+                            return DotNetDupe::System::SmartPointer<DotNetDupe::System::Object>(DotNetDupe::System::SmartPointer<TImplementation>::NewShared(sp->GetRequiredService<TArgs>()...));
                         },
                         eLifetime
                     );

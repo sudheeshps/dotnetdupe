@@ -44,8 +44,11 @@ namespace {
     };
 
     class DemoProductsController : public ControllerBase {
+    private:
+        SmartPointer<IInfoService> m_infoService;
+
     public:
-        DemoProductsController() = default;
+        DemoProductsController(SmartPointer<IInfoService> infoService) : m_infoService(infoService) {}
         ~DemoProductsController() override = default;
 
         // Returns strongly typed List directly, utilizing automatic JSON serialization
@@ -58,7 +61,8 @@ namespace {
 
         // Returns strongly typed single DemoProduct directly (automatic JSON serialization)
         DemoProduct GetDefaultProduct() {
-            return DemoProduct{"Coffee Maker", 85};
+            String name = String("Coffee Maker (Served by ") + m_infoService->GetInfo() + ")";
+            return DemoProduct{name, 85};
         }
 
         // Returns String using Ok() / NotFound() helpers for conditional logic
@@ -110,7 +114,7 @@ void DemonstrateWebApplication() {
     // 1. Create Builder & Register Service
     auto builder = WebApplication::CreateBuilder();
     builder->GetServices().AddSingleton<IInfoService, InfoService>();
-    builder->GetServices().AddSingleton<DemoProductsController, DemoProductsController>();
+    builder->GetServices().AddSingleton<DemoProductsController, DemoProductsController, IInfoService>();
     builder->AddController<DemoProductsController>("/api/products")
         .MapGet("", &DemoProductsController::GetProducts)
         .MapGet("/default", &DemoProductsController::GetDefaultProduct)

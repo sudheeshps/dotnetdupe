@@ -17,9 +17,9 @@ namespace DotNetDupe {
                 IServiceCollection& operator=(IServiceCollection&&) noexcept = default;
 
                 // Singleton
-                template <typename TService, typename TImplementation>
+                template <typename TService, typename TImplementation, typename... TArgs>
                 IServiceCollection& AddSingleton() {
-                    this->Add(ServiceDescriptor::Describe<TService, TImplementation>(ServiceLifetime::Singleton));
+                    this->Add(ServiceDescriptor::Describe<TService, TImplementation, TArgs...>(ServiceLifetime::Singleton));
                     return *this;
                 }
 
@@ -36,9 +36,9 @@ namespace DotNetDupe {
                 }
 
                 // Transient
-                template <typename TService, typename TImplementation>
+                template <typename TService, typename TImplementation, typename... TArgs>
                 IServiceCollection& AddTransient() {
-                    this->Add(ServiceDescriptor::Describe<TService, TImplementation>(ServiceLifetime::Transient));
+                    this->Add(ServiceDescriptor::Describe<TService, TImplementation, TArgs...>(ServiceLifetime::Transient));
                     return *this;
                 }
 
@@ -49,9 +49,9 @@ namespace DotNetDupe {
                 }
 
                 // Scoped
-                template <typename TService, typename TImplementation>
+                template <typename TService, typename TImplementation, typename... TArgs>
                 IServiceCollection& AddScoped() {
-                    this->Add(ServiceDescriptor::Describe<TService, TImplementation>(ServiceLifetime::Scoped));
+                    this->Add(ServiceDescriptor::Describe<TService, TImplementation, TArgs...>(ServiceLifetime::Scoped));
                     return *this;
                 }
 
