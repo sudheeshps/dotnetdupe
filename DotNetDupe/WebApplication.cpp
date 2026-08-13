@@ -247,9 +247,9 @@ namespace DotNetDupe {
                         if (equals != std::string::npos) {
                             std::string key = pair.substr(0, equals);
                             std::string val = pair.substr(equals + 1);
-                            spRequest->GetQuery().Add(System::String(key.c_str()), System::String(val.c_str()));
+                            spRequest->GetQuery()[System::String(key.c_str())] = System::String(val.c_str());
                         } else if (!pair.empty()) {
-                            spRequest->GetQuery().Add(System::String(pair.c_str()), System::String(""));
+                            spRequest->GetQuery()[System::String(pair.c_str())] = System::String("");
                         }
                         if (ampersand == std::string::npos) break;
                         start = ampersand + 1;
@@ -279,7 +279,7 @@ namespace DotNetDupe {
                         std::string nameLower = name;
                         std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
 
-                        spRequest->GetHeaders().Add(System::String(nameLower.c_str()), System::String(value.c_str()));
+                        spRequest->GetHeaders()[System::String(nameLower.c_str())] = System::String(value.c_str());
 
                         if (nameLower == "content-length") {
                             try {

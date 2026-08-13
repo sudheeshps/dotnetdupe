@@ -35,8 +35,8 @@ void DemonstrateFileDownloader() {
             if (ctx->GetRequest()->GetHeaders().TryGetValue("range", sRange)) {
                 // Range request (Resume)
                 ctx->GetResponse()->SetStatusCode(206);
-                ctx->GetResponse()->GetHeaders().Add("Content-Length", "20000");
-                ctx->GetResponse()->GetHeaders().Add("Content-Range", "bytes 20000-39999/40000");
+                ctx->GetResponse()->GetHeaders()[String("Content-Length")] = String("20000");
+                ctx->GetResponse()->GetHeaders()[String("Content-Range")] = String("bytes 20000-39999/40000");
                 
                 if (ctx->GetRequest()->GetMethod().GetRawString() && std::string(ctx->GetRequest()->GetMethod().GetRawString()) == "HEAD") {
                     return String("");
@@ -45,7 +45,7 @@ void DemonstrateFileDownloader() {
             } else {
                 // Initial request
                 ctx->GetResponse()->SetStatusCode(200);
-                ctx->GetResponse()->GetHeaders().Add("Content-Length", "40000");
+                ctx->GetResponse()->GetHeaders()[String("Content-Length")] = String("40000");
                 
                 if (ctx->GetRequest()->GetMethod().GetRawString() && std::string(ctx->GetRequest()->GetMethod().GetRawString()) == "HEAD") {
                     return String("");
