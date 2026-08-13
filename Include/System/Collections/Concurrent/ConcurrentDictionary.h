@@ -4,8 +4,9 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/ArgumentException.h"
-#include <mutex>
-#include <algorithm>
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Lock.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,182 +16,106 @@ namespace DotNetDupe {
                 template <typename TKey, typename TValue>
                 class ConcurrentDictionary : public Object {
                 private:
-                    struct KeyValuePair {
-                        TKey Key;
-                        TValue Value;
-                    };
-                    
-                    mutable std::mutex m_mtxLock;
-                    KeyValuePair* m_pItems;
-                    int m_iCount;
-                    int m_iCapacity;
-
-                    void EnsureCapacity(int required) {
-                        if (required <= m_iCapacity) return;
-                        int newCap = m_iCapacity == 0 ? 4 : m_iCapacity * 2;
-                        if (newCap < required) newCap = required;
-                        
-                        KeyValuePair* newItems = (KeyValuePair*)System::AllocateCollectionBuffer(newCap * sizeof(KeyValuePair));
-                        for (int i = 0; i < m_iCount; ++i) {
-                            new (&newItems[i]) KeyValuePair(std::move(m_pItems[i]));
-                            m_pItems[i].~KeyValuePair();
-                        }
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                        }
-                        m_pItems = newItems;
-                        m_iCapacity = newCap;
-                    }
-
-                    int FindIndex(const TKey& key) const {
-                        for (int i = 0; i < m_iCount; ++i) {
-                            if (m_pItems[i].Key == key) return i;
-                        }
-                        return -1;
-                    }
+                    mutable Threading::CriticalSection m_csLock;
+                    Generic::Dictionary<TKey, TValue> m_dict;
 
                 public:
-                    ConcurrentDictionary() : m_pItems(nullptr), m_iCount(0), m_iCapacity(0) {}
+                    ConcurrentDictionary() = default;
 
                     ~ConcurrentDictionary() override {
                         Clear();
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                            m_pItems = nullptr;
-                        }
                     }
 
                     bool TryAdd(const TKey& key, const TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        if (FindIndex(key) != -1) return false;
-
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) KeyValuePair{ key, value };
-                        m_iCount++;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.ContainsKey(key)) {
+                            return false;
+                        }
+                        m_dict.Add(key, value);
                         return true;
                     }
 
                     bool TryGetValue(const TKey& key, TValue& value) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            value = m_pItems[index].Value;
-                            return true;
-                        }
-                        return false;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.TryGetValue(key, value);
                     }
 
                     bool TryRemove(const TKey& key, TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            value = std::move(m_pItems[index].Value);
-                            m_pItems[index].~KeyValuePair();
-                            for (int i = index; i < m_iCount - 1; ++i) {
-                                new (&m_pItems[i]) KeyValuePair(std::move(m_pItems[i + 1]));
-                                m_pItems[i + 1].~KeyValuePair();
-                            }
-                            m_iCount--;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.TryGetValue(key, value)) {
+                            m_dict.Remove(key);
                             return true;
                         }
                         return false;
                     }
 
                     bool ContainsKey(const TKey& key) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return FindIndex(key) != -1;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.ContainsKey(key);
                     }
 
                     void Clear() {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        for (int i = 0; i < m_iCount; ++i) {
-                            m_pItems[i].~KeyValuePair();
-                        }
-                        m_iCount = 0;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_dict.Clear();
                     }
 
                     int GetCount() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_iCount;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetCount();
                     }
 
                     bool IsEmpty() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_iCount == 0;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetCount() == 0;
                     }
 
                     TValue GetOrAdd(const TKey& key, const TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            return m_pItems[index].Value;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        TValue existingVal;
+                        if (m_dict.TryGetValue(key, existingVal)) {
+                            return existingVal;
                         }
-
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) KeyValuePair{ key, value };
-                        m_iCount++;
+                        m_dict.Add(key, value);
                         return value;
                     }
 
                     template <typename F>
                     TValue GetOrAdd(const TKey& key, F valueFactory) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            return m_pItems[index].Value;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        TValue existingVal;
+                        if (m_dict.TryGetValue(key, existingVal)) {
+                            return existingVal;
                         }
-
                         TValue val = valueFactory(key);
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) KeyValuePair{ key, val };
-                        m_iCount++;
+                        m_dict.Add(key, val);
                         return val;
                     }
 
                     TValue AddOrUpdate(const TKey& key, const TValue& addValue, const TValue& updateValue) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            m_pItems[index].Value = updateValue;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.ContainsKey(key)) {
+                            m_dict[key] = updateValue;
                             return updateValue;
                         }
-
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) KeyValuePair{ key, addValue };
-                        m_iCount++;
+                        m_dict.Add(key, addValue);
                         return addValue;
                     }
 
                     TValue& operator[](const TKey& key) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        int index = FindIndex(key);
-                        if (index != -1) {
-                            return m_pItems[index].Value;
-                        }
-
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) KeyValuePair{ key, TValue() };
-                        int addedIndex = m_iCount;
-                        m_iCount++;
-                        return m_pItems[addedIndex].Value;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        // Be careful returning a reference while lock is released.
+                        // The user must synchronize external accesses to this reference.
+                        return m_dict[key];
                     }
 
                     Array<TKey> GetKeys() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        Array<TKey> arrKeys(m_iCount);
-                        for (int i = 0; i < m_iCount; ++i) {
-                            arrKeys[i] = m_pItems[i].Key;
-                        }
-                        return arrKeys;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetKeys();
                     }
 
                     Array<TValue> GetValues() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        Array<TValue> arrValues(m_iCount);
-                        for (int i = 0; i < m_iCount; ++i) {
-                            arrValues[i] = m_pItems[i].Value;
-                        }
-                        return arrValues;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetValues();
                     }
                 };
 

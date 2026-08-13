@@ -5,10 +5,10 @@
 #include "System/Array.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
-#include <queue>
-#include <mutex>
-#include <condition_variable>
-#include <chrono>
+#include "System/Collections/Generic/LinkedList.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/ConditionVariable.h"
+#include "System/Threading/Lock.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -18,10 +18,10 @@ namespace DotNetDupe {
                 template <typename T>
                 class BlockingCollection : public Object {
                 private:
-                    mutable std::mutex m_mtxLock;
-                    std::condition_variable m_cvAdd;
-                    std::condition_variable m_cvTake;
-                    std::queue<T> m_qQueue;
+                    mutable Threading::CriticalSection m_csLock;
+                    Threading::ConditionVariable m_cvAdd;
+                    Threading::ConditionVariable m_cvTake;
+                    Generic::LinkedList<T> m_list;
                     int m_iBoundedCapacity;
                     bool m_bIsAddingCompleted;
 
@@ -35,49 +35,57 @@ namespace DotNetDupe {
                     }
 
                     void Add(const T& item) {
-                        std::unique_lock<std::mutex> lock(m_mtxLock);
+                        m_csLock.Enter();
                         
                         if (m_bIsAddingCompleted) {
+                            m_csLock.Leave();
                             throw System::InvalidOperationException("The collection has been marked as complete for adding.");
                         }
 
                         if (m_iBoundedCapacity > 0) {
-                            m_cvAdd.wait(lock, [this]() {
-                                return m_bIsAddingCompleted || (int)m_qQueue.size() < m_iBoundedCapacity;
-                            });
+                            while (!m_bIsAddingCompleted && m_list.GetCount() >= m_iBoundedCapacity) {
+                                m_cvAdd.Wait(m_csLock);
+                            }
 
                             if (m_bIsAddingCompleted) {
+                                m_csLock.Leave();
                                 throw System::InvalidOperationException("The collection has been marked as complete for adding.");
                             }
                         }
 
-                        m_qQueue.push(item);
-                        m_cvTake.notify_one();
+                        m_list.AddLast(item);
+                        m_cvTake.Pulse();
+                        m_csLock.Leave();
                     }
 
                     bool TryAdd(const T& item, int iTimeoutMilliseconds = 0) {
-                        std::unique_lock<std::mutex> lock(m_mtxLock);
+                        m_csLock.Enter();
                         
                         if (m_bIsAddingCompleted) {
+                            m_csLock.Leave();
                             return false;
                         }
 
-                        if (m_iBoundedCapacity > 0 && (int)m_qQueue.size() >= m_iBoundedCapacity) {
+                        if (m_iBoundedCapacity > 0 && m_list.GetCount() >= m_iBoundedCapacity) {
                             if (iTimeoutMilliseconds <= 0) {
+                                m_csLock.Leave();
                                 return false;
                             }
 
-                            bool bWaitResult = m_cvAdd.wait_for(lock, std::chrono::milliseconds(iTimeoutMilliseconds), [this]() {
-                                return m_bIsAddingCompleted || (int)m_qQueue.size() < m_iBoundedCapacity;
-                            });
-
-                            if (!bWaitResult || m_bIsAddingCompleted) {
-                                return false;
+                            if (m_bIsAddingCompleted || m_list.GetCount() < m_iBoundedCapacity) {
+                                // Condition already met
+                            } else {
+                                bool bWaitResult = m_cvAdd.Wait(m_csLock, iTimeoutMilliseconds);
+                                if (!bWaitResult || m_bIsAddingCompleted || m_list.GetCount() >= m_iBoundedCapacity) {
+                                    m_csLock.Leave();
+                                    return false;
+                                }
                             }
                         }
 
-                        m_qQueue.push(item);
-                        m_cvTake.notify_one();
+                        m_list.AddLast(item);
+                        m_cvTake.Pulse();
+                        m_csLock.Leave();
                         return true;
                     }
 
@@ -91,62 +99,66 @@ namespace DotNetDupe {
                     }
 
                     bool TryTake(T& item, int iTimeoutMilliseconds = 0) {
-                        std::unique_lock<std::mutex> lock(m_mtxLock);
+                        m_csLock.Enter();
 
-                        if (m_qQueue.empty()) {
+                        if (m_list.GetCount() == 0) {
                             if (m_bIsAddingCompleted) {
+                                m_csLock.Leave();
                                 return false;
                             }
 
                             if (iTimeoutMilliseconds == 0) {
+                                m_csLock.Leave();
                                 return false;
                             }
 
                             if (iTimeoutMilliseconds < 0) {
-                                m_cvTake.wait(lock, [this]() {
-                                    return m_bIsAddingCompleted || !m_qQueue.empty();
-                                });
+                                while (!m_bIsAddingCompleted && m_list.GetCount() == 0) {
+                                    m_cvTake.Wait(m_csLock);
+                                }
                             } else {
-                                m_cvTake.wait_for(lock, std::chrono::milliseconds(iTimeoutMilliseconds), [this]() {
-                                    return m_bIsAddingCompleted || !m_qQueue.empty();
-                                });
+                                if (!m_bIsAddingCompleted && m_list.GetCount() == 0) {
+                                    m_cvTake.Wait(m_csLock, iTimeoutMilliseconds);
+                                }
                             }
 
-                            if (m_qQueue.empty()) {
+                            if (m_list.GetCount() == 0) {
+                                m_csLock.Leave();
                                 return false;
                             }
                         }
 
-                        item = m_qQueue.front();
-                        m_qQueue.pop();
+                        item = m_list.GetFirst()->Value;
+                        m_list.RemoveFirst();
 
                         if (m_iBoundedCapacity > 0) {
-                            m_cvAdd.notify_one();
+                            m_cvAdd.Pulse();
                         }
 
+                        m_csLock.Leave();
                         return true;
                     }
 
                     void CompleteAdding() {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
+                        Threading::CriticalSectionLock lock(m_csLock);
                         m_bIsAddingCompleted = true;
-                        m_cvTake.notify_all();
-                        m_cvAdd.notify_all();
+                        m_cvTake.PulseAll();
+                        m_cvAdd.PulseAll();
                     }
 
                     bool IsAddingCompleted() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
+                        Threading::CriticalSectionLock lock(m_csLock);
                         return m_bIsAddingCompleted;
                     }
 
                     bool IsCompleted() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_bIsAddingCompleted && m_qQueue.empty();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_bIsAddingCompleted && m_list.GetCount() == 0;
                     }
 
                     int GetCount() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return (int)m_qQueue.size();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.GetCount();
                     }
 
                     int GetBoundedCapacity() const {
@@ -154,18 +166,8 @@ namespace DotNetDupe {
                     }
 
                     Array<T> ToArray() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        Array<T> arrResult((int)m_qQueue.size());
-                        std::queue<T> qTemp = m_qQueue;
-                        int iIndex = 0;
-
-                        while (!qTemp.empty()) {
-                            arrResult[iIndex++] = qTemp.front();
-                            qTemp.pop();
-                        }
-
-                        return arrResult;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.ToArray();
                     }
                 };
 
