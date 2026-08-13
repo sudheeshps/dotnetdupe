@@ -372,12 +372,12 @@ namespace DotNetDupe {
                     }
                 }
 
-                if (method == "GET") {
+                if (method == "GET" || method == "HEAD") {
                     if (findHandler(m_getHandlers)) {
                         try {
-                            System::Console::WriteLine("[Server] Found GET handler, invoking...");
+                            System::Console::WriteLine("[Server] Found GET/HEAD handler, invoking...");
                             sBodyResult = handler(spContext);
-                            System::Console::WriteLine("[Server] GET handler invoked successfully.");
+                            System::Console::WriteLine("[Server] GET/HEAD handler invoked successfully.");
                             bMatched = true;
                         } catch (const DotNetDupe::System::SystemException& ex) {
                             spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
@@ -485,7 +485,7 @@ namespace DotNetDupe {
                 responseString += "\r\n";
                 System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)(responseString.length() + respBody.length())));
                 stream->Write(responseString.data(), 0, static_cast<int>(responseString.length()));
-                if (!respBody.empty()) {
+                if (!respBody.empty() && method != "HEAD") {
                     stream->Write(respBody.data(), 0, static_cast<int>(respBody.length()));
                 }
                 spClient->Close();

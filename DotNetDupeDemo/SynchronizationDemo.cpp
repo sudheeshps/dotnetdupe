@@ -136,10 +136,14 @@ void DemonstrateSynchronization() {
     Console::Write(bCreatedNewEvent ? "true" : "false");
     Console::WriteLine(")");
 
-    SmartPointer<ManualResetEvent> mre3 = ManualResetEvent::OpenExisting("Global\\DemoManualResetEvent");
-    if (mre3.Get() != nullptr) {
-        Console::WriteLine("Successfully opened existing ManualResetEvent.");
-        mre3->WaitOne();
+    try {
+        SmartPointer<ManualResetEvent> mre3 = ManualResetEvent::OpenExisting("GlobalDemoEvent");
+        if (mre3.Get() != nullptr) {
+            Console::WriteLine("Successfully opened existing ManualResetEvent.");
+            mre3->WaitOne(100);
+        }
+    } catch (const Exception& e) {
+        Console::WriteLine(String("Failed to open named event: ") + e.What());
     }
     
     bool bCreatedNewMutex = false;

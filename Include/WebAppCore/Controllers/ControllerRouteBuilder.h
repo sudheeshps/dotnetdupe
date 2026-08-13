@@ -11,6 +11,8 @@
 #include <vector>
 #include <functional>
 #include <type_traits>
+#include <ios>
+#include <sstream>
 
 namespace DotNetDupe {
     namespace WebAppCore {

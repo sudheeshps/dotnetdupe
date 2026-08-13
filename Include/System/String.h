@@ -9,18 +9,9 @@
 
 // Forward declaration moved
 #include "System/Utils/StringConvert.h"
-#include <algorithm>
-#include <type_traits>
-#include <iomanip>
-#include <memory>
-#include <regex>
-#include <sstream>
-
-#include <vector>
-#include <set>
-#include <cstring>
-#include <cwctype>
-#include <format>
+#include <initializer_list>
+#include <ctype.h>
+#include <wctype.h>
 
 namespace DotNetDupe {
     namespace System {
@@ -34,27 +25,17 @@ namespace DotNetDupe {
         // Helper for portable case-insensitive comparison
         struct CaseInsensitiveCompare {
             static bool Equals(char c1, char c2) {
-                return std::tolower(static_cast<unsigned char>(c1)) == std::tolower(static_cast<unsigned char>(c2));
+                return tolower(static_cast<unsigned char>(c1)) == tolower(static_cast<unsigned char>(c2));
             }
         };
 
         struct CaseInsensitiveCompareWChar {
             static bool Equals(wchar_t c1, wchar_t c2) {
-                return std::towlower(c1) == std::towlower(c2);
+                return towlower(c1) == towlower(c2);
             }
         };
 
         class DateTimeOffset;
-
-        // Helper to check if T has a ToString() method
-        template<typename T, typename = void>
-        struct has_ToString : std::false_type {};
-
-        template<typename T>
-        struct has_ToString<T, std::void_t<decltype(std::declval<const T&>().ToString())>> : std::true_type {};
-
-        template<typename T>
-        inline constexpr bool has_ToString_v = has_ToString<T>::value;
 
         struct BoolRepresentation {
             static constexpr const char* True = "True";
@@ -102,35 +83,13 @@ namespace DotNetDupe {
             DOTNETDUPE_API int GetLength() const;
             DOTNETDUPE_API String Clone() const;
 
-            friend std::basic_ostream<char>& operator<<(std::basic_ostream<char>& os, const String& sStr) {
-                os << sStr.GetRawString();
-                return os;
-            }
-
-            friend std::basic_istream<char>& operator>>(std::basic_istream<char>& is, String& sStr) {
-                std::string s;
-                is >> s;
-                sStr = s.c_str();
-                return is;
-            }
-
-            friend void PrintTo(const String& sStr, ::std::ostream* os) {
-                if (os) {
-                    if constexpr (std::is_same_v<char, wchar_t>) {
-                        *os << "\"" << (sStr.GetRawString() ? "wchar_t string" : "") << "\"";
-                    } else {
-                        *os << "\"" << (sStr.GetRawString() ? sStr.GetRawString() : "") << "\"";
-                    }
-                }
-            }
-
             DOTNETDUPE_API bool operator<(const String& sStr) const {
                 const char* p1 = GetRawString();
                 const char* p2 = sStr.GetRawString();
                 if (!p1 && !p2) return false;
                 if (!p1) return true;
                 if (!p2) return false;
-                return std::strcmp(p1, p2) < 0;
+                return strcmp(p1, p2) < 0;
             }
 
             friend bool operator==(const String& sStr1, const String& sStr2) {
@@ -138,13 +97,13 @@ namespace DotNetDupe {
                 const char* p2 = sStr2.GetRawString();
                 if (p1 == p2) return true;
                 if (!p1 || !p2) return false;
-                return std::strcmp(p1, p2) == 0;
+                return strcmp(p1, p2) == 0;
             }
             friend bool operator==(const String& sStr1, const char* pStr2) {
                 const char* p1 = sStr1.GetRawString();
                 if (p1 == pStr2) return true;
                 if (!p1 || !pStr2) return false;
-                return std::strcmp(p1, pStr2) == 0;
+                return strcmp(p1, pStr2) == 0;
             }
             friend bool operator==(const char* pStr1, const String& sStr2) {
                 return sStr2 == pStr1;
@@ -215,34 +174,37 @@ namespace DotNetDupe {
                 std::initializer_list<String> sStrings, int iStartIndex,
                 int iCount);
 
+            static String FormatArgHelper(bool b) { return b ? "True" : "False"; }
+            static String FormatArgHelper(std::nullptr_t) { return ""; }
+            static String FormatArgHelper(const String& s) { return s; }
+            static String FormatArgHelper(const char* s) { return String(s); }
+            static String FormatArgHelper(char c) { char arr[2] = {c, 0}; return String(arr); }
+            static String FormatArgHelper(short i) { return String::FromInt(i); }
+            static String FormatArgHelper(unsigned short i) { return String::FromInt(i); }
+            static String FormatArgHelper(int i) { return String::FromInt(i); }
+            static String FormatArgHelper(unsigned int u) { return String::ValueOf((long long)u); }
+            static String FormatArgHelper(long l) { return String::ValueOf((long long)l); }
+            static String FormatArgHelper(unsigned long ul) { return String::ValueOf((long long)ul); }
+            static String FormatArgHelper(long long ll) { return String::ValueOf(ll); }
+            static String FormatArgHelper(unsigned long long ull) { return String::ValueOf((long long)ull); }
+            static String FormatArgHelper(float f) { return String::ValueOf((double)f); }
+            static String FormatArgHelper(double d) { return String::ValueOf(d); }
             template<typename T>
-            static auto FormatArgHelper(const T& arg) {
-                if constexpr (std::is_same_v<T, bool>) {
-                    return arg ? "True" : "False";
-                } else if constexpr (std::is_same_v<T, std::nullptr_t>) {
-                    return "";
-                } else if constexpr (std::is_same_v<T, String>) {
-                    return arg.GetRawString();
-                } else {
-                    return arg;
-                }
-            }
+            static String FormatArgHelper(const T& arg) { return arg.ToString(); }
+
+            DOTNETDUPE_API static String InternalFormat(const char* pFormat, const String* pArgs, int iArgCount);
 
             template <typename... Args>
-            static String Format(const String& sFormat, const Args&... args) {
-                return Format(sFormat.GetRawString(), args...);
+            static String Format(const char* pFormat, const Args&... args) {
+                String arrArgs[] = { FormatArgHelper(args)... };
+                return InternalFormat(pFormat, arrArgs, sizeof...(Args));
+            }
+            static String Format(const char* pFormat) {
+                return InternalFormat(pFormat, nullptr, 0);
             }
             template <typename... Args>
-            static String Format(const char* pFormat, const Args&... args) {
-                try {
-                    auto mapped_args = std::make_tuple(FormatArgHelper(args)...);
-                    std::string sRet = std::apply([&](const auto&... lvalue_args) {
-                        return std::vformat(pFormat, std::make_format_args(lvalue_args...));
-                    }, mapped_args);
-                    return String(sRet.c_str());
-                } catch (const std::format_error&) {
-                    throw FormatException(FormatExceptionMessage::Message);
-                }
+            static String Format(const String& sFormat, const Args&... args) {
+                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "", args...);
             }
 
             DOTNETDUPE_API int LastIndexOf(const String& sStr, bool bIgnoreCase);
@@ -289,20 +251,10 @@ namespace DotNetDupe {
             DOTNETDUPE_API void operator delete[](void* p);
 
         private:
-
-            DOTNETDUPE_API static std::string TranscodeWcharoUtf8(const wchar_t* pWStr);
-            DOTNETDUPE_API static std::wstring TranscodeUtf8ToWChar(const char* pUtf8Str);
-
-            friend class StringImpl;
-            void* m_pData;
+            struct StringImpl;
+            StringImpl* m_pImpl;
         };
-
     }
 }
 
-template <>
-struct std::formatter<DotNetDupe::System::String> : std::formatter<std::string> {
-    auto format(const DotNetDupe::System::String& str, format_context& ctx) const {
-        return std::formatter<std::string>::format(str.GetRawString() ? str.GetRawString() : "", ctx);
-    }
-};
+

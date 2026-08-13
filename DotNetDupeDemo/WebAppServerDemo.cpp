@@ -2,6 +2,7 @@
 #include "System/SmartPointer.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
+#include "System/IO/Directory.h"
 #if defined(_WIN32)
 #include <windows.h>
 #endif
@@ -17,9 +18,9 @@ void RunWebAppServerDemo() {
     Console::WriteLine("--- WebAppServer Demo ---");
 
     String webRoot = "demo_wwwroot";
-#if defined(_WIN32)
-    CreateDirectoryA(webRoot.GetRawString(), NULL);
-#endif
+    if (IO::Directory::Exists(webRoot)) {
+        IO::Directory::Delete(webRoot, true);
+    }
 
     IO::File::WriteAllText(IO::Path::Combine({webRoot, "index.html"}), 
         "<!DOCTYPE html><html><head><title>DotNetDupe WebAppServer</title></head>"

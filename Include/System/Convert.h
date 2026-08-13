@@ -5,6 +5,8 @@
 #include "System/String.h"
 #include "System/Char.h"
 
+#include <vector>
+
 namespace DotNetDupe {
     namespace System {
         class Convert : public Object {
