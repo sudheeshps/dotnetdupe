@@ -15,17 +15,20 @@ namespace DotNetDupe {
                 void unlock() { cs.Leave(); }
             };
 
+            struct ConditionVariable::Impl : public Object {
+                std::condition_variable_any cv;
+            };
+
             ConditionVariable::ConditionVariable() {
-                _pData = new std::condition_variable_any();
+                m_pImpl = SmartPointer<Impl>::NewShared();
             }
 
             ConditionVariable::~ConditionVariable() {
-                delete static_cast<std::condition_variable_any*>(_pData);
             }
 
             void ConditionVariable::Wait(CriticalSection& cs) {
                 CSLockAdapter adapter{cs};
-                static_cast<std::condition_variable_any*>(_pData)->wait(adapter);
+                m_pImpl->cv.wait(adapter);
             }
 
             bool ConditionVariable::Wait(CriticalSection& cs, int millisecondsTimeout) {
@@ -34,16 +37,16 @@ namespace DotNetDupe {
                     return true;
                 }
                 CSLockAdapter adapter{cs};
-                auto status = static_cast<std::condition_variable_any*>(_pData)->wait_for(adapter, std::chrono::milliseconds(millisecondsTimeout));
+                auto status = m_pImpl->cv.wait_for(adapter, std::chrono::milliseconds(millisecondsTimeout));
                 return status == std::cv_status::no_timeout;
             }
 
             void ConditionVariable::Pulse() {
-                static_cast<std::condition_variable_any*>(_pData)->notify_one();
+                m_pImpl->cv.notify_one();
             }
 
             void ConditionVariable::PulseAll() {
-                static_cast<std::condition_variable_any*>(_pData)->notify_all();
+                m_pImpl->cv.notify_all();
             }
         }
     }

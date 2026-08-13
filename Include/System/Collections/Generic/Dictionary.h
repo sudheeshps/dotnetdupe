@@ -270,7 +270,7 @@ namespace DotNetDupe {
                     TValue& operator[](const TKey& key) {
                         int i = FindEntry(key);
                         if (i >= 0) return m_pEntries[i].value;
-                        Insert(key, TValue(), true);
+                        Insert(key, TValue(), false);
                         return m_pEntries[FindEntry(key)].value;
                     }
 

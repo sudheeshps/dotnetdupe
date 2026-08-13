@@ -59,7 +59,7 @@ namespace DotNetDupe {
                         rowsAffected
                     );
 
-                    return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared((void*)&resultRows, (void*)&columns);
+                    return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared(std::move(resultRows), std::move(columns));
                 }
 
                 int SqlCommand::ExecuteNonQuery() {

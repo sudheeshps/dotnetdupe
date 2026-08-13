@@ -3,6 +3,7 @@
 #include "System/Convert.h"
 #include "System/ArgumentException.h"
 #include "System/SmartPointer.h"
+#include "System/Data/Internal/IDatabaseBackend.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,7 +16,7 @@ namespace DotNetDupe {
                     DotNetDupe::System::SmartPointer<Impl> m_pImpl;
 
                 public:
-                    DOTNETDUPE_API SqlDataReader(void* pRows, void* pColumns);
+                    DOTNETDUPE_API SqlDataReader(Collections::Generic::List<DotNetDupe::System::Data::Internal::Row>&& rows, Collections::Generic::List<DotNetDupe::System::String>&& columns);
                     DOTNETDUPE_API ~SqlDataReader() override;
 
                     DOTNETDUPE_API bool Read() override;

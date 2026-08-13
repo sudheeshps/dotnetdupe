@@ -1,12 +1,9 @@
 #pragma once
 #include "Common.h"
 #include "System/Data/Internal/IDatabaseBackend.h"
-#include <string>
-#include <vector>
-#include <unordered_map>
+#include "System/SmartPointer.h"
 
 #if defined(DOTNETDUPE_USE_SQLITE)
-#include <sqlite3.h>
 
 namespace DotNetDupe {
     namespace System {
@@ -15,19 +12,19 @@ namespace DotNetDupe {
 
                 class SqliteDatabaseBackend : public IDatabaseBackend {
                 private:
-                    sqlite3* m_db = nullptr;
-                    std::string m_connectionString;
+                    struct Impl;
+                    DotNetDupe::System::SmartPointer<Impl> m_pImpl;
 
                 public:
-                    DOTNETDUPE_API SqliteDatabaseBackend(const std::string& connStr);
+                    DOTNETDUPE_API SqliteDatabaseBackend(const DotNetDupe::System::String& connStr);
                     DOTNETDUPE_API ~SqliteDatabaseBackend() override;
 
                     DOTNETDUPE_API void ClearDatabase() override;
 
-                    DOTNETDUPE_API std::vector<Row> Execute(
-                        const std::string& sql,
-                        const std::unordered_map<std::string, std::string>& parameters,
-                        std::vector<std::string>& columnNames,
+                    DOTNETDUPE_API Collections::Generic::List<Row> Execute(
+                        const String& sql,
+                        const Collections::Generic::Dictionary<String, String>& parameters,
+                        Collections::Generic::List<String>& columnNames,
                         int& rowsAffected
                     ) override;
                 };

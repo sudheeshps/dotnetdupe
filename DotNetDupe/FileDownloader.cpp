@@ -11,8 +11,9 @@
 #include "System/Convert.h"
 #include "System/IO/FileStream.h"
 #include "System/IO/File.h"
+#include "System/IO/File.h"
+#include "System/Threading/Thread.h"
 #include <chrono>
-#include <thread>
 #include <cstdlib>
 #include <atomic>
 #include <string>
@@ -35,6 +36,7 @@ namespace DotNetDupe {
                     std::atomic<double> m_dDownloadRate{ 0.0 };
 
                     HttpClient m_httpClient;
+                    SmartPointer<Threading::Thread> m_workerThread;
 
                     long long CheckExistingFileSize() {
                         if (!IO::File::Exists(m_sDestinationPath)) return 0;
@@ -284,8 +286,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Starting download from ") + m_pImpl->m_sUrl);
 
                     auto pImpl = m_pImpl;
-                    std::thread workerThread([pImpl]() { pImpl->DownloadLoop(); });
-                    workerThread.detach();
+                    m_pImpl->m_workerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
+                    m_pImpl->m_workerThread->Start();
                     return true;
                 }
 
@@ -298,8 +300,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Resuming download for ") + m_pImpl->m_sDestinationPath);
 
                     auto pImpl = m_pImpl;
-                    std::thread workerThread([pImpl]() { pImpl->DownloadLoop(); });
-                    workerThread.detach();
+                    m_pImpl->m_workerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
+                    m_pImpl->m_workerThread->Start();
                     return true;
                 }
 

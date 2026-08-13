@@ -127,8 +127,8 @@ namespace DotNetDupe {
                         };
 
                         System::Console::WriteLine("[Server] Queueing connection to ThreadPool...");
-                        System::SmartPointer<ConnectionState> spState(new ConnectionState(std::move(client), this));
-                        System::Threading::ThreadPool::QueueUserWorkItem([](Object* rawState) {
+                        ConnectionState* pState = new ConnectionState(std::move(client), this);
+                        bool bQueued = System::Threading::ThreadPool::QueueUserWorkItem([](Object* rawState) {
                             System::Console::WriteLine("[Server] ThreadPool callback invoked!");
                             System::SmartPointer<ConnectionState> spState(dynamic_cast<ConnectionState*>(rawState));
                             if (!spState.IsNull() && spState->App) {
@@ -144,7 +144,11 @@ namespace DotNetDupe {
                             } else {
                                 System::Console::WriteLine("[Server Exception] ConnectionState is NULL or App is NULL");
                             }
-                        }, spState.Detach());
+                        }, pState);
+                        
+                        if (!bQueued) {
+                            delete pState;
+                        }
                     }
                 } catch (const System::Net::Sockets::SocketException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] AcceptTcpClient: ") + ex.What());

@@ -15,13 +15,10 @@ namespace DotNetDupe {
                     int m_nCurrentIndex = -1;
                 };
 
-                SqlDataReader::SqlDataReader(void* pRows, void* pColumns) : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
-                    if (pRows) {
-                        m_pImpl->m_rows = *static_cast<Collections::Generic::List<DotNetDupe::System::Data::Internal::Row>*>(pRows);
-                    }
-                    if (pColumns) {
-                        m_pImpl->m_columns = *static_cast<Collections::Generic::List<String>*>(pColumns);
-                    }
+                SqlDataReader::SqlDataReader(Collections::Generic::List<DotNetDupe::System::Data::Internal::Row>&& rows, Collections::Generic::List<String>&& columns) 
+                    : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                    m_pImpl->m_rows = std::move(rows);
+                    m_pImpl->m_columns = std::move(columns);
                 }
 
                 SqlDataReader::~SqlDataReader() = default;

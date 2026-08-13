@@ -61,7 +61,7 @@ namespace DotNetDupe {
                         m_pObject = new T();
                         m_pnRefCount = nullptr;
                         if (bIsShared) {
-                            m_pnRefCount = new int(1);
+                            m_pnRefCount = new std::atomic<int>(1);
                         }
                     } else {
                         m_pObject = nullptr;
@@ -88,7 +88,7 @@ namespace DotNetDupe {
              */
             SmartPointer(T* pPtr, bool bIsShared) : m_pObject(pPtr), m_pnRefCount(nullptr) {
                 if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new int(1);
+                    m_pnRefCount = new std::atomic<int>(1);
                 }
             }
 
@@ -234,7 +234,7 @@ namespace DotNetDupe {
                 InternalCleanup();
                 m_pObject = pPtr;
                 if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new int(1);
+                    m_pnRefCount = new std::atomic<int>(1);
                 } else {
                     m_pnRefCount = nullptr;
                 }
@@ -286,7 +286,7 @@ namespace DotNetDupe {
              * @brief Gets the current reference count. Returns 0 for Unique or Null pointers.
              */
             int GetRefCount() const {
-                return (m_pnRefCount != nullptr) ? *m_pnRefCount : 0;
+                return (m_pnRefCount != nullptr) ? m_pnRefCount->load() : 0;
             }
 
             // --- Operators ---
@@ -325,7 +325,7 @@ namespace DotNetDupe {
             }
 
             T* m_pObject;
-            int* m_pnRefCount;
+            std::atomic<int>* m_pnRefCount;
         };
     }
 }

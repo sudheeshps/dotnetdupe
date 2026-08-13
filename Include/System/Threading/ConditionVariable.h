@@ -1,5 +1,6 @@
 #pragma once
 #include "System/Object.h"
+#include "System/SmartPointer.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -17,7 +18,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Pulse();
                 DOTNETDUPE_API void PulseAll();
             private:
-                void* _pData;
+                struct Impl;
+                SmartPointer<Impl> m_pImpl;
             };
         }
     }
