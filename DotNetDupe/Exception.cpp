@@ -3,27 +3,34 @@
 #include "System/SystemException.h"
 #include "System/String.h"
 
+#include <cstring>
+
 namespace DotNetDupe {
     namespace System {
-        Exception::Exception() : std::exception("Exception of type 'DotNetDupe::System::Exception' was thrown.") {}
-        
-        Exception::Exception(const String& sMessage) : std::exception(sMessage.GetRawString() ? sMessage.GetRawString() : "") {
+        Exception::Exception() : std::runtime_error("Exception of type 'DotNetDupe::System::Exception' was thrown.") {
         }
         
-        Exception::Exception(const String& sMessage, const Exception& innerException) : std::exception(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_innerException(new Exception(innerException)) {}
+        Exception::Exception(const String& sMessage) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : "") {
+        }
         
-        Exception::Exception(const Exception& other) : std::exception(other), m_innerException(other.m_innerException ? new Exception(*other.m_innerException) : nullptr) {}
+        Exception::Exception(const String& sMessage, const Exception& innerException) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
+        }
+        
+        Exception::Exception(const Exception& other) : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
+        }
         
         Exception& Exception::operator=(const Exception& other) {
             if (this != &other) {
-                std::exception::operator=(other);
-                delete m_innerException;
-                m_innerException = other.m_innerException ? new Exception(*other.m_innerException) : nullptr;
+                std::runtime_error::operator=(other);
+                delete m_pInnerException;
+                m_pInnerException = other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr;
             }
             return *this;
         }
         
-        Exception::~Exception() { delete m_innerException; }
+        Exception::~Exception() { 
+            delete m_pInnerException; 
+        }
 
         SystemException::SystemException() : Exception() {}
         SystemException::SystemException(const char* pchMessage) : Exception(String(pchMessage)) {}

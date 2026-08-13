@@ -29,7 +29,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Dispose() override;
                 DOTNETDUPE_API void Flush() override;
 
-                DOTNETDUPE_API std::shared_ptr<DotNetDupe::System::Text::Encoding> GetEncoding() const override;
+                DOTNETDUPE_API virtual System::Text::EncodingPtr GetEncoding() const override;
 
                 DOTNETDUPE_API void Write(bool bValue) override;
                 DOTNETDUPE_API void Write(char chValue) override;

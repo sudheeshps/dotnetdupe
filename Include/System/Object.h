@@ -1,5 +1,6 @@
 #pragma once
 #include "Common.h"
+#include <cstddef>
 namespace DotNetDupe {
     namespace System {
         class Object {

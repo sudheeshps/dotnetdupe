@@ -75,7 +75,7 @@ void InternalWriteLine(const String& sValue) {
 }
 
 void Console::Write(bool value) { InternalWrite(value ? "True" : "False"); }
-void Console::Write(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWrite(buf); }
+void Console::Write(Char value) { char buf[2] = { static_cast<char>(value.GetChar()), 0 }; InternalWrite(buf); }
 void Console::Write(double value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(int value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(long value) { InternalWrite(String(std::to_string(value).c_str())); }
@@ -86,7 +86,7 @@ void Console::Write(const char* value) { InternalWrite(value); }
 
 void Console::WriteLine() { InternalWriteLine(""); }
 void Console::WriteLine(bool value) { InternalWriteLine(value ? "True" : "False"); }
-void Console::WriteLine(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWriteLine(String(buf)); }
+void Console::WriteLine(Char value) { char buf[2] = { static_cast<char>(value.GetChar()), 0 }; InternalWriteLine(String(buf)); }
 void Console::WriteLine(double value) { InternalWriteLine(String(std::to_string(value).c_str())); }
 void Console::WriteLine(int value) { InternalWriteLine(String(std::to_string(value).c_str())); }
 void Console::WriteLine(long value) { InternalWriteLine(String(std::to_string(value).c_str())); }

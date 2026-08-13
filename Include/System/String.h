@@ -12,6 +12,7 @@
 #include <initializer_list>
 #include <ctype.h>
 #include <wctype.h>
+#include <cstring>
 
 namespace DotNetDupe {
     namespace System {

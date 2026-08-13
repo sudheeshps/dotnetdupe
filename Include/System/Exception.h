@@ -1,14 +1,14 @@
 #pragma once
-#include <exception>
+#include <stdexcept>
 #include "Common.h"
 
 namespace DotNetDupe {
     namespace System {
         class String;
 
-        class Exception : public std::exception {
+        class Exception : public std::runtime_error {
         private:
-            Exception* m_innerException = nullptr;
+            Exception* m_pInnerException = nullptr;
         public:
                 DOTNETDUPE_API Exception();
                 DOTNETDUPE_API Exception(const String& sMessage);

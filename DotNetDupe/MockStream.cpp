@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "System/IO/MockStream.h"
 #include "System/String.h"
-#include "System/IO/IOException.h"
+#include "System/IOException.h"
 #include <vector>
 
 namespace DotNetDupe {

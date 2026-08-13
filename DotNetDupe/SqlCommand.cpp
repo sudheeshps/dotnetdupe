@@ -49,7 +49,7 @@ namespace DotNetDupe {
                         rowsAffected
                     );
 
-                    return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared(resultRows, columns);
+                    return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared((void*)&resultRows, (void*)&columns);
                 }
 
                 int SqlCommand::ExecuteNonQuery() {

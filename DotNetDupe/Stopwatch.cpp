@@ -25,7 +25,7 @@ namespace DotNetDupe {
 
             Stopwatch::Stopwatch() : Stopwatch(TimeProvider::GetSystem()) {}
 
-            Stopwatch::Stopwatch(const std::shared_ptr<TimeProvider>& timeProvider)
+            Stopwatch::Stopwatch(const TimeProviderPtr& timeProvider)
                 : _timeProvider(timeProvider), _elapsedTicks(0), _startTimeStamp(0), _isRunning(false) {}
 
             void Stopwatch::Start() {
@@ -81,7 +81,7 @@ namespace DotNetDupe {
                 return sw;
             }
 
-            Stopwatch Stopwatch::StartNew(const std::shared_ptr<TimeProvider>& timeProvider) {
+            Stopwatch Stopwatch::StartNew(const TimeProviderPtr& timeProvider) {
                 Stopwatch sw(timeProvider);
                 sw.Start();
                 return sw;

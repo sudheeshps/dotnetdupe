@@ -2,7 +2,6 @@
 #include "Common.h"
 #include "System/IO/Stream.h"
 #include "System/Array.h"
-#include <vector>
 
 namespace DotNetDupe {
     namespace System {
@@ -32,10 +31,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API Array<char> ToArray() const;
 
             private:
-                std::vector<char> m_buffer;
-                long m_position;
-                bool m_writable;
-                bool m_disposed;
+                struct MemoryStreamImpl;
+                MemoryStreamImpl* m_pImpl;
             };
         }
     }

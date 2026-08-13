@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include "System/String.h"
 #include "System/SystemException.h"
 
 namespace DotNetDupe {

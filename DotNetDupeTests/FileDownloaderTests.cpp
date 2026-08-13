@@ -78,7 +78,13 @@ namespace DotNetDupeTests {
     struct ServerGuard {
         std::thread& t;
         TcpListener& l;
+        int port;
         ~ServerGuard() {
+            try {
+                // Wake up potentially blocking accept() on Linux
+                TcpClient dummy;
+                dummy.Connect("127.0.0.1", port);
+            } catch (...) {}
             l.Stop();
             if (t.joinable()) {
                 t.join();
@@ -156,7 +162,7 @@ namespace DotNetDupeTests {
                 clientGet->Close();
             } catch (...) {}
         });
-        ServerGuard guard{ serverThread, server };
+        ServerGuard guard{ serverThread, server, iPort };
 
         String sDest = IO::Path::Combine({ IO::Path::GetTempPath(), "test_download_full.bin" });
         if (IO::File::Exists(sDest)) IO::File::Delete(sDest);
@@ -239,7 +245,7 @@ namespace DotNetDupeTests {
                 clientGet->Close();
             } catch (...) {}
         });
-        ServerGuard guard{ serverThread, server };
+        ServerGuard guard{ serverThread, server, iPort };
 
         String sDest = IO::Path::Combine({ IO::Path::GetTempPath(), "test_download_resume.bin" });
         IO::File::WriteAllText(sDest, String(sPart1.c_str()));
@@ -311,7 +317,7 @@ namespace DotNetDupeTests {
                 clientGet->Close();
             } catch (...) {}
         });
-        ServerGuard guard{ serverThread, server };
+        ServerGuard guard{ serverThread, server, iPort };
 
         String sDest = IO::Path::Combine({ IO::Path::GetTempPath(), "test_download_pause.bin" });
         if (IO::File::Exists(sDest)) IO::File::Delete(sDest);
@@ -390,7 +396,7 @@ namespace DotNetDupeTests {
                 clientGet2->Close();
             } catch (...) {}
         });
-        ServerGuard guard{ serverThread, server };
+        ServerGuard guard{ serverThread, server, iPort };
 
         String sDest = IO::Path::Combine({ IO::Path::GetTempPath(), "test_download_redirect.bin" });
         if (IO::File::Exists(sDest)) IO::File::Delete(sDest);

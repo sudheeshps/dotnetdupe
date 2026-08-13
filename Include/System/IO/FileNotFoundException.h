@@ -1,5 +1,5 @@
 #pragma once
-#include "System/IO/IOException.h"
+#include "System/IOException.h"
 
 namespace DotNetDupe {
     namespace System {

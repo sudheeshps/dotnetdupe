@@ -9,7 +9,7 @@
 #include "Extensions/Logging/LogManager.h"
 #include "Extensions/Logging/LoggerTextWriter.h"
 #include "System/IO/File.h"
-#include "System/IO/IOException.h"
+#include "System/IOException.h"
 #include "Demos.h"
 
 using namespace DotNetDupe::System;

@@ -2,6 +2,7 @@
 #include "gtest/gtest.h"
 #include "System/String.h"
 #include "System/IO/Path.h"
+#include <algorithm>
 #include <filesystem>
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;

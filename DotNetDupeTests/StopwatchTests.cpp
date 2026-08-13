@@ -35,7 +35,7 @@ namespace DotNetDupeTests {
 
     TEST(StopwatchTest, Elapsed_Should_ReturnCorrectDuration_With_Mock) {
         // Given
-        auto mock = std::make_shared<MockTimeProviderForStopwatch>();
+        auto mock = SmartPointer<MockTimeProviderForStopwatch>::NewShared();
         Stopwatch sw(mock);
 
         // When
@@ -50,7 +50,7 @@ namespace DotNetDupeTests {
 
     TEST(StopwatchTest, Restart_Should_ResetAndStart) {
         // Given
-        auto mock = std::make_shared<MockTimeProviderForStopwatch>();
+        auto mock = SmartPointer<MockTimeProviderForStopwatch>::NewShared();
         Stopwatch sw(mock);
         sw.Start();
         mock->AdvanceTimestamp(TimeSpan::TicksPerSecond);
@@ -68,7 +68,7 @@ namespace DotNetDupeTests {
 
     TEST(StopwatchTest, Reset_Should_ClearElapsedAndStop) {
         // Given
-        auto mock = std::make_shared<MockTimeProviderForStopwatch>();
+        auto mock = SmartPointer<MockTimeProviderForStopwatch>::NewShared();
         Stopwatch sw(mock);
         sw.Start();
         mock->AdvanceTimestamp(TimeSpan::TicksPerSecond);
@@ -85,7 +85,7 @@ namespace DotNetDupeTests {
 
     TEST(StopwatchTest, Stop_When_AlreadyStopped_Should_HaveNoEffect) {
         // Given
-        auto mock = std::make_shared<MockTimeProviderForStopwatch>();
+        auto mock = SmartPointer<MockTimeProviderForStopwatch>::NewShared();
         Stopwatch sw(mock);
         sw.Start();
         mock->AdvanceTimestamp(TimeSpan::TicksPerSecond);
@@ -102,7 +102,7 @@ namespace DotNetDupeTests {
 
     TEST(StopwatchTest, Start_When_AlreadyRunning_Should_HaveNoEffect) {
         // Given
-        auto mock = std::make_shared<MockTimeProviderForStopwatch>();
+        auto mock = SmartPointer<MockTimeProviderForStopwatch>::NewShared();
         Stopwatch sw(mock);
         sw.Start();
         mock->AdvanceTimestamp(TimeSpan::TicksPerSecond);

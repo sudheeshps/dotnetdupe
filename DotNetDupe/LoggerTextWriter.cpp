@@ -24,7 +24,7 @@ namespace DotNetDupe {
             void LoggerTextWriter::Flush() {
             }
 
-            std::shared_ptr<DotNetDupe::System::Text::Encoding> LoggerTextWriter::GetEncoding() const {
+            System::Text::EncodingPtr LoggerTextWriter::GetEncoding() const {
                 return DotNetDupe::System::Text::TextEncoding::UTF8();
             }
 

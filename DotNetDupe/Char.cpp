@@ -94,6 +94,11 @@ namespace DotNetDupe {
         }
 
         bool Char::IsLetter(char32_t c) {
+            if (c >= 'A' && c <= 'Z') return true;
+            if (c >= 'a' && c <= 'z') return true;
+            if (c >= 0xC0 && c <= 0xD6) return true;
+            if (c >= 0xD8 && c <= 0xF6) return true;
+            if (c >= 0xF8 && c <= 0xFF) return true;
             if (c <= 0xFFFF) return std::iswalpha(static_cast<wint_t>(c)) != 0;
             return (c >= 0x20000 && c <= 0x2A6DF);
         }

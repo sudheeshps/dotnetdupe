@@ -4,15 +4,16 @@
 #include "System/Object.h"
 #include "System/TimeSpan.h"
 #include "System/TimeProvider.h"
-#include <memory>
+#include "System/SmartPointer.h"
 
 namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
+            using TimeProviderPtr = SmartPointer<TimeProvider>;
             class Stopwatch : public Object {
             public:
                 DOTNETDUPE_API Stopwatch();
-                DOTNETDUPE_API Stopwatch(const std::shared_ptr<TimeProvider>& timeProvider);
+                DOTNETDUPE_API Stopwatch(const TimeProviderPtr& timeProvider);
 
                 DOTNETDUPE_API void Start();
                 DOTNETDUPE_API void Stop();
@@ -25,13 +26,13 @@ namespace DotNetDupe {
                 DOTNETDUPE_API long long ElapsedTicks() const;
 
                 DOTNETDUPE_API static Stopwatch StartNew();
-                DOTNETDUPE_API static Stopwatch StartNew(const std::shared_ptr<TimeProvider>& timeProvider);
+                DOTNETDUPE_API static Stopwatch StartNew(const TimeProviderPtr& timeProvider);
                 DOTNETDUPE_API static long long GetTimestamp();
                 DOTNETDUPE_API static const long long Frequency;
                 DOTNETDUPE_API static const bool IsHighResolution;
 
             private:
-                std::shared_ptr<TimeProvider> _timeProvider;
+                TimeProviderPtr _timeProvider;
                 long long _elapsedTicks;
                 long long _startTimeStamp;
                 bool _isRunning;

@@ -426,6 +426,7 @@
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="EventWaitHandle.cpp" />
     <ClCompile Include="ManualResetEvent.cpp" />
+    <ClCompile Include="MockStream.cpp" />
     <ClCompile Include="AutoResetEvent.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Semaphore.cpp" />

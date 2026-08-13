@@ -175,7 +175,12 @@ namespace DotNetDupe {
 			if (m_kind == DateTimeKind::Local) return *this;
 			int64_t time = (m_nTicks - UnixEpochTicks) / TicksPerSecond;
 			struct tm t;
+#if defined(_WIN32)
 			_localtime64_s(&t, &time);
+#else
+			time_t time_t_val = static_cast<time_t>(time);
+			localtime_r(&time_t_val, &t);
+#endif
 			int year = t.tm_year + 1900;
 			int month = t.tm_mon + 1;
 			int day = t.tm_mday;
@@ -190,7 +195,12 @@ namespace DotNetDupe {
 			if (m_kind == DateTimeKind::Utc) return *this;
 			int64_t time = (m_nTicks - UnixEpochTicks) / TicksPerSecond;
 			struct tm t;
+#if defined(_WIN32)
 			_gmtime64_s(&t, &time);
+#else
+			time_t time_t_val = static_cast<time_t>(time);
+			gmtime_r(&time_t_val, &t);
+#endif
 			int year = t.tm_year + 1900;
 			int month = t.tm_mon + 1;
 			int day = t.tm_mday;

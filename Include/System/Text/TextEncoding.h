@@ -4,11 +4,14 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/Array.h"
-#include <memory>
+#include "System/SmartPointer.h"
 
 namespace DotNetDupe {
     namespace System {
         namespace Text {
+            class Encoding;
+            using EncodingPtr = SmartPointer<Encoding>;
+
             // Abstract base class for encodings
             class Encoding : public Object {
             public:
@@ -22,6 +25,9 @@ namespace DotNetDupe {
                 virtual String GetString(const char* bytes, int byteCount) = 0;
             };
 
+            class UTF8Encoding;
+            using UTF8EncodingPtr = SmartPointer<UTF8Encoding>;
+
             // UTF8 Encoding implementation
             class UTF8Encoding : public Encoding {
             public:
@@ -33,10 +39,10 @@ namespace DotNetDupe {
             // Main TextEncoding class with static factory methods
             class TextEncoding : public Object {
             public:
-                DOTNETDUPE_API static std::shared_ptr<Encoding> UTF8();
+                DOTNETDUPE_API static EncodingPtr UTF8();
 
             private:
-                static std::shared_ptr<UTF8Encoding> s_utf8EncodingInstance;
+                static UTF8EncodingPtr s_utf8EncodingInstance;
             };
         }
     }

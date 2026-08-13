@@ -24,7 +24,7 @@ namespace DotNetDupe {
                 // Nothing to flush
             }
 
-            std::shared_ptr<Text::Encoding> StringWriter::GetEncoding() const {
+            Text::EncodingPtr StringWriter::GetEncoding() const {
                 return Text::TextEncoding::UTF8();
             }
 

@@ -4,7 +4,7 @@
 #include "System/ArgumentException.h"
 #include <vector>
 #include <string>
-#include "DatabaseEngineImpl.h"
+#include "System/Data/Internal/IDatabaseBackend.h"
 
 namespace DotNetDupe {
     namespace System {
