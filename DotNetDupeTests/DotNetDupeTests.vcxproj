@@ -130,6 +130,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HashHelperTests.cpp" />
     <ClCompile Include="ArrayTests.cpp" />
     <ClCompile Include="ArrayTests2.cpp" />
     <ClCompile Include="BitConverterTests.cpp" />

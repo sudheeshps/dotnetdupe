@@ -220,6 +220,17 @@ namespace DotNetDupe {
 		const char* String::GetRawString() const {
 			return m_pImpl->s.c_str();
 		}
+		int String::GetHashCode() const {
+			const char* p = GetRawString();
+			if (!p) return 0;
+			unsigned int hash = 2166136261u;
+			while (*p) {
+				hash ^= (unsigned char)(*p);
+				hash *= 16777619u;
+				++p;
+			}
+			return (int)hash;
+		}
 		int String::GetLength() const {
 			return static_cast<int>(m_pImpl->s.length());
 		}

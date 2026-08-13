@@ -81,6 +81,7 @@ namespace DotNetDupe {
             }
             DOTNETDUPE_API const char* GetRawString() const;
             operator const char* () const { return GetRawString(); }
+            DOTNETDUPE_API int GetHashCode() const;
             DOTNETDUPE_API int GetLength() const;
             DOTNETDUPE_API String Clone() const;
 
