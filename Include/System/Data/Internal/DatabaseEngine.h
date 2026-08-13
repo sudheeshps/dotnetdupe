@@ -3,9 +3,8 @@
 #include "System/Data/Internal/IDatabaseBackend.h"
 #include "System/SmartPointer.h"
 #include "System/String.h"
-#include <string>
-#include <vector>
-#include <unordered_map>
+#include "System/Collections/Generic/List.h"
+#include "System/Collections/Generic/Dictionary.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -29,12 +28,11 @@ namespace DotNetDupe {
 
                     DOTNETDUPE_API void ClearDatabase(const DotNetDupe::System::String& dbName);
 
-                    // Re-adding Execute using std::vector since we decided to leave Internal engines as is.
-                    DOTNETDUPE_API std::vector<Row> Execute(
+                    DOTNETDUPE_API Collections::Generic::List<Row> Execute(
                         const DotNetDupe::System::String& dbName,
-                        const std::string& sql,
-                        const std::unordered_map<std::string, std::string>& parameters,
-                        std::vector<std::string>& columnNames,
+                        const String& sql,
+                        const Collections::Generic::Dictionary<String, String>& parameters,
+                        Collections::Generic::List<String>& columnNames,
                         int& rowsAffected
                     );
                 };

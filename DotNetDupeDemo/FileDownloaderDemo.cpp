@@ -72,9 +72,14 @@ void DemonstrateFileDownloader() {
         Thread serverThread([&server, iPort]() {
             try {
                 server.Run(String("http://127.0.0.1:") + Convert::ToString(iPort), 5);
-            } catch (...) {}
+            } catch (const SystemException& ex) {
+                Console::WriteLine(String("[Server Thread SystemException] ") + ex.What());
+            } catch (...) {
+                Console::WriteLine("[Server Thread] Unknown Exception!");
+            }
         });
         
+        serverThread.Start();
         Thread::Sleep(500); // give server time to start
 
         String sDest = IO::Path::Combine({ IO::Path::GetTempPath(), "demo_download.bin" });

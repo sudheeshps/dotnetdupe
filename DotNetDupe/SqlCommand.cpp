@@ -43,17 +43,17 @@ namespace DotNetDupe {
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbDataReader> SqlCommand::ExecuteReader() {
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
                     
-                    std::unordered_map<std::string, std::string> params;
+                    Collections::Generic::Dictionary<String, String> params;
                     for (int i = 0; i < m_pImpl->m_parameters->GetCount(); ++i) {
                         auto p = m_pImpl->m_parameters->GetAt(i);
-                        params[p->GetParameterName().GetRawString()] = p->GetValue().GetRawString();
+                        params.Add(p->GetParameterName(), p->GetValue());
                     }
 
-                    std::vector<std::string> columns;
+                    Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
                     auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(
                         dbName,
-                        m_pImpl->m_sCommandText.GetRawString(),
+                        m_pImpl->m_sCommandText,
                         params,
                         columns,
                         rowsAffected
@@ -65,17 +65,17 @@ namespace DotNetDupe {
                 int SqlCommand::ExecuteNonQuery() {
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
 
-                    std::unordered_map<std::string, std::string> params;
+                    Collections::Generic::Dictionary<String, String> params;
                     for (int i = 0; i < m_pImpl->m_parameters->GetCount(); ++i) {
                         auto p = m_pImpl->m_parameters->GetAt(i);
-                        params[p->GetParameterName().GetRawString()] = p->GetValue().GetRawString();
+                        params.Add(p->GetParameterName(), p->GetValue());
                     }
 
-                    std::vector<std::string> columns;
+                    Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
                     DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(
                         dbName,
-                        m_pImpl->m_sCommandText.GetRawString(),
+                        m_pImpl->m_sCommandText,
                         params,
                         columns,
                         rowsAffected

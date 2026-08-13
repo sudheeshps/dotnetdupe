@@ -413,6 +413,7 @@
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Semaphore.cpp" />
     <ClCompile Include="SemaphoreSlim.cpp" />
+    <ClCompile Include="ConditionVariable.cpp" />
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="Interlocked.cpp" />
     <ClCompile Include="SslStream.cpp" />

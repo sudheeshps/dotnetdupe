@@ -47,11 +47,11 @@ namespace DotNetDupe {
                     }
                 }
 
-                std::vector<Row> DatabaseEngine::Execute(
+                Collections::Generic::List<Row> DatabaseEngine::Execute(
                     const DotNetDupe::System::String& dbName,
-                    const std::string& sql,
-                    const std::unordered_map<std::string, std::string>& parameters,
-                    std::vector<std::string>& columnNames,
+                    const String& sql,
+                    const Collections::Generic::Dictionary<String, String>& parameters,
+                    Collections::Generic::List<String>& columnNames,
                     int& rowsAffected
                 ) {
                     auto backend = GetBackend(dbName);
@@ -59,8 +59,8 @@ namespace DotNetDupe {
                         return backend->Execute(sql, parameters, columnNames, rowsAffected);
                     }
                     rowsAffected = 0;
-                    columnNames.clear();
-                    return {};
+                    columnNames.Clear();
+                    return Collections::Generic::List<Row>();
                 }
 
             }

@@ -2,8 +2,6 @@
 #include "System/Data/SqlClient/SqlDataReader.h"
 #include "System/Convert.h"
 #include "System/ArgumentException.h"
-#include <vector>
-#include <string>
 #include "System/Data/Internal/IDatabaseBackend.h"
 
 namespace DotNetDupe {
@@ -12,24 +10,24 @@ namespace DotNetDupe {
             namespace SqlClient {
 
                 struct SqlDataReader::Impl : public Object {
-                    std::vector<DotNetDupe::System::Data::Internal::Row> m_rows;
-                    std::vector<std::string> m_columns;
+                    Collections::Generic::List<DotNetDupe::System::Data::Internal::Row> m_rows;
+                    Collections::Generic::List<String> m_columns;
                     int m_nCurrentIndex = -1;
                 };
 
                 SqlDataReader::SqlDataReader(void* pRows, void* pColumns) : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
                     if (pRows) {
-                        m_pImpl->m_rows = *static_cast<std::vector<DotNetDupe::System::Data::Internal::Row>*>(pRows);
+                        m_pImpl->m_rows = *static_cast<Collections::Generic::List<DotNetDupe::System::Data::Internal::Row>*>(pRows);
                     }
                     if (pColumns) {
-                        m_pImpl->m_columns = *static_cast<std::vector<std::string>*>(pColumns);
+                        m_pImpl->m_columns = *static_cast<Collections::Generic::List<String>*>(pColumns);
                     }
                 }
 
                 SqlDataReader::~SqlDataReader() = default;
 
                 bool SqlDataReader::Read() {
-                    if (m_pImpl->m_nCurrentIndex + 1 < static_cast<int>(m_pImpl->m_rows.size())) {
+                    if (m_pImpl->m_nCurrentIndex + 1 < m_pImpl->m_rows.GetCount()) {
                         m_pImpl->m_nCurrentIndex++;
                         return true;
                     }
@@ -37,13 +35,13 @@ namespace DotNetDupe {
                 }
 
                 DotNetDupe::System::String SqlDataReader::GetString(int iOrdinal) {
-                    if (m_pImpl->m_nCurrentIndex < 0 || m_pImpl->m_nCurrentIndex >= static_cast<int>(m_pImpl->m_rows.size())) {
+                    if (m_pImpl->m_nCurrentIndex < 0 || m_pImpl->m_nCurrentIndex >= m_pImpl->m_rows.GetCount()) {
                         return "";
                     }
-                    if (iOrdinal < 0 || iOrdinal >= static_cast<int>(m_pImpl->m_columns.size())) {
+                    if (iOrdinal < 0 || iOrdinal >= m_pImpl->m_columns.GetCount()) {
                         return "";
                     }
-                    return DotNetDupe::System::String(m_pImpl->m_rows[m_pImpl->m_nCurrentIndex].Values[iOrdinal].c_str());
+                    return m_pImpl->m_rows[m_pImpl->m_nCurrentIndex].Values[iOrdinal];
                 }
 
                 int SqlDataReader::GetInt32(int iOrdinal) {
@@ -59,21 +57,20 @@ namespace DotNetDupe {
                 }
 
                 int SqlDataReader::GetFieldCount() const {
-                    return static_cast<int>(m_pImpl->m_columns.size());
+                    return m_pImpl->m_columns.GetCount();
                 }
 
                 DotNetDupe::System::String SqlDataReader::GetName(int iOrdinal) {
-                    if (iOrdinal < 0 || iOrdinal >= static_cast<int>(m_pImpl->m_columns.size())) {
+                    if (iOrdinal < 0 || iOrdinal >= m_pImpl->m_columns.GetCount()) {
                         return "";
                     }
-                    return DotNetDupe::System::String(m_pImpl->m_columns[iOrdinal].c_str());
+                    return m_pImpl->m_columns[iOrdinal];
                 }
 
                 int SqlDataReader::GetOrdinal(const DotNetDupe::System::String& sName) {
-                    std::string target = sName.GetRawString();
-                    for (size_t i = 0; i < m_pImpl->m_columns.size(); ++i) {
-                        if (m_pImpl->m_columns[i] == target) {
-                            return static_cast<int>(i);
+                    for (int i = 0; i < m_pImpl->m_columns.GetCount(); ++i) {
+                        if (m_pImpl->m_columns[i] == sName) {
+                            return i;
                         }
                     }
                     return -1;

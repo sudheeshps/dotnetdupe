@@ -1,7 +1,8 @@
 #pragma once
-#include <string>
-#include <vector>
-#include <unordered_map>
+#include "Common.h"
+#include "System/String.h"
+#include "System/Collections/Generic/List.h"
+#include "System/Collections/Generic/Dictionary.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -9,22 +10,22 @@ namespace DotNetDupe {
             namespace Internal {
 
                 struct Row {
-                    std::vector<std::string> Values;
+                    Collections::Generic::List<String> Values;
                 };
 
                 struct Table {
-                    std::vector<std::string> Columns;
-                    std::vector<Row> Rows;
+                    Collections::Generic::List<String> Columns;
+                    Collections::Generic::List<Row> Rows;
                 };
 
                 class IDatabaseBackend {
                 public:
                     virtual ~IDatabaseBackend() = default;
 
-                    virtual std::vector<Row> Execute(
-                        const std::string& sql,
-                        const std::unordered_map<std::string, std::string>& parameters,
-                        std::vector<std::string>& columnNames,
+                    virtual Collections::Generic::List<Row> Execute(
+                        const String& sql,
+                        const Collections::Generic::Dictionary<String, String>& parameters,
+                        Collections::Generic::List<String>& columnNames,
                         int& rowsAffected
                     ) = 0;
 
