@@ -205,8 +205,11 @@ namespace DotNetDupe {
                         if (pStream.IsNull()) return NotifyStateChange(DownloadStatus::Failed);
 
                         try {
-                            IO::FileStream outFile(m_sDestinationPath, iFileMode);
-                            bool bCompleted = ReadAndWriteData(pStream, outFile);
+                            bool bCompleted = false;
+                            {
+                                IO::FileStream outFile(m_sDestinationPath, iFileMode);
+                                bCompleted = ReadAndWriteData(pStream, outFile);
+                            } // outFile goes out of scope and releases the lock here
                             NotifyStateChange(bCompleted ? DownloadStatus::Completed : DownloadStatus::Paused);
                         } catch (const IO::IOException& ex) {
                             Console::WriteLine(String("[FileDownloader] File I/O exception: ") + ex.What());
