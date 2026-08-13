@@ -8,9 +8,6 @@
 #include "System/Net/Http/HttpClient.h"
 #include "System/Net/Http/HttpResponseMessage.h"
 #include "System/Net/Http/HttpRequestMessage.h"
-#include <atomic>
-#include <string>
-#include <chrono>
 
 namespace DotNetDupe {
     namespace System {
@@ -53,28 +50,8 @@ namespace DotNetDupe {
                     DOTNETDUPE_API void SetUserAgent(const String& sUserAgent);
 
                 private:
-                    Collections::Generic::Dictionary<String, String> m_customHeaders;
-                    String m_sUrl;
-                    String m_sDestinationPath;
-                    Action<DownloadProgress> m_progressCallback;
-
-                    std::atomic<DownloadStatus> m_status{ DownloadStatus::NotStarted };
-                    std::atomic<bool> m_bPauseRequested{ false };
-                    std::atomic<long long> m_llTotalBytes{ 0 };
-                    std::atomic<long long> m_llDownloadedBytes{ 0 };
-                    std::atomic<double> m_dDownloadRate{ 0.0 };
-
-                    HttpClient m_httpClient;
-
-                    void DownloadLoop();
-                    long long CheckExistingFileSize();
-                    long long FetchContentLength();
-                    SmartPointer<HttpRequestMessage> CreateGetRequest(long long llRangeStart);
-                    void UpdateRate(long long llBytesInSession, const std::chrono::steady_clock::time_point& timeStart);
-                    bool ReadAndWriteData(const SmartPointer<IO::Stream>& pStream, IO::FileStream& outFile);
-                    void NotifyStateChange(DownloadStatus status);
-                    void ExecuteDownload(long long llExistingBytes);
-                    long long ParseContentLengthFromResponse(const SmartPointer<HttpResponseMessage>& pResponse);
+                    struct Impl;
+                    SmartPointer<Impl> m_pImpl;
                 };
 
             }

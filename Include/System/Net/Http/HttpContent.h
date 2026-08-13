@@ -33,6 +33,8 @@ namespace DotNetDupe {
                     Collections::Generic::Dictionary<String, String> m_headers;
                 };
 
+                using HttpContentPtr = SmartPointer<HttpContent>;
+
                 class StringContent : public HttpContent {
                 public:
                     DOTNETDUPE_API explicit StringContent(const String& content);

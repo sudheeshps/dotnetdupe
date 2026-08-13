@@ -444,6 +444,7 @@
     <ClCompile Include="HttpResponse.cpp" />
     <ClCompile Include="WebSocket.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
+    <ClCompile Include="SqlDataReader.cpp" />
     <ClCompile Include="SqlConnection.cpp" />
     <ClCompile Include="DatabaseEngine.cpp" />
     <ClCompile Include="InMemoryDatabaseBackend.cpp" />

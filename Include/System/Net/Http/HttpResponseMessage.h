@@ -25,8 +25,8 @@ namespace DotNetDupe {
 
                     DOTNETDUPE_API bool IsSuccessStatusCode() const;
 
-                    DOTNETDUPE_API SmartPointer<HttpContent> GetContent() const;
-                    DOTNETDUPE_API void SetContent(const SmartPointer<HttpContent>& content);
+                    DOTNETDUPE_API HttpContentPtr GetContent() const;
+                    DOTNETDUPE_API void SetContent(const HttpContentPtr& content);
 
                     DOTNETDUPE_API Collections::Generic::Dictionary<String, String>& GetHeaders();
                     DOTNETDUPE_API const Collections::Generic::Dictionary<String, String>& GetHeaders() const;
@@ -36,9 +36,11 @@ namespace DotNetDupe {
                 private:
                     HttpStatusCode m_statusCode;
                     String m_sReasonPhrase;
-                    SmartPointer<HttpContent> m_pContent;
+                    HttpContentPtr m_pContent;
                     Collections::Generic::Dictionary<String, String> m_headers;
                 };
+
+                using HttpResponseMessagePtr = SmartPointer<HttpResponseMessage>;
 
             }
         }

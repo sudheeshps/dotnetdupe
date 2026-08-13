@@ -31,11 +31,11 @@ namespace DotNetDupe {
                     m_requestUri = requestUri;
                 }
 
-                SmartPointer<HttpContent> HttpRequestMessage::GetContent() const {
+                HttpContentPtr HttpRequestMessage::GetContent() const {
                     return m_pContent;
                 }
 
-                void HttpRequestMessage::SetContent(const SmartPointer<HttpContent>& content) {
+                void HttpRequestMessage::SetContent(const HttpContentPtr& content) {
                     m_pContent = content;
                 }
 
