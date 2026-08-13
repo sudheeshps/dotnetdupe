@@ -4,8 +4,7 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/InvalidOperationException.h"
-#include <stack>
-#include <stdexcept>
+#include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,71 +14,65 @@ namespace DotNetDupe {
                 template <typename T>
                 class Stack : public Object {
                 private:
-                    std::stack<T> m_stkItems;
+                    List<T> m_lstItems;
 
                 public:
                     Stack() = default;
 
-                    int GetCount() const { return (int)m_stkItems.size(); }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     void Push(const T& item) {
-                        m_stkItems.push(item);
+                        m_lstItems.Add(item);
                     }
 
                     T Pop() {
-                        if (m_stkItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("Stack is empty.");
                         }
-                        T item = m_stkItems.top();
-                        m_stkItems.pop();
+                        int lastIndex = m_lstItems.GetCount() - 1;
+                        T item = m_lstItems[lastIndex];
+                        m_lstItems.RemoveAt(lastIndex);
                         return item;
                     }
 
                     T Peek() const {
-                        if (m_stkItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("Stack is empty.");
                         }
-                        return m_stkItems.top();
+                        return m_lstItems[m_lstItems.GetCount() - 1];
                     }
 
                     bool TryPop(T& result) {
-                        if (m_stkItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             return false;
                         }
-                        result = m_stkItems.top();
-                        m_stkItems.pop();
+                        int lastIndex = m_lstItems.GetCount() - 1;
+                        result = m_lstItems[lastIndex];
+                        m_lstItems.RemoveAt(lastIndex);
                         return true;
                     }
 
                     bool TryPeek(T& result) const {
-                        if (m_stkItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             return false;
                         }
-                        result = m_stkItems.top();
+                        result = m_lstItems[m_lstItems.GetCount() - 1];
                         return true;
                     }
 
                     void Clear() {
-                        std::stack<T> emptyStack;
-                        std::swap(m_stkItems, emptyStack);
+                        m_lstItems.Clear();
                     }
 
                     bool Contains(const T& item) const {
-                        std::stack<T> stkCopy = m_stkItems;
-                        while (!stkCopy.empty()) {
-                            if (stkCopy.top() == item) return true;
-                            stkCopy.pop();
-                        }
-                        return false;
+                        return m_lstItems.Contains(item);
                     }
 
                     Array<T> ToArray() const {
-                        Array<T> arrResult((int)m_stkItems.size());
-                        std::stack<T> stkCopy = m_stkItems;
-                        int iIndex = 0;
-                        while (!stkCopy.empty()) {
-                            arrResult[iIndex++] = stkCopy.top();
-                            stkCopy.pop();
+                        int count = m_lstItems.GetCount();
+                        Array<T> arrResult(count);
+                        for (int i = 0; i < count; ++i) {
+                            arrResult[i] = m_lstItems[count - 1 - i];
                         }
                         return arrResult;
                     }

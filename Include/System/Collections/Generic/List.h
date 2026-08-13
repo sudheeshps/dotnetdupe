@@ -125,6 +125,21 @@ namespace DotNetDupe {
                         return -1;
 					}
 
+					int BinarySearch(const T& item) const {
+                        int low = 0;
+                        int high = m_iCount - 1;
+                        while (low <= high) {
+                            int mid = low + (high - low) / 2;
+                            if (m_pData[mid] == item) return mid;
+                            if (m_pData[mid] < item) {
+                                low = mid + 1;
+                            } else {
+                                high = mid - 1;
+                            }
+                        }
+                        return ~low;
+					}
+
 					void Insert(int iIndex, const T& item) {
                         if (m_iCount == m_iCapacity) {
                             SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);

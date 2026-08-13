@@ -4,6 +4,7 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/InvalidOperationException.h"
+#include "System/Collections/Generic/List.h"
 #include <functional>
 
 namespace DotNetDupe {
@@ -21,34 +22,19 @@ namespace DotNetDupe {
                         bool operator>(const ElementPriorityPair& other) const {
                             return Priority > other.Priority;
                         }
+                        
+                        bool operator==(const ElementPriorityPair& other) const {
+                            return false; // required for List<T> Contains
+                        }
                     };
 
-                    ElementPriorityPair* m_pItems;
-                    int m_iCount;
-                    int m_iCapacity;
-
-                    void EnsureCapacity(int required) {
-                        if (required <= m_iCapacity) return;
-                        int newCap = m_iCapacity == 0 ? 4 : m_iCapacity * 2;
-                        if (newCap < required) newCap = required;
-                        
-                        ElementPriorityPair* newItems = (ElementPriorityPair*)System::AllocateCollectionBuffer(newCap * sizeof(ElementPriorityPair));
-                        for (int i = 0; i < m_iCount; ++i) {
-                            new (&newItems[i]) ElementPriorityPair(std::move(m_pItems[i]));
-                            m_pItems[i].~ElementPriorityPair();
-                        }
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                        }
-                        m_pItems = newItems;
-                        m_iCapacity = newCap;
-                    }
+                    List<ElementPriorityPair> m_lstItems;
 
                     void SiftUp(int index) {
                         while (index > 0) {
                             int parent = (index - 1) / 2;
-                            if (m_pItems[parent] > m_pItems[index]) {
-                                std::swap(m_pItems[parent], m_pItems[index]);
+                            if (m_lstItems[parent] > m_lstItems[index]) {
+                                std::swap(m_lstItems[parent], m_lstItems[index]);
                                 index = parent;
                             } else {
                                 break;
@@ -57,14 +43,15 @@ namespace DotNetDupe {
                     }
 
                     void SiftDown(int index) {
-                        while (index * 2 + 1 < m_iCount) {
+                        int count = m_lstItems.GetCount();
+                        while (index * 2 + 1 < count) {
                             int smallest = index * 2 + 1;
                             int right = index * 2 + 2;
-                            if (right < m_iCount && m_pItems[smallest] > m_pItems[right]) {
+                            if (right < count && m_lstItems[smallest] > m_lstItems[right]) {
                                 smallest = right;
                             }
-                            if (m_pItems[index] > m_pItems[smallest]) {
-                                std::swap(m_pItems[index], m_pItems[smallest]);
+                            if (m_lstItems[index] > m_lstItems[smallest]) {
+                                std::swap(m_lstItems[index], m_lstItems[smallest]);
                                 index = smallest;
                             } else {
                                 break;
@@ -73,62 +60,47 @@ namespace DotNetDupe {
                     }
 
                 public:
-                    PriorityQueue() : m_pItems(nullptr), m_iCount(0), m_iCapacity(0) {}
+                    PriorityQueue() = default;
 
-                    ~PriorityQueue() override {
-                        Clear();
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                            m_pItems = nullptr;
-                        }
-                    }
-
-                    int GetCount() const { return m_iCount; }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     void Enqueue(const TElement& element, const TPriority& priority) {
-                        EnsureCapacity(m_iCount + 1);
-                        new (&m_pItems[m_iCount]) ElementPriorityPair{ element, priority };
-                        SiftUp(m_iCount);
-                        m_iCount++;
+                        m_lstItems.Add(ElementPriorityPair{ element, priority });
+                        SiftUp(m_lstItems.GetCount() - 1);
                     }
 
                     TElement Dequeue() {
-                        if (m_iCount == 0) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("PriorityQueue is empty.");
                         }
-                        TElement item = std::move(m_pItems[0].Element);
-                        std::swap(m_pItems[0], m_pItems[m_iCount - 1]);
-                        m_pItems[m_iCount - 1].~ElementPriorityPair();
-                        m_iCount--;
+                        TElement item = std::move(m_lstItems[0].Element);
+                        std::swap(m_lstItems[0], m_lstItems[m_lstItems.GetCount() - 1]);
+                        m_lstItems.RemoveAt(m_lstItems.GetCount() - 1);
                         SiftDown(0);
                         return item;
                     }
 
                     TElement Peek() const {
-                        if (m_iCount == 0) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("PriorityQueue is empty.");
                         }
-                        return m_pItems[0].Element;
+                        return m_lstItems[0].Element;
                     }
 
                     bool TryDequeue(TElement& element, TPriority& priority) {
-                        if (m_iCount == 0) {
+                        if (m_lstItems.GetCount() == 0) {
                             return false;
                         }
-                        element = std::move(m_pItems[0].Element);
-                        priority = std::move(m_pItems[0].Priority);
-                        std::swap(m_pItems[0], m_pItems[m_iCount - 1]);
-                        m_pItems[m_iCount - 1].~ElementPriorityPair();
-                        m_iCount--;
+                        element = std::move(m_lstItems[0].Element);
+                        priority = std::move(m_lstItems[0].Priority);
+                        std::swap(m_lstItems[0], m_lstItems[m_lstItems.GetCount() - 1]);
+                        m_lstItems.RemoveAt(m_lstItems.GetCount() - 1);
                         SiftDown(0);
                         return true;
                     }
 
                     void Clear() {
-                        for (int i = 0; i < m_iCount; ++i) {
-                            m_pItems[i].~ElementPriorityPair();
-                        }
-                        m_iCount = 0;
+                        m_lstItems.Clear();
                     }
                 };
 

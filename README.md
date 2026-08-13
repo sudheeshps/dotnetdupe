@@ -784,8 +784,8 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [List](docs/GenericCollections.md) | Represents a strongly typed list of objects that can be accessed by index. |
 | [Dictionary](docs/GenericCollections.md) | Represents a collection of keys and values. |
-| [Queue](docs/GenericCollections.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
-| [Stack](docs/GenericCollections.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
+| [Queue](docs/Queue.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
+| [Stack](docs/Stack.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
 | [HashSet](docs/GenericCollections.md) | Represents a set of unique values using a hash table. |
 | [SortedDictionary](docs/GenericCollections.md) | Represents a collection of key/value pairs that are sorted on the key. |
 | [SortedSet](docs/GenericCollections.md) | Represents a collection of objects that is maintained in sorted order. |

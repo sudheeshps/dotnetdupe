@@ -5,6 +5,7 @@
 #include "System/Array.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/Collections/Generic/List.h"
 #include <algorithm>
 
 namespace DotNetDupe {
@@ -18,150 +19,91 @@ namespace DotNetDupe {
                     struct KeyValuePair {
                         TKey Key;
                         TValue Value;
+                        
+                        bool operator==(const KeyValuePair& other) const {
+                            return Key == other.Key;
+                        }
+                        
+                        bool operator<(const KeyValuePair& other) const {
+                            return Key < other.Key;
+                        }
+
+                        bool operator>(const KeyValuePair& other) const {
+                            return Key > other.Key;
+                        }
                     };
                     
-                    KeyValuePair* m_pItems;
-                    int m_iCount;
-                    int m_iCapacity;
-
-                    void EnsureCapacity(int required) {
-                        if (required <= m_iCapacity) return;
-                        int newCap = m_iCapacity == 0 ? 4 : m_iCapacity * 2;
-                        if (newCap < required) newCap = required;
-                        
-                        KeyValuePair* newItems = (KeyValuePair*)System::AllocateCollectionBuffer(newCap * sizeof(KeyValuePair));
-                        for (int i = 0; i < m_iCount; ++i) {
-                            new (&newItems[i]) KeyValuePair(std::move(m_pItems[i]));
-                            m_pItems[i].~KeyValuePair();
-                        }
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                        }
-                        m_pItems = newItems;
-                        m_iCapacity = newCap;
-                    }
-
-                    int BinarySearch(const TKey& key, bool& found) const {
-                        int low = 0;
-                        int high = m_iCount - 1;
-                        while (low <= high) {
-                            int mid = low + (high - low) / 2;
-                            if (m_pItems[mid].Key == key) {
-                                found = true;
-                                return mid;
-                            }
-                            if (m_pItems[mid].Key < key) {
-                                low = mid + 1;
-                            } else {
-                                high = mid - 1;
-                            }
-                        }
-                        found = false;
-                        return low;
-                    }
+                    List<KeyValuePair> m_lstItems;
 
                 public:
-                    SortedDictionary() : m_pItems(nullptr), m_iCount(0), m_iCapacity(0) {}
+                    SortedDictionary() = default;
 
-                    ~SortedDictionary() override {
-                        Clear();
-                        if (m_pItems) {
-                            System::FreeCollectionBuffer(m_pItems);
-                            m_pItems = nullptr;
-                        }
-                    }
-
-                    int GetCount() const { return m_iCount; }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     TValue& operator[](const TKey& key) {
-                        bool found = false;
-                        int index = BinarySearch(key, found);
-                        if (found) {
-                            return m_pItems[index].Value;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            return m_lstItems[index].Value;
                         }
 
-                        EnsureCapacity(m_iCount + 1);
-                        for (int i = m_iCount; i > index; --i) {
-                            new (&m_pItems[i]) KeyValuePair(std::move(m_pItems[i - 1]));
-                            m_pItems[i - 1].~KeyValuePair();
-                        }
-                        new (&m_pItems[index]) KeyValuePair{ key, TValue() };
-                        m_iCount++;
-                        return m_pItems[index].Value;
+                        m_lstItems.Insert(~index, KeyValuePair{ key, TValue() });
+                        return m_lstItems[~index].Value;
                     }
 
                     const TValue& operator[](const TKey& key) const {
-                        bool found = false;
-                        int index = BinarySearch(key, found);
-                        if (found) {
-                            return m_pItems[index].Value;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            return m_lstItems[index].Value;
                         }
                         throw System::ArgumentException("Key not found.");
                     }
 
                     void Add(const TKey& key, const TValue& value) {
-                        bool found = false;
-                        int index = BinarySearch(key, found);
-                        if (found) throw System::ArgumentException("An item with the same key has already been added.");
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) throw System::ArgumentException("An item with the same key has already been added.");
 
-                        EnsureCapacity(m_iCount + 1);
-                        for (int i = m_iCount; i > index; --i) {
-                            new (&m_pItems[i]) KeyValuePair(std::move(m_pItems[i - 1]));
-                            m_pItems[i - 1].~KeyValuePair();
-                        }
-                        new (&m_pItems[index]) KeyValuePair{ key, value };
-                        m_iCount++;
+                        m_lstItems.Insert(~index, KeyValuePair{ key, value });
                     }
 
                     void Clear() {
-                        for (int i = 0; i < m_iCount; ++i) {
-                            m_pItems[i].~KeyValuePair();
-                        }
-                        m_iCount = 0;
+                        m_lstItems.Clear();
                     }
 
                     bool ContainsKey(const TKey& key) const {
-                        bool found = false;
-                        BinarySearch(key, found);
-                        return found;
+                        return m_lstItems.BinarySearch(KeyValuePair{ key, TValue() }) >= 0;
                     }
 
                     bool Remove(const TKey& key) {
-                        bool found = false;
-                        int index = BinarySearch(key, found);
-                        if (!found) return false;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index < 0) return false;
 
-                        m_pItems[index].~KeyValuePair();
-                        for (int i = index; i < m_iCount - 1; ++i) {
-                            new (&m_pItems[i]) KeyValuePair(std::move(m_pItems[i + 1]));
-                            m_pItems[i + 1].~KeyValuePair();
-                        }
-                        m_iCount--;
+                        m_lstItems.RemoveAt(index);
                         return true;
                     }
 
                     bool TryGetValue(const TKey& key, TValue& value) const {
-                        bool found = false;
-                        int index = BinarySearch(key, found);
-                        if (found) {
-                            value = m_pItems[index].Value;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            value = m_lstItems[index].Value;
                             return true;
                         }
                         return false;
                     }
 
                     Array<TKey> GetKeys() const {
-                        Array<TKey> arrKeys(m_iCount);
-                        for (int i = 0; i < m_iCount; ++i) {
-                            arrKeys[i] = m_pItems[i].Key;
+                        int count = m_lstItems.GetCount();
+                        Array<TKey> arrKeys(count);
+                        for (int i = 0; i < count; ++i) {
+                            arrKeys[i] = m_lstItems[i].Key;
                         }
                         return arrKeys;
                     }
 
                     Array<TValue> GetValues() const {
-                        Array<TValue> arrValues(m_iCount);
-                        for (int i = 0; i < m_iCount; ++i) {
-                            arrValues[i] = m_pItems[i].Value;
+                        int count = m_lstItems.GetCount();
+                        Array<TValue> arrValues(count);
+                        for (int i = 0; i < count; ++i) {
+                            arrValues[i] = m_lstItems[i].Value;
                         }
                         return arrValues;
                     }
