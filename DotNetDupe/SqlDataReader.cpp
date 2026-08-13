@@ -11,13 +11,13 @@ namespace DotNetDupe {
         namespace Data {
             namespace SqlClient {
 
-                struct SqlDataReader::Impl {
+                struct SqlDataReader::Impl : public Object {
                     std::vector<DotNetDupe::System::Data::Internal::Row> m_rows;
                     std::vector<std::string> m_columns;
                     int m_nCurrentIndex = -1;
                 };
 
-                SqlDataReader::SqlDataReader(void* pRows, void* pColumns) : m_pImpl(new Impl()) {
+                SqlDataReader::SqlDataReader(void* pRows, void* pColumns) : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
                     if (pRows) {
                         m_pImpl->m_rows = *static_cast<std::vector<DotNetDupe::System::Data::Internal::Row>*>(pRows);
                     }
@@ -26,9 +26,7 @@ namespace DotNetDupe {
                     }
                 }
 
-                SqlDataReader::~SqlDataReader() {
-                    delete m_pImpl;
-                }
+                SqlDataReader::~SqlDataReader() = default;
 
                 bool SqlDataReader::Read() {
                     if (m_pImpl->m_nCurrentIndex + 1 < static_cast<int>(m_pImpl->m_rows.size())) {

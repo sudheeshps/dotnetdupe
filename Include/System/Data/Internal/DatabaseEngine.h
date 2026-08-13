@@ -1,11 +1,11 @@
 #pragma once
 #include "Common.h"
 #include "System/Data/Internal/IDatabaseBackend.h"
+#include "System/SmartPointer.h"
+#include "System/String.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <memory>
-#include <mutex>
 
 namespace DotNetDupe {
     namespace System {
@@ -14,22 +14,24 @@ namespace DotNetDupe {
 
                 class DatabaseEngine {
                 private:
-                    std::unordered_map<std::string, std::shared_ptr<IDatabaseBackend>> m_backends;
-                    std::mutex m_mutex;
+                    struct Impl;
+                    DotNetDupe::System::SmartPointer<Impl> m_pImpl;
 
-                    DatabaseEngine() = default;
+                    DatabaseEngine();
+                    ~DatabaseEngine();
 
                 public:
                     DOTNETDUPE_API static DatabaseEngine& Instance();
 
-                    DOTNETDUPE_API void RegisterBackend(const std::string& dbName, std::shared_ptr<IDatabaseBackend> backend);
+                    DOTNETDUPE_API void RegisterBackend(const DotNetDupe::System::String& dbName, DotNetDupe::System::SmartPointer<IDatabaseBackend> backend);
 
-                    DOTNETDUPE_API std::shared_ptr<IDatabaseBackend> GetBackend(const std::string& dbName);
+                    DOTNETDUPE_API DotNetDupe::System::SmartPointer<IDatabaseBackend> GetBackend(const DotNetDupe::System::String& dbName);
 
-                    DOTNETDUPE_API void ClearDatabase(const std::string& dbName);
+                    DOTNETDUPE_API void ClearDatabase(const DotNetDupe::System::String& dbName);
 
+                    // Re-adding Execute using std::vector since we decided to leave Internal engines as is.
                     DOTNETDUPE_API std::vector<Row> Execute(
-                        const std::string& dbName,
+                        const DotNetDupe::System::String& dbName,
                         const std::string& sql,
                         const std::unordered_map<std::string, std::string>& parameters,
                         std::vector<std::string>& columnNames,

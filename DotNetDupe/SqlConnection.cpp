@@ -6,22 +6,36 @@
 #include "System/Data/Internal/InMemoryDatabaseBackend.h"
 #include "System/InvalidOperationException.h"
 #include <algorithm>
+#include <string>
 
 namespace DotNetDupe {
     namespace System {
         namespace Data {
             namespace SqlClient {
 
-                SqlConnection::SqlConnection(const DotNetDupe::System::String& sConnectionString) {
+                struct SqlConnection::Impl {
+                    DotNetDupe::System::String m_sConnectionString;
+                    std::string m_dbName;
+                    std::string m_engineType;
+                    bool m_bIsOpen = false;
+                };
+
+                SqlConnection::SqlConnection() : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                }
+
+                SqlConnection::SqlConnection(const DotNetDupe::System::String& sConnectionString) 
+                    : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
                     SetConnectionString(sConnectionString);
                 }
 
+                SqlConnection::~SqlConnection() = default;
+
                 DotNetDupe::System::String SqlConnection::GetConnectionString() const {
-                    return m_sConnectionString;
+                    return m_pImpl->m_sConnectionString;
                 }
 
                 void SqlConnection::SetConnectionString(const DotNetDupe::System::String& sConnStr) {
-                    m_sConnectionString = sConnStr;
+                    m_pImpl->m_sConnectionString = sConnStr;
                     std::string raw = sConnStr.GetRawString();
                     size_t dbIdx = raw.find("Database=");
                     if (dbIdx == std::string::npos) {
@@ -36,56 +50,56 @@ namespace DotNetDupe {
                     if (dbIdx != std::string::npos) {
                         size_t endIdx = raw.find(";", dbIdx);
                         if (endIdx != std::string::npos) {
-                            m_dbName = raw.substr(dbIdx, endIdx - dbIdx);
+                            m_pImpl->m_dbName = raw.substr(dbIdx, endIdx - dbIdx);
                         } else {
-                            m_dbName = raw.substr(dbIdx);
+                            m_pImpl->m_dbName = raw.substr(dbIdx);
                         }
                     } else {
-                        m_dbName = "DefaultDb";
+                        m_pImpl->m_dbName = "DefaultDb";
                     }
 
-                    m_engineType = "InMemory"; // Default
+                    m_pImpl->m_engineType = "InMemory"; // Default
                     size_t engIdx = raw.find("Engine=");
                     if (engIdx != std::string::npos) {
                         engIdx += 7;
                         size_t endIdx = raw.find(";", engIdx);
                         if (endIdx != std::string::npos) {
-                            m_engineType = raw.substr(engIdx, endIdx - engIdx);
+                            m_pImpl->m_engineType = raw.substr(engIdx, endIdx - engIdx);
                         } else {
-                            m_engineType = raw.substr(engIdx);
+                            m_pImpl->m_engineType = raw.substr(engIdx);
                         }
                     }
                 }
 
-                std::string SqlConnection::GetDatabaseName() const {
-                    return m_dbName;
+                DotNetDupe::System::String SqlConnection::GetDatabaseName() const {
+                    return DotNetDupe::System::String(m_pImpl->m_dbName.c_str());
                 }
 
                 bool SqlConnection::IsOpen() const {
-                    return m_bIsOpen;
+                    return m_pImpl->m_bIsOpen;
                 }
 
                 void SqlConnection::Open() {
-                    m_bIsOpen = true;
+                    m_pImpl->m_bIsOpen = true;
 
-                    std::string engineUpper = m_engineType;
+                    std::string engineUpper = m_pImpl->m_engineType;
                     std::transform(engineUpper.begin(), engineUpper.end(), engineUpper.begin(), ::toupper);
 
                     if (engineUpper == "SQLITE") {
 #if defined(DOTNETDUPE_USE_SQLITE)
-                        auto sqliteBackend = std::make_shared<DotNetDupe::System::Data::Internal::SqliteDatabaseBackend>(m_sConnectionString.GetRawString());
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(m_dbName, sqliteBackend);
+                        auto sqliteBackend = DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Internal::SqliteDatabaseBackend>::NewShared(m_pImpl->m_sConnectionString.GetRawString());
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl->m_dbName.c_str()), sqliteBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
 #else
                         throw DotNetDupe::System::InvalidOperationException("SQLite database engine is not compiled in this build.");
 #endif
                     } else {
-                        auto inMemoryBackend = std::make_shared<DotNetDupe::System::Data::Internal::InMemoryDatabaseBackend>();
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(m_dbName, inMemoryBackend);
+                        auto inMemoryBackend = DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Internal::InMemoryDatabaseBackend>::NewShared();
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl->m_dbName.c_str()), inMemoryBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
                     }
                 }
 
                 void SqlConnection::Close() {
-                    m_bIsOpen = false;
+                    m_pImpl->m_bIsOpen = false;
                 }
 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbCommand> SqlConnection::CreateCommand() {

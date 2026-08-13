@@ -1,9 +1,8 @@
 #pragma once
 #include "System/Data/Common/DbDataReader.h"
-// Removed DatabaseEngine.h
 #include "System/Convert.h"
 #include "System/ArgumentException.h"
-// Removed STL headers
+#include "System/SmartPointer.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -13,7 +12,7 @@ namespace DotNetDupe {
                 class SqlDataReader : public DotNetDupe::System::Data::Common::DbDataReader {
                 private:
                     struct Impl;
-                    Impl* m_pImpl;
+                    DotNetDupe::System::SmartPointer<Impl> m_pImpl;
 
                 public:
                     DOTNETDUPE_API SqlDataReader(void* pRows, void* pColumns);
