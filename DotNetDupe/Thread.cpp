@@ -4,6 +4,11 @@
 #include "System/UnknownException.h"
 #include "System/SmartPointer.h"
 #include <chrono>
+#include <memory>
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <condition_variable>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -16,24 +21,42 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
 
+            struct Thread::Impl {
+                std::unique_ptr<std::thread> internalThread;
+                ThreadStart start;
+                ParameterizedThreadStart parameterizedStart;
+                String name;
+                std::atomic<bool> isAlive{false};
+                bool completed{false};
+                std::mutex joinMutex;
+                std::condition_variable joinCv;
+            };
+
             thread_local Thread* Thread::_currentThread = nullptr;
             static thread_local SmartPointer<Thread> s_pCurrentThreadStorage(nullptr);
 
             Thread::Thread(ThreadStart start)
-                : _start(start), _isAlive(false), _completed(false) {
+                : m_pImpl(new Impl()) {
+                m_pImpl->start = start;
             }
 
             Thread::Thread(ParameterizedThreadStart start)
-                : _parameterizedStart(start), _isAlive(false), _completed(false) {
+                : m_pImpl(new Impl()) {
+                m_pImpl->parameterizedStart = start;
             }
 
             Thread::Thread()
-                : _isAlive(true), _completed(false) {
+                : m_pImpl(new Impl()) {
+                m_pImpl->isAlive = true;
             }
 
             Thread::~Thread() {
-                if (_internalThread && _internalThread->joinable()) {
-                    _internalThread->join();
+                if (m_pImpl) {
+                    if (m_pImpl->internalThread && m_pImpl->internalThread->joinable()) {
+                        m_pImpl->internalThread->join();
+                    }
+                    delete m_pImpl;
+                    m_pImpl = nullptr;
                 }
             }
 
@@ -42,26 +65,27 @@ namespace DotNetDupe {
             }
 
             void Thread::Start(Object* parameter) {
-                if (_isAlive) return;
-                _isAlive = true;
-                _completed = false;
-                _internalThread = std::make_unique<std::thread>(&Thread::ThreadMain, this, parameter);
+                if (!m_pImpl || m_pImpl->isAlive) return;
+                m_pImpl->isAlive = true;
+                m_pImpl->completed = false;
+                m_pImpl->internalThread = std::make_unique<std::thread>(&Thread::ThreadMain, this, parameter);
             }
 
             void Thread::Join() {
-                if (_internalThread && _internalThread->joinable()) {
-                    _internalThread->join();
+                if (m_pImpl && m_pImpl->internalThread && m_pImpl->internalThread->joinable()) {
+                    m_pImpl->internalThread->join();
                 }
             }
 
             bool Thread::Join(int millisecondsTimeout) {
-                if (!_isAlive && _completed) return true;
-                if (!_internalThread) return true;
+                if (!m_pImpl) return true;
+                if (!m_pImpl->isAlive && m_pImpl->completed) return true;
+                if (!m_pImpl->internalThread) return true;
 
-                std::unique_lock<std::mutex> lock(_joinMutex);
-                if (_joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _completed; })) {
-                    if (_internalThread->joinable()) {
-                        _internalThread->join();
+                std::unique_lock<std::mutex> lock(m_pImpl->joinMutex);
+                if (m_pImpl->joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return m_pImpl->completed; })) {
+                    if (m_pImpl->internalThread->joinable()) {
+                        m_pImpl->internalThread->join();
                     }
                     return true;
                 }
@@ -74,15 +98,15 @@ namespace DotNetDupe {
             }
 
             bool Thread::IsAlive() const {
-                return _isAlive;
+                return m_pImpl ? m_pImpl->isAlive.load() : false;
             }
 
             String Thread::GetName() const {
-                return _name;
+                return m_pImpl ? m_pImpl->name : String("");
             }
 
             void Thread::SetName(const String& name) {
-                _name = name;
+                if (m_pImpl) m_pImpl->name = name;
             }
 
             Thread* Thread::GetCurrentThread() {
@@ -108,17 +132,17 @@ namespace DotNetDupe {
             void Thread::ThreadMain(Object* parameter) {
                 _currentThread = this;
                 try {
-                    if (_start) _start();
-                    else if (_parameterizedStart) _parameterizedStart(parameter);
+                    if (m_pImpl->start) m_pImpl->start();
+                    else if (m_pImpl->parameterizedStart) m_pImpl->parameterizedStart(parameter);
                 } catch (...) {
                     (void)0;
                 }
                 {
-                    std::lock_guard<std::mutex> lock(_joinMutex);
-                    _completed = true;
-                    _isAlive = false;
+                    std::lock_guard<std::mutex> lock(m_pImpl->joinMutex);
+                    m_pImpl->completed = true;
+                    m_pImpl->isAlive = false;
                 }
-                _joinCv.notify_all();
+                m_pImpl->joinCv.notify_all();
             }
         }
     }
