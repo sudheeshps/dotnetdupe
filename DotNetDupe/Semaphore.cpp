@@ -3,6 +3,7 @@
 #include "System/Threading/SemaphoreFullException.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/TimeoutException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
@@ -25,25 +26,37 @@ namespace DotNetDupe {
             Semaphore::Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways)
                 : Semaphore(initialCount, maximumCount, sName, openAlways, s_semDummyCreatedNew) {}
 
+#if defined(_WIN32)
+            static HANDLE OpenOrCreateWin32Semaphore(const std::wstring& wsName, int initialCount, int maximumCount, bool openAlways, bool& bCreatedNew) {
+                HANDLE hHandle = ::CreateSemaphoreW(NULL, initialCount, maximumCount, wsName.c_str());
+                if (hHandle != NULL) {
+                    bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
+                    return hHandle;
+                }
+                if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating Semaphore synchronization object.");
+                }
+                bCreatedNew = false;
+                if (!openAlways) {
+                    throw WaitHandleCannotBeOpenedException("Semaphore creation returned null handle and openAlways is false.");
+                }
+                hHandle = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                if (hHandle == NULL) {
+                    if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied opening existing Semaphore synchronization object.");
+                    }
+                    throw WaitHandleCannotBeOpenedException("Failed to open existing semaphore with SYNCHRONIZE access.");
+                }
+                return hHandle;
+            }
+#endif
+
             Semaphore::Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways, bool& bCreatedNew)
                 : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
-                    _hHandle = ::CreateSemaphoreW(NULL, initialCount, maximumCount, wsName.c_str());
-                    if (_hHandle != NULL) {
-                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
-                    } else {
-                        bCreatedNew = false;
-                        if (openAlways) {
-                            _hHandle = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                            if (_hHandle == NULL) {
-                                throw WaitHandleCannotBeOpenedException("Failed to open existing semaphore with SYNCHRONIZE access.");
-                            }
-                        } else {
-                            throw WaitHandleCannotBeOpenedException("Semaphore creation returned null handle and openAlways is false.");
-                        }
-                    }
+                    _hHandle = OpenOrCreateWin32Semaphore(wsName, initialCount, maximumCount, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
                 }

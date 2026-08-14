@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "System/Security/Principal/UserPrincipal.h"
 #include "System/ArgumentException.h"
+#include "System/UnauthorizedAccessException.h"
 
 #include &lt;vector&gt;
 #include &lt;string&gt;
@@ -27,6 +28,7 @@ using namespace DotNetDupe::System::Internal;
 #include &lt;grp.h&gt;
 #include &lt;sys/types.h&gt;
 #include &lt;unistd.h&gt;
+#include &lt;cerrno&gt;
 #endif
 
 namespace DotNetDupe {
@@ -52,7 +54,12 @@ namespace DotNetDupe {
                     LPGROUP_USERS_INFO_0 pGroups = NULL;
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0;</span>
 
-<span style = "background-color:#dfd">                    if (::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&amp;pGroups, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries) == NERR_Success) {
+<span style = "background-color:#dfd">                    NET_API_STATUS nStatus = ::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&amp;pGroups, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries);
+                    if (nStatus == ERROR_ACCESS_DENIED) {</span>
+<span style = "background-color:#fdd">                        throw UnauthorizedAccessException("Access denied querying user groups. Administrator privileges required.");</span>
+                    }
+
+<span style = "background-color:#dfd">                    if (nStatus == NERR_Success) {
                         for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
                             std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
                             lstPermissions.Add(String("GroupMember:") + String(sGroup.c_str()));
@@ -90,6 +97,10 @@ namespace DotNetDupe {
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0, dwResumeHandle = 0;
 
                     NET_API_STATUS nStatus = ::NetUserEnum(NULL, 1, FILTER_NORMAL_ACCOUNT, (LPBYTE*)&amp;pBuf, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries, &amp;dwResumeHandle);
+                    if (nStatus == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied enumerating user accounts. Administrator privileges required.");
+                    }
+
                     if (nStatus == NERR_Success || nStatus == ERROR_MORE_DATA) {
                         for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
                             lstUsers.Add(BuildWin32UserInfo(&amp;pBuf[i]));
@@ -126,10 +137,15 @@ namespace DotNetDupe {
                 }
 
                 static void EnumerateLinuxUsers(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    errno = 0;
                     setpwent();
                     struct passwd* pw;
                     while ((pw = getpwent()) != NULL) {
                         lstUsers.Add(BuildLinuxUserInfo(pw));
+                    }
+                    if (errno == EACCES || errno == EPERM) {
+                        endpwent();
+                        throw UnauthorizedAccessException("Access denied enumerating user accounts. Root privileges required.");
                     }
                     endpwent();
                 }
@@ -144,8 +160,8 @@ namespace DotNetDupe {
                     EnumerateLinuxUsers(lstUsers);
 #endif
 
-                    return lstUsers;
-<span style = "background-color:#dfd">                }</span>
+<span style = "background-color:#dfd">                    return lstUsers;
+                }</span>
 
 <span style = "background-color:#dfd">                UserInfo UserPrincipal::GetUser(const String&amp; sUsername) {
                     if (sUsername.IsEmpty()) {

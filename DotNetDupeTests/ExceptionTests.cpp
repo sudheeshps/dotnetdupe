@@ -7,11 +7,14 @@
 #include "System/OutOfMemoryException.h"
 #include "System/ComponentModel/Win32Exception.h"
 #include "System/Security/SecurityException.h"
+#include "System/Diagnostics/Process.h"
+#include "System/IO/FileNotFoundException.h"
 #include "System/String.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::ComponentModel;
 using namespace DotNetDupe::System::Security;
+using namespace DotNetDupe::System::Diagnostics;
 
 TEST(ExceptionTests, GivenUnauthorizedAccessException_WhenDefaultConstructorCalled_ThenHasDefaultMessage) {
     UnauthorizedAccessException ex;
@@ -74,4 +77,10 @@ TEST(ExceptionTests, GivenWin32Exception_WhenCustomMessageAndErrorCodeProvided_T
 TEST(ExceptionTests, GivenWin32Exception_WhenCustomMessageOnlyProvided_ThenStoresMessage) {
     Win32Exception ex("Custom win32 error message");
     EXPECT_STREQ(ex.What(), "Custom win32 error message");
+}
+
+TEST(ExceptionTests, GivenProcessInstance_WhenNonExistentFileStarted_ThrowsFileNotFoundException) {
+    Process proc;
+    proc.SetStartInfo(ProcessStartInfo("C:\\NonExistentPath\\NonExistentBinary12345.exe"));
+    EXPECT_THROW(proc.Start(), DotNetDupe::System::IO::FileNotFoundException);
 }

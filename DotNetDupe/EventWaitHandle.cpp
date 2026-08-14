@@ -2,6 +2,7 @@
 #include "System/Threading/EventWaitHandle.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/TimeoutException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
@@ -24,25 +25,37 @@ namespace DotNetDupe {
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways)
                 : EventWaitHandle(initialState, manualReset, sName, openAlways, s_dummyCreatedNew) {}
 
+#if defined(_WIN32)
+            static HANDLE OpenOrCreateWin32Event(const std::wstring& wsName, bool manualReset, bool initialState, bool openAlways, bool& bCreatedNew) {
+                HANDLE hHandle = ::CreateEventW(NULL, manualReset ? TRUE : FALSE, initialState ? TRUE : FALSE, wsName.c_str());
+                if (hHandle != NULL) {
+                    bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
+                    return hHandle;
+                }
+                if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating EventWaitHandle synchronization object.");
+                }
+                bCreatedNew = false;
+                if (!openAlways) {
+                    throw WaitHandleCannotBeOpenedException("Event creation returned null handle and openAlways is false.");
+                }
+                hHandle = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                if (hHandle == NULL) {
+                    if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied opening existing EventWaitHandle synchronization object.");
+                    }
+                    throw WaitHandleCannotBeOpenedException("Failed to open existing event with SYNCHRONIZE access.");
+                }
+                return hHandle;
+            }
+#endif
+
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways, bool& bCreatedNew)
                 : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
-                    _hHandle = ::CreateEventW(NULL, manualReset ? TRUE : FALSE, initialState ? TRUE : FALSE, wsName.c_str());
-                    if (_hHandle != NULL) {
-                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
-                    } else {
-                        bCreatedNew = false;
-                        if (openAlways) {
-                            _hHandle = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                            if (_hHandle == NULL) {
-                                throw WaitHandleCannotBeOpenedException("Failed to open existing event with SYNCHRONIZE access.");
-                            }
-                        } else {
-                            throw WaitHandleCannotBeOpenedException("Event creation returned null handle and openAlways is false.");
-                        }
-                    }
+                    _hHandle = OpenOrCreateWin32Event(wsName, manualReset, initialState, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
                 }

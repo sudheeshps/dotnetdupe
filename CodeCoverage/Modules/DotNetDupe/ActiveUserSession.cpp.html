@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/ActiveUserSession.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Utils/StringConvert.h"
 
 #if defined(_WIN32)
@@ -27,29 +28,35 @@ namespace DotNetDupe {
             ActiveUserSession::~ActiveUserSession() {}</span>
 
 #if defined(_WIN32)
+<span style = "background-color:#dfd">            static void PopulateSessionInfo(const WTS_SESSION_INFOW&amp; wtsInfo, UserSessionInfo&amp; session) {
+                LPWSTR pBuffer = NULL; DWORD dwBytes = 0;
+                String sUsername = "SYSTEM";
+                if (::WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, wtsInfo.SessionId, WTSUserName, &amp;pBuffer, &amp;dwBytes) &amp;&amp; pBuffer &amp;&amp; dwBytes &gt; 2) {
+                    sUsername = String(pBuffer);
+                    ::WTSFreeMemory(pBuffer);</span>
+                }
+
+<span style = "background-color:#dfd">                session.uSessionId = wtsInfo.SessionId;
+                session.sUsername = sUsername;
+                session.bIsActive = (wtsInfo.State == WTSActive);
+                session.sPrivilege = session.bIsActive ? "Administrator (Active Terminal)" : "Standard User";
+                session.sLoginTimestamp = "Active Session";
+                session.sLogoutTimestamp = session.bIsActive ? "Active Session" : "Session Disconnected";
+            }</span>
+
 <span style = "background-color:#dfd">            void ActiveUserSession::EnumerateWin32Sessions(Collections::Generic::List&lt;UserSessionInfo&gt;&amp; lstSessions) {
                 WTS_SESSION_INFOW* pSessionInfo = NULL;
-                DWORD dwSessionCount = 0;
-                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwSessionCount) &amp;&amp; pSessionInfo) {
+                DWORD dwSessionCount = 0;</span>
+
+<span style = "background-color:#dfd">                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwSessionCount) &amp;&amp; pSessionInfo) {
                     for (DWORD i = 0; i &lt; dwSessionCount; ++i) {
-                        LPWSTR pBuffer = NULL; DWORD dwBytes = 0;
-                        String sUsername = "SYSTEM";
-                        if (::WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, pSessionInfo[i].SessionId, WTSUserName, &amp;pBuffer, &amp;dwBytes) &amp;&amp; pBuffer &amp;&amp; dwBytes &gt; 2) {
-                            sUsername = String(pBuffer);
-                            ::WTSFreeMemory(pBuffer);</span>
-                        }
-
-<span style = "background-color:#dfd">                        UserSessionInfo session;
-                        session.uSessionId = pSessionInfo[i].SessionId;
-                        session.sUsername = sUsername;
-                        session.bIsActive = (pSessionInfo[i].State == WTSActive);
-                        session.sPrivilege = session.bIsActive ? "Administrator (Active Terminal)" : "Standard User";
-                        session.sLoginTimestamp = "Active Session";
-                        session.sLogoutTimestamp = session.bIsActive ? "Active Session" : "Session Disconnected";</span>
-
-<span style = "background-color:#dfd">                        lstSessions.Add(session);
+                        UserSessionInfo session;
+                        PopulateSessionInfo(pSessionInfo[i], session);
+                        lstSessions.Add(session);
                     }
                     ::WTSFreeMemory(pSessionInfo);</span>
+<span style = "background-color:#fdd">                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied querying active user sessions. Administrator privileges required.");</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 #endif

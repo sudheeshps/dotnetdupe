@@ -11,6 +11,9 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/Process.h"
+#include "System/UnauthorizedAccessException.h"
+#include "System/IO/FileNotFoundException.h"
+#include "System/InvalidOperationException.h"
 #include "System/Utils/StringConvert.h"
 
 #if defined(_WIN32)
@@ -24,7 +27,7 @@ using namespace DotNetDupe::System::Internal;
 #include &lt;spawn.h&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
-#include &lt;errno.h&gt;
+#include &lt;cerrno&gt;
 extern char** environ;
 #endif
 
@@ -42,56 +45,57 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                : FileName(sFileName), Arguments(sArguments), CreateNoWindow(false), UseShellExecute(false) {}</span>
 
             Process::Process() 
-<span style = "background-color:#fdd">                : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}</span>
+<span style = "background-color:#dfd">                : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}</span>
 
-<span style = "background-color:#fdd">            Process::~Process() {</span>
+<span style = "background-color:#dfd">            Process::~Process() {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                if (m_pProcessHandle != nullptr) {
-                    CloseHandle((HANDLE)m_pProcessHandle);</span>
+<span style = "background-color:#dfd">                if (m_pProcessHandle != nullptr) {</span>
+<span style = "background-color:#fdd">                    CloseHandle((HANDLE)m_pProcessHandle);</span>
                 }
 #endif
-<span style = "background-color:#fdd">            }</span>
-
-<span style = "background-color:#dfd">            bool Process::Start() {
-                if (m_objStartInfo.FileName.GetLength() == 0) return false;</span>
+<span style = "background-color:#dfd">            }</span>
 
 #if defined(_WIN32)
+<span style = "background-color:#dfd">            static std::wstring BuildCommandLine(const ProcessStartInfo&amp; info) {
+                std::wstring sWFileName = StringConvertInternal::Utf8ToWChar(info.FileName.GetRawString());
+                std::wstring sWArgs = StringConvertInternal::Utf8ToWChar(info.Arguments.GetRawString());
+                std::wstring sCmd = L"\"" + sWFileName + L"\"";
+                if (info.Arguments.GetLength() &gt; 0) {
+                    sCmd += L" " + sWArgs;</span>
+                }
+<span style = "background-color:#dfd">                return sCmd;
+            }</span>
+
+            static bool CreateWin32Process(const ProcessStartInfo&amp; info, PROCESS_INFORMATION&amp; pi) {
                 STARTUPINFOW si;
-                PROCESS_INFORMATION pi;
-<span style = "background-color:#dfd">                ZeroMemory(&amp;si, sizeof(si));
+                ZeroMemory(&amp;si, sizeof(si));
                 si.cb = sizeof(si);
-                ZeroMemory(&amp;pi, sizeof(pi));</span>
+                ZeroMemory(&amp;pi, sizeof(pi));
 
-<span style = "background-color:#dfd">                std::wstring sWFileName = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.FileName.GetRawString());
-                std::wstring sWArgs = DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(m_objStartInfo.Arguments.GetRawString());
-                std::wstring sWCommandLine = L"\"" + sWFileName + L"\"";
-                if (m_objStartInfo.Arguments.GetLength() &gt; 0) {
-                    sWCommandLine += L" " + sWArgs;</span>
-                }
-
-                DWORD dwCreationFlags = 0;
-                if (m_objStartInfo.CreateNoWindow) {
-                    dwCreationFlags |= CREATE_NO_WINDOW;
-                }
-
-<span style = "background-color:#dfd">                if (CreateProcessW(NULL, (LPWSTR)sWCommandLine.c_str(), NULL, NULL, FALSE, </span>
-                    dwCreationFlags, NULL, NULL, &amp;si, &amp;pi)) {
-<span style = "background-color:#dfd">                    m_iId = (int)pi.dwProcessId;
-                    m_pProcessHandle = (void*)pi.hProcess;
-                    CloseHandle(pi.hThread);
-                    m_bHasExited = false;</span>
+                std::wstring sCmd = BuildCommandLine(info);
+                DWORD dwFlags = info.CreateNoWindow ? CREATE_NO_WINDOW : 0;
+                if (::CreateProcessW(NULL, (LPWSTR)sCmd.c_str(), NULL, NULL, FALSE, dwFlags, NULL, NULL, &amp;si, &amp;pi)) {
                     return true;
                 }
-<span style = "background-color:#dfd">                return false;</span>
-#else
-                pid_t pid;
-                std::vector&lt;std::string&gt; argStrings;
-                std::string sFileName = m_objStartInfo.FileName.GetRawString();
-                argStrings.push_back(sFileName);
 
-                std::string sArgs = m_objStartInfo.Arguments.GetRawString();
+                DWORD dwErr = ::GetLastError();
+                if (dwErr == ERROR_FILE_NOT_FOUND || dwErr == ERROR_PATH_NOT_FOUND) {
+                    throw IO::FileNotFoundException("The system cannot find the file specified.");
+                }
+                if (dwErr == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied starting process. Higher privileges required.");
+                }
+                return false;
+            }
+#else
+            static std::vector&lt;std::string&gt; ParsePosixArgs(const ProcessStartInfo&amp; info) {
+                std::vector&lt;std::string&gt; argStrings;
+                argStrings.push_back(info.FileName.GetRawString());
+
+                std::string sArgs = info.Arguments.GetRawString();
                 std::string sCurrentArg;
                 bool bInQuotes = false;
+
                 for (size_t i = 0; i &lt; sArgs.length(); ++i) {
                     char c = sArgs[i];
                     if (c == '\"') {
@@ -105,18 +109,41 @@ namespace DotNetDupe {
                         sCurrentArg += c;
                     }
                 }
-                if (!sCurrentArg.empty()) {
-                    argStrings.push_back(sCurrentArg);
-                }
+                if (!sCurrentArg.empty()) argStrings.push_back(sCurrentArg);
+                return argStrings;
+            }
 
+            static bool SpawnPosixProcess(const ProcessStartInfo&amp; info, pid_t&amp; pid) {
+                auto argStrings = ParsePosixArgs(info);
                 std::vector&lt;char*&gt; argv;
-                for (auto&amp; s : argStrings) {
-                    argv.push_back((char*)s.c_str());
-                }
+                for (auto&amp; s : argStrings) argv.push_back((char*)s.c_str());
                 argv.push_back(NULL);
 
-                if (posix_spawn(&amp;pid, sFileName.c_str(), NULL, NULL, argv.data(), environ) == 0) {
-                    m_iId = (int)pid;
+                int err = posix_spawn(&amp;pid, info.FileName.GetRawString(), NULL, NULL, argv.data(), environ);
+                if (err == 0) return true;
+                if (err == ENOENT) throw IO::FileNotFoundException("The system cannot find the file specified.");
+                if (err == EACCES || err == EPERM) throw UnauthorizedAccessException("Access denied starting process.");
+                return false;
+            }
+#endif
+
+<span style = "background-color:#dfd">            bool Process::Start() {
+                if (m_objStartInfo.FileName.GetLength() == 0) return false;</span>
+
+#if defined(_WIN32)
+                PROCESS_INFORMATION pi;
+<span style = "background-color:#dfd">                if (CreateWin32Process(m_objStartInfo, pi)) {
+                    m_iId = static_cast&lt;int&gt;(pi.dwProcessId);
+                    m_pProcessHandle = (void*)pi.hProcess;
+                    ::CloseHandle(pi.hThread);
+                    m_bHasExited = false;
+                    return true;</span>
+                }
+                return false;
+#else
+                pid_t pid;
+                if (SpawnPosixProcess(m_objStartInfo, pid)) {
+                    m_iId = static_cast&lt;int&gt;(pid);
                     m_pProcessHandle = (void*)(intptr_t)pid;
                     m_bHasExited = false;
                     return true;
@@ -135,12 +162,16 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const ProcessStartInfo&amp; objStartInfo) {
                 SmartPointer&lt;Process&gt; pProcess = SmartPointer&lt;Process&gt;::New();
-                pProcess-&gt;SetStartInfo(objStartInfo);
-                if (pProcess-&gt;Start()) {
-                    return pProcess;</span>
+                pProcess-&gt;SetStartInfo(objStartInfo);</span>
+                try {
+<span style = "background-color:#dfd">                    if (pProcess-&gt;Start()) {
+                        return pProcess;</span>
+                    }
+<span style = "background-color:#dfd">                } catch (const IO::FileNotFoundException&amp;) {
+                    return SmartPointer&lt;Process&gt;(nullptr);</span>
                 }
-<span style = "background-color:#dfd">                return SmartPointer&lt;Process&gt;(nullptr);
-            }</span>
+<span style = "background-color:#fdd">                return SmartPointer&lt;Process&gt;(nullptr);</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            void Process::WaitForExit() {
                 WaitForExit(-1);</span>
@@ -197,15 +228,25 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void Process::Kill() {
-                if (m_bHasExited) return;
-                if (m_pProcessHandle == nullptr) return;</span>
+                if (m_bHasExited || m_pProcessHandle == nullptr) return;</span>
 
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                TerminateProcess((HANDLE)m_pProcessHandle, 1);
-                Refresh();</span>
+<span style = "background-color:#dfd">                if (!::TerminateProcess((HANDLE)m_pProcessHandle, 1)) {</span>
+<span style = "background-color:#fdd">                    DWORD dwErr = ::GetLastError();
+                    if (dwErr == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Cannot terminate target process: access denied.");</span>
+                    }
+<span style = "background-color:#fdd">                    if (dwErr == ERROR_INVALID_HANDLE) {
+                        throw InvalidOperationException("Process has already exited.");</span>
+                    }
+                }
+<span style = "background-color:#dfd">                Refresh();</span>
 #else
                 pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
-                kill(pid, SIGKILL);
+                if (kill(pid, SIGKILL) != 0) {
+                    if (errno == EPERM) throw UnauthorizedAccessException("Cannot terminate target process: access denied.");
+                    if (errno == ESRCH) throw InvalidOperationException("Process has already exited.");
+                }
                 
                 // Wait for the process to actually be reaped to ensure GetHasExited() 
                 // returns true immediately after Kill()

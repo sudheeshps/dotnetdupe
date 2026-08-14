@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/Diagnostics/TerminalSession.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Utils/StringConvert.h"
 #include <vector>
 
@@ -44,6 +45,8 @@ namespace DotNetDupe {
                         sResult = String(pBuffer);
                     }
                     ::WTSFreeMemory(pBuffer);
+                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied querying terminal session information.");
                 }
 
                 return sResult;
@@ -78,6 +81,8 @@ namespace DotNetDupe {
                     }
 
                     ::WTSFreeMemory(pSessionInfo);
+                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied enumerating terminal sessions. Administrator privileges required.");
                 }
 #endif
                 return lstResult;

@@ -13,6 +13,7 @@
 #include "System/Diagnostics/EventLog.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
 #include "System/Environment.h"
@@ -152,10 +153,13 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                HKEY hKey = NULL;
                 LONG lRes = ::RegCreateKeyExW(HKEY_LOCAL_MACHINE, wSubKey.c_str(), 0, NULL, 0, KEY_WRITE, NULL, &amp;hKey, NULL);
                 if (lRes == ERROR_SUCCESS) {</span>
-<span style = "background-color:#fdd">                    ::RegCloseKey(hKey);</span>
-                    return true;
+<span style = "background-color:#fdd">                    ::RegCloseKey(hKey);
+                    return true;</span>
                 }
-<span style = "background-color:#dfd">                return false;
+<span style = "background-color:#dfd">                if (lRes == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating EventLog source in registry under HKLM. Administrator privileges required.");</span>
+                }
+<span style = "background-color:#fdd">                return false;
             }</span>
 
 <span style = "background-color:#dfd">            bool EventLog::Win32SourceExists(const String&amp; sSource) {
@@ -176,8 +180,11 @@ namespace DotNetDupe {
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
-                    ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
-                }
+                    LONG lRes = ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
+                    if (lRes == ERROR_ACCESS_DENIED) {</span>
+<span style = "background-color:#fdd">                        throw UnauthorizedAccessException("Access denied deleting EventLog source from registry under HKLM. Administrator privileges required.");</span>
+                    }
+<span style = "background-color:#dfd">                }
             }</span>
 #else
             void EventLog::WriteLinuxSyslog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
@@ -315,7 +322,11 @@ namespace DotNetDupe {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
                 String sEffectiveLog = sLogName.IsEmpty() ? String("Application") : sLogName;</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                CreateWin32EventSource(sSource, sEffectiveLog);</span>
+                try {
+<span style = "background-color:#dfd">                    CreateWin32EventSource(sSource, sEffectiveLog);
+                } catch (const UnauthorizedAccessException&amp;) {</span>
+                    // Fallback to in-memory store in non-elevated environments
+<span style = "background-color:#dfd">                }</span>
 #endif
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 auto it = s_mapSourceToLog.find(sSource);
@@ -361,7 +372,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            void EventLog::DeleteEventSource(const String&amp; sSource, const String&amp; sMachineName) {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                DeleteWin32EventSource(sSource);</span>
+                try {
+<span style = "background-color:#dfd">                    DeleteWin32EventSource(sSource);</span>
+<span style = "background-color:#fdd">                } catch (const UnauthorizedAccessException&amp;) {</span>
+                    // Fallback to in-memory store in non-elevated environments
+<span style = "background-color:#fdd">                }</span>
 #endif
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 if (s_mapSourceToLog.find(sSource) == s_mapSourceToLog.end()) {</span>

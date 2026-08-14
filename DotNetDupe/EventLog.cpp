@@ -2,6 +2,7 @@
 #include "System/Diagnostics/EventLog.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
 #include "System/Environment.h"
@@ -144,6 +145,9 @@ namespace DotNetDupe {
                     ::RegCloseKey(hKey);
                     return true;
                 }
+                if (lRes == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating EventLog source in registry under HKLM. Administrator privileges required.");
+                }
                 return false;
             }
 
@@ -165,7 +169,10 @@ namespace DotNetDupe {
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
-                    ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
+                    LONG lRes = ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
+                    if (lRes == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied deleting EventLog source from registry under HKLM. Administrator privileges required.");
+                    }
                 }
             }
 #else
@@ -304,7 +311,11 @@ namespace DotNetDupe {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
                 String sEffectiveLog = sLogName.IsEmpty() ? String("Application") : sLogName;
 #if defined(_WIN32)
-                CreateWin32EventSource(sSource, sEffectiveLog);
+                try {
+                    CreateWin32EventSource(sSource, sEffectiveLog);
+                } catch (const UnauthorizedAccessException&) {
+                    // Fallback to in-memory store in non-elevated environments
+                }
 #endif
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 auto it = s_mapSourceToLog.find(sSource);
@@ -350,7 +361,11 @@ namespace DotNetDupe {
             void EventLog::DeleteEventSource(const String& sSource, const String& sMachineName) {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
 #if defined(_WIN32)
-                DeleteWin32EventSource(sSource);
+                try {
+                    DeleteWin32EventSource(sSource);
+                } catch (const UnauthorizedAccessException&) {
+                    // Fallback to in-memory store in non-elevated environments
+                }
 #endif
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 if (s_mapSourceToLog.find(sSource) == s_mapSourceToLog.end()) {

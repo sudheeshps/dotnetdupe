@@ -2,6 +2,7 @@
 #include "System/Threading/Mutex.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/TimeoutException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
@@ -29,25 +30,37 @@ namespace DotNetDupe {
             Mutex::Mutex(bool bInitiallyOwned, const String& sName, bool openAlways)
                 : Mutex(bInitiallyOwned, sName, openAlways, s_mutexDummyCreatedNew) {}
 
+#if defined(_WIN32)
+            static HANDLE OpenOrCreateWin32Mutex(const std::wstring& wsName, bool bInitiallyOwned, bool openAlways, bool& bCreatedNew) {
+                HANDLE hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
+                if (hHandle != NULL) {
+                    bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
+                    return hHandle;
+                }
+                if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating Mutex synchronization object.");
+                }
+                bCreatedNew = false;
+                if (!openAlways) {
+                    throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");
+                }
+                hHandle = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
+                if (hHandle == NULL) {
+                    if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied opening existing Mutex synchronization object.");
+                    }
+                    throw WaitHandleCannotBeOpenedException("Failed to open existing mutex with SYNCHRONIZE access.");
+                }
+                return hHandle;
+            }
+#endif
+
             Mutex::Mutex(bool bInitiallyOwned, const String& sName, bool openAlways, bool& bCreatedNew)
                 : _name(sName), _hHandle(nullptr) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
-                    _hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
-                    if (_hHandle != NULL) {
-                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
-                    } else {
-                        bCreatedNew = false;
-                        if (openAlways) {
-                            _hHandle = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
-                            if (_hHandle == NULL) {
-                                throw WaitHandleCannotBeOpenedException("Failed to open existing mutex with SYNCHRONIZE access.");
-                            }
-                        } else {
-                            throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");
-                        }
-                    }
+                    _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
                     if (bInitiallyOwned) {

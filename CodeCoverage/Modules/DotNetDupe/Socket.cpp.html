@@ -89,7 +89,7 @@ namespace DotNetDupe {
                     if (!bInitialized) {</span>
                         WSADATA wsaData;
 <span style = "background-color:#dfd">                        if (WSAStartup(MAKEWORD(2, 2), &amp;wsaData) != 0) {</span>
-<span style = "background-color:#fdd">                            throw SocketException(GetLastErrorCode(), String("WSAStartup failed"));</span>
+<span style = "background-color:#fdd">                            throw SocketException(GetLastErrorCode(), "WSAStartup failed");</span>
                         }
 <span style = "background-color:#dfd">                        bInitialized = true;
                         std::atexit([]() { WSACleanup(); });</span>
@@ -116,7 +116,7 @@ namespace DotNetDupe {
                     m_pImpl-&gt;hSocket = ::socket(af, type, proto);
 #endif
 <span style = "background-color:#dfd">                    if (m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to create native socket."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to create native socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
@@ -177,22 +177,22 @@ namespace DotNetDupe {
 #endif
 
 <span style = "background-color:#dfd">                    if (bind(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to bind socket."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to bind socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                void Socket::Listen(int backlog) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 <span style = "background-color:#dfd">                    if (listen(m_pImpl-&gt;hSocket, backlog) == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to listen on socket."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to listen on socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                SmartPointer&lt;Socket&gt; Socket::Accept() {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
                     sockaddr_in clientAddr;
@@ -203,7 +203,7 @@ namespace DotNetDupe {
                     int clientSocket = ::accept(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;clientAddr), &amp;clientSize);
 #endif
 <span style = "background-color:#dfd">                    if (clientSocket == INVALID_SOCKET) {
-                        throw SocketException(GetLastErrorCode(), String("Failed to accept connection."));</span>
+                        throw SocketException(GetLastErrorCode(), "Failed to accept connection.");</span>
                     }
 
 <span style = "background-color:#dfd">                    return SmartPointer&lt;Socket&gt;(new Socket(reinterpret_cast&lt;void*&gt;(clientSocket)), true);
@@ -211,7 +211,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                void Socket::Connect(const String&amp; ip, int port) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
                     sockaddr_in addr;
@@ -230,35 +230,35 @@ namespace DotNetDupe {
 #endif
 
 <span style = "background-color:#dfd">                    if (connect(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), String("Failed to connect to host."));</span>
+                        throw SocketException(GetLastErrorCode(), "Failed to connect to host.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::Send(const char* buffer, int offset, int size) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 <span style = "background-color:#dfd">                    int bytesSent = send(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
                     if (bytesSent == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), String("Failed to send data."));</span>
+                        throw SocketException(GetLastErrorCode(), "Failed to send data.");</span>
                     }
                     return bytesSent;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::Receive(char* buffer, int offset, int size) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 <span style = "background-color:#dfd">                    int bytesReceived = recv(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
                     if (bytesReceived == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to receive data."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to receive data.");</span>
                     }
                     return bytesReceived;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::SendTo(const char* buffer, int offset, int size, const String&amp; ip, int port) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
                     sockaddr_in addr;
@@ -278,14 +278,14 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                    int bytesSent = sendto(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr));
                     if (bytesSent == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to send data to host."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to send data to host.");</span>
                     }
                     return bytesSent;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::ReceiveFrom(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
                     sockaddr_in addr;
@@ -294,7 +294,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                    int bytesReceived = recvfrom(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), &amp;addrSize);
                     if (bytesReceived == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), String("Failed to receive data from host."));</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");</span>
                     }
 
                     char ipBuf[INET_ADDRSTRLEN];

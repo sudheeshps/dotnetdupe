@@ -13,6 +13,7 @@
 #include "System/Diagnostics/EtwLogReader.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/TimeProvider.h"
 
 #include &lt;mutex&gt;
@@ -67,18 +68,21 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                return 0;
             }</span>
 
-            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String&amp; sChannelName, std::function&lt;void(const EtwEvent&amp;)&gt;* pCallback) {
+<span style = "background-color:#dfd">            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String&amp; sChannelName, std::function&lt;void(const EtwEvent&amp;)&gt;* pCallback) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
-                if (!hSub) {
-                    DWORD err = ::GetLastError();
+                if (!hSub) {</span>
+<span style = "background-color:#fdd">                    DWORD err = ::GetLastError();
+                    if (err == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");</span>
+                    }
                     char buf[256];
-                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
-                    throw SystemException(buf);
+<span style = "background-color:#fdd">                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
+                    throw SystemException(buf);</span>
                 }
-                return hSub;
-            }
+<span style = "background-color:#dfd">                return hSub;
+            }</span>
 
 <span style = "background-color:#dfd">            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List&lt;String&gt;&amp; lstChannels) {
                 EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
@@ -190,7 +194,10 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), wQuery.c_str(), dwFlags);
                 if (hResults == NULL) {</span>
 <span style = "background-color:#fdd">                    DWORD err = ::GetLastError();
-                    if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;</span>
+                    if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;
+                    if (err == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied querying ETW event channel. Administrator or Performance Log Users membership required.");</span>
+                    }
                     char buf[256];
 <span style = "background-color:#fdd">                    snprintf(buf, sizeof(buf), "EvtQuery failed with error code %lu", err);
                     throw SystemException(buf);</span>

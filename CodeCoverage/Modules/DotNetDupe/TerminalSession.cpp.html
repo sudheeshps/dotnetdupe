@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/TerminalSession.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Utils/StringConvert.h"
 #include &lt;vector&gt;
 
@@ -55,10 +56,12 @@ namespace DotNetDupe {
                         sResult = String(pBuffer);</span>
                     }
 <span style = "background-color:#dfd">                    ::WTSFreeMemory(pBuffer);</span>
+<span style = "background-color:#fdd">                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied querying terminal session information.");</span>
                 }
 
-                return sResult;
-<span style = "background-color:#dfd">            }</span>
+<span style = "background-color:#dfd">                return sResult;
+            }</span>
 
 <span style = "background-color:#dfd">            void TerminalSession::QuerySessionDetails(unsigned long uSessionId, const String&amp; sSessionName, RdpSessionState eState, RdpSessionInfo&amp; info) {
                 info.uSessionId = uSessionId;
@@ -89,10 +92,12 @@ namespace DotNetDupe {
                     }</span>
 
 <span style = "background-color:#dfd">                    ::WTSFreeMemory(pSessionInfo);</span>
+<span style = "background-color:#fdd">                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied enumerating terminal sessions. Administrator privileges required.");</span>
                 }
 #endif
-                return lstResult;
-<span style = "background-color:#dfd">            }</span>
+<span style = "background-color:#dfd">                return lstResult;
+            }</span>
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetActiveSessions() {
                 auto lstAll = GetSessions();

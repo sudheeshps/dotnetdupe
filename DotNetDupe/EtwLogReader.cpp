@@ -2,6 +2,7 @@
 #include "System/Diagnostics/EtwLogReader.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/TimeProvider.h"
 
 #include <mutex>
@@ -62,6 +63,9 @@ namespace DotNetDupe {
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
                 if (!hSub) {
                     DWORD err = ::GetLastError();
+                    if (err == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");
+                    }
                     char buf[256];
                     snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
                     throw SystemException(buf);
@@ -180,6 +184,9 @@ namespace DotNetDupe {
                 if (hResults == NULL) {
                     DWORD err = ::GetLastError();
                     if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;
+                    if (err == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied querying ETW event channel. Administrator or Performance Log Users membership required.");
+                    }
                     char buf[256];
                     snprintf(buf, sizeof(buf), "EvtQuery failed with error code %lu", err);
                     throw SystemException(buf);
