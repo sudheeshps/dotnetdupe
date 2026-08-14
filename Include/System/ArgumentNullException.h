@@ -2,12 +2,12 @@
 #include "System/ArgumentException.h"
 
 namespace DotNetDupe {
-    namespace System {
+	namespace System {
 
-        class ArgumentNullException : public ArgumentException {
-        public:
-            ArgumentNullException(const String& sMessage) : ArgumentException(sMessage) {}
-        };
+		class ArgumentNullException : public ArgumentException {
+		public:
+			ArgumentNullException(const String& sMessage) : ArgumentException(sMessage) { }
+		};
 
-    }
+	}
 }

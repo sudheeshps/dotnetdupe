@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Text/StringBuilder.h"
 #include <algorithm>
+#include <string>
 
 #ifdef UNICODE
 #define TO_TSTRING std::to_wstring
@@ -12,69 +13,84 @@ namespace DotNetDupe {
     namespace System {
         namespace Text {
 
-            StringBuilder::StringBuilder() {}
+            struct StringBuilder::Impl {
+                std::string buffer;
+            };
 
-            StringBuilder::StringBuilder(int nCapacity) {
-                m_strBuffer.reserve(nCapacity);
+            StringBuilder::StringBuilder() : m_pImpl(new Impl()) {}
+
+            StringBuilder::StringBuilder(int nCapacity) : m_pImpl(new Impl()) {
+                if (nCapacity > 0) {
+                    m_pImpl->buffer.reserve(nCapacity);
+                }
             }
 
-            StringBuilder::StringBuilder(const String& sValue) : m_strBuffer((const char*)sValue) {}
+            StringBuilder::StringBuilder(const String& sValue) : m_pImpl(new Impl()) {
+                m_pImpl->buffer = (const char*)sValue;
+            }
+
+            StringBuilder::~StringBuilder() {
+                if (m_pImpl) {
+                    delete m_pImpl;
+                    m_pImpl = nullptr;
+                }
+            }
 
             int StringBuilder::GetLength() const {
-                return (int)m_strBuffer.length();
+                return m_pImpl ? static_cast<int>(m_pImpl->buffer.length()) : 0;
             }
 
             void StringBuilder::SetLength(int nLength) {
-                if (nLength < 0) return;
-                m_strBuffer.resize(nLength);
+                if (nLength < 0 || !m_pImpl) return;
+                m_pImpl->buffer.resize(nLength);
             }
 
             int StringBuilder::GetCapacity() const {
-                return (int)m_strBuffer.capacity();
+                return m_pImpl ? static_cast<int>(m_pImpl->buffer.capacity()) : 0;
             }
 
             void StringBuilder::SetCapacity(int nCapacity) {
-                if (nCapacity < (int)m_strBuffer.length()) return;
-                m_strBuffer.reserve(nCapacity);
+                if (!m_pImpl || nCapacity < static_cast<int>(m_pImpl->buffer.length())) return;
+                m_pImpl->buffer.reserve(nCapacity);
             }
 
             StringBuilder& StringBuilder::Append(const String& sValue) {
-                m_strBuffer.append((const char*)sValue);
+                if (m_pImpl) m_pImpl->buffer.append((const char*)sValue);
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(const char* pValue) {
-                if (pValue) m_strBuffer.append(pValue);
+                if (m_pImpl && pValue) m_pImpl->buffer.append(pValue);
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(char chValue) {
-                m_strBuffer.append(1, chValue);
+                if (m_pImpl) m_pImpl->buffer.append(1, chValue);
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(int iValue) {
-                m_strBuffer.append(std::to_string(iValue));
+                if (m_pImpl) m_pImpl->buffer.append(std::to_string(iValue));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(long long llValue) {
-                m_strBuffer.append(std::to_string(llValue));
+                if (m_pImpl) m_pImpl->buffer.append(std::to_string(llValue));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(double value) {
-                m_strBuffer.append(std::to_string(value));
+                if (m_pImpl) m_pImpl->buffer.append(std::to_string(value));
                 return *this;
             }
 
             StringBuilder& StringBuilder::Append(bool bValue) {
-                m_strBuffer.append(bValue ? "True" : "False");
+                if (m_pImpl) m_pImpl->buffer.append(bValue ? "True" : "False");
                 return *this;
             }
 
             StringBuilder& StringBuilder::AppendLine() {
-                m_strBuffer.append("\r\n");
+                if (m_pImpl) m_pImpl->buffer.append("\r\n");
                 return *this;
             }
 
@@ -84,12 +100,12 @@ namespace DotNetDupe {
             }
 
             StringBuilder& StringBuilder::Clear() {
-                m_strBuffer.clear();
+                if (m_pImpl) m_pImpl->buffer.clear();
                 return *this;
             }
 
             String StringBuilder::ToString() const {
-                return String(m_strBuffer.c_str());
+                return m_pImpl ? String(m_pImpl->buffer.c_str()) : String("");
             }
         }
     }

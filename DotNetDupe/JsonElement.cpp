@@ -426,7 +426,9 @@ namespace DotNetDupe {
 
                 static String FormatJsonNumber(double dVal) {
                     if (dVal == static_cast<long long>(dVal)) return String(std::to_string(static_cast<long long>(dVal)).c_str());
-                    return String(std::to_string(dVal).c_str());
+                    char buf[64];
+                    snprintf(buf, sizeof(buf), "%g", dVal);
+                    return String(buf);
                 }
 
                 String JsonElement::ToString() const {

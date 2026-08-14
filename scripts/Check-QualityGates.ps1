@@ -172,7 +172,10 @@ $allowedPimplAndRaiiFiles = @(
     "UdpClient.cpp",
     "Thread.cpp",
     "HttpClient.cpp",
-    "HttpContent.cpp"
+    "HttpContent.cpp",
+    "FileStream.cpp",
+    "StringBuilder.cpp",
+    "CriticalSection.cpp"
 )
 
 foreach ($file in $cppFiles) {

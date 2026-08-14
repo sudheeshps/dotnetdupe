@@ -4,7 +4,6 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/Collections/Generic/List.h"
-#include <algorithm>
 
 namespace DotNetDupe {
     namespace System {

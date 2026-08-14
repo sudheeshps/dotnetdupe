@@ -3,14 +3,14 @@
 #include "Common.h"
 
 namespace DotNetDupe {
-    namespace System {
+	namespace System {
 
-        class UnauthorizedAccessException : public SystemException {
-        public:
-            DOTNETDUPE_API UnauthorizedAccessException();
-            UnauthorizedAccessException(const String& sMessage) : SystemException(sMessage) {}
-            UnauthorizedAccessException(const String& sMessage, const Exception& innerException) : SystemException(sMessage, innerException) {}
-        };
+		class UnauthorizedAccessException : public SystemException {
+		public:
+			DOTNETDUPE_API UnauthorizedAccessException();
+			DOTNETDUPE_API UnauthorizedAccessException(const String& sMessage) : SystemException(sMessage) { }
+			DOTNETDUPE_API UnauthorizedAccessException(const String& sMessage, const Exception& innerException) : SystemException(sMessage, innerException) { }
+		};
 
-    }
+	}
 }

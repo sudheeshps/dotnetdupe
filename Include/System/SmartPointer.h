@@ -2,12 +2,39 @@
 
 #include "Common.h"
 #include "System/SystemException.h"
-#include <atomic>
 #include <type_traits>
 #include <utility>
 
+#if defined(_WIN32)
+#ifndef _INTERLOCKED_DECLARED_
+#define _INTERLOCKED_DECLARED_
+extern "C" long __cdecl _InterlockedIncrement(long volatile* Addend);
+extern "C" long __cdecl _InterlockedDecrement(long volatile* Addend);
+#pragma intrinsic(_InterlockedIncrement)
+#pragma intrinsic(_InterlockedDecrement)
+#endif
+#endif
+
 namespace DotNetDupe {
     namespace System {
+        namespace Internal {
+            inline long AtomicIncrement(volatile long* pLocation) {
+#if defined(_WIN32)
+                return _InterlockedIncrement(pLocation);
+#else
+                return __sync_add_and_fetch(pLocation, 1);
+#endif
+            }
+
+            inline long AtomicDecrement(volatile long* pLocation) {
+#if defined(_WIN32)
+                return _InterlockedDecrement(pLocation);
+#else
+                return __sync_sub_and_fetch(pLocation, 1);
+#endif
+            }
+        }
+
         // Helper trait to check if a type is complete at compile time
         template <typename T, typename = void>
         struct IsComplete : std::false_type {};
@@ -61,7 +88,7 @@ namespace DotNetDupe {
                         m_pObject = new T();
                         m_pnRefCount = nullptr;
                         if (bIsShared) {
-                            m_pnRefCount = new std::atomic<int>(1);
+                            m_pnRefCount = new long(1);
                         }
                     } else {
                         m_pObject = nullptr;
@@ -88,7 +115,7 @@ namespace DotNetDupe {
              */
             SmartPointer(T* pPtr, bool bIsShared) : m_pObject(pPtr), m_pnRefCount(nullptr) {
                 if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new std::atomic<int>(1);
+                    m_pnRefCount = new long(1);
                 }
             }
 
@@ -117,7 +144,7 @@ namespace DotNetDupe {
                 m_pObject = objOther.m_pObject;
                 m_pnRefCount = objOther.m_pnRefCount;
                 if (m_pnRefCount != nullptr) {
-                    (*m_pnRefCount)++;
+                    Internal::AtomicIncrement(m_pnRefCount);
                 }
             }
 
@@ -126,8 +153,10 @@ namespace DotNetDupe {
                 if (objOther.m_pnRefCount == nullptr && objOther.m_pObject != nullptr) {
                     throw SystemException("Cannot copy a Unique SmartPointer. Use Move semantics or initialize as Shared.");
                 }
+                m_pObject = objOther.m_pObject;
+                m_pnRefCount = objOther.m_pnRefCount;
                 if (m_pnRefCount != nullptr) {
-                    (*m_pnRefCount)++;
+                    Internal::AtomicIncrement(m_pnRefCount);
                 }
             }
 
@@ -143,7 +172,7 @@ namespace DotNetDupe {
                     m_pObject = objOther.m_pObject;
                     m_pnRefCount = objOther.m_pnRefCount;
                     if (m_pnRefCount != nullptr) {
-                        (*m_pnRefCount)++;
+                        Internal::AtomicIncrement(m_pnRefCount);
                     }
                 }
                 return *this;
@@ -158,7 +187,7 @@ namespace DotNetDupe {
                 m_pObject = objOther.m_pObject;
                 m_pnRefCount = objOther.m_pnRefCount;
                 if (m_pnRefCount != nullptr) {
-                    (*m_pnRefCount)++;
+                    Internal::AtomicIncrement(m_pnRefCount);
                 }
                 return *this;
             }
@@ -197,12 +226,32 @@ namespace DotNetDupe {
 
             template <typename U>
             SmartPointer& operator=(SmartPointer<U>&& objOther) noexcept {
-                InternalCleanup();
-                m_pObject = objOther.m_pObject;
-                m_pnRefCount = objOther.m_pnRefCount;
-                objOther.m_pObject = nullptr;
-                objOther.m_pnRefCount = nullptr;
+                if (this != reinterpret_cast<const SmartPointer<T>*>(&objOther)) {
+                    InternalCleanup();
+                    m_pObject = objOther.m_pObject;
+                    m_pnRefCount = objOther.m_pnRefCount;
+                    objOther.m_pObject = nullptr;
+                    objOther.m_pnRefCount = nullptr;
+                }
                 return *this;
+            }
+
+            // --- Factory Methods ---
+
+            /**
+             * @brief Creates a Unique SmartPointer, forwarding arguments to T's constructor.
+             */
+            template <typename... Args>
+            static SmartPointer<T> NewUnique(Args&&... args) {
+                return SmartPointer<T>(new T(std::forward<Args>(args)...), false);
+            }
+
+            /**
+             * @brief Creates a Shared SmartPointer, forwarding arguments to T's constructor.
+             */
+            template <typename... Args>
+            static SmartPointer<T> NewShared(Args&&... args) {
+                return SmartPointer<T>(new T(std::forward<Args>(args)...), true);
             }
 
             // --- Static Factory Helpers (C#-like instantiation) ---
@@ -212,15 +261,25 @@ namespace DotNetDupe {
              */
             template <typename... Args>
             static SmartPointer<T> New(Args&&... args) {
-                return SmartPointer<T>(new T(std::forward<Args>(args)...), false);
+                return NewUnique(std::forward<Args>(args)...);
+            }
+
+            // --- Conversion / Compatibility Aliases ---
+
+            /**
+             * @brief Alias for NewUnique. Provided for compatibility.
+             */
+            template <typename... Args>
+            static SmartPointer<T> MakeUnique(Args&&... args) {
+                return NewUnique(std::forward<Args>(args)...);
             }
 
             /**
-             * @brief Creates a new Shared SmartPointer with variadic arguments for T's constructor.
+             * @brief Alias for NewShared. Provided for compatibility.
              */
             template <typename... Args>
-            static SmartPointer<T> NewShared(Args&&... args) {
-                return SmartPointer<T>(new T(std::forward<Args>(args)...), true);
+            static SmartPointer<T> MakeShared(Args&&... args) {
+                return NewShared(std::forward<Args>(args)...);
             }
 
             // --- API Methods ---
@@ -231,12 +290,32 @@ namespace DotNetDupe {
              * @param bIsShared Ownership mode for the new pointer.
              */
             void Attach(T* pPtr, bool bIsShared = false) {
+                Reset(pPtr, bIsShared);
+            }
+
+            // --- Utility Methods ---
+
+            /**
+             * @brief Resets the SmartPointer to null or a new object in Unique mode.
+             * @param pPtr Optional new raw pointer to manage.
+             */
+            void Reset(T* pPtr = nullptr) {
                 InternalCleanup();
                 m_pObject = pPtr;
+                m_pnRefCount = nullptr;
+            }
+
+            /**
+             * @brief Resets the SmartPointer with a specific ownership mode.
+             * @param pPtr The raw pointer to manage.
+             * @param bIsShared If true, enables reference counting.
+             */
+            void Reset(T* pPtr, bool bIsShared) {
+                InternalCleanup();
+                m_pObject = pPtr;
+                m_pnRefCount = nullptr;
                 if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new std::atomic<int>(1);
-                } else {
-                    m_pnRefCount = nullptr;
+                    m_pnRefCount = new long(1);
                 }
             }
 
@@ -248,7 +327,6 @@ namespace DotNetDupe {
             T* Detach() {
                 T* pTemp = m_pObject;
                 if (m_pnRefCount != nullptr) {
-                    // Release this instance's ownership without destroying the object
                     m_pnRefCount = nullptr;
                 }
                 m_pObject = nullptr;
@@ -277,7 +355,7 @@ namespace DotNetDupe {
                 spRet.m_pObject = pCast;
                 spRet.m_pnRefCount = m_pnRefCount;
                 if (m_pnRefCount != nullptr) {
-                    (*m_pnRefCount)++;
+                    Internal::AtomicIncrement(m_pnRefCount);
                 }
                 return spRet;
             }
@@ -286,7 +364,7 @@ namespace DotNetDupe {
              * @brief Gets the current reference count. Returns 0 for Unique or Null pointers.
              */
             int GetRefCount() const {
-                return (m_pnRefCount != nullptr) ? m_pnRefCount->load() : 0;
+                return (m_pnRefCount != nullptr) ? static_cast<int>(*m_pnRefCount) : 0;
             }
 
             // --- Operators ---
@@ -313,10 +391,9 @@ namespace DotNetDupe {
                         delete m_pObject;
                     } else {
                         // Shared mode: Decrement and delete if zero
-                        (*m_pnRefCount)--;
-                        if (*m_pnRefCount == 0) {
+                        if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
                             delete m_pObject;
-                            delete m_pnRefCount;
+                            delete (long*)m_pnRefCount;
                         }
                     }
                 }
@@ -325,7 +402,7 @@ namespace DotNetDupe {
             }
 
             T* m_pObject;
-            std::atomic<int>* m_pnRefCount;
+            volatile long* m_pnRefCount;
         };
     }
 }

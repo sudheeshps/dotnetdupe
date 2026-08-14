@@ -2,14 +2,14 @@
 #include "System/SystemException.h"
 
 namespace DotNetDupe {
-    namespace System {
-        namespace IO {
+	namespace System {
+		namespace IO {
 
-        class IOException : public SystemException {
-        public:
-            IOException(const String& sMessage) : SystemException(sMessage) {}
-        };
-        }
+			class IOException : public SystemException {
+			public:
+				IOException(const String& sMessage) : SystemException(sMessage) { }
+			};
+		}
 
-    }
+	}
 }

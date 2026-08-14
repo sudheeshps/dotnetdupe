@@ -105,8 +105,8 @@ namespace DotNetDupe {
                 static void DeleteWin32EventSource(const String& sSource);
 #else
                 static void WriteLinuxSyslog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID);
-                static EventLogEntry ParseSyslogLine(const std::string& line);
-                static void ReadLinuxSyslogFile(const std::string& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries);
+                static EventLogEntry ParseSyslogLine(const String& line);
+                static void ReadLinuxSyslogFile(const String& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries);
                 static void ReadLinuxSyslog(Collections::Generic::List<EventLogEntry>& lstEntries);
 #endif
                 static void RecordInternalLogEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID);

@@ -8,8 +8,8 @@ namespace DotNetDupe {
         class UnknownException : public SystemException {
         public:
             DOTNETDUPE_API UnknownException();
-            UnknownException(const String& sMessage) : SystemException(sMessage) {}
-            UnknownException(const String& sMessage, const Exception& innerException) : SystemException(sMessage, innerException) {}
+            DOTNETDUPE_API UnknownException(const String& sMessage) : SystemException(sMessage) {}
+            DOTNETDUPE_API UnknownException(const String& sMessage, const Exception& innerException) : SystemException(sMessage, innerException) {}
         };
 
     }

@@ -2,12 +2,12 @@
 #include "System/SystemException.h"
 
 namespace DotNetDupe {
-    namespace System {
+	namespace System {
 
-        class ArgumentException : public SystemException {
-        public:
-            ArgumentException(const String& sMessage) : SystemException(sMessage) {}
-        };
+		class ArgumentException : public SystemException {
+		public:
+			ArgumentException(const String& sMessage) : SystemException(sMessage) { }
+		};
 
-    }
+	}
 }

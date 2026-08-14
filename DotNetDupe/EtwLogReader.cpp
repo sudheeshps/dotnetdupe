@@ -41,7 +41,7 @@ namespace DotNetDupe {
 #if defined(_WIN32)
             DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
                 if (action == EvtSubscribeActionDeliver && pUserContext != nullptr) {
-                    auto pCallback = static_cast<std::function<void(const EtwEvent&)>*>(pUserContext);
+                    auto pCallback = static_cast<Action<const EtwEvent&>*>(pUserContext);
                     if (pCallback && *pCallback) {
                         EtwEvent evt;
                         evt.sChannelName = "Windows-ETW";
@@ -57,7 +57,7 @@ namespace DotNetDupe {
                 return 0;
             }
 
-            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String& sChannelName, std::function<void(const EtwEvent&)>* pCallback) {
+            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String& sChannelName, Action<const EtwEvent&>* pCallback) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
@@ -305,7 +305,7 @@ namespace DotNetDupe {
                 return lstEvents;
             }
 
-            void EtwLogReader::StartListening(const String& sChannelName, std::function<void(const EtwEvent&)> fnCallback) {
+            void EtwLogReader::StartListening(const String& sChannelName, Action<const EtwEvent&> fnCallback) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 if (m_bListening) throw InvalidOperationException("Already listening to an event channel.");
 

@@ -298,11 +298,11 @@ namespace DotNetDupe {
                      "abcdefghijklmnopqrstuvwxyz"
                      "0123456789+/";
 
-        bool Convert::IsBase64(unsigned char c) {
+        static bool IsBase64(unsigned char c) {
             return (isalnum(c) || (c == '+') || (c == '/'));
         }
 
-        void Convert::EncodeBase64Chunk4(const unsigned char* char_array_3, std::string& ret) {
+        static void EncodeBase64Chunk4(const unsigned char* char_array_3, std::string& ret) {
             unsigned char char_array_4[4];
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
             char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
@@ -311,7 +311,7 @@ namespace DotNetDupe {
             for (int i = 0; i < 4; i++) ret += base64_chars[char_array_4[i]];
         }
 
-        void Convert::EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret) {
+        static void EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret) {
             unsigned char char_array_4[4];
             for (int j = i; j < 3; j++) char_array_3[j] = '\0';
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
@@ -336,7 +336,7 @@ namespace DotNetDupe {
             return String(ret.c_str());
         }
 
-        void Convert::DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded) {
+        static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded) {
             for (int k = 0; k < 4; k++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[k]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
@@ -347,7 +347,7 @@ namespace DotNetDupe {
             decoded.push_back(((char_array_4[2] & 0x3) << 6) + char_array_4[3]);
         }
 
-        void Convert::DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded) {
+        static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded) {
             for (int j = 0; j < i; j++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[j]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
@@ -364,18 +364,18 @@ namespace DotNetDupe {
             }
         }
 
-        void Convert::DecodeBase64Loop(const std::string& sInput, std::vector<char>& decoded) {
+        static void DecodeBase64Loop(const std::string& sInput, std::vector<char>& decoded) {
             size_t in_len = sInput.size();
             int i = 0, in_ = 0;
             unsigned char char_array_4[4];
-            while (in_len-- && (sInput[in_] != '=') && Convert::IsBase64(sInput[in_])) {
+            while (in_len-- && (sInput[in_] != '=') && IsBase64(sInput[in_])) {
                 char_array_4[i++] = sInput[in_++];
                 if (i == 4) {
-                    Convert::DecodeBase64Chunk4(char_array_4, decoded);
+                    DecodeBase64Chunk4(char_array_4, decoded);
                     i = 0;
                 }
             }
-            if (i) Convert::DecodeBase64Remainder(char_array_4, i, decoded);
+            if (i) DecodeBase64Remainder(char_array_4, i, decoded);
         }
 
         Array<char> Convert::FromBase64String(const char* s) {

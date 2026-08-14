@@ -3,8 +3,6 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/String.h"
-#include <string>
-#include <sstream>
 
 namespace DotNetDupe {
     namespace System {
@@ -14,6 +12,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API StringBuilder();
                 DOTNETDUPE_API StringBuilder(int capacity);
                 DOTNETDUPE_API StringBuilder(const String& value);
+                DOTNETDUPE_API ~StringBuilder() override;
 
                 DOTNETDUPE_API int GetLength() const;
                 DOTNETDUPE_API void SetLength(int value);
@@ -36,7 +35,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API String ToString() const;
 
             private:
-                std::string m_strBuffer;
+                struct Impl;
+                Impl* m_pImpl;
             };
         }
     }

@@ -2,12 +2,12 @@
 #include "System/InvalidOperationException.h"
 
 namespace DotNetDupe {
-    namespace System {
+	namespace System {
 
-        class ObjectDisposedException : public InvalidOperationException {
-        public:
-            ObjectDisposedException(const String& sMessage) : InvalidOperationException(sMessage) {}
-        };
+		class ObjectDisposedException : public InvalidOperationException {
+		public:
+			ObjectDisposedException(const String& sMessage) : InvalidOperationException(sMessage) { }
+		};
 
-    }
+	}
 }

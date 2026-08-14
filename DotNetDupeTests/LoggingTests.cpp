@@ -435,5 +435,47 @@ namespace LoggingTests {
             if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
         } catch (...) {}
     }
+
+    TEST(LoggingTests, GivenDynamicPropertiesInFormat_WhenLogged_InterpolatesCustomPropertiesCorrectly) {
+        // Given
+        LogManager::Reset();
+        String filePath = "dynamic_props_test.log";
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.PlainTextFormat = "[TRACE:{TraceId}] [{Level}] [{Category}] => {Message} [{Properties}]";
+        config.IsJsonFormat = false;
+
+        auto fileProv = DotNetDupe::System::SmartPointer<FileLoggerProvider>::NewShared(config);
+        auto logger = fileProv->CreateLogger("OrderService");
+
+        Collections::Generic::Dictionary<String, String> props;
+        props.Add("TraceId", "tx_98765");
+        props.Add("UserId", "user_42");
+
+        // When
+        logger->Log(LogLevel::Information, "Order placed successfully", props);
+
+        // Force flush/close
+        fileProv = nullptr;
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+        String fileContent = IO::File::ReadAllText(filePath);
+        EXPECT_TRUE(fileContent.Contains("[TRACE:tx_98765]"));
+        EXPECT_TRUE(fileContent.Contains("[OrderService]"));
+        EXPECT_TRUE(fileContent.Contains("Order placed successfully"));
+        EXPECT_TRUE(fileContent.Contains("UserId: user_42"));
+        EXPECT_FALSE(fileContent.Contains("{TraceId}"));
+
+        // Cleanup
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+    }
 }
 

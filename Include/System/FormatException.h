@@ -2,12 +2,12 @@
 #include "System/SystemException.h"
 
 namespace DotNetDupe {
-    namespace System {
+	namespace System {
 
-        class FormatException : public SystemException {
-        public:
-            FormatException(const String& sMessage) : SystemException(sMessage) {}
-        };
+		class FormatException : public SystemException {
+		public:
+			FormatException(const String& sMessage) : SystemException(sMessage) { }
+		};
 
-    }
+	}
 }

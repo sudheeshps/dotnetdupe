@@ -2,6 +2,7 @@
 #include "Extensions/Logging/LoggerBase.h"
 #include "System/Diagnostics/Process.h"
 #include "System/Threading/Thread.h"
+#include "System/Text/Json/JsonElement.h"
 #include <chrono>
 #include <iomanip>
 #include <sstream>
@@ -62,6 +63,37 @@ namespace DotNetDupe {
                 }
             }
 
+            static void ReplaceDynamicPropertyTokens(std::string& str, const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties, std::vector<std::string>& usedKeys) {
+                auto keys = properties.GetKeys();
+                for (int i = 0; i < keys.GetLength(); ++i) {
+                    DotNetDupe::System::String key = keys[i];
+                    std::string placeholder = "{" + std::string(key.GetRawString()) + "}";
+                    if (str.find(placeholder) != std::string::npos) {
+                        DotNetDupe::System::String val;
+                        properties.TryGetValue(key, val);
+                        ReplaceToken(str, placeholder, val.GetRawString());
+                        usedKeys.push_back(key.GetRawString());
+                    }
+                }
+            }
+
+            static std::string SerializeUnusedPropertiesText(const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties, const std::vector<std::string>& usedKeys) {
+                if (properties.GetCount() == 0) return "";
+                std::stringstream ss;
+                auto keys = properties.GetKeys();
+                bool bFirst = true;
+                for (int i = 0; i < keys.GetLength(); ++i) {
+                    std::string k = keys[i].GetRawString();
+                    if (std::find(usedKeys.begin(), usedKeys.end(), k) != usedKeys.end()) continue;
+                    if (!bFirst) ss << ", ";
+                    DotNetDupe::System::String val;
+                    properties.TryGetValue(keys[i], val);
+                    ss << k << ": " << val.GetRawString();
+                    bFirst = false;
+                }
+                return ss.str();
+            }
+
             DotNetDupe::System::String LoggerBase::FormatLogLine(const DotNetDupe::System::String& fmt, const DotNetDupe::System::String& timestamp, const DotNetDupe::System::String& level, const DotNetDupe::System::String& category, const DotNetDupe::System::String& message, const DotNetDupe::System::String& properties, const DotNetDupe::System::String& processId, const DotNetDupe::System::String& threadId) const {
                 std::string res = fmt.GetRawString();
                 ReplaceToken(res, "{Timestamp}", timestamp.GetRawString());
@@ -74,61 +106,48 @@ namespace DotNetDupe {
                 return DotNetDupe::System::String(res.c_str());
             }
 
-            static std::string SerializePropertiesJson(const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
-                if (properties.GetCount() == 0) return "";
-                std::stringstream ss;
-                ss << ",\"properties\":{";
+            static void AddJsonLogProperties(DotNetDupe::System::Text::Json::JsonElement& logObj, const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
+                if (properties.GetCount() == 0) return;
+                DotNetDupe::System::Text::Json::JsonElement propsObj(DotNetDupe::System::Text::Json::JsonValueKind::Object);
                 auto keys = properties.GetKeys();
                 for (int i = 0; i < keys.GetLength(); ++i) {
-                    if (i > 0) ss << ",";
-                    DotNetDupe::System::String key = keys[i];
                     DotNetDupe::System::String val;
-                    properties.TryGetValue(key, val);
-                    ss << "\"" << key.GetRawString() << "\":\"" << val.GetRawString() << "\"";
+                    properties.TryGetValue(keys[i], val);
+                    propsObj.SetProperty(keys[i], DotNetDupe::System::Text::Json::JsonElement(val));
                 }
-                ss << "}";
-                return ss.str();
+                logObj.SetProperty("properties", propsObj);
             }
 
-            static std::string SerializePropertiesText(const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
-                if (properties.GetCount() == 0) return "";
-                std::stringstream ss;
-                auto keys = properties.GetKeys();
-                for (int i = 0; i < keys.GetLength(); ++i) {
-                    if (i > 0) ss << ", ";
-                    DotNetDupe::System::String key = keys[i];
-                    DotNetDupe::System::String val;
-                    properties.TryGetValue(key, val);
-                    ss << key.GetRawString() << ": " << val.GetRawString();
-                }
-                return ss.str();
-            }
-
-            static DotNetDupe::System::String BuildJsonLog(const char* timestamp, const char* level, const char* category, const std::string& procId, const std::string& threadId, const char* message, const std::string& jsonProps) {
-                std::stringstream logLine;
-                logLine << "{\"timestamp\":\"" << timestamp 
-                        << "\",\"level\":\"" << level 
-                        << "\",\"category\":\"" << category 
-                        << "\",\"processId\":" << procId
-                        << ",\"threadId\":" << threadId
-                        << ",\"message\":\"" << message << "\""
-                        << jsonProps << "}";
-                return DotNetDupe::System::String(logLine.str().c_str());
+            static DotNetDupe::System::String BuildJsonLog(const DotNetDupe::System::String& timestamp, const char* level, const DotNetDupe::System::String& category, int procId, unsigned long threadId, const DotNetDupe::System::String& message, const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
+                using namespace DotNetDupe::System::Text::Json;
+                JsonElement logObj(JsonValueKind::Object);
+                logObj.SetProperty("timestamp", JsonElement(timestamp));
+                logObj.SetProperty("level", JsonElement(DotNetDupe::System::String(level)));
+                logObj.SetProperty("category", JsonElement(category));
+                logObj.SetProperty("processId", JsonElement(static_cast<double>(procId)));
+                logObj.SetProperty("threadId", JsonElement(static_cast<double>(threadId)));
+                logObj.SetProperty("message", JsonElement(message));
+                AddJsonLogProperties(logObj, properties);
+                return logObj.ToString();
             }
 
             DotNetDupe::System::String LoggerBase::BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String& message, 
                                                     const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) const {
                 DotNetDupe::System::String timestamp = GetFormattedTimestamp(m_config.TimestampFormat);
                 const char* levelStr = LogLevelToString(logLevel);
-                std::string procId = std::to_string(DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId());
-                std::string threadId = std::to_string(DotNetDupe::System::Threading::Thread::GetCurrentThreadId());
+                int procId = DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId();
+                unsigned long threadId = DotNetDupe::System::Threading::Thread::GetCurrentThreadId();
 
                 if (m_config.IsJsonFormat) {
-                    std::string jsonProps = SerializePropertiesJson(properties);
-                    return BuildJsonLog(timestamp.GetRawString(), levelStr, m_categoryName.GetRawString(), procId, threadId, message.GetRawString(), jsonProps);
+                    return BuildJsonLog(timestamp, levelStr, m_categoryName, procId, threadId, message, properties);
                 }
-                std::string propsStr = SerializePropertiesText(properties);
-                return FormatLogLine(m_config.PlainTextFormat, timestamp, DotNetDupe::System::String(levelStr), m_categoryName, message, DotNetDupe::System::String(propsStr.c_str()), DotNetDupe::System::String(procId.c_str()), DotNetDupe::System::String(threadId.c_str()));
+                std::vector<std::string> usedKeys;
+                std::string sWorkingFmt = m_config.PlainTextFormat.GetRawString();
+                ReplaceDynamicPropertyTokens(sWorkingFmt, properties, usedKeys);
+                std::string propsStr = SerializeUnusedPropertiesText(properties, usedKeys);
+                std::string sProcId = std::to_string(procId);
+                std::string sThreadId = std::to_string(threadId);
+                return FormatLogLine(DotNetDupe::System::String(sWorkingFmt.c_str()), timestamp, DotNetDupe::System::String(levelStr), m_categoryName, message, DotNetDupe::System::String(propsStr.c_str()), DotNetDupe::System::String(sProcId.c_str()), DotNetDupe::System::String(sThreadId.c_str()));
             }
 
         }

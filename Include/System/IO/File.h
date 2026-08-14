@@ -43,8 +43,6 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static void Create(const String& sPath);
                 DOTNETDUPE_API static bool GetAttributes(const String& sPath, FileAttributes& attrAttributes);
                 DOTNETDUPE_API static bool SetAttributes(const String& sPath, FileAttributes attrAttributes);
-            private:
-                static std::string ToNarrowPath(const String& sPath);
             };
         }
     }

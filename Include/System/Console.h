@@ -8,7 +8,6 @@
 #include "System/SmartPointer.h"
 #include "System/IO/TextWriter.h"
 #include "System/IO/TextReader.h"
-#include <memory>
 
 namespace DotNetDupe {
     namespace System {

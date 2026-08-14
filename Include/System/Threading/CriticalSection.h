@@ -1,6 +1,6 @@
 #pragma once
+#include "Common.h"
 #include "System/Object.h"
-#include <mutex>
 
 namespace DotNetDupe {
     namespace System {
@@ -8,12 +8,13 @@ namespace DotNetDupe {
             class CriticalSection : public Object {
             public:
                 DOTNETDUPE_API CriticalSection();
-                DOTNETDUPE_API virtual ~CriticalSection();
+                DOTNETDUPE_API ~CriticalSection() override;
                 DOTNETDUPE_API void Enter();
                 DOTNETDUPE_API void Leave();
                 DOTNETDUPE_API bool TryEnter();
             private:
-                std::recursive_mutex _mutex;
+                struct Impl;
+                Impl* m_pImpl;
             };
         }
     }

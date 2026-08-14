@@ -6,7 +6,6 @@
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
 #include "System/Collections/Generic/List.h"
-#include <algorithm>
 
 namespace DotNetDupe {
     namespace System {
