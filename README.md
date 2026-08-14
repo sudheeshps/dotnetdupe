@@ -2,6 +2,9 @@
 
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
+[![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
+[![Quality Gates](https://img.shields.io/badge/Quality%20Gates-100%25%20Passing-brightgreen?style=flat-square&logo=checkmarx)](CodeCoverage/StaticAnalysis.html)
+[![Tests](https://img.shields.io/badge/Tests-660%20Passed-brightgreen?style=flat-square&logo=google)](DotNetDupeTests/)
 [![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
 [![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
@@ -1015,8 +1018,10 @@ Contributions to the DotNetDupe project are highly welcome! Whether it's bug rep
 This repository uses GitHub Actions to automate the build, test, and release process.
 
 ### Workflow Details
-- **Build & Test**: Every push to `main` and all pull requests trigger a full build (Debug & Release) and execution of all unit tests.
-- **Code Coverage & Static Analysis**: Automated code coverage measurement via OpenCppCoverage (> 80% line coverage required) and LLOC / export compliance checks.
+- **Build & Test Matrix**: Every push to `main` and all pull requests trigger a full build (Debug & Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.
+- **GitHub CodeQL Analysis**: Continuous semantic security vulnerability scanning on every push, pull request, and weekly schedule via `github/codeql-action`.
+- **Quality Gates & Static Analysis**: Automated enforcement of 11 Quality Gate metrics (LLOC $\le 15$, CCN $\le 10$, Nesting depth $\le 4$, Hungarian SmartPointers, zero empty catch blocks, zero standard `throw std::*` exceptions, zero raw pointer ownership).
+- **Code Coverage**: Automated code coverage measurement via OpenCppCoverage (> 80% line coverage required) and static analysis HTML report generation.
 - **NuGet Release**: Pushing a tag (e.g., `v1.0.0`) triggers the creation and publishing of the NuGet package to [nuget.org](https://www.nuget.org/).
 
 ### Code Coverage & Static Analysis 📊
