@@ -61,65 +61,54 @@ namespace DotNetDupe {
 		}
 		String::String() { m_pImpl = new StringImpl("");  }
 		String::~String() { delete m_pImpl; }
+		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
+			std::string num = sFmt.substr(i + 1, end - i - 1);
+			size_t idx = 0;
+			int argIdx = std::stoi(num, &idx);
+			if (idx != num.length() || argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
+			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+		}
+
+		static void FormatOpenBrace(const std::string& sFmt, size_t& i, int& iAutoIndex, const String* pArgs, int iArgCount, std::string& sRes) {
+			if (i + 1 < sFmt.length() && sFmt[i+1] == '{') {
+				sRes += '{'; i++;
+			} else if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
+				if (iAutoIndex >= iArgCount) throw FormatException("Index out of bounds");
+				sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
+				iAutoIndex++; i++;
+			} else {
+				size_t end = sFmt.find('}', i + 1);
+				if (end == std::string::npos) throw FormatException("Unclosed brace");
+				AppendExplicitArg(sFmt, i, end, pArgs, iArgCount, sRes);
+				i = end;
+			}
+		}
+
+		static void FormatClosingBrace(const std::string& sFmt, size_t& i, std::string& sRes) {
+			if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
+				sRes += '}'; i++;
+			} else {
+				throw FormatException("Unescaped closing brace");
+			}
+		}
+
 		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
 			if (!pFormat) throw ArgumentException("Format string cannot be null.");
 			if (iArgCount == 0 || !pArgs) return String(pFormat);
 
-			try {
-				std::string sFmt = pFormat;
-				std::string sRes;
-				int iAutoIndex = 0;
-				for (size_t i = 0; i < sFmt.length(); ++i) {
-					if (sFmt[i] == '{') {
-						if (i + 1 < sFmt.length() && sFmt[i+1] == '{') {
-							sRes += '{';
-							i++;
-						} else if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
-							if (iAutoIndex < iArgCount) {
-								sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
-								iAutoIndex++;
-								i++;
-							} else {
-								throw FormatException("Index out of bounds");
-							}
-						} else {
-							size_t end = sFmt.find('}', i + 1);
-							if (end == std::string::npos) throw FormatException("Unclosed brace");
-							std::string num = sFmt.substr(i + 1, end - i - 1);
-							try {
-								size_t idx;
-								int argIdx = std::stoi(num, &idx);
-								if (idx != num.length()) throw FormatException("Invalid format string");
-								if (argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
-								sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
-								i = end;
-							} catch (const FormatException&) {
-								throw;
-							} catch (const std::exception&) {
-								throw FormatException("Invalid format string");
-							} catch (...) {
-								throw FormatException("Invalid format string");
-							}
-						}
-					} else if (sFmt[i] == '}') {
-						if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
-							sRes += '}';
-							i++;
-						} else {
-							throw FormatException("Unescaped closing brace");
-						}
-					} else {
-						sRes += sFmt[i];
-					}
+			std::string sFmt = pFormat;
+			std::string sRes;
+			int iAutoIndex = 0;
+			for (size_t i = 0; i < sFmt.length(); ++i) {
+				if (sFmt[i] == '{') {
+					FormatOpenBrace(sFmt, i, iAutoIndex, pArgs, iArgCount, sRes);
+				} else if (sFmt[i] == '}') {
+					FormatClosingBrace(sFmt, i, sRes);
+				} else {
+					sRes += sFmt[i];
 				}
-				return String(sRes.c_str());
-			} catch (const FormatException&) {
-				throw;
-			} catch (const std::exception&) {
-				throw FormatException("Error formatting string.");
-			} catch (...) {
-				throw FormatException("Error formatting string.");
 			}
+			return String(sRes.c_str());
 		}
 
 		void* String::operator new(size_t size) {
@@ -250,27 +239,20 @@ namespace DotNetDupe {
 			if (iIndex >= (int)m_pImpl->s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
 			return GetRawString() [iIndex];
 		}
-		int String::Compare(const String& sStr1,
-							int iIndex1,
-							const String& sStr2,
-							int iIndex2, int iLength,
-							bool bIgnoreCase) {
+		static std::string ToLowerString(const std::string& s) {
+			std::string res = s;
+			std::transform(res.begin(), res.end(), res.begin(), [](char ch) {
+				return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
+			});
+			return res;
+		}
+
+		int String::Compare(const String& sStr1, int iIndex1, const String& sStr2, int iIndex2, int iLength, bool bIgnoreCase) {
 			if (!bIgnoreCase) {
 				return sStr1.m_pImpl->s.compare(iIndex1, iLength, sStr2.m_pImpl->s, iIndex2, iLength);
 			}
-
-			auto s1 = sStr1.m_pImpl->s.substr(iIndex1, iLength);
-			auto s2 = sStr2.m_pImpl->s.substr(iIndex2, iLength);
-			auto transform_char = [](char ch) -> char {
-				if constexpr (std::is_same_v<char, wchar_t>) {
-					return static_cast<wchar_t>(std::towlower(ch));
-				}
-				else {
-					return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
-				}
-				};
-			std::transform(s1.begin(), s1.end(), s1.begin(), transform_char);
-			std::transform(s2.begin(), s2.end(), s2.begin(), transform_char);
+			auto s1 = ToLowerString(sStr1.m_pImpl->s.substr(iIndex1, iLength));
+			auto s2 = ToLowerString(sStr2.m_pImpl->s.substr(iIndex2, iLength));
 			return s1.compare(s2);
 		}
 
@@ -464,32 +446,24 @@ namespace DotNetDupe {
 
 			return (it == m_pImpl->s.end()) ? -1 : (int)std::distance(m_pImpl->s.begin(), it);
 		}
-		int String::LastIndexOfAny(
-			int iStartIndex, std::initializer_list<char> chChars, bool bIgnoreCase) {
-			if (iStartIndex < 0 || iStartIndex > GetLength())
-				throw ArgumentOutOfRangeException("Invalid iStartIndex");
 
+		static int FindLastCharIndex(const std::string& s, int iStartIndex, char ch, bool bIgnoreCase) {
+			for (int i = static_cast<int>(s.length()) - 1; i >= iStartIndex; --i) {
+				bool match = bIgnoreCase 
+					? std::tolower(static_cast<unsigned char>(s[i])) == std::tolower(static_cast<unsigned char>(ch))
+					: (s[i] == ch);
+				if (match) return i;
+			}
+			return -1;
+		}
+
+		int String::LastIndexOfAny(int iStartIndex, std::initializer_list<char> chChars, bool bIgnoreCase) {
+			if (iStartIndex < 0 || iStartIndex > GetLength()) throw ArgumentOutOfRangeException("Invalid iStartIndex");
 			if (IsEmpty()) return -1;
 
 			for (auto ch : chChars) {
-				size_t lastFound = std::string::npos;
-				for (int i = GetLength() - 1; i >= iStartIndex; --i) {
-					bool match = false;
-					if (bIgnoreCase) {
-						match = std::tolower(static_cast<unsigned char>(m_pImpl->s [i])) == std::tolower(static_cast<unsigned char>(ch));
-					}
-					else {
-						match = (m_pImpl->s [i] == ch);
-					}
-
-					if (match) {
-						lastFound = i;
-						break;
-					}
-				}
-				if (lastFound != std::string::npos) {
-					return static_cast<int>(lastFound);
-				}
+				int idx = FindLastCharIndex(m_pImpl->s, iStartIndex, ch, bIgnoreCase);
+				if (idx != -1) return idx;
 			}
 			return -1;
 		}
@@ -570,35 +544,38 @@ namespace DotNetDupe {
 			return result;
 		}
 
-		Array<String> String::Split(String sSeparator [], int iCount,
-									StringSplitOptions eOptions) const {
-			std::vector<String> vTempResult;
+		static void AddSplitToken(const std::string& sCurrent, StringSplitOptions eOptions, std::vector<String>& vResult) {
+			String s(sCurrent.c_str());
+			if (eOptions == StringSplitOptions::TrimEntries) s = s.Trim();
+			if (eOptions != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
+				vResult.push_back(s);
+			}
+		}
+
+		static std::set<char> PopulateSplitCharSet(String sSeparator[], int iCount) {
 			std::set<char> charSet;
 			for (int i = 0; i < iCount; ++i) {
-				for (auto c : sSeparator[i].m_pImpl->s) charSet.insert(c);
+				const char* raw = sSeparator[i].GetRawString();
+				if (raw) { while (*raw) charSet.insert(*raw++); }
 			}
+			return charSet;
+		}
+
+		Array<String> String::Split(String sSeparator[], int iCount, StringSplitOptions eOptions) const {
+			std::set<char> charSet = PopulateSplitCharSet(sSeparator, iCount);
+			std::vector<String> vTempResult;
 			std::string sCurrent;
 			for (auto c : m_pImpl->s) {
 				if (charSet.find(c) == charSet.end()) {
 					sCurrent += c;
-				}
-				else {
-					String s(sCurrent.c_str());
-					if (eOptions == StringSplitOptions::TrimEntries) s = s.Trim();
-					if (eOptions != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
-						vTempResult.push_back(s);
-					}
+				} else {
+					AddSplitToken(sCurrent, eOptions, vTempResult);
 					sCurrent.clear();
 				}
 			}
-			String sFinal(sCurrent.c_str());
-			if (eOptions == StringSplitOptions::TrimEntries) sFinal = sFinal.Trim();
-			if (eOptions != StringSplitOptions::RemoveEmptyEntries || !sFinal.IsEmpty()) {
-				vTempResult.push_back(sFinal);
-			}
-
-			Array<String> result((int)vTempResult.size());
-			for (int i = 0; i < (int)vTempResult.size(); i++) result [i] = vTempResult [i];
+			AddSplitToken(sCurrent, eOptions, vTempResult);
+			Array<String> result(static_cast<int>(vTempResult.size()));
+			for (int i = 0; i < result.GetLength(); i++) result[i] = vTempResult[i];
 			return result;
 		}
 

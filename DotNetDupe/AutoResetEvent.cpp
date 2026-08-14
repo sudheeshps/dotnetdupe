@@ -32,21 +32,17 @@ namespace DotNetDupe {
             }
 
             bool AutoResetEvent::TryOpenExisting(const String& sName, SmartPointer<AutoResetEvent>& pResult) {
-                pResult = SmartPointer<AutoResetEvent>();
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+                pResult = nullptr;
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<AutoResetEvent> spEvt = SmartPointer<AutoResetEvent>::NewShared(false);
-                    spEvt->_name = sName;
-                    spEvt->_hHandle = h;
-                    pResult = std::move(spEvt);
-                    return true;
-                }
-                return false;
+                if (!h) return false;
+                auto spEvt = SmartPointer<AutoResetEvent>::NewShared(false);
+                spEvt->_name = sName;
+                spEvt->_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;
 #else
                 return false;
 #endif

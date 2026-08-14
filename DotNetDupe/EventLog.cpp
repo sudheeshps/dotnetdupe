@@ -121,21 +121,21 @@ namespace DotNetDupe {
                 }
             }
 
-            void EventLog::ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
+            static HANDLE OpenWin32EventLogHandle(const String& sLogName) {
                 std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
-                HANDLE hEventLog = ::OpenEventLogW(NULL, wLogName.c_str());
-                if (hEventLog == NULL) {
+                HANDLE h = ::OpenEventLogW(NULL, wLogName.c_str());
+                if (!h) {
                     DWORD dwErr = ::GetLastError();
-                    if (dwErr == ERROR_ACCESS_DENIED) {
-                        throw UnauthorizedAccessException("Access denied opening EventLog: " + sLogName);
-                    }
-                    if (dwErr == ERROR_FILE_NOT_FOUND || dwErr == ERROR_PATH_NOT_FOUND) {
-                        throw ArgumentException("EventLog not found: " + sLogName);
-                    }
+                    if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied opening EventLog: " + sLogName);
+                    if (dwErr == ERROR_FILE_NOT_FOUND || dwErr == ERROR_PATH_NOT_FOUND) throw ArgumentException("EventLog not found: " + sLogName);
                     throw ComponentModel::Win32Exception(dwErr, "Failed to open EventLog: " + sLogName);
                 }
+                return h;
+            }
 
+            void EventLog::ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
+                HANDLE hEventLog = OpenWin32EventLogHandle(sLogName);
                 DWORD dwBytesRead = 0, dwNeeded = 0;
                 BYTE buffer[0x10000];
                 while (::ReadEventLogW(hEventLog, EVENTLOG_SEQUENTIAL_READ | EVENTLOG_BACKWARDS_READ, 0, buffer, sizeof(buffer), &dwBytesRead, &dwNeeded)) {
@@ -144,26 +144,26 @@ namespace DotNetDupe {
                 ::CloseEventLog(hEventLog);
             }
 
-            void EventLog::WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+            static HANDLE RegisterWin32EventSourceHandle(const String& sSource) {
                 std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSource(sStdSource.begin(), sStdSource.end());
-                HANDLE hEventLog = ::RegisterEventSourceW(NULL, wSource.c_str());
-                if (hEventLog == NULL) {
+                HANDLE h = ::RegisterEventSourceW(NULL, wSource.c_str());
+                if (!h) {
                     DWORD dwErr = ::GetLastError();
-                    if (dwErr == ERROR_ACCESS_DENIED) {
-                        throw UnauthorizedAccessException("Access denied registering EventSource: " + sSource);
-                    }
+                    if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied registering EventSource: " + sSource);
                     throw ComponentModel::Win32Exception(dwErr, "Failed to register EventSource: " + sSource);
                 }
+                return h;
+            }
 
-                WORD wType = MapEventLogEntryTypeToWin32(eType);
+            void EventLog::WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+                HANDLE hEventLog = RegisterWin32EventSourceHandle(sSource);
                 std::string sStdMsg(sMessage.GetRawString() ? sMessage.GetRawString() : "");
                 std::wstring wMsg(sStdMsg.begin(), sStdMsg.end());
                 LPCWSTR pStrings[1] = { wMsg.c_str() };
-                BOOL bReported = ::ReportEventW(hEventLog, wType, 0, (DWORD)iEventID, NULL, 1, 0, pStrings, NULL);
+                BOOL bReported = ::ReportEventW(hEventLog, MapEventLogEntryTypeToWin32(eType), 0, (DWORD)iEventID, NULL, 1, 0, pStrings, NULL);
                 DWORD dwErr = ::GetLastError();
                 ::DeregisterEventSource(hEventLog);
-
                 ValidateWin32ReportResult(bReported, dwErr, sSource);
             }
 

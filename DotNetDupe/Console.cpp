@@ -317,6 +317,23 @@ void Console::Beep() {
 #endif
 }
 
+static void ClearConsoleScreenNative() {
+#if defined(_WIN32)
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD count, cellCount;
+    COORD home = { 0, 0 };
+    if (GetConsoleScreenBufferInfo(h, &csbi)) {
+        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+        FillConsoleOutputCharacterW(h, (wchar_t)' ', cellCount, home, &count);
+        FillConsoleOutputAttribute(h, csbi.wAttributes, cellCount, home, &count);
+        SetConsoleCursorPosition(h, home);
+    }
+#else
+    std::cout << "\033[2J\033[1;1H" << std::flush;
+#endif
+}
+
 void Console::Clear() {
     std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_outputs.clear();
@@ -325,25 +342,7 @@ void Console::Clear() {
     s_pOutWriter = nullptr;
     s_pErrorWriter = nullptr;
     s_pInReader = nullptr;
-
-#if defined(_WIN32)
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    DWORD count;
-    DWORD cellCount;
-    COORD homeCoords = { 0, 0 };
-
-    if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
-        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
-        if (FillConsoleOutputCharacterW(hConsole, (wchar_t) ' ', cellCount, homeCoords, &count)) {
-            if (FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) {
-                SetConsoleCursorPosition(hConsole, homeCoords);
-            }
-        }
-    }
-#else
-    std::cout << "\033[2J\033[1;1H" << std::flush;
-#endif
+    ClearConsoleScreenNative();
 }
 
 void Console::SetOut(const SmartPointer<IO::TextWriter>& pOutWriter) {

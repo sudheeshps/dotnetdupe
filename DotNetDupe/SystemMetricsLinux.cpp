@@ -18,332 +18,218 @@ namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
 
-            int SystemMetrics::FindPidByName(const String& sProcessName) {
-                DIR* dir = ::opendir("/proc");
-                if (!dir) return -1;
-
-                struct dirent* entry = nullptr;
-                std::string targetName = sProcessName.GetRawString();
-
-                while ((entry = ::readdir(dir)) != nullptr) {
-                    if (entry->d_type == DT_DIR) {
-                        std::string dname = entry->d_name;
-                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
-                            std::string commPath = "/proc/" + dname + "/comm";
-                            std::ifstream commFile(commPath);
-                            if (commFile.is_open()) {
-                                std::string procComm;
-                                std::getline(commFile, procComm);
-                                if (procComm == targetName) {
-                                    ::closedir(dir);
-                                    return std::stoi(dname);
+            struct SystemMetricsLinuxHelper {
+                static int FindPid(const String& sProcessName) {
+                    DIR* dir = ::opendir("/proc");
+                    if (!dir) return -1;
+                    struct dirent* entry = nullptr;
+                    std::string target = sProcessName.GetRawString();
+                    while ((entry = ::readdir(dir)) != nullptr) {
+                        if (entry->d_type == DT_DIR) {
+                            std::string dname = entry->d_name;
+                            if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
+                                std::ifstream f("/proc/" + dname + "/comm");
+                                std::string comm;
+                                if (f.is_open() && std::getline(f, comm) && comm == target) {
+                                    ::closedir(dir); return std::stoi(dname);
                                 }
                             }
                         }
                     }
+                    ::closedir(dir); return -1;
                 }
-                ::closedir(dir);
-                return -1;
-            }
 
-            MemoryInfo SystemMetrics::ReadLinuxProcessMemory(int iPid) {
-                MemoryInfo info;
-                if (iPid <= 0) return info;
-
-                std::string statusPath = "/proc/" + std::to_string(iPid) + "/status";
-                std::ifstream statusFile(statusPath);
-                if (!statusFile.is_open()) return info;
-
-                std::string line;
-                long long lRssKb = 0;
-                long long lVmKb = 0;
-
-                while (std::getline(statusFile, line)) {
-                    if (line.rfind("VmRSS:", 0) == 0) {
-                        std::istringstream iss(line.substr(6));
-                        iss >> lRssKb;
-                    } else if (line.rfind("VmSize:", 0) == 0) {
-                        std::istringstream iss(line.substr(7));
-                        iss >> lVmKb;
+                static MemoryInfo ReadMem(int iPid) {
+                    MemoryInfo info;
+                    if (iPid <= 0) return info;
+                    std::ifstream f("/proc/" + std::to_string(iPid) + "/status");
+                    std::string line; long long rss = 0, vm = 0;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (line.rfind("VmRSS:", 0) == 0) std::istringstream(line.substr(6)) >> rss;
+                        else if (line.rfind("VmSize:", 0) == 0) std::istringstream(line.substr(7)) >> vm;
                     }
+                    info.lPhysicalMemoryBytes = rss * 1024LL; info.lPrivateBytes = vm * 1024LL;
+                    return info;
                 }
 
-                info.lPhysicalMemoryBytes = lRssKb * 1024LL;
-                info.lPrivateBytes = lVmKb * 1024LL;
-                return info;
-            }
-
-            DiskInfo SystemMetrics::ReadLinuxProcessDisk(int iPid) {
-                DiskInfo info;
-                if (iPid <= 0) return info;
-
-                std::string ioPath = "/proc/" + std::to_string(iPid) + "/io";
-                std::ifstream ioFile(ioPath);
-                if (!ioFile.is_open()) return info;
-
-                std::string line;
-                while (std::getline(ioFile, line)) {
-                    if (line.rfind("read_bytes:", 0) == 0) {
-                        std::istringstream iss(line.substr(11));
-                        iss >> info.lDiskReadBytes;
-                    } else if (line.rfind("write_bytes:", 0) == 0) {
-                        std::istringstream iss(line.substr(12));
-                        iss >> info.lDiskWriteBytes;
+                static DiskInfo ReadDisk(int iPid) {
+                    DiskInfo info;
+                    if (iPid <= 0) return info;
+                    std::ifstream f("/proc/" + std::to_string(iPid) + "/io");
+                    std::string line;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (line.rfind("read_bytes:", 0) == 0) std::istringstream(line.substr(11)) >> info.lDiskReadBytes;
+                        else if (line.rfind("write_bytes:", 0) == 0) std::istringstream(line.substr(12)) >> info.lDiskWriteBytes;
                     }
+                    return info;
                 }
-                return info;
-            }
 
-            NetworkUsageInfo SystemMetrics::ReadLinuxProcessNetwork(int iPid) {
-                NetworkUsageInfo info;
-                if (iPid <= 0) return info;
-
-                std::string devPath = "/proc/" + std::to_string(iPid) + "/net/dev";
-                std::ifstream devFile(devPath);
-                if (!devFile.is_open()) return info;
-
-                std::string line;
-                long long totalRx = 0, totalTx = 0;
-                int lineCount = 0;
-
-                while (std::getline(devFile, line)) {
-                    if (++lineCount <= 2) continue;
-                    auto colonPos = line.find(':');
-                    if (colonPos != std::string::npos) {
-                        std::istringstream iss(line.substr(colonPos + 1));
-                        long long rx = 0, tx = 0, dummy = 0;
-                        iss >> rx;
-                        for (int i = 0; i < 7; ++i) iss >> dummy;
-                        iss >> tx;
-                        totalRx += rx;
-                        totalTx += tx;
+                static NetworkUsageInfo ReadNet(int iPid) {
+                    NetworkUsageInfo info;
+                    if (iPid <= 0) return info;
+                    std::ifstream f("/proc/" + std::to_string(iPid) + "/net/dev");
+                    std::string line; long long totalRx = 0, totalTx = 0; int cnt = 0;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (++cnt <= 2) continue;
+                        auto pos = line.find(':');
+                        if (pos != std::string::npos) {
+                            std::istringstream iss(line.substr(pos + 1));
+                            long long rx = 0, tx = 0, dummy = 0;
+                            iss >> rx; for (int i = 0; i < 7; ++i) iss >> dummy; iss >> tx;
+                            totalRx += rx; totalTx += tx;
+                        }
                     }
+                    info.lNetworkReadBytes = totalRx; info.lNetworkWriteBytes = totalTx;
+                    return info;
                 }
-                info.lNetworkReadBytes = totalRx;
-                info.lNetworkWriteBytes = totalTx;
-                return info;
-            }
 
-            Collections::Generic::List<int> SystemMetrics::ReadLinuxProcessPorts(int iPid) {
-                Collections::Generic::List<int> lstPorts;
-                ProcessNetworkConnectionInfo connInfo = ReadLinuxProcessNetworkInfo(iPid);
-                return connInfo.lstOpenPorts;
-            }
-
-            ProcessNetworkConnectionInfo SystemMetrics::ReadLinuxProcessNetworkInfo(int iPid) {
-                ProcessNetworkConnectionInfo connInfo;
-                if (iPid <= 0) return connInfo;
-
-                std::string tcpPath = "/proc/net/tcp";
-                std::ifstream tcpFile(tcpPath);
-                if (!tcpFile.is_open()) return connInfo;
-
-                std::string line;
-                int lineNum = 0;
-
-                while (std::getline(tcpFile, line)) {
-                    if (lineNum++ == 0) continue;
-                    std::istringstream iss(line);
-                    std::string sl, localAddr, remAddr, st;
-                    if (iss >> sl >> localAddr >> remAddr >> st) {
-                        auto colonLocal = localAddr.find(':');
-                        auto colonRem = remAddr.find(':');
-                        if (colonLocal != std::string::npos && colonRem != std::string::npos) {
-                            int localPort = std::stoi(localAddr.substr(colonLocal + 1), nullptr, 16);
-                            int remotePort = std::stoi(remAddr.substr(colonRem + 1), nullptr, 16);
-
-                            NetworkConnectionInfo conn;
-                            conn.iLocalPort = localPort;
-                            conn.iRemotePort = remotePort;
-                            conn.sState = (st == "01") ? String("ESTABLISHED") : String("LISTEN");
-
-                            connInfo.lstConnections.Add(conn);
-                            connInfo.lstOpenPorts.Add(localPort);
-
-                            if (st == "01") {
-                                connInfo.bHasEstablishedInboundConnection = true;
+                static ProcessNetworkConnectionInfo ReadNetInfo(int iPid) {
+                    ProcessNetworkConnectionInfo info;
+                    if (iPid <= 0) return info;
+                    std::ifstream f("/proc/net/tcp");
+                    std::string line; int cnt = 0;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (cnt++ == 0) continue;
+                        std::istringstream iss(line);
+                        std::string sl, lAddr, rAddr, st;
+                        if (iss >> sl >> lAddr >> rAddr >> st) {
+                            auto c1 = lAddr.find(':'), c2 = rAddr.find(':');
+                            if (c1 != std::string::npos && c2 != std::string::npos) {
+                                int lp = std::stoi(lAddr.substr(c1 + 1), nullptr, 16);
+                                int rp = std::stoi(rAddr.substr(c2 + 1), nullptr, 16);
+                                NetworkConnectionInfo conn; conn.iLocalPort = lp; conn.iRemotePort = rp;
+                                conn.sState = (st == "01") ? "ESTABLISHED" : "LISTEN";
+                                info.lstConnections.Add(conn); info.lstOpenPorts.Add(lp);
+                                if (st == "01") info.bHasEstablishedInboundConnection = true;
                             }
                         }
                     }
+                    return info;
                 }
-                return connInfo;
-            }
 
-            MemoryInfo SystemMetrics::GetSystemMemoryUsage() {
-                MemoryInfo info;
-                std::ifstream memFile("/proc/meminfo");
-                if (!memFile.is_open()) return info;
-
-                std::string line;
-                unsigned long long totalKb = 0, availKb = 0;
-
-                while (std::getline(memFile, line)) {
-                    if (line.rfind("MemTotal:", 0) == 0) {
-                        std::istringstream iss(line.substr(9));
-                        iss >> totalKb;
-                    } else if (line.rfind("MemAvailable:", 0) == 0) {
-                        std::istringstream iss(line.substr(13));
-                        iss >> availKb;
+                static MemoryInfo GetSysMem() {
+                    MemoryInfo info;
+                    std::ifstream f("/proc/meminfo");
+                    std::string line; unsigned long long tot = 0, av = 0;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (line.rfind("MemTotal:", 0) == 0) std::istringstream(line.substr(9)) >> tot;
+                        else if (line.rfind("MemAvailable:", 0) == 0) std::istringstream(line.substr(13)) >> av;
                     }
+                    info.uMemoryTotalBytes = tot * 1024ULL;
+                    info.uMemoryUsedBytes = (tot > av) ? (tot - av) * 1024ULL : 0ULL;
+                    if (tot > 0) info.dMemoryUsagePercent = (static_cast<double>(info.uMemoryUsedBytes) / static_cast<double>(info.uMemoryTotalBytes)) * 100.0;
+                    return info;
                 }
 
-                info.uMemoryTotalBytes = totalKb * 1024ULL;
-                info.uMemoryUsedBytes = (totalKb > availKb) ? (totalKb - availKb) * 1024ULL : 0ULL;
-                if (totalKb > 0) {
-                    info.dMemoryUsagePercent = (static_cast<double>(info.uMemoryUsedBytes) / static_cast<double>(info.uMemoryTotalBytes)) * 100.0;
-                }
-                return info;
-            }
-
-            double SystemMetrics::GetSystemCpuUsage() {
-                std::ifstream statFile("/proc/stat");
-                if (!statFile.is_open()) return 0.0;
-
-                std::string line;
-                if (std::getline(statFile, line) && line.rfind("cpu ", 0) == 0) {
-                    std::istringstream iss(line.substr(4));
-                    long long user, nice, system, idle, iowait, irq, softirq, steal;
-                    if (iss >> user >> nice >> system >> idle >> iowait >> irq >> softirq >> steal) {
-                        long long totalIdle = idle + iowait;
-                        long long totalNonIdle = user + nice + system + irq + softirq + steal;
-                        long long total = totalIdle + totalNonIdle;
-                        if (total > 0) {
-                            return (static_cast<double>(totalNonIdle) / static_cast<double>(total)) * 100.0;
+                static double GetSysCpu() {
+                    std::ifstream f("/proc/stat");
+                    std::string line;
+                    if (f.is_open() && std::getline(f, line) && line.rfind("cpu ", 0) == 0) {
+                        std::istringstream iss(line.substr(4));
+                        long long u, n, s, id, io, ir, so, st;
+                        if (iss >> u >> n >> s >> id >> io >> ir >> so >> st) {
+                            long long idle = id + io, nonIdle = u + n + s + ir + so + st, total = idle + nonIdle;
+                            if (total > 0) return (static_cast<double>(nonIdle) / static_cast<double>(total)) * 100.0;
                         }
                     }
+                    return 0.0;
                 }
-                return 0.0;
-            }
 
-            DiskInfo SystemMetrics::GetSystemDiskUsage() {
-                DiskInfo info;
-                struct statvfs vfs;
-                if (statvfs("/", &vfs) == 0) {
-                    info.lDiskReadBytes = static_cast<long long>(vfs.f_blocks * vfs.f_frsize);
-                    info.lDiskWriteBytes = static_cast<long long>((vfs.f_blocks - vfs.f_bfree) * vfs.f_frsize);
-                }
-                return info;
-            }
-
-            double SystemMetrics::GetSystemNetworkUsage() {
-                std::ifstream devFile("/proc/net/dev");
-                if (!devFile.is_open()) return 0.0;
-
-                std::string line;
-                long long totalBytes = 0;
-                int lineCount = 0;
-
-                while (std::getline(devFile, line)) {
-                    if (++lineCount <= 2) continue;
-                    auto colonPos = line.find(':');
-                    if (colonPos != std::string::npos) {
-                        std::istringstream iss(line.substr(colonPos + 1));
-                        long long rx = 0, tx = 0, dummy = 0;
-                        iss >> rx;
-                        for (int i = 0; i < 7; ++i) iss >> dummy;
-                        iss >> tx;
-                        totalBytes += (rx + tx);
+                static DiskInfo GetSysDisk() {
+                    DiskInfo info; struct statvfs vfs;
+                    if (statvfs("/", &vfs) == 0) {
+                        info.lDiskReadBytes = static_cast<long long>(vfs.f_blocks * vfs.f_frsize);
+                        info.lDiskWriteBytes = static_cast<long long>((vfs.f_blocks - vfs.f_bfree) * vfs.f_frsize);
                     }
+                    return info;
                 }
-                return static_cast<double>(totalBytes);
-            }
 
-            String SystemMetrics::GetProcessCommandLine(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                if (pid <= 0) return String("");
-
-                std::string cmdPath = "/proc/" + std::to_string(pid) + "/cmdline";
-                std::ifstream cmdFile(cmdPath, std::ios::binary);
-                if (!cmdFile.is_open()) return String("");
-
-                std::string cmdLine;
-                char ch;
-                while (cmdFile.get(ch)) {
-                    cmdLine += (ch == '\0') ? ' ' : ch;
+                static double GetSysNet() {
+                    std::ifstream f("/proc/net/dev");
+                    std::string line; long long total = 0; int cnt = 0;
+                    while (f.is_open() && std::getline(f, line)) {
+                        if (++cnt <= 2) continue;
+                        auto pos = line.find(':');
+                        if (pos != std::string::npos) {
+                            std::istringstream iss(line.substr(pos + 1));
+                            long long rx = 0, tx = 0, dummy = 0;
+                            iss >> rx; for (int i = 0; i < 7; ++i) iss >> dummy; iss >> tx;
+                            total += (rx + tx);
+                        }
+                    }
+                    return static_cast<double>(total);
                 }
-                return String(cmdLine.c_str());
-            }
 
-            MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                return ReadLinuxProcessMemory(pid);
-            }
+                static String ReadCmdLine(int pid) {
+                    if (pid <= 0) return String("");
+                    std::ifstream f("/proc/" + std::to_string(pid) + "/cmdline", std::ios::binary);
+                    std::string cmd; char ch;
+                    while (f.is_open() && f.get(ch)) cmd += (ch == '\0') ? ' ' : ch;
+                    return String(cmd.c_str());
+                }
+            };
 
-            DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                return ReadLinuxProcessDisk(pid);
-            }
+            int SystemMetrics::FindPidByName(const String& sProcessName) { return SystemMetricsLinuxHelper::FindPid(sProcessName); }
+            MemoryInfo SystemMetrics::ReadLinuxProcessMemory(int iPid) { return SystemMetricsLinuxHelper::ReadMem(iPid); }
+            DiskInfo SystemMetrics::ReadLinuxProcessDisk(int iPid) { return SystemMetricsLinuxHelper::ReadDisk(iPid); }
+            NetworkUsageInfo SystemMetrics::ReadLinuxProcessNetwork(int iPid) { return SystemMetricsLinuxHelper::ReadNet(iPid); }
+            ProcessNetworkConnectionInfo SystemMetrics::ReadLinuxProcessNetworkInfo(int iPid) { return SystemMetricsLinuxHelper::ReadNetInfo(iPid); }
+            Collections::Generic::List<int> SystemMetrics::ReadLinuxProcessPorts(int iPid) { return SystemMetricsLinuxHelper::ReadNetInfo(iPid).lstOpenPorts; }
 
-            NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                return ReadLinuxProcessNetwork(pid);
-            }
+            MemoryInfo SystemMetrics::GetSystemMemoryUsage() { return SystemMetricsLinuxHelper::GetSysMem(); }
+            double SystemMetrics::GetSystemCpuUsage() { return SystemMetricsLinuxHelper::GetSysCpu(); }
+            DiskInfo SystemMetrics::GetSystemDiskUsage() { return SystemMetricsLinuxHelper::GetSysDisk(); }
+            double SystemMetrics::GetSystemNetworkUsage() { return SystemMetricsLinuxHelper::GetSysNet(); }
 
-            Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                return ReadLinuxProcessPorts(pid);
-            }
+            String SystemMetrics::GetProcessCommandLine(const String& sProcessName) { return SystemMetricsLinuxHelper::ReadCmdLine(FindPidByName(sProcessName)); }
+            MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String& sProcessName) { return ReadLinuxProcessMemory(FindPidByName(sProcessName)); }
+            DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName) { return ReadLinuxProcessDisk(FindPidByName(sProcessName)); }
+            NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName) { return ReadLinuxProcessNetwork(FindPidByName(sProcessName)); }
+            Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName) { return ReadLinuxProcessPorts(FindPidByName(sProcessName)); }
+            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName) { return ReadLinuxProcessNetworkInfo(FindPidByName(sProcessName)); }
 
-            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName) {
-                int pid = FindPidByName(sProcessName);
-                return ReadLinuxProcessNetworkInfo(pid);
+            static bool CompareLinuxProcessResource(const ProcessInfo& a, const ProcessInfo& b, SystemResource eResource) {
+                if (eResource == SystemResource::Cpu) return a.dCpuUsagePercent > b.dCpuUsagePercent;
+                if (eResource == SystemResource::Memory) return a.memory.lPhysicalMemoryBytes > b.memory.lPhysicalMemoryBytes;
+                if (eResource == SystemResource::Disk) return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) > (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
+                if (eResource == SystemResource::Network) return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) > (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
+                return a.dCpuUsagePercent > b.dCpuUsagePercent;
             }
 
             Collections::Generic::List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
                 Collections::Generic::List<ProcessInfo> lstAll = GetAllProcesses(-1);
-                std::vector<ProcessInfo> tempVector;
-
-                for (int i = 0; i < lstAll.GetCount(); ++i) {
-                    tempVector.push_back(lstAll[i]);
-                }
-
-                std::sort(tempVector.begin(), tempVector.end(), [eResource](const ProcessInfo& a, const ProcessInfo& b) {
-                    switch (eResource) {
-                    case SystemResource::Cpu: return a.dCpuUsagePercent > b.dCpuUsagePercent;
-                    case SystemResource::Memory: return a.memory.lPhysicalMemoryBytes > b.memory.lPhysicalMemoryBytes;
-                    case SystemResource::Disk: return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) > (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
-                    case SystemResource::Network: return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) > (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
-                    default: return a.dCpuUsagePercent > b.dCpuUsagePercent;
-                    }
+                std::vector<ProcessInfo> vec;
+                for (int i = 0; i < lstAll.GetCount(); ++i) vec.push_back(lstAll[i]);
+                std::sort(vec.begin(), vec.end(), [eResource](const ProcessInfo& a, const ProcessInfo& b) {
+                    return CompareLinuxProcessResource(a, b, eResource);
                 });
-
                 Collections::Generic::List<ProcessInfo> lstResult;
-                for (size_t i = 0; i < tempVector.size() && static_cast<int>(i) < iCount; ++i) {
-                    lstResult.Add(tempVector[i]);
-                }
+                for (size_t i = 0; i < vec.size() && static_cast<int>(i) < iCount; ++i) lstResult.Add(vec[i]);
                 return lstResult;
+            }
+
+            void SystemMetrics::PopulateLinuxProc(const std::string& dname, ProcessInfo& proc) {
+                proc.iProcessId = std::stoi(dname);
+                std::ifstream commFile("/proc/" + dname + "/comm");
+                std::string procComm;
+                if (commFile.is_open() && std::getline(commFile, procComm)) proc.sName = String(procComm.c_str());
+                proc.sCommandLine = GetProcessCommandLine(proc.sName);
+                proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
+                proc.disk = ReadLinuxProcessDisk(proc.iProcessId);
+                proc.network = ReadLinuxProcessNetwork(proc.iProcessId);
             }
 
             Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {
                 Collections::Generic::List<ProcessInfo> lstProcs;
                 DIR* dir = ::opendir("/proc");
                 if (!dir) return lstProcs;
-
                 struct dirent* entry = nullptr;
                 while ((entry = ::readdir(dir)) != nullptr) {
                     if (entry->d_type == DT_DIR) {
                         std::string dname = entry->d_name;
                         if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
-                            int pid = std::stoi(dname);
-                            ProcessInfo proc;
-                            proc.iProcessId = pid;
-
-                            std::string commPath = "/proc/" + dname + "/comm";
-                            std::ifstream commFile(commPath);
-                            if (commFile.is_open()) {
-                                std::string procComm;
-                                std::getline(commFile, procComm);
-                                proc.sName = String(procComm.c_str());
-                            }
-
-                            proc.sCommandLine = GetProcessCommandLine(proc.sName);
-                            proc.memory = ReadLinuxProcessMemory(pid);
-                            proc.disk = ReadLinuxProcessDisk(pid);
-                            proc.network = ReadLinuxProcessNetwork(pid);
-
-                            if (iSessionId == -1 || proc.iSessionId == iSessionId) {
-                                lstProcs.Add(proc);
-                            }
+                            ProcessInfo proc; PopulateLinuxProc(dname, proc);
+                            if (iSessionId == -1 || proc.iSessionId == iSessionId) lstProcs.Add(proc);
                         }
                     }
                 }
@@ -352,8 +238,7 @@ namespace DotNetDupe {
             }
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
-                Collections::Generic::List<ServiceInfo> lstServices;
-                return lstServices;
+                return Collections::Generic::List<ServiceInfo>();
             }
 
         }

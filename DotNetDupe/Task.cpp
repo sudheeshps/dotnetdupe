@@ -13,7 +13,7 @@ namespace DotNetDupe {
         namespace Threading {
             namespace Tasks {
 
-                static Collections::Generic::List<SmartPointer<Task>> s_vActiveTasks;
+                static Collections::Generic::List<SmartPointer<Task>> s_pvActiveTasks;
                 static CriticalSection s_csActiveTasks;
 
                 Task::Task(Action<> objAction)
@@ -82,26 +82,14 @@ namespace DotNetDupe {
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::Running;
                     }
-
                     try {
-                        if (m_objAction) {
-                            m_objAction();
-                        }
+                        if (m_objAction) m_objAction();
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::RanToCompletion;
-                    } catch (const Exception&) {
-                        Lock<CriticalSection> lock(m_csSync);
-                        m_eStatus = TaskStatus::Faulted;
-                    } catch (const std::exception& ex) {
-                        (void)UnknownException(ex.what());
-                        Lock<CriticalSection> lock(m_csSync);
-                        m_eStatus = TaskStatus::Faulted;
                     } catch (...) {
-                        (void)UnknownException("An unhandled exception occurred during task execution.");
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::Faulted;
                     }
-
                     m_pCompletionEvent->Set();
                     ReleaseTask(this);
                 }
@@ -114,9 +102,9 @@ namespace DotNetDupe {
                     SmartPointer<Task> spSelf(nullptr);
                     {
                         Lock<CriticalSection> lock(s_csActiveTasks);
-                        for (int i = 0; i < s_vActiveTasks.GetCount(); ++i) {
-                            if (s_vActiveTasks[i].Get() == pTask) {
-                                spSelf = s_vActiveTasks[i];
+                        for (int i = 0; i < s_pvActiveTasks.GetCount(); ++i) {
+                            if (s_pvActiveTasks[i].Get() == pTask) {
+                                spSelf = s_pvActiveTasks[i];
                                 break;
                             }
                         }
@@ -129,14 +117,14 @@ namespace DotNetDupe {
 
                 void Task::RetainTask(SmartPointer<Task> pTask) {
                     Lock<CriticalSection> lock(s_csActiveTasks);
-                    s_vActiveTasks.Add(pTask);
+                    s_pvActiveTasks.Add(pTask);
                 }
 
                 void Task::ReleaseTask(Task* pTask) {
                     Lock<CriticalSection> lock(s_csActiveTasks);
-                    for (int i = 0; i < s_vActiveTasks.GetCount(); ++i) {
-                        if (s_vActiveTasks[i].Get() == pTask) {
-                            s_vActiveTasks.RemoveAt(i);
+                    for (int i = 0; i < s_pvActiveTasks.GetCount(); ++i) {
+                        if (s_pvActiveTasks[i].Get() == pTask) {
+                            s_pvActiveTasks.RemoveAt(i);
                             break;
                         }
                     }

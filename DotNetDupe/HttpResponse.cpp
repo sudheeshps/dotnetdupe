@@ -14,34 +14,34 @@ namespace DotNetDupe {
                 }
             }
 
-            void HttpResponse::FlushHeaders() {
-                if (m_bHeadersSent) return;
-                m_bHeadersSent = true;
-
-                std::string statusMsg = "OK";
-                if (m_nStatusCode == 404) statusMsg = "Not Found";
-                else if (m_nStatusCode == 500) statusMsg = "Internal Server Error";
-                else if (m_nStatusCode == 201) statusMsg = "Created";
-                else if (m_nStatusCode == 204) statusMsg = "No Content";
-                else if (m_nStatusCode == 400) statusMsg = "Bad Request";
-                else if (m_nStatusCode == 401) statusMsg = "Unauthorized";
-
-                std::string headerString = "HTTP/1.1 " + std::to_string(m_nStatusCode) + " " + statusMsg + "\r\n";
-                headerString += "Content-Type: " + std::string(m_sContentType.GetRawString() ? m_sContentType.GetRawString() : "") + "\r\n";
-                if (m_bChunked) {
-                    headerString += "Transfer-Encoding: chunked\r\n";
+            static std::string GetHttpStatusMessage(int code) {
+                switch (code) {
+                case 201: return "Created";
+                case 204: return "No Content";
+                case 400: return "Bad Request";
+                case 401: return "Unauthorized";
+                case 404: return "Not Found";
+                case 500: return "Internal Server Error";
+                default: return "OK";
                 }
-                headerString += "Connection: keep-alive\r\n";
-                headerString += "Server: DotNetDupeWebApplication/1.0\r\n";
+            }
 
-                auto keys = m_headers.GetKeys();
-                auto values = m_headers.GetValues();
+            static std::string BuildResponseHeaderString(int statusCode, const System::String& contentType, bool bChunked, const System::Collections::Generic::Dictionary<System::String, System::String>& headers) {
+                std::string headerString = "HTTP/1.1 " + std::to_string(statusCode) + " " + GetHttpStatusMessage(statusCode) + "\r\n";
+                headerString += "Content-Type: " + std::string(contentType.GetRawString() ? contentType.GetRawString() : "") + "\r\n";
+                if (bChunked) headerString += "Transfer-Encoding: chunked\r\n";
+                headerString += "Connection: keep-alive\r\nServer: DotNetDupeWebApplication/1.0\r\n";
+                auto keys = headers.GetKeys(); auto values = headers.GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
                     headerString += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";
                 }
-                headerString += "\r\n";
+                return headerString + "\r\n";
+            }
 
-                WriteRaw(m_pStream, headerString);
+            void HttpResponse::FlushHeaders() {
+                if (m_bHeadersSent) return;
+                m_bHeadersSent = true;
+                WriteRaw(m_pStream, BuildResponseHeaderString(m_nStatusCode, m_sContentType, m_bChunked, m_headers));
             }
 
             void HttpResponse::WriteChunk(const System::String& data) {

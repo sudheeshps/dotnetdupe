@@ -33,36 +33,35 @@ namespace DotNetDupe {
                         });
                     }
 
+                    static X509* LoadPemCert(const String& certPath) {
+                        BIO* pCertBio = BIO_new_file(certPath.GetRawString(), "r");
+                        if (!pCertBio) throw IO::IOException("Could not open certificate file.");
+                        X509* pCert = PEM_read_bio_X509(pCertBio, nullptr, nullptr, nullptr);
+                        BIO_free(pCertBio);
+                        if (!pCert) throw ArgumentException("Invalid PEM certificate.");
+                        return pCert;
+                    }
+
+                    static EVP_PKEY* LoadPemKey(const String& keyPath) {
+                        BIO* pKeyBio = BIO_new_file(keyPath.GetRawString(), "r");
+                        if (!pKeyBio) throw IO::IOException("Could not open private key file.");
+                        EVP_PKEY* pKey = PEM_read_bio_PrivateKey(pKeyBio, nullptr, nullptr, nullptr);
+                        BIO_free(pKeyBio);
+                        if (!pKey) throw ArgumentException("Invalid PEM private key.");
+                        return pKey;
+                    }
+
                     X509Certificate2::X509Certificate2(const String& certPath, const String& keyPath)
                         : m_pCert(nullptr), m_pKey(nullptr) {
                         InitializeCrypto();
-                        
-                        BIO* pCertBio = BIO_new_file(certPath.GetRawString(), "r");
-                        if (!pCertBio) {
-                            throw IO::IOException("Could not open certificate file.");
-                        }
-                        
-                        X509* pCert = PEM_read_bio_X509(pCertBio, nullptr, nullptr, nullptr);
-                        BIO_free(pCertBio);
-                        if (!pCert) {
-                            throw ArgumentException("Invalid PEM certificate.");
-                        }
-
-                        BIO* pKeyBio = BIO_new_file(keyPath.GetRawString(), "r");
-                        if (!pKeyBio) {
+                        X509* pCert = LoadPemCert(certPath);
+                        try {
+                            m_pKey = LoadPemKey(keyPath);
+                            m_pCert = pCert;
+                        } catch (...) {
                             X509_free(pCert);
-                            throw IO::IOException("Could not open private key file.");
+                            throw;
                         }
-
-                        EVP_PKEY* pKey = PEM_read_bio_PrivateKey(pKeyBio, nullptr, nullptr, nullptr);
-                        BIO_free(pKeyBio);
-                        if (!pKey) {
-                            X509_free(pCert);
-                            throw ArgumentException("Invalid PEM private key.");
-                        }
-
-                        m_pCert = pCert;
-                        m_pKey = pKey;
                     }
 
                     X509Certificate2::~X509Certificate2() {

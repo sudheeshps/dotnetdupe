@@ -57,6 +57,7 @@ namespace DotNetDupe {
                 }
 
                 void HandleConnection(DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpClient> spClient);
+                void QueueAcceptedClient(DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpClient> pClient);
                 void StartServerLoop(const DotNetDupe::System::String& host, int port);
 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> m_spServices;

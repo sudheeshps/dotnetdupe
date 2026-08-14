@@ -116,29 +116,101 @@ namespace DotNetDupe {
             }
 #endif
 
+#if defined(_WIN32)
+            static bool StartProcessPlatform(const ProcessStartInfo& info, int& iId, void*& pHandle, bool& bExited) {
+                PROCESS_INFORMATION pi;
+                if (CreateWin32Process(info, pi)) {
+                    iId = static_cast<int>(pi.dwProcessId);
+                    pHandle = (void*)pi.hProcess;
+                    ::CloseHandle(pi.hThread);
+                    bExited = false;
+                    return true;
+                }
+                return false;
+            }
+
+            static bool WaitForExitPlatform(void* pHandle, int iMilliseconds) {
+                DWORD dwTimeout = (iMilliseconds == -1) ? INFINITE : (DWORD)iMilliseconds;
+                return (WaitForSingleObject((HANDLE)pHandle, dwTimeout) == WAIT_OBJECT_0);
+            }
+
+            static void KillProcessPlatform(void* pHandle) {
+                if (!::TerminateProcess((HANDLE)pHandle, 1)) {
+                    DWORD dwErr = ::GetLastError();
+                    if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Cannot terminate target process: access denied.");
+                    if (dwErr == ERROR_INVALID_HANDLE) throw InvalidOperationException("Process has already exited.");
+                }
+            }
+
+            static bool RefreshProcessPlatform(void* pHandle, int& iExitCode) {
+                DWORD dwCode;
+                if (GetExitCodeProcess((HANDLE)pHandle, &dwCode) && dwCode != STILL_ACTIVE) {
+                    iExitCode = static_cast<int>(dwCode);
+                    return true;
+                }
+                return false;
+            }
+#else
+            static bool StartProcessPlatform(const ProcessStartInfo& info, int& iId, void*& pHandle, bool& bExited) {
+                pid_t pid;
+                if (SpawnPosixProcess(info, pid)) {
+                    iId = static_cast<int>(pid);
+                    pHandle = (void*)(intptr_t)pid;
+                    bExited = false;
+                    return true;
+                }
+                return false;
+            }
+
+            static bool WaitForExitPlatform(void* pHandle, int iMilliseconds, int& iExitCode) {
+                int iStatus;
+                pid_t pid = (pid_t)(intptr_t)pHandle;
+                if (iMilliseconds == -1) {
+                    if (waitpid(pid, &iStatus, 0) == pid) {
+                        iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                        return true;
+                    }
+                    return false;
+                }
+                int iElapsed = 0;
+                while (iElapsed < iMilliseconds) {
+                    pid_t res = waitpid(pid, &iStatus, WNOHANG);
+                    if (res == pid) {
+                        iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                        return true;
+                    }
+                    if (res != 0 && errno == ECHILD) return true;
+                    usleep(10000); iElapsed += 10;
+                }
+                return false;
+            }
+
+            static void KillProcessPlatform(void* pHandle, int& iExitCode) {
+                pid_t pid = (pid_t)(intptr_t)pHandle;
+                if (kill(pid, SIGKILL) != 0) {
+                    if (errno == EPERM) throw UnauthorizedAccessException("Cannot terminate target process: access denied.");
+                    if (errno == ESRCH) throw InvalidOperationException("Process has already exited.");
+                }
+                int iStatus;
+                if (waitpid(pid, &iStatus, 0) == pid) {
+                    iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                }
+            }
+
+            static bool RefreshProcessPlatform(void* pHandle, int& iExitCode) {
+                int iStatus;
+                pid_t res = waitpid((pid_t)(intptr_t)pHandle, &iStatus, WNOHANG);
+                if (res > 0) {
+                    iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
+                    return true;
+                }
+                return (res == -1 && errno == ECHILD);
+            }
+#endif
+
             bool Process::Start() {
                 if (m_objStartInfo.FileName.GetLength() == 0) return false;
-
-#if defined(_WIN32)
-                PROCESS_INFORMATION pi;
-                if (CreateWin32Process(m_objStartInfo, pi)) {
-                    m_iId = static_cast<int>(pi.dwProcessId);
-                    m_pProcessHandle = (void*)pi.hProcess;
-                    ::CloseHandle(pi.hThread);
-                    m_bHasExited = false;
-                    return true;
-                }
-                return false;
-#else
-                pid_t pid;
-                if (SpawnPosixProcess(m_objStartInfo, pid)) {
-                    m_iId = static_cast<int>(pid);
-                    m_pProcessHandle = (void*)(intptr_t)pid;
-                    m_bHasExited = false;
-                    return true;
-                }
-                return false;
-#endif
+                return StartProcessPlatform(m_objStartInfo, m_iId, m_pProcessHandle, m_bHasExited);
             }
 
             SmartPointer<Process> Process::Start(const String& sFileName) {
@@ -153,9 +225,7 @@ namespace DotNetDupe {
                 SmartPointer<Process> pProcess = SmartPointer<Process>::New();
                 pProcess->SetStartInfo(objStartInfo);
                 try {
-                    if (pProcess->Start()) {
-                        return pProcess;
-                    }
+                    if (pProcess->Start()) return pProcess;
                 } catch (const IO::FileNotFoundException&) {
                     return SmartPointer<Process>(nullptr);
                 }
@@ -167,47 +237,19 @@ namespace DotNetDupe {
             }
 
             bool Process::WaitForExit(int iMilliseconds) {
-                if (m_bHasExited) return true;
-                if (m_pProcessHandle == nullptr) return true;
-
+                if (m_bHasExited || m_pProcessHandle == nullptr) return true;
 #if defined(_WIN32)
-                DWORD dwTimeout = (iMilliseconds == -1) ? INFINITE : (DWORD)iMilliseconds;
-                DWORD dwResult = WaitForSingleObject((HANDLE)m_pProcessHandle, dwTimeout);
-                if (dwResult == WAIT_OBJECT_0) {
+                if (WaitForExitPlatform(m_pProcessHandle, iMilliseconds)) {
                     Refresh();
                     return true;
                 }
                 return false;
 #else
-                int iStatus;
-                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
-                if (iMilliseconds == -1) {
-                    if (waitpid(pid, &iStatus, 0) == pid) {
-                        m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
-                        m_bHasExited = true;
-                        return true;
-                    }
-                    return false;
-                } else {
-                    int iElapsed = 0;
-                    while (iElapsed < iMilliseconds) {
-                        pid_t res = waitpid(pid, &iStatus, WNOHANG);
-                        if (res == pid) {
-                            m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
-                            m_bHasExited = true;
-                            return true;
-                        } else if (res == 0) {
-                            usleep(10000); // 10ms
-                            iElapsed += 10;
-                        } else {
-                            if (errno == ECHILD) {
-                                m_bHasExited = true;
-                            }
-                            break;
-                        }
-                    }
-                    return m_bHasExited;
+                if (WaitForExitPlatform(m_pProcessHandle, iMilliseconds, m_iExitCode)) {
+                    m_bHasExited = true;
+                    return true;
                 }
+                return m_bHasExited;
 #endif
             }
 
@@ -218,34 +260,12 @@ namespace DotNetDupe {
 
             void Process::Kill() {
                 if (m_bHasExited || m_pProcessHandle == nullptr) return;
-
 #if defined(_WIN32)
-                if (!::TerminateProcess((HANDLE)m_pProcessHandle, 1)) {
-                    DWORD dwErr = ::GetLastError();
-                    if (dwErr == ERROR_ACCESS_DENIED) {
-                        throw UnauthorizedAccessException("Cannot terminate target process: access denied.");
-                    }
-                    if (dwErr == ERROR_INVALID_HANDLE) {
-                        throw InvalidOperationException("Process has already exited.");
-                    }
-                }
+                KillProcessPlatform(m_pProcessHandle);
                 Refresh();
 #else
-                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
-                if (kill(pid, SIGKILL) != 0) {
-                    if (errno == EPERM) throw UnauthorizedAccessException("Cannot terminate target process: access denied.");
-                    if (errno == ESRCH) throw InvalidOperationException("Process has already exited.");
-                }
-                
-                // Wait for the process to actually be reaped to ensure GetHasExited() 
-                // returns true immediately after Kill()
-                int iStatus;
-                if (waitpid(pid, &iStatus, 0) == pid) {
-                    m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
-                    m_bHasExited = true;
-                } else if (errno == ECHILD) {
-                    m_bHasExited = true;
-                }
+                KillProcessPlatform(m_pProcessHandle, m_iExitCode);
+                m_bHasExited = true;
 #endif
             }
 
@@ -258,28 +278,10 @@ namespace DotNetDupe {
             }
 
             void Process::Refresh() const {
-                if (m_bHasExited) return;
-                if (m_pProcessHandle == nullptr) return;
-
-#if defined(_WIN32)
-                DWORD dwExitCode;
-                if (GetExitCodeProcess((HANDLE)m_pProcessHandle, &dwExitCode)) {
-                    if (dwExitCode != STILL_ACTIVE) {
-                        m_iExitCode = (int)dwExitCode;
-                        m_bHasExited = true;
-                    }
-                }
-#else
-                int iStatus;
-                pid_t pid = (pid_t)(intptr_t)m_pProcessHandle;
-                pid_t res = waitpid(pid, &iStatus, WNOHANG);
-                if (res == pid) {
-                    m_iExitCode = WIFEXITED(iStatus) ? WEXITSTATUS(iStatus) : (WIFSIGNALED(iStatus) ? -WTERMSIG(iStatus) : 0);
-                    m_bHasExited = true;
-                } else if (res == -1 && errno == ECHILD) {
+                if (m_bHasExited || m_pProcessHandle == nullptr) return;
+                if (RefreshProcessPlatform(m_pProcessHandle, m_iExitCode)) {
                     m_bHasExited = true;
                 }
-#endif
             }
         }
     }

@@ -134,6 +134,7 @@ namespace DotNetDupe {
                 static NetworkUsageInfo ReadLinuxProcessNetwork(int iPid);
                 static Collections::Generic::List<int> ReadLinuxProcessPorts(int iPid);
                 static ProcessNetworkConnectionInfo ReadLinuxProcessNetworkInfo(int iPid);
+                static void PopulateLinuxProc(const std::string& dname, ProcessInfo& proc);
 #endif
             };
 

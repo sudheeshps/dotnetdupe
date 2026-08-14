@@ -82,21 +82,17 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult) {
-                pResult = SmartPointer<EventWaitHandle>();
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+                pResult = nullptr;
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<EventWaitHandle> spEvt = SmartPointer<EventWaitHandle>::NewShared(false, false);
-                    spEvt->_name = sName;
-                    spEvt->_hHandle = h;
-                    pResult = std::move(spEvt);
-                    return true;
-                }
-                return false;
+                if (!h) return false;
+                auto spEvt = SmartPointer<EventWaitHandle>::NewShared(false, false);
+                spEvt->_name = sName;
+                spEvt->_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;
 #else
                 return false;
 #endif

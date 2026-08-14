@@ -35,16 +35,16 @@ namespace DotNetDupe {
 
             struct FileLoggerProvider::Impl {
                 LoggerConfiguration config;
-                DotNetDupe::System::SmartPointer<FileLoggerContext> context;
+                DotNetDupe::System::SmartPointer<FileLoggerContext> pContext;
             };
 
             FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration& config)
                 : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
                 m_pImpl->config = config;
                 m_pImpl->config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
-                m_pImpl->context = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
-                m_pImpl->context->fileMutex = std::make_shared<std::mutex>();
-                m_pImpl->context->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+                m_pImpl->pContext = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->pContext->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->pContext->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }
 
             FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel)
@@ -52,16 +52,16 @@ namespace DotNetDupe {
                 m_pImpl->config.FilePath = ResolveAndPrepareLogPath(filePath);
                 m_pImpl->config.IsJsonFormat = isJsonFormat;
                 m_pImpl->config.MinLevel = minLevel;
-                m_pImpl->context = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
-                m_pImpl->context->fileMutex = std::make_shared<std::mutex>();
-                m_pImpl->context->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+                m_pImpl->pContext = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->pContext->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->pContext->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }
 
             FileLoggerProvider::~FileLoggerProvider() {
-                if (m_pImpl && m_pImpl->context && m_pImpl->context->fileMutex && m_pImpl->context->fileStream) {
-                    std::lock_guard<std::mutex> lock(*(m_pImpl->context->fileMutex));
-                    if (m_pImpl->context->fileStream->is_open()) {
-                        m_pImpl->context->fileStream->close();
+                if (m_pImpl && m_pImpl->pContext && m_pImpl->pContext->fileMutex && m_pImpl->pContext->fileStream) {
+                    std::lock_guard<std::mutex> lock(*(m_pImpl->pContext->fileMutex));
+                    if (m_pImpl->pContext->fileStream->is_open()) {
+                        m_pImpl->pContext->fileStream->close();
                     }
                 }
             }
@@ -71,7 +71,7 @@ namespace DotNetDupe {
             }
 
             DotNetDupe::System::SmartPointer<ILogger> FileLoggerProvider::CreateLogger(const DotNetDupe::System::String& categoryName) {
-                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_pImpl->config, m_pImpl->context);
+                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_pImpl->config, m_pImpl->pContext);
             }
 
         }

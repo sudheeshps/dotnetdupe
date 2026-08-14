@@ -24,50 +24,23 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
+            static std::ios_base::openmode DetermineOpenMode(int iMode, const String& sPath, bool& bCanRead, bool& bCanWrite, bool& bCanSeek) {
+                if (iMode < 0 || iMode > 5) throw ArgumentException("Invalid FileMode");
+                if (iMode == 0 && fs::exists(ToFsPath(sPath))) throw IOException("File already exists.");
+                if (iMode == 5) {
+                    bCanRead = false; bCanWrite = true; bCanSeek = false;
+                    return std::ios_base::binary | std::ios_base::out | std::ios_base::app;
+                }
+                bCanRead = true; bCanWrite = true; bCanSeek = true;
+                std::ios_base::openmode m = std::ios_base::binary | std::ios_base::in | std::ios_base::out;
+                if (iMode == 0 || iMode == 1 || iMode == 4) m |= std::ios_base::trunc;
+                return m;
+            }
+
             FileStream::FileStream(const String& sPath, int iMode) : m_sPath(sPath), m_iMode(iMode) {
-                std::ios_base::openmode openMode = std::ios_base::binary;
-
-                if (iMode == 0) { // FileMode::CreateNew
-                    if (fs::exists(ToFsPath(sPath))) {
-                        throw IOException("File already exists.");
-                    }
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-                } else if (iMode == 1) { // FileMode::Create
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-                } else if (iMode == 2) { // FileMode::Open
-                    openMode |= std::ios_base::in | std::ios_base::out;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-                } else if (iMode == 3) { // FileMode::OpenOrCreate
-                    openMode |= std::ios_base::in | std::ios_base::out;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-                } else if (iMode == 4) { // FileMode::Truncate
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-                } else if (iMode == 5) { // FileMode::Append
-                    openMode |= std::ios_base::out | std::ios_base::app;
-                    m_bCanRead = false;
-                    m_bCanWrite = true;
-                    m_bCanSeek = false;
-                } else {
-                    throw ArgumentException("Invalid FileMode");
-                }
-
+                std::ios_base::openmode openMode = DetermineOpenMode(iMode, sPath, m_bCanRead, m_bCanWrite, m_bCanSeek);
                 m_fsFileStream.open(ToFsPath(sPath), openMode);
-                if (!m_fsFileStream.is_open()) {
-                    throw IOException("Could not open file.");
-                }
+                if (!m_fsFileStream.is_open()) throw IOException("Could not open file.");
             }
 
             FileStream::~FileStream() {

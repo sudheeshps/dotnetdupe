@@ -62,65 +62,46 @@ namespace DotNetDupe {
                         return m_signature;
                     }
 
-                    String JWTToken::CreateToken(const String& secretKey) {
-                        using namespace DotNetDupe::System::Text::Json;
-                        using namespace DotNetDupe::System::Security::Cryptography;
+                    static String EncodeDictToBase64Url(const Collections::Generic::Dictionary<String, String>& dict) {
+                        String json = Text::Json::JsonSerializer::Serialize(dict);
+                        Array<char> bytes(json.GetLength());
+                        std::memcpy(bytes.GetData(), json.GetRawString(), json.GetLength());
+                        return Base64ToBase64Url(Convert::ToBase64String(bytes));
+                    }
 
-                        String headerJson = JsonSerializer::Serialize(m_header);
-                        Array<char> headerBytes(headerJson.GetLength());
-                        std::memcpy(headerBytes.GetData(), headerJson.GetRawString(), headerJson.GetLength());
-                        String headerB64 = Convert::ToBase64String(headerBytes);
-                        String headerB64Url = Base64ToBase64Url(headerB64);
-
-                        String payloadJson = JsonSerializer::Serialize(m_payload);
-                        Array<char> payloadBytes(payloadJson.GetLength());
-                        std::memcpy(payloadBytes.GetData(), payloadJson.GetRawString(), payloadJson.GetLength());
-                        String payloadB64 = Convert::ToBase64String(payloadBytes);
-                        String payloadB64Url = Base64ToBase64Url(payloadB64);
-
-                        m_rawTokenWithoutSignature = headerB64Url + "." + payloadB64Url;
-
-                        Array<char> tokenBytes(m_rawTokenWithoutSignature.GetLength());
-                        std::memcpy(tokenBytes.GetData(), m_rawTokenWithoutSignature.GetRawString(), m_rawTokenWithoutSignature.GetLength());
-
+                    static String ComputeJwtSignature(const String& rawToken, const String& secretKey) {
+                        Array<char> tokenBytes(rawToken.GetLength());
+                        std::memcpy(tokenBytes.GetData(), rawToken.GetRawString(), rawToken.GetLength());
                         Array<char> keyBytes(secretKey.GetLength());
                         std::memcpy(keyBytes.GetData(), secretKey.GetRawString(), secretKey.GetLength());
+                        Array<char> sigHash = Security::Cryptography::HMACSHA256::ComputeHash(tokenBytes, keyBytes);
+                        return Base64ToBase64Url(Convert::ToBase64String(sigHash));
+                    }
 
-                        Array<char> signatureHash = HMACSHA256::ComputeHash(tokenBytes, keyBytes);
-                        String signatureB64 = Convert::ToBase64String(signatureHash);
-                        m_signature = Base64ToBase64Url(signatureB64);
-
+                    String JWTToken::CreateToken(const String& secretKey) {
+                        String headerB64Url = EncodeDictToBase64Url(m_header);
+                        String payloadB64Url = EncodeDictToBase64Url(m_payload);
+                        m_rawTokenWithoutSignature = headerB64Url + "." + payloadB64Url;
+                        m_signature = ComputeJwtSignature(m_rawTokenWithoutSignature, secretKey);
                         return m_rawTokenWithoutSignature + "." + m_signature;
                     }
 
+                    static Collections::Generic::Dictionary<String, String> DecodeBase64UrlToDict(const String& b64url) {
+                        String b64 = Base64UrlToBase64(b64url);
+                        Array<char> bytes = Convert::FromBase64String(b64);
+                        std::string jsonStr(bytes.GetData(), bytes.GetLength());
+                        return Text::Json::JsonSerializer::Deserialize<Collections::Generic::Dictionary<String, String>>(String(jsonStr.c_str()));
+                    }
+
                     SmartPointer<JWTToken> JWTToken::Parse(const String& tokenStr) {
-                        using namespace DotNetDupe::System::Text::Json;
-
                         Array<String> parts = tokenStr.Split('.');
-                        if (parts.GetLength() != 3) {
-                            throw ArgumentException("Invalid JWT token format.");
-                        }
-
-                        auto token = SmartPointer<JWTToken>::NewShared();
-
-                        String headerB64 = Base64UrlToBase64(parts[0]);
-                        Array<char> headerBytes = Convert::FromBase64String(headerB64);
-                        String headerJson;
-                        std::string tempHeader(headerBytes.GetData(), headerBytes.GetLength());
-                        headerJson = String(tempHeader.c_str());
-                        token->m_header = JsonSerializer::Deserialize<Collections::Generic::Dictionary<String, String>>(headerJson);
-
-                        String payloadB64 = Base64UrlToBase64(parts[1]);
-                        Array<char> payloadBytes = Convert::FromBase64String(payloadB64);
-                        String payloadJson;
-                        std::string tempPayload(payloadBytes.GetData(), payloadBytes.GetLength());
-                        payloadJson = String(tempPayload.c_str());
-                        token->m_payload = JsonSerializer::Deserialize<Collections::Generic::Dictionary<String, String>>(payloadJson);
-
-                        token->m_rawTokenWithoutSignature = parts[0] + "." + parts[1];
-                        token->m_signature = parts[2];
-
-                        return token;
+                        if (parts.GetLength() != 3) throw ArgumentException("Invalid JWT token format.");
+                        auto pToken = SmartPointer<JWTToken>::NewShared();
+                        pToken->m_header = DecodeBase64UrlToDict(parts[0]);
+                        pToken->m_payload = DecodeBase64UrlToDict(parts[1]);
+                        pToken->m_rawTokenWithoutSignature = parts[0] + "." + parts[1];
+                        pToken->m_signature = parts[2];
+                        return pToken;
                     }
 
                     bool JWTToken::Verify(const String& secretKey) const {

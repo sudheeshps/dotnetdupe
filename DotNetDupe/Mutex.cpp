@@ -94,20 +94,16 @@ namespace DotNetDupe {
 
             bool Mutex::TryOpenExisting(const String& sName, SmartPointer<Mutex>& pResult) {
                 pResult = SmartPointer<Mutex>();
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<Mutex> spM = SmartPointer<Mutex>::NewShared();
-                    spM->_name = sName;
-                    spM->_hHandle = h;
-                    pResult = std::move(spM);
-                    return true;
-                }
-                return false;
+                if (h == NULL) return false;
+                SmartPointer<Mutex> spM = SmartPointer<Mutex>::NewShared();
+                spM->_name = sName;
+                spM->_hHandle = h;
+                pResult = std::move(spM);
+                return true;
 #else
                 return false;
 #endif

@@ -46,51 +46,44 @@ namespace DotNetDupe {
             return Uri(ToString());
         }
 
+        static void AppendAuthority(std::string& result, const String& host, const String& user, const String& pass, int port) {
+            if (host.IsEmpty()) return;
+            result += "//";
+            if (!user.IsEmpty()) {
+                result += (const char*)user;
+                if (!pass.IsEmpty()) {
+                    result += ":"; result += (const char*)pass;
+                }
+                result += "@";
+            }
+            result += (const char*)host;
+            if (port != -1) {
+                result += ":"; result += std::to_string(port);
+            }
+        }
+
+        static void AppendPathAndQuery(std::string& result, const String& path, const String& query, const String& fragment) {
+            if (!path.IsEmpty()) {
+                if (path[0] != '/') result += "/";
+                result += (const char*)path;
+            }
+            if (!query.IsEmpty()) {
+                if (query[0] != '?') result += "?";
+                result += (const char*)query;
+            }
+            if (!fragment.IsEmpty()) {
+                if (fragment[0] != '#') result += "#";
+                result += (const char*)fragment;
+            }
+        }
+
         String UriBuilder::ToString() {
             std::string result;
             if (!_scheme.IsEmpty()) {
-                result += (const char*)_scheme;
-                result += ":";
+                result += (const char*)_scheme; result += ":";
             }
-
-            if (!_host.IsEmpty()) {
-                result += "//";
-                if (!_userName.IsEmpty()) {
-                    result += (const char*)_userName;
-                    if (!_password.IsEmpty()) {
-                        result += ":";
-                        result += (const char*)_password;
-                    }
-                    result += "@";
-                }
-                result += (const char*)_host;
-                if (_port != -1) {
-                    result += ":";
-                    result += std::to_string(_port);
-                }
-            }
-
-            if (!_path.IsEmpty()) {
-                if (_path[0] != '/') {
-                    result += "/";
-                }
-                result += (const char*)_path;
-            }
-
-            if (!_query.IsEmpty()) {
-                if (_query[0] != '?') {
-                    result += "?";
-                }
-                result += (const char*)_query;
-            }
-
-            if (!_fragment.IsEmpty()) {
-                if (_fragment[0] != '#') {
-                    result += "#";
-                }
-                result += (const char*)_fragment;
-            }
-
+            AppendAuthority(result, _host, _userName, _password, _port);
+            AppendPathAndQuery(result, _path, _query, _fragment);
             return String(result.c_str());
         }
     }

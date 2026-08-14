@@ -10,84 +10,77 @@ namespace DotNetDupe {
             ParseUri();
         }
 
-        void Uri::ParseUri() {
-            std::string rawUri = (const char*)_uriString;
+        static void ParseSchemeAndAuthority(const std::string& rawUri, String& scheme, String& authority) {
             size_t schemeEnd = rawUri.find(':');
-            
-            if (schemeEnd != std::string::npos) {
-                _scheme = String(rawUri.substr(0, schemeEnd).c_str());
-                
-                size_t authorityStart = schemeEnd + 1;
-                if (authorityStart + 1 < rawUri.length() && rawUri.substr(authorityStart, 2) == "//") {
-                    authorityStart += 2;
-                    size_t authorityEnd = rawUri.find_first_of("/?#", authorityStart);
-                    if (authorityEnd == std::string::npos) {
-                        _authority = String(rawUri.substr(authorityStart).c_str());
-                    } else {
-                        _authority = String(rawUri.substr(authorityStart, authorityEnd - authorityStart).c_str());
-                    }
-                }
+            if (schemeEnd == std::string::npos) return;
+            scheme = String(rawUri.substr(0, schemeEnd).c_str());
+            size_t authStart = schemeEnd + 1;
+            if (authStart + 1 < rawUri.length() && rawUri.substr(authStart, 2) == "//") {
+                authStart += 2;
+                size_t authEnd = rawUri.find_first_of("/?#", authStart);
+                authority = (authEnd == std::string::npos) 
+                    ? String(rawUri.substr(authStart).c_str())
+                    : String(rawUri.substr(authStart, authEnd - authStart).c_str());
             }
+        }
 
+        static void ParsePath(const std::string& rawUri, const String& scheme, String& path) {
             size_t pathStart = rawUri.find("//");
             if (pathStart != std::string::npos) {
                 pathStart = rawUri.find('/', pathStart + 2);
             } else {
-                pathStart = rawUri.find(':');
-                if (pathStart != std::string::npos) {
-                    if (_scheme.Equals("mailto")) {
-                        pathStart++; // For mailto, the path starts right after the colon
-                    } else {
-                        pathStart = rawUri.find('/', pathStart + 1);
-                    }
-                } else {
-                    pathStart = 0;
-                }
+                size_t colon = rawUri.find(':');
+                pathStart = (colon != std::string::npos) 
+                    ? (scheme.Equals("mailto") ? colon + 1 : rawUri.find('/', colon + 1)) 
+                    : 0;
             }
-
             if (pathStart != std::string::npos) {
                 size_t pathEnd = rawUri.find_first_of("?#", pathStart);
-                if (pathEnd == std::string::npos) {
-                    _path = String(rawUri.substr(pathStart).c_str());
-                } else {
-                    _path = String(rawUri.substr(pathStart, pathEnd - pathStart).c_str());
-                }
+                path = (pathEnd == std::string::npos)
+                    ? String(rawUri.substr(pathStart).c_str())
+                    : String(rawUri.substr(pathStart, pathEnd - pathStart).c_str());
             }
-            if (_path.IsEmpty()) _path = String("/");
+            if (path.IsEmpty()) path = String("/");
+        }
 
-            size_t queryStart = rawUri.find('?');
-            if (queryStart != std::string::npos) {
-                size_t queryEnd = rawUri.find('#', queryStart);
-                if (queryEnd == std::string::npos) {
-                    _query = String(rawUri.substr(queryStart + 1).c_str());
-                } else {
-                    _query = String(rawUri.substr(queryStart + 1, queryEnd - queryStart - 1).c_str());
-                }
+        static void ParseQueryAndFragment(const std::string& rawUri, String& query, String& fragment) {
+            size_t qStart = rawUri.find('?');
+            if (qStart != std::string::npos) {
+                size_t qEnd = rawUri.find('#', qStart);
+                query = (qEnd == std::string::npos)
+                    ? String(rawUri.substr(qStart + 1).c_str())
+                    : String(rawUri.substr(qStart + 1, qEnd - qStart - 1).c_str());
             }
-
-            size_t fragmentStart = rawUri.find('#');
-            if (fragmentStart != std::string::npos) {
-                _fragment = String(rawUri.substr(fragmentStart + 1).c_str());
+            size_t fStart = rawUri.find('#');
+            if (fStart != std::string::npos) {
+                fragment = String(rawUri.substr(fStart + 1).c_str());
             }
+        }
 
-            // Simple Authority parsing
-            std::string authorityStr = (const char*)_authority;
-            if (!authorityStr.empty()) {
-                size_t userInfoEnd = authorityStr.find('@');
-                if (userInfoEnd != std::string::npos) {
-                    _userInfo = String(authorityStr.substr(0, userInfoEnd).c_str());
-                    authorityStr = authorityStr.substr(userInfoEnd + 1);
-                }
-
-                size_t portStart = authorityStr.find(':');
-                if (portStart != std::string::npos) {
-                    _host = String(authorityStr.substr(0, portStart).c_str());
-                    _port = std::stoi(authorityStr.substr(portStart + 1));
-                } else {
-                    _host = String(authorityStr.c_str());
-                    _port = (_scheme.ToLower() == "https") ? 443 : 80;
-                }
+        static void ParseAuthorityComponents(const String& authority, const String& scheme, String& userInfo, String& host, int& port) {
+            std::string authStr = (const char*)authority;
+            if (authStr.empty()) return;
+            size_t userEnd = authStr.find('@');
+            if (userEnd != std::string::npos) {
+                userInfo = String(authStr.substr(0, userEnd).c_str());
+                authStr = authStr.substr(userEnd + 1);
             }
+            size_t portStart = authStr.find(':');
+            if (portStart != std::string::npos) {
+                host = String(authStr.substr(0, portStart).c_str());
+                port = std::stoi(authStr.substr(portStart + 1));
+            } else {
+                host = String(authStr.c_str());
+                port = (scheme.ToLower() == "https") ? 443 : 80;
+            }
+        }
+
+        void Uri::ParseUri() {
+            std::string rawUri = (const char*)_uriString;
+            ParseSchemeAndAuthority(rawUri, _scheme, _authority);
+            ParsePath(rawUri, _scheme, _path);
+            ParseQueryAndFragment(rawUri, _query, _fragment);
+            ParseAuthorityComponents(_authority, _scheme, _userInfo, _host, _port);
         }
 
         String Uri::GetScheme() const { return _scheme; }
@@ -134,22 +127,26 @@ namespace DotNetDupe {
             return String(escaped.c_str());
         }
 
+        static void UnescapePercentChar(const std::string& s, size_t& i, std::string& unescaped) {
+            int value;
+#if defined(_WIN32)
+            if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
+#else
+            if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
+#endif
+                unescaped += static_cast<char>(value);
+                i += 2;
+            } else {
+                unescaped += s[i];
+            }
+        }
+
         String Uri::UnescapeDataString(const String& stringToUnescape) {
             std::string s = (const char*)stringToUnescape;
             std::string unescaped;
             for (size_t i = 0; i < s.length(); ++i) {
                 if (s[i] == '%' && i + 2 < s.length()) {
-                    int value;
-#if defined(_WIN32)
-                    if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
-#else
-                    if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &value) == 1) {
-#endif
-                        unescaped += static_cast<char>(value);
-                        i += 2;
-                    } else {
-                        unescaped += s[i];
-                    }
+                    UnescapePercentChar(s, i, unescaped);
                 } else {
                     unescaped += s[i];
                 }

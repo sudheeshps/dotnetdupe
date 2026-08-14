@@ -36,8 +36,6 @@ namespace DotNetDupe {
                     return line;
                 }
 
-				HttpClient::~HttpClient() = default;
-
                 struct HttpClient::Impl : public Object {
                     Collections::Generic::Dictionary<String, String> m_defaultRequestHeaders;
                     SmartPointer<Sockets::TcpClient> m_pLastTcpClient;
@@ -235,25 +233,49 @@ namespace DotNetDupe {
                         return arrData;
                     }
 
+                    SmartPointer<IO::Stream> ConnectStream(const Uri& uri, const String& scheme) {
+                        int iPort = uri.GetPort() > 0 ? uri.GetPort() : ((scheme == "https") ? 443 : 80);
+                        String sResolvedIp = ResolveHost(uri, iPort);
+                        m_pLastTcpClient = SmartPointer<Sockets::TcpClient>::NewShared();
+                        try { m_pLastTcpClient->Connect(sResolvedIp, iPort); }
+                        catch (const Net::Sockets::SocketException& ex) { throw HttpRequestException(ex.What()); }
+                        SmartPointer<IO::Stream> spStream = m_pLastTcpClient->GetStream();
+                        if (scheme == "https") {
+                            auto spSsl = SmartPointer<Net::Security::SslStream>::NewShared(spStream, false);
+                            try { spSsl->AuthenticateAsClient(uri.GetHost()); }
+                            catch (const SystemException& ex) { throw HttpRequestException(ex.What()); }
+                            spStream = spSsl;
+                        }
+                        return spStream;
+                    }
+
+                    HttpResponseMessagePtr BuildStreamResponse(const SmartPointer<IO::Stream>& spStream) {
+                        auto spResponse = ParseStatusLine(spStream);
+                        bool bChunked = false; long lContentLength = -1; String sContentType = "text/plain";
+                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+                        auto spResponseContent = HttpContentPtr(new StreamContent(spStream), true);
+                        spResponseContent->GetHeaders()["Content-Type"] = sContentType;
+                        if (lContentLength >= 0) spResponseContent->GetHeaders()["Content-Length"] = Convert::ToString(static_cast<long long>(lContentLength));
+                        spResponse->SetContent(spResponseContent);
+                        return spResponse;
+                    }
+
                     HttpResponseMessagePtr PrepareResponse(const SmartPointer<IO::Stream>& spStream) {
                         auto spResponse = ParseStatusLine(spStream);
-
                         bool bChunked = false;
                         long lContentLength = -1;
                         String sContentType = "text/plain";
                         ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
-
                         Array<char> arrData = ReadResponseBody(spStream, bChunked, lContentLength);
-
                         auto spResponseContent = HttpContentPtr(new ByteArrayContent(arrData), true);
                         spResponseContent->GetHeaders()["Content-Type"] = sContentType;
                         spResponse->SetContent(spResponseContent);
-
                         return spResponse;
                     }
                 };
 
                 HttpClient::HttpClient() : m_pImpl(SmartPointer<Impl>::NewShared()) {}
+                HttpClient::~HttpClient() = default;
 
                 HttpResponseMessagePtr HttpClient::Get(const String& requestUri) {
                     return Get(Uri(requestUri));
@@ -330,59 +352,13 @@ namespace DotNetDupe {
                 }
 
                 HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr& request, HttpCompletionOption completionOption) {
-                    if (request.IsNull()) {
-                        throw ArgumentNullException("request");
-                    }
-
+                    if (request.IsNull()) throw ArgumentNullException("request");
                     Uri uri = request->GetRequestUri();
                     String scheme = uri.GetScheme().ToLower();
-                    if (scheme != "http" && scheme != "https") {
-                        throw ArgumentException("Only 'http' and 'https' schemes are supported.");
-                    }
-
-                    int iPort = uri.GetPort();
-                    if (iPort <= 0) {
-                        iPort = (scheme == "https") ? 443 : 80;
-                    }
-                    String sResolvedIp = m_pImpl->ResolveHost(uri, iPort);
-
-                    m_pImpl->m_pLastTcpClient = SmartPointer<Sockets::TcpClient>::NewShared();
-                    try {
-                        m_pImpl->m_pLastTcpClient->Connect(sResolvedIp, iPort);
-                    } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
-                        throw HttpRequestException(ex.What());
-                    }
-
-                    SmartPointer<IO::Stream> spStream = m_pImpl->m_pLastTcpClient->GetStream();
-
-                    if (scheme == "https") {
-                        auto spSslStream = SmartPointer<Net::Security::SslStream>::NewShared(spStream, false);
-                        try {
-                            spSslStream->AuthenticateAsClient(uri.GetHost());
-                        } catch (const SystemException& ex) {
-                            throw HttpRequestException(ex.What());
-                        }
-                        spStream = spSslStream;
-                    }
-
-                    std::string sHeaders = m_pImpl->PrepareHeaders(request, uri);
-                    m_pImpl->SendRequest(spStream, sHeaders, request->GetContent());
-
-                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) {
-                        auto spResponse = m_pImpl->ParseStatusLine(spStream);
-                        bool bChunked = false;
-                        long lContentLength = -1;
-                        String sContentType = "text/plain";
-                        m_pImpl->ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
-                        auto spResponseContent = HttpContentPtr(new StreamContent(spStream), true);
-                        spResponseContent->GetHeaders()["Content-Type"] = sContentType;
-                        if (lContentLength >= 0) {
-                            spResponseContent->GetHeaders()["Content-Length"] = Convert::ToString(static_cast<long long>(lContentLength));
-                        }
-                        spResponse->SetContent(spResponseContent);
-                        return spResponse;
-                    }
-
+                    if (scheme != "http" && scheme != "https") throw ArgumentException("Only 'http' and 'https' schemes are supported.");
+                    auto spStream = m_pImpl->ConnectStream(uri, scheme);
+                    m_pImpl->SendRequest(spStream, m_pImpl->PrepareHeaders(request, uri), request->GetContent());
+                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) return m_pImpl->BuildStreamResponse(spStream);
                     return m_pImpl->PrepareResponse(spStream);
                 }
 

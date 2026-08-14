@@ -176,66 +176,67 @@ namespace DotNetDupe {
                     return lstUsers;
                 }
 
-                UserInfo UserPrincipal::GetUser(const String& sUsername) {
-                    if (sUsername.IsEmpty()) {
-                        throw ArgumentException("Username cannot be empty.");
-                    }
-
 #if defined(_WIN32)
+                static UserInfo QueryWin32User(const String& sUsername) {
                     std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
                     LPUSER_INFO_1 pBuf = NULL;
                     NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&pBuf);
-
                     if (nStatus == NERR_Success && pBuf != NULL) {
                         UserInfo info = BuildWin32UserInfo(pBuf);
                         ::NetApiBufferFree(pBuf);
                         return info;
                     }
-
-                    if (nStatus == ERROR_ACCESS_DENIED) {
-                        throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
-                    }
-                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) {
-                        throw ArgumentException("User not found: " + sUsername);
-                    }
+                    if (nStatus == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) throw ArgumentException("User not found: " + sUsername);
                     throw ComponentModel::Win32Exception(nStatus, "Failed to query user information for: " + sUsername);
+                }
+
+                static std::string GetCurrentWin32UserName() {
+                    WCHAR szName[256] = { 0 };
+                    DWORD dwSize = 256;
+                    if (!::GetUserNameW(szName, &dwSize)) {
+                        DWORD dwErr = ::GetLastError();
+                        if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying current user name.");
+                        throw ComponentModel::Win32Exception(dwErr, "Failed to get current user name.");
+                    }
+                    return StringConvertInternal::WCharToUtf8(szName);
+                }
 #else
+                static UserInfo QueryLinuxUser(const String& sUsername) {
                     errno = 0;
                     struct passwd* pw = getpwnam(sUsername.GetRawString());
                     if (pw == NULL) {
-                        if (errno == EACCES || errno == EPERM) {
-                            throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
-                        }
+                        if (errno == EACCES || errno == EPERM) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
                         throw ArgumentException("User not found: " + sUsername);
                     }
                     return BuildLinuxUserInfo(pw);
+                }
+
+                static UserInfo QueryCurrentLinuxUser() {
+                    errno = 0;
+                    struct passwd* pw = getpwuid(getuid());
+                    if (pw == NULL) {
+                        if (errno == EACCES || errno == EPERM) throw UnauthorizedAccessException("Access denied querying current user information.");
+                        throw SystemException("Failed to query current user information.");
+                    }
+                    return BuildLinuxUserInfo(pw);
+                }
+#endif
+
+                UserInfo UserPrincipal::GetUser(const String& sUsername) {
+                    if (sUsername.IsEmpty()) throw ArgumentException("Username cannot be empty.");
+#if defined(_WIN32)
+                    return QueryWin32User(sUsername);
+#else
+                    return QueryLinuxUser(sUsername);
 #endif
                 }
 
                 UserInfo UserPrincipal::GetCurrent() {
 #if defined(_WIN32)
-                    WCHAR szName[256] = { 0 };
-                    DWORD dwSize = 256;
-
-                    if (!::GetUserNameW(szName, &dwSize)) {
-                        DWORD dwErr = ::GetLastError();
-                        if (dwErr == ERROR_ACCESS_DENIED) {
-                            throw UnauthorizedAccessException("Access denied querying current user name.");
-                        }
-                        throw ComponentModel::Win32Exception(dwErr, "Failed to get current user name.");
-                    }
-                    return GetUser(StringConvertInternal::WCharToUtf8(szName).c_str());
+                    return GetUser(GetCurrentWin32UserName().c_str());
 #else
-                    errno = 0;
-                    uid_t uid = getuid();
-                    struct passwd* pw = getpwuid(uid);
-                    if (pw == NULL) {
-                        if (errno == EACCES || errno == EPERM) {
-                            throw UnauthorizedAccessException("Access denied querying current user information.");
-                        }
-                        throw SystemException("Failed to query current user information.");
-                    }
-                    return BuildLinuxUserInfo(pw);
+                    return QueryCurrentLinuxUser();
 #endif
                 }
 

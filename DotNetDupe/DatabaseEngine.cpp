@@ -12,7 +12,7 @@ namespace DotNetDupe {
             namespace Internal {
 
                 struct DatabaseEngine::Impl {
-                    std::unordered_map<std::string, DotNetDupe::System::SmartPointer<IDatabaseBackend>> m_backends;
+                    std::unordered_map<std::string, DotNetDupe::System::SmartPointer<IDatabaseBackend>> m_pBackends;
                     std::mutex m_mutex;
                 };
 
@@ -28,13 +28,13 @@ namespace DotNetDupe {
 
                 void DatabaseEngine::RegisterBackend(const DotNetDupe::System::String& dbName, DotNetDupe::System::SmartPointer<IDatabaseBackend> backend) {
                     std::lock_guard<std::mutex> lock(m_pImpl->m_mutex);
-                    m_pImpl->m_backends[dbName.GetRawString()] = backend;
+                    m_pImpl->m_pBackends[dbName.GetRawString()] = backend;
                 }
 
                 DotNetDupe::System::SmartPointer<IDatabaseBackend> DatabaseEngine::GetBackend(const DotNetDupe::System::String& dbName) {
                     std::lock_guard<std::mutex> lock(m_pImpl->m_mutex);
-                    auto it = m_pImpl->m_backends.find(dbName.GetRawString());
-                    if (it != m_pImpl->m_backends.end()) {
+                    auto it = m_pImpl->m_pBackends.find(dbName.GetRawString());
+                    if (it != m_pImpl->m_pBackends.end()) {
                         return it->second;
                     }
                     return DotNetDupe::System::SmartPointer<IDatabaseBackend>(nullptr);

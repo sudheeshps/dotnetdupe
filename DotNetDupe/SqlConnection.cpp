@@ -34,41 +34,24 @@ namespace DotNetDupe {
                     return m_pImpl->m_sConnectionString;
                 }
 
+                static std::string ExtractConnectionStringValue(const std::string& raw, const std::string& key, const std::string& defaultVal) {
+                    size_t idx = raw.find(key);
+                    if (idx == std::string::npos) return defaultVal;
+                    idx += key.length();
+                    size_t endIdx = raw.find(";", idx);
+                    return (endIdx != std::string::npos) ? raw.substr(idx, endIdx - idx) : raw.substr(idx);
+                }
+
+                static std::string ExtractDatabaseName(const std::string& raw) {
+                    if (raw.find("Database=") != std::string::npos) return ExtractConnectionStringValue(raw, "Database=", "DefaultDb");
+                    return ExtractConnectionStringValue(raw, "Data Source=", "DefaultDb");
+                }
+
                 void SqlConnection::SetConnectionString(const DotNetDupe::System::String& sConnStr) {
                     m_pImpl->m_sConnectionString = sConnStr;
                     std::string raw = sConnStr.GetRawString();
-                    size_t dbIdx = raw.find("Database=");
-                    if (dbIdx == std::string::npos) {
-                        dbIdx = raw.find("Data Source=");
-                        if (dbIdx != std::string::npos) {
-                            dbIdx += 12;
-                        }
-                    } else {
-                        dbIdx += 9;
-                    }
-
-                    if (dbIdx != std::string::npos) {
-                        size_t endIdx = raw.find(";", dbIdx);
-                        if (endIdx != std::string::npos) {
-                            m_pImpl->m_dbName = raw.substr(dbIdx, endIdx - dbIdx);
-                        } else {
-                            m_pImpl->m_dbName = raw.substr(dbIdx);
-                        }
-                    } else {
-                        m_pImpl->m_dbName = "DefaultDb";
-                    }
-
-                    m_pImpl->m_engineType = "InMemory"; // Default
-                    size_t engIdx = raw.find("Engine=");
-                    if (engIdx != std::string::npos) {
-                        engIdx += 7;
-                        size_t endIdx = raw.find(";", engIdx);
-                        if (endIdx != std::string::npos) {
-                            m_pImpl->m_engineType = raw.substr(engIdx, endIdx - engIdx);
-                        } else {
-                            m_pImpl->m_engineType = raw.substr(engIdx);
-                        }
-                    }
+                    m_pImpl->m_dbName = ExtractDatabaseName(raw);
+                    m_pImpl->m_engineType = ExtractConnectionStringValue(raw, "Engine=", "InMemory");
                 }
 
                 DotNetDupe::System::String SqlConnection::GetDatabaseName() const {

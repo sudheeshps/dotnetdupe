@@ -84,20 +84,16 @@ namespace DotNetDupe {
 
             bool Semaphore::TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult) {
                 pResult = SmartPointer<Semaphore>();
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::NewShared(0, 1);
-                    spSem->_name = sName;
-                    spSem->_hHandle = h;
-                    pResult = std::move(spSem);
-                    return true;
-                }
-                return false;
+                if (h == NULL) return false;
+                SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::NewShared(0, 1);
+                spSem->_name = sName;
+                spSem->_hHandle = h;
+                pResult = std::move(spSem);
+                return true;
 #else
                 return false;
 #endif

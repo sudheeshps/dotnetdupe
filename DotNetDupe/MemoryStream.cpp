@@ -81,28 +81,17 @@ namespace DotNetDupe {
                 return toRead;
             }
 
+            static long CalculateSeekPosition(long currentPos, long length, long offset, int origin) {
+                if (origin == 0) return offset;
+                if (origin == 1) return currentPos + offset;
+                if (origin == 2) return length + offset;
+                throw ArgumentException("Invalid seek origin.");
+            }
+
             long MemoryStream::Seek(long offset, int origin) {
                 if (m_pImpl->m_disposed) throw IOException("Stream is closed.");
-
-                long newPosition = m_pImpl->m_position;
-                switch (origin) {
-                    case 0: // Begin
-                        newPosition = offset;
-                        break;
-                    case 1: // Current
-                        newPosition += offset;
-                        break;
-                    case 2: // End
-                        newPosition = GetLength() + offset;
-                        break;
-                    default:
-                        throw ArgumentException("Invalid seek origin.");
-                }
-
-                if (newPosition < 0) {
-                    throw IOException("An attempt was made to move the file pointer before the beginning of the file.");
-                }
-
+                long newPosition = CalculateSeekPosition(m_pImpl->m_position, GetLength(), offset, origin);
+                if (newPosition < 0) throw IOException("An attempt was made to move the file pointer before the beginning of the file.");
                 m_pImpl->m_position = newPosition;
                 return m_pImpl->m_position;
             }

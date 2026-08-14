@@ -37,26 +37,27 @@ namespace DotNetDupe {
                 return nRead;
             }
 
-            String StringReader::ReadLine() {
-                int iIdx = m_iPos;
-                while (iIdx < m_nLength) {
-                    char chCurrent = (char)m_sSource[iIdx];
-                    if (chCurrent == '\r' || chCurrent == '\n') {
-                        String sResult = m_sSource.Substring(m_iPos, iIdx - m_iPos);
-                        m_iPos = iIdx + 1;
-                        if (chCurrent == '\r' && m_iPos < m_nLength && (char)m_sSource[m_iPos] == '\n') {
-                            m_iPos++;
-                        }
-                        return sResult;
-                    }
-                    iIdx++;
+            static int FindNewlineIndex(const String& sSource, int startPos, int length) {
+                for (int i = startPos; i < length; ++i) {
+                    char c = (char)sSource[i];
+                    if (c == '\r' || c == '\n') return i;
                 }
-                if (iIdx > m_iPos) {
-                    String sResult = m_sSource.Substring(m_iPos, iIdx - m_iPos);
-                    m_iPos = iIdx;
+                return -1;
+            }
+
+            String StringReader::ReadLine() {
+                if (m_iPos >= m_nLength) return String("");
+                int nlIdx = FindNewlineIndex(m_sSource, m_iPos, m_nLength);
+                if (nlIdx != -1) {
+                    String sResult = m_sSource.Substring(m_iPos, nlIdx - m_iPos);
+                    char c = (char)m_sSource[nlIdx];
+                    m_iPos = nlIdx + 1;
+                    if (c == '\r' && m_iPos < m_nLength && (char)m_sSource[m_iPos] == '\n') m_iPos++;
                     return sResult;
                 }
-                return String("");
+                String sResult = m_sSource.Substring(m_iPos, m_nLength - m_iPos);
+                m_iPos = m_nLength;
+                return sResult;
             }
 
             String StringReader::ReadToEnd() {

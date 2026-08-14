@@ -86,24 +86,34 @@ namespace DotNetDupe {
 #endif
                 }
 
+                static SOCKET CreateNativeSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+                    int af = (addressFamily == AddressFamily::InterNetworkV6) ? AF_INET6 : AF_INET;
+                    int type = (socketType == SocketType::Dgram) ? SOCK_DGRAM : SOCK_STREAM;
+                    int proto = (protocolType == ProtocolType::Udp) ? IPPROTO_UDP : IPPROTO_TCP;
+#if defined(_WIN32)
+                    return socket(af, type, proto);
+#else
+                    return ::socket(af, type, proto);
+#endif
+                }
+
+                static void InitSockAddrIn(const String& ip, int port, sockaddr_in& addr) {
+                    std::memset(&addr, 0, sizeof(addr));
+                    addr.sin_family = AF_INET;
+                    addr.sin_port = htons(static_cast<u_short>(port));
+                    if (ip.IsEmpty() || ip == "0.0.0.0") {
+                        addr.sin_addr.s_addr = INADDR_ANY;
+                    } else {
+                        if (inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
+                            throw ArgumentException("Invalid IP address.");
+                        }
+                    }
+                }
+
                 Socket::Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
                     : m_pImpl(new SocketImpl()) {
                     InitializeSockets();
-
-                    int af = AF_INET;
-                    if (addressFamily == AddressFamily::InterNetworkV6) af = AF_INET6;
-
-                    int type = SOCK_STREAM;
-                    if (socketType == SocketType::Dgram) type = SOCK_DGRAM;
-
-                    int proto = IPPROTO_TCP;
-                    if (protocolType == ProtocolType::Udp) proto = IPPROTO_UDP;
-
-#if defined(_WIN32)
-                    m_pImpl->hSocket = socket(af, type, proto);
-#else
-                    m_pImpl->hSocket = ::socket(af, type, proto);
-#endif
+                    m_pImpl->hSocket = CreateNativeSocket(addressFamily, socketType, protocolType);
                     if (m_pImpl->hSocket == INVALID_SOCKET) {
                         throw SocketException(GetLastErrorCode(), "Failed to create native socket.");
                     }
@@ -119,52 +129,25 @@ namespace DotNetDupe {
 #endif
                 }
 
-                Socket::~Socket() {
-                }
+                Socket::~Socket() {}
 
-                Socket::Socket(Socket&& other) noexcept
-                    : m_pImpl(std::move(other.m_pImpl)) {
-                }
+                Socket::Socket(Socket&& other) noexcept : m_pImpl(std::move(other.m_pImpl)) {}
 
                 Socket& Socket::operator=(Socket&& other) noexcept {
-                    if (this != &other) {
-                        m_pImpl = std::move(other.m_pImpl);
-                    }
+                    if (this != &other) m_pImpl = std::move(other.m_pImpl);
                     return *this;
                 }
 
                 void Socket::Bind(const String& ip, int port) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, String("Socket is closed."));
-                    }
-
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, String("Socket is closed."));
                     sockaddr_in addr;
-                    std::memset(&addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-                    addr.sin_port = htons(static_cast<u_short>(port));
-
-                    if (ip.IsEmpty() || ip == "0.0.0.0") {
-                        addr.sin_addr.s_addr = INADDR_ANY;
-                    } else {
-#if defined(_WIN32)
-                        if (inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                            throw ArgumentException("Invalid IP address.");
-                        }
-#else
-                        if (::inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                            throw ArgumentException("Invalid IP address.");
-                        }
-#endif
-                    }
-
-                    // Set SO_REUSEADDR to avoid EADDRINUSE on rapid restarts
+                    InitSockAddrIn(ip, port, addr);
                     int optval = 1;
 #if defined(_WIN32)
                     setsockopt(m_pImpl->hSocket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval));
 #else
                     ::setsockopt(m_pImpl->hSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 #endif
-
                     if (bind(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
                         throw SocketException(GetLastErrorCode(), "Failed to bind socket.");
                     }
@@ -199,210 +182,111 @@ namespace DotNetDupe {
                 }
 
                 void Socket::Connect(const String& ip, int port) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, "Socket is closed.");
-                    }
-
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
                     sockaddr_in addr;
-                    std::memset(&addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-                    addr.sin_port = htons(static_cast<u_short>(port));
-
-#if defined(_WIN32)
-                    if (inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#else
-                    if (::inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#endif
-
+                    InitSockAddrIn(ip, port, addr);
                     if (connect(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
                         throw SocketException(GetLastErrorCode(), "Failed to connect to host.");
                     }
                 }
 
                 int Socket::Send(const char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, "Socket is closed.");
-                    }
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
                     int bytesSent = send(m_pImpl->hSocket, buffer + offset, size, 0);
-                    if (bytesSent == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), "Failed to send data.");
-                    }
+                    if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data.");
                     return bytesSent;
                 }
 
                 int Socket::Receive(char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, "Socket is closed.");
-                    }
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
                     int bytesReceived = recv(m_pImpl->hSocket, buffer + offset, size, 0);
-                    if (bytesReceived == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), "Failed to receive data.");
-                    }
+                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data.");
                     return bytesReceived;
                 }
 
                 int Socket::SendTo(const char* buffer, int offset, int size, const String& ip, int port) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, "Socket is closed.");
-                    }
-
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
                     sockaddr_in addr;
-                    std::memset(&addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-                    addr.sin_port = htons(static_cast<u_short>(port));
-
-#if defined(_WIN32)
-                    if (inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#else
-                    if (::inet_pton(AF_INET, ip.GetRawString(), &addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#endif
-
+                    InitSockAddrIn(ip, port, addr);
                     int bytesSent = sendto(m_pImpl->hSocket, buffer + offset, size, 0, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
-                    if (bytesSent == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), "Failed to send data to host.");
-                    }
+                    if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data to host.");
                     return bytesSent;
                 }
 
-                int Socket::ReceiveFrom(char* buffer, int offset, int size, String& ip, int& port) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        throw SocketException(-1, "Socket is closed.");
-                    }
-
-                    sockaddr_in addr;
-                    SockLen addrSize = sizeof(addr);
-                    std::memset(&addr, 0, sizeof(addr));
-
-                    int bytesReceived = recvfrom(m_pImpl->hSocket, buffer + offset, size, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
-                    if (bytesReceived == SOCKET_ERROR) {
-                        throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");
-                    }
-
+                static void FormatSockAddrIp(const sockaddr_in& addr, String& ip, int& port) {
                     char ipBuf[INET_ADDRSTRLEN];
-#if defined(_WIN32)
                     if (inet_ntop(AF_INET, &addr.sin_addr, ipBuf, sizeof(ipBuf)) != nullptr) {
                         ip = String(ipBuf);
                     }
-#else
-                    if (::inet_ntop(AF_INET, &addr.sin_addr, ipBuf, sizeof(ipBuf)) != nullptr) {
-                        ip = String(ipBuf);
-                    }
-#endif
                     port = ntohs(addr.sin_port);
+                }
+
+                int Socket::ReceiveFrom(char* buffer, int offset, int size, String& ip, int& port) {
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+                    sockaddr_in addr;
+                    SockLen addrSize = sizeof(addr);
+                    std::memset(&addr, 0, sizeof(addr));
+                    int bytesReceived = recvfrom(m_pImpl->hSocket, buffer + offset, size, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
+                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");
+                    FormatSockAddrIp(addr, ip, port);
                     return bytesReceived;
                 }
 
                 void Socket::Close() {
-                    if (m_pImpl) {
-                        m_pImpl->Cleanup();
-                    }
+                    if (m_pImpl) m_pImpl->Cleanup();
                 }
 
                 void Socket::Shutdown(SocketShutdown how) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        return;
-                    }
-                    int nativeHow = SD_BOTH;
-                    if (how == SocketShutdown::Receive) {
-                        nativeHow = SD_RECEIVE;
-                    } else if (how == SocketShutdown::Send) {
-                        nativeHow = SD_SEND;
-                    }
-
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) return;
+                    int nativeHow = (how == SocketShutdown::Receive) ? SD_RECEIVE : ((how == SocketShutdown::Send) ? SD_SEND : SD_BOTH);
                     shutdown(m_pImpl->hSocket, nativeHow);
                 }
 
-                bool Socket::Poll(int microSeconds, SelectMode mode) {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        return false;
-                    }
-
+                static int SelectSingleSocket(SOCKET hSocket, int microSeconds, SelectMode mode) {
                     fd_set fds;
                     FD_ZERO(&fds);
-                    FD_SET(m_pImpl->hSocket, &fds);
-
-                    timeval timeout;
-                    timeout.tv_sec = microSeconds / 1000000;
-                    timeout.tv_usec = microSeconds % 1000000;
-
-                    fd_set* readFds = (mode == SelectMode::SelectRead) ? &fds : nullptr;
-                    fd_set* writeFds = (mode == SelectMode::SelectWrite) ? &fds : nullptr;
-                    fd_set* errorFds = (mode == SelectMode::SelectError) ? &fds : nullptr;
-
+                    FD_SET(hSocket, &fds);
+                    timeval timeout{ microSeconds / 1000000, microSeconds % 1000000 };
+                    fd_set* pRead = (mode == SelectMode::SelectRead) ? &fds : nullptr;
+                    fd_set* pWrite = (mode == SelectMode::SelectWrite) ? &fds : nullptr;
+                    fd_set* pErr = (mode == SelectMode::SelectError) ? &fds : nullptr;
 #if defined(_WIN32)
-                    int result = select(0, readFds, writeFds, errorFds, &timeout);
+                    return select(0, pRead, pWrite, pErr, &timeout);
 #else
-                    int result = select(m_pImpl->hSocket + 1, readFds, writeFds, errorFds, &timeout);
+                    return select(hSocket + 1, pRead, pWrite, pErr, &timeout);
 #endif
-                    return result > 0;
+                }
+
+                bool Socket::Poll(int microSeconds, SelectMode mode) {
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) return false;
+                    return SelectSingleSocket(m_pImpl->hSocket, microSeconds, mode) > 0;
+                }
+
+                static bool IsPeerConnected(SOCKET hSocket) {
+                    sockaddr_in peerAddr;
+                    SockLen peerLen = sizeof(peerAddr);
+                    return (getpeername(hSocket, reinterpret_cast<sockaddr*>(&peerAddr), &peerLen) != SOCKET_ERROR);
+                }
+
+                static bool IsSocketActivePeek(SOCKET hSocket) {
+                    char buf;
+#if defined(_WIN32)
+                    int result = recv(hSocket, &buf, 1, MSG_PEEK);
+                    if (result == 0) return false;
+                    return (result != SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK);
+#else
+                    int result = ::recv(hSocket, &buf, 1, MSG_PEEK | MSG_DONTWAIT);
+                    if (result == 0) return false;
+                    return (result != SOCKET_ERROR || (errno == EAGAIN || errno == EWOULDBLOCK));
+#endif
                 }
 
                 bool Socket::Connected() const {
-                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
-                        return false;
-                    }
-
-                    // Check if the socket is actually connected (and not listening, closed, or never connected)
-                    sockaddr_in peerAddr;
-                    SockLen peerLen = sizeof(peerAddr);
-#if defined(_WIN32)
-                    if (getpeername(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&peerAddr), &peerLen) == SOCKET_ERROR) {
-                        return false;
-                    }
-#else
-                    if (::getpeername(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&peerAddr), &peerLen) == SOCKET_ERROR) {
-                        return false;
-                    }
-#endif
-
-                    // Check readability with select (timeout 0) to ensure recv won't block
-                    fd_set fds;
-                    FD_ZERO(&fds);
-                    FD_SET(m_pImpl->hSocket, &fds);
-
-                    timeval timeout;
-                    timeout.tv_sec = 0;
-                    timeout.tv_usec = 0;
-
-#if defined(_WIN32)
-                    int selResult = select(0, &fds, nullptr, nullptr, &timeout);
-#else
-                    int selResult = ::select(m_pImpl->hSocket + 1, &fds, nullptr, nullptr, &timeout);
-#endif
-
-                    if (selResult == SOCKET_ERROR) {
-                        return false;
-                    }
-
-                    if (selResult == 0) {
-                        // Not readable, but no error or closure detected -> still connected
-                        return true;
-                    }
-
-                    char buf;
-#if defined(_WIN32)
-                    int result = recv(m_pImpl->hSocket, &buf, 1, MSG_PEEK);
-                    if (result == 0) return false;
-                    if (result == SOCKET_ERROR) {
-                        int err = WSAGetLastError();
-                        if (err != WSAEWOULDBLOCK) return false;
-                    }
-#else
-                    int result = ::recv(m_pImpl->hSocket, &buf, 1, MSG_PEEK | MSG_DONTWAIT);
-                    if (result == 0) return false;
-                    if (result == SOCKET_ERROR) {
-                        if (errno != EAGAIN && errno != EWOULDBLOCK) return false;
-                    }
-#endif
-                    return true;
+                    if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET || !IsPeerConnected(m_pImpl->hSocket)) return false;
+                    int sel = SelectSingleSocket(m_pImpl->hSocket, 0, SelectMode::SelectRead);
+                    if (sel == SOCKET_ERROR) return false;
+                    if (sel == 0) return true;
+                    return IsSocketActivePeek(m_pImpl->hSocket);
                 }
 
                 void* Socket::GetNativeHandle() const {

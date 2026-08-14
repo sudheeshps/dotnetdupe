@@ -36,7 +36,7 @@ namespace DotNetDupe {
                     std::atomic<double> m_dDownloadRate{ 0.0 };
 
                     HttpClient m_httpClient;
-                    SmartPointer<Threading::Thread> m_workerThread;
+                    SmartPointer<Threading::Thread> m_pWorkerThread;
 
                     long long CheckExistingFileSize() {
                         if (!IO::File::Exists(m_sDestinationPath)) return 0;
@@ -120,30 +120,27 @@ namespace DotNetDupe {
                         return progress;
                     }
 
+                    void ProcessDownloadChunk(int iRead, const char* pBuffer, IO::FileStream& outFile, long long& llBytesSession, const std::chrono::steady_clock::time_point& timeStart) {
+                        outFile.Write(pBuffer, 0, iRead);
+                        outFile.Flush();
+                        m_llDownloadedBytes += iRead;
+                        llBytesSession += iRead;
+                        UpdateRate(llBytesSession, timeStart);
+                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                    }
+
                     bool ReadAndWriteData(const SmartPointer<IO::Stream>& pStream, IO::FileStream& outFile) {
                         char pBuffer[8192];
                         auto timeStart = std::chrono::steady_clock::now();
-                        long long llBytesDownloadedInSession = 0;
-
+                        long long llBytesSession = 0;
                         try {
                             while (!m_bPauseRequested.load()) {
                                 int iRead = pStream->Read(pBuffer, 0, sizeof(pBuffer));
                                 if (iRead <= 0) break;
-
-                                outFile.Write(pBuffer, 0, iRead);
-                                outFile.Flush();
-
-                                m_llDownloadedBytes += iRead;
-                                llBytesDownloadedInSession += iRead;
-                                UpdateRate(llBytesDownloadedInSession, timeStart);
-
-                                if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                                ProcessDownloadChunk(iRead, pBuffer, outFile, llBytesSession, timeStart);
                             }
-                        } catch (const IO::IOException& ex) {
-                            Console::WriteLine(String("[FileDownloader] Stream I/O error during download: ") + ex.What());
-                            return false;
-                        } catch (const SystemException& ex) {
-                            Console::WriteLine(String("[FileDownloader] Error reading response stream: ") + ex.What());
+                        } catch (const Exception& ex) {
+                            Console::WriteLine(String("[FileDownloader] Stream error: ") + ex.What());
                             return false;
                         }
                         return !m_bPauseRequested.load();
@@ -291,8 +288,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Starting download from ") + m_pImpl->m_sUrl);
 
                     auto pImpl = m_pImpl;
-                    m_pImpl->m_workerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
-                    m_pImpl->m_workerThread->Start();
+                    m_pImpl->m_pWorkerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
+                    m_pImpl->m_pWorkerThread->Start();
                     return true;
                 }
 
@@ -305,8 +302,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Resuming download for ") + m_pImpl->m_sDestinationPath);
 
                     auto pImpl = m_pImpl;
-                    m_pImpl->m_workerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
-                    m_pImpl->m_workerThread->Start();
+                    m_pImpl->m_pWorkerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
+                    m_pImpl->m_pWorkerThread->Start();
                     return true;
                 }
 

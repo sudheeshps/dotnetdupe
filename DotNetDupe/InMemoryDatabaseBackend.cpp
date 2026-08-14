@@ -331,6 +331,15 @@ namespace DotNetDupe {
                         }
                         return val;
                     }
+
+                    std::vector<StdRow> DispatchCommand(const std::string& cmd, const std::vector<std::string>& tokens, const std::unordered_map<std::string, std::string>& stdParams, std::vector<std::string>& stdColNames, int& rowsAffected) {
+                        if (cmd == "CREATE") ExecuteCreate(tokens);
+                        else if (cmd == "INSERT") ExecuteInsert(tokens, stdParams, rowsAffected);
+                        else if (cmd == "SELECT") return ExecuteSelect(tokens, stdParams, stdColNames);
+                        else if (cmd == "UPDATE") ExecuteUpdate(tokens, stdParams, rowsAffected);
+                        else if (cmd == "DELETE") ExecuteDelete(tokens, stdParams, rowsAffected);
+                        return {};
+                    }
                 };
 
                 InMemoryDatabaseBackend::InMemoryDatabaseBackend() : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {}
@@ -338,6 +347,28 @@ namespace DotNetDupe {
 
                 void InMemoryDatabaseBackend::ClearDatabase() {
                     m_pImpl->m_tables.clear();
+                }
+
+                static std::unordered_map<std::string, std::string> ConvertParamsMap(const Collections::Generic::Dictionary<String, String>& parameters) {
+                    std::unordered_map<std::string, std::string> stdParams;
+                    auto keys = parameters.GetKeys();
+                    for (int i = 0; i < keys.GetLength(); ++i) {
+                        String val;
+                        parameters.TryGetValue(keys[i], val);
+                        stdParams[keys[i].GetRawString()] = val.GetRawString();
+                    }
+                    return stdParams;
+                }
+
+                static Collections::Generic::List<Row> ConvertResultRows(const std::vector<StdRow>& stdResRows, const std::vector<std::string>& stdColNames, Collections::Generic::List<String>& columnNames) {
+                    for (const auto& col : stdColNames) columnNames.Add(String(col.c_str()));
+                    Collections::Generic::List<Row> resultRows;
+                    for (const auto& sr : stdResRows) {
+                        Row r;
+                        for (const auto& v : sr.Values) r.Values.Add(String(v.c_str()));
+                        resultRows.Add(r);
+                    }
+                    return resultRows;
                 }
 
                 Collections::Generic::List<Row> InMemoryDatabaseBackend::Execute(
@@ -348,53 +379,13 @@ namespace DotNetDupe {
                 ) {
                     rowsAffected = 0;
                     columnNames.Clear();
-
-                    std::string stdSql = sql.GetRawString();
-                    std::unordered_map<std::string, std::string> stdParams;
-                    auto keys = parameters.GetKeys();
-                    for (int i = 0; i < keys.GetLength(); ++i) {
-                        String val;
-                        parameters.TryGetValue(keys[i], val);
-                        stdParams[keys[i].GetRawString()] = val.GetRawString();
-                    }
-
-                    std::vector<std::string> stdColNames;
-
-                    std::vector<std::string> tokens = m_pImpl->Tokenize(stdSql);
+                    std::unordered_map<std::string, std::string> stdParams = ConvertParamsMap(parameters);
+                    std::vector<std::string> tokens = m_pImpl->Tokenize(sql.GetRawString());
                     if (tokens.empty()) return Collections::Generic::List<Row>();
 
-                    std::string cmd = m_pImpl->ToUpper(tokens[0]);
-
-                    std::vector<StdRow> stdResRows;
-                    if (cmd == "CREATE") {
-                        m_pImpl->ExecuteCreate(tokens);
-                    }
-                    else if (cmd == "INSERT") {
-                        m_pImpl->ExecuteInsert(tokens, stdParams, rowsAffected);
-                    }
-                    else if (cmd == "SELECT") {
-                        stdResRows = m_pImpl->ExecuteSelect(tokens, stdParams, stdColNames);
-                    }
-                    else if (cmd == "UPDATE") {
-                        m_pImpl->ExecuteUpdate(tokens, stdParams, rowsAffected);
-                    }
-                    else if (cmd == "DELETE") {
-                        m_pImpl->ExecuteDelete(tokens, stdParams, rowsAffected);
-                    }
-
-                    for (const auto& col : stdColNames) {
-                        columnNames.Add(String(col.c_str()));
-                    }
-
-                    Collections::Generic::List<Row> resultRows;
-                    for (const auto& sr : stdResRows) {
-                        Row r;
-                        for (const auto& v : sr.Values) {
-                            r.Values.Add(String(v.c_str()));
-                        }
-                        resultRows.Add(r);
-                    }
-                    return resultRows;
+                    std::vector<std::string> stdColNames;
+                    std::vector<StdRow> stdResRows = m_pImpl->DispatchCommand(m_pImpl->ToUpper(tokens[0]), tokens, stdParams, stdColNames, rowsAffected);
+                    return ConvertResultRows(stdResRows, stdColNames, columnNames);
                 }
 
             }

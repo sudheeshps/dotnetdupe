@@ -40,47 +40,30 @@ namespace DotNetDupe {
                     return m_pImpl->m_parameters;
                 }
 
+                static Collections::Generic::Dictionary<String, String> ExtractDbParameters(const DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbParameterCollection>& pParams) {
+                    Collections::Generic::Dictionary<String, String> dict;
+                    for (int i = 0; i < pParams->GetCount(); ++i) {
+                        auto p = pParams->GetAt(i);
+                        dict.Add(p->GetParameterName(), p->GetValue());
+                    }
+                    return dict;
+                }
+
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbDataReader> SqlCommand::ExecuteReader() {
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
-                    
-                    Collections::Generic::Dictionary<String, String> params;
-                    for (int i = 0; i < m_pImpl->m_parameters->GetCount(); ++i) {
-                        auto p = m_pImpl->m_parameters->GetAt(i);
-                        params.Add(p->GetParameterName(), p->GetValue());
-                    }
-
+                    auto params = ExtractDbParameters(m_pImpl->m_parameters);
                     Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
-                    auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(
-                        dbName,
-                        m_pImpl->m_sCommandText,
-                        params,
-                        columns,
-                        rowsAffected
-                    );
-
+                    auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl->m_sCommandText, params, columns, rowsAffected);
                     return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared(std::move(resultRows), std::move(columns));
                 }
 
                 int SqlCommand::ExecuteNonQuery() {
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
-
-                    Collections::Generic::Dictionary<String, String> params;
-                    for (int i = 0; i < m_pImpl->m_parameters->GetCount(); ++i) {
-                        auto p = m_pImpl->m_parameters->GetAt(i);
-                        params.Add(p->GetParameterName(), p->GetValue());
-                    }
-
+                    auto params = ExtractDbParameters(m_pImpl->m_parameters);
                     Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
-                    DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(
-                        dbName,
-                        m_pImpl->m_sCommandText,
-                        params,
-                        columns,
-                        rowsAffected
-                    );
-
+                    DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl->m_sCommandText, params, columns, rowsAffected);
                     return rowsAffected;
                 }
 

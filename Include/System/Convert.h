@@ -129,6 +129,7 @@ namespace DotNetDupe {
             static void EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret);
             static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector<char>& decoded);
             static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded);
+            static void DecodeBase64Loop(const std::string& sInput, std::vector<char>& decoded);
         };
     }
 }

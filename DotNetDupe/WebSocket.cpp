@@ -90,12 +90,8 @@ namespace DotNetDupe {
                     return String(encoded);
                 }
 
-                bool WebSocket::SendAsync(const String& message) {
-                    std::string text = message.GetRawString();
-                    std::vector<uint8_t> frame;
-                    frame.push_back(0x81); // FIN bit set + Text frame opcode (0x1)
-
-                    size_t len = text.length();
+                static void BuildWebSocketFrameHeader(uint8_t opcode, size_t len, std::vector<uint8_t>& frame) {
+                    frame.push_back(opcode);
                     if (len <= 125) {
                         frame.push_back(static_cast<uint8_t>(len));
                     } else if (len <= 65535) {
@@ -104,11 +100,14 @@ namespace DotNetDupe {
                         frame.push_back(static_cast<uint8_t>(len & 0xFF));
                     } else {
                         frame.push_back(127);
-                        for (int i = 7; i >= 0; --i) {
-                            frame.push_back(static_cast<uint8_t>((len >> (i * 8)) & 0xFF));
-                        }
+                        for (int i = 7; i >= 0; --i) frame.push_back(static_cast<uint8_t>((len >> (i * 8)) & 0xFF));
                     }
+                }
 
+                bool WebSocket::SendAsync(const String& message) {
+                    std::string text = message.GetRawString();
+                    std::vector<uint8_t> frame;
+                    BuildWebSocketFrameHeader(0x81, text.length(), frame);
                     frame.insert(frame.end(), text.begin(), text.end());
                     Threading::Lock<Threading::CriticalSection> lock(m_pImpl->m_csLock);
                     if (m_pImpl->m_pStream.IsNull() || m_pImpl->m_eState != WebSocketState::Open) return false;
@@ -118,25 +117,8 @@ namespace DotNetDupe {
 
                 bool WebSocket::SendBytes(const Array<uint8_t>& data) {
                     std::vector<uint8_t> frame;
-                    frame.push_back(0x82); // FIN bit set + Binary frame opcode (0x2)
-
-                    size_t len = data.GetLength();
-                    if (len <= 125) {
-                        frame.push_back(static_cast<uint8_t>(len));
-                    } else if (len <= 65535) {
-                        frame.push_back(126);
-                        frame.push_back(static_cast<uint8_t>((len >> 8) & 0xFF));
-                        frame.push_back(static_cast<uint8_t>(len & 0xFF));
-                    } else {
-                        frame.push_back(127);
-                        for (int i = 7; i >= 0; --i) {
-                            frame.push_back(static_cast<uint8_t>((len >> (i * 8)) & 0xFF));
-                        }
-                    }
-
-                    for (int i = 0; i < len; ++i) {
-                        frame.push_back(data[i]);
-                    }
+                    BuildWebSocketFrameHeader(0x82, data.GetLength(), frame);
+                    for (int i = 0; i < data.GetLength(); ++i) frame.push_back(data[i]);
                     Threading::Lock<Threading::CriticalSection> lock(m_pImpl->m_csLock);
                     if (m_pImpl->m_pStream.IsNull() || m_pImpl->m_eState != WebSocketState::Open) return false;
                     m_pImpl->m_pStream->Write(reinterpret_cast<const char*>(frame.data()), 0, static_cast<int>(frame.size()));
@@ -149,19 +131,13 @@ namespace DotNetDupe {
                         if (m_pImpl->m_pStream.IsNull() || m_pImpl->m_eState != WebSocketState::Open) return false;
                     }
                     uint8_t opcode = 0; bool masked = false; uint64_t payloadLen = 0;
-                    if (!m_pImpl->ReadFrameHeader(opcode, masked, payloadLen)) {
+                    if (!m_pImpl->ReadFrameHeader(opcode, masked, payloadLen) || opcode == 0x08) {
                         m_pImpl->CloseState(); return false;
                     }
-                    if (opcode == 0x08) {
-                        m_pImpl->CloseState(); return false;
-                    }
-                    if (!m_pImpl->ReadExtendedLength(payloadLen)) return false;
                     std::vector<uint8_t> payload;
-                    if (!m_pImpl->ReadMaskKeyAndPayload(masked, payloadLen, payload)) return false;
-                    std::string sPayload;
-                    sPayload.reserve(payload.size());
-                    for (uint8_t b : payload) { sPayload.push_back(static_cast<char>(b)); }
-                    outMessage = String(std::move(sPayload.c_str()));
+                    if (!m_pImpl->ReadExtendedLength(payloadLen) || !m_pImpl->ReadMaskKeyAndPayload(masked, payloadLen, payload)) return false;
+                    std::string sPayload(payload.begin(), payload.end());
+                    outMessage = String(sPayload.c_str());
                     return true;
                 }
 

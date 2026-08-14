@@ -90,31 +90,30 @@ namespace DotNetDupe {
                     }
                 }
 
+                static SSL* CreateAndBindSsl(SSL_CTX* ctx, void*& pBioIn, void*& pBioOut) {
+                    SSL* ssl = SSL_new(ctx);
+                    if (!ssl) {
+                        SSL_CTX_free(ctx);
+                        throw IO::IOException("Failed to create SSL handle.");
+                    }
+                    BIO* bioIn = BIO_new(BIO_s_mem());
+                    BIO* bioOut = BIO_new(BIO_s_mem());
+                    pBioIn = bioIn;
+                    pBioOut = bioOut;
+                    SSL_set_bio(ssl, bioIn, bioOut);
+                    return ssl;
+                }
+
                 void SslStream::AuthenticateAsClient(const String& targetHost) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");
 
                     SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(false));
                     m_pSslCtx = ctx;
-
-                    SSL* ssl = SSL_new(ctx);
-                    if (!ssl) {
-                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw IO::IOException("Failed to create SSL handle.");
-                    }
-
+                    SSL* ssl = CreateAndBindSsl(ctx, m_pBioIn, m_pBioOut);
                     m_pSsl = ssl;
                     SSL_set_tlsext_host_name(ssl, targetHost.GetRawString());
-
-                    BIO* bioIn = BIO_new(BIO_s_mem());
-                    BIO* bioOut = BIO_new(BIO_s_mem());
-                    m_pBioIn = bioIn;
-                    m_pBioOut = bioOut;
-
-                    SSL_set_bio(ssl, bioIn, bioOut);
                     SSL_set_connect_state(ssl);
-
                     ProcessHandshake();
                 }
 
@@ -125,70 +124,53 @@ namespace DotNetDupe {
 
                     SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(true));
                     m_pSslCtx = ctx;
-
                     ConfigureServerCert(ctx, certificate);
-
-                    SSL* ssl = SSL_new(ctx);
-                    if (!ssl) {
-                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw IO::IOException("Failed to create SSL handle.");
-                    }
-
+                    SSL* ssl = CreateAndBindSsl(ctx, m_pBioIn, m_pBioOut);
                     m_pSsl = ssl;
-
-                    BIO* bioIn = BIO_new(BIO_s_mem());
-                    BIO* bioOut = BIO_new(BIO_s_mem());
-                    m_pBioIn = bioIn;
-                    m_pBioOut = bioOut;
-
-                    SSL_set_bio(ssl, bioIn, bioOut);
                     SSL_set_accept_state(ssl);
-
                     ProcessHandshake();
+                }
+
+                static void PumpNetworkToBio(IO::Stream* pStream, void* pBioIn, const char* pErrorContext) {
+                    char buffer[4096];
+                    int read = pStream->Read(buffer, 0, sizeof(buffer));
+                    if (read <= 0) throw IO::IOException(pErrorContext);
+                    BIO_write(static_cast<BIO*>(pBioIn), buffer, read);
+                }
+
+                static void FlushBioOutbound(void* pBioOut, const SmartPointer<IO::Stream>& spInnerStream) {
+                    if (!pBioOut) return;
+                    char buffer[4096];
+                    while (true) {
+                        int read = BIO_read(static_cast<BIO*>(pBioOut), buffer, sizeof(buffer));
+                        if (read <= 0) break;
+                        spInnerStream->Write(buffer, 0, read);
+                    }
+                }
+
+                static void HandleHandshakeError(int err, void* pBioIn, void* pBioOut, const SmartPointer<IO::Stream>& spStream) {
+                    FlushBioOutbound(pBioOut, spStream);
+                    if (err == SSL_ERROR_WANT_READ) {
+                        PumpNetworkToBio(spStream.Get(), pBioIn, "Connection closed during SSL handshake.");
+                    } else if (err != SSL_ERROR_WANT_WRITE) {
+                        char errBuf[256];
+                        ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                        throw IO::IOException(String("SSL handshake failed: ") + errBuf);
+                    }
                 }
 
                 void SslStream::ProcessHandshake() {
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
-                    
                     while (!SSL_is_init_finished(ssl)) {
                         int ret = SSL_do_handshake(ssl);
-                        if (ret == 1) {
-                            break; // Handshake complete!
-                        }
-                        
-                        int err = SSL_get_error(ssl, ret);
-                        if (err == SSL_ERROR_WANT_READ) {
-                            FlushOutboundBio();
-                            
-                            char buffer[4096];
-                            int read = m_spInnerStream->Read(buffer, 0, sizeof(buffer));
-                            if (read <= 0) {
-                                throw IO::IOException("Connection closed during SSL handshake.");
-                            }
-                            
-                            BIO_write(static_cast<BIO*>(m_pBioIn), buffer, read);
-                        } else if (err == SSL_ERROR_WANT_WRITE) {
-                            FlushOutboundBio();
-                        } else {
-                            char errBuf[256];
-                            ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                            throw IO::IOException(String("SSL handshake failed: ") + errBuf);
-                        }
+                        if (ret == 1) break;
+                        HandleHandshakeError(SSL_get_error(ssl, ret), m_pBioIn, m_pBioOut, m_spInnerStream);
                     }
-                    
                     FlushOutboundBio();
                 }
 
                 void SslStream::FlushOutboundBio() {
-                    if (!m_pBioOut) return;
-                    
-                    char buffer[4096];
-                    while (true) {
-                        int read = BIO_read(static_cast<BIO*>(m_pBioOut), buffer, sizeof(buffer));
-                        if (read <= 0) break;
-                        m_spInnerStream->Write(buffer, 0, read);
-                    }
+                    FlushBioOutbound(m_pBioOut, m_spInnerStream);
                 }
 
                 bool SslStream::CanRead() const { return !m_bDisposed; }
@@ -203,75 +185,62 @@ namespace DotNetDupe {
                     m_spInnerStream->Flush();
                 }
 
-                long SslStream::Seek(long offset, int origin) {
-                    throw IO::IOException("SslStream does not support seeking.");
-                }
+                long SslStream::Seek(long offset, int origin) { throw IO::IOException("SslStream does not support seeking."); }
+                void SslStream::SetLength(long value) { throw IO::IOException("SslStream does not support seeking."); }
 
-                void SslStream::SetLength(long value) {
-                    throw IO::IOException("SslStream does not support seeking.");
+                static int HandleReadError(int err, const SmartPointer<IO::Stream>& spStream, void* pBioIn, void* pBioOut) {
+                    if (err == SSL_ERROR_WANT_READ) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        char rawBuf[4096];
+                        int read = spStream->Read(rawBuf, 0, sizeof(rawBuf));
+                        if (read <= 0) return 0;
+                        BIO_write(static_cast<BIO*>(pBioIn), rawBuf, read);
+                        return -1;
+                    }
+                    if (err == SSL_ERROR_ZERO_RETURN) return 0;
+                    if (err == SSL_ERROR_WANT_WRITE) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        return -1;
+                    }
+                    char errBuf[256];
+                    ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                    throw IO::IOException(String("SSL read failed: ") + errBuf);
                 }
 
                 int SslStream::Read(char* buffer, int offset, int count) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");
-                    
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
-                    
                     while (true) {
                         int ret = SSL_read(ssl, buffer + offset, count);
-                        if (ret > 0) {
-                            return ret;
-                        }
-                        
-                        int err = SSL_get_error(ssl, ret);
-                        if (err == SSL_ERROR_WANT_READ) {
-                            FlushOutboundBio();
-                            
-                            char rawBuf[4096];
-                            int read = m_spInnerStream->Read(rawBuf, 0, sizeof(rawBuf));
-                            if (read <= 0) {
-                                return 0; // EOF
-                            }
-                            
-                            BIO_write(static_cast<BIO*>(m_pBioIn), rawBuf, read);
-                        } else if (err == SSL_ERROR_ZERO_RETURN) {
-                            return 0; // SSL closed cleanly
-                        } else if (err == SSL_ERROR_WANT_WRITE) {
-                            FlushOutboundBio();
-                        } else {
-                            char errBuf[256];
-                            ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                            throw IO::IOException(String("SSL read failed: ") + errBuf);
-                        }
+                        if (ret > 0) return ret;
+                        int r = HandleReadError(SSL_get_error(ssl, ret), m_spInnerStream, m_pBioIn, m_pBioOut);
+                        if (r >= 0) return r;
+                    }
+                }
+
+                static void HandleWriteError(int err, const SmartPointer<IO::Stream>& spStream, void* pBioIn, void* pBioOut) {
+                    if (err == SSL_ERROR_WANT_WRITE) {
+                        FlushBioOutbound(pBioOut, spStream);
+                    } else if (err == SSL_ERROR_WANT_READ) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        PumpNetworkToBio(spStream.Get(), pBioIn, "Connection closed during SSL write.");
+                    } else {
+                        char errBuf[256];
+                        ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                        throw IO::IOException(String("SSL write failed: ") + errBuf);
                     }
                 }
 
                 void SslStream::Write(const char* buffer, int offset, int count) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");
-                    
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
-                    
                     int written = 0;
                     while (written < count) {
                         int ret = SSL_write(ssl, buffer + offset + written, count - written);
                         if (ret <= 0) {
-                            int err = SSL_get_error(ssl, ret);
-                            if (err == SSL_ERROR_WANT_WRITE) {
-                                FlushOutboundBio();
-                            } else if (err == SSL_ERROR_WANT_READ) {
-                                FlushOutboundBio();
-                                char rawBuf[4096];
-                                int read = m_spInnerStream->Read(rawBuf, 0, sizeof(rawBuf));
-                                if (read <= 0) {
-                                    throw IO::IOException("Connection closed during SSL write.");
-                                }
-                                BIO_write(static_cast<BIO*>(m_pBioIn), rawBuf, read);
-                            } else {
-                                char errBuf[256];
-                                ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                                throw IO::IOException(String("SSL write failed: ") + errBuf);
-                            }
+                            HandleWriteError(SSL_get_error(ssl, ret), m_spInnerStream, m_pBioIn, m_pBioOut);
                         } else {
                             written += ret;
                             FlushOutboundBio();

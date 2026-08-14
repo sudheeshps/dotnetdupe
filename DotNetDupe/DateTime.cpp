@@ -171,44 +171,46 @@ namespace DotNetDupe {
 			return Now().GetDate();
 		}
 
+        static int64_t TmToTicks(const struct tm& t, int64_t remainderTicks) {
+            int year = t.tm_year + 1900, month = t.tm_mon + 1, day = t.tm_mday;
+            int hour = t.tm_hour, minute = t.tm_min, second = t.tm_sec;
+            return DateToTicks(year, month, day) + TimeToTicks(hour, minute, second) + remainderTicks;
+        }
+
+        static struct tm ConvertToLocalTm(int64_t time) {
+            struct tm t;
+#if defined(_WIN32)
+            _localtime64_s(&t, &time);
+#else
+            time_t time_t_val = static_cast<time_t>(time);
+            localtime_r(&time_t_val, &t);
+#endif
+            return t;
+        }
+
+        static struct tm ConvertToUtcTm(int64_t time) {
+            struct tm t;
+#if defined(_WIN32)
+            _gmtime64_s(&t, &time);
+#else
+            time_t time_t_val = static_cast<time_t>(time);
+            gmtime_r(&time_t_val, &t);
+#endif
+            return t;
+        }
+
 		DateTime DateTime::ToLocalTime() const {
 			if (m_kind == DateTimeKind::Local) return *this;
 			int64_t time = (m_nTicks - UnixEpochTicks) / TicksPerSecond;
-			struct tm t;
-#if defined(_WIN32)
-			_localtime64_s(&t, &time);
-#else
-			time_t time_t_val = static_cast<time_t>(time);
-			localtime_r(&time_t_val, &t);
-#endif
-			int year = t.tm_year + 1900;
-			int month = t.tm_mon + 1;
-			int day = t.tm_mday;
-			int hour = t.tm_hour;
-			int minute = t.tm_min;
-			int second = t.tm_sec;
-			int64_t ticks = DateToTicks(year, month, day) + TimeToTicks(hour, minute, second) + m_nTicks % TicksPerSecond;
-			return DateTime(ticks, DateTimeKind::Local);
+			struct tm t = ConvertToLocalTm(time);
+			return DateTime(TmToTicks(t, m_nTicks % TicksPerSecond), DateTimeKind::Local);
 		}
 
 		DateTime DateTime::ToUniversalTime() const {
 			if (m_kind == DateTimeKind::Utc) return *this;
 			int64_t time = (m_nTicks - UnixEpochTicks) / TicksPerSecond;
-			struct tm t;
-#if defined(_WIN32)
-			_gmtime64_s(&t, &time);
-#else
-			time_t time_t_val = static_cast<time_t>(time);
-			gmtime_r(&time_t_val, &t);
-#endif
-			int year = t.tm_year + 1900;
-			int month = t.tm_mon + 1;
-			int day = t.tm_mday;
-			int hour = t.tm_hour;
-			int minute = t.tm_min;
-			int second = t.tm_sec;
-			int64_t ticks = DateToTicks(year, month, day) + TimeToTicks(hour, minute, second) + m_nTicks % TicksPerSecond;
-			return DateTime(ticks, DateTimeKind::Utc);
+			struct tm t = ConvertToUtcTm(time);
+			return DateTime(TmToTicks(t, m_nTicks % TicksPerSecond), DateTimeKind::Utc);
 		}
 
 		String DateTime::ToString() const {

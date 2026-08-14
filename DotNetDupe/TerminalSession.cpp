@@ -62,55 +62,46 @@ namespace DotNetDupe {
                 info.sClientIpAddress = QueryWtsString(uSessionId, WTSClientAddress);
                 info.bIsRdpSession = !info.sClientName.IsEmpty() || info.sSessionName.Contains("RDP");
             }
-#endif
 
             Collections::Generic::List<RdpSessionInfo> TerminalSession::GetSessions() {
                 Collections::Generic::List<RdpSessionInfo> lstResult;
-#if defined(_WIN32)
                 WTS_SESSION_INFOW* pSessionInfo = NULL;
                 DWORD dwCount = 0;
-
                 if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &pSessionInfo, &dwCount)) {
                     for (DWORD i = 0; i < dwCount; ++i) {
                         RdpSessionInfo info;
                         String sName = (pSessionInfo[i].pWinStationName != NULL) ? String(pSessionInfo[i].pWinStationName) : String("");
                         RdpSessionState eState = ConvertWtsState(pSessionInfo[i].State);
-
                         QuerySessionDetails(pSessionInfo[i].SessionId, sName, eState, info);
                         lstResult.Add(info);
                     }
-
                     ::WTSFreeMemory(pSessionInfo);
                 } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied enumerating terminal sessions. Administrator privileges required.");
                 }
-#endif
                 return lstResult;
             }
+#else
+            Collections::Generic::List<RdpSessionInfo> TerminalSession::GetSessions() {
+                return Collections::Generic::List<RdpSessionInfo>();
+            }
+#endif
 
             Collections::Generic::List<RdpSessionInfo> TerminalSession::GetActiveSessions() {
                 auto lstAll = GetSessions();
                 Collections::Generic::List<RdpSessionInfo> lstActive;
-
                 for (int i = 0; i < lstAll.GetCount(); ++i) {
-                    if (lstAll[i].eState == RdpSessionState::Active) {
-                        lstActive.Add(lstAll[i]);
-                    }
+                    if (lstAll[i].eState == RdpSessionState::Active) lstActive.Add(lstAll[i]);
                 }
-
                 return lstActive;
             }
 
             Collections::Generic::List<RdpSessionInfo> TerminalSession::GetDisconnectedSessions() {
                 auto lstAll = GetSessions();
                 Collections::Generic::List<RdpSessionInfo> lstDisconnected;
-
                 for (int i = 0; i < lstAll.GetCount(); ++i) {
-                    if (lstAll[i].eState == RdpSessionState::Disconnected) {
-                        lstDisconnected.Add(lstAll[i]);
-                    }
+                    if (lstAll[i].eState == RdpSessionState::Disconnected) lstDisconnected.Add(lstAll[i]);
                 }
-
                 return lstDisconnected;
             }
 

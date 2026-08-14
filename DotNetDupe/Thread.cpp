@@ -17,7 +17,7 @@ namespace DotNetDupe {
         namespace Threading {
 
             thread_local Thread* Thread::_currentThread = nullptr;
-            static thread_local SmartPointer<Thread> _currentThreadStorage(nullptr);
+            static thread_local SmartPointer<Thread> s_pCurrentThreadStorage(nullptr);
 
             Thread::Thread(ThreadStart start)
                 : _start(start), _isAlive(false), _completed(false) {
@@ -87,8 +87,8 @@ namespace DotNetDupe {
 
             Thread* Thread::GetCurrentThread() {
                 if (_currentThread == nullptr) {
-                    _currentThreadStorage = CreateCurrentThreadWrapper();
-                    _currentThread = _currentThreadStorage.Get();
+                    s_pCurrentThreadStorage = CreateCurrentThreadWrapper();
+                    _currentThread = s_pCurrentThreadStorage.Get();
                 }
                 return _currentThread;
             }
@@ -108,20 +108,11 @@ namespace DotNetDupe {
             void Thread::ThreadMain(Object* parameter) {
                 _currentThread = this;
                 try {
-                    if (_start) {
-                        _start();
-                    }
-                    else if (_parameterizedStart) {
-                        _parameterizedStart(parameter);
-                    }
-                } catch (const Exception&) {
-                    // DotNetDupe exception
-                } catch (const std::exception& ex) {
-                    UnknownException unk(ex.what());
+                    if (_start) _start();
+                    else if (_parameterizedStart) _parameterizedStart(parameter);
                 } catch (...) {
-                    UnknownException unk("An unhandled exception occurred on worker thread.");
+                    (void)0;
                 }
-
                 {
                     std::lock_guard<std::mutex> lock(_joinMutex);
                     _completed = true;

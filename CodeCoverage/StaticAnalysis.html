@@ -6,27 +6,26 @@
     <title>DotNetDupe Static Analysis & Quality Gate Dashboard</title>
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 28px; line-height: 1.5; }
-        .container { max-width: 1100px; margin: 0 auto; background: #1e293b; border-radius: 12px; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5); padding: 36px; border: 1px solid #334155; }
+        .container { max-width: 1200px; margin: 0 auto; background: #1e293b; border-radius: 12px; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5); padding: 36px; border: 1px solid #334155; }
         h1 { margin-top: 0; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 16px; font-size: 26px; }
         h2 { color: #94a3b8; margin-top: 32px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
         .nav { margin-bottom: 24px; font-size: 14px; }
         .nav a { color: #38bdf8; text-decoration: none; font-weight: 600; padding: 6px 12px; background: #0f172a; border-radius: 6px; border: 1px solid #334155; }
         .nav a:hover { background: #1e293b; border-color: #38bdf8; }
         .meta { color: #94a3b8; font-size: 13px; margin-bottom: 28px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 28px; }
         .card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 18px; }
-        .card h3 { margin: 0 0 8px 0; font-size: 14px; color: #94a3b8; font-weight: 600; }
+        .card h3 { margin: 0 0 8px 0; font-size: 13px; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
         .card .val { font-size: 22px; font-weight: 700; color: #f8fafc; }
-        .card .status-pass { color: #4ade80; font-size: 14px; font-weight: 600; margin-top: 4px; }
-        .card .status-fail { color: #f87171; font-size: 14px; font-weight: 600; margin-top: 4px; }
-        .alert { padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
-        .alert.pass { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
-        .alert.fail { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .card .status-pass { color: #4ade80; font-size: 13px; font-weight: 600; margin-top: 4px; }
+        .card .status-warn { color: #facc15; font-size: 13px; font-weight: 600; margin-top: 4px; }
+        .card .status-fail { color: #f87171; font-size: 13px; font-weight: 600; margin-top: 4px; }
         table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; background: #0f172a; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
         th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #1e293b; }
         th { background: #1e293b; color: #94a3b8; font-weight: 600; }
         tr:hover { background: #1e293b; }
         .badge-pass { background: #166534; color: #86efac; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #22c55e; }
+        .badge-warn { background: #854d0e; color: #fef08a; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #eab308; }
         .badge-fail { background: #991b1b; color: #fca5a5; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #ef4444; }
         code { font-family: "Cascadia Code", "Consolas", monospace; background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #38bdf8; border: 1px solid #334155; }
     </style>
@@ -35,96 +34,105 @@
     <div class="container">
         <div class="nav"><a href="index.html">&larr; Back to Code Coverage Report</a></div>
         <h1>DotNetDupe Static Analysis & Quality Gate Dashboard</h1>
-        <div class='meta'>Generated: 2026-08-14 13:24:50 | Quality Gate Status: <strong>PASSED</strong></div>
+        <div class='meta'>Generated: 2026-08-14 15:06:18 | Quality Gate Status: <strong>PASSED</strong> | Total Rules Checked: <strong>11</strong></div>
+        <h2>&#128737; Phase 1: High-Priority Safety & Hygiene Gates</h2>
         <div class="grid">
             <div class="card"><h3>1. File Length (&le; 600 LLOC)</h3><div class="val">102 Files</div><div class="status-pass">&#10004; 100% Compliant</div></div>
-            <div class="card"><h3>2. Function-Level Export Macros</h3><div class="val">187 Headers</div><div class="status-pass">&#10004; 100% Compliant</div></div>
-            <div class="card"><h3>3. Standard Exceptions (throw std::*)</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Prohibited Throws</div></div>
-            <div class="card"><h3>4. Raw Allocations (new/delete)</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Raw Allocations</div></div>
-            <div class="card"><h3>5. Swallowed Catch Blocks</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Empty Blocks</div></div>
-            <div class="card"><h3>6. Public API STL Leakage</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 STL Leaks</div></div>
+            <div class="card"><h3>2. Function Export Macros</h3><div class="val">187 Headers</div><div class="status-pass">&#10004; 100% Compliant</div></div>
+            <div class="card"><h3>3. Standard Exceptions</h3><div class="val">0 Throws</div><div class="status-pass">&#10004; 0 Prohibited</div></div>
+            <div class="card"><h3>4. Raw Allocations</h3><div class="val">0 Allocations</div><div class="status-pass">&#10004; 0 Unmanaged</div></div>
+            <div class="card"><h3>5. Swallowed Catches</h3><div class="val">0 Empty Blocks</div><div class="status-pass">&#10004; 0 Swallowed</div></div>
+            <div class="card"><h3>6. Public API STL Leakage</h3><div class="val">0 Leaks</div><div class="status-pass">&#10004; 0 Leaks</div></div>
+        </div>
+        <h2>&#128202; Phase 2: Structural Complexity & Function Limits</h2>
+        <div class="grid">
+            <div class="card"><h3>7. Function Length (&le; 15 LLOC)</h3><div class="val">1402 Functions</div><div class="status-pass">&#10004; 0 Over Limits</div></div>
+            <div class="card"><h3>8. Class Length (&le; 500 LLOC)</h3><div class="val">125 Classes</div><div class="status-pass">&#10004; 0 Over Limits</div></div>
+            <div class="card"><h3>9. Cyclomatic Complexity (CCN)</h3><div class="val">4 High CCN</div><div class="status-pass">&#10004; Analyzed</div></div>
+            <div class="card"><h3>10. Max Nesting Depth (&le; 4)</h3><div class="val">0 Deep Blocks</div><div class="status-pass">&#10004; Analyzed</div></div>
+            <div class="card"><h3>11. SmartPointer "p" Prefix</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 100% Compliant</div></div>
         </div>
         <h2>&#128196; Implementation Source File Size Distribution (&le; 600 LLOC)</h2>
         <table>
             <thead><tr><th>Source File</th><th>LLOC</th><th>Limit</th><th>Status</th></tr></thead>
             <tbody>
-                <tr><td><code>DotNetDupe\String.cpp</code></td><td>490</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SystemMetrics.cpp</code></td><td>430</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\WebApplication.cpp</code></td><td>352</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\EventLog.cpp</code></td><td>326</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\JsonElement.cpp</code></td><td>323</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Console.cpp</code></td><td>287</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Socket.cpp</code></td><td>287</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\InMemoryDatabaseBackend.cpp</code></td><td>279</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Convert.cpp</code></td><td>278</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\EtwLogReader.cpp</code></td><td>271</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Environment.cpp</code></td><td>261</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\HttpClient.cpp</code></td><td>256</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SystemMetricsLinux.cpp</code></td><td>253</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Path.cpp</code></td><td>250</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\FileDownloader.cpp</code></td><td>237</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SslStream.cpp</code></td><td>211</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Process.cpp</code></td><td>210</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\DateTime.cpp</code></td><td>209</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\UserPrincipal.cpp</code></td><td>173</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\HMACSHA256.cpp</code></td><td>153</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\String.cpp</code></td><td>467</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SystemMetrics.cpp</code></td><td>369</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\EventLog.cpp</code></td><td>328</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\JsonElement.cpp</code></td><td>316</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Console.cpp</code></td><td>288</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Convert.cpp</code></td><td>280</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\InMemoryDatabaseBackend.cpp</code></td><td>277</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\EtwLogReader.cpp</code></td><td>259</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Environment.cpp</code></td><td>256</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\HttpClient.cpp</code></td><td>248</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\FileDownloader.cpp</code></td><td>236</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Path.cpp</code></td><td>234</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\WebApplication.cpp</code></td><td>232</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Socket.cpp</code></td><td>222</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Process.cpp</code></td><td>207</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\DateTime.cpp</code></td><td>205</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SslStream.cpp</code></td><td>200</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SystemMetricsLinux.cpp</code></td><td>188</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\UserPrincipal.cpp</code></td><td>177</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Directory.cpp</code></td><td>152</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\File.cpp</code></td><td>143</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\BitConverter.cpp</code></td><td>140</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\WebSocket.cpp</code></td><td>130</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\HMACSHA256.cpp</code></td><td>140</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\File.cpp</code></td><td>138</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\LoggerConfiguration.cpp</code></td><td>127</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\FileStream.cpp</code></td><td>126</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\EventWaitHandle.cpp</code></td><td>125</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\ServiceProvider.cpp</code></td><td>124</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Semaphore.cpp</code></td><td>120</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\EventWaitHandle.cpp</code></td><td>123</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Semaphore.cpp</code></td><td>118</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Uri.cpp</code></td><td>116</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\HttpContent.cpp</code></td><td>115</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Uri.cpp</code></td><td>113</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Mutex.cpp</code></td><td>112</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\LoggerBase.cpp</code></td><td>107</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\ServiceProvider.cpp</code></td><td>115</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\WebSocket.cpp</code></td><td>113</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Mutex.cpp</code></td><td>110</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Interlocked.cpp</code></td><td>104</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\WebAppServer.cpp</code></td><td>97</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\MemoryStream.cpp</code></td><td>97</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\JWTToken.cpp</code></td><td>97</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\LoggerBase.cpp</code></td><td>103</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\FileStream.cpp</code></td><td>101</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\ThreadPool.cpp</code></td><td>94</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Task.cpp</code></td><td>92</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\MemoryStream.cpp</code></td><td>89</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\MockStream.cpp</code></td><td>89</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\LogManager.cpp</code></td><td>87</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Thread.cpp</code></td><td>82</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\TerminalSession.cpp</code></td><td>82</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\JWTToken.cpp</code></td><td>86</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Task.cpp</code></td><td>83</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\WebAppServer.cpp</code></td><td>82</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Stopwatch.cpp</code></td><td>81</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SqliteDatabaseBackend.cpp</code></td><td>79</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\TerminalSession.cpp</code></td><td>81</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\WebApplicationRouting.cpp</code></td><td>78</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Thread.cpp</code></td><td>77</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Char.cpp</code></td><td>77</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SqlConnection.cpp</code></td><td>75</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SqliteDatabaseBackend.cpp</code></td><td>76</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TimeZone.cpp</code></td><td>69</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\SqlCommand.cpp</code></td><td>65</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\UriBuilder.cpp</code></td><td>63</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SqlConnection.cpp</code></td><td>62</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\UriBuilder.cpp</code></td><td>61</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\X509Certificate2.cpp</code></td><td>61</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TimeProvider.cpp</code></td><td>60</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\X509Certificate2.cpp</code></td><td>58</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\StringBuilder.cpp</code></td><td>57</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\Dns.cpp</code></td><td>58</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\ActiveUserSession.cpp</code></td><td>57</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TextWriter.cpp</code></td><td>57</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\StringBuilder.cpp</code></td><td>57</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Guid.cpp</code></td><td>57</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\Dns.cpp</code></td><td>56</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TcpListener.cpp</code></td><td>56</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\StringWriter.cpp</code></td><td>55</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\SqlDataReader.cpp</code></td><td>54</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Win32Exception.cpp</code></td><td>53</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\SqlCommand.cpp</code></td><td>53</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\HttpResponse.cpp</code></td><td>52</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\LoggerTextWriter.cpp</code></td><td>52</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\FileLoggerProvider.cpp</code></td><td>51</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TimeZoneInfo.cpp</code></td><td>49</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TcpClient.cpp</code></td><td>48</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\NetworkStream.cpp</code></td><td>48</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\StringReader.cpp</code></td><td>47</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\DatabaseEngine.cpp</code></td><td>46</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\StringReader.cpp</code></td><td>46</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\OperatingSystem.cpp</code></td><td>46</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\UdpClient.cpp</code></td><td>46</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\ManualResetEvent.cpp</code></td><td>42</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\AutoResetEvent.cpp</code></td><td>42</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\FileLogger.cpp</code></td><td>41</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\FileLogger.cpp</code></td><td>43</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\ManualResetEvent.cpp</code></td><td>40</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\HttpResponseMessage.cpp</code></td><td>40</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TextReader.cpp</code></td><td>40</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\AutoResetEvent.cpp</code></td><td>40</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\InternalStringConvert.cpp</code></td><td>38</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\SemaphoreSlim.cpp</code></td><td>36</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\ConditionVariable.cpp</code></td><td>34</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
@@ -150,6 +158,37 @@
                 <tr><td><code>DotNetDupe\System\Utils\StringConvert.cpp</code></td><td>10</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Stream.cpp</code></td><td>5</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\pch.cpp</code></td><td>1</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+            </tbody>
+        </table>
+        <h2>&#9881; Top Functions by Complexity & LLOC</h2>
+        <table>
+            <thead><tr><th>Function</th><th>File</th><th>LLOC</th><th>CCN</th><th>Nesting Depth</th><th>Status</th></tr></thead>
+            <tbody>
+                <tr><td><code>EventLog::CreateEventSource</code></td><td><code>EventLog.cpp:344</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>EventWaitHandle::TryOpenExisting</code></td><td><code>EventWaitHandle.cpp:84</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Environment::GetOSVersion</code></td><td><code>Environment.cpp:103</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Semaphore::Release</code></td><td><code>Semaphore.cpp:135</code></td><td>15</td><td>5</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>EventWaitHandle::WaitOne</code></td><td><code>EventWaitHandle.cpp:143</code></td><td>15</td><td>5</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>String::CopyTo</code></td><td><code>String.cpp:281</code></td><td>15</td><td>6</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>SystemMetrics::GetAllServices</code></td><td><code>SystemMetrics.cpp:451</code></td><td>15</td><td>5</td><td>4</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>File::GetAttributes</code></td><td><code>File.cpp:162</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>ManualResetEvent::TryOpenExisting</code></td><td><code>ManualResetEvent.cpp:34</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>SqliteDatabaseBackend::Execute</code></td><td><code>SqliteDatabaseBackend.cpp:91</code></td><td>15</td><td>1</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>ServiceProvider::GetService</code></td><td><code>ServiceProvider.cpp:100</code></td><td>15</td><td>5</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Semaphore::WaitOne</code></td><td><code>Semaphore.cpp:115</code></td><td>15</td><td>4</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Semaphore::TryOpenExisting</code></td><td><code>Semaphore.cpp:85</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>WebAppServer::GetMimeType</code></td><td><code>WebAppServer.cpp:45</code></td><td>15</td><td>3</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Mutex::TryOpenExisting</code></td><td><code>Mutex.cpp:95</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Mutex::Mutex</code></td><td><code>Mutex.cpp:58</code></td><td>15</td><td>4</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Path::ChangeExtension</code></td><td><code>Path.cpp:41</code></td><td>15</td><td>5</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DateTimeOffset::ToString</code></td><td><code>DateTimeOffset.cpp:22</code></td><td>15</td><td>2</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>String::Join</code></td><td><code>String.cpp:412</code></td><td>15</td><td>7</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>AutoResetEvent::TryOpenExisting</code></td><td><code>AutoResetEvent.cpp:34</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>InterlockedInternal::Decrement64</code></td><td><code>Interlocked.cpp:65</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>LoggerBase::GetFormattedTimestamp</code></td><td><code>LoggerBase.cpp:26</code></td><td>15</td><td>3</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>StringConvertInternal::Utf8ToWChar</code></td><td><code>InternalStringConvert.cpp:30</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>InterlockedInternal::Add64</code></td><td><code>Interlocked.cpp:81</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>TerminalSession::GetSessions</code></td><td><code>TerminalSession.cpp:66</code></td><td>15</td><td>6</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
             </tbody>
         </table>
     </div>

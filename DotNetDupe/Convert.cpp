@@ -338,22 +338,24 @@ namespace DotNetDupe {
             }
         }
 
-        Array<char> Convert::FromBase64String(const String& s) {
-            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+        void Convert::DecodeBase64Loop(const std::string& sInput, std::vector<char>& decoded) {
             size_t in_len = sInput.size();
             int i = 0, in_ = 0;
             unsigned char char_array_4[4];
-            std::vector<char> decoded;
-
-            while (in_len-- && (sInput[in_] != '=') && IsBase64(sInput[in_])) {
-                char_array_4[i++] = sInput[in_]; in_++;
+            while (in_len-- && (sInput[in_] != '=') && Convert::IsBase64(sInput[in_])) {
+                char_array_4[i++] = sInput[in_++];
                 if (i == 4) {
-                    DecodeBase64Chunk4(char_array_4, decoded);
+                    Convert::DecodeBase64Chunk4(char_array_4, decoded);
                     i = 0;
                 }
             }
-            if (i) DecodeBase64Remainder(char_array_4, i, decoded);
+            if (i) Convert::DecodeBase64Remainder(char_array_4, i, decoded);
+        }
 
+        Array<char> Convert::FromBase64String(const String& s) {
+            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+            std::vector<char> decoded;
+            DecodeBase64Loop(sInput, decoded);
             Array<char> result(static_cast<int>(decoded.size()));
             for (size_t idx = 0; idx < decoded.size(); idx++) {
                 result[static_cast<int>(idx)] = decoded[idx];
@@ -362,5 +364,3 @@ namespace DotNetDupe {
         }
     }
 }
-
-
