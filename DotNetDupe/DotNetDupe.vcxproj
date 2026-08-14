@@ -340,6 +340,7 @@
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
     <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="TimeProvider.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />

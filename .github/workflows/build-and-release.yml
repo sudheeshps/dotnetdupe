@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   build-windows:
@@ -167,6 +168,7 @@ jobs:
         # Windows Release
         cp artifacts-temp/win-x64-Release/DotNetDupe.dll bin/x64/Release/
         cp artifacts-temp/win-x64-Release/DotNetDupe.lib bin/x64/Release/
+        cp artifacts-temp/win-x64-Release/DotNetDupe.pdb bin/x64/Release/
         
         # Linux Release
         cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
@@ -174,7 +176,13 @@ jobs:
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
 
-    - name: Publish NuGet Package
+    - name: Publish to NuGet.org
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
         nuget push artifacts\*.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }} -SkipDuplicate
+
+    - name: Publish to GitHub Packages
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -UserName "${{ github.repository_owner }}" -Password "${{ secrets.GITHUB_TOKEN }}"
+        nuget push artifacts\*.nupkg -Source "GitHub" -SkipDuplicate

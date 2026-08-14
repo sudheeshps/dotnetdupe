@@ -4,10 +4,11 @@
     <id>DotNetDupe</id>
     <version>4.0.0</version>
     <authors>Sudheesh Subramanian</authors>
-    <description>A multi-platform C++ library that duplicates some .NET functionality.</description>
+    <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
     <releaseNotes>v4.0.0: Major architectural release. Refactored codebase to avoid STL dependency from public headers (providing ABI stability and clean interfaces across System::String, generic/concurrent collections, I/O, Networking, Logging, and Database subsystems). Added Console I/O stream redirection (SetOut, SetError, SetIn), LoggerTextWriter stream redirector, global LogManager category caching, FileDownloader utility with prompt file handle cleanup, recursive Directory::CreateDirectory, ServiceCollection DI improvements, and streamlined exception hierarchy.</releaseNotes>
     <readme>README.md</readme>
-    <projectUrl>https://github.com/sudheeshps/dotnetdupe</projectUrl>
+    <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
+    <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <tags>native c++ dotnet multi-platform linux windows</tags>
@@ -34,6 +35,7 @@
     <!-- Windows x64 -->
     <file src="bin\x64\Release\DotNetDupe.dll" target="runtimes\win-x64\native\DotNetDupe.dll" />
     <file src="bin\x64\Release\DotNetDupe.lib" target="runtimes\win-x64\native\DotNetDupe.lib" />
+    <file src="bin\x64\Release\DotNetDupe.pdb" target="runtimes\win-x64\native\DotNetDupe.pdb" />
     <file src="external\openssl-4.0.1\x64\bin\libssl-4-x64.dll" target="runtimes\win-x64\native\libssl-4-x64.dll" />
     <file src="external\openssl-4.0.1\x64\bin\libcrypto-4-x64.dll" target="runtimes\win-x64\native\libcrypto-4-x64.dll" />
     
