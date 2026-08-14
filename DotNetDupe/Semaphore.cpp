@@ -125,6 +125,25 @@ namespace DotNetDupe {
                 return true;
             }
 
+            static bool WaitForSemaphoreCv(Semaphore::Impl* pImpl, int& count, int msTimeout) {
+                std::unique_lock<std::mutex> lock(pImpl->mutex);
+                bool bRes = pImpl->cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&count]() { return count > 0; });
+                if (!bRes) throw TimeoutException("The wait operation timed out.");
+                --count;
+                return true;
+            }
+
+            static int ReleaseSemaphoreCv(Semaphore::Impl* pImpl, int& count, int maxCount, int releaseCount) {
+                std::lock_guard<std::mutex> lock(pImpl->mutex);
+                if (count + releaseCount > maxCount) {
+                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");
+                }
+                int prev = count;
+                count += releaseCount;
+                for (int i = 0; i < releaseCount; ++i) pImpl->cv.notify_one();
+                return prev;
+            }
+
             bool Semaphore::WaitOne(int millisecondsTimeout) {
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
@@ -136,14 +155,7 @@ namespace DotNetDupe {
                 }
 #endif
                 if (!_pImpl) return false;
-                std::unique_lock<std::mutex> lock(_pImpl->mutex);
-                bool result = _pImpl->cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count > 0; });
-                if (result) {
-                    --_count;
-                } else {
-                    throw TimeoutException("The wait operation timed out.");
-                }
-                return result;
+                return WaitForSemaphoreCv(_pImpl, _count, millisecondsTimeout);
             }
 
             int Semaphore::Release(int releaseCount) {
@@ -157,14 +169,7 @@ namespace DotNetDupe {
                 }
 #endif
                 if (!_pImpl) return 0;
-                std::lock_guard<std::mutex> lock(_pImpl->mutex);
-                if (_count + releaseCount > _maxCount) {
-                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");
-                }
-                int prev = _count;
-                _count += releaseCount;
-                for (int i = 0; i < releaseCount; ++i) _pImpl->cv.notify_one();
-                return prev;
+                return ReleaseSemaphoreCv(_pImpl, _count, _maxCount, releaseCount);
             }
         }
     }

@@ -21,12 +21,12 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API static SmartPointer<EventWaitHandle> OpenExisting(const String& sName);
                 DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult);
+                struct Impl;
             protected:
                 bool _state;
                 bool _manualReset;
                 String _name;
                 void* _hHandle;
-                struct Impl;
                 Impl* _pImpl;
             };
         }

@@ -20,12 +20,12 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API static SmartPointer<Semaphore> OpenExisting(const String& sName);
                 DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult);
+                struct Impl;
             private:
                 int _count;
                 int _maxCount;
                 String _name;
                 void* _hHandle;
-                struct Impl;
                 Impl* _pImpl;
             };
         }

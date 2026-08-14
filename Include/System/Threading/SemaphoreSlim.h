@@ -16,10 +16,10 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API int Release(int releaseCount = 1) override;
                 DOTNETDUPE_API int GetCurrentCount() const;
+                struct Impl;
             private:
                 int _count;
                 int _maxCount;
-                struct Impl;
                 Impl* _pImpl;
             };
         }

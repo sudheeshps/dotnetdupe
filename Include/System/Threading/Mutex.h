@@ -21,10 +21,10 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API static SmartPointer<Mutex> OpenExisting(const String& sName);
                 DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<Mutex>& pResult);
+                struct Impl;
             private:
                 String _name;
                 void* _hHandle;
-                struct Impl;
                 Impl* _pImpl;
             };
         }

@@ -139,6 +139,23 @@ namespace DotNetDupe {
                 return true;
             }
 
+            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool& bState, bool bManualReset) {
+                std::unique_lock<std::mutex> lock(pImpl->mutex);
+                pImpl->cv.wait(lock, [&bState]() { return bState; });
+                if (!bManualReset) bState = false;
+                return true;
+            }
+
+            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool& bState, bool bManualReset, int msTimeout) {
+                std::unique_lock<std::mutex> lock(pImpl->mutex);
+                bool bRes = pImpl->cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&bState]() { return bState; });
+                if (bRes) {
+                    if (!bManualReset) bState = false;
+                    return true;
+                }
+                throw TimeoutException("The wait operation timed out.");
+            }
+
             bool EventWaitHandle::WaitOne() {
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
@@ -147,12 +164,7 @@ namespace DotNetDupe {
                 }
 #endif
                 if (!_pImpl) return false;
-                std::unique_lock<std::mutex> lock(_pImpl->mutex);
-                _pImpl->cv.wait(lock, [this]() { return _state; });
-                if (!_manualReset) {
-                    _state = false;
-                }
-                return true;
+                return WaitForEventCv(_pImpl, _state, _manualReset);
             }
 
             bool EventWaitHandle::WaitOne(int millisecondsTimeout) {
@@ -166,16 +178,7 @@ namespace DotNetDupe {
                 }
 #endif
                 if (!_pImpl) return false;
-                std::unique_lock<std::mutex> lock(_pImpl->mutex);
-                bool result = _pImpl->cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _state; });
-                if (result) {
-                    if (!_manualReset) {
-                        _state = false;
-                    }
-                    return true;
-                }
-                
-                throw TimeoutException("The wait operation timed out.");
+                return WaitForEventCv(_pImpl, _state, _manualReset, millisecondsTimeout);
             }
         }
     }
