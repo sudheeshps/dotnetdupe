@@ -3,43 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DotNetDupe Static Analysis Report</title>
+    <title>DotNetDupe Static Analysis & Quality Gate Dashboard</title>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 24px; }
-        .container { max-width: 1000px; margin: 0 auto; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); padding: 32px; }
-        h1 { margin-top: 0; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; font-size: 24px; }
-        h2 { color: #334155; margin-top: 28px; font-size: 18px; }
-        .nav { margin-bottom: 20px; font-size: 14px; }
-        .nav a { color: #2563eb; text-decoration: none; font-weight: 600; margin-right: 16px; }
-        .nav a:hover { text-decoration: underline; }
-        .meta { color: #64748b; font-size: 13px; margin-bottom: 24px; }
-        .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-size: 14px; }
-        .alert.pass { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .alert.fail { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-        table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13px; }
-        th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #e2e8f0; }
-        th { background: #f1f5f9; color: #475569; font-weight: 600; }
-        tr:hover { background: #f8fafc; }
-        .badge-pass { background: #10b981; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-        .badge-fail { background: #ef4444; color: white; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
-        code { font-family: "Consolas", "Courier New", monospace; background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-size: 12px; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 28px; line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; background: #1e293b; border-radius: 12px; box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.5); padding: 36px; border: 1px solid #334155; }
+        h1 { margin-top: 0; color: #38bdf8; border-bottom: 1px solid #334155; padding-bottom: 16px; font-size: 26px; }
+        h2 { color: #94a3b8; margin-top: 32px; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+        .nav { margin-bottom: 24px; font-size: 14px; }
+        .nav a { color: #38bdf8; text-decoration: none; font-weight: 600; padding: 6px 12px; background: #0f172a; border-radius: 6px; border: 1px solid #334155; }
+        .nav a:hover { background: #1e293b; border-color: #38bdf8; }
+        .meta { color: #94a3b8; font-size: 13px; margin-bottom: 28px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 28px; }
+        .card { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 18px; }
+        .card h3 { margin: 0 0 8px 0; font-size: 14px; color: #94a3b8; font-weight: 600; }
+        .card .val { font-size: 22px; font-weight: 700; color: #f8fafc; }
+        .card .status-pass { color: #4ade80; font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .card .status-fail { color: #f87171; font-size: 14px; font-weight: 600; margin-top: 4px; }
+        .alert { padding: 14px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; font-weight: 500; }
+        .alert.pass { background: rgba(34, 197, 94, 0.15); color: #86efac; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .alert.fail { background: rgba(239, 68, 68, 0.15); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; background: #0f172a; border-radius: 8px; overflow: hidden; border: 1px solid #334155; }
+        th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid #1e293b; }
+        th { background: #1e293b; color: #94a3b8; font-weight: 600; }
+        tr:hover { background: #1e293b; }
+        .badge-pass { background: #166534; color: #86efac; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #22c55e; }
+        .badge-fail { background: #991b1b; color: #fca5a5; padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid #ef4444; }
+        code { font-family: "Cascadia Code", "Consolas", monospace; background: #0f172a; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #38bdf8; border: 1px solid #334155; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="nav"><a href="index.html">&larr; Back to Code Coverage Report</a></div>
-        <h1>DotNetDupe Static Analysis & Quality Gate Report</h1>
-        <div class='meta'>Generated: 2026-08-14 13:07:22 | Overall Quality Status: PASSED</div>
-        <h2>1. Header Export Macro Compliance (DOTNETDUPE_API)</h2>
-        <div class='alert pass'>&#10004; <strong>All 187 headers passed:</strong> Zero class-level <code>DOTNETDUPE_API</code> violations found.</div>
-        <h2>2. Implementation File Length Limit (Max 600 LLOC)</h2>
-        <div class='alert pass'>Checked <strong>102</strong> C++ source files. Max allowed per file is <strong>600 LLOC</strong>.</div>
+        <h1>DotNetDupe Static Analysis & Quality Gate Dashboard</h1>
+        <div class='meta'>Generated: 2026-08-14 13:24:50 | Quality Gate Status: <strong>PASSED</strong></div>
+        <div class="grid">
+            <div class="card"><h3>1. File Length (&le; 600 LLOC)</h3><div class="val">102 Files</div><div class="status-pass">&#10004; 100% Compliant</div></div>
+            <div class="card"><h3>2. Function-Level Export Macros</h3><div class="val">187 Headers</div><div class="status-pass">&#10004; 100% Compliant</div></div>
+            <div class="card"><h3>3. Standard Exceptions (throw std::*)</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Prohibited Throws</div></div>
+            <div class="card"><h3>4. Raw Allocations (new/delete)</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Raw Allocations</div></div>
+            <div class="card"><h3>5. Swallowed Catch Blocks</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 Empty Blocks</div></div>
+            <div class="card"><h3>6. Public API STL Leakage</h3><div class="val">0 Violations</div><div class="status-pass">&#10004; 0 STL Leaks</div></div>
+        </div>
+        <h2>&#128196; Implementation Source File Size Distribution (&le; 600 LLOC)</h2>
         <table>
             <thead><tr><th>Source File</th><th>LLOC</th><th>Limit</th><th>Status</th></tr></thead>
             <tbody>
                 <tr><td><code>DotNetDupe\String.cpp</code></td><td>490</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\SystemMetrics.cpp</code></td><td>430</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\WebApplication.cpp</code></td><td>353</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\WebApplication.cpp</code></td><td>352</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\EventLog.cpp</code></td><td>326</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\JsonElement.cpp</code></td><td>323</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Console.cpp</code></td><td>287</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>

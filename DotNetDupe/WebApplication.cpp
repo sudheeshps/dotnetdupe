@@ -128,10 +128,9 @@ namespace DotNetDupe {
                         };
 
                         System::Console::WriteLine("[Server] Queueing connection to ThreadPool...");
-                        ConnectionState* pState = new ConnectionState(std::move(client), this);
-                        bool bQueued = System::Threading::ThreadPool::QueueUserWorkItem([](Object* rawState) {
+                        auto spState = System::SmartPointer<ConnectionState>::NewShared(std::move(client), this);
+                        System::Threading::ThreadPool::QueueUserWorkItem([spState](Object*) {
                             System::Console::WriteLine("[Server] ThreadPool callback invoked!");
-                            System::SmartPointer<ConnectionState> spState(dynamic_cast<ConnectionState*>(rawState));
                             if (!spState.IsNull() && spState->App) {
                                 try {
                                     System::Console::WriteLine("[Server] Calling HandleConnection...");
@@ -149,11 +148,7 @@ namespace DotNetDupe {
                             } else {
                                 System::Console::WriteLine("[Server Exception] ConnectionState is NULL or App is NULL");
                             }
-                        }, pState);
-                        
-                        if (!bQueued) {
-                            delete pState;
-                        }
+                        }, nullptr);
                     }
                 } catch (const System::Net::Sockets::SocketException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] AcceptTcpClient: ") + ex.What());
@@ -386,8 +381,10 @@ namespace DotNetDupe {
                         }
                         try {
                             wsHandler->OnDisconnected(pWsContext);
-                        } catch (const DotNetDupe::System::Exception&) {
-                        } catch (const std::exception&) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
+                            System::Console::WriteLine(System::String("[WebSocket] Disconnection error: ") + ex.What());
+                        } catch (const std::exception& ex) {
+                            System::Console::WriteLine(System::String("[WebSocket] Disconnection error: ") + ex.what());
                         }
 
                         spClient->Close();
