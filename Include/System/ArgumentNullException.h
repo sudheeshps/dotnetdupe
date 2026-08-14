@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class ArgumentNullException : public ArgumentException {
         public:
-            ArgumentNullException(const char* pchMessage) : ArgumentException(pchMessage) {}
             ArgumentNullException(const String& sMessage) : ArgumentException(sMessage) {}
         };
 

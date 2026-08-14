@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class InvalidOperationException : public SystemException {
         public:
-            InvalidOperationException(const char* pchMessage) : SystemException(pchMessage) {}
             InvalidOperationException(const String& sMessage) : SystemException(sMessage) {}
         };
 

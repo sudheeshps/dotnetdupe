@@ -7,7 +7,6 @@ namespace DotNetDupe {
 
         class WaitHandleCannotBeOpenedException : public SystemException {
         public:
-            DOTNETDUPE_API WaitHandleCannotBeOpenedException(const char* pchMessage) : SystemException(pchMessage) {}
             DOTNETDUPE_API WaitHandleCannotBeOpenedException(const String& sMessage) : SystemException(sMessage) {}
         };
         }

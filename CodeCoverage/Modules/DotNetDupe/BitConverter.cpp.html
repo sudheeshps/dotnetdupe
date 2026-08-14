@@ -105,24 +105,24 @@ namespace DotNetDupe {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             short iResult;
-            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
-<span style = "background-color:#dfd">            return iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
+            return iResult;
         }</span>
 
 <span style = "background-color:#dfd">        int BitConverter::ToInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             int iResult;
-            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
-<span style = "background-color:#dfd">            return iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
+            return iResult;
         }</span>
 
 <span style = "background-color:#dfd">        long long BitConverter::ToInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             long long llResult;
-            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
-<span style = "background-color:#dfd">            return llResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
+            return llResult;
         }</span>
 
 <span style = "background-color:#dfd">        float BitConverter::ToSingle(Array&lt;byte&gt;&amp; value, int iStartIndex) {
@@ -137,24 +137,24 @@ namespace DotNetDupe {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             unsigned short iResult;
-            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
-<span style = "background-color:#dfd">            return iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
+            return iResult;
         }</span>
 
 <span style = "background-color:#dfd">        unsigned int BitConverter::ToUInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             unsigned int iResult;
-            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
-<span style = "background-color:#dfd">            return iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
+            return iResult;
         }</span>
 
 <span style = "background-color:#dfd">        unsigned long long BitConverter::ToUInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
             if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
             unsigned long long llResult;
-            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
-<span style = "background-color:#dfd">            return llResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
+            return llResult;
         }</span>
 
 <span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value) {

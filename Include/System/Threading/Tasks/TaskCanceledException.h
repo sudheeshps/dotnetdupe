@@ -8,7 +8,6 @@ namespace DotNetDupe {
 
         class TaskCanceledException : public SystemException {
         public:
-            TaskCanceledException(const char* pchMessage) : SystemException(pchMessage) {}
             TaskCanceledException(const String& sMessage) : SystemException(sMessage) {}
         };
             }

@@ -124,8 +124,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                            contentStr = DotNetDupe::System::IO::File::ReadAllText(targetFilePath);</span>
 <span style = "background-color:#fdd">                        } catch (...) {
                             ctx-&gt;GetResponse()-&gt;SetStatusCode(500);
-                            ctx-&gt;GetResponse()-&gt;SetContentType("text/plain");
-                            return "500 Internal Server Error: Unable to open file";</span>
+                            ctx-&gt;GetResponse()-&gt;SetContentType("text/plain");</span>
+<span style = "background-color:#dfd">                            return "500 Internal Server Error: Unable to open file";</span>
                         }
 
                         // Set Content-Type, Content-Disposition (inline rendering), and Status 200
@@ -133,8 +133,8 @@ namespace DotNetDupe {
                         ctx-&gt;GetResponse()-&gt;SetContentType(GetMimeType(targetFilePath));
                         ctx-&gt;GetResponse()-&gt;GetHeaders()[DotNetDupe::System::String("Content-Disposition")] = DotNetDupe::System::String("inline");</span>
 
-<span style = "background-color:#dfd">                        return contentStr;</span>
-<span style = "background-color:#fdd">                    });</span>
+<span style = "background-color:#dfd">                        return contentStr;
+                    });</span>
                 }
 
 <span style = "background-color:#dfd">                m_spApp-&gt;Run(url, threadCount);

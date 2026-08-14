@@ -118,9 +118,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">        bool Uri::IsDefaultPort() const {
             if (_scheme.Equals("http") &amp;&amp; _port == 80) return true;
-            if (_scheme.Equals("https") &amp;&amp; _port == 443) return true;</span>
+            if (_scheme.Equals("https") &amp;&amp; _port == 443) return true;
             return false;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#fdd">        bool Uri::IsFile() const {
             return _scheme.Equals("file");

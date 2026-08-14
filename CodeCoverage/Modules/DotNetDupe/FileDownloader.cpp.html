@@ -109,8 +109,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        if (llRangeStart &gt; 0) {
                             pRequest-&gt;GetHeaders().Add("Range", String("bytes=") + Convert::ToString(llRangeStart) + "-");</span>
                         }
-<span style = "background-color:#dfd">                        return pRequest;
-                    }</span>
+                        return pRequest;
+<span style = "background-color:#dfd">                    }</span>
 
                     void UpdateRate(long long llBytesInSession, const std::chrono::steady_clock::time_point&amp; timeStart) {
                         auto timeNow = std::chrono::steady_clock::now();

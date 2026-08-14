@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class NullReferenceException : public SystemException {
         public:
-            NullReferenceException(const char* pchMessage) : SystemException(pchMessage) {}
             NullReferenceException(const String& sMessage) : SystemException(sMessage) {}
         };
 

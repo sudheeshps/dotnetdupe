@@ -242,16 +242,16 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">        }</span>
 
         // String
-<span style = "background-color:#fdd">        String Convert::ToString(bool bValue) { return bValue ? "True" : "False"; }
-        String Convert::ToString(unsigned char chValue) { return String(std::to_string(chValue).c_str()); }
+<span style = "background-color:#dfd">        String Convert::ToString(bool bValue) { return bValue ? "True" : "False"; }</span>
+<span style = "background-color:#fdd">        String Convert::ToString(unsigned char chValue) { return String(std::to_string(chValue).c_str()); }
         String Convert::ToString(signed char chValue) { return String(std::to_string(chValue).c_str()); }
         String Convert::ToString(char chValue) { char buf[2] = { chValue, 0 }; return String(buf); }
         String Convert::ToString(double value) { return String(std::to_string(value).c_str()); }
         String Convert::ToString(float value) { return String(std::to_string(value).c_str()); }
         String Convert::ToString(short iValue) { return String(std::to_string(iValue).c_str()); }</span>
-<span style = "background-color:#dfd">        String Convert::ToString(int iValue) { return String(std::to_string(iValue).c_str()); }</span>
-<span style = "background-color:#fdd">        String Convert::ToString(long long llValue) { return String(std::to_string(llValue).c_str()); }
-        String Convert::ToString(unsigned short iValue) { return String(std::to_string(iValue).c_str()); }
+<span style = "background-color:#dfd">        String Convert::ToString(int iValue) { return String(std::to_string(iValue).c_str()); }
+        String Convert::ToString(long long llValue) { return String(std::to_string(llValue).c_str()); }</span>
+<span style = "background-color:#fdd">        String Convert::ToString(unsigned short iValue) { return String(std::to_string(iValue).c_str()); }
         String Convert::ToString(unsigned int iValue) { return String(std::to_string(iValue).c_str()); }
         String Convert::ToString(unsigned long long llValue) { return String(std::to_string(llValue).c_str()); }</span>
 

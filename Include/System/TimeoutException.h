@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class TimeoutException : public SystemException {
         public:
-            TimeoutException(const char* pchMessage) : SystemException(pchMessage) {}
             TimeoutException(const String& sMessage) : SystemException(sMessage) {}
         };
 

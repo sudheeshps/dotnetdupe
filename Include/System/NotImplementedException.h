@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class NotImplementedException : public SystemException {
         public:
-            NotImplementedException(const char* pchMessage) : SystemException(pchMessage) {}
             NotImplementedException(const String& sMessage) : SystemException(sMessage) {}
         };
 

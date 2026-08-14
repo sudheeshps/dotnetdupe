@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class PlatformNotSupportedException : public NotSupportedException {
         public:
-            PlatformNotSupportedException(const char* pchMessage) : NotSupportedException(pchMessage) {}
             PlatformNotSupportedException(const String& sMessage) : NotSupportedException(sMessage) {}
         };
 

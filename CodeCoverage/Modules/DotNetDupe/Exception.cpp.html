@@ -13,6 +13,11 @@
 #include "System/Exception.h"
 #include "System/SystemException.h"
 #include "System/String.h"
+#include "System/UnauthorizedAccessException.h"
+#include "System/UnknownException.h"
+#include "System/OutOfMemoryException.h"
+#include "System/Security/SecurityException.h"
+#include "System/IOException.h"
 
 #include &lt;cstring&gt;
 
@@ -24,10 +29,10 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">        Exception::Exception(const String&amp; sMessage) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : "") {
         }</span>
         
-<span style = "background-color:#fdd">        Exception::Exception(const String&amp; sMessage, const Exception&amp; innerException) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
+<span style = "background-color:#dfd">        Exception::Exception(const String&amp; sMessage, const Exception&amp; innerException) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
         }</span>
         
-<span style = "background-color:#fdd">        Exception::Exception(const Exception&amp; other) : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
+<span style = "background-color:#dfd">        Exception::Exception(const Exception&amp; other) : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
         }</span>
         
 <span style = "background-color:#fdd">        Exception&amp; Exception::operator=(const Exception&amp; other) {
@@ -44,9 +49,14 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#fdd">        SystemException::SystemException() : Exception() {}</span>
-<span style = "background-color:#dfd">        SystemException::SystemException(const char* pchMessage) : Exception(String(pchMessage)) {}</span>
-<span style = "background-color:#fdd">        SystemException::SystemException(const String&amp; message) : Exception(message) {}
+<span style = "background-color:#dfd">        SystemException::SystemException(const String&amp; message) : Exception(message) {}
         SystemException::SystemException(const String&amp; message, const Exception&amp; innerException) : Exception(message, innerException) {}</span>
+
+<span style = "background-color:#dfd">        UnauthorizedAccessException::UnauthorizedAccessException() : SystemException("Attempted to perform an unauthorized operation.") {}
+        UnknownException::UnknownException() : SystemException("An unknown or unhandled non-DotNetDupe exception occurred.") {}
+        OutOfMemoryException::OutOfMemoryException() : SystemException("Insufficient memory to continue the execution of the program.") {}
+        Security::SecurityException::SecurityException() : SystemException("A security error has been detected.") {}</span>
+<span style = "background-color:#fdd">        IO::IOException::IOException() : SystemException("I/O error occurred.") {}</span>
     }
 }</pre>
         <hr />

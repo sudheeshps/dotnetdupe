@@ -31,7 +31,7 @@ namespace DotNetDupe {
 
 		struct String::StringImpl {
 			std::string s;
-			StringImpl() = default;
+<span style = "background-color:#dfd">			StringImpl() = default;</span>
 			StringImpl(const char* str) : s(str) {}
 			StringImpl(const std::string&amp; str) : s(str) {}
 			StringImpl(std::string&amp;&amp; str) : s(std::move(str)) {}
@@ -496,8 +496,8 @@ namespace DotNetDupe {
 					return static_cast&lt;int&gt;(lastFound);</span>
 				}
 			}
-<span style = "background-color:#dfd">			return -1;
-		}
+			return -1;
+<span style = "background-color:#dfd">		}
 		String String::PadLeft(int iTotalWidth) {
 			return PadLeft(iTotalWidth, (char)' ');
 		}</span>

@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class ArgumentOutOfRangeException : public ArgumentException {
         public:
-            ArgumentOutOfRangeException(const char* pchMessage) : ArgumentException(pchMessage) {}
             ArgumentOutOfRangeException(const String& sMessage) : ArgumentException(sMessage) {}
         };
 

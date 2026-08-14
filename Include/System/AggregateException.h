@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class AggregateException : public Exception {
         public:
-            AggregateException(const char* pchMessage) : Exception(pchMessage) {}
             AggregateException(const String& sMessage) : Exception(sMessage) {}
         };
 

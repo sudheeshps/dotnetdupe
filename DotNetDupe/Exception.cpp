@@ -2,6 +2,11 @@
 #include "System/Exception.h"
 #include "System/SystemException.h"
 #include "System/String.h"
+#include "System/UnauthorizedAccessException.h"
+#include "System/UnknownException.h"
+#include "System/OutOfMemoryException.h"
+#include "System/Security/SecurityException.h"
+#include "System/IOException.h"
 
 #include <cstring>
 
@@ -33,8 +38,13 @@ namespace DotNetDupe {
         }
 
         SystemException::SystemException() : Exception() {}
-        SystemException::SystemException(const char* pchMessage) : Exception(String(pchMessage)) {}
         SystemException::SystemException(const String& message) : Exception(message) {}
         SystemException::SystemException(const String& message, const Exception& innerException) : Exception(message, innerException) {}
+
+        UnauthorizedAccessException::UnauthorizedAccessException() : SystemException("Attempted to perform an unauthorized operation.") {}
+        UnknownException::UnknownException() : SystemException("An unknown or unhandled non-DotNetDupe exception occurred.") {}
+        OutOfMemoryException::OutOfMemoryException() : SystemException("Insufficient memory to continue the execution of the program.") {}
+        Security::SecurityException::SecurityException() : SystemException("A security error has been detected.") {}
+        IO::IOException::IOException() : SystemException("I/O error occurred.") {}
     }
 }

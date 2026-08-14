@@ -62,9 +62,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            void TerminalSession::QuerySessionDetails(unsigned long uSessionId, const String&amp; sSessionName, RdpSessionState eState, RdpSessionInfo&amp; info) {
                 info.uSessionId = uSessionId;
-                info.sSessionName = sSessionName;</span>
+                info.sSessionName = sSessionName;
                 info.eState = eState;
-<span style = "background-color:#dfd">                info.sUserName = QueryWtsString(uSessionId, WTSUserName);
+                info.sUserName = QueryWtsString(uSessionId, WTSUserName);
                 info.sDomainName = QueryWtsString(uSessionId, WTSDomainName);
                 info.sClientName = QueryWtsString(uSessionId, WTSClientName);
                 info.sClientIpAddress = QueryWtsString(uSessionId, WTSClientAddress);

@@ -56,8 +56,8 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">        String Environment::GetUserName() {</span>
 #if defined(_WIN32)
             wchar_t buffer [256];
-            DWORD nSize = 256;
-<span style = "background-color:#fdd">            ::GetUserNameW(buffer, &amp;nSize);
+<span style = "background-color:#fdd">            DWORD nSize = 256;
+            ::GetUserNameW(buffer, &amp;nSize);
             return String(buffer);</span>
 #else
             struct passwd *pPw = getpwuid(getuid());

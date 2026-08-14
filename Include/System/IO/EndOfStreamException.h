@@ -7,7 +7,6 @@ namespace DotNetDupe {
 
         class EndOfStreamException : public IOException {
         public:
-            EndOfStreamException(const char* pchMessage) : IOException(pchMessage) {}
             EndOfStreamException(const String& sMessage) : IOException(sMessage) {}
         };
         }

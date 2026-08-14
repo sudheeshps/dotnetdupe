@@ -67,6 +67,7 @@ The project is configured to generate a NuGet package on build (as specified in 
 - **Exceptions**: DotNetDupe classes shall not throw standard C++ exceptions (such as `std::runtime_error`, `std::invalid_argument`). Instead, throw the library's custom exception types inheriting from `BasicException` (such as `SystemException`, `ArgumentException`, `InvalidOperationException`, `JsonException`, `IOException`, `SocketException`) to match `.NET` behavior and ensure unified exception handling.
   - **Exception Messages**: Exceptions shall not use raw char pointers; pass the exception message directly to `std::exception` (or the underlying base exception).
   - **Error Handling**: Do not swallow exceptions or ignore system API failures. If a system call (e.g., Win32 API) fails, retrieve the specific error code (e.g., via `GetLastError()`) and throw an appropriate exception with the formatted error message.
+- **Avoid Unnecessary `String()` Wrappers**: Do not explicitly construct `String("...")` or `String(pStr)` when passing string literals or `const char*` to functions, constructors, or operators that accept `const String&` or `String`. `DotNetDupe::System::String` provides an implicit converting constructor (`String(const char*)`) that automatically handles conversion without redundant wrapping.
 
 ### Testing
 - All new functionality should include corresponding unit tests in the `DotNetDupeTests/` project.

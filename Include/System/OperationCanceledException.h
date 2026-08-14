@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class OperationCanceledException : public SystemException {
         public:
-            OperationCanceledException(const char* pchMessage) : SystemException(pchMessage) {}
             OperationCanceledException(const String& sMessage) : SystemException(sMessage) {}
         };
 

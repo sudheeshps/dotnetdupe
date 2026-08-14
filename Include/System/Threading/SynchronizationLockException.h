@@ -7,7 +7,6 @@ namespace DotNetDupe {
 
         class SynchronizationLockException : public SystemException {
         public:
-            SynchronizationLockException(const char* pchMessage) : SystemException(pchMessage) {}
             SynchronizationLockException(const String& sMessage) : SystemException(sMessage) {}
         };
         }

@@ -229,6 +229,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
+    <ClInclude Include="..\Include\System\UnauthorizedAccessException.h" />
+    <ClInclude Include="..\Include\System\UnknownException.h" />
+    <ClInclude Include="..\Include\System\OutOfMemoryException.h" />
+    <ClInclude Include="..\Include\System\ComponentModel\Win32Exception.h" />
+    <ClInclude Include="..\Include\System\Security\SecurityException.h" />
     <ClInclude Include="InternalStringConvert.h" />
     <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
     <ClInclude Include="..\Include\System\Utils\StringConvert.h" />
@@ -352,6 +357,7 @@
     <ClCompile Include="String.cpp" />
     <ClCompile Include="Char.cpp" />
     <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="Win32Exception.cpp" />
     <ClCompile Include="SocketException.cpp" />
     <ClCompile Include="System\Utils\StringConvert.cpp" />
     <ClCompile Include="Object.cpp" />

@@ -11,14 +11,14 @@
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
 #include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
             class SemaphoreFullException : public SystemException {
             public:
-                SemaphoreFullException(const char* pchMessage);
+<span style = "background-color:#dfd">                SemaphoreFullException(const String&amp; sMessage) : SystemException(sMessage) {}</span>
             };
-<span style = "background-color:#dfd">            inline SemaphoreFullException::SemaphoreFullException(const char* pchMessage) : SystemException(pchMessage) { }</span>
         }
     }
 }</pre>

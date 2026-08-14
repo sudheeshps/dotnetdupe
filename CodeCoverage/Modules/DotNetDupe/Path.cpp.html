@@ -160,8 +160,8 @@ namespace DotNetDupe {
 
                 char chRandomString[13];
 
-                for (int iIndex = 0; iIndex &lt; 8; ++iIndex) {
-<span style = "background-color:#dfd">                    chRandomString[iIndex] = chChars[distribution(generator)];</span>
+<span style = "background-color:#dfd">                for (int iIndex = 0; iIndex &lt; 8; ++iIndex) {
+                    chRandomString[iIndex] = chChars[distribution(generator)];</span>
                 }
 <span style = "background-color:#dfd">                chRandomString[8] = '.';</span>
                 for (int iIndex = 0; iIndex &lt; 3; ++iIndex) {

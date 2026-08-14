@@ -6,7 +6,6 @@ namespace DotNetDupe {
 
         class FormatException : public SystemException {
         public:
-            FormatException(const char* pchMessage) : SystemException(pchMessage) {}
             FormatException(const String& sMessage) : SystemException(sMessage) {}
         };
 

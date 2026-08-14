@@ -7,7 +7,6 @@ namespace DotNetDupe {
 
         class IOException : public SystemException {
         public:
-            IOException(const char* pchMessage) : SystemException(pchMessage) {}
             IOException(const String& sMessage) : SystemException(sMessage) {}
         };
         }

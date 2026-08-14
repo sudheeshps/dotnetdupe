@@ -1,13 +1,13 @@
 #pragma once
 #include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
             class SemaphoreFullException : public SystemException {
             public:
-                SemaphoreFullException(const char* pchMessage);
+                SemaphoreFullException(const String& sMessage) : SystemException(sMessage) {}
             };
-            inline SemaphoreFullException::SemaphoreFullException(const char* pchMessage) : SystemException(pchMessage) { }
         }
     }
 }

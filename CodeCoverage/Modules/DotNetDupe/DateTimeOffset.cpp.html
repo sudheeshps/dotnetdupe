@@ -40,8 +40,8 @@ namespace DotNetDupe {
 #else
             localtime_r(&amp;tTime, &amp;tmTime);
 #endif
-            char szBuf[128] = { 0 };
-<span style = "background-color:#dfd">            std::snprintf(szBuf, sizeof(szBuf), "%04d-%02d-%02d %02d:%02d:%02d",</span>
+<span style = "background-color:#dfd">            char szBuf[128] = { 0 };
+            std::snprintf(szBuf, sizeof(szBuf), "%04d-%02d-%02d %02d:%02d:%02d",</span>
                 tmTime.tm_year + 1900, tmTime.tm_mon + 1, tmTime.tm_mday,
                 tmTime.tm_hour, tmTime.tm_min, tmTime.tm_sec);
 <span style = "background-color:#dfd">            return String(szBuf);
