@@ -2,6 +2,7 @@
 
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
 [![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
@@ -12,14 +13,16 @@ Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While th
 Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨
 
 > [!IMPORTANT]
-> **Major Update v3.0.7 ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe is now updated with enhanced logging & stream redirection! 🌐 Key highlights in this release include:
+> **Major Update v4.0.0 ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe 4.0.0 is a major architectural release with header STL decoupling and expanded core services! 🌐 Key highlights in this release include:
+> - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
+> - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, and all concurrent collections.
 > - 📄 **Console I/O Redirection:** Standard stream redirection via `Console::SetOut`, `Console::SetError`, and `Console::SetIn` using `SmartPointer`.
 > - 🖊️ **LoggerTextWriter Log Redirector:** Bridge standard `TextWriter` stream calls directly into `LogManager` logging providers without per-call lookup overhead.
+> - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
+> - 📥 **FileDownloader Utility:** High-level download utility with robust lifecycle and prompt file handle release.
 > - 🌲 **Recursive Directory Creation:** Overloaded `Directory::CreateDirectory(path, recursive)` to automatically construct missing parent directory structures.
 > - 📂 **Resilient File Logging:** Enhanced `FileLoggerProvider` to resolve relative log paths to full paths and auto-create missing log directories.
-> - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
-> - ⚡ **C++ Standard:** Language version upgraded to C++20.
-> - 🌐 **Mini WebAppServer & Synchronization:** Built-in web application server capabilities and cross-process named sync primitives (`Mutex`, `EventWaitHandle`).
+> - 🧩 **ServiceCollection DI Enhancements:** Improved lifetime management and container registration.
 
 We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
 
@@ -57,6 +60,7 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
   - [Project Status 🚧](#project-status-)
   - [Contributions 👋](#contributions-)
   - [CI/CD Pipeline 🚀](#cicd-pipeline-)
+    - [Code Coverage & Static Analysis 📊](#code-coverage--static-analysis-)
   - [License 📄](#license-)
   - [Generated Content 🤖](#generated-content-)
   - [Contact 📧](#contact-)
@@ -141,7 +145,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.7.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.0.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -268,7 +272,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.7.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.0.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -278,9 +282,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.3.0.7.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.0.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.7.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -1012,7 +1016,15 @@ This repository uses GitHub Actions to automate the build, test, and release pro
 
 ### Workflow Details
 - **Build & Test**: Every push to `main` and all pull requests trigger a full build (Debug & Release) and execution of all unit tests.
+- **Code Coverage & Static Analysis**: Automated code coverage measurement via OpenCppCoverage (> 80% line coverage required) and LLOC / export compliance checks.
 - **NuGet Release**: Pushing a tag (e.g., `v1.0.0`) triggers the creation and publishing of the NuGet package to [nuget.org](https://www.nuget.org/).
+
+### Code Coverage & Static Analysis 📊
+- **Local Git Repository Reports:**
+  - 📈 [OpenCppCoverage HTML Report](CodeCoverage/index.html)
+  - 🔍 [Static Analysis & Quality Gate Report](CodeCoverage/StaticAnalysis.html)
+- **Live Web Report:** [https://sudheeshps.github.io/DotNetDupe/](https://sudheeshps.github.io/DotNetDupe/)
+- **Local Generation:** Run `powershell .\scripts\Generate-CoverageReport.ps1` to execute tests under OpenCppCoverage and refresh the `CodeCoverage/` folder.
 
 ### How to Release
 1. Update the version in `DotNetDupe.nuspec`.

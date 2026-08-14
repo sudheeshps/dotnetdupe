@@ -1,0 +1,154 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Char.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Char.h"
+#include &lt;cwctype&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        
+<span style = "background-color:#fdd">        Char::Char() : m_c('\0') { }</span>
+
+<span style = "background-color:#dfd">        Char::Char(char32_t c) {
+            m_c = c;
+        }</span>
+
+<span style = "background-color:#fdd">        void Char::operator=(char32_t c) {
+            m_c = c;
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::Equals(char32_t c) const {
+            return m_c == c;
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::operator==(char32_t c) const {
+            return m_c == c;
+        }</span>
+
+<span style = "background-color:#dfd">        double Char::GetNumericValue(char32_t c) {
+            if (c &gt;= '0' &amp;&amp; c &lt;= '9') {
+                return c - '0';</span>
+            }
+<span style = "background-color:#dfd">            return -1.0;
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAscii(char32_t c) {
+            return (c &lt;= 0x7f);
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiDigit(char32_t c) {
+            return c &gt;= '0' &amp;&amp; c &lt;= '9';
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiHexDigit(char32_t c) {
+            return (c &gt;= '0' &amp;&amp; c &lt;= '9') ||</span>
+                   (c &gt;= 'A' &amp;&amp; c &lt;= 'F') || 
+                   (c &gt;= 'a' &amp;&amp; c &lt;= 'f');
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiHexDigitLower(char32_t c) {
+            return (c &gt;= '0' &amp;&amp; c &lt;= '9') ||</span>
+                   (c &gt;= 'a' &amp;&amp; c &lt;= 'f');
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiHexDigitUpper(char32_t c) {
+            return (c &gt;= '0' &amp;&amp; c &lt;= '9') ||</span>
+                   (c &gt;= 'A' &amp;&amp; c &lt;= 'F');
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiLetter(char32_t c) {
+            return (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') || (c &gt;= 'a' &amp;&amp; c &lt;= 'z');
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiLetterLower(char32_t c) {
+            return (c &gt;= 'a' &amp;&amp; c &lt;= 'z');
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiLetterOrDigit(char32_t c) {
+            return (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') || </span>
+                   (c &gt;= 'a' &amp;&amp; c &lt;= 'z') ||
+                   (c &gt;= '0' &amp;&amp; c &lt;= '9');
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsAsciiLetterUpper(char32_t c) {
+            return (c &gt;= 'A' &amp;&amp; c &lt;= 'Z');
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsBetween(char32_t c, char32_t minInclusive, char32_t maxInclusive) {
+            return c &gt;= minInclusive &amp;&amp; c &lt;= maxInclusive;
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsControl(char32_t c) {
+            if (c &lt;= 0x1F || (c &gt;= 0x7F &amp;&amp; c &lt;= 0x9F)) return true;
+            if (c &gt;= 0xFFFFFF7F &amp;&amp; c &lt;= 0xFFFFFF9F) return true; // Handling signed char cast
+            if (c &lt;= 0xFFFF) return std::iswcntrl(static_cast&lt;wint_t&gt;(c)) != 0;</span>
+<span style = "background-color:#fdd">            return (c &gt;= 0xE0000 &amp;&amp; c &lt;= 0xE007F);</span>
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsDigit(char32_t c) {
+            if (c &lt;= 0xFFFF) return std::iswdigit(static_cast&lt;wint_t&gt;(c)) != 0;
+            return (c &gt;= 0x1D7CE &amp;&amp; c &lt;= 0x1D7FF);
+        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsLower(char32_t c) {
+            if (c &lt;= 0xFFFF) return std::iswlower(static_cast&lt;wint_t&gt;(c)) != 0;</span>
+<span style = "background-color:#fdd">            return (c &gt;= 0x10428 &amp;&amp; c &lt;= 0x1044F);</span>
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsLetter(char32_t c) {
+            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return true;
+            if (c &gt;= 'a' &amp;&amp; c &lt;= 'z') return true;
+            if (c &gt;= 0xC0 &amp;&amp; c &lt;= 0xD6) return true;
+            if (c &gt;= 0xD8 &amp;&amp; c &lt;= 0xF6) return true;
+            if (c &gt;= 0xF8 &amp;&amp; c &lt;= 0xFF) return true;
+            if (c &lt;= 0xFFFF) return std::iswalpha(static_cast&lt;wint_t&gt;(c)) != 0;
+            return (c &gt;= 0x20000 &amp;&amp; c &lt;= 0x2A6DF);
+        }</span>
+
+<span style = "background-color:#fdd">        bool Char::IsLetterOrDigit(char32_t c) {
+            if (c &lt;= 0xFFFF) return std::iswalnum(static_cast&lt;wint_t&gt;(c)) != 0;
+            return IsLetter(c) || IsDigit(c);
+        }</span>
+
+<span style = "background-color:#dfd">        char32_t Char::ToLower(char32_t c) {
+            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return c + 0x20;
+            if (c &gt;= 0xC0 &amp;&amp; c &lt;= 0xD6) return c + 0x20;
+            if (c &gt;= 0xD8 &amp;&amp; c &lt;= 0xDE) return c + 0x20;
+            if (c &lt;= 0xFFFF) {
+                wint_t lower = std::towlower(static_cast&lt;wint_t&gt;(c));
+                if (lower != static_cast&lt;wint_t&gt;(c)) return static_cast&lt;char32_t&gt;(lower);</span>
+            }
+<span style = "background-color:#dfd">            if (c &gt;= 0x10400 &amp;&amp; c &lt;= 0x10427) return c + 0x28;</span>
+            return c;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool Char::IsNumber(char32_t c) {
+            return IsDigit(c);
+        }</span>
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

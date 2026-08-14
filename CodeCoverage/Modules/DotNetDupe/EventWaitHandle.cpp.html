@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>EventWaitHandle.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Threading/EventWaitHandle.h"
+#include "System/Threading/WaitHandleCannotBeOpenedException.h"
+#include "System/TimeoutException.h"
+#include "System/Char.h"
+#include "System/Utils/StringConvert.h"
+#include "System/SmartPointer.h"
+#include &lt;chrono&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Threading {
+            EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset)
+<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(""), _hHandle(nullptr) {}</span>
+
+            static bool s_dummyCreatedNew = false;
+            EventWaitHandle::EventWaitHandle(const String&amp; sName, bool initialState, bool manualReset, bool openAlways)
+<span style = "background-color:#fdd">                : EventWaitHandle(initialState, manualReset, sName, openAlways, s_dummyCreatedNew) {}</span>
+
+            EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String&amp; sName, bool openAlways)
+<span style = "background-color:#dfd">                : EventWaitHandle(initialState, manualReset, sName, openAlways, s_dummyCreatedNew) {}</span>
+
+            EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
+<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
+                    std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
+                    _hHandle = ::CreateEventW(NULL, manualReset ? TRUE : FALSE, initialState ? TRUE : FALSE, wsName.c_str());
+                    if (_hHandle != NULL) {
+                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);</span>
+                    } else {
+<span style = "background-color:#fdd">                        bCreatedNew = false;
+                        if (openAlways) {
+                            _hHandle = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                            if (_hHandle == NULL) {
+                                throw WaitHandleCannotBeOpenedException("Failed to open existing event with SYNCHRONIZE access.");</span>
+                            }
+                        } else {
+<span style = "background-color:#fdd">                            throw WaitHandleCannotBeOpenedException("Event creation returned null handle and openAlways is false.");</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                } else {</span>
+<span style = "background-color:#fdd">                    bCreatedNew = true;</span>
+                }
+#else
+                bCreatedNew = true;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            EventWaitHandle::~EventWaitHandle() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    ::CloseHandle((HANDLE)_hHandle);
+                    _hHandle = nullptr;</span>
+                }
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;EventWaitHandle&gt; EventWaitHandle::OpenExisting(const String&amp; sName) {
+                SmartPointer&lt;EventWaitHandle&gt; pResult = nullptr;
+                if (TryOpenExisting(sName, pResult)) {
+                    return pResult;</span>
+                }
+<span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No event handle of the given name exists.");
+            }</span>
+
+<span style = "background-color:#dfd">            bool EventWaitHandle::TryOpenExisting(const String&amp; sName, SmartPointer&lt;EventWaitHandle&gt;&amp; pResult) {
+                pResult = SmartPointer&lt;EventWaitHandle&gt;();
+                if (sName.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    return false;</span>
+                }
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
+                HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                if (h != NULL) {
+                    SmartPointer&lt;EventWaitHandle&gt; spEvt = SmartPointer&lt;EventWaitHandle&gt;::NewShared(false, false);
+                    spEvt-&gt;_name = sName;
+                    spEvt-&gt;_hHandle = h;
+                    pResult = std::move(spEvt);
+                    return true;</span>
+                }
+<span style = "background-color:#dfd">                return false;</span>
+#else
+                return false;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool EventWaitHandle::Set() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    return (::SetEvent((HANDLE)_hHandle) != FALSE);</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(_mutex);</span>
+                _state = true;
+<span style = "background-color:#dfd">                if (_manualReset) {
+                    _cv.notify_all();
+                } else {
+                    _cv.notify_one();</span>
+                }
+<span style = "background-color:#dfd">                return true;
+            }</span>
+
+<span style = "background-color:#fdd">            bool EventWaitHandle::Reset() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">                if (_hHandle != nullptr) {
+                    return (::ResetEvent((HANDLE)_hHandle) != FALSE);</span>
+                }
+#endif
+<span style = "background-color:#fdd">                std::lock_guard&lt;std::mutex&gt; lock(_mutex);
+                _state = false;
+                return true;
+            }</span>
+
+<span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {</span>
+<span style = "background-color:#fdd">                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
+                    return (dwWaitResult == WAIT_OBJECT_0);</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
+                _cv.wait(lock, [this]() { return _state; });
+                if (!_manualReset) {
+                    _state = false;</span>
+                }
+<span style = "background-color:#dfd">                return true;
+            }</span>
+
+<span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne(int millisecondsTimeout) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (_hHandle != nullptr) {
+                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);
+                    if (dwWaitResult == WAIT_TIMEOUT) {
+                        throw TimeoutException("The wait operation timed out.");</span>
+                    }
+<span style = "background-color:#dfd">                    return (dwWaitResult == WAIT_OBJECT_0);</span>
+                }
+#endif
+<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
+                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _state; });
+                if (result) {
+                    if (!_manualReset) {
+                        _state = false;</span>
+                    }
+<span style = "background-color:#dfd">                    return true;</span>
+                }
+                
+<span style = "background-color:#dfd">                throw TimeoutException("The wait operation timed out.");
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

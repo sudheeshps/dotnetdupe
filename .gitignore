@@ -379,11 +379,10 @@ FodyWeavers.xsd
 /update_chars.ps1
 /port-plan.md
 /DotNetDupeDemo/DotNetDupeDemo.vcxproj.filters
-/coverage_report/
-/DotNetDupeDemo/app_structured.log.1
-/DotNetDupeDemo/app_structured.log.2
-/DotNetDupeDemo/demo_wwwroot
-/CoverageReport-2026-08-08-17h44m17s
+# Code Coverage & Static Analysis Reports (Tracked in Git)
+/CoverageReport-*/
+!/CodeCoverage/
+!/CodeCoverage/**
 /demo_wwwroot
 /app_structured.log.1
 /app_structured.log.2
@@ -480,3 +479,6 @@ FodyWeavers.xsd
 /rewrite_hashset.py
 /synthesize_exceptions.py
 /test_wsl.cpp
+/DotNetDupeDemo/app_structured.log.1
+/DotNetDupeDemo/app_structured.log.2
+/DotNetDupeDemo/demo_wwwroot

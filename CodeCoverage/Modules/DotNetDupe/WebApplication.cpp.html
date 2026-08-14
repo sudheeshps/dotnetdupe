@@ -1,0 +1,527 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>WebApplication.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "System/Net/WebSockets/WebSocket.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
+#include "System/Console.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/SocketException.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Convert.h"
+
+#include "System/Net/HttpStatusCode.h"
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+namespace DotNetDupe {
+    namespace WebAppCore {
+        namespace Builder {
+
+            namespace Internal {
+                std::vector&lt;std::string&gt; GetPathSegments(const std::string&amp; path);
+                bool MatchRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams);
+                void ParseServerUrl(const std::string&amp; sUrl, std::string&amp; host, int&amp; port);
+            }
+
+            WebApplication::WebApplication(const System::SmartPointer&lt;System::IServiceProvider&gt;&amp; spServices)
+<span style = "background-color:#dfd">                : m_spServices(spServices), m_bRunning(false), m_nPort(0) {}</span>
+
+<span style = "background-color:#dfd">            WebApplication::~WebApplication() {
+                Stop();
+            }</span>
+
+            WebApplication::WebApplication(WebApplication&amp;&amp; other) noexcept
+<span style = "background-color:#fdd">                : m_spServices(std::move(other.m_spServices)),
+                  m_getHandlers(std::move(other.m_getHandlers)),
+                  m_postHandlers(std::move(other.m_postHandlers)),
+                  m_putHandlers(std::move(other.m_putHandlers)),
+                  m_deleteHandlers(std::move(other.m_deleteHandlers)),
+                  m_pListener(std::move(other.m_pListener)),
+                  m_bRunning(other.m_bRunning.load()),
+                  m_sHost(std::move(other.m_sHost)),
+                  m_nPort(other.m_nPort),
+                  m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
+
+<span style = "background-color:#fdd">            WebApplication&amp; WebApplication::operator=(WebApplication&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    m_spServices = std::move(other.m_spServices);
+                    m_getHandlers = std::move(other.m_getHandlers);
+                    m_postHandlers = std::move(other.m_postHandlers);
+                    m_putHandlers = std::move(other.m_putHandlers);
+                    m_deleteHandlers = std::move(other.m_deleteHandlers);
+                    m_pListener = std::move(other.m_pListener);
+                    m_bRunning = other.m_bRunning.load();
+                    m_sHost = std::move(other.m_sHost);
+                    m_nPort = other.m_nPort;
+                    m_controllerRegistrars = std::move(other.m_controllerRegistrars);</span>
+                }
+<span style = "background-color:#fdd">                return *this;
+            }</span>
+
+<span style = "background-color:#dfd">            System::SmartPointer&lt;WebApplicationBuilder&gt; WebApplication::CreateBuilder() {
+                return System::SmartPointer&lt;WebApplicationBuilder&gt;::NewShared();
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapGet(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_getHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapPost(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_postHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapPut(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_putHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapDelete(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_deleteHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#fdd">            void WebApplication::MapWebSocket(const System::String&amp; pattern, System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; handler) {
+                m_wsHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapControllers() {
+                for (auto&amp; registerRoutes : m_controllerRegistrars) {
+                    registerRoutes(m_spSelf);</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::Run(const System::String&amp; url, int threadCount) {
+                if (threadCount &gt; 0) {
+                    System::Threading::ThreadPool::SetMinThreads(threadCount);</span>
+                }
+
+<span style = "background-color:#dfd">                std::string host;
+                int port = 5000;
+                Internal::ParseServerUrl(url.GetRawString(), host, port);</span>
+
+<span style = "background-color:#dfd">                m_sHost = System::String(host.c_str());
+                m_nPort = port;
+                m_pListener = System::SmartPointer&lt;System::Net::Sockets::TcpListener&gt;::NewShared(m_sHost, port);
+                m_pListener-&gt;Start();</span>
+
+<span style = "background-color:#dfd">                System::Console::WriteLine(System::String("[Server] Started listener on host: ") + m_sHost + " port: " + System::Convert::ToString(port));
+                System::Console::WriteLine("Hosting environment: Production");
+                System::Console::WriteLine(System::String("Now listening on: ") + url);
+                System::Console::WriteLine("Application started. Press Ctrl+C to shut down.");</span>
+
+<span style = "background-color:#dfd">                m_bRunning = true;
+                try {
+                    while (m_bRunning) {
+                        System::Console::WriteLine("[Server] Waiting for connection in AcceptTcpClient...");
+                        auto client = m_pListener-&gt;AcceptTcpClient();
+                        System::Console::WriteLine("[Server] AcceptTcpClient returned a client!");
+                        if (client.IsNull()) {</span>
+<span style = "background-color:#fdd">                            System::Console::WriteLine("[Server] Accepted client is NULL!");
+                            continue;</span>
+                        }
+
+                        struct ConnectionState : public Object {
+                            System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; Client;
+                            WebApplication* App;
+                            ConnectionState(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; c, WebApplication* a) : Client(std::move(c)), App(a) {}
+                        };
+
+<span style = "background-color:#dfd">                        System::Console::WriteLine("[Server] Queueing connection to ThreadPool...");
+                        ConnectionState* pState = new ConnectionState(std::move(client), this);
+                        bool bQueued = System::Threading::ThreadPool::QueueUserWorkItem([](Object* rawState) {
+                            System::Console::WriteLine("[Server] ThreadPool callback invoked!");
+                            System::SmartPointer&lt;ConnectionState&gt; spState(dynamic_cast&lt;ConnectionState*&gt;(rawState));
+                            if (!spState.IsNull() &amp;&amp; spState-&gt;App) {</span>
+                                try {
+<span style = "background-color:#dfd">                                    System::Console::WriteLine("[Server] Calling HandleConnection...");
+                                    spState-&gt;App-&gt;HandleConnection(std::move(spState-&gt;Client));
+                                    System::Console::WriteLine("[Server] HandleConnection finished!");</span>
+<span style = "background-color:#fdd">                                } catch (const DotNetDupe::System::SystemException&amp; ex) {
+                                    System::Console::WriteLine(System::String("[Server Exception] HandleConnection: ") + ex.What());
+                                } catch (...) {
+                                    System::Console::WriteLine("[Server Exception] HandleConnection unknown");
+                                }</span>
+                            } else {
+<span style = "background-color:#fdd">                                System::Console::WriteLine("[Server Exception] ConnectionState is NULL or App is NULL");</span>
+                            }
+<span style = "background-color:#dfd">                        }, pState);</span>
+                        
+<span style = "background-color:#dfd">                        if (!bQueued) {</span>
+<span style = "background-color:#fdd">                            delete pState;</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                } catch (const System::Net::Sockets::SocketException&amp; ex) {
+                    System::Console::WriteLine(System::String("[Server Exception] AcceptTcpClient: ") + ex.What());</span>
+<span style = "background-color:#fdd">                } catch (const System::SystemException&amp; ex) {
+                    System::Console::WriteLine(System::String("[Server Exception] Run loop: ") + ex.What());
+                } catch (...) {
+                    System::Console::WriteLine("[Server Exception] Run loop unknown");
+                }</span>
+<span style = "background-color:#dfd">                System::Console::WriteLine("[Server] Run loop exited!");
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::Stop() {
+                System::Console::WriteLine("[Server] Stop() invoked!");
+                if (!m_bRunning) {
+                    System::Console::WriteLine("[Server] Stop(): m_bRunning is already false!");
+                    return;</span>
+                }
+<span style = "background-color:#dfd">                m_bRunning = false;
+                if (!m_pListener.IsNull()) {
+                    System::Console::WriteLine("[Server] Stopping TcpListener...");
+                    m_pListener-&gt;Stop();</span>
+                }
+
+                // Send a dummy connection to wake up the AcceptTcpClient block
+                try {
+<span style = "background-color:#dfd">                    System::Console::WriteLine(System::String("[Server] Sending dummy wake-up connection to ") + m_sHost + ":" + System::Convert::ToString(m_nPort));
+                    System::Net::Sockets::TcpClient dummy;
+                    dummy.Connect(m_sHost, m_nPort);</span>
+<span style = "background-color:#fdd">                    dummy.Close();
+                    System::Console::WriteLine("[Server] Dummy connection sent successfully.");</span>
+<span style = "background-color:#dfd">                } catch (const System::SystemException&amp; ex) {
+                    System::Console::WriteLine(System::String("[Server Exception] Dummy connection failed: ") + ex.What());</span>
+<span style = "background-color:#fdd">                } catch (...) {
+                    System::Console::WriteLine("[Server Exception] Dummy connection failed unknown");
+                }</span>
+
+                // Break the reference cycle
+<span style = "background-color:#dfd">                m_spSelf = nullptr;
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::HandleConnection(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; spClient) {
+                System::Console::WriteLine("[Server] HandleConnection started.");
+                auto stream = spClient-&gt;GetStream();
+                if (stream.IsNull()) {</span>
+<span style = "background-color:#fdd">                    System::Console::WriteLine("[Server] HandleConnection: NetworkStream is NULL!");</span>
+                    return;
+                }
+
+                char c;
+<span style = "background-color:#dfd">                std::string currentLine;
+                std::vector&lt;std::string&gt; lines;</span>
+
+<span style = "background-color:#dfd">                System::Console::WriteLine("[Server] Reading request headers...");
+                while (m_bRunning &amp;&amp; stream-&gt;Read(&amp;c, 0, 1) &gt; 0) {
+                    if (c == '\n') {
+                        if (!currentLine.empty() &amp;&amp; currentLine.back() == '\r') {
+                            currentLine.pop_back();</span>
+                        }
+<span style = "background-color:#dfd">                        if (currentLine.empty()) {</span>
+                            break;
+                        }
+<span style = "background-color:#dfd">                        lines.push_back(currentLine);
+                        currentLine.clear();
+                    } else {
+                        currentLine += c;</span>
+                    }
+                }
+
+<span style = "background-color:#dfd">                System::Console::WriteLine(System::String("[Server] Headers read complete. Number of lines: ") + System::Convert::ToString((int)lines.size()));
+                if (lines.empty()) {</span>
+<span style = "background-color:#fdd">                    System::Console::WriteLine("[Server] Request lines empty, returning.");
+                    return;</span>
+                }
+
+<span style = "background-color:#dfd">                std::string reqLine = lines[0];
+                size_t space1 = reqLine.find(' ');
+                size_t space2 = reqLine.find(' ', space1 + 1);
+                if (space1 == std::string::npos || space2 == std::string::npos) return;</span>
+
+<span style = "background-color:#dfd">                std::string method = reqLine.substr(0, space1);
+                std::string fullPath = reqLine.substr(space1 + 1, space2 - space1 - 1);</span>
+
+<span style = "background-color:#dfd">                auto spContext = System::SmartPointer&lt;Http::HttpContext&gt;::NewShared();
+                auto spRequest = spContext-&gt;GetRequest();
+                auto spResponse = spContext-&gt;GetResponse();</span>
+
+<span style = "background-color:#dfd">                spRequest-&gt;SetMethod(System::String(method.c_str()));</span>
+
+<span style = "background-color:#dfd">                std::string path = fullPath;
+                size_t question = fullPath.find('?');
+                if (question != std::string::npos) {
+                    path = fullPath.substr(0, question);
+                    std::string queryStr = fullPath.substr(question + 1);</span>
+
+<span style = "background-color:#dfd">                    size_t start = 0;
+                    while (start &lt; queryStr.length()) {
+                        size_t ampersand = queryStr.find('&amp;', start);
+                        std::string pair = (ampersand == std::string::npos) ? queryStr.substr(start) : queryStr.substr(start, ampersand - start);
+                        size_t equals = pair.find('=');
+                        if (equals != std::string::npos) {
+                            std::string key = pair.substr(0, equals);
+                            std::string val = pair.substr(equals + 1);
+                            spRequest-&gt;GetQuery()[System::String(key.c_str())] = System::String(val.c_str());
+                        } else if (!pair.empty()) {</span>
+<span style = "background-color:#fdd">                            spRequest-&gt;GetQuery()[System::String(pair.c_str())] = System::String("");</span>
+                        }
+<span style = "background-color:#dfd">                        if (ampersand == std::string::npos) break;</span>
+<span style = "background-color:#fdd">                        start = ampersand + 1;
+                    }</span>
+<span style = "background-color:#dfd">                }
+                spRequest-&gt;SetPath(System::String(path.c_str()));</span>
+
+<span style = "background-color:#dfd">                System::Console::WriteLine(System::String("[Server] Parsed request: Method='") + System::String(method.c_str()) + "', Path='" + System::String(path.c_str()) + "'");</span>
+
+<span style = "background-color:#dfd">                int contentLength = 0;
+                for (size_t i = 1; i &lt; lines.size(); ++i) {
+                    std::string hLine = lines[i];
+                    size_t colon = hLine.find(':');
+                    if (colon != std::string::npos) {
+                        std::string name = hLine.substr(0, colon);
+                        std::string value = hLine.substr(colon + 1);</span>
+
+<span style = "background-color:#dfd">                        auto trim = [](const std::string&amp; s) {
+                            size_t f = s.find_first_not_of(" \t");
+                            if (f == std::string::npos) return std::string("");
+                            size_t l = s.find_last_not_of(" \t\r\n");
+                            return s.substr(f, l - f + 1);
+                        };
+                        name = trim(name);
+                        value = trim(value);</span>
+
+<span style = "background-color:#dfd">                        std::string nameLower = name;
+                        std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);</span>
+
+<span style = "background-color:#dfd">                        spRequest-&gt;GetHeaders()[System::String(nameLower.c_str())] = System::String(value.c_str());</span>
+
+<span style = "background-color:#dfd">                        if (nameLower == "content-length") {</span>
+                            try {
+<span style = "background-color:#dfd">                                contentLength = std::stoi(value);</span>
+<span style = "background-color:#fdd">                            } catch (...) {</span>
+                                contentLength = 0;
+<span style = "background-color:#fdd">                            }</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                }</span>
+
+<span style = "background-color:#dfd">                if (contentLength &gt; 0) {
+                    System::Console::WriteLine(System::String("[Server] Reading content body of length: ") + System::Convert::ToString(contentLength));
+                    std::string body;
+                    for (int i = 0; i &lt; contentLength; ++i) {
+                        if (stream-&gt;Read(&amp;c, 0, 1) &gt; 0) {
+                            body += c;</span>
+                        } else {
+                            break;
+                        }
+                    }
+<span style = "background-color:#dfd">                    spRequest-&gt;SetBody(System::String(body.c_str()));
+                }</span>
+
+<span style = "background-color:#dfd">                System::String sBodyResult;</span>
+                bool bMatched = false;
+<span style = "background-color:#dfd">                System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler;</span>
+
+<span style = "background-color:#dfd">                System::Console::WriteLine("[Server] Matching handler...");
+                std::string reqPathStr = spRequest-&gt;GetPath().GetRawString();
+                std::vector&lt;std::string&gt; pathSegs = Internal::GetPathSegments(reqPathStr);</span>
+
+<span style = "background-color:#dfd">                auto findHandler = [&amp;](auto&amp; handlersMap) -&gt; bool {</span>
+                    // Try exact match first
+<span style = "background-color:#dfd">                    if (handlersMap.TryGetValue(spRequest-&gt;GetPath(), handler)) {
+                        return true;</span>
+                    }
+                    // Try pattern match
+<span style = "background-color:#dfd">                    auto keys = handlersMap.GetKeys();
+                    for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                        System::String pattern = keys[i];
+                        std::vector&lt;std::string&gt; patternSegs = Internal::GetPathSegments(pattern.GetRawString());
+                        std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; extractedParams;
+                        if (Internal::MatchRoute(patternSegs, pathSegs, extractedParams)) {</span>
+                            // Found a match! Extract parameters into GetRouteValues()
+<span style = "background-color:#dfd">                            for (const auto&amp; pair : extractedParams) {
+                                spRequest-&gt;GetRouteValues()[System::String(pair.first.c_str())] = System::String(pair.second.c_str());</span>
+                            }
+<span style = "background-color:#dfd">                            if (handlersMap.TryGetValue(pattern, handler)) {
+                                return true;</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                    }
+                    return false;
+                };</span>
+
+<span style = "background-color:#dfd">                spResponse-&gt;BindStream(stream);</span>
+
+                // Check for WebSocket Upgrade request
+<span style = "background-color:#dfd">                System::String sUpgrade, sSecKey;</span>
+                if (spRequest-&gt;GetHeaders().TryGetValue(System::String("upgrade"), sUpgrade) &amp;&amp;
+<span style = "background-color:#dfd">                    sUpgrade.GetRawString() == "websocket" &amp;&amp;</span>
+                    spRequest-&gt;GetHeaders().TryGetValue(System::String("sec-websocket-key"), sSecKey)) {
+
+<span style = "background-color:#fdd">                    System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; wsHandler;
+                    if (m_wsHandlers.TryGetValue(spRequest-&gt;GetPath(), wsHandler) &amp;&amp; !wsHandler.IsNull()) {
+                        System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
+                        std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\n"</span>
+                                                 "Upgrade: websocket\r\n"
+                                                 "Connection: Upgrade\r\n"
+                                                 "Sec-WebSocket-Accept: " + std::string(sAcceptKey.GetRawString() ? sAcceptKey.GetRawString() : "") + "\r\n\r\n";
+<span style = "background-color:#fdd">                        stream-&gt;Write(hsResponse.data(), 0, static_cast&lt;int&gt;(hsResponse.length()));</span>
+
+<span style = "background-color:#fdd">                        auto pWebSocket = System::SmartPointer&lt;System::Net::WebSockets::WebSocket&gt;::NewShared(stream);
+                        auto pWsContext = System::SmartPointer&lt;WebSockets::WebSocketContext&gt;::NewShared(spContext, pWebSocket);</span>
+
+                        try {
+<span style = "background-color:#fdd">                            wsHandler-&gt;OnConnected(pWsContext);
+                            System::String msg;
+                            while (pWebSocket-&gt;GetState() == System::Net::WebSockets::WebSocketState::Open &amp;&amp; pWebSocket-&gt;ReceiveText(msg)) {
+                                wsHandler-&gt;OnMessage(pWsContext, msg);
+                            }
+                        } catch (...) {}</span>
+                        try {
+<span style = "background-color:#fdd">                            wsHandler-&gt;OnDisconnected(pWsContext);
+                        } catch (...) {}</span>
+
+<span style = "background-color:#fdd">                        spClient-&gt;Close();
+                        return;</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                if (method == "GET" || method == "HEAD") {
+                    if (findHandler(m_getHandlers)) {</span>
+                        try {
+<span style = "background-color:#dfd">                            System::Console::WriteLine("[Server] Found GET/HEAD handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] GET/HEAD handler invoked successfully.");
+                            bMatched = true;</span>
+<span style = "background-color:#fdd">                        } catch (const DotNetDupe::System::SystemException&amp; ex) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = "500 Internal Server Error";</span>
+                            bMatched = true;
+<span style = "background-color:#fdd">                        }</span>
+                    }
+<span style = "background-color:#dfd">                } else if (method == "POST") {
+                    if (findHandler(m_postHandlers)) {</span>
+                        try {
+<span style = "background-color:#dfd">                            System::Console::WriteLine("[Server] Found POST handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] POST handler invoked successfully.");
+                            bMatched = true;</span>
+<span style = "background-color:#fdd">                        } catch (const DotNetDupe::System::SystemException&amp; ex) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = "500 Internal Server Error";</span>
+                            bMatched = true;
+<span style = "background-color:#fdd">                        }</span>
+                    }
+<span style = "background-color:#dfd">                } else if (method == "PUT") {
+                    if (findHandler(m_putHandlers)) {</span>
+                        try {
+<span style = "background-color:#dfd">                            System::Console::WriteLine("[Server] Found PUT handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] PUT handler invoked successfully.");
+                            bMatched = true;</span>
+<span style = "background-color:#fdd">                        } catch (const DotNetDupe::System::SystemException&amp; ex) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = "500 Internal Server Error";</span>
+                            bMatched = true;
+<span style = "background-color:#fdd">                        }</span>
+                    }
+<span style = "background-color:#dfd">                } else if (method == "DELETE") {
+                    if (findHandler(m_deleteHandlers)) {</span>
+                        try {
+<span style = "background-color:#dfd">                            System::Console::WriteLine("[Server] Found DELETE handler, invoking...");
+                            sBodyResult = handler(spContext);
+                            System::Console::WriteLine("[Server] DELETE handler invoked successfully.");</span>
+                            bMatched = true;
+<span style = "background-color:#fdd">                        } catch (const DotNetDupe::System::SystemException&amp; ex) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                            bMatched = true;
+                        } catch (...) {
+                            spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                            sBodyResult = "500 Internal Server Error";</span>
+                            bMatched = true;
+<span style = "background-color:#fdd">                        }</span>
+                    }
+                }
+
+                if (!bMatched) {
+<span style = "background-color:#dfd">                    System::Console::WriteLine("[Server] Route not matched!");
+                    spResponse-&gt;SetStatusCode(System::Net::HttpStatusCode::NotFound);
+                    sBodyResult = "404 Not Found";</span>
+                }
+
+                // Handle streaming / headers-already-sent responses (e.g. SSE or chunked transfer)
+<span style = "background-color:#dfd">                if (spResponse-&gt;IsHeadersSent()) {
+                    spResponse-&gt;Flush();
+                    spClient-&gt;Close();
+                    return;</span>
+                }
+
+<span style = "background-color:#dfd">                if (!sBodyResult.IsEmpty()) {
+                    spResponse-&gt;SetBody(sBodyResult);</span>
+                }
+
+<span style = "background-color:#dfd">                std::string respBody = spResponse-&gt;GetBody().GetRawString();</span>
+
+<span style = "background-color:#dfd">                std::string statusMsg = "OK";
+                int code = spResponse-&gt;GetStatusCode();
+                if (code == 404) statusMsg = "Not Found";
+                else if (code == 500) statusMsg = "Internal Server Error";
+                else if (code == 201) statusMsg = "Created";
+                else if (code == 204) statusMsg = "No Content";
+                else if (code == 400) statusMsg = "Bad Request";
+                else if (code == 401) statusMsg = "Unauthorized";</span>
+
+<span style = "background-color:#dfd">                std::string responseString = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\n";
+                responseString += "Content-Type: " + std::string(spResponse-&gt;GetContentType().GetRawString() ? spResponse-&gt;GetContentType().GetRawString() : "") + "\r\n";
+                responseString += "Content-Length: " + std::to_string(respBody.length()) + "\r\n";
+                responseString += "Connection: close\r\n";
+                responseString += "Server: DotNetDupeWebApplication/1.0\r\n";</span>
+
+<span style = "background-color:#dfd">                auto keys = spResponse-&gt;GetHeaders().GetKeys();
+                auto values = spResponse-&gt;GetHeaders().GetValues();
+                for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                    responseString += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";</span>
+                }
+
+<span style = "background-color:#dfd">                responseString += "\r\n";
+                System::Console::WriteLine(System::String("[Server] Sending response. Length: ") + System::Convert::ToString((int)(responseString.length() + respBody.length())));
+                stream-&gt;Write(responseString.data(), 0, static_cast&lt;int&gt;(responseString.length()));
+                if (!respBody.empty() &amp;&amp; method != "HEAD") {
+                    stream-&gt;Write(respBody.data(), 0, static_cast&lt;int&gt;(respBody.length()));</span>
+                }
+<span style = "background-color:#dfd">                spClient-&gt;Close();
+                System::Console::WriteLine("[Server] Client closed.");
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

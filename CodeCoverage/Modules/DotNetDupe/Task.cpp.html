@@ -1,0 +1,165 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Task.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Threading/Tasks/Task.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Lock.h"
+#include "System/Collections/Generic/List.h"
+#include "System/SystemException.h"
+#include "System/TimeoutException.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Threading {
+            namespace Tasks {
+
+<span style = "background-color:#dfd">                static Collections::Generic::List&lt;SmartPointer&lt;Task&gt;&gt; s_vActiveTasks;
+                static CriticalSection s_csActiveTasks;</span>
+
+                Task::Task(Action&lt;&gt; objAction)
+<span style = "background-color:#dfd">                    : m_objAction(objAction), m_eStatus(TaskStatus::Created) {
+                    m_pCompletionEvent = SmartPointer&lt;ManualResetEvent&gt;::NewShared(false);
+                }</span>
+
+<span style = "background-color:#fdd">                Task::~Task() {
+                }</span>
+
+<span style = "background-color:#dfd">                void Task::Start() {</span>
+                    {
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        if (m_eStatus != TaskStatus::Created) {</span>
+<span style = "background-color:#fdd">                            throw SystemException("Task has already been started.");</span>
+                        }
+<span style = "background-color:#dfd">                        m_eStatus = TaskStatus::WaitingToRun;
+                    }</span>
+                    
+<span style = "background-color:#dfd">                    ThreadPool::QueueUserWorkItem(WaitCallback(&amp;Task::ThreadPoolCallback), this);
+                }</span>
+
+<span style = "background-color:#dfd">                void Task::Wait() {
+                    m_pCompletionEvent-&gt;WaitOne();</span>
+                }
+
+<span style = "background-color:#dfd">                bool Task::Wait(int iMillisecondsTimeout) {</span>
+                    try {
+<span style = "background-color:#dfd">                        m_pCompletionEvent-&gt;WaitOne(iMillisecondsTimeout);</span>
+<span style = "background-color:#fdd">                        return true;</span>
+<span style = "background-color:#dfd">                    } catch (const TimeoutException&amp;) {
+                        return false;</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                TaskStatus Task::GetStatus() const {
+                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    return m_eStatus;
+                }</span>
+
+<span style = "background-color:#dfd">                bool Task::GetIsCompleted() const {
+                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    return m_eStatus == TaskStatus::RanToCompletion || </span>
+                           m_eStatus == TaskStatus::Faulted || 
+                           m_eStatus == TaskStatus::Canceled;
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                bool Task::GetIsFaulted() const {
+                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    return m_eStatus == TaskStatus::Faulted;
+                }</span>
+
+<span style = "background-color:#fdd">                bool Task::GetIsCanceled() const {
+                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    return m_eStatus == TaskStatus::Canceled;
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;Task&gt; Task::Run(Action&lt;&gt; objAction) {
+                    SmartPointer&lt;Task&gt; pTask = SmartPointer&lt;Task&gt;::NewShared(objAction);
+                    RetainTask(pTask);
+                    pTask-&gt;Start();
+                    return pTask;
+                }</span>
+
+<span style = "background-color:#dfd">                void Task::Execute() {</span>
+                    {
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        m_eStatus = TaskStatus::Running;
+                    }</span>
+
+                    try {
+<span style = "background-color:#dfd">                        if (m_objAction) {
+                            m_objAction();</span>
+                        }
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        m_eStatus = TaskStatus::RanToCompletion;
+                    } catch (...) {
+                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        m_eStatus = TaskStatus::Faulted;
+                    }</span>
+
+<span style = "background-color:#dfd">                    m_pCompletionEvent-&gt;Set();
+                    ReleaseTask(this);
+                }</span>
+
+<span style = "background-color:#dfd">                void Task::ThreadPoolCallback(Object* pState) {</span>
+                    Task* pTask = static_cast&lt;Task*&gt;(pState);
+<span style = "background-color:#dfd">                    if (pTask == nullptr) return;</span>
+
+                    // Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute()
+<span style = "background-color:#dfd">                    SmartPointer&lt;Task&gt; spSelf(nullptr);</span>
+                    {
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
+                        for (int i = 0; i &lt; s_vActiveTasks.GetCount(); ++i) {
+                            if (s_vActiveTasks[i].Get() == pTask) {
+                                spSelf = s_vActiveTasks[i];</span>
+                                break;
+                            }
+                        }
+<span style = "background-color:#fdd">                    }</span>
+
+<span style = "background-color:#dfd">                    if (!spSelf.IsNull()) {
+                        spSelf-&gt;Execute();</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {
+                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
+                    s_vActiveTasks.Add(pTask);
+                }</span>
+
+                void Task::ReleaseTask(Task* pTask) {
+                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
+                    for (int i = 0; i &lt; s_vActiveTasks.GetCount(); ++i) {
+                        if (s_vActiveTasks[i].Get() == pTask) {
+                            s_vActiveTasks.RemoveAt(i);
+                            break;
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

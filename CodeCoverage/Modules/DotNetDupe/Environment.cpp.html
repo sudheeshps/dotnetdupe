@@ -1,0 +1,354 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Environment.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Environment.h"
+#include &lt;vector&gt;
+#include &lt;map&gt;
+#include &lt;sstream&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#include &lt;Psapi.h&gt;
+#include &lt;shellapi.h&gt;
+#include &lt;shlobj.h&gt;
+#include "Win32Internal.h"
+#pragma comment(lib, "psapi.lib")
+#pragma warning(disable : 4996)
+
+using namespace DotNetDupe::System::Internal;
+#else
+#include &lt;unistd.h&gt;
+#include &lt;pwd.h&gt;
+#include &lt;limits.h&gt;
+#include &lt;sys/utsname.h&gt;
+#include &lt;fstream&gt;
+#include &lt;iostream&gt;
+
+extern char** environ;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+<span style = "background-color:#dfd">        String Environment::GetMachineName() {</span>
+#if defined(_WIN32)
+            wchar_t buffer [MAX_COMPUTERNAME_LENGTH + 1];
+<span style = "background-color:#dfd">            DWORD nSize = MAX_COMPUTERNAME_LENGTH + 1;
+            GetComputerNameW(buffer, &amp;nSize);
+            return String(WCharToUtf8(buffer).c_str());</span>
+#else
+            char buffer[HOST_NAME_MAX + 1];
+            if (gethostname(buffer, sizeof(buffer)) == 0) {
+                return buffer;
+            }
+            return "";
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#fdd">        String Environment::GetUserName() {</span>
+#if defined(_WIN32)
+            wchar_t buffer [256];
+            DWORD nSize = 256;
+<span style = "background-color:#fdd">            ::GetUserNameW(buffer, &amp;nSize);
+            return String(buffer);</span>
+#else
+            struct passwd *pPw = getpwuid(getuid());
+            if (pPw) {
+                return pPw-&gt;pw_name;
+            }
+            const char* pUser = getenv("USER");
+            return pUser ? pUser : "";
+#endif
+<span style = "background-color:#fdd">        }</span>
+
+<span style = "background-color:#fdd">        int Environment::GetProcessorCount() {</span>
+#if defined(_WIN32)
+            SYSTEM_INFO sysInfo;
+<span style = "background-color:#fdd">            GetSystemInfo(&amp;sysInfo);
+            return (int)sysInfo.dwNumberOfProcessors;</span>
+#else
+            return (int)sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+<span style = "background-color:#fdd">        }</span>
+
+<span style = "background-color:#fdd">        String Environment::GetNewLine() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">            return "\r\n";</span>
+#else
+            return "\n";
+#endif
+<span style = "background-color:#fdd">        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetCurrentDirectory() {</span>
+#if defined(_WIN32)
+            wchar_t buffer [MAX_PATH];
+<span style = "background-color:#dfd">            ::GetCurrentDirectoryW(MAX_PATH, buffer);
+            return String(WCharToUtf8(buffer).c_str());</span>
+#else
+            char buffer[PATH_MAX];
+            if (getcwd(buffer, sizeof(buffer))) {
+                return String(buffer);
+            }
+            return String("");
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetSystemDirectory() {</span>
+#if defined(_WIN32)
+            wchar_t buffer [MAX_PATH];
+<span style = "background-color:#dfd">            ::GetSystemDirectoryW(buffer, MAX_PATH);
+            return String(WCharToUtf8(buffer).c_str());</span>
+#else
+            return String("/usr/lib"); // Better POSIX default
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetOSVersion() {</span>
+#if defined(_WIN32)
+            OSVERSIONINFOEXW info;
+<span style = "background-color:#dfd">            ZeroMemory(&amp;info, sizeof(OSVERSIONINFOEXW));
+            info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
+            GetVersionExW((LPOSVERSIONINFOW)&amp;info);</span>
+
+<span style = "background-color:#dfd">            std::stringstream ss;
+            ss &lt;&lt; info.dwMajorVersion &lt;&lt; "." &lt;&lt; info.dwMinorVersion &lt;&lt; "." &lt;&lt; info.dwBuildNumber;
+            return String(ss.str().c_str());</span>
+#else
+            struct utsname name;
+            if (uname(&amp;name) == 0) {
+                return String(name.release);
+            }
+            return String("Unknown");
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetUserDomainName() {
+            return GetMachineName();
+        }</span>
+
+<span style = "background-color:#dfd">        int64_t Environment::GetWorkingSet() {</span>
+#if defined(_WIN32)
+            PROCESS_MEMORY_COUNTERS pmc;
+<span style = "background-color:#dfd">            if (GetProcessMemoryInfo(GetCurrentProcess(), &amp;pmc, sizeof(pmc))) {</span>
+                return (int64_t)pmc.WorkingSetSize;
+            }
+#else
+            std::ifstream statusFile("/proc/self/status");
+            std::string sLine;
+            while (std::getline(statusFile, sLine)) {
+                if (sLine.compare(0, 6, "VmRSS:") == 0) {
+                    size_t nStart = sLine.find_first_of("0123456789");
+                    size_t nEnd = sLine.find_first_not_of("0123456789", nStart);
+                    if (nStart != std::string::npos) {
+                        return std::stoll(sLine.substr(nStart, nEnd - nStart)) * 1024;
+                    }
+                }
+            }
+#endif
+            return 0;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#fdd">        void Environment::Exit(int iExitCode) {
+            ::exit(iExitCode);</span>
+        }
+
+<span style = "background-color:#dfd">        String Environment::ExpandEnvironmentVariables(const String&amp; sName) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            std::wstring sWName = Utf8ToWChar(sName.GetRawString());
+            DWORD nSize = ::ExpandEnvironmentStringsW(sWName.c_str(), NULL, 0);
+            if (nSize == 0) return sName;
+            std::vector&lt;wchar_t&gt; buffer(nSize);
+            ::ExpandEnvironmentStringsW(sWName.c_str(), buffer.data(), nSize);
+            return String(WCharToUtf8(buffer.data()).c_str());</span>
+#else
+            // Simple implementation: check if name is exactly a variable
+            if (sName.StartsWith("%", false) &amp;&amp; sName.EndsWith("%", false)) {
+                const char* pVal = getenv(sName.Substring(1, sName.GetLength() - 2).GetRawString());
+                return pVal ? String(pVal) : sName;
+            }
+            return sName;
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;String&gt; Environment::GetCommandLineArgs() {
+            std::vector&lt;String&gt; tempArgs;</span>
+#if defined(_WIN32)
+            int nArgs;
+<span style = "background-color:#dfd">            LPWSTR* pSzArglist = CommandLineToArgvW(GetCommandLineW(), &amp;nArgs);
+            if (pSzArglist != NULL) {
+                for (int iIndex = 0; iIndex &lt; nArgs; iIndex++) {
+                    tempArgs.push_back(String(WCharToUtf8(pSzArglist[iIndex]).c_str()));</span>
+                }
+<span style = "background-color:#dfd">                LocalFree(pSzArglist);</span>
+            }
+#else
+            std::ifstream cmdline("/proc/self/cmdline", std::ios::binary);
+            std::string sArg;
+            while (std::getline(cmdline, sArg, '\0')) {
+                tempArgs.push_back(String(sArg.c_str()));
+            }
+#endif
+<span style = "background-color:#dfd">            Array&lt;String&gt; result((int)tempArgs.size());
+            for (int iIndex = 0; iIndex &lt; (int)tempArgs.size(); iIndex++) result[iIndex] = tempArgs[iIndex];
+            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetEnvironmentVariable(const String&amp; sVariable) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            std::wstring sWVar = Utf8ToWChar(sVariable.GetRawString());
+            DWORD nSize = ::GetEnvironmentVariableW(sWVar.c_str(), NULL, 0);
+            if (nSize == 0) return String("");
+            std::vector&lt;wchar_t&gt; buffer(nSize);
+            ::GetEnvironmentVariableW(sWVar.c_str(), buffer.data(), nSize);
+            return String(WCharToUtf8(buffer.data()).c_str());</span>
+#else
+            const char* pVal = getenv(sVariable.GetRawString());
+            return pVal ? String(pVal) : String("");
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Collections::Generic::Dictionary&lt;String, String&gt; Environment::GetEnvironmentVariables() {
+            Collections::Generic::Dictionary&lt;String, String&gt; result;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            wchar_t* pLpvEnv = GetEnvironmentStringsW();
+            for (wchar_t* pLpszVariable = pLpvEnv; *pLpszVariable; ) {
+                std::string sLineUtf8 = WCharToUtf8(pLpszVariable);
+                String sLine(sLineUtf8.c_str());
+                int iEqIdx = sLine.IndexOf("=");
+                if (iEqIdx != -1) {
+                    result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));</span>
+                }
+<span style = "background-color:#dfd">                pLpszVariable += wcslen(pLpszVariable) + 1;
+            }
+            FreeEnvironmentStringsW(pLpvEnv);</span>
+#else
+            for (char** ppEnv = environ; *ppEnv; ++ppEnv) {
+                std::string sLine(*ppEnv);
+                size_t nEqPos = sLine.find('=');
+                if (nEqPos != std::string::npos) {
+                    result.Add(String(sLine.substr(0, nEqPos).c_str()), String(sLine.substr(nEqPos + 1).c_str()));
+                }
+            }
+#endif
+<span style = "background-color:#dfd">            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        String Environment::GetFolderPath(SpecialFolder eFolder) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            int iCsidl = 0;
+            switch (eFolder) {</span>
+<span style = "background-color:#fdd">            case SpecialFolder::ApplicationData: iCsidl = CSIDL_APPDATA; break;
+            case SpecialFolder::CommonApplicationData: iCsidl = CSIDL_COMMON_APPDATA; break;
+            case SpecialFolder::CommonProgramFiles: iCsidl = CSIDL_PROGRAM_FILES_COMMON; break;
+            case SpecialFolder::Cookies: iCsidl = CSIDL_COOKIES; break;</span>
+            case SpecialFolder::Desktop: iCsidl = CSIDL_DESKTOP; break;
+<span style = "background-color:#fdd">            case SpecialFolder::Favorites: iCsidl = CSIDL_FAVORITES; break;
+            case SpecialFolder::History: iCsidl = CSIDL_HISTORY; break;
+            case SpecialFolder::InternetCache: iCsidl = CSIDL_INTERNET_CACHE; break;
+            case SpecialFolder::LocalApplicationData: iCsidl = CSIDL_LOCAL_APPDATA; break;
+            case SpecialFolder::MyComputer: iCsidl = CSIDL_DRIVES; break;
+            case SpecialFolder::MyDocuments: iCsidl = CSIDL_MYDOCUMENTS; break;
+            case SpecialFolder::MyMusic: iCsidl = CSIDL_MYMUSIC; break;
+            case SpecialFolder::MyPictures: iCsidl = CSIDL_MYPICTURES; break;
+            case SpecialFolder::MyVideos: iCsidl = CSIDL_MYVIDEO; break;
+            case SpecialFolder::ProgramFiles: iCsidl = CSIDL_PROGRAM_FILES; break;
+            case SpecialFolder::Programs: iCsidl = CSIDL_PROGRAMS; break;
+            case SpecialFolder::Recent: iCsidl = CSIDL_RECENT; break;
+            case SpecialFolder::SendTo: iCsidl = CSIDL_SENDTO; break;
+            case SpecialFolder::StartMenu: iCsidl = CSIDL_STARTMENU; break;
+            case SpecialFolder::Startup: iCsidl = CSIDL_STARTUP; break;</span>
+<span style = "background-color:#dfd">            case SpecialFolder::System: iCsidl = CSIDL_SYSTEM; break;</span>
+<span style = "background-color:#fdd">            case SpecialFolder::Templates: iCsidl = CSIDL_TEMPLATES; break;
+            case SpecialFolder::UserProfile: iCsidl = CSIDL_PROFILE; break;</span>
+            }
+
+            wchar_t buffer [MAX_PATH];
+<span style = "background-color:#dfd">            if (SHGetFolderPathW(NULL, iCsidl, NULL, 0, buffer) == S_OK) {
+                return String(WCharToUtf8(buffer).c_str());</span>
+            }
+#else
+            // Simple POSIX mapping
+            switch (eFolder) {
+            case SpecialFolder::UserProfile:
+            case SpecialFolder::MyDocuments:
+                return String(getenv("HOME"));
+            case SpecialFolder::LocalApplicationData:
+                return String(getenv("HOME")) + "/.local/share";
+            default:
+                break;
+            }
+#endif
+<span style = "background-color:#fdd">            return String("");</span>
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;String&gt; Environment::GetLogicalDrives() {
+            std::vector&lt;String&gt; tempDrives;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            DWORD nDrives = ::GetLogicalDrives();
+            for (int iIndex = 0; iIndex &lt; 26; iIndex++) {
+                if ((nDrives &gt;&gt; iIndex) &amp; 1) {
+                    char chDriveName [4] = { (char)('A' + iIndex), ':', '\\', 0 };
+                    tempDrives.push_back(String(chDriveName));</span>
+                }
+            }
+#else
+            tempDrives.push_back(String("/"));
+#endif
+<span style = "background-color:#dfd">            Array&lt;String&gt; result((int)tempDrives.size());
+            for (int iIndex = 0; iIndex &lt; (int)tempDrives.size(); iIndex++) result[iIndex] = tempDrives[iIndex];
+            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        void Environment::SetEnvironmentVariable(const String&amp; sVariable, const String&amp; sValue) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            std::wstring sWVar = Utf8ToWChar(sVariable.GetRawString());
+            std::wstring sWVal = Utf8ToWChar(sValue.GetRawString());
+            ::SetEnvironmentVariableW(sWVar.c_str(), sWVal.c_str());</span>
+#else
+            setenv(sVariable.GetRawString(), sValue.GetRawString(), 1);
+#endif
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        OperatingSystem Environment::GetOperatingSystem() {</span>
+#if defined(_WIN32)
+            OSVERSIONINFOEXW info;
+<span style = "background-color:#dfd">            ZeroMemory(&amp;info, sizeof(OSVERSIONINFOEXW));</span>
+            info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
+<span style = "background-color:#dfd">            GetVersionExW((LPOSVERSIONINFOW)&amp;info);</span>
+
+            Version version(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, 0);
+            PlatformID ePlatform = PlatformID::Win32NT;
+<span style = "background-color:#dfd">            return OperatingSystem(ePlatform, version);</span>
+#else
+            struct utsname name;
+            uname(&amp;name);
+            Version version(0, 0, 0, 0); // Need better parsing
+            PlatformID ePlatform = PlatformID::Unix;
+            return OperatingSystem(ePlatform, version);
+#endif
+<span style = "background-color:#dfd">        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

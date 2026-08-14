@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>UriBuilder.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/UriBuilder.h"
+#include &lt;string&gt;
+
+namespace DotNetDupe {
+    namespace System {
+<span style = "background-color:#dfd">        UriBuilder::UriBuilder() : _port(-1) {}</span>
+<span style = "background-color:#fdd">        UriBuilder::UriBuilder(const String&amp; uri) : _uri(uri), _port(-1) {</span>
+            // Simple parsing to initialize fields if needed
+<span style = "background-color:#fdd">        }</span>
+        UriBuilder::UriBuilder(const Uri&amp; uri)
+<span style = "background-color:#dfd">            : _scheme(uri.GetScheme()), _host(uri.GetHost()), _port(uri.GetPort()),
+              _path(uri.GetAbsolutePath()), _query(uri.GetQuery()), _fragment(uri.GetFragment()) {
+            _uri = uri.ToString();
+        }</span>
+        UriBuilder::UriBuilder(const String&amp; scheme, const String&amp; host)
+<span style = "background-color:#fdd">            : _scheme(scheme), _host(host), _port(-1) {}</span>
+        UriBuilder::UriBuilder(const String&amp; scheme, const String&amp; host, int port)
+<span style = "background-color:#fdd">            : _scheme(scheme), _host(host), _port(port) {}</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetScheme() const { return _scheme; }
+        void UriBuilder::SetScheme(const String&amp; value) { _scheme = value; }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetHost() const { return _host; }
+        void UriBuilder::SetHost(const String&amp; value) { _host = value; }</span>
+
+<span style = "background-color:#dfd">        int UriBuilder::GetPort() const { return _port; }
+        void UriBuilder::SetPort(int value) { _port = value; }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetPath() const { return _path; }
+        void UriBuilder::SetPath(const String&amp; value) { _path = value; }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetQuery() const { return _query; }
+        void UriBuilder::SetQuery(const String&amp; value) { _query = value; }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetFragment() const { return _fragment; }
+        void UriBuilder::SetFragment(const String&amp; value) { _fragment = value; }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::GetUserName() const { return _userName; }</span>
+<span style = "background-color:#fdd">        void UriBuilder::SetUserName(const String&amp; value) { _userName = value; }</span>
+
+<span style = "background-color:#fdd">        String UriBuilder::GetPassword() const { return _password; }
+        void UriBuilder::SetPassword(const String&amp; value) { _password = value; }</span>
+
+<span style = "background-color:#dfd">        Uri UriBuilder::GetUri() {
+            return Uri(ToString());
+        }</span>
+
+<span style = "background-color:#dfd">        String UriBuilder::ToString() {
+            std::string result;
+            if (!_scheme.IsEmpty()) {
+                result += (const char*)_scheme;
+                result += ":";</span>
+            }
+
+<span style = "background-color:#dfd">            if (!_host.IsEmpty()) {
+                result += "//";
+                if (!_userName.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    result += (const char*)_userName;
+                    if (!_password.IsEmpty()) {
+                        result += ":";
+                        result += (const char*)_password;</span>
+                    }
+<span style = "background-color:#fdd">                    result += "@";</span>
+                }
+<span style = "background-color:#dfd">                result += (const char*)_host;
+                if (_port != -1) {
+                    result += ":";
+                    result += std::to_string(_port);</span>
+                }
+            }
+
+<span style = "background-color:#dfd">            if (!_path.IsEmpty()) {
+                if (_path[0] != '/') {</span>
+<span style = "background-color:#fdd">                    result += "/";</span>
+                }
+<span style = "background-color:#dfd">                result += (const char*)_path;</span>
+            }
+
+<span style = "background-color:#dfd">            if (!_query.IsEmpty()) {
+                if (_query[0] != '?') {
+                    result += "?";</span>
+                }
+<span style = "background-color:#dfd">                result += (const char*)_query;</span>
+            }
+
+<span style = "background-color:#dfd">            if (!_fragment.IsEmpty()) {
+                if (_fragment[0] != '#') {
+                    result += "#";</span>
+                }
+<span style = "background-color:#dfd">                result += (const char*)_fragment;</span>
+            }
+
+<span style = "background-color:#dfd">            return String(result.c_str());
+        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

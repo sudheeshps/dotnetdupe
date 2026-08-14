@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>LoggerBase.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/LoggerBase.h"
+#include "System/Diagnostics/Process.h"
+#include "System/Threading/Thread.h"
+#include &lt;chrono&gt;
+#include &lt;iomanip&gt;
+#include &lt;sstream&gt;
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+            LoggerBase::LoggerBase(const DotNetDupe::System::String&amp; categoryName, const LoggerConfiguration&amp; config)
+<span style = "background-color:#dfd">                : m_categoryName(categoryName), m_config(config) {}</span>
+
+<span style = "background-color:#dfd">            bool LoggerBase::IsEnabled(LogLevel logLevel) const {
+                return logLevel &gt;= m_config.MinLevel &amp;&amp; logLevel != LogLevel::None;
+            }</span>
+
+<span style = "background-color:#dfd">            void LoggerBase::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
+                if (!IsEnabled(logLevel)) return;
+                DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt; emptyProps;
+                Log(logLevel, message, emptyProps);
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::GetFormattedTimestamp(const DotNetDupe::System::String&amp; formatFmt) const {
+                auto now = std::chrono::system_clock::now();
+                auto time = std::chrono::system_clock::to_time_t(now);</span>
+                struct tm buf;
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                gmtime_s(&amp;buf, &amp;time);</span>
+#else
+                gmtime_r(&amp;time, &amp;buf);
+#endif
+<span style = "background-color:#dfd">                std::string fmt = formatFmt.IsEmpty() ? "%Y-%m-%d %H:%M:%S" : formatFmt.GetRawString();
+                char timeStr[255] = { 0 };
+                size_t written = std::strftime(timeStr, sizeof(timeStr), fmt.c_str(), &amp;buf);
+                if (written &gt; 0) {
+                    return DotNetDupe::System::String(timeStr);</span>
+                }
+<span style = "background-color:#fdd">                return DotNetDupe::System::String("time_error");</span>
+<span style = "background-color:#dfd">            }</span>
+
+            const char* LoggerBase::LogLevelToString(LogLevel level) const {
+                switch (level) {
+                    case LogLevel::Trace: return "Trace";
+                    case LogLevel::Debug: return "Debug";
+                    case LogLevel::Information: return "Information";
+                    case LogLevel::Warning: return "Warning";
+                    case LogLevel::Error: return "Error";
+                    case LogLevel::Critical: return "Critical";
+                    default: return "None";
+                }
+            }
+
+<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::FormatLogLine(const DotNetDupe::System::String&amp; fmt, const DotNetDupe::System::String&amp; timestamp, const DotNetDupe::System::String&amp; level, const DotNetDupe::System::String&amp; category, const DotNetDupe::System::String&amp; message, const DotNetDupe::System::String&amp; properties, const DotNetDupe::System::String&amp; processId, const DotNetDupe::System::String&amp; threadId) const {
+                std::string res = fmt.GetRawString();</span>
+                auto replace = [](std::string&amp; str, const std::string&amp; from, const std::string&amp; to) {
+                    size_t start_pos = 0;
+                    while ((start_pos = str.find(from, start_pos)) != std::string::npos) {
+                        str.replace(start_pos, from.length(), to);
+                        start_pos += to.length();
+                    }
+                };
+<span style = "background-color:#dfd">                replace(res, "{Timestamp}", timestamp.GetRawString());
+                replace(res, "{Level}", level.GetRawString());
+                replace(res, "{Category}", category.GetRawString());
+                replace(res, "{Message}", message.GetRawString());
+                replace(res, "{Properties}", properties.GetRawString());
+                replace(res, "{ProcessId}", processId.GetRawString());
+                replace(res, "{ThreadId}", threadId.GetRawString());
+                return DotNetDupe::System::String(res.c_str());
+            }</span>
+
+            DotNetDupe::System::String LoggerBase::BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
+<span style = "background-color:#dfd">                                                    const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) const {
+                DotNetDupe::System::String timestamp = GetFormattedTimestamp(m_config.TimestampFormat);
+                const char* levelStr = LogLevelToString(logLevel);
+                std::string procId = std::to_string(DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId());
+                std::string threadId = std::to_string(DotNetDupe::System::Threading::Thread::GetCurrentThreadId());</span>
+
+<span style = "background-color:#dfd">                std::stringstream logLine;</span>
+
+<span style = "background-color:#dfd">                if (m_config.IsJsonFormat) {
+                    logLine &lt;&lt; "{\"timestamp\":\"" &lt;&lt; timestamp.GetRawString() </span>
+                            &lt;&lt; "\",\"level\":\"" &lt;&lt; levelStr 
+                            &lt;&lt; "\",\"category\":\"" &lt;&lt; m_categoryName.GetRawString() 
+                            &lt;&lt; "\",\"processId\":" &lt;&lt; procId
+                            &lt;&lt; ",\"threadId\":" &lt;&lt; threadId
+                            &lt;&lt; ",\"message\":\"" &lt;&lt; message.GetRawString() &lt;&lt; "\"";
+
+<span style = "background-color:#dfd">                    if (properties.GetCount() &gt; 0) {
+                        logLine &lt;&lt; ",\"properties\":{";
+                        auto keys = properties.GetKeys();
+                        for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                            if (i &gt; 0) logLine &lt;&lt; ",";
+                            DotNetDupe::System::String key = keys[i];
+                            DotNetDupe::System::String val;
+                            properties.TryGetValue(key, val);
+                            logLine &lt;&lt; "\"" &lt;&lt; key.GetRawString() &lt;&lt; "\":\"" &lt;&lt; val.GetRawString() &lt;&lt; "\"";
+                        }
+                        logLine &lt;&lt; "}";
+                    }
+                    logLine &lt;&lt; "}";
+                } else {
+                    std::string propsStr = "";
+                    if (properties.GetCount() &gt; 0) {
+                        std::stringstream ss;
+                        auto keys = properties.GetKeys();
+                        for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                            if (i &gt; 0) ss &lt;&lt; ", ";
+                            DotNetDupe::System::String key = keys[i];
+                            DotNetDupe::System::String val;
+                            properties.TryGetValue(key, val);
+                            ss &lt;&lt; key.GetRawString() &lt;&lt; ": " &lt;&lt; val.GetRawString();
+                        }
+                        propsStr = ss.str();
+                    }</span>
+
+<span style = "background-color:#dfd">                    DotNetDupe::System::String formatted = FormatLogLine(</span>
+                        m_config.PlainTextFormat,
+                        timestamp,
+                        DotNetDupe::System::String(levelStr),
+                        m_categoryName,
+                        message,
+                        DotNetDupe::System::String(propsStr.c_str()),
+                        DotNetDupe::System::String(procId.c_str()),
+                        DotNetDupe::System::String(threadId.c_str())
+                    );
+<span style = "background-color:#dfd">                    logLine &lt;&lt; formatted.GetRawString();
+                }</span>
+
+<span style = "background-color:#dfd">                return DotNetDupe::System::String(logLine.str().c_str());
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

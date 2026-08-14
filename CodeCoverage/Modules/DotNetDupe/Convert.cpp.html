@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Convert.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Convert.h"
+#include "System/Array.h"
+#include "System/OverflowException.h"
+#include "System/FormatException.h"
+#include &lt;string&gt;
+#include &lt;limits&gt;
+#include &lt;algorithm&gt;
+#include &lt;cwctype&gt;
+
+namespace DotNetDupe {
+    namespace System {
+
+        template&lt;typename Target, typename Source&gt;
+<span style = "background-color:#fdd">        static Target CheckRange(Source value) {</span>
+            if (value &lt; (Source)(std::numeric_limits&lt;Target&gt;::min)() || value &gt; (Source)(std::numeric_limits&lt;Target&gt;::max)()) {
+<span style = "background-color:#fdd">                throw OverflowException("Value was either too large or too small for the target type.");</span>
+            }
+            return (Target)value;
+        }
+
+        // Boolean
+<span style = "background-color:#fdd">        bool Convert::ToBoolean(bool bValue) { return bValue; }</span>
+<span style = "background-color:#dfd">        bool Convert::ToBoolean(int iValue) { return iValue != 0; }</span>
+<span style = "background-color:#fdd">        bool Convert::ToBoolean(long long llValue) { return llValue != 0; }
+        bool Convert::ToBoolean(double value) { return value != 0.0; }</span>
+<span style = "background-color:#dfd">        bool Convert::ToBoolean(const String&amp; sValue) {
+            std::string s = (const char*)sValue;
+            std::transform(s.begin(), s.end(), s.begin(), [](char c) { return (char)std::towlower(c); });
+            if (s == "true") return true;
+            if (s == "false") return false;
+            throw FormatException("String was not recognized as a valid Boolean.");
+        }</span>
+
+        // Byte
+<span style = "background-color:#fdd">        unsigned char Convert::ToByte(bool bValue) { return bValue ? 1 : 0; }
+        unsigned char Convert::ToByte(unsigned char chValue) { return chValue; }
+        unsigned char Convert::ToByte(signed char chValue) { return CheckRange&lt;unsigned char&gt;(chValue); }
+        unsigned char Convert::ToByte(short iValue) { return CheckRange&lt;unsigned char&gt;(iValue); }</span>
+<span style = "background-color:#dfd">        unsigned char Convert::ToByte(int iValue) { return CheckRange&lt;unsigned char&gt;(iValue); }</span>
+<span style = "background-color:#fdd">        unsigned char Convert::ToByte(long long llValue) { return CheckRange&lt;unsigned char&gt;(llValue); }
+        unsigned char Convert::ToByte(double value) { return CheckRange&lt;unsigned char&gt;(value); }
+        unsigned char Convert::ToByte(const String&amp; sValue) { return ToByte(sValue, 10); }</span>
+<span style = "background-color:#dfd">        unsigned char Convert::ToByte(const String&amp; sValue, int iFromBase) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#dfd">                long long llVal = std::stoll((const char*)sValue, &amp;nPos, iFromBase);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;unsigned char&gt;(llVal);</span>
+<span style = "background-color:#fdd">            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for an unsigned byte.");</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+        // SByte
+<span style = "background-color:#fdd">        signed char Convert::ToSByte(bool bValue) { return bValue ? 1 : 0; }
+        signed char Convert::ToSByte(unsigned char chValue) { return CheckRange&lt;signed char&gt;(chValue); }
+        signed char Convert::ToSByte(signed char chValue) { return chValue; }
+        signed char Convert::ToSByte(short iValue) { return CheckRange&lt;signed char&gt;(iValue); }
+        signed char Convert::ToSByte(int iValue) { return CheckRange&lt;signed char&gt;(iValue); }
+        signed char Convert::ToSByte(long long llValue) { return CheckRange&lt;signed char&gt;(llValue); }
+        signed char Convert::ToSByte(double value) { return CheckRange&lt;signed char&gt;(value); }
+        signed char Convert::ToSByte(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                long long llVal = std::stoll((const char*)sValue, &amp;nPos, 10);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;signed char&gt;(llVal);
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a signed byte.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // Char
+<span style = "background-color:#fdd">        char Convert::ToChar(unsigned short iValue) { return (char)iValue; }
+        char Convert::ToChar(int iValue) { return CheckRange&lt;char&gt;(iValue); }
+        char Convert::ToChar(long long llValue) { return CheckRange&lt;char&gt;(llValue); }</span>
+<span style = "background-color:#dfd">        char Convert::ToChar(const String&amp; sValue) {
+            if (sValue.GetLength() != 1) throw FormatException("String must be exactly one character long.");
+            return sValue[0];
+        }</span>
+
+        // Double
+<span style = "background-color:#fdd">        double Convert::ToDouble(int iValue) { return (double)iValue; }
+        double Convert::ToDouble(long long llValue) { return (double)llValue; }
+        double Convert::ToDouble(float value) { return (double)value; }</span>
+<span style = "background-color:#dfd">        double Convert::ToDouble(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#dfd">                double val = std::stod((const char*)sValue, &amp;nPos);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return val;</span>
+<span style = "background-color:#fdd">            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a Double.");</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+        // Single
+<span style = "background-color:#fdd">        float Convert::ToSingle(int iValue) { return (float)iValue; }
+        float Convert::ToSingle(long long llValue) { return (float)llValue; }
+        float Convert::ToSingle(double value) { return (float)value; }</span>
+<span style = "background-color:#dfd">        float Convert::ToSingle(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#dfd">                float val = std::stof((const char*)sValue, &amp;nPos);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return val;</span>
+<span style = "background-color:#fdd">            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a Single.");</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+        // Int16
+<span style = "background-color:#fdd">        short Convert::ToInt16(bool bValue) { return bValue ? 1 : 0; }
+        short Convert::ToInt16(short iValue) { return iValue; }
+        short Convert::ToInt16(int iValue) { return CheckRange&lt;short&gt;(iValue); }
+        short Convert::ToInt16(long long llValue) { return CheckRange&lt;short&gt;(llValue); }
+        short Convert::ToInt16(double value) { return CheckRange&lt;short&gt;(value); }
+        short Convert::ToInt16(const String&amp; sValue) { return ToInt16(sValue, 10); }
+        short Convert::ToInt16(const String&amp; sValue, int iFromBase) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                long long llVal = std::stoll((const char*)sValue, &amp;nPos, iFromBase);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;short&gt;(llVal);
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for an Int16.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // Int32
+<span style = "background-color:#fdd">        int Convert::ToInt32(bool bValue) { return bValue ? 1 : 0; }
+        int Convert::ToInt32(int iValue) { return iValue; }</span>
+<span style = "background-color:#dfd">        int Convert::ToInt32(long long llValue) { return CheckRange&lt;int&gt;(llValue); }</span>
+<span style = "background-color:#fdd">        int Convert::ToInt32(double value) { return CheckRange&lt;int&gt;(value); }</span>
+<span style = "background-color:#dfd">        int Convert::ToInt32(const String&amp; sValue) { return ToInt32(sValue, 10); }
+        int Convert::ToInt32(const String&amp; sValue, int iFromBase) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#dfd">                long long llVal = std::stoll((const char*)sValue, &amp;nPos, iFromBase);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;int&gt;(llVal);
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");</span>
+<span style = "background-color:#fdd">            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for an Int32.");</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+        // Int64
+<span style = "background-color:#fdd">        long long Convert::ToInt64(bool bValue) { return bValue ? 1 : 0; }
+        long long Convert::ToInt64(int iValue) { return (long long)iValue; }
+        long long Convert::ToInt64(long long llValue) { return llValue; }
+        long long Convert::ToInt64(double value) { return (long long)value; }
+        long long Convert::ToInt64(const String&amp; sValue) { return ToInt64(sValue, 10); }
+        long long Convert::ToInt64(const String&amp; sValue, int iFromBase) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                long long llVal = std::stoll((const char*)sValue, &amp;nPos, iFromBase);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return llVal;
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for an Int64.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // UInt16
+<span style = "background-color:#fdd">        unsigned short Convert::ToUInt16(bool bValue) { return bValue ? 1 : 0; }
+        unsigned short Convert::ToUInt16(int iValue) { return CheckRange&lt;unsigned short&gt;(iValue); }
+        unsigned short Convert::ToUInt16(long long llValue) { return CheckRange&lt;unsigned short&gt;(llValue); }
+        unsigned short Convert::ToUInt16(double value) { return CheckRange&lt;unsigned short&gt;(value); }
+        unsigned short Convert::ToUInt16(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                unsigned long long llVal = std::stoull((const char*)sValue, &amp;nPos, 10);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;unsigned short&gt;(llVal);
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a UInt16.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // UInt32
+<span style = "background-color:#fdd">        unsigned int Convert::ToUInt32(bool bValue) { return bValue ? 1 : 0; }
+        unsigned int Convert::ToUInt32(int iValue) { return CheckRange&lt;unsigned int&gt;(iValue); }
+        unsigned int Convert::ToUInt32(long long llValue) { return CheckRange&lt;unsigned int&gt;(llValue); }
+        unsigned int Convert::ToUInt32(double value) { return CheckRange&lt;unsigned int&gt;(value); }
+        unsigned int Convert::ToUInt32(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                unsigned long long llVal = std::stoull((const char*)sValue, &amp;nPos, 10);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return CheckRange&lt;unsigned int&gt;(llVal);
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a UInt32.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // UInt64
+<span style = "background-color:#fdd">        unsigned long long Convert::ToUInt64(bool bValue) { return bValue ? 1 : 0; }
+        unsigned long long Convert::ToUInt64(int iValue) { return CheckRange&lt;unsigned long long&gt;(iValue); }
+        unsigned long long Convert::ToUInt64(long long llValue) { return CheckRange&lt;unsigned long long&gt;(llValue); }
+        unsigned long long Convert::ToUInt64(double value) { return (unsigned long long)value; }
+        unsigned long long Convert::ToUInt64(const String&amp; sValue) {</span>
+            try {
+                size_t nPos;
+<span style = "background-color:#fdd">                unsigned long long llVal = std::stoull((const char*)sValue, &amp;nPos, 10);
+                if (nPos != sValue.GetLength()) throw FormatException("Input string was not in a correct format.");
+                return llVal;
+            } catch (const std::invalid_argument&amp;) {
+                throw FormatException("Input string was not in a correct format.");
+            } catch (const std::out_of_range&amp;) {
+                throw OverflowException("Value was either too large or too small for a UInt64.");</span>
+            }
+<span style = "background-color:#fdd">        }</span>
+
+        // String
+<span style = "background-color:#fdd">        String Convert::ToString(bool bValue) { return bValue ? "True" : "False"; }
+        String Convert::ToString(unsigned char chValue) { return String(std::to_string(chValue).c_str()); }
+        String Convert::ToString(signed char chValue) { return String(std::to_string(chValue).c_str()); }
+        String Convert::ToString(char chValue) { char buf[2] = { chValue, 0 }; return String(buf); }
+        String Convert::ToString(double value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(float value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(short iValue) { return String(std::to_string(iValue).c_str()); }</span>
+<span style = "background-color:#dfd">        String Convert::ToString(int iValue) { return String(std::to_string(iValue).c_str()); }</span>
+<span style = "background-color:#fdd">        String Convert::ToString(long long llValue) { return String(std::to_string(llValue).c_str()); }
+        String Convert::ToString(unsigned short iValue) { return String(std::to_string(iValue).c_str()); }
+        String Convert::ToString(unsigned int iValue) { return String(std::to_string(iValue).c_str()); }
+        String Convert::ToString(unsigned long long llValue) { return String(std::to_string(llValue).c_str()); }</span>
+
+<span style = "background-color:#dfd">        static String ToBaseString(unsigned long long llValue, int iToBase) {
+            if (iToBase != 2 &amp;&amp; iToBase != 8 &amp;&amp; iToBase != 10 &amp;&amp; iToBase != 16)
+                throw ArgumentException("The base must be 2, 8, 10, or 16.");</span>
+
+<span style = "background-color:#dfd">            if (llValue == 0) return "0";</span>
+
+<span style = "background-color:#dfd">            std::string res;</span>
+            const char* digits = "0123456789ABCDEF";
+<span style = "background-color:#dfd">            while (llValue &gt; 0) {
+                res += digits[llValue % iToBase];</span>
+                llValue /= iToBase;
+            }
+<span style = "background-color:#dfd">            std::reverse(res.begin(), res.end());
+            return String(res.c_str());
+        }</span>
+
+<span style = "background-color:#dfd">        String Convert::ToString(int iValue, int iToBase) {
+            return ToBaseString((unsigned int)iValue, iToBase);
+        }</span>
+<span style = "background-color:#fdd">        String Convert::ToString(long long llValue, int iToBase) {
+            return ToBaseString((unsigned long long)llValue, iToBase);
+        }</span>
+
+        static const char base64_chars[] = 
+                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                     "abcdefghijklmnopqrstuvwxyz"
+                     "0123456789+/";
+
+        bool Convert::IsBase64(unsigned char c) {
+            return (isalnum(c) || (c == '+') || (c == '/'));
+        }
+
+        void Convert::EncodeBase64Chunk4(const unsigned char* char_array_3, std::string&amp; ret) {
+            unsigned char char_array_4[4];
+            char_array_4[0] = (char_array_3[0] &amp; 0xfc) &gt;&gt; 2;
+            char_array_4[1] = ((char_array_3[0] &amp; 0x03) &lt;&lt; 4) + ((char_array_3[1] &amp; 0xf0) &gt;&gt; 4);
+            char_array_4[2] = ((char_array_3[1] &amp; 0x0f) &lt;&lt; 2) + ((char_array_3[2] &amp; 0xc0) &gt;&gt; 6);
+            char_array_4[3] = char_array_3[2] &amp; 0x3f;
+            for (int i = 0; i &lt; 4; i++) ret += base64_chars[char_array_4[i]];
+        }
+
+        void Convert::EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string&amp; ret) {
+            unsigned char char_array_4[4];
+            for (int j = i; j &lt; 3; j++) char_array_3[j] = '\0';
+            char_array_4[0] = (char_array_3[0] &amp; 0xfc) &gt;&gt; 2;
+            char_array_4[1] = ((char_array_3[0] &amp; 0x03) &lt;&lt; 4) + ((char_array_3[1] &amp; 0xf0) &gt;&gt; 4);
+            char_array_4[2] = ((char_array_3[1] &amp; 0x0f) &lt;&lt; 2) + ((char_array_3[2] &amp; 0xc0) &gt;&gt; 6);
+            for (int j = 0; j &lt; i + 1; j++) ret += base64_chars[char_array_4[j]];
+            while (i++ &lt; 3) ret += '=';
+        }
+
+<span style = "background-color:#dfd">        String Convert::ToBase64String(const Array&lt;char&gt;&amp; inArray) {
+            int in_len = inArray.GetLength();
+            if (in_len == 0) return String("");
+            const unsigned char* bytes = reinterpret_cast&lt;const unsigned char*&gt;(inArray.GetData());
+            std::string ret;
+            int i = 0;</span>
+            unsigned char char_array_3[3];
+<span style = "background-color:#dfd">            while (in_len--) {
+                char_array_3[i++] = *(bytes++);
+                if (i == 3) { EncodeBase64Chunk4(char_array_3, ret); i = 0; }</span>
+            }
+<span style = "background-color:#dfd">            if (i) EncodeBase64Remainder(char_array_3, i, ret);
+            return String(ret.c_str());
+        }</span>
+
+        void Convert::DecodeBase64Chunk4(unsigned char* char_array_4, std::vector&lt;char&gt;&amp; decoded) {
+            for (int k = 0; k &lt; 4; k++) {
+                const char* ptr = std::strchr(base64_chars, char_array_4[k]);
+                if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
+                char_array_4[k] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);
+            }
+            decoded.push_back((char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4));
+            decoded.push_back(((char_array_4[1] &amp; 0xf) &lt;&lt; 4) + ((char_array_4[2] &amp; 0x3c) &gt;&gt; 2));
+            decoded.push_back(((char_array_4[2] &amp; 0x3) &lt;&lt; 6) + char_array_4[3]);
+        }
+
+        void Convert::DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector&lt;char&gt;&amp; decoded) {
+            for (int j = 0; j &lt; i; j++) {
+                const char* ptr = std::strchr(base64_chars, char_array_4[j]);
+                if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
+                char_array_4[j] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);
+            }
+            unsigned char char_array_3[2];
+            char_array_3[0] = (char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4);
+            if (i &gt; 2) {
+                char_array_3[1] = ((char_array_4[1] &amp; 0xf) &lt;&lt; 4) + ((char_array_4[2] &amp; 0x3c) &gt;&gt; 2);
+                decoded.push_back(char_array_3[0]);
+                decoded.push_back(char_array_3[1]);
+            } else if (i &gt; 1) {
+                decoded.push_back(char_array_3[0]);
+            }
+        }
+
+<span style = "background-color:#dfd">        Array&lt;char&gt; Convert::FromBase64String(const String&amp; s) {
+            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+            size_t in_len = sInput.size();
+            int i = 0, in_ = 0;</span>
+            unsigned char char_array_4[4];
+<span style = "background-color:#dfd">            std::vector&lt;char&gt; decoded;</span>
+
+<span style = "background-color:#dfd">            while (in_len-- &amp;&amp; (sInput[in_] != '=') &amp;&amp; IsBase64(sInput[in_])) {
+                char_array_4[i++] = sInput[in_]; in_++;
+                if (i == 4) {
+                    DecodeBase64Chunk4(char_array_4, decoded);
+                    i = 0;</span>
+                }
+            }
+<span style = "background-color:#dfd">            if (i) DecodeBase64Remainder(char_array_4, i, decoded);</span>
+
+<span style = "background-color:#dfd">            Array&lt;char&gt; result(static_cast&lt;int&gt;(decoded.size()));
+            for (size_t idx = 0; idx &lt; decoded.size(); idx++) {
+                result[static_cast&lt;int&gt;(idx)] = decoded[idx];</span>
+            }
+<span style = "background-color:#dfd">            return result;
+        }</span>
+    }
+}
+
+</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

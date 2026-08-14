@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>File.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/File.h"
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;filesystem&gt;
+#include &lt;vector&gt;
+#include "System/Text/TextEncoding.h"
+#include "System/IOException.h"
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String&amp; sPath) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+<span style = "background-color:#dfd">            bool File::Exists(const String&amp; sPath) {
+                return fs::exists(ToFsPath(sPath));
+            }</span>
+
+<span style = "background-color:#dfd">            String File::ReadAllText(const String&amp; sPath) {
+                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for reading.");</span>
+                }
+<span style = "background-color:#dfd">                std::stringstream buffer;
+                buffer &lt;&lt; fileStream.rdbuf();
+                std::string charContent = buffer.str();</span>
+                
+<span style = "background-color:#dfd">                Array&lt;char&gt; bytes((int)charContent.size());
+                for (int iIdx = 0; iIdx &lt; (int)charContent.size(); iIdx++) bytes[iIdx] = charContent[iIdx];
+                return Text::TextEncoding::UTF8()-&gt;GetString(bytes);
+            }</span>
+
+<span style = "background-color:#dfd">            void File::WriteAllText(const String&amp; sPath, const String&amp; sContents) {
+                Array&lt;char&gt; contentBytes = Text::TextEncoding::UTF8()-&gt;GetBytes(sContents);</span>
+
+<span style = "background-color:#dfd">                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing.");</span>
+                }
+<span style = "background-color:#dfd">                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
+            }</span>
+
+<span style = "background-color:#dfd">            void File::Copy(const String&amp; sSourceFileName, const String&amp; sDestFileName, bool bOverwrite) {</span>
+                fs::copy_options options = fs::copy_options::none;
+                if (bOverwrite) options |= fs::copy_options::overwrite_existing;
+                
+<span style = "background-color:#dfd">                try {
+                    fs::copy(ToFsPath(sSourceFileName), ToFsPath(sDestFileName), options);</span>
+<span style = "background-color:#fdd">                } catch (const std::exception&amp; ex) {
+                    throw IO::IOException(ex.what());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void File::Move(const String&amp; sSourceFileName, const String&amp; sDestFileName) {</span>
+                try {
+<span style = "background-color:#dfd">                    fs::rename(ToFsPath(sSourceFileName), ToFsPath(sDestFileName));</span>
+<span style = "background-color:#fdd">                } catch (const std::exception&amp; ex) {
+                    throw IO::IOException(ex.what());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void File::Delete(const String&amp; sPath) {</span>
+                try {
+<span style = "background-color:#dfd">                    fs::remove(ToFsPath(sPath));
+                } catch (const std::exception&amp; ex) {
+                    throw IO::IOException(ex.what());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void File::AppendAllText(const String&amp; sPath, const String&amp; sContents) {
+                Array&lt;char&gt; contentBytes = Text::TextEncoding::UTF8()-&gt;GetBytes(sContents);
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing.");</span>
+                }
+<span style = "background-color:#dfd">                fileStream.write(contentBytes.GetData(), contentBytes.GetLength());
+            }</span>
+
+<span style = "background-color:#dfd">            void File::AppendAllLines(const String&amp; sPath, const Array&lt;String&gt;&amp; sContents) {
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary | std::ios_base::app);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing.");</span>
+                }
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; sContents.GetLength(); iIdx++) {
+                    const auto&amp; line = sContents[iIdx];
+                    Array&lt;char&gt; lineBytes = Text::TextEncoding::UTF8()-&gt;GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream &lt;&lt; "\n";
+                }
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; File::ReadAllLines(const String&amp; sPath) {
+                std::vector&lt;String&gt; tempLines;
+                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for reading.");</span>
+                }
+<span style = "background-color:#dfd">                std::string line;
+                while (std::getline(fileStream, line)) {
+                    Array&lt;char&gt; lineBytes((int)line.size());
+                    for (int iIdx = 0; iIdx &lt; (int)line.size(); iIdx++) lineBytes[iIdx] = line[iIdx];
+                    tempLines.push_back(Text::TextEncoding::UTF8()-&gt;GetString(lineBytes));
+                }</span>
+                
+<span style = "background-color:#dfd">                Array&lt;String&gt; lines((int)tempLines.size());
+                for (int iIdx = 0; iIdx &lt; (int)tempLines.size(); iIdx++) lines[iIdx] = tempLines[iIdx];
+                return lines;
+            }</span>
+
+<span style = "background-color:#dfd">            void File::WriteAllLines(const String&amp; sPath, const Array&lt;String&gt;&amp; sContents) {
+                std::ofstream fileStream(ToFsPath(sPath), std::ios::binary);
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing.");</span>
+                }
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; sContents.GetLength(); iIdx++) {
+                    const auto&amp; line = sContents[iIdx];
+                    Array&lt;char&gt; lineBytes = Text::TextEncoding::UTF8()-&gt;GetBytes(line);
+                    fileStream.write(lineBytes.GetData(), lineBytes.GetLength());
+                    fileStream &lt;&lt; "\n";
+                }
+            }</span>
+
+<span style = "background-color:#dfd">            void File::Create(const String&amp; sPath) {
+                std::ofstream fileStream(ToFsPath(sPath));
+                if (!fileStream.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing.");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool File::GetAttributes(const String&amp; sPath, FileAttributes&amp; eAttributes) {</span>
+            #if defined(_WIN32)
+<span style = "background-color:#dfd">                std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
+                DWORD iAttrs = GetFileAttributesW(sWPath.c_str());
+                if (iAttrs == INVALID_FILE_ATTRIBUTES) {</span>
+                    return false;
+                }
+<span style = "background-color:#dfd">                eAttributes = static_cast&lt;FileAttributes&gt;(iAttrs);
+                return true;</span>
+            #else
+                fs::path pPath = ToFsPath(sPath);
+                std::error_code ecError;
+                auto statusInfo = fs::status(pPath, ecError);
+                if (ecError) {
+                    return false;
+                }
+
+                int iAttrs = static_cast&lt;int&gt;(FileAttributes::Normal);
+                if ((statusInfo.permissions() &amp; fs::perms::owner_write) == fs::perms::none) {
+                    iAttrs |= static_cast&lt;int&gt;(FileAttributes::ReadOnly);
+                }
+                if (fs::is_directory(statusInfo)) {
+                    iAttrs |= static_cast&lt;int&gt;(FileAttributes::Directory);
+                }
+
+                // On Linux, we consider files starting with '.' as hidden
+                if (!pPath.filename().empty() &amp;&amp; pPath.filename().string()[0] == '.') {
+                    iAttrs |= static_cast&lt;int&gt;(FileAttributes::Hidden);
+                }
+
+                eAttributes = static_cast&lt;FileAttributes&gt;(iAttrs);
+                return true;
+            #endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool File::SetAttributes(const String&amp; sPath, FileAttributes eAttributes) {</span>
+            #if defined(_WIN32)
+<span style = "background-color:#dfd">                std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
+                if (::SetFileAttributesW(sWPath.c_str(), static_cast&lt;DWORD&gt;(eAttributes))) {</span>
+                    return true;
+                }
+<span style = "background-color:#dfd">                return false;</span>
+            #else
+                fs::path pPath = ToFsPath(sPath);
+                std::error_code ecError;
+                auto statusInfo = fs::status(pPath, ecError);
+                if (ecError) {
+                    return false;
+                }
+
+                auto permsCurrent = statusInfo.permissions();
+                if ((static_cast&lt;int&gt;(eAttributes) &amp; static_cast&lt;int&gt;(FileAttributes::ReadOnly)) != 0) {
+                    permsCurrent &amp;= ~(fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write);
+                } else {
+                    permsCurrent |= fs::perms::owner_write;
+                }
+
+                fs::permissions(pPath, permsCurrent, fs::perm_options::replace, ecError);
+                return !ecError;
+            #endif
+<span style = "background-color:#dfd">            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

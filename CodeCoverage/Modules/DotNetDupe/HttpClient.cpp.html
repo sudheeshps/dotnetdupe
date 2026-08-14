@@ -1,0 +1,418 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>HttpClient.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Net/Http/HttpClient.h"
+#include "System/Net/Http/HttpRequestException.h"
+#include "System/Net/Dns.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/NetworkStream.h"
+#include "System/Net/Sockets/SocketException.h"
+#include "System/Net/Security/SslStream.h"
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentException.h"
+#include "System/IO/MemoryStream.h"
+#include "System/Convert.h"
+#include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;cctype&gt;
+#include &lt;cstdlib&gt;
+#include &lt;cstring&gt;
+#include &lt;string&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Net {
+            namespace Http {
+
+<span style = "background-color:#dfd">                static std::string ReadLine(const SmartPointer&lt;IO::Stream&gt;&amp; stream) {
+                    std::string line;
+                    char c = 0;</span>
+                    while (true) {
+<span style = "background-color:#dfd">                        int read = stream-&gt;Read(&amp;c, 0, 1);
+                        if (read &lt;= 0) break;
+                        if (c == '\n') break;
+                        if (c != '\r') {
+                            line += c;</span>
+                        }
+                    }
+                    return line;
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">				HttpClient::~HttpClient() = default;</span>
+
+                struct HttpClient::Impl : public Object {
+                    Collections::Generic::Dictionary&lt;String, String&gt; m_defaultRequestHeaders;
+                    SmartPointer&lt;Sockets::TcpClient&gt; m_pLastTcpClient;
+
+                    String ResolveHost(const Uri&amp; uri, int&amp; riPort) {
+                        String sHost = uri.GetHost();
+                        riPort = uri.GetPort();
+                        if (riPort &lt;= 0) {
+                            riPort = 80;
+                        }
+
+                        // Resolve hostname to IP Address
+                        Array&lt;String&gt; arrIpAddresses = Dns::GetHostAddresses(sHost);
+                        if (arrIpAddresses.GetLength() == 0) {
+                            throw HttpRequestException("Could not resolve host.");
+                        }
+                        return arrIpAddresses[0];
+                    }
+
+<span style = "background-color:#dfd">                    std::string PrepareHeaders(const HttpRequestMessagePtr&amp; spRequest, const Uri&amp; uri) {
+                        String sHost = uri.GetHost();
+                        String sPath = uri.GetAbsolutePath();
+                        if (sPath.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                            sPath = "/";</span>
+                        }
+<span style = "background-color:#dfd">                        String sQuery = uri.GetQuery();
+                        std::string sRequestPath = sPath.GetRawString();
+                        if (!sQuery.IsEmpty()) {
+                            sRequestPath += "?";
+                            sRequestPath += sQuery.GetRawString();</span>
+                        }
+
+                        // Write HTTP request headers
+<span style = "background-color:#dfd">                        std::ostringstream ssHeadersStream;
+                        ssHeadersStream &lt;&lt; spRequest-&gt;GetMethod().GetMethod().GetRawString() &lt;&lt; " " &lt;&lt; sRequestPath &lt;&lt; " HTTP/1.1\r\n";</span>
+                        
+                        // Host header
+<span style = "background-color:#dfd">                        ssHeadersStream &lt;&lt; "Host: " &lt;&lt; sHost.GetRawString();
+                        if (!uri.IsDefaultPort() &amp;&amp; uri.GetPort() &gt; 0) {
+                            ssHeadersStream &lt;&lt; ":" &lt;&lt; uri.GetPort();</span>
+                        }
+<span style = "background-color:#dfd">                        ssHeadersStream &lt;&lt; "\r\n";</span>
+
+                        // Default request headers
+<span style = "background-color:#dfd">                        auto arrDefaultHeadersKeys = m_defaultRequestHeaders.GetKeys();
+                        for (int i = 0; i &lt; arrDefaultHeadersKeys.GetLength(); ++i) {
+                            String sKey = arrDefaultHeadersKeys[i];
+                            ssHeadersStream &lt;&lt; sKey.GetRawString() &lt;&lt; ": " &lt;&lt; m_defaultRequestHeaders[sKey].GetRawString() &lt;&lt; "\r\n";
+                        }</span>
+
+                        // Request headers
+<span style = "background-color:#dfd">                        auto arrRequestHeadersKeys = spRequest-&gt;GetHeaders().GetKeys();
+                        for (int i = 0; i &lt; arrRequestHeadersKeys.GetLength(); ++i) {
+                            String sKey = arrRequestHeadersKeys[i];
+                            ssHeadersStream &lt;&lt; sKey.GetRawString() &lt;&lt; ": " &lt;&lt; spRequest-&gt;GetHeaders()[sKey].GetRawString() &lt;&lt; "\r\n";
+                        }</span>
+
+                        // Content headers
+<span style = "background-color:#dfd">                        auto spContent = spRequest-&gt;GetContent();
+                        if (!spContent.IsNull()) {
+                            auto arrContentHeadersKeys = spContent-&gt;GetHeaders().GetKeys();
+                            for (int i = 0; i &lt; arrContentHeadersKeys.GetLength(); ++i) {
+                                String sKey = arrContentHeadersKeys[i];
+                                ssHeadersStream &lt;&lt; sKey.GetRawString() &lt;&lt; ": " &lt;&lt; spContent-&gt;GetHeaders()[sKey].GetRawString() &lt;&lt; "\r\n";
+                            }</span>
+
+<span style = "background-color:#dfd">                            long lLen = spContent-&gt;GetLength();
+                            if (lLen &gt;= 0) {
+                                ssHeadersStream &lt;&lt; "Content-Length: " &lt;&lt; lLen &lt;&lt; "\r\n";</span>
+                            }
+<span style = "background-color:#dfd">                        }</span>
+
+<span style = "background-color:#dfd">                        ssHeadersStream &lt;&lt; "Connection: close\r\n\r\n";</span>
+
+<span style = "background-color:#dfd">                        return ssHeadersStream.str();
+                    }</span>
+
+                    void SendRequest(const SmartPointer&lt;IO::Stream&gt;&amp; spStream, const std::string&amp; sHeaders, const HttpContentPtr&amp; spContent) {
+                        spStream-&gt;Write(sHeaders.data(), 0, static_cast&lt;int&gt;(sHeaders.size()));
+
+                        // Write content
+                        if (!spContent.IsNull()) {
+                            spContent-&gt;CopyTo(spStream);
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    HttpResponseMessagePtr ParseStatusLine(const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
+                        std::string sStatusLine = ReadLine(spStream);
+                        if (sStatusLine.empty()) {</span>
+<span style = "background-color:#fdd">                            throw HttpRequestException("No response from server.");</span>
+                        }
+
+                        // HTTP/1.1 StatusCode ReasonPhrase
+<span style = "background-color:#dfd">                        size_t iFirstSpace = sStatusLine.find(' ');
+                        if (iFirstSpace == std::string::npos) {</span>
+<span style = "background-color:#fdd">                            throw HttpRequestException("Invalid response status line.");</span>
+                        }
+
+<span style = "background-color:#dfd">                        size_t iSecondSpace = sStatusLine.find(' ', iFirstSpace + 1);</span>
+                        int iStatusCodeVal = 0;
+<span style = "background-color:#dfd">                        std::string sReasonPhrase;
+                        if (iSecondSpace == std::string::npos) {</span>
+<span style = "background-color:#fdd">                            iStatusCodeVal = std::atoi(sStatusLine.substr(iFirstSpace + 1).c_str());
+                        } else {</span>
+<span style = "background-color:#dfd">                            iStatusCodeVal = std::atoi(sStatusLine.substr(iFirstSpace + 1, iSecondSpace - iFirstSpace - 1).c_str());
+                            sReasonPhrase = sStatusLine.substr(iSecondSpace + 1);</span>
+                        }
+
+<span style = "background-color:#dfd">                        auto spResponse = HttpResponseMessagePtr::NewShared(static_cast&lt;HttpStatusCode&gt;(iStatusCodeVal));
+                        spResponse-&gt;SetReasonPhrase(String(sReasonPhrase.c_str()));
+                        return spResponse;
+                    }</span>
+
+<span style = "background-color:#dfd">                    void ParseHeaders(const SmartPointer&lt;IO::Stream&gt;&amp; spStream, const HttpResponseMessagePtr&amp; spResponse, bool&amp; rbChunked, long&amp; rlContentLength, String&amp; rsContentType) {
+                        auto&amp; dictRespHeaders = spResponse-&gt;GetHeaders();</span>
+                        while (true) {
+<span style = "background-color:#dfd">                            std::string sHeaderLine = ReadLine(spStream);
+                            if (sHeaderLine.empty()) break;</span>
+
+<span style = "background-color:#dfd">                            size_t iColon = sHeaderLine.find(':');
+                            if (iColon != std::string::npos) {
+                                std::string sKey = sHeaderLine.substr(0, iColon);
+                                std::string sVal = sHeaderLine.substr(iColon + 1);</span>
+
+                                // trim whitespace
+<span style = "background-color:#dfd">                                while (!sKey.empty() &amp;&amp; std::isspace(static_cast&lt;unsigned char&gt;(sKey.front()))) sKey.erase(sKey.begin());</span>
+<span style = "background-color:#fdd">                                while (!sKey.empty() &amp;&amp; std::isspace(static_cast&lt;unsigned char&gt;(sKey.back()))) sKey.pop_back();</span>
+<span style = "background-color:#dfd">                                while (!sVal.empty() &amp;&amp; std::isspace(static_cast&lt;unsigned char&gt;(sVal.front()))) sVal.erase(sVal.begin());</span>
+<span style = "background-color:#fdd">                                while (!sVal.empty() &amp;&amp; std::isspace(static_cast&lt;unsigned char&gt;(sVal.back()))) sVal.pop_back();</span>
+
+<span style = "background-color:#dfd">                                String sKeyObj(sKey.c_str());
+                                String sValObj(sVal.c_str());
+                                dictRespHeaders[sKeyObj] = sValObj;</span>
+
+<span style = "background-color:#dfd">                                if (sKeyObj.ToLower() == "transfer-encoding" &amp;&amp; sValObj.ToLower() == "chunked") {
+                                    rbChunked = true;
+                                } else if (sKeyObj.ToLower() == "content-length") {
+                                    rlContentLength = std::atol(sVal.c_str());
+                                } else if (sKeyObj.ToLower() == "content-type") {
+                                    rsContentType = sValObj;</span>
+                                }
+<span style = "background-color:#dfd">                            }
+                        }
+                    }</span>
+
+                    Array&lt;char&gt; ReadResponseBody(const SmartPointer&lt;IO::Stream&gt;&amp; spStream, bool bChunked, long lContentLength) {
+                        std::vector&lt;char&gt; vecBodyData;
+                        if (bChunked) {
+                            while (true) {
+                                std::string sSizeLine = ReadLine(spStream);
+                                if (sSizeLine.empty()) break;
+
+                                long lChunkSize = std::strtol(sSizeLine.c_str(), nullptr, 16);
+                                if (lChunkSize &lt;= 0) {
+                                    ReadLine(spStream); // read trailing CRLF of the final chunk
+                                    break;
+                                }
+
+                                std::vector&lt;char&gt; vecChunk(lChunkSize);
+                                int iTotalRead = 0;
+                                while (iTotalRead &lt; lChunkSize) {
+                                    int iRead = spStream-&gt;Read(vecChunk.data() + iTotalRead, 0, static_cast&lt;int&gt;(lChunkSize - iTotalRead));
+                                    if (iRead &lt;= 0) {
+                                        throw HttpRequestException("Connection closed prematurely while reading chunk data.");
+                                    }
+                                    iTotalRead += iRead;
+                                }
+                                vecBodyData.insert(vecBodyData.end(), vecChunk.begin(), vecChunk.end());
+
+                                ReadLine(spStream); // read trailing CRLF of the chunk
+                            }
+                        } else if (lContentLength &gt;= 0) {
+                            vecBodyData.resize(lContentLength);
+                            int iTotalRead = 0;
+                            while (iTotalRead &lt; lContentLength) {
+                                int iRead = spStream-&gt;Read(vecBodyData.data() + iTotalRead, 0, static_cast&lt;int&gt;(lContentLength - iTotalRead));
+                                if (iRead &lt;= 0) {
+                                    throw HttpRequestException("Connection closed prematurely while reading content.");
+                                }
+                                iTotalRead += iRead;
+                            }
+                        } else {
+                            // Read until EOF
+                            char arrBuffer[4096];
+                            int iBytesRead = 0;
+                            while ((iBytesRead = spStream-&gt;Read(arrBuffer, 0, sizeof(arrBuffer))) &gt; 0) {
+                                vecBodyData.insert(vecBodyData.end(), arrBuffer, arrBuffer + iBytesRead);
+                            }
+                        }
+
+                        Array&lt;char&gt; arrData(static_cast&lt;int&gt;(vecBodyData.size()));
+                        if (!vecBodyData.empty()) {
+                            std::memcpy(arrData.GetData(), vecBodyData.data(), vecBodyData.size());
+                        }
+                        return arrData;
+                    }
+
+<span style = "background-color:#dfd">                    HttpResponseMessagePtr PrepareResponse(const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
+                        auto spResponse = ParseStatusLine(spStream);</span>
+
+<span style = "background-color:#dfd">                        bool bChunked = false;
+                        long lContentLength = -1;
+                        String sContentType = "text/plain";
+                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);</span>
+
+<span style = "background-color:#dfd">                        Array&lt;char&gt; arrData = ReadResponseBody(spStream, bChunked, lContentLength);</span>
+
+<span style = "background-color:#dfd">                        auto spResponseContent = HttpContentPtr(new ByteArrayContent(arrData), true);
+                        spResponseContent-&gt;GetHeaders()["Content-Type"] = sContentType;
+                        spResponse-&gt;SetContent(spResponseContent);</span>
+
+<span style = "background-color:#dfd">                        return spResponse;
+                    }</span>
+                };
+
+<span style = "background-color:#dfd">                HttpClient::HttpClient() : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const String&amp; requestUri) {
+                    return Get(Uri(requestUri));
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const Uri&amp; requestUri) {
+                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Get, requestUri);
+                    return Send(request);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const String&amp; requestUri, const HttpContentPtr&amp; content) {
+                    return Post(Uri(requestUri), content);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {
+                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Post, requestUri);
+                    request-&gt;SetContent(content);
+                    return Send(request);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const String&amp; requestUri, const HttpContentPtr&amp; content) {
+                    return Put(Uri(requestUri), content);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {
+                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Put, requestUri);
+                    request-&gt;SetContent(content);
+                    return Send(request);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const String&amp; requestUri) {
+                    return Delete(Uri(requestUri));
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const Uri&amp; requestUri) {
+                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Delete, requestUri);
+                    return Send(request);
+                }</span>
+
+<span style = "background-color:#dfd">                String HttpClient::GetString(const String&amp; requestUri) {
+                    return GetString(Uri(requestUri));
+                }</span>
+
+<span style = "background-color:#dfd">                String HttpClient::GetString(const Uri&amp; requestUri) {
+                    auto response = Get(requestUri);
+                    response-&gt;EnsureSuccessStatusCode();
+                    auto content = response-&gt;GetContent();
+                    if (content.IsNull()) return String("");
+                    return content-&gt;ReadAsString();
+                }</span>
+
+<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const String&amp; requestUri) {
+                    return GetByteArray(Uri(requestUri));
+                }</span>
+
+<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const Uri&amp; requestUri) {
+                    auto response = Get(requestUri);
+                    response-&gt;EnsureSuccessStatusCode();
+                    auto content = response-&gt;GetContent();
+                    if (content.IsNull()) return Array&lt;char&gt;(0);
+                    return content-&gt;ReadAsByteArray();
+                }</span>
+
+<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() {
+                    return m_pImpl-&gt;m_defaultRequestHeaders;
+                }</span>
+
+<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() const {
+                    return m_pImpl-&gt;m_defaultRequestHeaders;
+                }</span>
+
+<span style = "background-color:#fdd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request) {
+                    return Send(request, HttpCompletionOption::ResponseContentRead);
+                }</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request, HttpCompletionOption completionOption) {
+                    if (request.IsNull()) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentNullException("request");</span>
+                    }
+
+<span style = "background-color:#dfd">                    Uri uri = request-&gt;GetRequestUri();
+                    String scheme = uri.GetScheme().ToLower();
+                    if (scheme != "http" &amp;&amp; scheme != "https") {
+                        throw ArgumentException("Only 'http' and 'https' schemes are supported.");</span>
+                    }
+
+                    int iPort = uri.GetPort();
+                    if (iPort &lt;= 0) {
+                        iPort = (scheme == "https") ? 443 : 80;
+                    }
+<span style = "background-color:#dfd">                    String sResolvedIp = m_pImpl-&gt;ResolveHost(uri, iPort);</span>
+
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_pLastTcpClient = SmartPointer&lt;Sockets::TcpClient&gt;::NewShared();</span>
+                    try {
+<span style = "background-color:#dfd">                        m_pImpl-&gt;m_pLastTcpClient-&gt;Connect(sResolvedIp, iPort);</span>
+<span style = "background-color:#fdd">                    } catch (const DotNetDupe::System::Net::Sockets::SocketException&amp; ex) {
+                        throw HttpRequestException(ex.What());</span>
+                    }
+
+<span style = "background-color:#dfd">                    SmartPointer&lt;IO::Stream&gt; spStream = m_pImpl-&gt;m_pLastTcpClient-&gt;GetStream();</span>
+
+<span style = "background-color:#dfd">                    if (scheme == "https") {
+                        auto spSslStream = SmartPointer&lt;Net::Security::SslStream&gt;::NewShared(spStream, false);</span>
+                        try {
+<span style = "background-color:#dfd">                            spSslStream-&gt;AuthenticateAsClient(uri.GetHost());</span>
+<span style = "background-color:#fdd">                        } catch (const SystemException&amp; ex) {
+                            throw HttpRequestException(ex.What());</span>
+                        }
+<span style = "background-color:#dfd">                        spStream = spSslStream;
+                    }</span>
+
+<span style = "background-color:#dfd">                    std::string sHeaders = m_pImpl-&gt;PrepareHeaders(request, uri);
+                    m_pImpl-&gt;SendRequest(spStream, sHeaders, request-&gt;GetContent());</span>
+
+<span style = "background-color:#dfd">                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) {
+                        auto spResponse = m_pImpl-&gt;ParseStatusLine(spStream);
+                        bool bChunked = false;
+                        long lContentLength = -1;
+                        String sContentType = "text/plain";
+                        m_pImpl-&gt;ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+                        auto spResponseContent = HttpContentPtr(new StreamContent(spStream), true);
+                        spResponseContent-&gt;GetHeaders()["Content-Type"] = sContentType;
+                        if (lContentLength &gt;= 0) {
+                            spResponseContent-&gt;GetHeaders()["Content-Length"] = Convert::ToString(static_cast&lt;long long&gt;(lContentLength));</span>
+                        }
+<span style = "background-color:#dfd">                        spResponse-&gt;SetContent(spResponseContent);
+                        return spResponse;</span>
+                    }
+
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;PrepareResponse(spStream);
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

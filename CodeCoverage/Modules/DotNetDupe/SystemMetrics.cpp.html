@@ -1,0 +1,971 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SystemMetrics.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Diagnostics/SystemMetrics.h"
+#include "System/Utils/StringConvert.h"
+#include &lt;algorithm&gt;
+#include &lt;vector&gt;
+#include &lt;map&gt;
+
+#if defined(_WIN32)
+#include &lt;winsock2.h&gt;
+#include &lt;ws2tcpip.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;winternl.h&gt;
+#include &lt;tlhelp32.h&gt;
+#include &lt;psapi.h&gt;
+#include &lt;iphlpapi.h&gt;
+#include &lt;pdh.h&gt;
+#include &lt;winsvc.h&gt;
+#pragma comment(lib, "ws2_32.lib")
+#pragma comment(lib, "iphlpapi.lib")
+#pragma comment(lib, "psapi.lib")
+#pragma comment(lib, "pdh.lib")
+#pragma comment(lib, "advapi32.lib")
+#else
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;dirent.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/statvfs.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;arpa/inet.h&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+<span style = "background-color:#fdd">            SystemMetrics::SystemMetrics() {}
+            SystemMetrics::~SystemMetrics() {}</span>
+
+#if defined(_WIN32)
+            struct ProcessCpuSample {
+                uint64_t uProcessTime;
+                uint64_t uSystemTime;
+            };
+<span style = "background-color:#dfd">            static std::map&lt;int, ProcessCpuSample&gt; s_mapProcessCpuSamples;</span>
+
+<span style = "background-color:#dfd">            MemoryInfo SystemMetrics::GetSystemMemoryUsage() {
+                MemoryInfo info;</span>
+                MEMORYSTATUSEX memStatus;
+                memStatus.dwLength = sizeof(MEMORYSTATUSEX);
+
+<span style = "background-color:#dfd">                if (::GlobalMemoryStatusEx(&amp;memStatus)) {
+                    info.dMemoryUsagePercent = static_cast&lt;double&gt;(memStatus.dwMemoryLoad);
+                    info.uMemoryTotalBytes = static_cast&lt;unsigned long long&gt;(memStatus.ullTotalPhys);
+                    info.uMemoryUsedBytes = static_cast&lt;unsigned long long&gt;(memStatus.ullTotalPhys - memStatus.ullAvailPhys);</span>
+                }
+                return info;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            double SystemMetrics::GetSystemCpuUsage() {</span>
+                static uint64_t s_uPrevIdle = 0, s_uPrevTotal = 0;
+                FILETIME ftIdle, ftKernel, ftUser;
+                double dCpuUsagePercent = 0.0;
+
+<span style = "background-color:#dfd">                if (::GetSystemTimes(&amp;ftIdle, &amp;ftKernel, &amp;ftUser)) {
+                    uint64_t uIdle = (static_cast&lt;uint64_t&gt;(ftIdle.dwHighDateTime) &lt;&lt; 32) | ftIdle.dwLowDateTime;</span>
+                    uint64_t uKernel = (static_cast&lt;uint64_t&gt;(ftKernel.dwHighDateTime) &lt;&lt; 32) | ftKernel.dwLowDateTime;
+<span style = "background-color:#dfd">                    uint64_t uUser = (static_cast&lt;uint64_t&gt;(ftUser.dwHighDateTime) &lt;&lt; 32) | ftUser.dwLowDateTime;</span>
+                    uint64_t uTotal = uKernel + uUser;
+
+<span style = "background-color:#dfd">                    if (s_uPrevTotal &gt; 0 &amp;&amp; uTotal &gt; s_uPrevTotal) {</span>
+<span style = "background-color:#fdd">                        uint64_t uTotalDiff = uTotal - s_uPrevTotal;</span>
+                        uint64_t uIdleDiff = uIdle - s_uPrevIdle;
+<span style = "background-color:#fdd">                        dCpuUsagePercent = static_cast&lt;double&gt;((uTotalDiff - uIdleDiff) * 100.0 / uTotalDiff);</span>
+<span style = "background-color:#dfd">                    } else if (uTotal &gt; 0) {
+                        dCpuUsagePercent = static_cast&lt;double&gt;((uTotal - uIdle) * 100.0 / uTotal);</span>
+                    }
+
+<span style = "background-color:#fdd">                    if (dCpuUsagePercent &lt; 0.0) dCpuUsagePercent = 0.0;</span>
+                    if (dCpuUsagePercent &gt; 100.0) dCpuUsagePercent = 100.0;
+
+<span style = "background-color:#dfd">                    s_uPrevIdle = uIdle;
+                    s_uPrevTotal = uTotal;</span>
+                }
+<span style = "background-color:#dfd">                return dCpuUsagePercent;
+            }</span>
+
+<span style = "background-color:#dfd">            DiskInfo SystemMetrics::GetSystemDiskUsage() {</span>
+                DiskInfo info;
+<span style = "background-color:#dfd">                info.lDiskReadBytes = 0;</span>
+                info.lDiskWriteBytes = 0;
+                static HQUERY s_hQuery = NULL;
+                static HCOUNTER s_hCounterRead = NULL;
+                static HCOUNTER s_hCounterWrite = NULL;
+                static bool s_bPdhInitialized = false;
+
+<span style = "background-color:#dfd">                if (!s_bPdhInitialized) {
+                    if (::PdhOpenQueryW(NULL, 0, &amp;s_hQuery) == ERROR_SUCCESS) {
+                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec", 0, &amp;s_hCounterRead);
+                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec", 0, &amp;s_hCounterWrite);
+                        ::PdhCollectQueryData(s_hQuery);
+                        s_bPdhInitialized = true;</span>
+                    }
+                }
+
+<span style = "background-color:#dfd">                if (s_bPdhInitialized &amp;&amp; s_hQuery != NULL) {
+                    if (::PdhCollectQueryData(s_hQuery) == ERROR_SUCCESS) {</span>
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+<span style = "background-color:#dfd">                        if (::PdhGetFormattedCounterValue(s_hCounterRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)
+                            info.lDiskReadBytes = static_cast&lt;long long&gt;(fmtRead.largeValue);</span>
+
+<span style = "background-color:#dfd">                        if (::PdhGetFormattedCounterValue(s_hCounterWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)
+                            info.lDiskWriteBytes = static_cast&lt;long long&gt;(fmtWrite.largeValue);</span>
+                    }
+                }
+                return info;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            double SystemMetrics::GetSystemNetworkUsage() {</span>
+                static uint64_t s_uPrevOctets = 0;
+                static DWORD s_dwPrevTick = 0;
+<span style = "background-color:#dfd">                DWORD dwSize = 0;</span>
+                double dNetworkUsageMbps = 0.0;
+
+<span style = "background-color:#dfd">                if (::GetIfTable(NULL, &amp;dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
+                    std::vector&lt;uint8_t&gt; ifTableBuffer(dwSize, 0);
+                    MIB_IFTABLE* pIfTable = reinterpret_cast&lt;MIB_IFTABLE*&gt;(ifTableBuffer.data());</span>
+
+<span style = "background-color:#dfd">                    if (::GetIfTable(pIfTable, &amp;dwSize, FALSE) == NO_ERROR) {</span>
+                        uint64_t totalOctets = 0;
+
+<span style = "background-color:#dfd">                        for (DWORD i = 0; i &lt; pIfTable-&gt;dwNumEntries; ++i) {
+                            if (pIfTable-&gt;table[i].dwType != IF_TYPE_SOFTWARE_LOOPBACK &amp;&amp; pIfTable-&gt;table[i].dwOperStatus == IF_OPER_STATUS_OPERATIONAL)
+                                totalOctets += pIfTable-&gt;table[i].dwInOctets + pIfTable-&gt;table[i].dwOutOctets;</span>
+                        }
+
+<span style = "background-color:#dfd">                        DWORD dwNow = ::GetTickCount();</span>
+
+<span style = "background-color:#dfd">                        if (s_dwPrevTick &gt; 0 &amp;&amp; dwNow &gt; s_dwPrevTick &amp;&amp; totalOctets &gt;= s_uPrevOctets) {</span>
+<span style = "background-color:#fdd">                            double dElapsedSec = (dwNow - s_dwPrevTick) / 1000.0;
+                            double dBytesPerSec = (totalOctets - s_uPrevOctets) / dElapsedSec;
+                            dNetworkUsageMbps = (dBytesPerSec * 8.0) / 1000000.0;</span>
+                        }
+
+<span style = "background-color:#dfd">                        s_uPrevOctets = totalOctets;
+                        s_dwPrevTick = dwNow;</span>
+                    }
+<span style = "background-color:#dfd">                }
+                return dNetworkUsageMbps;
+            }</span>
+
+<span style = "background-color:#dfd">            void* SystemMetrics::OpenProcessByName(const String&amp; sProcessName, unsigned long dwDesiredAccess, int&amp; iOutProcessId) {
+                iOutProcessId = -1;
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return NULL;</span>
+
+                PROCESSENTRY32W pe32;
+<span style = "background-color:#dfd">                pe32.dwSize = sizeof(PROCESSENTRY32W);</span>
+
+<span style = "background-color:#dfd">                std::string sTargetProc = sProcessName.GetRawString() ? sProcessName.GetRawString() : "";
+                std::wstring wTargetProc(sTargetProc.begin(), sTargetProc.end());
+                std::transform(wTargetProc.begin(), wTargetProc.end(), wTargetProc.begin(), ::tolower);</span>
+
+                HANDLE hProcResult = NULL;
+
+<span style = "background-color:#dfd">                if (::Process32FirstW(hSnapshot, &amp;pe32)) {</span>
+                    do {
+<span style = "background-color:#dfd">                        std::wstring wExeFile(pe32.szExeFile);
+                        std::transform(wExeFile.begin(), wExeFile.end(), wExeFile.begin(), ::tolower);</span>
+
+<span style = "background-color:#dfd">                        if (wExeFile == wTargetProc || wExeFile == wTargetProc + L".exe") {
+                            iOutProcessId = pe32.th32ProcessID;
+                            hProcResult = ::OpenProcess(dwDesiredAccess, FALSE, pe32.th32ProcessID);
+                            break;</span>
+                        }
+<span style = "background-color:#dfd">                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
+                }
+
+<span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);
+                return hProcResult;
+            }</span>
+
+<span style = "background-color:#dfd">            String SystemMetrics::ReadProcessCommandLineHandle(void* hProc) {</span>
+                typedef NTSTATUS(NTAPI* pfnNtQueryInformationProcess)(HANDLE, ULONG, PVOID, ULONG, PULONG);
+<span style = "background-color:#dfd">                HMODULE hNtDll = ::GetModuleHandleW(L"ntdll.dll");
+                pfnNtQueryInformationProcess fnNtQuery = hNtDll ? (pfnNtQueryInformationProcess)::GetProcAddress(hNtDll, "NtQueryInformationProcess") : NULL;</span>
+
+<span style = "background-color:#dfd">                if (fnNtQuery &amp;&amp; hProc != NULL) {</span>
+                    PROCESS_BASIC_INFORMATION pbi;
+<span style = "background-color:#dfd">                    DWORD dwLen = 0;</span>
+
+<span style = "background-color:#dfd">                    if (fnNtQuery(static_cast&lt;HANDLE&gt;(hProc), 0, &amp;pbi, sizeof(pbi), &amp;dwLen) == 0 &amp;&amp; pbi.PebBaseAddress) {</span>
+                        PEB peb;
+<span style = "background-color:#dfd">                        SIZE_T bytesRead = 0;</span>
+
+<span style = "background-color:#dfd">                        if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), pbi.PebBaseAddress, &amp;peb, sizeof(peb), &amp;bytesRead)) {</span>
+                            RTL_USER_PROCESS_PARAMETERS upp;
+
+<span style = "background-color:#dfd">                            if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), peb.ProcessParameters, &amp;upp, sizeof(upp), &amp;bytesRead) &amp;&amp; upp.CommandLine.Buffer &amp;&amp; upp.CommandLine.Length &gt; 0) {
+                                std::vector&lt;wchar_t&gt; wCmd(upp.CommandLine.Length / sizeof(wchar_t) + 1, 0);</span>
+
+<span style = "background-color:#dfd">                                if (::ReadProcessMemory(static_cast&lt;HANDLE&gt;(hProc), upp.CommandLine.Buffer, wCmd.data(), upp.CommandLine.Length, &amp;bytesRead)) {
+                                    return String(wCmd.data());</span>
+                                }
+<span style = "background-color:#fdd">                            }</span>
+                        }
+                    }
+                }
+<span style = "background-color:#fdd">                return String("");</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            String SystemMetrics::GetProcessCommandLine(const String&amp; sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+                if (hProc == NULL) return String("");</span>
+
+<span style = "background-color:#fdd">                String sCmd = ReadProcessCommandLineHandle(hProc);
+                if (sCmd.GetLength() == 0) {
+                    WCHAR szPath[MAX_PATH] = { 0 };
+                    DWORD dwPathLen = MAX_PATH;
+                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwPathLen)) {
+                        sCmd = String(szPath);</span>
+                    }
+                }
+<span style = "background-color:#fdd">                ::CloseHandle(hProc);
+                return sCmd;</span>
+<span style = "background-color:#dfd">            }</span>
+
+            MemoryInfo SystemMetrics::ReadProcessMemoryHandle(void* hProc) {
+                MemoryInfo info;
+                if (hProc != NULL) {
+                    PROCESS_MEMORY_COUNTERS_EX pmcEx;
+                    if (::GetProcessMemoryInfo(static_cast&lt;HANDLE&gt;(hProc), reinterpret_cast&lt;PROCESS_MEMORY_COUNTERS*&gt;(&amp;pmcEx), sizeof(pmcEx))) {
+                        info.lPhysicalMemoryBytes = static_cast&lt;long long&gt;(pmcEx.WorkingSetSize);
+                        info.lPrivateBytes = static_cast&lt;long long&gt;(pmcEx.PrivateUsage);
+                    }
+                }
+                return info;
+            }
+
+<span style = "background-color:#dfd">            MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String&amp; sProcessName) {</span>
+                int iPid = -1;
+<span style = "background-color:#dfd">                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+                if (hProc == NULL) return MemoryInfo();</span>
+
+<span style = "background-color:#fdd">                MemoryInfo memInfo = ReadProcessMemoryHandle(hProc);
+                ::CloseHandle(hProc);
+                return memInfo;</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            DiskInfo SystemMetrics::ReadProcessDiskHandle(void* hProc, const String&amp; sProcessName) {
+                DiskInfo info;
+                std::string sStdProc(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
+                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
+                size_t nExtPos = wProcName.rfind(L'.');
+                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);</span>
+
+<span style = "background-color:#dfd">                std::wstring wReadCounterPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
+                std::wstring wWriteCounterPath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";</span>
+
+<span style = "background-color:#dfd">                HQUERY hProcQuery = NULL;
+                HCOUNTER hProcRead = NULL, hProcWrite = NULL;</span>
+
+<span style = "background-color:#dfd">                if (::PdhOpenQueryW(NULL, 0, &amp;hProcQuery) == ERROR_SUCCESS) {
+                    bool bReadOk = (::PdhAddEnglishCounterW(hProcQuery, wReadCounterPath.c_str(), 0, &amp;hProcRead) == ERROR_SUCCESS);
+                    bool bWriteOk = (::PdhAddEnglishCounterW(hProcQuery, wWriteCounterPath.c_str(), 0, &amp;hProcWrite) == ERROR_SUCCESS);</span>
+
+<span style = "background-color:#dfd">                    if (::PdhCollectQueryData(hProcQuery) == ERROR_SUCCESS) {</span>
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+<span style = "background-color:#dfd">                        if (bReadOk &amp;&amp; ::PdhGetFormattedCounterValue(hProcRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            info.lDiskReadBytes = static_cast&lt;long long&gt;(fmtRead.largeValue);</span>
+
+<span style = "background-color:#dfd">                        if (bWriteOk &amp;&amp; ::PdhGetFormattedCounterValue(hProcWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            info.lDiskWriteBytes = static_cast&lt;long long&gt;(fmtWrite.largeValue);</span>
+                    }
+<span style = "background-color:#dfd">                    ::PdhCloseQuery(hProcQuery);</span>
+                }
+
+<span style = "background-color:#dfd">                if ((info.lDiskReadBytes == -1 || info.lDiskWriteBytes == -1) &amp;&amp; hProc != NULL) {</span>
+                    IO_COUNTERS io;
+<span style = "background-color:#dfd">                    if (::GetProcessIoCounters(static_cast&lt;HANDLE&gt;(hProc), &amp;io)) {
+                        if (info.lDiskReadBytes == -1) info.lDiskReadBytes = static_cast&lt;long long&gt;(io.ReadTransferCount);
+                        if (info.lDiskWriteBytes == -1) info.lDiskWriteBytes = static_cast&lt;long long&gt;(io.WriteTransferCount);</span>
+                    }
+                }
+<span style = "background-color:#dfd">                return info;
+            }</span>
+
+<span style = "background-color:#dfd">            DiskInfo SystemMetrics::GetProcessDiskUsage(const String&amp; sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                DiskInfo info = ReadProcessDiskHandle(hProc, sProcessName);
+                if (hProc != NULL) ::CloseHandle(hProc);</span>
+                return info;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            NetworkUsageInfo SystemMetrics::ReadProcessNetworkHandle(void* hProc, const String&amp; sProcessName) {
+                NetworkUsageInfo info;
+                std::string sStdProc(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
+                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
+                size_t nExtPos = wProcName.rfind(L'.');
+                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);</span>
+
+<span style = "background-color:#dfd">                std::wstring wReadPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
+                std::wstring wWritePath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";</span>
+
+<span style = "background-color:#dfd">                HQUERY hQuery = NULL;
+                HCOUNTER hCounterRead = NULL, hCounterWrite = NULL;</span>
+
+<span style = "background-color:#dfd">                if (::PdhOpenQueryW(NULL, 0, &amp;hQuery) == ERROR_SUCCESS) {
+                    bool bReadOk = (::PdhAddEnglishCounterW(hQuery, wReadPath.c_str(), 0, &amp;hCounterRead) == ERROR_SUCCESS);
+                    bool bWriteOk = (::PdhAddEnglishCounterW(hQuery, wWritePath.c_str(), 0, &amp;hCounterWrite) == ERROR_SUCCESS);</span>
+
+<span style = "background-color:#dfd">                    if (::PdhCollectQueryData(hQuery) == ERROR_SUCCESS) {</span>
+                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
+
+<span style = "background-color:#dfd">                        if (bReadOk &amp;&amp; ::PdhGetFormattedCounterValue(hCounterRead, PDH_FMT_LARGE, NULL, &amp;fmtRead) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            info.lNetworkReadBytes = static_cast&lt;long long&gt;(fmtRead.largeValue);</span>
+
+<span style = "background-color:#dfd">                        if (bWriteOk &amp;&amp; ::PdhGetFormattedCounterValue(hCounterWrite, PDH_FMT_LARGE, NULL, &amp;fmtWrite) == ERROR_SUCCESS)</span>
+<span style = "background-color:#fdd">                            info.lNetworkWriteBytes = static_cast&lt;long long&gt;(fmtWrite.largeValue);</span>
+                    }
+<span style = "background-color:#dfd">                    ::PdhCloseQuery(hQuery);</span>
+                }
+<span style = "background-color:#dfd">                return info;
+            }</span>
+
+<span style = "background-color:#dfd">            NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String&amp; sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                NetworkUsageInfo info = ReadProcessNetworkHandle(hProc, sProcessName);
+                if (hProc != NULL) ::CloseHandle(hProc);</span>
+                return info;
+<span style = "background-color:#dfd">            }</span>
+
+            Collections::Generic::List&lt;int&gt; SystemMetrics::ReadProcessNetworkPortInternal(int iProcessId) {
+                Collections::Generic::List&lt;int&gt; lstPorts;
+                if (iProcessId &lt;= 0) return lstPorts;
+
+                DWORD dwSize = 0;
+                if (::GetExtendedTcpTable(NULL, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
+                    std::vector&lt;uint8_t&gt; tcpTableBuffer(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTcpTable = reinterpret_cast&lt;MIB_TCPTABLE_OWNER_PID*&gt;(tcpTableBuffer.data());
+
+                    if (::GetExtendedTcpTable(pTcpTable, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                        for (DWORD i = 0; i &lt; pTcpTable-&gt;dwNumEntries; ++i) {
+                            if (pTcpTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iProcessId)) {
+                                if (pTcpTable-&gt;table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                                    int iPort = ntohs(static_cast&lt;u_short&gt;(pTcpTable-&gt;table[i].dwLocalPort));
+                                    if (!lstPorts.Contains(iPort)) {
+                                        lstPorts.Add(iPort);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return lstPorts;
+            }
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;int&gt; SystemMetrics::GetProcessNetworkPort(const String&amp; sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                if (hProc != NULL) ::CloseHandle(hProc);
+                return ReadProcessNetworkPortInternal(iPid);
+            }</span>
+
+<span style = "background-color:#fdd">            static String TcpStateToString(DWORD dwState) {
+                switch (dwState) {
+                case MIB_TCP_STATE_CLOSED: return String("CLOSED");
+                case MIB_TCP_STATE_LISTEN: return String("LISTEN");
+                case MIB_TCP_STATE_SYN_SENT: return String("SYN_SENT");
+                case MIB_TCP_STATE_SYN_RCVD: return String("SYN_RCVD");
+                case MIB_TCP_STATE_ESTAB: return String("ESTABLISHED");
+                case MIB_TCP_STATE_FIN_WAIT1: return String("FIN_WAIT1");
+                case MIB_TCP_STATE_FIN_WAIT2: return String("FIN_WAIT2");
+                case MIB_TCP_STATE_CLOSE_WAIT: return String("CLOSE_WAIT");
+                case MIB_TCP_STATE_CLOSING: return String("CLOSING");
+                case MIB_TCP_STATE_LAST_ACK: return String("LAST_ACK");
+                case MIB_TCP_STATE_TIME_WAIT: return String("TIME_WAIT");
+                case MIB_TCP_STATE_DELETE_TCB: return String("DELETE_TCB");
+                default: return String("UNKNOWN");</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+            ProcessNetworkConnectionInfo SystemMetrics::ReadProcessNetworkInfoInternal(int iProcessId) {
+                ProcessNetworkConnectionInfo info;
+                if (iProcessId &lt;= 0) return info;
+
+                DWORD dwSize = 0;
+                if (::GetExtendedTcpTable(NULL, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
+                    std::vector&lt;uint8_t&gt; tcpTableBuffer(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTcpTable = reinterpret_cast&lt;MIB_TCPTABLE_OWNER_PID*&gt;(tcpTableBuffer.data());
+
+                    if (::GetExtendedTcpTable(pTcpTable, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                        for (DWORD i = 0; i &lt; pTcpTable-&gt;dwNumEntries; ++i) {
+                            if (pTcpTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iProcessId)) {
+                                NetworkConnectionInfo conn;
+                                in_addr localAddr;
+                                localAddr.S_un.S_addr = pTcpTable-&gt;table[i].dwLocalAddr;
+                                char szLocal[INET_ADDRSTRLEN] = { 0 };
+                                ::inet_ntop(AF_INET, &amp;localAddr, szLocal, sizeof(szLocal));
+                                conn.sLocalAddress = String(szLocal);
+                                conn.iLocalPort = ntohs(static_cast&lt;u_short&gt;(pTcpTable-&gt;table[i].dwLocalPort));
+
+                                in_addr remoteAddr;
+                                remoteAddr.S_un.S_addr = pTcpTable-&gt;table[i].dwRemoteAddr;
+                                char szRemote[INET_ADDRSTRLEN] = { 0 };
+                                ::inet_ntop(AF_INET, &amp;remoteAddr, szRemote, sizeof(szRemote));
+                                conn.sRemoteAddress = String(szRemote);
+                                conn.iRemotePort = ntohs(static_cast&lt;u_short&gt;(pTcpTable-&gt;table[i].dwRemotePort));
+
+                                conn.sState = TcpStateToString(pTcpTable-&gt;table[i].dwState);
+
+                                info.lstConnections.Add(conn);
+
+                                if (pTcpTable-&gt;table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                                    if (!info.lstOpenPorts.Contains(conn.iLocalPort)) {
+                                        info.lstOpenPorts.Add(conn.iLocalPort);
+                                    }
+                                } else if (pTcpTable-&gt;table[i].dwState == MIB_TCP_STATE_ESTAB) {
+                                    info.bHasEstablishedInboundConnection = true;
+                                }
+                            }
+                        }
+                    }
+                }
+                return info;
+            }
+
+<span style = "background-color:#dfd">            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String&amp; sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                if (hProc != NULL) ::CloseHandle(hProc);
+                return ReadProcessNetworkInfoInternal(iPid);
+            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo&amp; proc) {</span>
+                PROCESSENTRY32W* pe32 = static_cast&lt;PROCESSENTRY32W*&gt;(pEntry32);
+<span style = "background-color:#dfd">                proc.iProcessId = pe32-&gt;th32ProcessID;
+                proc.sName = String(pe32-&gt;szExeFile);
+                proc.dCpuUsagePercent = 0.0;</span>
+
+<span style = "background-color:#dfd">                DWORD dwSessionId = 0;
+                if (::ProcessIdToSessionId(pe32-&gt;th32ProcessID, &amp;dwSessionId)) {
+                    proc.iSessionId = static_cast&lt;int&gt;(dwSessionId);</span>
+                }
+
+<span style = "background-color:#dfd">                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32-&gt;th32ProcessID);
+                if (hProc != NULL) {
+                    WCHAR szPath[MAX_PATH] = { 0 };
+                    DWORD dwPathLen = MAX_PATH;
+                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwPathLen)) {
+                        proc.sPath = String(szPath);</span>
+                    }
+
+<span style = "background-color:#dfd">                    proc.sCommandLine = ReadProcessCommandLineHandle(hProc);
+                    if (proc.sCommandLine.GetLength() == 0) proc.sCommandLine = proc.sPath;</span>
+
+<span style = "background-color:#dfd">                    proc.memory = ReadProcessMemoryHandle(hProc);
+                    proc.disk = ReadProcessDiskHandle(hProc, proc.sName);
+                    proc.network = ReadProcessNetworkHandle(hProc, proc.sName);</span>
+
+                    FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser;
+<span style = "background-color:#dfd">                    if (::GetProcessTimes(hProc, &amp;ftCreate, &amp;ftExit, &amp;ftKernel, &amp;ftUser) &amp;&amp; ::GetSystemTimes(&amp;ftSysIdle, &amp;ftSysKernel, &amp;ftSysUser)) {
+                        uint64_t uProcTime = ((static_cast&lt;uint64_t&gt;(ftKernel.dwHighDateTime) &lt;&lt; 32) | ftKernel.dwLowDateTime) +</span>
+                                             ((static_cast&lt;uint64_t&gt;(ftUser.dwHighDateTime) &lt;&lt; 32) | ftUser.dwLowDateTime);
+<span style = "background-color:#dfd">                        uint64_t uSysTime = ((static_cast&lt;uint64_t&gt;(ftSysKernel.dwHighDateTime) &lt;&lt; 32) | ftSysKernel.dwLowDateTime) +</span>
+                                            ((static_cast&lt;uint64_t&gt;(ftSysUser.dwHighDateTime) &lt;&lt; 32) | ftSysUser.dwLowDateTime);
+
+<span style = "background-color:#dfd">                        auto it = s_mapProcessCpuSamples.find(proc.iProcessId);
+                        if (it != s_mapProcessCpuSamples.end() &amp;&amp; uSysTime &gt; it-&gt;second.uSystemTime &amp;&amp; uProcTime &gt;= it-&gt;second.uProcessTime) {
+                            uint64_t uProcDiff = uProcTime - it-&gt;second.uProcessTime;
+                            uint64_t uSysDiff = uSysTime - it-&gt;second.uSystemTime;
+                            double dCpu = (static_cast&lt;double&gt;(uProcDiff) * 100.0 / static_cast&lt;double&gt;(uSysDiff));
+                            if (dCpu &gt; 100.0) dCpu = 100.0;
+                            if (dCpu &lt; 0.0) dCpu = 0.0;
+                            proc.dCpuUsagePercent = dCpu;</span>
+                        }
+<span style = "background-color:#dfd">                        s_mapProcessCpuSamples[proc.iProcessId] = { uProcTime, uSysTime };</span>
+                    }
+<span style = "background-color:#dfd">                    ::CloseHandle(hProc);</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;ProcessInfo&gt; SystemMetrics::GetAllProcesses(int iSessionId) {
+                Collections::Generic::List&lt;ProcessInfo&gt; lstProcesses;
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return lstProcesses;</span>
+
+                PROCESSENTRY32W pe32;
+<span style = "background-color:#dfd">                pe32.dwSize = sizeof(PROCESSENTRY32W);</span>
+
+<span style = "background-color:#dfd">                if (::Process32FirstW(hSnapshot, &amp;pe32)) {</span>
+                    do {
+<span style = "background-color:#dfd">                        ProcessInfo proc;
+                        PopulateProcessInfo(&amp;pe32, proc);
+                        if (iSessionId == -1 || proc.iSessionId == iSessionId) {
+                            lstProcesses.Add(proc);</span>
+                        }
+<span style = "background-color:#dfd">                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
+                }
+
+<span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);</span>
+                return lstProcesses;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;ProcessInfo&gt; SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
+                Collections::Generic::List&lt;ProcessInfo&gt; lstAll = GetAllProcesses(-1);
+                std::vector&lt;ProcessInfo&gt; tempVector;</span>
+
+<span style = "background-color:#dfd">                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    tempVector.push_back(lstAll[i]);</span>
+                }
+
+<span style = "background-color:#dfd">                std::sort(tempVector.begin(), tempVector.end(), [eResource](const ProcessInfo&amp; a, const ProcessInfo&amp; b) {</span>
+                    switch (eResource) {
+                    case SystemResource::Cpu:
+                        return a.dCpuUsagePercent &gt; b.dCpuUsagePercent;
+                    case SystemResource::Memory:
+                        return a.memory.lPhysicalMemoryBytes &gt; b.memory.lPhysicalMemoryBytes;
+                    case SystemResource::Disk:
+                        return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) &gt; (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
+                    case SystemResource::Network:
+                        return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) &gt; (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
+                    default:
+                        return a.dCpuUsagePercent &gt; b.dCpuUsagePercent;
+                    }
+                });
+
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;ProcessInfo&gt; lstResult;
+                for (size_t i = 0; i &lt; tempVector.size() &amp;&amp; static_cast&lt;int&gt;(i) &lt; iCount; ++i) {
+                    lstResult.Add(tempVector[i]);</span>
+                }
+<span style = "background-color:#dfd">                return lstResult;
+            }</span>
+
+<span style = "background-color:#dfd">            static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
+                SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
+                if (hService == NULL) return String("Manual");</span>
+                BYTE buffer[1024];
+<span style = "background-color:#dfd">                DWORD dwBytesNeeded = 0;</span>
+                QUERY_SERVICE_CONFIGW* pConfig = reinterpret_cast&lt;QUERY_SERVICE_CONFIGW*&gt;(buffer);
+<span style = "background-color:#dfd">                String sStartType = String("Manual");
+                if (::QueryServiceConfigW(hService, pConfig, sizeof(buffer), &amp;dwBytesNeeded)) {
+                    switch (pConfig-&gt;dwStartType) {
+                    case SERVICE_AUTO_START: sStartType = String("Automatic"); break;</span>
+                    case SERVICE_DEMAND_START: sStartType = String("Manual"); break;
+<span style = "background-color:#dfd">                    case SERVICE_DISABLED: sStartType = String("Disabled"); break;</span>
+<span style = "background-color:#fdd">                    case SERVICE_BOOT_START: sStartType = String("Boot"); break;
+                    case SERVICE_SYSTEM_START: sStartType = String("System"); break;</span>
+                    default: sStartType = String("Manual"); break;
+                    }
+                }
+<span style = "background-color:#dfd">                ::CloseServiceHandle(hService);
+                return sStartType;
+            }</span>
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;ServiceInfo&gt; SystemMetrics::GetAllServices() {
+                Collections::Generic::List&lt;ServiceInfo&gt; lstServices;
+                SC_HANDLE hSCM = ::OpenSCManagerW(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
+                if (hSCM == NULL) return lstServices;</span>
+
+<span style = "background-color:#dfd">                DWORD dwBytesNeeded = 0;
+                DWORD dwServicesReturned = 0;
+                DWORD dwResumeHandle = 0;
+                ::EnumServicesStatusExW(hSCM, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_STATE_ALL,</span>
+                                        NULL, 0, &amp;dwBytesNeeded, &amp;dwServicesReturned, &amp;dwResumeHandle, NULL);
+
+<span style = "background-color:#dfd">                if (dwBytesNeeded &gt; 0) {
+                    std::vector&lt;uint8_t&gt; buffer(dwBytesNeeded, 0);
+                    ENUM_SERVICE_STATUS_PROCESSW* pServices = reinterpret_cast&lt;ENUM_SERVICE_STATUS_PROCESSW*&gt;(buffer.data());</span>
+
+<span style = "background-color:#dfd">                    if (::EnumServicesStatusExW(hSCM, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_STATE_ALL,</span>
+                                                buffer.data(), dwBytesNeeded, &amp;dwBytesNeeded, &amp;dwServicesReturned, &amp;dwResumeHandle, NULL)) {
+<span style = "background-color:#dfd">                        for (DWORD i = 0; i &lt; dwServicesReturned; ++i) {
+                            ServiceInfo svc;
+                            svc.sServiceName = String(pServices[i].lpServiceName);
+                            svc.sDisplayName = String(pServices[i].lpDisplayName);
+                            svc.iProcessId = static_cast&lt;int&gt;(pServices[i].ServiceStatusProcess.dwProcessId);</span>
+
+<span style = "background-color:#dfd">                            switch (pServices[i].ServiceStatusProcess.dwCurrentState) {
+                            case SERVICE_RUNNING: svc.sStatus = String("Running"); break;
+                            case SERVICE_STOPPED: svc.sStatus = String("Stopped"); break;</span>
+<span style = "background-color:#fdd">                            case SERVICE_PAUSED: svc.sStatus = String("Paused"); break;
+                            case SERVICE_START_PENDING: svc.sStatus = String("StartPending"); break;
+                            case SERVICE_STOP_PENDING: svc.sStatus = String("StopPending"); break;
+                            case SERVICE_CONTINUE_PENDING: svc.sStatus = String("ContinuePending"); break;
+                            case SERVICE_PAUSE_PENDING: svc.sStatus = String("PausePending"); break;</span>
+<span style = "background-color:#dfd">                            default: svc.sStatus = String("Unknown"); break;</span>
+                            }
+
+<span style = "background-color:#dfd">                            svc.sStartType = GetServiceStartType(hSCM, pServices[i].lpServiceName);
+                            lstServices.Add(svc);
+                        }</span>
+                    }
+<span style = "background-color:#dfd">                }
+                ::CloseServiceHandle(hSCM);</span>
+                return lstServices;
+<span style = "background-color:#dfd">            }</span>
+#else
+            int SystemMetrics::FindPidByName(const String&amp; sProcessName) {
+                DIR* dir = ::opendir("/proc");
+                if (!dir) return -1;
+
+                struct dirent* entry = nullptr;
+                std::string targetName = sProcessName.GetRawString();
+
+                while ((entry = ::readdir(dir)) != nullptr) {
+                    if (entry-&gt;d_type == DT_DIR) {
+                        std::string dname = entry-&gt;d_name;
+                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
+                            std::string commPath = "/proc/" + dname + "/comm";
+                            std::ifstream commFile(commPath);
+                            if (commFile.is_open()) {
+                                std::string procComm;
+                                std::getline(commFile, procComm);
+                                if (procComm == targetName) {
+                                    ::closedir(dir);
+                                    return std::stoi(dname);
+                                }
+                            }
+                        }
+                    }
+                }
+                ::closedir(dir);
+                return -1;
+            }
+
+            MemoryInfo SystemMetrics::ReadLinuxProcessMemory(int iPid) {
+                MemoryInfo info;
+                if (iPid &lt;= 0) return info;
+
+                std::string statusPath = "/proc/" + std::to_string(iPid) + "/status";
+                std::ifstream statusFile(statusPath);
+                if (!statusFile.is_open()) return info;
+
+                std::string line;
+                long long lRssKb = 0;
+                long long lVmKb = 0;
+
+                while (std::getline(statusFile, line)) {
+                    if (line.rfind("VmRSS:", 0) == 0) {
+                        std::istringstream iss(line.substr(6));
+                        iss &gt;&gt; lRssKb;
+                    } else if (line.rfind("VmSize:", 0) == 0) {
+                        std::istringstream iss(line.substr(7));
+                        iss &gt;&gt; lVmKb;
+                    }
+                }
+
+                info.lPhysicalMemoryBytes = lRssKb * 1024LL;
+                info.lPrivateBytes = lVmKb * 1024LL;
+                return info;
+            }
+
+            DiskInfo SystemMetrics::ReadLinuxProcessDisk(int iPid) {
+                DiskInfo info;
+                if (iPid &lt;= 0) return info;
+
+                std::string ioPath = "/proc/" + std::to_string(iPid) + "/io";
+                std::ifstream ioFile(ioPath);
+                if (!ioFile.is_open()) return info;
+
+                std::string line;
+                while (std::getline(ioFile, line)) {
+                    if (line.rfind("read_bytes:", 0) == 0) {
+                        std::istringstream iss(line.substr(11));
+                        iss &gt;&gt; info.lDiskReadBytes;
+                    } else if (line.rfind("write_bytes:", 0) == 0) {
+                        std::istringstream iss(line.substr(12));
+                        iss &gt;&gt; info.lDiskWriteBytes;
+                    }
+                }
+                return info;
+            }
+
+            NetworkUsageInfo SystemMetrics::ReadLinuxProcessNetwork(int iPid) {
+                NetworkUsageInfo info;
+                if (iPid &lt;= 0) return info;
+
+                std::string devPath = "/proc/" + std::to_string(iPid) + "/net/dev";
+                std::ifstream devFile(devPath);
+                if (!devFile.is_open()) return info;
+
+                std::string line;
+                long long totalRx = 0, totalTx = 0;
+                int lineCount = 0;
+
+                while (std::getline(devFile, line)) {
+                    if (++lineCount &lt;= 2) continue; // Skip header lines
+                    auto colonPos = line.find(':');
+                    if (colonPos != std::string::npos) {
+                        std::istringstream iss(line.substr(colonPos + 1));
+                        long long rx = 0, tx = 0, dummy = 0;
+                        iss &gt;&gt; rx;
+                        for (int i = 0; i &lt; 7; ++i) iss &gt;&gt; dummy;
+                        iss &gt;&gt; tx;
+                        totalRx += rx;
+                        totalTx += tx;
+                    }
+                }
+                info.lNetworkReadBytes = totalRx;
+                info.lNetworkWriteBytes = totalTx;
+                return info;
+            }
+
+            Collections::Generic::List&lt;int&gt; SystemMetrics::ReadLinuxProcessPorts(int iPid) {
+                Collections::Generic::List&lt;int&gt; lstPorts;
+                ProcessNetworkConnectionInfo connInfo = ReadLinuxProcessNetworkInfo(iPid);
+                return connInfo.lstOpenPorts;
+            }
+
+            ProcessNetworkConnectionInfo SystemMetrics::ReadLinuxProcessNetworkInfo(int iPid) {
+                ProcessNetworkConnectionInfo connInfo;
+                if (iPid &lt;= 0) return connInfo;
+
+                std::string tcpPath = "/proc/net/tcp";
+                std::ifstream tcpFile(tcpPath);
+                if (!tcpFile.is_open()) return connInfo;
+
+                std::string line;
+                int lineNum = 0;
+
+                while (std::getline(tcpFile, line)) {
+                    if (lineNum++ == 0) continue; // Skip header
+                    std::istringstream iss(line);
+                    std::string sl, localAddr, remAddr, st;
+                    if (iss &gt;&gt; sl &gt;&gt; localAddr &gt;&gt; remAddr &gt;&gt; st) {
+                        auto colonLocal = localAddr.find(':');
+                        auto colonRem = remAddr.find(':');
+                        if (colonLocal != std::string::npos &amp;&amp; colonRem != std::string::npos) {
+                            int localPort = std::stoi(localAddr.substr(colonLocal + 1), nullptr, 16);
+                            int remotePort = std::stoi(remAddr.substr(colonRem + 1), nullptr, 16);
+
+                            NetworkConnectionInfo conn;
+                            conn.iLocalPort = localPort;
+                            conn.iRemotePort = remotePort;
+                            conn.sState = (st == "01") ? String("ESTABLISHED") : String("LISTEN");
+
+                            connInfo.lstConnections.Add(conn);
+                            connInfo.lstOpenPorts.Add(localPort);
+
+                            if (st == "01") {
+                                connInfo.bHasEstablishedInboundConnection = true;
+                            }
+                        }
+                    }
+                }
+                return connInfo;
+            }
+
+            MemoryInfo SystemMetrics::GetSystemMemoryUsage() {
+                MemoryInfo info;
+                std::ifstream memFile("/proc/meminfo");
+                if (!memFile.is_open()) return info;
+
+                std::string line;
+                unsigned long long totalKb = 0, availKb = 0;
+
+                while (std::getline(memFile, line)) {
+                    if (line.rfind("MemTotal:", 0) == 0) {
+                        std::istringstream iss(line.substr(9));
+                        iss &gt;&gt; totalKb;
+                    } else if (line.rfind("MemAvailable:", 0) == 0) {
+                        std::istringstream iss(line.substr(13));
+                        iss &gt;&gt; availKb;
+                    }
+                }
+
+                info.uMemoryTotalBytes = totalKb * 1024ULL;
+                info.uMemoryUsedBytes = (totalKb &gt; availKb) ? (totalKb - availKb) * 1024ULL : 0ULL;
+                if (totalKb &gt; 0) {
+                    info.dMemoryUsagePercent = (static_cast&lt;double&gt;(info.uMemoryUsedBytes) / static_cast&lt;double&gt;(info.uMemoryTotalBytes)) * 100.0;
+                }
+                return info;
+            }
+
+            double SystemMetrics::GetSystemCpuUsage() {
+                std::ifstream statFile("/proc/stat");
+                if (!statFile.is_open()) return 0.0;
+
+                std::string line;
+                if (std::getline(statFile, line) &amp;&amp; line.rfind("cpu ", 0) == 0) {
+                    std::istringstream iss(line.substr(4));
+                    long long user, nice, system, idle, iowait, irq, softirq, steal;
+                    if (iss &gt;&gt; user &gt;&gt; nice &gt;&gt; system &gt;&gt; idle &gt;&gt; iowait &gt;&gt; irq &gt;&gt; softirq &gt;&gt; steal) {
+                        long long totalIdle = idle + iowait;
+                        long long totalNonIdle = user + nice + system + irq + softirq + steal;
+                        long long total = totalIdle + totalNonIdle;
+                        if (total &gt; 0) {
+                            return (static_cast&lt;double&gt;(totalNonIdle) / static_cast&lt;double&gt;(total)) * 100.0;
+                        }
+                    }
+                }
+                return 0.0;
+            }
+
+            DiskInfo SystemMetrics::GetSystemDiskUsage() {
+                DiskInfo info;
+                struct statvfs vfs;
+                if (statvfs("/", &amp;vfs) == 0) {
+                    info.lDiskReadBytes = static_cast&lt;long long&gt;(vfs.f_blocks * vfs.f_frsize);
+                    info.lDiskWriteBytes = static_cast&lt;long long&gt;((vfs.f_blocks - vfs.f_bfree) * vfs.f_frsize);
+                }
+                return info;
+            }
+
+            double SystemMetrics::GetSystemNetworkUsage() {
+                std::ifstream devFile("/proc/net/dev");
+                if (!devFile.is_open()) return 0.0;
+
+                std::string line;
+                long long totalBytes = 0;
+                int lineCount = 0;
+
+                while (std::getline(devFile, line)) {
+                    if (++lineCount &lt;= 2) continue;
+                    auto colonPos = line.find(':');
+                    if (colonPos != std::string::npos) {
+                        std::istringstream iss(line.substr(colonPos + 1));
+                        long long rx = 0, tx = 0, dummy = 0;
+                        iss &gt;&gt; rx;
+                        for (int i = 0; i &lt; 7; ++i) iss &gt;&gt; dummy;
+                        iss &gt;&gt; tx;
+                        totalBytes += (rx + tx);
+                    }
+                }
+                return static_cast&lt;double&gt;(totalBytes);
+            }
+
+            String SystemMetrics::GetProcessCommandLine(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                if (pid &lt;= 0) return String("");
+
+                std::string cmdPath = "/proc/" + std::to_string(pid) + "/cmdline";
+                std::ifstream cmdFile(cmdPath, std::ios::binary);
+                if (!cmdFile.is_open()) return String("");
+
+                std::string cmdLine;
+                char ch;
+                while (cmdFile.get(ch)) {
+                    cmdLine += (ch == '\0') ? ' ' : ch;
+                }
+                return String(cmdLine.c_str());
+            }
+
+            MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                return ReadLinuxProcessMemory(pid);
+            }
+
+            DiskInfo SystemMetrics::GetProcessDiskUsage(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                return ReadLinuxProcessDisk(pid);
+            }
+
+            NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                return ReadLinuxProcessNetwork(pid);
+            }
+
+            Collections::Generic::List&lt;int&gt; SystemMetrics::GetProcessNetworkPort(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                return ReadLinuxProcessPorts(pid);
+            }
+
+            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String&amp; sProcessName) {
+                int pid = FindPidByName(sProcessName);
+                return ReadLinuxProcessNetworkInfo(pid);
+            }
+
+            Collections::Generic::List&lt;ProcessInfo&gt; SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
+                Collections::Generic::List&lt;ProcessInfo&gt; lstAll = GetAllProcesses(-1);
+                std::vector&lt;ProcessInfo&gt; tempVector;
+
+                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    tempVector.push_back(lstAll[i]);
+                }
+
+                std::sort(tempVector.begin(), tempVector.end(), [eResource](const ProcessInfo&amp; a, const ProcessInfo&amp; b) {
+                    switch (eResource) {
+                    case SystemResource::Cpu: return a.dCpuUsagePercent &gt; b.dCpuUsagePercent;
+                    case SystemResource::Memory: return a.memory.lPhysicalMemoryBytes &gt; b.memory.lPhysicalMemoryBytes;
+                    case SystemResource::Disk: return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) &gt; (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
+                    case SystemResource::Network: return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) &gt; (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
+                    default: return a.dCpuUsagePercent &gt; b.dCpuUsagePercent;
+                    }
+                });
+
+                Collections::Generic::List&lt;ProcessInfo&gt; lstResult;
+                for (size_t i = 0; i &lt; tempVector.size() &amp;&amp; static_cast&lt;int&gt;(i) &lt; iCount; ++i) {
+                    lstResult.Add(tempVector[i]);
+                }
+                return lstResult;
+            }
+
+            Collections::Generic::List&lt;ProcessInfo&gt; SystemMetrics::GetAllProcesses(int iSessionId) {
+                Collections::Generic::List&lt;ProcessInfo&gt; lstProcs;
+                DIR* dir = ::opendir("/proc");
+                if (!dir) return lstProcs;
+
+                struct dirent* entry = nullptr;
+                while ((entry = ::readdir(dir)) != nullptr) {
+                    if (entry-&gt;d_type == DT_DIR) {
+                        std::string dname = entry-&gt;d_name;
+                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
+                            int pid = std::stoi(dname);
+                            ProcessInfo proc;
+                            proc.iProcessId = pid;
+
+                            std::string commPath = "/proc/" + dname + "/comm";
+                            std::ifstream commFile(commPath);
+                            if (commFile.is_open()) {
+                                std::string procComm;
+                                std::getline(commFile, procComm);
+                                proc.sName = String(procComm.c_str());
+                            }
+
+                            proc.sCommandLine = GetProcessCommandLine(proc.sName);
+                            proc.memory = ReadLinuxProcessMemory(pid);
+                            proc.disk = ReadLinuxProcessDisk(pid);
+                            proc.network = ReadLinuxProcessNetwork(pid);
+
+                            if (iSessionId == -1 || proc.iSessionId == iSessionId) {
+                                lstProcs.Add(proc);
+                            }
+                        }
+                    }
+                }
+                ::closedir(dir);
+                return lstProcs;
+            }
+
+            Collections::Generic::List&lt;ServiceInfo&gt; SystemMetrics::GetAllServices() {
+                Collections::Generic::List&lt;ServiceInfo&gt; lstServices;
+                return lstServices;
+            }
+#endif
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

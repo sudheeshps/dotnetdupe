@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FileLogger.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/FileLogger.h"
+#include &lt;cstdio&gt;
+#include "FileLoggerContext.h"
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+            struct FileLogger::Impl {
+                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; context;
+            };
+
+            FileLogger::FileLogger(const DotNetDupe::System::String&amp; categoryName, const LoggerConfiguration&amp; config, 
+                                   const DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;&amp; context)
+<span style = "background-color:#dfd">                : LoggerBase(categoryName, config), m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                m_pImpl-&gt;context = context;
+            }</span>
+
+<span style = "background-color:#fdd">            FileLogger::~FileLogger() = default;</span>
+
+<span style = "background-color:#dfd">            void FileLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
+                LoggerBase::Log(logLevel, message);</span>
+            }
+
+            void FileLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
+<span style = "background-color:#dfd">                                 const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
+                if (!IsEnabled(logLevel)) return;
+                if (!m_pImpl-&gt;context || !m_pImpl-&gt;context-&gt;fileStream || !m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) return;</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String line = BuildLogMessage(logLevel, message, properties);</span>
+
+                // Write thread-safely to file
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;context-&gt;fileMutex));</span>
+
+<span style = "background-color:#dfd">                if (m_config.Rollover.EnableRollover &amp;&amp; m_pImpl-&gt;context-&gt;fileStream &amp;&amp; m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) {
+                    auto currentPos = m_pImpl-&gt;context-&gt;fileStream-&gt;tellp();
+                    if (currentPos != std::streampos(-1)) {</span>
+                        long long currentSize = static_cast&lt;long long&gt;(currentPos);
+<span style = "background-color:#dfd">                        if (currentSize + static_cast&lt;long long&gt;(line.GetLength()) &gt;= m_config.Rollover.MaxFileSizeInBytes) {</span>
+                            // Close current stream
+<span style = "background-color:#dfd">                            m_pImpl-&gt;context-&gt;fileStream-&gt;close();</span>
+
+<span style = "background-color:#dfd">                            std::string baseName = m_config.FilePath.GetRawString();</span>
+
+                            // Rotate backups: app.log.2 -&gt; app.log.3, etc.
+<span style = "background-color:#dfd">                            for (int i = m_config.Rollover.MaxBackupFiles - 1; i &gt;= 1; --i) {
+                                std::string oldBackup = baseName + "." + std::to_string(i);
+                                std::string newBackup = baseName + "." + std::to_string(i + 1);
+                                std::remove(newBackup.c_str());
+                                std::rename(oldBackup.c_str(), newBackup.c_str());
+                            }</span>
+
+                            // Rename current file: app.log -&gt; app.log.1
+<span style = "background-color:#dfd">                            std::string firstBackup = baseName + ".1";
+                            std::remove(firstBackup.c_str());
+                            std::rename(baseName.c_str(), firstBackup.c_str());</span>
+
+                            // Re-open fresh file
+<span style = "background-color:#dfd">                            m_pImpl-&gt;context-&gt;fileStream-&gt;open(baseName, std::ios::out | std::ios::app);
+                        }</span>
+                    }
+                }
+
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;context-&gt;fileStream &amp;&amp; m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) {
+                    (*(m_pImpl-&gt;context-&gt;fileStream)) &lt;&lt; line.GetRawString() &lt;&lt; std::endl;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

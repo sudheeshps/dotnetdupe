@@ -1,0 +1,257 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Directory.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/Directory.h"
+#include "System/IO/Path.h"
+#include "System/IOException.h"
+#include "System/ArgumentException.h"
+#include &lt;filesystem&gt;
+#include &lt;vector&gt;
+#include &lt;regex&gt;
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String&amp; sPath) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+
+<span style = "background-color:#dfd">    std::regex PatternToRegex(const DotNetDupe::System::String&amp; sPattern) {
+        std::string sPat = sPattern.GetRawString();
+        std::string sRegexStr;
+        for (char c : sPat) {
+            if (c == '*') sRegexStr += ".*";
+            else if (c == '?') sRegexStr += ".";
+            else if (c == '.' || c == '\\' || c == '/' || c == '(' || c == ')' || c == '[' || c == ']' || c == '^' || c == '$' || c == '+' || c == '|' || c == '{' || c == '}') {
+                sRegexStr += "\\";</span>
+                sRegexStr += c;
+            } else {
+                sRegexStr += c;
+            }
+        }
+<span style = "background-color:#dfd">        return std::regex("^" + sRegexStr + "$", std::regex_constants::icase);
+    }</span>
+
+    DotNetDupe::System::DateTimeOffset FileTimeToDateTimeOffset(fs::file_time_type ftime) {
+        auto sctp = std::chrono::time_point_cast&lt;std::chrono::system_clock::duration&gt;(
+            ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now()
+        );
+        auto durationSec = std::chrono::duration_cast&lt;std::chrono::seconds&gt;(sctp.time_since_epoch()).count();
+        // 62135596800ULL is seconds between 0001-01-01 and 1970-01-01
+        int64_t ticks = (durationSec + 62135596800LL) * 10000000LL;
+        return DotNetDupe::System::DateTimeOffset(ticks);
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+<span style = "background-color:#dfd">            bool Directory::Exists(const String&amp; sPath) {
+                if (sPath.IsEmpty()) return false;</span>
+                std::error_code ec;
+<span style = "background-color:#dfd">                return fs::is_directory(ToFsPath(sPath), ec);
+            }</span>
+
+<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath) {
+                CreateDirectory(sPath, true);</span>
+            }
+
+<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath, bool bRecursive) {
+                if (sPath.IsEmpty()) {
+                    throw ArgumentException("Path cannot be empty.");</span>
+                }
+<span style = "background-color:#dfd">                std::error_code ec;
+                if (bRecursive) {
+                    fs::create_directories(ToFsPath(sPath), ec);
+                } else {
+                    fs::create_directory(ToFsPath(sPath), ec);</span>
+                }
+<span style = "background-color:#dfd">                if (ec) {
+                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath) {
+                Delete(sPath, false);</span>
+            }
+
+<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath, bool bRecursive) {
+                if (sPath.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentException("Path cannot be empty.");</span>
+                }
+<span style = "background-color:#dfd">                fs::path p = ToFsPath(sPath);
+                std::error_code ec;
+                if (!fs::exists(p, ec)) {
+                    throw IO::IOException("Directory does not exist.");</span>
+                }
+
+<span style = "background-color:#dfd">                if (bRecursive) {
+                    fs::remove_all(p, ec);
+                } else {</span>
+<span style = "background-color:#fdd">                    fs::remove(p, ec);</span>
+                }
+<span style = "background-color:#dfd">                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void Directory::Move(const String&amp; sSourceDirName, const String&amp; sDestDirName) {
+                if (sSourceDirName.IsEmpty() || sDestDirName.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentException("Source and destination paths cannot be empty.");</span>
+                }
+                std::error_code ec;
+<span style = "background-color:#dfd">                fs::rename(ToFsPath(sSourceDirName), ToFsPath(sDestDirName), ec);
+                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath) {
+                return GetFiles(sPath, "*");
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath, const String&amp; sSearchPattern) {
+                if (!Exists(sPath)) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
+                }
+<span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+
+<span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
+                    if (entry.is_regular_file(ec)) {
+                        std::string filename = entry.path().filename().string();
+                        if (std::regex_match(filename, reg)) {
+                            results.push_back(String(entry.path().string().c_str()));</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                }
+                Array&lt;String&gt; arr((int)results.size());
+                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
+                return arr;
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath) {
+                return GetDirectories(sPath, "*");
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath, const String&amp; sSearchPattern) {
+                if (!Exists(sPath)) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
+                }
+<span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+
+<span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
+                    if (entry.is_directory(ec)) {
+                        std::string filename = entry.path().filename().string();
+                        if (std::regex_match(filename, reg)) {
+                            results.push_back(String(entry.path().string().c_str()));</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                }
+                Array&lt;String&gt; arr((int)results.size());
+                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
+                return arr;
+            }</span>
+
+<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath) {
+                return GetFileSystemEntries(sPath, "*");
+            }</span>
+
+<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath, const String&amp; sSearchPattern) {
+                if (!Exists(sPath)) {
+                    throw IO::IOException("Directory does not exist.");</span>
+                }
+<span style = "background-color:#fdd">                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+
+<span style = "background-color:#fdd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
+                    std::string filename = entry.path().filename().string();
+                    if (std::regex_match(filename, reg)) {
+                        results.push_back(String(entry.path().string().c_str()));</span>
+                    }
+<span style = "background-color:#fdd">                }
+                Array&lt;String&gt; arr((int)results.size());
+                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
+                return arr;
+            }</span>
+
+<span style = "background-color:#dfd">            String Directory::GetCurrentDirectory() {
+                std::error_code ec;
+                fs::path p = fs::current_path(ec);
+                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#dfd">                return String(p.string().c_str());
+            }</span>
+
+<span style = "background-color:#fdd">            void Directory::SetCurrentDirectory(const String&amp; sPath) {
+                if (sPath.IsEmpty()) {
+                    throw ArgumentException("Path cannot be empty.");</span>
+                }
+                std::error_code ec;
+<span style = "background-color:#fdd">                fs::current_path(ToFsPath(sPath), ec);
+                if (ec) {
+                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            String Directory::GetDirectoryRoot(const String&amp; sPath) {
+                return Path::GetPathRoot(sPath);
+            }</span>
+
+<span style = "background-color:#fdd">            DateTimeOffset Directory::GetCreationTime(const String&amp; sPath) {
+                return GetLastWriteTime(sPath);
+            }</span>
+
+<span style = "background-color:#fdd">            DateTimeOffset Directory::GetLastWriteTime(const String&amp; sPath) {</span>
+                std::error_code ec;
+<span style = "background-color:#fdd">                auto ftime = fs::last_write_time(ToFsPath(sPath), ec);
+                if (ec) {
+                    throw IO::IOException(ec.message().c_str());</span>
+                }
+<span style = "background-color:#fdd">                return FileTimeToDateTimeOffset(ftime);
+            }</span>
+
+<span style = "background-color:#fdd">            DateTimeOffset Directory::GetLastAccessTime(const String&amp; sPath) {
+                return GetLastWriteTime(sPath);
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

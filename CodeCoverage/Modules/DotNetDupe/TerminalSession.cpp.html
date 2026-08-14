@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>TerminalSession.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Diagnostics/TerminalSession.h"
+#include "System/Utils/StringConvert.h"
+#include &lt;vector&gt;
+
+#if defined(_WIN32)
+#include &lt;winsock2.h&gt;
+#include &lt;windows.h&gt;
+#include &lt;wtsapi32.h&gt;
+#pragma comment(lib, "wtsapi32.lib")
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+<span style = "background-color:#fdd">            TerminalSession::TerminalSession() {}
+            TerminalSession::~TerminalSession() {}</span>
+
+#if defined(_WIN32)
+            RdpSessionState TerminalSession::ConvertWtsState(int iState) {
+                switch (iState) {
+                case WTSActive: return RdpSessionState::Active;
+                case WTSConnected: return RdpSessionState::Connected;
+                case WTSConnectQuery: return RdpSessionState::ConnectQuery;
+                case WTSShadow: return RdpSessionState::Shadow;
+                case WTSDisconnected: return RdpSessionState::Disconnected;
+                case WTSIdle: return RdpSessionState::Idle;
+                case WTSListen: return RdpSessionState::Listen;
+                case WTSReset: return RdpSessionState::Reset;
+                case WTSDown: return RdpSessionState::Down;
+                case WTSInit: return RdpSessionState::Init;
+                default: return RdpSessionState::Unknown;
+                }
+            }
+
+<span style = "background-color:#dfd">            String TerminalSession::QueryWtsString(unsigned long uSessionId, unsigned int eInfoClass) {
+                LPWSTR pBuffer = NULL;
+                DWORD dwBytesReturned = 0;
+                String sResult;</span>
+
+<span style = "background-color:#dfd">                if (::WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, uSessionId, static_cast&lt;WTS_INFO_CLASS&gt;(eInfoClass), &amp;pBuffer, &amp;dwBytesReturned)) {
+                    if (pBuffer != NULL &amp;&amp; dwBytesReturned &gt; 0) {
+                        sResult = String(pBuffer);</span>
+                    }
+<span style = "background-color:#dfd">                    ::WTSFreeMemory(pBuffer);</span>
+                }
+
+                return sResult;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void TerminalSession::QuerySessionDetails(unsigned long uSessionId, const String&amp; sSessionName, RdpSessionState eState, RdpSessionInfo&amp; info) {
+                info.uSessionId = uSessionId;
+                info.sSessionName = sSessionName;</span>
+                info.eState = eState;
+<span style = "background-color:#dfd">                info.sUserName = QueryWtsString(uSessionId, WTSUserName);
+                info.sDomainName = QueryWtsString(uSessionId, WTSDomainName);
+                info.sClientName = QueryWtsString(uSessionId, WTSClientName);
+                info.sClientIpAddress = QueryWtsString(uSessionId, WTSClientAddress);
+                info.bIsRdpSession = !info.sClientName.IsEmpty() || info.sSessionName.Contains("RDP");
+            }</span>
+#endif
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetSessions() {
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstResult;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                WTS_SESSION_INFOW* pSessionInfo = NULL;
+                DWORD dwCount = 0;</span>
+
+<span style = "background-color:#dfd">                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwCount)) {
+                    for (DWORD i = 0; i &lt; dwCount; ++i) {
+                        RdpSessionInfo info;
+                        String sName = (pSessionInfo[i].pWinStationName != NULL) ? String(pSessionInfo[i].pWinStationName) : String("");
+                        RdpSessionState eState = ConvertWtsState(pSessionInfo[i].State);</span>
+
+<span style = "background-color:#dfd">                        QuerySessionDetails(pSessionInfo[i].SessionId, sName, eState, info);
+                        lstResult.Add(info);
+                    }</span>
+
+<span style = "background-color:#dfd">                    ::WTSFreeMemory(pSessionInfo);</span>
+                }
+#endif
+                return lstResult;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetActiveSessions() {
+                auto lstAll = GetSessions();
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstActive;</span>
+
+<span style = "background-color:#dfd">                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    if (lstAll[i].eState == RdpSessionState::Active) {
+                        lstActive.Add(lstAll[i]);</span>
+                    }
+                }
+
+<span style = "background-color:#dfd">                return lstActive;
+            }</span>
+
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetDisconnectedSessions() {
+                auto lstAll = GetSessions();
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstDisconnected;</span>
+
+<span style = "background-color:#dfd">                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    if (lstAll[i].eState == RdpSessionState::Disconnected) {
+                        lstDisconnected.Add(lstAll[i]);</span>
+                    }
+                }
+
+<span style = "background-color:#dfd">                return lstDisconnected;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
