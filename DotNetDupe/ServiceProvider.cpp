@@ -1,6 +1,9 @@
 #include "pch.h"
 #include "Extensions/DependencyInjection/ServiceProvider.h"
 #include "System/Threading/Lock.h"
+#include <unordered_map>
+#include <vector>
+#include <typeindex>
 
 namespace DotNetDupe {
     namespace Extensions {

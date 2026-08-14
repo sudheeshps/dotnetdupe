@@ -9,8 +9,8 @@
 #include "System/String.h"
 #include <new>
 #include <initializer_list>
-#include <new>
 #include <utility>
+#include <cstddef>
 
 namespace DotNetDupe {
 	namespace System {

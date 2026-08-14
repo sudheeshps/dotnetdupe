@@ -3,6 +3,7 @@
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include "System/IOException.h"
+#include <vector>
 #include <algorithm>
 #include <cstring>
 

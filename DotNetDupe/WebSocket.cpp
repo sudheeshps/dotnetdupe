@@ -5,6 +5,7 @@
 #include <openssl/evp.h>
 #include <vector>
 #include <string>
+#include <cstdint>
 
 namespace DotNetDupe {
     namespace System {

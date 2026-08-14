@@ -6,6 +6,8 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <initializer_list>
+#include <vector>
 
 #if defined(_WIN32)
 #include <windows.h>

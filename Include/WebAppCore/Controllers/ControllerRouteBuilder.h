@@ -34,7 +34,7 @@ namespace DotNetDupe {
                 };
                 DotNetDupe::System::Collections::Generic::List<RouteInfo> m_routes;
 
-                DotNetDupe::System::SmartPointer<TController> ResolveController(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& context) {
+                static DotNetDupe::System::SmartPointer<TController> ResolveController(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& context) {
                     auto controller = app->GetServices()->GetRequiredService<TController>();
                     controller->Initialize(context);
                     return controller;
@@ -55,28 +55,28 @@ namespace DotNetDupe {
                         if (pStr[i] == '%') {
                             if (pStr[i + 1] != '\0' && pStr[i + 2] != '\0') {
                                 char ch = static_cast<char>((HexCharToDecimal(pStr[i + 1]) << 4) | HexCharToDecimal(pStr[i + 2]));
-                                decoded = decoded + DotNetDupe::System::String(ch);
+                                decoded += ch;
                                 i += 2;
                                 continue;
                             }
                         } else if (pStr[i] == '+') {
-                            decoded = decoded + DotNetDupe::System::String(" ");
+                            decoded += ' ';
                             continue;
                         }
-                        decoded = decoded + DotNetDupe::System::String(pStr[i]);
+                        decoded += pStr[i];
                     }
                     return decoded;
                 }
 
-                DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
+                static DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
                     DotNetDupe::System::String val;
                     // 1. Try route parameter "id" first
                     if (ctx->GetRequest()->GetRouteValues().TryGetValue("id", val) && !val.IsEmpty()) {
                         return UrlDecode(val);
                     }
                     // 2. Try extracting parameter name from subPath placeholder pattern, e.g., "/{channelName}"
-                    int openBrace = subPath.IndexOf('{');
-                    int closeBrace = subPath.IndexOf('}');
+                    int openBrace = subPath.IndexOf("{");
+                    int closeBrace = subPath.IndexOf("}");
                     if (openBrace >= 0 && closeBrace > openBrace + 1) {
                         DotNetDupe::System::String paramName = subPath.Substring(openBrace + 1, closeBrace - openBrace - 1);
                         if (ctx->GetRequest()->GetRouteValues().TryGetValue(paramName, val) && !val.IsEmpty()) {
@@ -109,7 +109,7 @@ namespace DotNetDupe {
 
                 // 1. Returns String
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)()) {
-                    m_routes.Add({"GET", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         return (controller.Get()->*action)();
                     }});
@@ -119,7 +119,7 @@ namespace DotNetDupe {
                 // 2. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)()) {
-                    m_routes.Add({"GET", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         auto result = (controller.Get()->*action)();
                         ctx->GetResponse()->SetContentType("application/json");
@@ -132,7 +132,7 @@ namespace DotNetDupe {
 
                 // 3. Returns String
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.Add({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         return (controller.Get()->*action)(id);
@@ -143,7 +143,7 @@ namespace DotNetDupe {
                 // 4. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.Add({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         auto result = (controller.Get()->*action)(id);
@@ -156,7 +156,7 @@ namespace DotNetDupe {
                 // 4b. Returns TResult (action with page & pageSize parameters)
                 template <typename TResult, typename TString, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && std::is_same_v<std::decay_t<TString>, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const TString&, size_t, size_t)) {
-                    m_routes.Add({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String channelName = ExtractRouteOrQueryParam(ctx, subPath);
                         
@@ -183,7 +183,7 @@ namespace DotNetDupe {
                 // 5. Returns String, parameter const TResource&
                 template <typename TResource>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const TResource&)) {
-                    m_routes.Add({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -201,7 +201,7 @@ namespace DotNetDupe {
                 // 6. Returns String, parameter TResource (by value)
                 template <typename TResource, typename = std::enable_if_t<!std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(TResource)) {
-                    m_routes.Add({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -219,7 +219,7 @@ namespace DotNetDupe {
                 // 7. Returns TResult (not String), parameter const TResource&
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const TResource&)) {
-                    m_routes.Add({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -239,7 +239,7 @@ namespace DotNetDupe {
                 // 8. Returns TResult (not String), parameter TResource (by value)
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && !std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, TResult (TController::*action)(TResource)) {
-                    m_routes.Add({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -261,7 +261,7 @@ namespace DotNetDupe {
                 // 9. Returns String, parameter const TResource&
                 template <typename TResource>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&, const TResource&)) {
-                    m_routes.Add({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -280,7 +280,7 @@ namespace DotNetDupe {
                 // 10. Returns String, parameter TResource (by value)
                 template <typename TResource, typename = std::enable_if_t<!std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&, TResource)) {
-                    m_routes.Add({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -299,7 +299,7 @@ namespace DotNetDupe {
                 // 11. Returns TResult (not String), parameter const TResource&
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&, const TResource&)) {
-                    m_routes.Add({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -320,7 +320,7 @@ namespace DotNetDupe {
                 // 12. Returns TResult (not String), parameter TResource (by value)
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && !std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&, TResource)) {
-                    m_routes.Add({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -342,7 +342,7 @@ namespace DotNetDupe {
 
                 // 13. Returns String
                 ControllerRouteBuilder& MapDelete(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.Add({"DELETE", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"DELETE", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         return (controller.Get()->*action)(id);
@@ -353,7 +353,7 @@ namespace DotNetDupe {
                 // 14. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapDelete(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.Add({"DELETE", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"DELETE", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         auto result = (controller.Get()->*action)(id);

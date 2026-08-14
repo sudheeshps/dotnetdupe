@@ -4,6 +4,7 @@
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include <cstring>
+#include <vector>
 
 namespace DotNetDupe {
     namespace System {

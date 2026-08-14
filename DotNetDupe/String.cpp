@@ -8,6 +8,8 @@
 #include "System/OverflowException.h"
 #include "System/FormatException.h"
 #include <set>
+#include <vector>
+#include <initializer_list>
 #include <sstream>
 #include <type_traits>
 #include <algorithm>
@@ -388,16 +390,16 @@ namespace DotNetDupe {
 		String String::Join(
 			char chSeparator, std::initializer_list<String> sStrings,
 			int iStartIndex, int iCount) {
-			if (iStartIndex < 0 || iStartIndex >(int)sStrings.size())
+			if (iStartIndex < 0 || iStartIndex > (int)sStrings.size())
 				throw ArgumentOutOfRangeException("Invalid iStartIndex");
-			if (iCount < 0 || (iStartIndex + iCount) >(int)sStrings.size())
+			if (iCount < 0 || (iStartIndex + iCount) > (int)sStrings.size())
 				throw ArgumentOutOfRangeException("Invalid iCount");
 
-			std::vector<String> vStrs(sStrings);
+			const String* pStrs = sStrings.begin();
 			String sJoinStr("");
 
 			for (int i = iStartIndex; i < iStartIndex + iCount; i++) {
-				sJoinStr.Append(vStrs [i]);
+				sJoinStr.Append(pStrs[i]);
 				if (i != iStartIndex + iCount - 1) {
 					sJoinStr.Append(chSeparator);
 				}
@@ -413,16 +415,16 @@ namespace DotNetDupe {
 			const String& sSeparator,
 			std::initializer_list<String> sStrings, int iStartIndex,
 			int iCount) {
-			if (iStartIndex < 0 || iStartIndex >(int)sStrings.size())
+			if (iStartIndex < 0 || iStartIndex > (int)sStrings.size())
 				throw ArgumentOutOfRangeException("Invalid iStartIndex");
-			if (iCount < 0 || (iStartIndex + iCount) >(int)sStrings.size())
+			if (iCount < 0 || (iStartIndex + iCount) > (int)sStrings.size())
 				throw ArgumentOutOfRangeException("Invalid iCount");
 
-			std::vector<String> vStrs(sStrings);
+			const String* pStrs = sStrings.begin();
 			String sJoinStr("");
 
 			for (int i = iStartIndex; i < iStartIndex + iCount; i++) {
-				sJoinStr.Append(vStrs [i]);
+				sJoinStr.Append(pStrs[i]);
 				if (i != iStartIndex + iCount - 1) {
 					sJoinStr.Append(sSeparator);
 				}

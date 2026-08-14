@@ -7,8 +7,8 @@
 #include "System/Net/Sockets/NetworkStream.h"
 #include "System/Threading/CriticalSection.h"
 #include "System/Threading/Lock.h"
-#include "System/Threading/Lock.h"
 #include "System/Array.h"
+#include <cstdint>
 namespace DotNetDupe {
     namespace System {
         namespace Net {

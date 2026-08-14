@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <cwctype>
 #include <cstring>
+#include <vector>
 
 namespace DotNetDupe {
     namespace System {
