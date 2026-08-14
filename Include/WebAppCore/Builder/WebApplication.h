@@ -4,15 +4,14 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/SmartPointer.h"
+#include "System/Action.h"
 #include "System/Func.h"
 #include "System/IServiceProvider.h"
 #include "WebAppCore/Http/HttpContext.h"
 #include "WebAppCore/WebSockets/WebSocketContext.h"
 #include "System/Collections/Generic/Dictionary.h"
+#include "System/Collections/Generic/List.h"
 #include "System/Net/Sockets/TcpListener.h"
-#include <atomic>
-#include <vector>
-#include <functional>
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -22,6 +21,8 @@ namespace DotNetDupe {
 
             class WebApplication : public virtual DotNetDupe::System::Object {
             public:
+                using ControllerRegistrar = DotNetDupe::System::Action<const DotNetDupe::System::SmartPointer<WebApplication>&>;
+
                 DOTNETDUPE_API explicit WebApplication(const DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>& spServices);
                 DOTNETDUPE_API ~WebApplication() override;
 
@@ -48,7 +49,7 @@ namespace DotNetDupe {
             private:
                 friend class WebApplicationBuilder;
 
-                void SetControllerRegistrars(std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> registrars) {
+                void SetControllerRegistrars(DotNetDupe::System::Collections::Generic::List<ControllerRegistrar> registrars) {
                     m_controllerRegistrars = std::move(registrars);
                 }
 
@@ -68,10 +69,10 @@ namespace DotNetDupe {
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler>> m_wsHandlers;
                 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpListener> m_pListener;
-                std::atomic<bool> m_bRunning;
+                bool m_bRunning;
                 DotNetDupe::System::String m_sHost;
                 int m_nPort;
-                std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> m_controllerRegistrars;
+                DotNetDupe::System::Collections::Generic::List<ControllerRegistrar> m_controllerRegistrars;
                 DotNetDupe::System::SmartPointer<WebApplication> m_spSelf;
             };
 

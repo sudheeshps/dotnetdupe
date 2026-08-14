@@ -10,7 +10,7 @@ namespace DotNetDupe {
             Predicate() : m_func() {}
             Predicate(decltype(nullptr)) : m_func(nullptr) {}
             
-            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Predicate>>>
+            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Predicate> && std::is_invocable_r_v<bool, std::decay_t<F>, T>>>
             Predicate(F&& func) : m_func(static_cast<F&&>(func)) {}
             
             bool Invoke(T obj) const {

@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "WebAppCore/Server/WebAppServer.h"
+#include "WebAppCore/Http/HttpContext.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
 #include "System/ArgumentException.h"
@@ -8,6 +9,7 @@
 #include <sstream>
 #include <algorithm>
 #include <filesystem>
+#include <unordered_map>
 
 namespace DotNetDupe {
     namespace WebAppCore {

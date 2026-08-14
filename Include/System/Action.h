@@ -33,7 +33,7 @@ namespace DotNetDupe {
             Action() : m_pHolder(nullptr) {}
             Action(decltype(nullptr)) : m_pHolder(nullptr) {}
             
-            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Action>>>
+            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Action> && std::is_invocable_v<std::decay_t<F>, Args...>>>
             Action(F&& func) : m_pHolder(new Internal::ActionHolder<std::decay_t<F>, Args...>(static_cast<F&&>(func))) {}
 
             Action(const Action& other) : m_pHolder(other.m_pHolder ? other.m_pHolder->Clone() : nullptr) {}

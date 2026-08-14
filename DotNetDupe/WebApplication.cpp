@@ -39,7 +39,7 @@ namespace DotNetDupe {
                   m_putHandlers(std::move(other.m_putHandlers)),
                   m_deleteHandlers(std::move(other.m_deleteHandlers)),
                   m_pListener(std::move(other.m_pListener)),
-                  m_bRunning(other.m_bRunning.load()),
+                  m_bRunning(other.m_bRunning),
                   m_sHost(std::move(other.m_sHost)),
                   m_nPort(other.m_nPort),
                   m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}
@@ -52,7 +52,7 @@ namespace DotNetDupe {
                     m_putHandlers = std::move(other.m_putHandlers);
                     m_deleteHandlers = std::move(other.m_deleteHandlers);
                     m_pListener = std::move(other.m_pListener);
-                    m_bRunning = other.m_bRunning.load();
+                    m_bRunning = other.m_bRunning;
                     m_sHost = std::move(other.m_sHost);
                     m_nPort = other.m_nPort;
                     m_controllerRegistrars = std::move(other.m_controllerRegistrars);
@@ -85,8 +85,8 @@ namespace DotNetDupe {
             }
 
             void WebApplication::MapControllers() {
-                for (auto& registerRoutes : m_controllerRegistrars) {
-                    registerRoutes(m_spSelf);
+                for (int i = 0; i < m_controllerRegistrars.GetCount(); ++i) {
+                    m_controllerRegistrars[i](m_spSelf);
                 }
             }
 
