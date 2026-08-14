@@ -7,6 +7,8 @@
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include <chrono>
+#include <mutex>
+#include <condition_variable>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -15,8 +17,14 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
+
+            struct EventWaitHandle::Impl {
+                std::mutex mutex;
+                std::condition_variable cv;
+            };
+
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset)
-                : _state(initialState), _manualReset(manualReset), _name(""), _hHandle(nullptr) {}
+                : _state(initialState), _manualReset(manualReset), _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
 
             static bool s_dummyCreatedNew = false;
             EventWaitHandle::EventWaitHandle(const String& sName, bool initialState, bool manualReset, bool openAlways)
@@ -51,7 +59,7 @@ namespace DotNetDupe {
 #endif
 
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways, bool& bCreatedNew)
-                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr) {
+                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
@@ -71,6 +79,10 @@ namespace DotNetDupe {
                     _hHandle = nullptr;
                 }
 #endif
+                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;
+                }
             }
 
             SmartPointer<EventWaitHandle> EventWaitHandle::OpenExisting(const String& sName) {
@@ -104,12 +116,13 @@ namespace DotNetDupe {
                     return (::SetEvent((HANDLE)_hHandle) != FALSE);
                 }
 #endif
-                std::lock_guard<std::mutex> lock(_mutex);
+                if (!_pImpl) return false;
+                std::lock_guard<std::mutex> lock(_pImpl->mutex);
                 _state = true;
                 if (_manualReset) {
-                    _cv.notify_all();
+                    _pImpl->cv.notify_all();
                 } else {
-                    _cv.notify_one();
+                    _pImpl->cv.notify_one();
                 }
                 return true;
             }
@@ -120,7 +133,8 @@ namespace DotNetDupe {
                     return (::ResetEvent((HANDLE)_hHandle) != FALSE);
                 }
 #endif
-                std::lock_guard<std::mutex> lock(_mutex);
+                if (!_pImpl) return false;
+                std::lock_guard<std::mutex> lock(_pImpl->mutex);
                 _state = false;
                 return true;
             }
@@ -132,8 +146,9 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                _cv.wait(lock, [this]() { return _state; });
+                if (!_pImpl) return false;
+                std::unique_lock<std::mutex> lock(_pImpl->mutex);
+                _pImpl->cv.wait(lock, [this]() { return _state; });
                 if (!_manualReset) {
                     _state = false;
                 }
@@ -150,8 +165,9 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _state; });
+                if (!_pImpl) return false;
+                std::unique_lock<std::mutex> lock(_pImpl->mutex);
+                bool result = _pImpl->cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _state; });
                 if (result) {
                     if (!_manualReset) {
                         _state = false;

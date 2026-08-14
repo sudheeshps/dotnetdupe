@@ -7,6 +7,7 @@
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include <chrono>
+#include <mutex>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -15,11 +16,16 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-            Mutex::Mutex() : _name(""), _hHandle(nullptr) {}
 
-            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr) {
-                if (bInitiallyOwned) {
-                    _mutex.lock();
+            struct Mutex::Impl {
+                std::timed_mutex mutex;
+            };
+
+            Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
+
+            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
+                if (bInitiallyOwned && _pImpl) {
+                    _pImpl->mutex.lock();
                 }
             }
 
@@ -56,21 +62,21 @@ namespace DotNetDupe {
 #endif
 
             Mutex::Mutex(bool bInitiallyOwned, const String& sName, bool openAlways, bool& bCreatedNew)
-                : _name(sName), _hHandle(nullptr) {
+                : _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
-                    if (bInitiallyOwned) {
-                        _mutex.lock();
+                    if (bInitiallyOwned && _pImpl) {
+                        _pImpl->mutex.lock();
                     }
                 }
 #else
                 bCreatedNew = true;
-                if (bInitiallyOwned) {
-                    _mutex.lock();
+                if (bInitiallyOwned && _pImpl) {
+                    _pImpl->mutex.lock();
                 }
 #endif
             }
@@ -82,6 +88,10 @@ namespace DotNetDupe {
                     _hHandle = nullptr;
                 }
 #endif
+                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;
+                }
             }
 
             SmartPointer<Mutex> Mutex::OpenExisting(const String& sName) {
@@ -116,7 +126,7 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);
                 }
 #endif
-                _mutex.lock();
+                if (_pImpl) _pImpl->mutex.lock();
                 return true;
             }
 
@@ -130,7 +140,7 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);
                 }
 #endif
-                if (!_mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
+                if (!_pImpl || !_pImpl->mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
                     throw TimeoutException("The wait operation timed out.");
                 }
                 return true;
@@ -143,7 +153,7 @@ namespace DotNetDupe {
                     return 0;
                 }
 #endif
-                _mutex.unlock();
+                if (_pImpl) _pImpl->mutex.unlock();
                 return 0;
             }
         }

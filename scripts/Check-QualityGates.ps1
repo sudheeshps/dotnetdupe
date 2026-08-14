@@ -175,7 +175,11 @@ $allowedPimplAndRaiiFiles = @(
     "HttpContent.cpp",
     "FileStream.cpp",
     "StringBuilder.cpp",
-    "CriticalSection.cpp"
+    "CriticalSection.cpp",
+    "EventWaitHandle.cpp",
+    "Mutex.cpp",
+    "Semaphore.cpp",
+    "SemaphoreSlim.cpp"
 )
 
 foreach ($file in $cppFiles) {

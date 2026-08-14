@@ -1,7 +1,7 @@
 #pragma once
+#include "Common.h"
 #include "System/Threading/WaitHandle.h"
-#include <mutex>
-#include <condition_variable>
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
@@ -9,7 +9,7 @@ namespace DotNetDupe {
             public:
                 DOTNETDUPE_API SemaphoreSlim(int initialCount);
                 DOTNETDUPE_API SemaphoreSlim(int initialCount, int maximumCount);
-                DOTNETDUPE_API virtual ~SemaphoreSlim();
+                DOTNETDUPE_API ~SemaphoreSlim() override;
                 
                 DOTNETDUPE_API bool WaitOne() override;
                 DOTNETDUPE_API bool WaitOne(int millisecondsTimeout) override;
@@ -19,8 +19,8 @@ namespace DotNetDupe {
             private:
                 int _count;
                 int _maxCount;
-                mutable std::mutex _mutex;
-                std::condition_variable _cv;
+                struct Impl;
+                Impl* _pImpl;
             };
         }
     }

@@ -8,6 +8,8 @@
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include <chrono>
+#include <mutex>
+#include <condition_variable>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -16,8 +18,14 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
+
+            struct Semaphore::Impl {
+                std::mutex mutex;
+                std::condition_variable cv;
+            };
+
             Semaphore::Semaphore(int initialCount, int maximumCount)
-                : _count(initialCount), _maxCount(maximumCount), _name(""), _hHandle(nullptr) {}
+                : _count(initialCount), _maxCount(maximumCount), _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
 
             static bool s_semDummyCreatedNew = false;
             Semaphore::Semaphore(const String& sName, int initialCount, int maximumCount, bool openAlways)
@@ -52,7 +60,7 @@ namespace DotNetDupe {
 #endif
 
             Semaphore::Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways, bool& bCreatedNew)
-                : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr) {
+                : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
@@ -72,6 +80,10 @@ namespace DotNetDupe {
                     _hHandle = nullptr;
                 }
 #endif
+                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;
+                }
             }
 
             SmartPointer<Semaphore> Semaphore::OpenExisting(const String& sName) {
@@ -106,8 +118,9 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                _cv.wait(lock, [this]() { return _count > 0; });
+                if (!_pImpl) return false;
+                std::unique_lock<std::mutex> lock(_pImpl->mutex);
+                _pImpl->cv.wait(lock, [this]() { return _count > 0; });
                 --_count;
                 return true;
             }
@@ -122,8 +135,9 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count > 0; });
+                if (!_pImpl) return false;
+                std::unique_lock<std::mutex> lock(_pImpl->mutex);
+                bool result = _pImpl->cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count > 0; });
                 if (result) {
                     --_count;
                 } else {
@@ -142,13 +156,14 @@ namespace DotNetDupe {
                     return (int)previousCount;
                 }
 #endif
-                std::lock_guard<std::mutex> lock(_mutex);
+                if (!_pImpl) return 0;
+                std::lock_guard<std::mutex> lock(_pImpl->mutex);
                 if (_count + releaseCount > _maxCount) {
                     throw SemaphoreFullException("Semaphore count exceeded maximum count.");
                 }
                 int prev = _count;
                 _count += releaseCount;
-                for (int i = 0; i < releaseCount; ++i) _cv.notify_one();
+                for (int i = 0; i < releaseCount; ++i) _pImpl->cv.notify_one();
                 return prev;
             }
         }

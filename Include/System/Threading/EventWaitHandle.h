@@ -1,10 +1,8 @@
 #pragma once
+#include "Common.h"
 #include "System/Threading/WaitHandle.h"
 #include "System/SmartPointer.h"
 #include "System/String.h"
-#include "System/SmartPointer.h"
-#include <mutex>
-#include <condition_variable>
 
 namespace DotNetDupe {
     namespace System {
@@ -15,7 +13,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API EventWaitHandle(const String& sName, bool initialState = false, bool manualReset = false, bool openAlways = true);
                 DOTNETDUPE_API EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways = true);
                 DOTNETDUPE_API EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways, bool& bCreatedNew);
-                DOTNETDUPE_API virtual ~EventWaitHandle();
+                DOTNETDUPE_API ~EventWaitHandle() override;
                 DOTNETDUPE_API bool Set();
                 DOTNETDUPE_API bool Reset();
                 DOTNETDUPE_API bool WaitOne() override;
@@ -28,8 +26,8 @@ namespace DotNetDupe {
                 bool _manualReset;
                 String _name;
                 void* _hHandle;
-                std::mutex _mutex;
-                std::condition_variable _cv;
+                struct Impl;
+                Impl* _pImpl;
             };
         }
     }
