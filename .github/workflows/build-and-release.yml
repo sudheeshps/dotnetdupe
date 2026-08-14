@@ -66,12 +66,15 @@ jobs:
       shell: powershell
       run: |
         $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
-        & $exePath --sources DotNetDupe --export_type html:coverage_report -- .\bin\x64\Release\DotNetDupeTests.exe
+        & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --export_type html:CodeCoverage -- .\bin\x64\Release\DotNetDupeTests.exe
         
-        Write-Host "OpenCppCoverage Report Generated Successfully."
+        Write-Host "OpenCppCoverage Report Generated Successfully in CodeCoverage/."
+        
+        # Generate Static Analysis Report inside CodeCoverage/
+        .\scripts\Check-QualityGates.ps1 -OutputDir CodeCoverage
         
         # Quality Gate Enforcement: Require > 80% coverage
-        $htmlContent = Get-Content -Path "coverage_report\index.html" -Raw
+        $htmlContent = Get-Content -Path "CodeCoverage\index.html" -Raw
         if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {
             $coveredLines = [int]$matches[1]
             $coveragePct = [int]$matches[2]
@@ -82,19 +85,19 @@ jobs:
             }
         }
 
-    - name: Upload Coverage HTML Artifact
+    - name: Upload Coverage & Static Analysis Artifact
       if: matrix.configuration == 'Release'
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-report-html
-        path: coverage_report/
+        name: code-coverage-report-html
+        path: CodeCoverage/
 
     - name: Deploy Coverage Report to GitHub Pages
       if: matrix.configuration == 'Release' && github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./coverage_report
+        publish_dir: ./CodeCoverage
 
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
