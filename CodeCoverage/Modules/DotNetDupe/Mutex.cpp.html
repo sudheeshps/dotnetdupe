@@ -18,6 +18,7 @@
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include &lt;chrono&gt;
+#include &lt;mutex&gt;
 
 #if defined(_WIN32)
 #include &lt;windows.h&gt;
@@ -26,11 +27,16 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-<span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr) {}</span>
 
-<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr) {
-                if (bInitiallyOwned) {
-                    _mutex.lock();</span>
+            struct Mutex::Impl {
+                std::timed_mutex mutex;
+            };
+
+<span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}</span>
+
+<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
+                if (bInitiallyOwned &amp;&amp; _pImpl) {
+                    _pImpl-&gt;mutex.lock();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
@@ -67,21 +73,21 @@ namespace DotNetDupe {
 #endif
 
             Mutex::Mutex(bool bInitiallyOwned, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
-<span style = "background-color:#dfd">                : _name(sName), _hHandle(nullptr) {</span>
+<span style = "background-color:#dfd">                : _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
                 } else {</span>
 <span style = "background-color:#fdd">                    bCreatedNew = true;
-                    if (bInitiallyOwned) {
-                        _mutex.lock();</span>
+                    if (bInitiallyOwned &amp;&amp; _pImpl) {
+                        _pImpl-&gt;mutex.lock();</span>
                     }
                 }
 #else
                 bCreatedNew = true;
-                if (bInitiallyOwned) {
-                    _mutex.lock();
+                if (bInitiallyOwned &amp;&amp; _pImpl) {
+                    _pImpl-&gt;mutex.lock();
                 }
 #endif
 <span style = "background-color:#dfd">            }</span>
@@ -93,6 +99,10 @@ namespace DotNetDupe {
                     _hHandle = nullptr;</span>
                 }
 #endif
+<span style = "background-color:#dfd">                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;</span>
+                }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            SmartPointer&lt;Mutex&gt; Mutex::OpenExisting(const String&amp; sName) {
@@ -127,7 +137,7 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                _mutex.lock();
+<span style = "background-color:#dfd">                if (_pImpl) _pImpl-&gt;mutex.lock();
                 return true;
             }</span>
 
@@ -141,7 +151,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                if (!_mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
+<span style = "background-color:#dfd">                if (!_pImpl || !_pImpl-&gt;mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
                     throw TimeoutException("The wait operation timed out.");</span>
                 }
 <span style = "background-color:#dfd">                return true;
@@ -154,7 +164,7 @@ namespace DotNetDupe {
                     return 0;
                 }
 #endif
-<span style = "background-color:#dfd">                _mutex.unlock();</span>
+<span style = "background-color:#dfd">                if (_pImpl) _pImpl-&gt;mutex.unlock();</span>
                 return 0;
 <span style = "background-color:#dfd">            }</span>
         }

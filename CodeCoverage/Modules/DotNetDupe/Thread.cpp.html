@@ -15,6 +15,11 @@
 #include "System/UnknownException.h"
 #include "System/SmartPointer.h"
 #include &lt;chrono&gt;
+#include &lt;memory&gt;
+#include &lt;thread&gt;
+#include &lt;atomic&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
 
 #if defined(_WIN32)
 #include &lt;windows.h&gt;
@@ -27,24 +32,42 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
 
+            struct Thread::Impl {
+                std::unique_ptr&lt;std::thread&gt; internalThread;
+                ThreadStart start;
+                ParameterizedThreadStart parameterizedStart;
+                String name;
+                std::atomic&lt;bool&gt; isAlive{false};
+                bool completed{false};
+                std::mutex joinMutex;
+                std::condition_variable joinCv;
+            };
+
             thread_local Thread* Thread::_currentThread = nullptr;
 <span style = "background-color:#dfd">            static thread_local SmartPointer&lt;Thread&gt; s_pCurrentThreadStorage(nullptr);</span>
 
-<span style = "background-color:#dfd">            Thread::Thread(ThreadStart start)
-                : _start(start), _isAlive(false), _completed(false) {
+            Thread::Thread(ThreadStart start)
+<span style = "background-color:#dfd">                : m_pImpl(new Impl()) {
+                m_pImpl-&gt;start = start;
             }</span>
 
-<span style = "background-color:#dfd">            Thread::Thread(ParameterizedThreadStart start)
-                : _parameterizedStart(start), _isAlive(false), _completed(false) {
+            Thread::Thread(ParameterizedThreadStart start)
+<span style = "background-color:#dfd">                : m_pImpl(new Impl()) {
+                m_pImpl-&gt;parameterizedStart = start;
             }</span>
 
             Thread::Thread()
-                : _isAlive(true), _completed(false) {
+                : m_pImpl(new Impl()) {
+                m_pImpl-&gt;isAlive = true;
             }
 
 <span style = "background-color:#dfd">            Thread::~Thread() {
-                if (_internalThread &amp;&amp; _internalThread-&gt;joinable()) {</span>
-<span style = "background-color:#fdd">                    _internalThread-&gt;join();</span>
+                if (m_pImpl) {
+                    if (m_pImpl-&gt;internalThread &amp;&amp; m_pImpl-&gt;internalThread-&gt;joinable()) {</span>
+<span style = "background-color:#fdd">                        m_pImpl-&gt;internalThread-&gt;join();</span>
+                    }
+<span style = "background-color:#dfd">                    delete m_pImpl;
+                    m_pImpl = nullptr;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
@@ -53,26 +76,27 @@ namespace DotNetDupe {
             }
 
 <span style = "background-color:#dfd">            void Thread::Start(Object* parameter) {
-                if (_isAlive) return;
-                _isAlive = true;
-                _completed = false;
-                _internalThread = std::make_unique&lt;std::thread&gt;(&amp;Thread::ThreadMain, this, parameter);
+                if (!m_pImpl || m_pImpl-&gt;isAlive) return;
+                m_pImpl-&gt;isAlive = true;
+                m_pImpl-&gt;completed = false;
+                m_pImpl-&gt;internalThread = std::make_unique&lt;std::thread&gt;(&amp;Thread::ThreadMain, this, parameter);
             }</span>
 
 <span style = "background-color:#dfd">            void Thread::Join() {
-                if (_internalThread &amp;&amp; _internalThread-&gt;joinable()) {
-                    _internalThread-&gt;join();</span>
+                if (m_pImpl &amp;&amp; m_pImpl-&gt;internalThread &amp;&amp; m_pImpl-&gt;internalThread-&gt;joinable()) {
+                    m_pImpl-&gt;internalThread-&gt;join();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            bool Thread::Join(int millisecondsTimeout) {
-                if (!_isAlive &amp;&amp; _completed) return true;
-                if (!_internalThread) return true;</span>
+                if (!m_pImpl) return true;
+                if (!m_pImpl-&gt;isAlive &amp;&amp; m_pImpl-&gt;completed) return true;
+                if (!m_pImpl-&gt;internalThread) return true;</span>
 
-<span style = "background-color:#fdd">                std::unique_lock&lt;std::mutex&gt; lock(_joinMutex);
-                if (_joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _completed; })) {
-                    if (_internalThread-&gt;joinable()) {
-                        _internalThread-&gt;join();</span>
+<span style = "background-color:#fdd">                std::unique_lock&lt;std::mutex&gt; lock(m_pImpl-&gt;joinMutex);
+                if (m_pImpl-&gt;joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return m_pImpl-&gt;completed; })) {
+                    if (m_pImpl-&gt;internalThread-&gt;joinable()) {
+                        m_pImpl-&gt;internalThread-&gt;join();</span>
                     }
 <span style = "background-color:#fdd">                    return true;</span>
                 }
@@ -85,15 +109,15 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool Thread::IsAlive() const {
-                return _isAlive;
+                return m_pImpl ? m_pImpl-&gt;isAlive.load() : false;
             }</span>
 
 <span style = "background-color:#fdd">            String Thread::GetName() const {
-                return _name;
+                return m_pImpl ? m_pImpl-&gt;name : String("");
             }</span>
 
 <span style = "background-color:#fdd">            void Thread::SetName(const String&amp; name) {
-                _name = name;
+                if (m_pImpl) m_pImpl-&gt;name = name;
             }</span>
 
 <span style = "background-color:#dfd">            Thread* Thread::GetCurrentThread() {
@@ -119,17 +143,17 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {
                 _currentThread = this;</span>
                 try {
-<span style = "background-color:#dfd">                    if (_start) _start();
-                    else if (_parameterizedStart) _parameterizedStart(parameter);
+<span style = "background-color:#dfd">                    if (m_pImpl-&gt;start) m_pImpl-&gt;start();
+                    else if (m_pImpl-&gt;parameterizedStart) m_pImpl-&gt;parameterizedStart(parameter);
                 } catch (...) {</span>
                     (void)0;
 <span style = "background-color:#dfd">                }</span>
                 {
-<span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(_joinMutex);
-                    _completed = true;
-                    _isAlive = false;
+<span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;joinMutex);
+                    m_pImpl-&gt;completed = true;
+                    m_pImpl-&gt;isAlive = false;
                 }
-                _joinCv.notify_all();
+                m_pImpl-&gt;joinCv.notify_all();
             }</span>
         }
     }

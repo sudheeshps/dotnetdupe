@@ -18,6 +18,8 @@
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include &lt;chrono&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
 
 #if defined(_WIN32)
 #include &lt;windows.h&gt;
@@ -26,8 +28,14 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
+
+            struct EventWaitHandle::Impl {
+                std::mutex mutex;
+                std::condition_variable cv;
+            };
+
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset)
-<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(""), _hHandle(nullptr) {}</span>
+<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}</span>
 
             static bool s_dummyCreatedNew = false;
             EventWaitHandle::EventWaitHandle(const String&amp; sName, bool initialState, bool manualReset, bool openAlways)
@@ -62,7 +70,7 @@ namespace DotNetDupe {
 #endif
 
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
-<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr) {</span>
+<span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
@@ -82,6 +90,10 @@ namespace DotNetDupe {
                     _hHandle = nullptr;</span>
                 }
 #endif
+<span style = "background-color:#dfd">                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;</span>
+                }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            SmartPointer&lt;EventWaitHandle&gt; EventWaitHandle::OpenExisting(const String&amp; sName) {
@@ -115,12 +127,13 @@ namespace DotNetDupe {
                     return (::SetEvent((HANDLE)_hHandle) != FALSE);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(_mutex);</span>
+<span style = "background-color:#dfd">                if (!_pImpl) return false;
+                std::lock_guard&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);</span>
                 _state = true;
 <span style = "background-color:#dfd">                if (_manualReset) {
-                    _cv.notify_all();
+                    _pImpl-&gt;cv.notify_all();
                 } else {
-                    _cv.notify_one();</span>
+                    _pImpl-&gt;cv.notify_one();</span>
                 }
 <span style = "background-color:#dfd">                return true;
             }</span>
@@ -131,9 +144,27 @@ namespace DotNetDupe {
                     return (::ResetEvent((HANDLE)_hHandle) != FALSE);</span>
                 }
 #endif
-<span style = "background-color:#fdd">                std::lock_guard&lt;std::mutex&gt; lock(_mutex);
+<span style = "background-color:#fdd">                if (!_pImpl) return false;
+                std::lock_guard&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);
                 _state = false;
                 return true;
+            }</span>
+
+            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool&amp; bState, bool bManualReset) {
+                std::unique_lock&lt;std::mutex&gt; lock(pImpl-&gt;mutex);
+                pImpl-&gt;cv.wait(lock, [&amp;bState]() { return bState; });
+                if (!bManualReset) bState = false;
+                return true;
+            }
+
+<span style = "background-color:#dfd">            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool&amp; bState, bool bManualReset, int msTimeout) {
+                std::unique_lock&lt;std::mutex&gt; lock(pImpl-&gt;mutex);
+                bool bRes = pImpl-&gt;cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&amp;bState]() { return bState; });
+                if (bRes) {
+                    if (!bManualReset) bState = false;
+                    return true;</span>
+                }
+<span style = "background-color:#dfd">                throw TimeoutException("The wait operation timed out.");
             }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne() {</span>
@@ -143,12 +174,8 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
-                _cv.wait(lock, [this]() { return _state; });
-                if (!_manualReset) {
-                    _state = false;</span>
-                }
-<span style = "background-color:#dfd">                return true;
+<span style = "background-color:#dfd">                if (!_pImpl) return false;
+                return WaitForEventCv(_pImpl, _state, _manualReset);
             }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne(int millisecondsTimeout) {</span>
@@ -161,16 +188,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return (dwWaitResult == WAIT_OBJECT_0);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
-                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _state; });
-                if (result) {
-                    if (!_manualReset) {
-                        _state = false;</span>
-                    }
-<span style = "background-color:#dfd">                    return true;</span>
-                }
-                
-<span style = "background-color:#dfd">                throw TimeoutException("The wait operation timed out.");
+<span style = "background-color:#dfd">                if (!_pImpl) return false;
+                return WaitForEventCv(_pImpl, _state, _manualReset, millisecondsTimeout);
             }</span>
         }
     }

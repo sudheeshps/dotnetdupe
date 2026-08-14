@@ -435,10 +435,12 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return String((sRes + "}").c_str());
                 }</span>
 
-<span style = "background-color:#dfd">                static String FormatJsonNumber(double dVal) {
+                static String FormatJsonNumber(double dVal) {
                     if (dVal == static_cast&lt;long long&gt;(dVal)) return String(std::to_string(static_cast&lt;long long&gt;(dVal)).c_str());
-                    return String(std::to_string(dVal).c_str());
-                }</span>
+                    char buf[64];
+                    snprintf(buf, sizeof(buf), "%g", dVal);
+                    return String(buf);
+                }
 
 <span style = "background-color:#dfd">                String JsonElement::ToString() const {
                     if (!m_pImpl) return "null";
@@ -452,7 +454,7 @@ namespace DotNetDupe {
                         case JsonValueKind::Object: return FormatJsonObject(m_pImpl-&gt;dictObject);</span>
                         default: return "null";
                     }
-<span style = "background-color:#dfd">                }</span>
+<span style = "background-color:#fdd">                }</span>
 
 <span style = "background-color:#dfd">                JsonElement JsonElement::Parse(const String&amp; sJson) {
                     return JsonParser::Parse(sJson);

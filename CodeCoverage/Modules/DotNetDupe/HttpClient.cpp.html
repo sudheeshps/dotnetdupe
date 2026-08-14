@@ -247,9 +247,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    SmartPointer&lt;IO::Stream&gt; ConnectStream(const Uri&amp; uri, const String&amp; scheme) {</span>
                         int iPort = uri.GetPort() &gt; 0 ? uri.GetPort() : ((scheme == "https") ? 443 : 80);
 <span style = "background-color:#dfd">                        String sResolvedIp = ResolveHost(uri, iPort);
-                        m_pLastTcpClient = SmartPointer&lt;Sockets::TcpClient&gt;::NewShared();
-                        try { m_pLastTcpClient-&gt;Connect(sResolvedIp, iPort); }</span>
-<span style = "background-color:#fdd">                        catch (const Net::Sockets::SocketException&amp; ex) { throw HttpRequestException(ex.What()); }</span>
+                        m_pLastTcpClient = SmartPointer&lt;Sockets::TcpClient&gt;::NewShared();</span>
+<span style = "background-color:#fdd">                        try { m_pLastTcpClient-&gt;Connect(sResolvedIp, iPort); }
+                        catch (const Net::Sockets::SocketException&amp; ex) { throw HttpRequestException(ex.What()); }</span>
 <span style = "background-color:#dfd">                        SmartPointer&lt;IO::Stream&gt; spStream = m_pLastTcpClient-&gt;GetStream();
                         if (scheme == "https") {
                             auto spSsl = SmartPointer&lt;Net::Security::SslStream&gt;::NewShared(spStream, false);

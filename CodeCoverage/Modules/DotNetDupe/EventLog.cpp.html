@@ -235,8 +235,9 @@ namespace DotNetDupe {
                 closelog();
             }
 
-            EventLogEntry EventLog::ParseSyslogLine(const std::string&amp; line) {
+            EventLogEntry EventLog::ParseSyslogLine(const String&amp; sLine) {
                 EventLogEntryType eType = EventLogEntryType::Information;
+                std::string line = sLine.GetRawString() ? sLine.GetRawString() : "";
 
                 if (line.find("error") != std::string::npos || line.find("ERR") != std::string::npos || line.find("err") != std::string::npos || line.find("Error") != std::string::npos) {
                     eType = EventLogEntryType::Error;
@@ -250,17 +251,17 @@ namespace DotNetDupe {
                     iEventId = std::atoi(line.c_str() + posId + 9);
                 }
 
-                return EventLogEntry(String(line.c_str()), eType, iEventId, "syslog", DateTimeOffset::Now());
+                return EventLogEntry(sLine, eType, iEventId, "syslog", DateTimeOffset::Now());
             }
 
-            void EventLog::ReadLinuxSyslogFile(const std::string&amp; sFilePath, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
-                std::ifstream infile(sFilePath);
+            void EventLog::ReadLinuxSyslogFile(const String&amp; sFilePath, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                std::ifstream infile(sFilePath.GetRawString() ? sFilePath.GetRawString() : "");
                 if (!infile.is_open()) return;
 
                 std::string line;
                 while (std::getline(infile, line)) {
                     if (line.empty()) continue;
-                    lstEntries.Add(ParseSyslogLine(line));
+                    lstEntries.Add(ParseSyslogLine(String(line.c_str())));
                 }
             }
 

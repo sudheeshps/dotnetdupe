@@ -50,7 +50,7 @@ namespace DotNetDupe {
                   m_putHandlers(std::move(other.m_putHandlers)),
                   m_deleteHandlers(std::move(other.m_deleteHandlers)),
                   m_pListener(std::move(other.m_pListener)),
-                  m_bRunning(other.m_bRunning.load()),
+                  m_bRunning(other.m_bRunning),
                   m_sHost(std::move(other.m_sHost)),
                   m_nPort(other.m_nPort),
                   m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
@@ -63,7 +63,7 @@ namespace DotNetDupe {
                     m_putHandlers = std::move(other.m_putHandlers);
                     m_deleteHandlers = std::move(other.m_deleteHandlers);
                     m_pListener = std::move(other.m_pListener);
-                    m_bRunning = other.m_bRunning.load();
+                    m_bRunning = other.m_bRunning;
                     m_sHost = std::move(other.m_sHost);
                     m_nPort = other.m_nPort;
                     m_controllerRegistrars = std::move(other.m_controllerRegistrars);</span>
@@ -96,8 +96,8 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void WebApplication::MapControllers() {
-                for (auto&amp; registerRoutes : m_controllerRegistrars) {
-                    registerRoutes(m_spSelf);</span>
+                for (int i = 0; i &lt; m_controllerRegistrars.GetCount(); ++i) {
+                    m_controllerRegistrars[i](m_spSelf);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
@@ -113,22 +113,22 @@ namespace DotNetDupe {
                 StartServerLoop(System::String(host.c_str()), port);
             }</span>
 
-            void WebApplication::QueueAcceptedClient(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; pClient) {
+<span style = "background-color:#dfd">            void WebApplication::QueueAcceptedClient(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; pClient) {
                 auto spCtx = System::SmartPointer&lt;ConnectionContext&gt;::NewShared(std::move(pClient));
-<span style = "background-color:#dfd">                System::Threading::ThreadPool::QueueUserWorkItem([this, spCtx](System::Object*) {
+                System::Threading::ThreadPool::QueueUserWorkItem([this, spCtx](System::Object*) {
                     try { HandleConnection(std::move(spCtx-&gt;pClient)); }</span>
 <span style = "background-color:#fdd">                    catch (const DotNetDupe::System::Exception&amp; ex) { System::Console::WriteLine(System::String("[Server] ") + ex.What()); }
                     catch (const std::exception&amp; ex) { System::Console::WriteLine(System::String("[Server] ") + ex.what()); }</span>
-<span style = "background-color:#dfd">                }, nullptr);</span>
-            }
+<span style = "background-color:#dfd">                }, nullptr);
+            }</span>
 
 <span style = "background-color:#dfd">            void WebApplication::StartServerLoop(const System::String&amp; host, int port) {
                 m_sHost = host; m_nPort = port;
                 m_pListener = System::SmartPointer&lt;System::Net::Sockets::TcpListener&gt;::NewShared(m_sHost, port);
                 m_pListener-&gt;Start();
-                m_bRunning = true;
+                m_bRunning = true;</span>
                 try {
-                    while (m_bRunning) {
+<span style = "background-color:#dfd">                    while (m_bRunning) {
                         auto pClient = m_pListener-&gt;AcceptTcpClient();
                         if (!pClient.IsNull()) QueueAcceptedClient(std::move(pClient));
                     }

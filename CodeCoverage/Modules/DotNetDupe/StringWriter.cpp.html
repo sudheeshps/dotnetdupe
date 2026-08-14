@@ -23,7 +23,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                : m_pSb(&amp;sbOutput), m_bIsOpen(true) {
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::Close() {
+<span style = "background-color:#dfd">            void StringWriter::Close() {
                 m_bIsOpen = false;
             }</span>
 
@@ -43,14 +43,14 @@ namespace DotNetDupe {
                 return m_pSb-&gt;ToString();
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::Write(bool bValue) {
+<span style = "background-color:#dfd">            void StringWriter::Write(bool bValue) {
                 TextWriter::Write(bValue);</span>
             }
 
-<span style = "background-color:#fdd">            void StringWriter::Write(char chValue) {
+<span style = "background-color:#dfd">            void StringWriter::Write(char chValue) {
                 if (!m_bIsOpen) return;
-                m_pSb-&gt;Append(chValue);
-            }</span>
+                m_pSb-&gt;Append(chValue);</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            void StringWriter::Write(const String&amp; sValue) {
                 if (!m_bIsOpen) return;
@@ -62,31 +62,31 @@ namespace DotNetDupe {
                 m_pSb-&gt;Append(pValue);</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::Write(int iValue) {
+<span style = "background-color:#dfd">            void StringWriter::Write(int iValue) {
                 TextWriter::Write(iValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::Write(long long llValue) {
+<span style = "background-color:#dfd">            void StringWriter::Write(long long llValue) {
                 TextWriter::Write(llValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::Write(float fValue) {
-                TextWriter::Write(fValue);
-            }</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(float fValue) {
+                TextWriter::Write(fValue);</span>
+            }
 
-<span style = "background-color:#fdd">            void StringWriter::Write(double dValue) {
-                TextWriter::Write(dValue);
-            }</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(double dValue) {
+                TextWriter::Write(dValue);</span>
+            }
 
 <span style = "background-color:#dfd">            void StringWriter::WriteLine() {
                 TextWriter::WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(bool bValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(bool bValue) {
                 TextWriter::WriteLine(bValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(char chValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(char chValue) {
                 TextWriter::WriteLine(chValue);
             }</span>
 
@@ -98,19 +98,19 @@ namespace DotNetDupe {
                 TextWriter::WriteLine(sValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(int iValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(int iValue) {
                 TextWriter::WriteLine(iValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(long long llValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(long long llValue) {
                 TextWriter::WriteLine(llValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(float fValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(float fValue) {
                 TextWriter::WriteLine(fValue);
             }</span>
 
-<span style = "background-color:#fdd">            void StringWriter::WriteLine(double dValue) {
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(double dValue) {
                 TextWriter::WriteLine(dValue);
             }</span>
         }

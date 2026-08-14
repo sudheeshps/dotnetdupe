@@ -15,6 +15,7 @@
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include &lt;cstring&gt;
+#include &lt;vector&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -104,8 +105,8 @@ namespace DotNetDupe {
                 }</span>
 
 <span style = "background-color:#dfd">                Array&lt;char&gt; ByteArrayContent::ReadAsByteArray() {
-                    if (m_iOffset == 0 &amp;&amp; m_iCount == m_arrContent.GetLength()) {</span>
-<span style = "background-color:#fdd">                        return m_arrContent;</span>
+                    if (m_iOffset == 0 &amp;&amp; m_iCount == m_arrContent.GetLength()) {
+                        return m_arrContent;</span>
                     }
 <span style = "background-color:#dfd">                    Array&lt;char&gt; arr(m_iCount);
                     if (m_iCount &gt; 0) {

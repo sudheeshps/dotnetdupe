@@ -49,8 +49,8 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#fdd">        SystemException::SystemException() : Exception() {}</span>
-<span style = "background-color:#dfd">        SystemException::SystemException(const String&amp; message) : Exception(message) {}
-        SystemException::SystemException(const String&amp; message, const Exception&amp; innerException) : Exception(message, innerException) {}</span>
+<span style = "background-color:#dfd">        SystemException::SystemException(const String&amp; message) : Exception(message) {}</span>
+<span style = "background-color:#fdd">        SystemException::SystemException(const String&amp; message, const Exception&amp; innerException) : Exception(message, innerException) {}</span>
 
 <span style = "background-color:#dfd">        UnauthorizedAccessException::UnauthorizedAccessException() : SystemException("Attempted to perform an unauthorized operation.") {}
         UnknownException::UnknownException() : SystemException("An unknown or unhandled non-DotNetDupe exception occurred.") {}

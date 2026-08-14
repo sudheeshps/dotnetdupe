@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "WebAppCore/Server/WebAppServer.h"
+#include "WebAppCore/Http/HttpContext.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
 #include "System/ArgumentException.h"
@@ -19,6 +20,7 @@
 #include &lt;sstream&gt;
 #include &lt;algorithm&gt;
 #include &lt;filesystem&gt;
+#include &lt;unordered_map&gt;
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -93,8 +95,8 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(404); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     return "404 Not Found";</span>
                 }
-<span style = "background-color:#dfd">                try {
-                    DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
+                try {
+<span style = "background-color:#dfd">                    DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
                     spContext-&gt;GetResponse()-&gt;SetStatusCode(200);
                     spContext-&gt;GetResponse()-&gt;SetContentType(WebAppServer::GetMimeType(target));
                     spContext-&gt;GetResponse()-&gt;GetHeaders()["Content-Disposition"] = "inline";

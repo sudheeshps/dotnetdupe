@@ -26,35 +26,35 @@ namespace DotNetDupe {
                 HttpRequestMessage::HttpRequestMessage(const HttpMethod&amp; method, const String&amp; requestUri)
 <span style = "background-color:#fdd">                    : m_method(method), m_requestUri(Uri(requestUri)), m_pContent(nullptr) {}</span>
 
-<span style = "background-color:#fdd">                HttpMethod HttpRequestMessage::GetMethod() const {
+<span style = "background-color:#dfd">                HttpMethod HttpRequestMessage::GetMethod() const {
                     return m_method;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpRequestMessage::SetMethod(const HttpMethod&amp; method) {
-                    m_method = method;
-                }</span>
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetMethod(const HttpMethod&amp; method) {
+                    m_method = method;</span>
+<span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#fdd">                Uri HttpRequestMessage::GetRequestUri() const {
+<span style = "background-color:#dfd">                Uri HttpRequestMessage::GetRequestUri() const {
                     return m_requestUri;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpRequestMessage::SetRequestUri(const Uri&amp; requestUri) {
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetRequestUri(const Uri&amp; requestUri) {
                     m_requestUri = requestUri;</span>
                 }
 
-<span style = "background-color:#fdd">                HttpContentPtr HttpRequestMessage::GetContent() const {
+<span style = "background-color:#dfd">                HttpContentPtr HttpRequestMessage::GetContent() const {
                     return m_pContent;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpRequestMessage::SetContent(const HttpContentPtr&amp; content) {
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetContent(const HttpContentPtr&amp; content) {
                     m_pContent = content;</span>
                 }
 
-<span style = "background-color:#fdd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() {
+<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() {
                     return m_headers;
                 }</span>
 
-<span style = "background-color:#fdd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() const {
+<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() const {
                     return m_headers;
                 }</span>
 

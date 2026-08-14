@@ -10,32 +10,84 @@
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
-#include &lt;functional&gt;
 #include &lt;type_traits&gt;
 
 namespace DotNetDupe {
     namespace System {
+        namespace Internal {
+            template &lt;typename TResult, typename... Args&gt;
+            struct IFunctorHolder {
+                virtual ~IFunctorHolder() = default;
+                virtual TResult Invoke(Args... args) = 0;
+                virtual IFunctorHolder* Clone() const = 0;
+            };
+
+            template &lt;typename F, typename TResult, typename... Args&gt;
+            struct FunctorHolder : IFunctorHolder&lt;TResult, Args...&gt; {
+                F m_fn;
+                FunctorHolder(const F&amp; fn) : m_fn(fn) {}
+                FunctorHolder(F&amp;&amp; fn) : m_fn(static_cast&lt;F&amp;&amp;&gt;(fn)) {}
+
+<span style = "background-color:#dfd">                TResult Invoke(Args... args) override {
+                    return m_fn(args...);
+                }</span>
+
+<span style = "background-color:#dfd">                IFunctorHolder&lt;TResult, Args...&gt;* Clone() const override {
+                    return new FunctorHolder&lt;F, TResult, Args...&gt;(m_fn);
+                }</span>
+            };
+        }
+
         template&lt;typename TResult, typename... Args&gt;
         class Func {
         public:
-            Func() = default;
-            Func(std::nullptr_t) : _func(nullptr) {}
+            Func() : m_pHolder(nullptr) {}
+            Func(decltype(nullptr)) : m_pHolder(nullptr) {}
             
-            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Func&gt; &amp;&amp; std::is_invocable_r_v&lt;TResult, F, Args...&gt;&gt;&gt;
-            Func(F&amp;&amp; func) : _func(std::forward&lt;F&gt;(func)) {}
+            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Func&gt; &amp;&amp; std::is_invocable_r_v&lt;TResult, std::decay_t&lt;F&gt;, Args...&gt;&gt;&gt;
+            Func(F&amp;&amp; func) : m_pHolder(new Internal::FunctorHolder&lt;std::decay_t&lt;F&gt;, TResult, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
+
+            Func(const Func&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
+
+            Func(Func&amp;&amp; other) noexcept : m_pHolder(other.m_pHolder) {
+                other.m_pHolder = nullptr;
+            }
+
+            Func&amp; operator=(const Func&amp; other) {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr;
+                }
+                return *this;
+            }
+
+            Func&amp; operator=(Func&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder;
+                    other.m_pHolder = nullptr;
+                }
+                return *this;
+            }
+
+<span style = "background-color:#dfd">            ~Func() {
+                delete m_pHolder;</span>
+                m_pHolder = nullptr;
+<span style = "background-color:#dfd">            }</span>
             
             TResult Invoke(Args... args) const {
-                return _func(args...);
+                if (m_pHolder) return m_pHolder-&gt;Invoke(args...);
+                return TResult();
             }
             
 <span style = "background-color:#dfd">            TResult operator()(Args... args) const {
                 return Invoke(args...);
             }</span>
             
-            explicit operator bool() const { return (bool)_func; }
+            explicit operator bool() const { return m_pHolder != nullptr; }
 
         private:
-            std::function&lt;TResult(Args...)&gt; _func;
+            Internal::IFunctorHolder&lt;TResult, Args...&gt;* m_pHolder;
         };
     }
 }</pre>

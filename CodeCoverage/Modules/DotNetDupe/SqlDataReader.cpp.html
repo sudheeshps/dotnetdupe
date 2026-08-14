@@ -56,26 +56,27 @@ namespace DotNetDupe {
                     return DotNetDupe::System::Convert::ToInt32(GetString(iOrdinal));
                 }</span>
 
-<span style = "background-color:#fdd">                double SqlDataReader::GetDouble(int iOrdinal) {
+<span style = "background-color:#dfd">                double SqlDataReader::GetDouble(int iOrdinal) {
                     return std::stod(GetString(iOrdinal).GetRawString());
                 }</span>
 
-<span style = "background-color:#fdd">                bool SqlDataReader::IsDBNull(int iOrdinal) {
-                    return GetString(iOrdinal).IsEmpty();
+<span style = "background-color:#dfd">                bool SqlDataReader::IsDBNull(int iOrdinal) {
+                    DotNetDupe::System::String sVal = GetString(iOrdinal);
+                    return sVal.IsEmpty() || sVal == "NULL" || sVal == "null";
                 }</span>
 
-<span style = "background-color:#fdd">                int SqlDataReader::GetFieldCount() const {
+<span style = "background-color:#dfd">                int SqlDataReader::GetFieldCount() const {
                     return m_pImpl-&gt;m_columns.GetCount();
                 }</span>
 
-<span style = "background-color:#fdd">                DotNetDupe::System::String SqlDataReader::GetName(int iOrdinal) {
-                    if (iOrdinal &lt; 0 || iOrdinal &gt;= m_pImpl-&gt;m_columns.GetCount()) {
-                        return "";</span>
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::GetName(int iOrdinal) {
+                    if (iOrdinal &lt; 0 || iOrdinal &gt;= m_pImpl-&gt;m_columns.GetCount()) {</span>
+<span style = "background-color:#fdd">                        return "";</span>
                     }
-<span style = "background-color:#fdd">                    return m_pImpl-&gt;m_columns[iOrdinal];
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_columns[iOrdinal];
                 }</span>
 
-<span style = "background-color:#fdd">                int SqlDataReader::GetOrdinal(const DotNetDupe::System::String&amp; sName) {
+<span style = "background-color:#dfd">                int SqlDataReader::GetOrdinal(const DotNetDupe::System::String&amp; sName) {
                     for (int i = 0; i &lt; m_pImpl-&gt;m_columns.GetCount(); ++i) {
                         if (m_pImpl-&gt;m_columns[i] == sName) {</span>
                             return i;
@@ -84,15 +85,15 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    return -1;
                 }</span>
 
-<span style = "background-color:#fdd">                DotNetDupe::System::String SqlDataReader::operator[](const DotNetDupe::System::String&amp; sName) {
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::operator[](const DotNetDupe::System::String&amp; sName) {
                     int ord = GetOrdinal(sName);
-                    if (ord == -1) {
-                        throw DotNetDupe::System::ArgumentException(DotNetDupe::System::String("Column not found: ") + sName);</span>
+                    if (ord == -1) {</span>
+<span style = "background-color:#fdd">                        throw DotNetDupe::System::ArgumentException(DotNetDupe::System::String("Column not found: ") + sName);</span>
                     }
-<span style = "background-color:#fdd">                    return GetString(ord);
+<span style = "background-color:#dfd">                    return GetString(ord);
                 }</span>
 
-<span style = "background-color:#fdd">                DotNetDupe::System::String SqlDataReader::operator[](int iOrdinal) {
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::operator[](int iOrdinal) {
                     return GetString(iOrdinal);
                 }</span>
 

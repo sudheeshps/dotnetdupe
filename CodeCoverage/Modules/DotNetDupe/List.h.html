@@ -176,15 +176,15 @@ namespace DotNetDupe {
                         return false;
 					}
 
-<span style = "background-color:#dfd">					void RemoveAt(int iIndex) {
+					void RemoveAt(int iIndex) {
                         if (iIndex &gt;= 0 &amp;&amp; iIndex &lt; m_iCount) {
                             for (int i = iIndex; i &lt; m_iCount - 1; ++i) {
-                                m_pData[i] = std::move(m_pData[i + 1]);</span>
+                                m_pData[i] = std::move(m_pData[i + 1]);
                             }
-<span style = "background-color:#dfd">                            m_pData[m_iCount - 1].~T();
-                            m_iCount--;</span>
+                            m_pData[m_iCount - 1].~T();
+                            m_iCount--;
                         }
-<span style = "background-color:#dfd">					}</span>
+					}
 
                     void SwapElements(T&amp; a, T&amp; b) {
                         T temp = std::move(a);

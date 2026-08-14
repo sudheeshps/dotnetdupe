@@ -27,37 +27,37 @@ namespace DotNetDupe {
 #else
                 return __sync_add_and_fetch(location, 1);
 #endif
-<span style = "background-color:#dfd">            }</span>
-<span style = "background-color:#fdd">            long InterlockedInternal::Decrement32(volatile long* location) {</span>
+<span style = "background-color:#dfd">            }
+            long InterlockedInternal::Decrement32(volatile long* location) {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return _InterlockedDecrement(location);</span>
+<span style = "background-color:#dfd">                return _InterlockedDecrement(location);</span>
 #else
                 return __sync_sub_and_fetch(location, 1);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long InterlockedInternal::Add32(volatile long* location, long value) {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return _InterlockedExchangeAdd(location, value) + value;</span>
+<span style = "background-color:#dfd">                return _InterlockedExchangeAdd(location, value) + value;</span>
 #else
                 return __sync_add_and_fetch(location, value);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long InterlockedInternal::Exchange32(volatile long* location, long value) {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return _InterlockedExchange(location, value);</span>
+<span style = "background-color:#dfd">                return _InterlockedExchange(location, value);</span>
 #else
                 return __sync_lock_test_and_set(location, value);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long InterlockedInternal::CompareExchange32(volatile long* location, long value, long comparand) {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return _InterlockedCompareExchange(location, value, comparand);</span>
+<span style = "background-color:#dfd">                return _InterlockedCompareExchange(location, value, comparand);</span>
 #else
                 return __sync_val_compare_and_swap(location, comparand, value);
 #endif
-<span style = "background-color:#fdd">            }</span>
+<span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            long long InterlockedInternal::Increment64(volatile long long* location) {</span>
+<span style = "background-color:#dfd">            long long InterlockedInternal::Increment64(volatile long long* location) {</span>
 #if defined(_WIN32)
 #if defined(_M_IX86)
                 long long oldVal, newVal;
@@ -67,12 +67,12 @@ namespace DotNetDupe {
                 } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
                 return newVal;
 #else
-<span style = "background-color:#fdd">                return _InterlockedIncrement64(location);</span>
+<span style = "background-color:#dfd">                return _InterlockedIncrement64(location);</span>
 #endif
 #else
                 return __sync_add_and_fetch(location, 1);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long long InterlockedInternal::Decrement64(volatile long long* location) {</span>
 #if defined(_WIN32)
 #if defined(_M_IX86)
@@ -83,12 +83,12 @@ namespace DotNetDupe {
                 } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
                 return newVal;
 #else
-<span style = "background-color:#fdd">                return _InterlockedDecrement64(location);</span>
+<span style = "background-color:#dfd">                return _InterlockedDecrement64(location);</span>
 #endif
 #else
                 return __sync_sub_and_fetch(location, 1);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long long InterlockedInternal::Add64(volatile long long* location, long long value) {</span>
 #if defined(_WIN32)
 #if defined(_M_IX86)
@@ -99,12 +99,12 @@ namespace DotNetDupe {
                 } while (_InterlockedCompareExchange64(location, newVal, oldVal) != oldVal);
                 return newVal;
 #else
-<span style = "background-color:#fdd">                return _InterlockedExchangeAdd64(location, value) + value;</span>
+<span style = "background-color:#dfd">                return _InterlockedExchangeAdd64(location, value) + value;</span>
 #endif
 #else
                 return __sync_add_and_fetch(location, value);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long long InterlockedInternal::Exchange64(volatile long long* location, long long value) {</span>
 #if defined(_WIN32)
 #if defined(_M_IX86)
@@ -114,19 +114,19 @@ namespace DotNetDupe {
                 } while (_InterlockedCompareExchange64(location, value, oldVal) != oldVal);
                 return oldVal;
 #else
-<span style = "background-color:#fdd">                return _InterlockedExchange64(location, value);</span>
+<span style = "background-color:#dfd">                return _InterlockedExchange64(location, value);</span>
 #endif
 #else
                 return __sync_lock_test_and_set(location, value);
 #endif
-<span style = "background-color:#fdd">            }
+<span style = "background-color:#dfd">            }
             long long InterlockedInternal::CompareExchange64(volatile long long* location, long long value, long long comparand) {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return _InterlockedCompareExchange64(location, value, comparand);</span>
+<span style = "background-color:#dfd">                return _InterlockedCompareExchange64(location, value, comparand);</span>
 #else
                 return __sync_val_compare_and_swap(location, comparand, value);
 #endif
-<span style = "background-color:#fdd">            }</span>
+<span style = "background-color:#dfd">            }</span>
         }
     }
 }</pre>

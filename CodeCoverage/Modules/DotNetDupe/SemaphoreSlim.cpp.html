@@ -13,26 +13,45 @@
 #include "System/Threading/SemaphoreSlim.h"
 #include "System/Threading/SemaphoreFullException.h"
 #include "System/TimeoutException.h"
-#include &lt;chrono&gt;
 #include "System/Char.h"
+#include &lt;chrono&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
 
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-<span style = "background-color:#dfd">            SemaphoreSlim::SemaphoreSlim(int initialCount) : _count(initialCount), _maxCount(2147483647) {}</span>
-<span style = "background-color:#fdd">            SemaphoreSlim::SemaphoreSlim(int initialCount, int maximumCount) : _count(initialCount), _maxCount(maximumCount) {}</span>
-<span style = "background-color:#dfd">            SemaphoreSlim::~SemaphoreSlim() {}</span>
+
+            struct SemaphoreSlim::Impl {
+                std::mutex mutex;
+                std::condition_variable cv;
+            };
+
+            SemaphoreSlim::SemaphoreSlim(int initialCount)
+<span style = "background-color:#dfd">                : _count(initialCount), _maxCount(2147483647), _pImpl(new Impl()) {}</span>
+
+            SemaphoreSlim::SemaphoreSlim(int initialCount, int maximumCount)
+<span style = "background-color:#fdd">                : _count(initialCount), _maxCount(maximumCount), _pImpl(new Impl()) {}</span>
+
+<span style = "background-color:#dfd">            SemaphoreSlim::~SemaphoreSlim() {
+                if (_pImpl) {
+                    delete _pImpl;
+                    _pImpl = nullptr;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            bool SemaphoreSlim::WaitOne() {
-                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
-                _cv.wait(lock, [this]() { return _count &gt; 0; });
+                if (!_pImpl) return false;
+                std::unique_lock&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);
+                _pImpl-&gt;cv.wait(lock, [this]() { return _count &gt; 0; });
                 --_count;
                 return true;
             }</span>
 
 <span style = "background-color:#fdd">            bool SemaphoreSlim::WaitOne(int millisecondsTimeout) {
-                std::unique_lock&lt;std::mutex&gt; lock(_mutex);
-                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count &gt; 0; });
+                if (!_pImpl) return false;
+                std::unique_lock&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);
+                bool result = _pImpl-&gt;cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count &gt; 0; });
                 if (result) {
                     --_count;</span>
                 } else {
@@ -42,17 +61,20 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            int SemaphoreSlim::Release(int releaseCount) {
-                std::lock_guard&lt;std::mutex&gt; lock(_mutex);
+                if (!_pImpl) return 0;
+                std::lock_guard&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);
                 if (_count + releaseCount &gt; _maxCount) {</span>
 <span style = "background-color:#fdd">                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");</span>
                 }
                 int prev = _count;
 <span style = "background-color:#dfd">                _count += releaseCount;
-                for (int i = 0; i &lt; releaseCount; ++i) _cv.notify_one();
+                for (int i = 0; i &lt; releaseCount; ++i) _pImpl-&gt;cv.notify_one();
                 return prev;
             }</span>
+
 <span style = "background-color:#fdd">            int SemaphoreSlim::GetCurrentCount() const {
-                std::lock_guard&lt;std::mutex&gt; lock(_mutex);
+                if (!_pImpl) return _count;
+                std::lock_guard&lt;std::mutex&gt; lock(_pImpl-&gt;mutex);
                 return _count;
             }</span>
         }

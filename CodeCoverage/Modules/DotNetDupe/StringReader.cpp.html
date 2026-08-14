@@ -20,7 +20,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                : m_sSource(sSource), m_iPos(0), m_nLength(sSource.GetLength()) {
             }</span>
 
-<span style = "background-color:#fdd">            void StringReader::Close() {
+<span style = "background-color:#dfd">            void StringReader::Close() {
                 m_iPos = m_nLength;
             }</span>
 
@@ -38,13 +38,13 @@ namespace DotNetDupe {
                 return (int)(unsigned char)m_sSource[m_iPos++];
             }</span>
 
-<span style = "background-color:#fdd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {
+<span style = "background-color:#dfd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {
                 if (pBuffer == nullptr) return 0;
                 int nRead = (std::min)(nCount, m_nLength - m_iPos);
                 for (int i = 0; i &lt; nRead; i++) {
                     pBuffer[iIndex + i] = (char)m_sSource[m_iPos + i];</span>
                 }
-<span style = "background-color:#fdd">                m_iPos += nRead;
+<span style = "background-color:#dfd">                m_iPos += nRead;
                 return nRead;
             }</span>
 

@@ -19,6 +19,8 @@
 #include "System/OverflowException.h"
 #include "System/FormatException.h"
 #include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;initializer_list&gt;
 #include &lt;sstream&gt;
 #include &lt;type_traits&gt;
 #include &lt;algorithm&gt;
@@ -164,7 +166,7 @@ namespace DotNetDupe {
 			return *this;
 <span style = "background-color:#fdd">		}</span>
 
-<span style = "background-color:#fdd">		String&amp; String::operator+=(char ch) {
+<span style = "background-color:#dfd">		String&amp; String::operator+=(char ch) {
 			m_pImpl-&gt;s.push_back(ch);
 			return *this;
 		}</span>
@@ -370,7 +372,7 @@ namespace DotNetDupe {
 
 
 
-<span style = "background-color:#fdd">		String&amp; String::Append(const char ch) {
+<span style = "background-color:#dfd">		String&amp; String::Append(const char ch) {
 			m_pImpl-&gt;s += ch;
 			return *this;
 		}</span>
@@ -399,16 +401,16 @@ namespace DotNetDupe {
 		String String::Join(
 			char chSeparator, std::initializer_list&lt;String&gt; sStrings,
 <span style = "background-color:#dfd">			int iStartIndex, int iCount) {
-			if (iStartIndex &lt; 0 || iStartIndex &gt;(int)sStrings.size())</span>
+			if (iStartIndex &lt; 0 || iStartIndex &gt; (int)sStrings.size())</span>
 <span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
-<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt;(int)sStrings.size())</span>
+<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt; (int)sStrings.size())</span>
 <span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iCount");</span>
 
-<span style = "background-color:#dfd">			std::vector&lt;String&gt; vStrs(sStrings);
-			String sJoinStr("");</span>
+			const String* pStrs = sStrings.begin();
+<span style = "background-color:#dfd">			String sJoinStr("");</span>
 
 <span style = "background-color:#dfd">			for (int i = iStartIndex; i &lt; iStartIndex + iCount; i++) {
-				sJoinStr.Append(vStrs [i]);
+				sJoinStr.Append(pStrs[i]);
 				if (i != iStartIndex + iCount - 1) {
 					sJoinStr.Append(chSeparator);</span>
 				}
@@ -424,16 +426,16 @@ namespace DotNetDupe {
 			const String&amp; sSeparator,
 			std::initializer_list&lt;String&gt; sStrings, int iStartIndex,
 <span style = "background-color:#dfd">			int iCount) {
-			if (iStartIndex &lt; 0 || iStartIndex &gt;(int)sStrings.size())</span>
+			if (iStartIndex &lt; 0 || iStartIndex &gt; (int)sStrings.size())</span>
 <span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
-<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt;(int)sStrings.size())</span>
+<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt; (int)sStrings.size())</span>
 <span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iCount");</span>
 
-<span style = "background-color:#dfd">			std::vector&lt;String&gt; vStrs(sStrings);
-			String sJoinStr("");</span>
+			const String* pStrs = sStrings.begin();
+<span style = "background-color:#dfd">			String sJoinStr("");</span>
 
 <span style = "background-color:#dfd">			for (int i = iStartIndex; i &lt; iStartIndex + iCount; i++) {
-				sJoinStr.Append(vStrs [i]);
+				sJoinStr.Append(pStrs[i]);
 				if (i != iStartIndex + iCount - 1) {
 					sJoinStr.Append(sSeparator);</span>
 				}

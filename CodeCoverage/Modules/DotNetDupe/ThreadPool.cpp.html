@@ -37,10 +37,10 @@ namespace DotNetDupe {
              */
             class ThreadPoolInternal {
             public:
-                static ThreadPoolInternal&amp; GetInstance() {
-                    static ThreadPoolInternal instance;
+<span style = "background-color:#dfd">                static ThreadPoolInternal&amp; GetInstance() {
+                    static ThreadPoolInternal instance;</span>
                     return instance;
-                }
+<span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                bool QueueTask(WaitCallback callback, Object* pState) {</span>
                     {
@@ -158,7 +158,7 @@ namespace DotNetDupe {
                 return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
             }</span>
 
-<span style = "background-color:#dfd">            bool ThreadPool::SetMinThreads(int iMinThreads) {
+<span style = "background-color:#fdd">            bool ThreadPool::SetMinThreads(int iMinThreads) {
                 return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
             }</span>
         }

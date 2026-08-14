@@ -52,7 +52,7 @@ namespace DotNetDupe {
 #if defined(_WIN32)
 <span style = "background-color:#fdd">            DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
                 if (action == EvtSubscribeActionDeliver &amp;&amp; pUserContext != nullptr) {</span>
-                    auto pCallback = static_cast&lt;std::function&lt;void(const EtwEvent&amp;)&gt;*&gt;(pUserContext);
+                    auto pCallback = static_cast&lt;Action&lt;const EtwEvent&amp;&gt;*&gt;(pUserContext);
 <span style = "background-color:#fdd">                    if (pCallback &amp;&amp; *pCallback) {
                         EtwEvent evt;
                         evt.sChannelName = "Windows-ETW";
@@ -65,10 +65,10 @@ namespace DotNetDupe {
                         (*pCallback)(evt);
                     }</span>
                 }
-<span style = "background-color:#fdd">                return 0;
-            }</span>
+                return 0;
+<span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String&amp; sChannelName, std::function&lt;void(const EtwEvent&amp;)&gt;* pCallback) {
+<span style = "background-color:#dfd">            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String&amp; sChannelName, Action&lt;const EtwEvent&amp;&gt;* pCallback) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
@@ -316,7 +316,7 @@ namespace DotNetDupe {
                 return lstEvents;
             }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::StartListening(const String&amp; sChannelName, std::function&lt;void(const EtwEvent&amp;)&gt; fnCallback) {
+<span style = "background-color:#dfd">            void EtwLogReader::StartListening(const String&amp; sChannelName, Action&lt;const EtwEvent&amp;&gt; fnCallback) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 if (m_bListening) throw InvalidOperationException("Already listening to an event channel.");</span>
 
