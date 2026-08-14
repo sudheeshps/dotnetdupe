@@ -31,7 +31,7 @@ namespace DotNetDupe {
 
 		struct String::StringImpl {
 			std::string s;
-<span style = "background-color:#dfd">			StringImpl() = default;</span>
+			StringImpl() = default;
 			StringImpl(const char* str) : s(str) {}
 			StringImpl(const std::string&amp; str) : s(str) {}
 			StringImpl(std::string&amp;&amp; str) : s(std::move(str)) {}
@@ -71,61 +71,56 @@ namespace DotNetDupe {
 			throw FormatException(msg);
 		}
 <span style = "background-color:#dfd">		String::String() { m_pImpl = new StringImpl("");  }
-		String::~String() { delete m_pImpl; }
-		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
+		String::~String() { delete m_pImpl; }</span>
+		static void AppendExplicitArg(const std::string&amp; sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+			std::string num = sFmt.substr(i + 1, end - i - 1);
+			size_t idx = 0;
+			int argIdx = std::stoi(num, &amp;idx);
+			if (idx != num.length() || argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");
+			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+		}
+
+<span style = "background-color:#dfd">		static void FormatOpenBrace(const std::string&amp; sFmt, size_t&amp; i, int&amp; iAutoIndex, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '{') {
+				sRes += '{'; i++;
+			} else if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {</span>
+<span style = "background-color:#fdd">				if (iAutoIndex &gt;= iArgCount) throw FormatException("Index out of bounds");
+				sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
+				iAutoIndex++; i++;
+			} else {</span>
+<span style = "background-color:#dfd">				size_t end = sFmt.find('}', i + 1);
+				if (end == std::string::npos) throw FormatException("Unclosed brace");
+				AppendExplicitArg(sFmt, i, end, pArgs, iArgCount, sRes);
+				i = end;</span>
+			}
+<span style = "background-color:#dfd">		}</span>
+
+		static void FormatClosingBrace(const std::string&amp; sFmt, size_t&amp; i, std::string&amp; sRes) {
+			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {
+				sRes += '}'; i++;
+			} else {
+				throw FormatException("Unescaped closing brace");
+			}
+		}
+
+<span style = "background-color:#dfd">		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
 			if (!pFormat) throw ArgumentException("Format string cannot be null.");
 			if (iArgCount == 0 || !pArgs) return String(pFormat);</span>
 
-			try {
-<span style = "background-color:#dfd">				std::string sFmt = pFormat;
-				std::string sRes;
-				int iAutoIndex = 0;
-				for (size_t i = 0; i &lt; sFmt.length(); ++i) {
-					if (sFmt[i] == '{') {
-						if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '{') {
-							sRes += '{';
-							i++;
-						} else if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {</span>
-<span style = "background-color:#fdd">							if (iAutoIndex &lt; iArgCount) {
-								sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
-								iAutoIndex++;
-								i++;</span>
-							} else {
-<span style = "background-color:#fdd">								throw FormatException("Index out of bounds");</span>
-							}
-						} else {
-<span style = "background-color:#dfd">							size_t end = sFmt.find('}', i + 1);</span>
-<span style = "background-color:#fdd">							if (end == std::string::npos) throw FormatException("Unclosed brace");</span>
-<span style = "background-color:#dfd">							std::string num = sFmt.substr(i + 1, end - i - 1);</span>
-							try {
-								size_t idx;
-<span style = "background-color:#dfd">								int argIdx = std::stoi(num, &amp;idx);
-								if (idx != num.length()) throw FormatException("Invalid format string");
-								if (argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");
-								sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
-								i = end;
-							} catch (...) {
-								throw FormatException("Invalid format string");</span>
-							}
-<span style = "background-color:#dfd">						}
-					} else if (sFmt[i] == '}') {
-						if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {
-							sRes += '}';
-							i++;</span>
-						} else {
-<span style = "background-color:#fdd">							throw FormatException("Unescaped closing brace");</span>
-						}
-					} else {
-<span style = "background-color:#dfd">						sRes += sFmt[i];</span>
-					}
+<span style = "background-color:#dfd">			std::string sFmt = pFormat;
+			std::string sRes;
+			int iAutoIndex = 0;
+			for (size_t i = 0; i &lt; sFmt.length(); ++i) {
+				if (sFmt[i] == '{') {
+					FormatOpenBrace(sFmt, i, iAutoIndex, pArgs, iArgCount, sRes);
+				} else if (sFmt[i] == '}') {
+					FormatClosingBrace(sFmt, i, sRes);
+				} else {
+					sRes += sFmt[i];</span>
 				}
-<span style = "background-color:#dfd">				return String(sRes.c_str());
-			} catch (const FormatException&amp;) {
-				throw;</span>
-<span style = "background-color:#fdd">			} catch (...) {
-				throw FormatException("Error formatting string.");</span>
 			}
-<span style = "background-color:#dfd">		}</span>
+<span style = "background-color:#dfd">			return String(sRes.c_str());
+		}</span>
 
 <span style = "background-color:#dfd">		void* String::operator new(size_t size) {
 			return ::operator new(size);</span>
@@ -174,7 +169,7 @@ namespace DotNetDupe {
 			return *this;
 		}</span>
 
-<span style = "background-color:#fdd">		String operator+(const char* pStr, const String&amp; sStr) {
+<span style = "background-color:#dfd">		String operator+(const char* pStr, const String&amp; sStr) {
 			String newStr(pStr ? pStr : "");
 			return newStr + sStr;
 		}</span>
@@ -255,27 +250,20 @@ namespace DotNetDupe {
 			if (iIndex &gt;= (int)m_pImpl-&gt;s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
 			return GetRawString() [iIndex];
 		}</span>
-		int String::Compare(const String&amp; sStr1,
-							int iIndex1,
-							const String&amp; sStr2,
-							int iIndex2, int iLength,
-<span style = "background-color:#dfd">							bool bIgnoreCase) {
+		static std::string ToLowerString(const std::string&amp; s) {
+			std::string res = s;
+			std::transform(res.begin(), res.end(), res.begin(), [](char ch) {
+				return static_cast&lt;char&gt;(std::tolower(static_cast&lt;unsigned char&gt;(ch)));
+			});
+			return res;
+		}
+
+<span style = "background-color:#dfd">		int String::Compare(const String&amp; sStr1, int iIndex1, const String&amp; sStr2, int iIndex2, int iLength, bool bIgnoreCase) {
 			if (!bIgnoreCase) {
 				return sStr1.m_pImpl-&gt;s.compare(iIndex1, iLength, sStr2.m_pImpl-&gt;s, iIndex2, iLength);</span>
 			}
-
-<span style = "background-color:#dfd">			auto s1 = sStr1.m_pImpl-&gt;s.substr(iIndex1, iLength);
-			auto s2 = sStr2.m_pImpl-&gt;s.substr(iIndex2, iLength);</span>
-			auto transform_char = [](char ch) -&gt; char {
-				if constexpr (std::is_same_v&lt;char, wchar_t&gt;) {
-					return static_cast&lt;wchar_t&gt;(std::towlower(ch));
-				}
-				else {
-					return static_cast&lt;char&gt;(std::tolower(static_cast&lt;unsigned char&gt;(ch)));
-				}
-				};
-<span style = "background-color:#dfd">			std::transform(s1.begin(), s1.end(), s1.begin(), transform_char);
-			std::transform(s2.begin(), s2.end(), s2.begin(), transform_char);
+<span style = "background-color:#dfd">			auto s1 = ToLowerString(sStr1.m_pImpl-&gt;s.substr(iIndex1, iLength));
+			auto s2 = ToLowerString(sStr2.m_pImpl-&gt;s.substr(iIndex2, iLength));
 			return s1.compare(s2);
 		}</span>
 
@@ -469,32 +457,24 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">			return (it == m_pImpl-&gt;s.end()) ? -1 : (int)std::distance(m_pImpl-&gt;s.begin(), it);
 		}</span>
-		int String::LastIndexOfAny(
-<span style = "background-color:#dfd">			int iStartIndex, std::initializer_list&lt;char&gt; chChars, bool bIgnoreCase) {
-			if (iStartIndex &lt; 0 || iStartIndex &gt; GetLength())
-				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
 
-<span style = "background-color:#dfd">			if (IsEmpty()) return -1;</span>
+		static int FindLastCharIndex(const std::string&amp; s, int iStartIndex, char ch, bool bIgnoreCase) {
+			for (int i = static_cast&lt;int&gt;(s.length()) - 1; i &gt;= iStartIndex; --i) {
+				bool match = bIgnoreCase 
+					? std::tolower(static_cast&lt;unsigned char&gt;(s[i])) == std::tolower(static_cast&lt;unsigned char&gt;(ch))
+					: (s[i] == ch);
+				if (match) return i;
+			}
+			return -1;
+		}
 
-<span style = "background-color:#dfd">			for (auto ch : chChars) {</span>
-				size_t lastFound = std::string::npos;
-<span style = "background-color:#dfd">				for (int i = GetLength() - 1; i &gt;= iStartIndex; --i) {</span>
-					bool match = false;
-<span style = "background-color:#dfd">					if (bIgnoreCase) {
-						match = std::tolower(static_cast&lt;unsigned char&gt;(m_pImpl-&gt;s [i])) == std::tolower(static_cast&lt;unsigned char&gt;(ch));
-					}</span>
-					else {
-<span style = "background-color:#dfd">						match = (m_pImpl-&gt;s [i] == ch);</span>
-					}
+<span style = "background-color:#dfd">		int String::LastIndexOfAny(int iStartIndex, std::initializer_list&lt;char&gt; chChars, bool bIgnoreCase) {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; GetLength()) throw ArgumentOutOfRangeException("Invalid iStartIndex");
+			if (IsEmpty()) return -1;</span>
 
-<span style = "background-color:#dfd">					if (match) {</span>
-						lastFound = i;
-						break;
-					}
-				}
-<span style = "background-color:#dfd">				if (lastFound != std::string::npos) {
-					return static_cast&lt;int&gt;(lastFound);</span>
-				}
+<span style = "background-color:#dfd">			for (auto ch : chChars) {
+				int idx = FindLastCharIndex(m_pImpl-&gt;s, iStartIndex, ch, bIgnoreCase);
+				if (idx != -1) return idx;</span>
 			}
 			return -1;
 <span style = "background-color:#dfd">		}
@@ -575,35 +555,38 @@ namespace DotNetDupe {
 			return result;
 		}</span>
 
-		Array&lt;String&gt; String::Split(String sSeparator [], int iCount,
-<span style = "background-color:#dfd">									StringSplitOptions eOptions) const {
-			std::vector&lt;String&gt; vTempResult;
+<span style = "background-color:#dfd">		static void AddSplitToken(const std::string&amp; sCurrent, StringSplitOptions eOptions, std::vector&lt;String&gt;&amp; vResult) {
+			String s(sCurrent.c_str());
+			if (eOptions == StringSplitOptions::TrimEntries) s = s.Trim();
+			if (eOptions != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
+				vResult.push_back(s);</span>
+			}
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#dfd">		static std::set&lt;char&gt; PopulateSplitCharSet(String sSeparator[], int iCount) {
 			std::set&lt;char&gt; charSet;
 			for (int i = 0; i &lt; iCount; ++i) {
-				for (auto c : sSeparator[i].m_pImpl-&gt;s) charSet.insert(c);</span>
+				const char* raw = sSeparator[i].GetRawString();
+				if (raw) { while (*raw) charSet.insert(*raw++); }</span>
 			}
-<span style = "background-color:#dfd">			std::string sCurrent;
+<span style = "background-color:#dfd">			return charSet;
+		}</span>
+
+<span style = "background-color:#dfd">		Array&lt;String&gt; String::Split(String sSeparator[], int iCount, StringSplitOptions eOptions) const {
+			std::set&lt;char&gt; charSet = PopulateSplitCharSet(sSeparator, iCount);
+			std::vector&lt;String&gt; vTempResult;
+			std::string sCurrent;
 			for (auto c : m_pImpl-&gt;s) {
 				if (charSet.find(c) == charSet.end()) {
 					sCurrent += c;
-				}</span>
-				else {
-<span style = "background-color:#dfd">					String s(sCurrent.c_str());
-					if (eOptions == StringSplitOptions::TrimEntries) s = s.Trim();
-					if (eOptions != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
-						vTempResult.push_back(s);</span>
-					}
-<span style = "background-color:#dfd">					sCurrent.clear();
-				}</span>
+				} else {
+					AddSplitToken(sCurrent, eOptions, vTempResult);
+					sCurrent.clear();</span>
+				}
 			}
-<span style = "background-color:#dfd">			String sFinal(sCurrent.c_str());
-			if (eOptions == StringSplitOptions::TrimEntries) sFinal = sFinal.Trim();
-			if (eOptions != StringSplitOptions::RemoveEmptyEntries || !sFinal.IsEmpty()) {
-				vTempResult.push_back(sFinal);</span>
-			}
-
-<span style = "background-color:#dfd">			Array&lt;String&gt; result((int)vTempResult.size());
-			for (int i = 0; i &lt; (int)vTempResult.size(); i++) result [i] = vTempResult [i];
+<span style = "background-color:#dfd">			AddSplitToken(sCurrent, eOptions, vTempResult);
+			Array&lt;String&gt; result(static_cast&lt;int&gt;(vTempResult.size()));
+			for (int i = 0; i &lt; result.GetLength(); i++) result[i] = vTempResult[i];
 			return result;
 		}</span>
 

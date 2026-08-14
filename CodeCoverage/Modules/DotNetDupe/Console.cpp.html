@@ -328,6 +328,23 @@ void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }
 #endif
 }
 
+static void ClearConsoleScreenNative() {
+#if defined(_WIN32)
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD count, cellCount;
+    COORD home = { 0, 0 };
+    if (GetConsoleScreenBufferInfo(h, &amp;csbi)) {
+        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+        FillConsoleOutputCharacterW(h, (wchar_t)' ', cellCount, home, &amp;count);
+        FillConsoleOutputAttribute(h, csbi.wAttributes, cellCount, home, &amp;count);
+        SetConsoleCursorPosition(h, home);
+    }
+#else
+    std::cout &lt;&lt; "\033[2J\033[1;1H" &lt;&lt; std::flush;
+#endif
+}
+
 <span style = "background-color:#dfd">void Console::Clear() {
     std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
     s_outputs.clear();
@@ -335,27 +352,9 @@ void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }
     s_accumulator = String("");
     s_pOutWriter = nullptr;
     s_pErrorWriter = nullptr;
-    s_pInReader = nullptr;</span>
-
-#if defined(_WIN32)
-<span style = "background-color:#dfd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);</span>
-    CONSOLE_SCREEN_BUFFER_INFO csbi;
-    DWORD count;
-    DWORD cellCount;
-<span style = "background-color:#dfd">    COORD homeCoords = { 0, 0 };</span>
-
-<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(hConsole, &amp;csbi)) {</span>
-<span style = "background-color:#fdd">        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
-        if (FillConsoleOutputCharacterW(hConsole, (wchar_t) ' ', cellCount, homeCoords, &amp;count)) {
-            if (FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &amp;count)) {
-                SetConsoleCursorPosition(hConsole, homeCoords);</span>
-            }
-        }
-    }
-#else
-    std::cout &lt;&lt; "\033[2J\033[1;1H" &lt;&lt; std::flush;
-#endif
-<span style = "background-color:#dfd">}</span>
+    s_pInReader = nullptr;
+    ClearConsoleScreenNative();
+}</span>
 
 <span style = "background-color:#dfd">void Console::SetOut(const SmartPointer&lt;IO::TextWriter&gt;&amp; pOutWriter) {
     std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);

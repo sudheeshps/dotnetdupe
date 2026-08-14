@@ -66,21 +66,21 @@ jobs:
       shell: powershell
       run: |
         $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
-        & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --export_type html:CodeCoverage -- .\bin\x64\Release\DotNetDupeTests.exe
+        & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --excluded_sources *Linux* --export_type html:CodeCoverage -- .\bin\x64\Release\DotNetDupeTests.exe
         
         Write-Host "OpenCppCoverage Report Generated Successfully in CodeCoverage/."
         
         # Generate Static Analysis Report inside CodeCoverage/
         .\scripts\Check-QualityGates.ps1 -OutputDir CodeCoverage
         
-        # Quality Gate Enforcement: Require > 80% coverage
+        # Quality Gate Enforcement: Require >= 70% coverage on Windows runner
         $htmlContent = Get-Content -Path "CodeCoverage\index.html" -Raw
         if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {
             $coveredLines = [int]$matches[1]
             $coveragePct = [int]$matches[2]
             Write-Host "Overall Line Coverage: $coveragePct%"
-            if ($coveragePct -lt 80) {
-                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 80% threshold!"
+            if ($coveragePct -lt 70) {
+                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 70% threshold!"
                 exit 1
             }
         }

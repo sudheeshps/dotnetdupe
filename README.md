@@ -3,8 +3,6 @@
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
 [![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
-[![Quality Gates](https://img.shields.io/badge/Quality%20Gates-100%25%20Passing-brightgreen?style=flat-square&logo=checkmarx)](CodeCoverage/StaticAnalysis.html)
-[![Tests](https://img.shields.io/badge/Tests-660%20Passed-brightgreen?style=flat-square&logo=google)](DotNetDupeTests/)
 [![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
 [![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)

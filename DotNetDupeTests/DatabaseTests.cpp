@@ -160,5 +160,39 @@ namespace DatabaseTests {
 #endif
     }
 
+    TEST(DatabaseTests, GivenSqlDataReader_WhenAccessingVariousTypes_ReturnsCorrectValues) {
+        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().ClearDatabase("TypeTestDb");
+        SqlConnection conn("Data Source=TypeTestDb;");
+        conn.Open();
+
+        auto cmdCreate = conn.CreateCommand();
+        cmdCreate->SetCommandText("CREATE TABLE TypedData (BVal VARCHAR, DVal VARCHAR, I64Val VARCHAR, NullVal VARCHAR)");
+        cmdCreate->ExecuteNonQuery();
+
+        auto cmdInsert = conn.CreateCommand();
+        cmdInsert->SetCommandText("INSERT INTO TypedData (BVal, DVal, I64Val, NullVal) VALUES (@b, @d, @i, @n)");
+        cmdInsert->GetParameters()->AddWithValue("@b", "true");
+        cmdInsert->GetParameters()->AddWithValue("@d", "123.456");
+        cmdInsert->GetParameters()->AddWithValue("@i", "9876543210");
+        cmdInsert->GetParameters()->AddWithValue("@n", "NULL");
+        cmdInsert->ExecuteNonQuery();
+
+        auto cmdSelect = conn.CreateCommand();
+        cmdSelect->SetCommandText("SELECT * FROM TypedData");
+        auto reader = cmdSelect->ExecuteReader();
+
+        EXPECT_EQ(reader->GetFieldCount(), 4);
+        EXPECT_STREQ(reader->GetName(0).GetRawString(), "BVal");
+        EXPECT_STREQ(reader->GetName(1).GetRawString(), "DVal");
+
+        ASSERT_TRUE(reader->Read());
+        EXPECT_STREQ(reader->GetString(0).GetRawString(), "true");
+        EXPECT_DOUBLE_EQ(reader->GetDouble(1), 123.456);
+        EXPECT_TRUE(reader->IsDBNull(3));
+        EXPECT_STREQ((*reader)["BVal"].GetRawString(), "true");
+        EXPECT_STREQ((*reader)[1].GetRawString(), "123.456");
+
+        conn.Close();
+    }
 }
 

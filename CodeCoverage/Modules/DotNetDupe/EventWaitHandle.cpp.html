@@ -93,21 +93,17 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::TryOpenExisting(const String&amp; sName, SmartPointer&lt;EventWaitHandle&gt;&amp; pResult) {
-                pResult = SmartPointer&lt;EventWaitHandle&gt;();
-                if (sName.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    return false;</span>
-                }
+                pResult = nullptr;
+                if (sName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer&lt;EventWaitHandle&gt; spEvt = SmartPointer&lt;EventWaitHandle&gt;::NewShared(false, false);
-                    spEvt-&gt;_name = sName;
-                    spEvt-&gt;_hHandle = h;
-                    pResult = std::move(spEvt);
-                    return true;</span>
-                }
-<span style = "background-color:#dfd">                return false;</span>
+                if (!h) return false;
+                auto spEvt = SmartPointer&lt;EventWaitHandle&gt;::NewShared(false, false);
+                spEvt-&gt;_name = sName;
+                spEvt-&gt;_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;</span>
 #else
                 return false;
 #endif

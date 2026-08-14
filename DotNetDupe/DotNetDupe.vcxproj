@@ -359,7 +359,6 @@
     <ClCompile Include="Exception.cpp" />
     <ClCompile Include="Win32Exception.cpp" />
     <ClCompile Include="SocketException.cpp" />
-    <ClCompile Include="System\Utils\StringConvert.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="Socket.cpp" />

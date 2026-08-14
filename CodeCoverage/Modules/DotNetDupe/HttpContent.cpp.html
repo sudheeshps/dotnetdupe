@@ -134,11 +134,11 @@ namespace DotNetDupe {
                 // --- StreamContent ---
 
                 StreamContent::StreamContent(const SmartPointer&lt;IO::Stream&gt;&amp; stream)
-<span style = "background-color:#fdd">                    : m_pStream(stream) {
-                    if (stream.IsNull()) {
-                        throw ArgumentNullException("stream");</span>
+<span style = "background-color:#dfd">                    : m_pStream(stream) {
+                    if (stream.IsNull()) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentNullException("stream");</span>
                     }
-<span style = "background-color:#fdd">                    GetHeaders().Add("Content-Type", "application/octet-stream");
+<span style = "background-color:#dfd">                    GetHeaders().Add("Content-Type", "application/octet-stream");
                 }</span>
 
 <span style = "background-color:#fdd">                String StreamContent::ReadAsString() {
@@ -185,8 +185,10 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                long StreamContent::GetLength() const {
                     if (!m_pStream.IsNull() &amp;&amp; m_pStream-&gt;CanSeek()) {</span>
                         try {
-<span style = "background-color:#fdd">                            return m_pStream-&gt;GetLength();</span>
-<span style = "background-color:#dfd">                        } catch (...) {
+<span style = "background-color:#fdd">                            return m_pStream-&gt;GetLength();
+                        } catch (const Exception&amp;) {
+                            return -1;
+                        } catch (const std::exception&amp;) {
                             return -1;</span>
                         }
                     }

@@ -23,7 +23,7 @@ namespace DotNetDupe {
             namespace Internal {
 
                 struct DatabaseEngine::Impl {
-                    std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt;&gt; m_backends;
+                    std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt;&gt; m_pBackends;
                     std::mutex m_mutex;
                 };
 
@@ -39,13 +39,13 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                void DatabaseEngine::RegisterBackend(const DotNetDupe::System::String&amp; dbName, DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; backend) {
                     std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);
-                    m_pImpl-&gt;m_backends[dbName.GetRawString()] = backend;
+                    m_pImpl-&gt;m_pBackends[dbName.GetRawString()] = backend;
                 }</span>
 
 <span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; DatabaseEngine::GetBackend(const DotNetDupe::System::String&amp; dbName) {
                     std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);
-                    auto it = m_pImpl-&gt;m_backends.find(dbName.GetRawString());
-                    if (it != m_pImpl-&gt;m_backends.end()) {
+                    auto it = m_pImpl-&gt;m_pBackends.find(dbName.GetRawString());
+                    if (it != m_pImpl-&gt;m_pBackends.end()) {
                         return it-&gt;second;</span>
                     }
                     return DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt;(nullptr);

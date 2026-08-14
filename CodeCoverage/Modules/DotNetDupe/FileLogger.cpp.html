@@ -19,13 +19,13 @@ namespace DotNetDupe {
         namespace Logging {
 
             struct FileLogger::Impl {
-                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; context;
+                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; pContext;
             };
 
             FileLogger::FileLogger(const DotNetDupe::System::String&amp; categoryName, const LoggerConfiguration&amp; config, 
-                                   const DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;&amp; context)
+                                   const DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;&amp; pContext)
 <span style = "background-color:#dfd">                : LoggerBase(categoryName, config), m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
-                m_pImpl-&gt;context = context;
+                m_pImpl-&gt;pContext = pContext;
             }</span>
 
 <span style = "background-color:#fdd">            FileLogger::~FileLogger() = default;</span>
@@ -34,47 +34,39 @@ namespace DotNetDupe {
                 LoggerBase::Log(logLevel, message);</span>
             }
 
+<span style = "background-color:#dfd">            static void PerformFileRollover(const LoggerConfiguration&amp; config, FileLoggerContext* pContext) {
+                pContext-&gt;fileStream-&gt;close();
+                std::string baseName = config.FilePath.GetRawString();
+                for (int i = config.Rollover.MaxBackupFiles - 1; i &gt;= 1; --i) {
+                    std::string oldBackup = baseName + "." + std::to_string(i);
+                    std::string newBackup = baseName + "." + std::to_string(i + 1);
+                    std::remove(newBackup.c_str());
+                    std::rename(oldBackup.c_str(), newBackup.c_str());
+                }
+                std::string firstBackup = baseName + ".1";
+                std::remove(firstBackup.c_str());
+                std::rename(baseName.c_str(), firstBackup.c_str());
+                pContext-&gt;fileStream-&gt;open(baseName, std::ios::out | std::ios::app);
+            }</span>
+
+            static void CheckAndRollover(const LoggerConfiguration&amp; config, FileLoggerContext* pContext, int lineLength) {
+                if (!config.Rollover.EnableRollover || !pContext-&gt;fileStream || !pContext-&gt;fileStream-&gt;is_open()) return;
+                auto currentPos = pContext-&gt;fileStream-&gt;tellp();
+                if (currentPos != std::streampos(-1) &amp;&amp; static_cast&lt;long long&gt;(currentPos) + lineLength &gt;= config.Rollover.MaxFileSizeInBytes) {
+                    PerformFileRollover(config, pContext);
+                }
+            }
+
             void FileLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
 <span style = "background-color:#dfd">                                 const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
                 if (!IsEnabled(logLevel)) return;
-                if (!m_pImpl-&gt;context || !m_pImpl-&gt;context-&gt;fileStream || !m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) return;</span>
+                if (!m_pImpl-&gt;pContext || !m_pImpl-&gt;pContext-&gt;fileStream || !m_pImpl-&gt;pContext-&gt;fileStream-&gt;is_open()) return;</span>
 
-<span style = "background-color:#dfd">                DotNetDupe::System::String line = BuildLogMessage(logLevel, message, properties);</span>
-
-                // Write thread-safely to file
-<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;context-&gt;fileMutex));</span>
-
-<span style = "background-color:#dfd">                if (m_config.Rollover.EnableRollover &amp;&amp; m_pImpl-&gt;context-&gt;fileStream &amp;&amp; m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) {
-                    auto currentPos = m_pImpl-&gt;context-&gt;fileStream-&gt;tellp();
-                    if (currentPos != std::streampos(-1)) {</span>
-                        long long currentSize = static_cast&lt;long long&gt;(currentPos);
-<span style = "background-color:#dfd">                        if (currentSize + static_cast&lt;long long&gt;(line.GetLength()) &gt;= m_config.Rollover.MaxFileSizeInBytes) {</span>
-                            // Close current stream
-<span style = "background-color:#dfd">                            m_pImpl-&gt;context-&gt;fileStream-&gt;close();</span>
-
-<span style = "background-color:#dfd">                            std::string baseName = m_config.FilePath.GetRawString();</span>
-
-                            // Rotate backups: app.log.2 -&gt; app.log.3, etc.
-<span style = "background-color:#dfd">                            for (int i = m_config.Rollover.MaxBackupFiles - 1; i &gt;= 1; --i) {
-                                std::string oldBackup = baseName + "." + std::to_string(i);
-                                std::string newBackup = baseName + "." + std::to_string(i + 1);
-                                std::remove(newBackup.c_str());
-                                std::rename(oldBackup.c_str(), newBackup.c_str());
-                            }</span>
-
-                            // Rename current file: app.log -&gt; app.log.1
-<span style = "background-color:#dfd">                            std::string firstBackup = baseName + ".1";
-                            std::remove(firstBackup.c_str());
-                            std::rename(baseName.c_str(), firstBackup.c_str());</span>
-
-                            // Re-open fresh file
-<span style = "background-color:#dfd">                            m_pImpl-&gt;context-&gt;fileStream-&gt;open(baseName, std::ios::out | std::ios::app);
-                        }</span>
-                    }
-                }
-
-<span style = "background-color:#dfd">                if (m_pImpl-&gt;context-&gt;fileStream &amp;&amp; m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) {
-                    (*(m_pImpl-&gt;context-&gt;fileStream)) &lt;&lt; line.GetRawString() &lt;&lt; std::endl;</span>
+<span style = "background-color:#dfd">                DotNetDupe::System::String line = BuildLogMessage(logLevel, message, properties);
+                std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;pContext-&gt;fileMutex));
+                CheckAndRollover(m_config, m_pImpl-&gt;pContext.Get(), line.GetLength());
+                if (m_pImpl-&gt;pContext-&gt;fileStream &amp;&amp; m_pImpl-&gt;pContext-&gt;fileStream-&gt;is_open()) {
+                    (*(m_pImpl-&gt;pContext-&gt;fileStream)) &lt;&lt; line.GetRawString() &lt;&lt; std::endl;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 

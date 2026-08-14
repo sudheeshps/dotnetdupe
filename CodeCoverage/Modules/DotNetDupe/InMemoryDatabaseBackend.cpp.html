@@ -342,6 +342,15 @@ namespace DotNetDupe {
                         }
 <span style = "background-color:#fdd">                        return val;</span>
 <span style = "background-color:#dfd">                    }</span>
+
+<span style = "background-color:#dfd">                    std::vector&lt;StdRow&gt; DispatchCommand(const std::string&amp; cmd, const std::vector&lt;std::string&gt;&amp; tokens, const std::unordered_map&lt;std::string, std::string&gt;&amp; stdParams, std::vector&lt;std::string&gt;&amp; stdColNames, int&amp; rowsAffected) {
+                        if (cmd == "CREATE") ExecuteCreate(tokens);
+                        else if (cmd == "INSERT") ExecuteInsert(tokens, stdParams, rowsAffected);
+                        else if (cmd == "SELECT") return ExecuteSelect(tokens, stdParams, stdColNames);
+                        else if (cmd == "UPDATE") ExecuteUpdate(tokens, stdParams, rowsAffected);
+                        else if (cmd == "DELETE") ExecuteDelete(tokens, stdParams, rowsAffected);
+                        return {};
+                    }</span>
                 };
 
 <span style = "background-color:#dfd">                InMemoryDatabaseBackend::InMemoryDatabaseBackend() : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
@@ -351,6 +360,28 @@ namespace DotNetDupe {
                     m_pImpl-&gt;m_tables.clear();</span>
                 }
 
+<span style = "background-color:#dfd">                static std::unordered_map&lt;std::string, std::string&gt; ConvertParamsMap(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters) {
+                    std::unordered_map&lt;std::string, std::string&gt; stdParams;
+                    auto keys = parameters.GetKeys();
+                    for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                        String val;
+                        parameters.TryGetValue(keys[i], val);
+                        stdParams[keys[i].GetRawString()] = val.GetRawString();
+                    }
+                    return stdParams;
+                }</span>
+
+<span style = "background-color:#dfd">                static Collections::Generic::List&lt;Row&gt; ConvertResultRows(const std::vector&lt;StdRow&gt;&amp; stdResRows, const std::vector&lt;std::string&gt;&amp; stdColNames, Collections::Generic::List&lt;String&gt;&amp; columnNames) {
+                    for (const auto&amp; col : stdColNames) columnNames.Add(String(col.c_str()));
+                    Collections::Generic::List&lt;Row&gt; resultRows;
+                    for (const auto&amp; sr : stdResRows) {
+                        Row r;
+                        for (const auto&amp; v : sr.Values) r.Values.Add(String(v.c_str()));
+                        resultRows.Add(r);</span>
+                    }
+<span style = "background-color:#dfd">                    return resultRows;
+                }</span>
+
                 Collections::Generic::List&lt;Row&gt; InMemoryDatabaseBackend::Execute(
                     const String&amp; sql,
                     const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters,
@@ -358,54 +389,14 @@ namespace DotNetDupe {
                     int&amp; rowsAffected
 <span style = "background-color:#dfd">                ) {
                     rowsAffected = 0;
-                    columnNames.Clear();</span>
-
-<span style = "background-color:#dfd">                    std::string stdSql = sql.GetRawString();
-                    std::unordered_map&lt;std::string, std::string&gt; stdParams;
-                    auto keys = parameters.GetKeys();
-                    for (int i = 0; i &lt; keys.GetLength(); ++i) {
-                        String val;
-                        parameters.TryGetValue(keys[i], val);
-                        stdParams[keys[i].GetRawString()] = val.GetRawString();
-                    }</span>
-
-<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; stdColNames;</span>
-
-<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; tokens = m_pImpl-&gt;Tokenize(stdSql);
+                    columnNames.Clear();
+                    std::unordered_map&lt;std::string, std::string&gt; stdParams = ConvertParamsMap(parameters);
+                    std::vector&lt;std::string&gt; tokens = m_pImpl-&gt;Tokenize(sql.GetRawString());
                     if (tokens.empty()) return Collections::Generic::List&lt;Row&gt;();</span>
 
-<span style = "background-color:#dfd">                    std::string cmd = m_pImpl-&gt;ToUpper(tokens[0]);</span>
-
-<span style = "background-color:#dfd">                    std::vector&lt;StdRow&gt; stdResRows;
-                    if (cmd == "CREATE") {
-                        m_pImpl-&gt;ExecuteCreate(tokens);
-                    }
-                    else if (cmd == "INSERT") {
-                        m_pImpl-&gt;ExecuteInsert(tokens, stdParams, rowsAffected);
-                    }
-                    else if (cmd == "SELECT") {
-                        stdResRows = m_pImpl-&gt;ExecuteSelect(tokens, stdParams, stdColNames);
-                    }
-                    else if (cmd == "UPDATE") {
-                        m_pImpl-&gt;ExecuteUpdate(tokens, stdParams, rowsAffected);
-                    }
-                    else if (cmd == "DELETE") {
-                        m_pImpl-&gt;ExecuteDelete(tokens, stdParams, rowsAffected);</span>
-                    }
-
-<span style = "background-color:#dfd">                    for (const auto&amp; col : stdColNames) {
-                        columnNames.Add(String(col.c_str()));</span>
-                    }
-
-<span style = "background-color:#dfd">                    Collections::Generic::List&lt;Row&gt; resultRows;
-                    for (const auto&amp; sr : stdResRows) {
-                        Row r;
-                        for (const auto&amp; v : sr.Values) {
-                            r.Values.Add(String(v.c_str()));</span>
-                        }
-<span style = "background-color:#dfd">                        resultRows.Add(r);</span>
-                    }
-<span style = "background-color:#dfd">                    return resultRows;
+<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; stdColNames;
+                    std::vector&lt;StdRow&gt; stdResRows = m_pImpl-&gt;DispatchCommand(m_pImpl-&gt;ToUpper(tokens[0]), tokens, stdParams, stdColNames, rowsAffected);
+                    return ConvertResultRows(stdResRows, stdColNames, columnNames);
                 }</span>
 
             }

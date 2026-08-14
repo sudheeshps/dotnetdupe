@@ -95,20 +95,16 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            bool Semaphore::TryOpenExisting(const String&amp; sName, SmartPointer&lt;Semaphore&gt;&amp; pResult) {
                 pResult = SmartPointer&lt;Semaphore&gt;();
-                if (sName.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    return false;</span>
-                }
+                if (sName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer&lt;Semaphore&gt; spSem = SmartPointer&lt;Semaphore&gt;::NewShared(0, 1);
-                    spSem-&gt;_name = sName;
-                    spSem-&gt;_hHandle = h;
-                    pResult = std::move(spSem);
-                    return true;</span>
-                }
-<span style = "background-color:#dfd">                return false;</span>
+                if (h == NULL) return false;
+                SmartPointer&lt;Semaphore&gt; spSem = SmartPointer&lt;Semaphore&gt;::NewShared(0, 1);
+                spSem-&gt;_name = sName;
+                spSem-&gt;_hHandle = h;
+                pResult = std::move(spSem);
+                return true;</span>
 #else
                 return false;
 #endif

@@ -4,6 +4,10 @@
 #include "System/String.h"
 #include "System/Uri.h"
 
+#ifdef SetPort
+#undef SetPort
+#endif
+
 namespace DotNetDupe {
     namespace System {
         class UriBuilder : public Object {

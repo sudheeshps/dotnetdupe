@@ -26,46 +26,54 @@ namespace DotNetDupe {
                     }
 
                     bool ReadFrameHeader(uint8_t& opcode, bool& masked, uint64_t& payloadLen) {
-                        uint8_t header[2] = { 0 };
-                        if (m_pStream->Read(reinterpret_cast<char*>(header), 0, 2) <= 0) return false;
-                        opcode = header[0] & 0x0F;
-                        masked = (header[1] & 0x80) != 0;
-                        payloadLen = header[1] & 0x7F;
-                        return true;
+                        try {
+                            uint8_t header[2] = { 0 };
+                            if (m_pStream->Read(reinterpret_cast<char*>(header), 0, 2) <= 0) return false;
+                            opcode = header[0] & 0x0F;
+                            masked = (header[1] & 0x80) != 0;
+                            payloadLen = header[1] & 0x7F;
+                            return true;
+                        } catch (...) {
+                            return false;
+                        }
                     }
 
                     bool ReadExtendedLength(uint64_t& payloadLen) {
-                        if (payloadLen == 126) {
-                            uint8_t extLen[2] = { 0 };
-                            if (m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 2) <= 0) return false;
-                            payloadLen = (static_cast<uint64_t>(extLen[0]) << 8) | extLen[1];
-                        } else if (payloadLen == 127) {
-                            uint8_t extLen[8] = { 0 };
-                            if (m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 8) <= 0) return false;
-                            payloadLen = 0;
-                            for (int i = 0; i < 8; ++i) {
-                                payloadLen = (payloadLen << 8) | extLen[i];
+                        try {
+                            if (payloadLen == 126) {
+                                uint8_t extLen[2] = { 0 };
+                                if (m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 2) <= 0) return false;
+                                payloadLen = (static_cast<uint64_t>(extLen[0]) << 8) | extLen[1];
+                            } else if (payloadLen == 127) {
+                                uint8_t extLen[8] = { 0 };
+                                if (m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 8) <= 0) return false;
+                                payloadLen = 0;
+                                for (int i = 0; i < 8; ++i) payloadLen = (payloadLen << 8) | extLen[i];
                             }
+                            return true;
+                        } catch (...) {
+                            return false;
                         }
-                        return true;
                     }
 
                     bool ReadMaskKeyAndPayload(bool masked, uint64_t payloadLen, std::vector<uint8_t>& payload) {
-                        uint8_t maskKey[4] = { 0 };
-                        if (masked && m_pStream->Read(reinterpret_cast<char*>(maskKey), 0, 4) <= 0) return false;
-                        payload.resize(payloadLen, 0);
-                        uint64_t totalRead = 0;
-                        while (totalRead < payloadLen) {
-                            int bytesRead = m_pStream->Read(reinterpret_cast<char*>(payload.data() + totalRead), 0, static_cast<int>(payloadLen - totalRead));
-                            if (bytesRead <= 0) return false;
-                            totalRead += bytesRead;
-                        }
-                        if (masked) {
-                            for (uint64_t i = 0; i < payloadLen; ++i) {
-                                payload[i] ^= maskKey[i % 4];
+                        try {
+                            uint8_t maskKey[4] = { 0 };
+                            if (masked && m_pStream->Read(reinterpret_cast<char*>(maskKey), 0, 4) <= 0) return false;
+                            payload.resize(payloadLen, 0);
+                            uint64_t totalRead = 0;
+                            while (totalRead < payloadLen) {
+                                int bytesRead = m_pStream->Read(reinterpret_cast<char*>(payload.data() + totalRead), 0, static_cast<int>(payloadLen - totalRead));
+                                if (bytesRead <= 0) return false;
+                                totalRead += bytesRead;
                             }
+                            if (masked) {
+                                for (uint64_t i = 0; i < payloadLen; ++i) payload[i] ^= maskKey[i % 4];
+                            }
+                            return true;
+                        } catch (...) {
+                            return false;
                         }
-                        return true;
                     }
                 };
 

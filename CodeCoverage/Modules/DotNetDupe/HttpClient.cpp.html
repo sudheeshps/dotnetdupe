@@ -47,8 +47,6 @@ namespace DotNetDupe {
                     return line;
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">				HttpClient::~HttpClient() = default;</span>
-
                 struct HttpClient::Impl : public Object {
                     Collections::Generic::Dictionary&lt;String, String&gt; m_defaultRequestHeaders;
                     SmartPointer&lt;Sockets::TcpClient&gt; m_pLastTcpClient;
@@ -246,25 +244,49 @@ namespace DotNetDupe {
                         return arrData;
                     }
 
-<span style = "background-color:#dfd">                    HttpResponseMessagePtr PrepareResponse(const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
-                        auto spResponse = ParseStatusLine(spStream);</span>
+<span style = "background-color:#dfd">                    SmartPointer&lt;IO::Stream&gt; ConnectStream(const Uri&amp; uri, const String&amp; scheme) {</span>
+                        int iPort = uri.GetPort() &gt; 0 ? uri.GetPort() : ((scheme == "https") ? 443 : 80);
+<span style = "background-color:#dfd">                        String sResolvedIp = ResolveHost(uri, iPort);
+                        m_pLastTcpClient = SmartPointer&lt;Sockets::TcpClient&gt;::NewShared();
+                        try { m_pLastTcpClient-&gt;Connect(sResolvedIp, iPort); }</span>
+<span style = "background-color:#fdd">                        catch (const Net::Sockets::SocketException&amp; ex) { throw HttpRequestException(ex.What()); }</span>
+<span style = "background-color:#dfd">                        SmartPointer&lt;IO::Stream&gt; spStream = m_pLastTcpClient-&gt;GetStream();
+                        if (scheme == "https") {
+                            auto spSsl = SmartPointer&lt;Net::Security::SslStream&gt;::NewShared(spStream, false);
+                            try { spSsl-&gt;AuthenticateAsClient(uri.GetHost()); }</span>
+<span style = "background-color:#fdd">                            catch (const SystemException&amp; ex) { throw HttpRequestException(ex.What()); }</span>
+<span style = "background-color:#dfd">                            spStream = spSsl;
+                        }
+                        return spStream;
+                    }</span>
 
-<span style = "background-color:#dfd">                        bool bChunked = false;
+<span style = "background-color:#dfd">                    HttpResponseMessagePtr BuildStreamResponse(const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
+                        auto spResponse = ParseStatusLine(spStream);
+                        bool bChunked = false; long lContentLength = -1; String sContentType = "text/plain";
+                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+                        auto spResponseContent = HttpContentPtr(new StreamContent(spStream), true);
+                        spResponseContent-&gt;GetHeaders()["Content-Type"] = sContentType;
+                        if (lContentLength &gt;= 0) spResponseContent-&gt;GetHeaders()["Content-Length"] = Convert::ToString(static_cast&lt;long long&gt;(lContentLength));
+                        spResponse-&gt;SetContent(spResponseContent);
+                        return spResponse;
+                    }</span>
+
+<span style = "background-color:#dfd">                    HttpResponseMessagePtr PrepareResponse(const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
+                        auto spResponse = ParseStatusLine(spStream);
+                        bool bChunked = false;
                         long lContentLength = -1;
                         String sContentType = "text/plain";
-                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);</span>
-
-<span style = "background-color:#dfd">                        Array&lt;char&gt; arrData = ReadResponseBody(spStream, bChunked, lContentLength);</span>
-
-<span style = "background-color:#dfd">                        auto spResponseContent = HttpContentPtr(new ByteArrayContent(arrData), true);
+                        ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
+                        Array&lt;char&gt; arrData = ReadResponseBody(spStream, bChunked, lContentLength);
+                        auto spResponseContent = HttpContentPtr(new ByteArrayContent(arrData), true);
                         spResponseContent-&gt;GetHeaders()["Content-Type"] = sContentType;
-                        spResponse-&gt;SetContent(spResponseContent);</span>
-
-<span style = "background-color:#dfd">                        return spResponse;
+                        spResponse-&gt;SetContent(spResponseContent);
+                        return spResponse;
                     }</span>
                 };
 
-<span style = "background-color:#dfd">                HttpClient::HttpClient() : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+<span style = "background-color:#dfd">                HttpClient::HttpClient() : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {}
+                HttpClient::~HttpClient() = default;</span>
 
 <span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const String&amp; requestUri) {
                     return Get(Uri(requestUri));
@@ -341,60 +363,14 @@ namespace DotNetDupe {
                 }</span>
 
 <span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request, HttpCompletionOption completionOption) {
-                    if (request.IsNull()) {</span>
-<span style = "background-color:#fdd">                        throw ArgumentNullException("request");</span>
-                    }
-
-<span style = "background-color:#dfd">                    Uri uri = request-&gt;GetRequestUri();
+                    if (request.IsNull()) throw ArgumentNullException("request");
+                    Uri uri = request-&gt;GetRequestUri();
                     String scheme = uri.GetScheme().ToLower();
-                    if (scheme != "http" &amp;&amp; scheme != "https") {
-                        throw ArgumentException("Only 'http' and 'https' schemes are supported.");</span>
-                    }
-
-                    int iPort = uri.GetPort();
-                    if (iPort &lt;= 0) {
-                        iPort = (scheme == "https") ? 443 : 80;
-                    }
-<span style = "background-color:#dfd">                    String sResolvedIp = m_pImpl-&gt;ResolveHost(uri, iPort);</span>
-
-<span style = "background-color:#dfd">                    m_pImpl-&gt;m_pLastTcpClient = SmartPointer&lt;Sockets::TcpClient&gt;::NewShared();</span>
-                    try {
-<span style = "background-color:#dfd">                        m_pImpl-&gt;m_pLastTcpClient-&gt;Connect(sResolvedIp, iPort);</span>
-<span style = "background-color:#fdd">                    } catch (const DotNetDupe::System::Net::Sockets::SocketException&amp; ex) {
-                        throw HttpRequestException(ex.What());</span>
-                    }
-
-<span style = "background-color:#dfd">                    SmartPointer&lt;IO::Stream&gt; spStream = m_pImpl-&gt;m_pLastTcpClient-&gt;GetStream();</span>
-
-<span style = "background-color:#dfd">                    if (scheme == "https") {
-                        auto spSslStream = SmartPointer&lt;Net::Security::SslStream&gt;::NewShared(spStream, false);</span>
-                        try {
-<span style = "background-color:#dfd">                            spSslStream-&gt;AuthenticateAsClient(uri.GetHost());</span>
-<span style = "background-color:#fdd">                        } catch (const SystemException&amp; ex) {
-                            throw HttpRequestException(ex.What());</span>
-                        }
-<span style = "background-color:#dfd">                        spStream = spSslStream;
-                    }</span>
-
-<span style = "background-color:#dfd">                    std::string sHeaders = m_pImpl-&gt;PrepareHeaders(request, uri);
-                    m_pImpl-&gt;SendRequest(spStream, sHeaders, request-&gt;GetContent());</span>
-
-<span style = "background-color:#dfd">                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) {
-                        auto spResponse = m_pImpl-&gt;ParseStatusLine(spStream);
-                        bool bChunked = false;
-                        long lContentLength = -1;
-                        String sContentType = "text/plain";
-                        m_pImpl-&gt;ParseHeaders(spStream, spResponse, bChunked, lContentLength, sContentType);
-                        auto spResponseContent = HttpContentPtr(new StreamContent(spStream), true);
-                        spResponseContent-&gt;GetHeaders()["Content-Type"] = sContentType;
-                        if (lContentLength &gt;= 0) {
-                            spResponseContent-&gt;GetHeaders()["Content-Length"] = Convert::ToString(static_cast&lt;long long&gt;(lContentLength));</span>
-                        }
-<span style = "background-color:#dfd">                        spResponse-&gt;SetContent(spResponseContent);
-                        return spResponse;</span>
-                    }
-
-<span style = "background-color:#dfd">                    return m_pImpl-&gt;PrepareResponse(spStream);
+                    if (scheme != "http" &amp;&amp; scheme != "https") throw ArgumentException("Only 'http' and 'https' schemes are supported.");
+                    auto spStream = m_pImpl-&gt;ConnectStream(uri, scheme);
+                    m_pImpl-&gt;SendRequest(spStream, m_pImpl-&gt;PrepareHeaders(request, uri), request-&gt;GetContent());
+                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) return m_pImpl-&gt;BuildStreamResponse(spStream);
+                    return m_pImpl-&gt;PrepareResponse(spStream);
                 }</span>
 
             }

@@ -92,29 +92,18 @@ namespace DotNetDupe {
                 return toRead;
             }</span>
 
+            static long CalculateSeekPosition(long currentPos, long length, long offset, int origin) {
+                if (origin == 0) return offset;
+                if (origin == 1) return currentPos + offset;
+                if (origin == 2) return length + offset;
+                throw ArgumentException("Invalid seek origin.");
+            }
+
 <span style = "background-color:#fdd">            long MemoryStream::Seek(long offset, int origin) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");</span>
-
-<span style = "background-color:#fdd">                long newPosition = m_pImpl-&gt;m_position;
-                switch (origin) {</span>
-                    case 0: // Begin
-<span style = "background-color:#fdd">                        newPosition = offset;</span>
-                        break;
-                    case 1: // Current
-<span style = "background-color:#fdd">                        newPosition += offset;
-                        break;</span>
-                    case 2: // End
-<span style = "background-color:#fdd">                        newPosition = GetLength() + offset;
-                        break;</span>
-                    default:
-<span style = "background-color:#fdd">                        throw ArgumentException("Invalid seek origin.");</span>
-                }
-
-<span style = "background-color:#fdd">                if (newPosition &lt; 0) {
-                    throw IOException("An attempt was made to move the file pointer before the beginning of the file.");</span>
-                }
-
-<span style = "background-color:#fdd">                m_pImpl-&gt;m_position = newPosition;
+                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+                long newPosition = CalculateSeekPosition(m_pImpl-&gt;m_position, GetLength(), offset, origin);
+                if (newPosition &lt; 0) throw IOException("An attempt was made to move the file pointer before the beginning of the file.");
+                m_pImpl-&gt;m_position = newPosition;
                 return m_pImpl-&gt;m_position;
             }</span>
 

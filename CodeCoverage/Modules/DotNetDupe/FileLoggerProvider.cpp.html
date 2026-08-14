@@ -46,16 +46,16 @@ namespace DotNetDupe {
 
             struct FileLoggerProvider::Impl {
                 LoggerConfiguration config;
-                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; context;
+                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; pContext;
             };
 
             FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration&amp; config)
 <span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
                 m_pImpl-&gt;config = config;
                 m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
-                m_pImpl-&gt;context = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
-                m_pImpl-&gt;context-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
-                m_pImpl-&gt;context-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+                m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
+                m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }</span>
 
             FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String&amp; filePath, bool isJsonFormat, LogLevel minLevel)
@@ -63,16 +63,16 @@ namespace DotNetDupe {
                 m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(filePath);
                 m_pImpl-&gt;config.IsJsonFormat = isJsonFormat;
                 m_pImpl-&gt;config.MinLevel = minLevel;
-                m_pImpl-&gt;context = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
-                m_pImpl-&gt;context-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
-                m_pImpl-&gt;context-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+                m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
+                m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }</span>
 
 <span style = "background-color:#dfd">            FileLoggerProvider::~FileLoggerProvider() {
-                if (m_pImpl &amp;&amp; m_pImpl-&gt;context &amp;&amp; m_pImpl-&gt;context-&gt;fileMutex &amp;&amp; m_pImpl-&gt;context-&gt;fileStream) {
-                    std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;context-&gt;fileMutex));
-                    if (m_pImpl-&gt;context-&gt;fileStream-&gt;is_open()) {
-                        m_pImpl-&gt;context-&gt;fileStream-&gt;close();</span>
+                if (m_pImpl &amp;&amp; m_pImpl-&gt;pContext &amp;&amp; m_pImpl-&gt;pContext-&gt;fileMutex &amp;&amp; m_pImpl-&gt;pContext-&gt;fileStream) {
+                    std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;pContext-&gt;fileMutex));
+                    if (m_pImpl-&gt;pContext-&gt;fileStream-&gt;is_open()) {
+                        m_pImpl-&gt;pContext-&gt;fileStream-&gt;close();</span>
                     }
 <span style = "background-color:#dfd">                }
             }</span>
@@ -82,7 +82,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; FileLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
-                return DotNetDupe::System::SmartPointer&lt;FileLogger&gt;::NewShared(categoryName, m_pImpl-&gt;config, m_pImpl-&gt;context);
+                return DotNetDupe::System::SmartPointer&lt;FileLogger&gt;::NewShared(categoryName, m_pImpl-&gt;config, m_pImpl-&gt;pContext);
             }</span>
 
         }

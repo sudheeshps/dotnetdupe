@@ -402,5 +402,23 @@ namespace SystemTests {
             ASSERT_THROW(Mutex::OpenExisting("Global\\DoesNotExist_Mutex"), WaitHandleCannotBeOpenedException);
             ASSERT_THROW(Semaphore::OpenExisting("Global\\DoesNotExist_Sem"), WaitHandleCannotBeOpenedException);
         }
+
+        TEST(InterlockedTest, Given32And64BitInterlocked_WhenAtomicOperationsInvoked_PerformsOperationsCorrectly) {
+            Interlocked<int> val32(10);
+            EXPECT_EQ(val32.Increment(), 11);
+            EXPECT_EQ(val32.Decrement(), 10);
+            EXPECT_EQ(val32.Add(5), 15);
+            EXPECT_EQ(val32.Exchange(50), 15);
+            EXPECT_EQ(val32.CompareExchange(100, 50), 50);
+            EXPECT_EQ(static_cast<int>(val32), 100);
+
+            Interlocked<long long> val64(1000LL);
+            EXPECT_EQ(val64.Increment(), 1001LL);
+            EXPECT_EQ(val64.Decrement(), 1000LL);
+            EXPECT_EQ(val64.Add(500LL), 1500LL);
+            EXPECT_EQ(val64.Exchange(5000LL), 1500LL);
+            EXPECT_EQ(val64.CompareExchange(10000LL, 5000LL), 5000LL);
+            EXPECT_EQ(static_cast<long long>(val64), 10000LL);
+        }
     }
 }

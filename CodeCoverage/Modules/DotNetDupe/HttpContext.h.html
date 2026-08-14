@@ -29,10 +29,10 @@ namespace DotNetDupe {
                 ~HttpRequest() override = default;
 
                 DotNetDupe::System::String GetMethod() const { return m_sMethod; }
-<span style = "background-color:#dfd">                void SetMethod(const DotNetDupe::System::String&amp; method) { m_sMethod = method; }</span>
+                void SetMethod(const DotNetDupe::System::String&amp; method) { m_sMethod = method; }
 
                 DotNetDupe::System::String GetPath() const { return m_sPath; }
-<span style = "background-color:#dfd">                void SetPath(const DotNetDupe::System::String&amp; path) { m_sPath = path; }</span>
+                void SetPath(const DotNetDupe::System::String&amp; path) { m_sPath = path; }
 
                 DotNetDupe::System::String GetBody() const { return m_sBody; }
                 void SetBody(const DotNetDupe::System::String&amp; body) { m_sBody = body; }
@@ -65,11 +65,11 @@ namespace DotNetDupe {
                 void SetStatusCode(DotNetDupe::System::Net::HttpStatusCode code) { m_nStatusCode = static_cast&lt;int&gt;(code); }
                 DotNetDupe::System::Net::HttpStatusCode GetStatusCodeEnum() const { return static_cast&lt;DotNetDupe::System::Net::HttpStatusCode&gt;(m_nStatusCode); }
 
-<span style = "background-color:#dfd">                DotNetDupe::System::String GetContentType() const { return m_sContentType; }</span>
+                DotNetDupe::System::String GetContentType() const { return m_sContentType; }
                 void SetContentType(const DotNetDupe::System::String&amp; type) { m_sContentType = type; }
 
                 DotNetDupe::System::String GetBody() const { return m_sBody; }
-<span style = "background-color:#dfd">                void SetBody(const DotNetDupe::System::String&amp; body) { m_sBody = body; }</span>
+                void SetBody(const DotNetDupe::System::String&amp; body) { m_sBody = body; }
 
                 void Write(const DotNetDupe::System::String&amp; text) { m_sBody = m_sBody + text; }
 
@@ -103,8 +103,8 @@ namespace DotNetDupe {
                 }</span>
                 ~HttpContext() override = default;
 
-<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;HttpRequest&gt; GetRequest() const { return m_spRequest; }
-                DotNetDupe::System::SmartPointer&lt;HttpResponse&gt; GetResponse() const { return m_spResponse; }</span>
+                DotNetDupe::System::SmartPointer&lt;HttpRequest&gt; GetRequest() const { return m_spRequest; }
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;HttpResponse&gt; GetResponse() const { return m_spResponse; }</span>
 
             private:
                 DotNetDupe::System::SmartPointer&lt;HttpRequest&gt; m_spRequest;

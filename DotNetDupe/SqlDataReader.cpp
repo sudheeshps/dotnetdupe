@@ -50,7 +50,8 @@ namespace DotNetDupe {
                 }
 
                 bool SqlDataReader::IsDBNull(int iOrdinal) {
-                    return GetString(iOrdinal).IsEmpty();
+                    DotNetDupe::System::String sVal = GetString(iOrdinal);
+                    return sVal.IsEmpty() || sVal == "NULL" || sVal == "null";
                 }
 
                 int SqlDataReader::GetFieldCount() const {

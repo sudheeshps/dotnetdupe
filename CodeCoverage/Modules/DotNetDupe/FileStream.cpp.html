@@ -35,51 +35,24 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-<span style = "background-color:#dfd">            FileStream::FileStream(const String&amp; sPath, int iMode) : m_sPath(sPath), m_iMode(iMode) {</span>
-                std::ios_base::openmode openMode = std::ios_base::binary;
-
-<span style = "background-color:#dfd">                if (iMode == 0) { // FileMode::CreateNew
-                    if (fs::exists(ToFsPath(sPath))) {</span>
-<span style = "background-color:#fdd">                        throw IOException("File already exists.");</span>
-                    }
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-<span style = "background-color:#dfd">                } else if (iMode == 1) { // FileMode::Create</span>
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-<span style = "background-color:#dfd">                } else if (iMode == 2) { // FileMode::Open
-                    openMode |= std::ios_base::in | std::ios_base::out;</span>
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-<span style = "background-color:#dfd">                    m_bCanSeek = true;
-                } else if (iMode == 3) { // FileMode::OpenOrCreate</span>
-<span style = "background-color:#fdd">                    openMode |= std::ios_base::in | std::ios_base::out;</span>
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-<span style = "background-color:#fdd">                    m_bCanSeek = true;</span>
-<span style = "background-color:#dfd">                } else if (iMode == 4) { // FileMode::Truncate</span>
-                    openMode |= std::ios_base::in | std::ios_base::out | std::ios_base::trunc;
-                    m_bCanRead = true;
-                    m_bCanWrite = true;
-                    m_bCanSeek = true;
-<span style = "background-color:#dfd">                } else if (iMode == 5) { // FileMode::Append
-                    openMode |= std::ios_base::out | std::ios_base::app;
-                    m_bCanRead = false;</span>
-                    m_bCanWrite = true;
-<span style = "background-color:#dfd">                    m_bCanSeek = false;</span>
-                } else {
-<span style = "background-color:#fdd">                    throw ArgumentException("Invalid FileMode");</span>
+<span style = "background-color:#dfd">            static std::ios_base::openmode DetermineOpenMode(int iMode, const String&amp; sPath, bool&amp; bCanRead, bool&amp; bCanWrite, bool&amp; bCanSeek) {
+                if (iMode &lt; 0 || iMode &gt; 5) throw ArgumentException("Invalid FileMode");
+                if (iMode == 0 &amp;&amp; fs::exists(ToFsPath(sPath))) throw IOException("File already exists.");
+                if (iMode == 5) {
+                    bCanRead = false; bCanWrite = true; bCanSeek = false;
+                    return std::ios_base::binary | std::ios_base::out | std::ios_base::app;</span>
                 }
+<span style = "background-color:#dfd">                bCanRead = true; bCanWrite = true; bCanSeek = true;
+                std::ios_base::openmode m = std::ios_base::binary | std::ios_base::in | std::ios_base::out;
+                if (iMode == 0 || iMode == 1 || iMode == 4) m |= std::ios_base::trunc;
+                return m;
+            }</span>
 
-<span style = "background-color:#dfd">                m_fsFileStream.open(ToFsPath(sPath), openMode);
-                if (!m_fsFileStream.is_open()) {
-                    throw IOException("Could not open file.");</span>
-                }
-<span style = "background-color:#dfd">            }</span>
+<span style = "background-color:#dfd">            FileStream::FileStream(const String&amp; sPath, int iMode) : m_sPath(sPath), m_iMode(iMode) {
+                std::ios_base::openmode openMode = DetermineOpenMode(iMode, sPath, m_bCanRead, m_bCanWrite, m_bCanSeek);
+                m_fsFileStream.open(ToFsPath(sPath), openMode);
+                if (!m_fsFileStream.is_open()) throw IOException("Could not open file.");
+            }</span>
 
 <span style = "background-color:#dfd">            FileStream::~FileStream() {
                 Dispose();

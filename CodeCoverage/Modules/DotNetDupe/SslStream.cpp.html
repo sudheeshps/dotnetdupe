@@ -101,32 +101,31 @@ namespace DotNetDupe {
                     }
                 }
 
+<span style = "background-color:#dfd">                static SSL* CreateAndBindSsl(SSL_CTX* ctx, void*&amp; pBioIn, void*&amp; pBioOut) {
+                    SSL* ssl = SSL_new(ctx);
+                    if (!ssl) {</span>
+<span style = "background-color:#fdd">                        SSL_CTX_free(ctx);
+                        throw IO::IOException("Failed to create SSL handle.");</span>
+                    }
+<span style = "background-color:#dfd">                    BIO* bioIn = BIO_new(BIO_s_mem());
+                    BIO* bioOut = BIO_new(BIO_s_mem());
+                    pBioIn = bioIn;
+                    pBioOut = bioOut;
+                    SSL_set_bio(ssl, bioIn, bioOut);
+                    return ssl;
+                }</span>
+
 <span style = "background-color:#dfd">                void SslStream::AuthenticateAsClient(const String&amp; targetHost) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");</span>
 
 <span style = "background-color:#dfd">                    SSL_CTX* ctx = static_cast&lt;SSL_CTX*&gt;(CreateSslContext(false));
-                    m_pSslCtx = ctx;</span>
-
-<span style = "background-color:#dfd">                    SSL* ssl = SSL_new(ctx);
-                    if (!ssl) {</span>
-<span style = "background-color:#fdd">                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw IO::IOException("Failed to create SSL handle.");</span>
-                    }
-
-<span style = "background-color:#dfd">                    m_pSsl = ssl;
-                    SSL_set_tlsext_host_name(ssl, targetHost.GetRawString());</span>
-
-<span style = "background-color:#dfd">                    BIO* bioIn = BIO_new(BIO_s_mem());
-                    BIO* bioOut = BIO_new(BIO_s_mem());
-                    m_pBioIn = bioIn;
-                    m_pBioOut = bioOut;</span>
-
-<span style = "background-color:#dfd">                    SSL_set_bio(ssl, bioIn, bioOut);
-                    SSL_set_connect_state(ssl);</span>
-
-<span style = "background-color:#dfd">                    ProcessHandshake();
+                    m_pSslCtx = ctx;
+                    SSL* ssl = CreateAndBindSsl(ctx, m_pBioIn, m_pBioOut);
+                    m_pSsl = ssl;
+                    SSL_set_tlsext_host_name(ssl, targetHost.GetRawString());
+                    SSL_set_connect_state(ssl);
+                    ProcessHandshake();
                 }</span>
 
 <span style = "background-color:#dfd">                void SslStream::AuthenticateAsServer(const SmartPointer&lt;::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2&gt;&amp; certificate) {
@@ -135,72 +134,55 @@ namespace DotNetDupe {
                     if (certificate.IsNull()) throw ArgumentNullException("certificate cannot be null.");</span>
 
 <span style = "background-color:#dfd">                    SSL_CTX* ctx = static_cast&lt;SSL_CTX*&gt;(CreateSslContext(true));
-                    m_pSslCtx = ctx;</span>
-
-<span style = "background-color:#dfd">                    ConfigureServerCert(ctx, certificate);</span>
-
-<span style = "background-color:#dfd">                    SSL* ssl = SSL_new(ctx);
-                    if (!ssl) {</span>
-<span style = "background-color:#fdd">                        SSL_CTX_free(ctx);
-                        m_pSslCtx = nullptr;
-                        throw IO::IOException("Failed to create SSL handle.");</span>
-                    }
-
-<span style = "background-color:#dfd">                    m_pSsl = ssl;</span>
-
-<span style = "background-color:#dfd">                    BIO* bioIn = BIO_new(BIO_s_mem());
-                    BIO* bioOut = BIO_new(BIO_s_mem());
-                    m_pBioIn = bioIn;
-                    m_pBioOut = bioOut;</span>
-
-<span style = "background-color:#dfd">                    SSL_set_bio(ssl, bioIn, bioOut);
-                    SSL_set_accept_state(ssl);</span>
-
-<span style = "background-color:#dfd">                    ProcessHandshake();
+                    m_pSslCtx = ctx;
+                    ConfigureServerCert(ctx, certificate);
+                    SSL* ssl = CreateAndBindSsl(ctx, m_pBioIn, m_pBioOut);
+                    m_pSsl = ssl;
+                    SSL_set_accept_state(ssl);
+                    ProcessHandshake();
                 }</span>
 
-<span style = "background-color:#dfd">                void SslStream::ProcessHandshake() {
-                    SSL* ssl = static_cast&lt;SSL*&gt;(m_pSsl);</span>
-                    
-<span style = "background-color:#dfd">                    while (!SSL_is_init_finished(ssl)) {
-                        int ret = SSL_do_handshake(ssl);
-                        if (ret == 1) {</span>
-                            break; // Handshake complete!
-                        }
-                        
-<span style = "background-color:#dfd">                        int err = SSL_get_error(ssl, ret);
-                        if (err == SSL_ERROR_WANT_READ) {
-                            FlushOutboundBio();</span>
-                            
-                            char buffer[4096];
-<span style = "background-color:#dfd">                            int read = m_spInnerStream-&gt;Read(buffer, 0, sizeof(buffer));
-                            if (read &lt;= 0) {</span>
-<span style = "background-color:#fdd">                                throw IO::IOException("Connection closed during SSL handshake.");</span>
-                            }
-                            
-<span style = "background-color:#dfd">                            BIO_write(static_cast&lt;BIO*&gt;(m_pBioIn), buffer, read);</span>
-<span style = "background-color:#fdd">                        } else if (err == SSL_ERROR_WANT_WRITE) {
-                            FlushOutboundBio();</span>
-                        } else {
-                            char errBuf[256];
-<span style = "background-color:#fdd">                            ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                            throw IO::IOException(String("SSL handshake failed: ") + errBuf);</span>
-                        }
+<span style = "background-color:#dfd">                static void PumpNetworkToBio(IO::Stream* pStream, void* pBioIn, const char* pErrorContext) {</span>
+                    char buffer[4096];
+<span style = "background-color:#dfd">                    int read = pStream-&gt;Read(buffer, 0, sizeof(buffer));
+                    if (read &lt;= 0) throw IO::IOException(pErrorContext);
+                    BIO_write(static_cast&lt;BIO*&gt;(pBioIn), buffer, read);
+                }</span>
+
+<span style = "background-color:#dfd">                static void FlushBioOutbound(void* pBioOut, const SmartPointer&lt;IO::Stream&gt;&amp; spInnerStream) {
+                    if (!pBioOut) return;</span>
+                    char buffer[4096];
+                    while (true) {
+<span style = "background-color:#dfd">                        int read = BIO_read(static_cast&lt;BIO*&gt;(pBioOut), buffer, sizeof(buffer));
+                        if (read &lt;= 0) break;
+                        spInnerStream-&gt;Write(buffer, 0, read);</span>
                     }
-                    
+<span style = "background-color:#dfd">                }</span>
+
+                static void HandleHandshakeError(int err, void* pBioIn, void* pBioOut, const SmartPointer&lt;IO::Stream&gt;&amp; spStream) {
+                    FlushBioOutbound(pBioOut, spStream);
+                    if (err == SSL_ERROR_WANT_READ) {
+                        PumpNetworkToBio(spStream.Get(), pBioIn, "Connection closed during SSL handshake.");
+                    } else if (err != SSL_ERROR_WANT_WRITE) {
+                        char errBuf[256];
+                        ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                        throw IO::IOException(String("SSL handshake failed: ") + errBuf);
+                    }
+                }
+
+<span style = "background-color:#dfd">                void SslStream::ProcessHandshake() {
+                    SSL* ssl = static_cast&lt;SSL*&gt;(m_pSsl);
+                    while (!SSL_is_init_finished(ssl)) {
+                        int ret = SSL_do_handshake(ssl);
+                        if (ret == 1) break;
+                        HandleHandshakeError(SSL_get_error(ssl, ret), m_pBioIn, m_pBioOut, m_spInnerStream);</span>
+                    }
 <span style = "background-color:#dfd">                    FlushOutboundBio();
                 }</span>
 
-<span style = "background-color:#dfd">                void SslStream::FlushOutboundBio() {
-                    if (!m_pBioOut) return;</span>
-                    
-                    char buffer[4096];
-                    while (true) {
-<span style = "background-color:#dfd">                        int read = BIO_read(static_cast&lt;BIO*&gt;(m_pBioOut), buffer, sizeof(buffer));
-                        if (read &lt;= 0) break;
-                        m_spInnerStream-&gt;Write(buffer, 0, read);</span>
-                    }
-<span style = "background-color:#dfd">                }</span>
+                void SslStream::FlushOutboundBio() {
+                    FlushBioOutbound(m_pBioOut, m_spInnerStream);
+                }
 
 <span style = "background-color:#dfd">                bool SslStream::CanRead() const { return !m_bDisposed; }
                 bool SslStream::CanSeek() const { return false; }
@@ -214,76 +196,63 @@ namespace DotNetDupe {
                     m_spInnerStream-&gt;Flush();
                 }</span>
 
-<span style = "background-color:#fdd">                long SslStream::Seek(long offset, int origin) {
-                    throw IO::IOException("SslStream does not support seeking.");</span>
-                }
+<span style = "background-color:#fdd">                long SslStream::Seek(long offset, int origin) { throw IO::IOException("SslStream does not support seeking."); }
+                void SslStream::SetLength(long value) { throw IO::IOException("SslStream does not support seeking."); }</span>
 
-<span style = "background-color:#fdd">                void SslStream::SetLength(long value) {
-                    throw IO::IOException("SslStream does not support seeking.");</span>
+                static int HandleReadError(int err, const SmartPointer&lt;IO::Stream&gt;&amp; spStream, void* pBioIn, void* pBioOut) {
+                    if (err == SSL_ERROR_WANT_READ) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        char rawBuf[4096];
+                        int read = spStream-&gt;Read(rawBuf, 0, sizeof(rawBuf));
+                        if (read &lt;= 0) return 0;
+                        BIO_write(static_cast&lt;BIO*&gt;(pBioIn), rawBuf, read);
+                        return -1;
+                    }
+                    if (err == SSL_ERROR_ZERO_RETURN) return 0;
+                    if (err == SSL_ERROR_WANT_WRITE) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        return -1;
+                    }
+                    char errBuf[256];
+                    ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                    throw IO::IOException(String("SSL read failed: ") + errBuf);
                 }
 
 <span style = "background-color:#dfd">                int SslStream::Read(char* buffer, int offset, int count) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");</span>
-                    
                     SSL* ssl = static_cast&lt;SSL*&gt;(m_pSsl);
-                    
                     while (true) {
 <span style = "background-color:#dfd">                        int ret = SSL_read(ssl, buffer + offset, count);
-                        if (ret &gt; 0) {</span>
-                            return ret;
-                        }
-                        
-<span style = "background-color:#dfd">                        int err = SSL_get_error(ssl, ret);
-                        if (err == SSL_ERROR_WANT_READ) {
-                            FlushOutboundBio();</span>
-                            
-                            char rawBuf[4096];
-<span style = "background-color:#dfd">                            int read = m_spInnerStream-&gt;Read(rawBuf, 0, sizeof(rawBuf));
-                            if (read &lt;= 0) {</span>
-                                return 0; // EOF
-                            }
-                            
-<span style = "background-color:#dfd">                            BIO_write(static_cast&lt;BIO*&gt;(m_pBioIn), rawBuf, read);</span>
-<span style = "background-color:#fdd">                        } else if (err == SSL_ERROR_ZERO_RETURN) {</span>
-<span style = "background-color:#dfd">                            return 0; // SSL closed cleanly</span>
-<span style = "background-color:#fdd">                        } else if (err == SSL_ERROR_WANT_WRITE) {
-                            FlushOutboundBio();</span>
-                        } else {
-                            char errBuf[256];
-<span style = "background-color:#fdd">                            ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                            throw IO::IOException(String("SSL read failed: ") + errBuf);</span>
-                        }
+                        if (ret &gt; 0) return ret;
+                        int r = HandleReadError(SSL_get_error(ssl, ret), m_spInnerStream, m_pBioIn, m_pBioOut);
+                        if (r &gt;= 0) return r;</span>
                     }
 <span style = "background-color:#dfd">                }</span>
+
+                static void HandleWriteError(int err, const SmartPointer&lt;IO::Stream&gt;&amp; spStream, void* pBioIn, void* pBioOut) {
+                    if (err == SSL_ERROR_WANT_WRITE) {
+                        FlushBioOutbound(pBioOut, spStream);
+                    } else if (err == SSL_ERROR_WANT_READ) {
+                        FlushBioOutbound(pBioOut, spStream);
+                        PumpNetworkToBio(spStream.Get(), pBioIn, "Connection closed during SSL write.");
+                    } else {
+                        char errBuf[256];
+                        ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
+                        throw IO::IOException(String("SSL write failed: ") + errBuf);
+                    }
+                }
 
 <span style = "background-color:#dfd">                void SslStream::Write(const char* buffer, int offset, int count) {
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");</span>
-                    
                     SSL* ssl = static_cast&lt;SSL*&gt;(m_pSsl);
-                    
 <span style = "background-color:#dfd">                    int written = 0;
                     while (written &lt; count) {
                         int ret = SSL_write(ssl, buffer + offset + written, count - written);
                         if (ret &lt;= 0) {</span>
-<span style = "background-color:#fdd">                            int err = SSL_get_error(ssl, ret);
-                            if (err == SSL_ERROR_WANT_WRITE) {</span>
-                                FlushOutboundBio();
-<span style = "background-color:#fdd">                            } else if (err == SSL_ERROR_WANT_READ) {
-                                FlushOutboundBio();</span>
-                                char rawBuf[4096];
-<span style = "background-color:#fdd">                                int read = m_spInnerStream-&gt;Read(rawBuf, 0, sizeof(rawBuf));
-                                if (read &lt;= 0) {
-                                    throw IO::IOException("Connection closed during SSL write.");</span>
-                                }
-<span style = "background-color:#fdd">                                BIO_write(static_cast&lt;BIO*&gt;(m_pBioIn), rawBuf, read);</span>
-                            } else {
-                                char errBuf[256];
-<span style = "background-color:#fdd">                                ERR_error_string_n(ERR_get_error(), errBuf, sizeof(errBuf));
-                                throw IO::IOException(String("SSL write failed: ") + errBuf);</span>
-                            }
-<span style = "background-color:#fdd">                        } else {</span>
+<span style = "background-color:#fdd">                            HandleWriteError(SSL_get_error(ssl, ret), m_spInnerStream, m_pBioIn, m_pBioOut);
+                        } else {</span>
 <span style = "background-color:#dfd">                            written += ret;</span>
                             FlushOutboundBio();
                         }

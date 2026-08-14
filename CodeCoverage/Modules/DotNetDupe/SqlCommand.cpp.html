@@ -51,48 +51,31 @@ namespace DotNetDupe {
                     return m_pImpl-&gt;m_parameters;
                 }</span>
 
+<span style = "background-color:#dfd">                static Collections::Generic::Dictionary&lt;String, String&gt; ExtractDbParameters(const DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt;&amp; pParams) {
+                    Collections::Generic::Dictionary&lt;String, String&gt; dict;
+                    for (int i = 0; i &lt; pParams-&gt;GetCount(); ++i) {
+                        auto p = pParams-&gt;GetAt(i);
+                        dict.Add(p-&gt;GetParameterName(), p-&gt;GetValue());
+                    }
+                    return dict;
+                }</span>
+
 <span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbDataReader&gt; SqlCommand::ExecuteReader() {
-                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();</span>
-                    
-<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt; params;
-                    for (int i = 0; i &lt; m_pImpl-&gt;m_parameters-&gt;GetCount(); ++i) {
-                        auto p = m_pImpl-&gt;m_parameters-&gt;GetAt(i);
-                        params.Add(p-&gt;GetParameterName(), p-&gt;GetValue());
-                    }</span>
-
-<span style = "background-color:#dfd">                    Collections::Generic::List&lt;String&gt; columns;
+                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();
+                    auto params = ExtractDbParameters(m_pImpl-&gt;m_parameters);
+                    Collections::Generic::List&lt;String&gt; columns;
                     int rowsAffected = 0;
-                    auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(</span>
-                        dbName,
-                        m_pImpl-&gt;m_sCommandText,
-                        params,
-                        columns,
-                        rowsAffected
-                    );
-
-<span style = "background-color:#dfd">                    return DotNetDupe::System::SmartPointer&lt;SqlDataReader&gt;::NewShared(std::move(resultRows), std::move(columns));
+                    auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl-&gt;m_sCommandText, params, columns, rowsAffected);
+                    return DotNetDupe::System::SmartPointer&lt;SqlDataReader&gt;::NewShared(std::move(resultRows), std::move(columns));
                 }</span>
 
 <span style = "background-color:#dfd">                int SqlCommand::ExecuteNonQuery() {
-                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();</span>
-
-<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt; params;
-                    for (int i = 0; i &lt; m_pImpl-&gt;m_parameters-&gt;GetCount(); ++i) {
-                        auto p = m_pImpl-&gt;m_parameters-&gt;GetAt(i);
-                        params.Add(p-&gt;GetParameterName(), p-&gt;GetValue());
-                    }</span>
-
-<span style = "background-color:#dfd">                    Collections::Generic::List&lt;String&gt; columns;
+                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();
+                    auto params = ExtractDbParameters(m_pImpl-&gt;m_parameters);
+                    Collections::Generic::List&lt;String&gt; columns;
                     int rowsAffected = 0;
-                    DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(</span>
-                        dbName,
-                        m_pImpl-&gt;m_sCommandText,
-                        params,
-                        columns,
-                        rowsAffected
-                    );
-
-<span style = "background-color:#dfd">                    return rowsAffected;
+                    DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl-&gt;m_sCommandText, params, columns, rowsAffected);
+                    return rowsAffected;
                 }</span>
 
 <span style = "background-color:#fdd">                DotNetDupe::System::String SqlCommand::ExecuteScalar() {

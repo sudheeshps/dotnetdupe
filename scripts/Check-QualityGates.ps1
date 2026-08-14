@@ -236,7 +236,7 @@ if ($EmptyCatchViolations.Count -eq 0) {
 Write-Host "`n--- Check 6: Public API STL Leakage Scanner ---"
 
 foreach ($file in $headerFiles) {
-    if ($file.FullName -match [regex]::Escape("System\Utils\")) { continue }
+    if (($file.FullName -replace '\\', '/') -match 'System/Utils/') { continue }
 
     $lines = Get-Content $file.FullName
     $lineNum = 0

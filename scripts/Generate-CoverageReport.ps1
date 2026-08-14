@@ -45,7 +45,7 @@ if (-not (Test-Path $targetOutDir)) {
 Write-Host "[2/3] Running OpenCppCoverage against tests..." -ForegroundColor Yellow
 Push-Location $RootDir
 try {
-    & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --export_type "html:$OutputDir" -- $testsExe
+    & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --excluded_sources *Linux* --export_type "html:$OutputDir" -- $testsExe
     if ($LASTEXITCODE -ne 0) {
         Write-Warning "Test runner exited with code $LASTEXITCODE"
     }

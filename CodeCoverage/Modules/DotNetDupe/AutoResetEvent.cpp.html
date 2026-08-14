@@ -43,21 +43,17 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool AutoResetEvent::TryOpenExisting(const String&amp; sName, SmartPointer&lt;AutoResetEvent&gt;&amp; pResult) {
-                pResult = SmartPointer&lt;AutoResetEvent&gt;();
-                if (sName.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    return false;</span>
-                }
+                pResult = nullptr;
+                if (sName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer&lt;AutoResetEvent&gt; spEvt = SmartPointer&lt;AutoResetEvent&gt;::NewShared(false);
-                    spEvt-&gt;_name = sName;
-                    spEvt-&gt;_hHandle = h;
-                    pResult = std::move(spEvt);
-                    return true;</span>
-                }
-<span style = "background-color:#dfd">                return false;</span>
+                if (!h) return false;
+                auto spEvt = SmartPointer&lt;AutoResetEvent&gt;::NewShared(false);
+                spEvt-&gt;_name = sName;
+                spEvt-&gt;_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;</span>
 #else
                 return false;
 #endif

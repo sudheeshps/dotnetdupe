@@ -115,7 +115,7 @@ namespace DotNetDupe {
                         }
                         try {
 <span style = "background-color:#dfd">                            port = std::stoi(sPort);</span>
-<span style = "background-color:#fdd">                        } catch (...) {
+<span style = "background-color:#fdd">                        } catch (const std::exception&amp;) {
                             port = 5000;
                         }</span>
 <span style = "background-color:#dfd">                    } else {</span>

@@ -3,10 +3,12 @@
 #include "System/Array.h"
 #include "System/OverflowException.h"
 #include "System/FormatException.h"
+#include "System/ArgumentException.h"
 #include <string>
 #include <limits>
 #include <algorithm>
 #include <cwctype>
+#include <cstring>
 
 namespace DotNetDupe {
     namespace System {
@@ -24,6 +26,7 @@ namespace DotNetDupe {
         bool Convert::ToBoolean(int iValue) { return iValue != 0; }
         bool Convert::ToBoolean(long long llValue) { return llValue != 0; }
         bool Convert::ToBoolean(double value) { return value != 0.0; }
+        bool Convert::ToBoolean(const char* value) { return ToBoolean(String(value)); }
         bool Convert::ToBoolean(const String& sValue) {
             std::string s = (const char*)sValue;
             std::transform(s.begin(), s.end(), s.begin(), [](char c) { return (char)std::towlower(c); });
@@ -35,6 +38,8 @@ namespace DotNetDupe {
         // Byte
         unsigned char Convert::ToByte(bool bValue) { return bValue ? 1 : 0; }
         unsigned char Convert::ToByte(unsigned char chValue) { return chValue; }
+        unsigned char Convert::ToByte(const char* value) { return ToByte(String(value)); }
+        unsigned char Convert::ToByte(const char* value, int fromBase) { return ToByte(String(value), fromBase); }
         unsigned char Convert::ToByte(signed char chValue) { return CheckRange<unsigned char>(chValue); }
         unsigned char Convert::ToByte(short iValue) { return CheckRange<unsigned char>(iValue); }
         unsigned char Convert::ToByte(int iValue) { return CheckRange<unsigned char>(iValue); }
@@ -57,6 +62,7 @@ namespace DotNetDupe {
         // SByte
         signed char Convert::ToSByte(bool bValue) { return bValue ? 1 : 0; }
         signed char Convert::ToSByte(unsigned char chValue) { return CheckRange<signed char>(chValue); }
+        signed char Convert::ToSByte(const char* value) { return ToSByte(String(value)); }
         signed char Convert::ToSByte(signed char chValue) { return chValue; }
         signed char Convert::ToSByte(short iValue) { return CheckRange<signed char>(iValue); }
         signed char Convert::ToSByte(int iValue) { return CheckRange<signed char>(iValue); }
@@ -79,6 +85,7 @@ namespace DotNetDupe {
         char Convert::ToChar(unsigned short iValue) { return (char)iValue; }
         char Convert::ToChar(int iValue) { return CheckRange<char>(iValue); }
         char Convert::ToChar(long long llValue) { return CheckRange<char>(llValue); }
+        char Convert::ToChar(const char* value) { return ToChar(String(value)); }
         char Convert::ToChar(const String& sValue) {
             if (sValue.GetLength() != 1) throw FormatException("String must be exactly one character long.");
             return sValue[0];
@@ -88,6 +95,7 @@ namespace DotNetDupe {
         double Convert::ToDouble(int iValue) { return (double)iValue; }
         double Convert::ToDouble(long long llValue) { return (double)llValue; }
         double Convert::ToDouble(float value) { return (double)value; }
+        double Convert::ToDouble(const char* value) { return ToDouble(String(value)); }
         double Convert::ToDouble(const String& sValue) {
             try {
                 size_t nPos;
@@ -105,6 +113,7 @@ namespace DotNetDupe {
         float Convert::ToSingle(int iValue) { return (float)iValue; }
         float Convert::ToSingle(long long llValue) { return (float)llValue; }
         float Convert::ToSingle(double value) { return (float)value; }
+        float Convert::ToSingle(const char* value) { return ToSingle(String(value)); }
         float Convert::ToSingle(const String& sValue) {
             try {
                 size_t nPos;
@@ -124,6 +133,8 @@ namespace DotNetDupe {
         short Convert::ToInt16(int iValue) { return CheckRange<short>(iValue); }
         short Convert::ToInt16(long long llValue) { return CheckRange<short>(llValue); }
         short Convert::ToInt16(double value) { return CheckRange<short>(value); }
+        short Convert::ToInt16(const char* value) { return ToInt16(String(value)); }
+        short Convert::ToInt16(const char* value, int fromBase) { return ToInt16(String(value), fromBase); }
         short Convert::ToInt16(const String& sValue) { return ToInt16(sValue, 10); }
         short Convert::ToInt16(const String& sValue, int iFromBase) {
             try {
@@ -143,6 +154,8 @@ namespace DotNetDupe {
         int Convert::ToInt32(int iValue) { return iValue; }
         int Convert::ToInt32(long long llValue) { return CheckRange<int>(llValue); }
         int Convert::ToInt32(double value) { return CheckRange<int>(value); }
+        int Convert::ToInt32(const char* value) { return ToInt32(String(value)); }
+        int Convert::ToInt32(const char* value, int fromBase) { return ToInt32(String(value), fromBase); }
         int Convert::ToInt32(const String& sValue) { return ToInt32(sValue, 10); }
         int Convert::ToInt32(const String& sValue, int iFromBase) {
             try {
@@ -162,6 +175,8 @@ namespace DotNetDupe {
         long long Convert::ToInt64(int iValue) { return (long long)iValue; }
         long long Convert::ToInt64(long long llValue) { return llValue; }
         long long Convert::ToInt64(double value) { return (long long)value; }
+        long long Convert::ToInt64(const char* value) { return ToInt64(String(value)); }
+        long long Convert::ToInt64(const char* value, int fromBase) { return ToInt64(String(value), fromBase); }
         long long Convert::ToInt64(const String& sValue) { return ToInt64(sValue, 10); }
         long long Convert::ToInt64(const String& sValue, int iFromBase) {
             try {
@@ -181,6 +196,7 @@ namespace DotNetDupe {
         unsigned short Convert::ToUInt16(int iValue) { return CheckRange<unsigned short>(iValue); }
         unsigned short Convert::ToUInt16(long long llValue) { return CheckRange<unsigned short>(llValue); }
         unsigned short Convert::ToUInt16(double value) { return CheckRange<unsigned short>(value); }
+        unsigned short Convert::ToUInt16(const char* value) { return ToUInt16(String(value)); }
         unsigned short Convert::ToUInt16(const String& sValue) {
             try {
                 size_t nPos;
@@ -199,6 +215,7 @@ namespace DotNetDupe {
         unsigned int Convert::ToUInt32(int iValue) { return CheckRange<unsigned int>(iValue); }
         unsigned int Convert::ToUInt32(long long llValue) { return CheckRange<unsigned int>(llValue); }
         unsigned int Convert::ToUInt32(double value) { return CheckRange<unsigned int>(value); }
+        unsigned int Convert::ToUInt32(const char* value) { return ToUInt32(String(value)); }
         unsigned int Convert::ToUInt32(const String& sValue) {
             try {
                 size_t nPos;
@@ -217,6 +234,7 @@ namespace DotNetDupe {
         unsigned long long Convert::ToUInt64(int iValue) { return CheckRange<unsigned long long>(iValue); }
         unsigned long long Convert::ToUInt64(long long llValue) { return CheckRange<unsigned long long>(llValue); }
         unsigned long long Convert::ToUInt64(double value) { return (unsigned long long)value; }
+        unsigned long long Convert::ToUInt64(const char* value) { return ToUInt64(String(value)); }
         unsigned long long Convert::ToUInt64(const String& sValue) {
             try {
                 size_t nPos;
@@ -235,8 +253,16 @@ namespace DotNetDupe {
         String Convert::ToString(unsigned char chValue) { return String(std::to_string(chValue).c_str()); }
         String Convert::ToString(signed char chValue) { return String(std::to_string(chValue).c_str()); }
         String Convert::ToString(char chValue) { char buf[2] = { chValue, 0 }; return String(buf); }
-        String Convert::ToString(double value) { return String(std::to_string(value).c_str()); }
-        String Convert::ToString(float value) { return String(std::to_string(value).c_str()); }
+        String Convert::ToString(double value) {
+            char buf[64];
+            snprintf(buf, sizeof(buf), "%g", value);
+            return String(buf);
+        }
+        String Convert::ToString(float value) {
+            char buf[64];
+            snprintf(buf, sizeof(buf), "%g", static_cast<double>(value));
+            return String(buf);
+        }
         String Convert::ToString(short iValue) { return String(std::to_string(iValue).c_str()); }
         String Convert::ToString(int iValue) { return String(std::to_string(iValue).c_str()); }
         String Convert::ToString(long long llValue) { return String(std::to_string(llValue).c_str()); }
@@ -350,6 +376,10 @@ namespace DotNetDupe {
                 }
             }
             if (i) Convert::DecodeBase64Remainder(char_array_4, i, decoded);
+        }
+
+        Array<char> Convert::FromBase64String(const char* s) {
+            return FromBase64String(String(s));
         }
 
         Array<char> Convert::FromBase64String(const String& s) {

@@ -10,6 +10,12 @@ typedef unsigned char byte;
     #else
         #define DOTNETDUPE_API __declspec(dllimport)
     #endif
+    #ifdef SetPort
+        #undef SetPort
+    #endif
+    #ifdef GetPort
+        #undef GetPort
+    #endif
 #else
     #if __GNUC__ >= 4
         #define DOTNETDUPE_API __attribute__ ((visibility ("default")))

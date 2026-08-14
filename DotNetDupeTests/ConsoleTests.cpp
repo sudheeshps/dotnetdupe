@@ -341,5 +341,48 @@ namespace SystemTests {
 			// Cleanup
 			Console::Clear();
 		}
+
+		TEST(ConsoleTest, ConsoleColors_WhenSetAndReset_BehavesCorrectly) {
+			Console::SetForegroundColor(ConsoleColor::Cyan);
+			EXPECT_EQ(Console::GetForegroundColor(), ConsoleColor::Cyan);
+
+			Console::SetBackgroundColor(ConsoleColor::DarkBlue);
+			EXPECT_EQ(Console::GetBackgroundColor(), ConsoleColor::DarkBlue);
+
+			Console::ResetColor();
+		}
+
+		TEST(ConsoleTest, ConsoleTitleAndLocks_WhenQueried_DoesNotThrow) {
+			Console::SetTitle("DotNetDupe Console Test");
+			String title = Console::GetTitle();
+			EXPECT_FALSE(title.IsEmpty());
+
+			bool bCaps = Console::GetCapsLock();
+			(void)bCaps;
+			bool bNum = Console::GetNumberLock();
+			(void)bNum;
+		}
+
+		TEST(ConsoleTest, WriteAndWriteLineOverloads_GivenNumericAndCharTypes_FormatsCorrectly) {
+			Console::Clear();
+			Console::Write(static_cast<long>(100));
+			Console::Write(static_cast<long long>(200));
+			Console::Write(1.5f);
+			Console::Write(2.5);
+			Console::Write(Char('X'));
+			Console::Write("ConstStr");
+			Console::WriteLine();
+
+			Console::WriteLine(static_cast<long>(300));
+			Console::WriteLine(static_cast<long long>(400));
+			Console::WriteLine(3.5f);
+			Console::WriteLine(4.5);
+			Console::WriteLine(Char('Y'));
+			Console::WriteLine("ConstStr2");
+
+			auto outputs = Console::GetOutputs();
+			EXPECT_GE(outputs.GetLength(), 6);
+			Console::Clear();
+		}
 	}
 }

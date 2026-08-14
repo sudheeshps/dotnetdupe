@@ -15,6 +15,8 @@
 #include "System/Threading/Lock.h"
 #include "System/Collections/Generic/List.h"
 #include "System/SystemException.h"
+#include "System/InvalidOperationException.h"
+#include "System/UnknownException.h"
 #include "System/TimeoutException.h"
 
 namespace DotNetDupe {
@@ -22,7 +24,7 @@ namespace DotNetDupe {
         namespace Threading {
             namespace Tasks {
 
-<span style = "background-color:#dfd">                static Collections::Generic::List&lt;SmartPointer&lt;Task&gt;&gt; s_vActiveTasks;
+<span style = "background-color:#dfd">                static Collections::Generic::List&lt;SmartPointer&lt;Task&gt;&gt; s_pvActiveTasks;
                 static CriticalSection s_csActiveTasks;</span>
 
                 Task::Task(Action&lt;&gt; objAction)
@@ -37,12 +39,12 @@ namespace DotNetDupe {
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         if (m_eStatus != TaskStatus::Created) {</span>
-<span style = "background-color:#fdd">                            throw SystemException("Task has already been started.");</span>
+<span style = "background-color:#fdd">                            throw InvalidOperationException("Task has already been started or executed.");</span>
                         }
 <span style = "background-color:#dfd">                        m_eStatus = TaskStatus::WaitingToRun;
                     }</span>
                     
-<span style = "background-color:#dfd">                    ThreadPool::QueueUserWorkItem(WaitCallback(&amp;Task::ThreadPoolCallback), this);
+<span style = "background-color:#dfd">                    ThreadPool::QueueUserWorkItem(&amp;Task::ThreadPoolCallback, this);
                 }</span>
 
 <span style = "background-color:#dfd">                void Task::Wait() {
@@ -51,32 +53,31 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                bool Task::Wait(int iMillisecondsTimeout) {</span>
                     try {
-<span style = "background-color:#dfd">                        m_pCompletionEvent-&gt;WaitOne(iMillisecondsTimeout);</span>
-<span style = "background-color:#fdd">                        return true;</span>
-<span style = "background-color:#dfd">                    } catch (const TimeoutException&amp;) {
+<span style = "background-color:#dfd">                        return m_pCompletionEvent-&gt;WaitOne(iMillisecondsTimeout);
+                    } catch (const TimeoutException&amp;) {
                         return false;</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                TaskStatus Task::GetStatus() const {
-                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus;
                 }</span>
 
 <span style = "background-color:#dfd">                bool Task::GetIsCompleted() const {
-                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::RanToCompletion || </span>
                            m_eStatus == TaskStatus::Faulted || 
                            m_eStatus == TaskStatus::Canceled;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                bool Task::GetIsFaulted() const {
-                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::Faulted;
                 }</span>
 
 <span style = "background-color:#fdd">                bool Task::GetIsCanceled() const {
-                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::Canceled;
                 }</span>
 
@@ -92,19 +93,15 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_eStatus = TaskStatus::Running;
                     }</span>
-
                     try {
-<span style = "background-color:#dfd">                        if (m_objAction) {
-                            m_objAction();</span>
-                        }
-<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+<span style = "background-color:#dfd">                        if (m_objAction) m_objAction();
+                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_eStatus = TaskStatus::RanToCompletion;
                     } catch (...) {
                         Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_eStatus = TaskStatus::Faulted;
-                    }</span>
-
-<span style = "background-color:#dfd">                    m_pCompletionEvent-&gt;Set();
+                    }
+                    m_pCompletionEvent-&gt;Set();
                     ReleaseTask(this);
                 }</span>
 
@@ -116,9 +113,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    SmartPointer&lt;Task&gt; spSelf(nullptr);</span>
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
-                        for (int i = 0; i &lt; s_vActiveTasks.GetCount(); ++i) {
-                            if (s_vActiveTasks[i].Get() == pTask) {
-                                spSelf = s_vActiveTasks[i];</span>
+                        for (int i = 0; i &lt; s_pvActiveTasks.GetCount(); ++i) {
+                            if (s_pvActiveTasks[i].Get() == pTask) {
+                                spSelf = s_pvActiveTasks[i];</span>
                                 break;
                             }
                         }
@@ -131,14 +128,14 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {
                     Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
-                    s_vActiveTasks.Add(pTask);
+                    s_pvActiveTasks.Add(pTask);
                 }</span>
 
                 void Task::ReleaseTask(Task* pTask) {
                     Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
-                    for (int i = 0; i &lt; s_vActiveTasks.GetCount(); ++i) {
-                        if (s_vActiveTasks[i].Get() == pTask) {
-                            s_vActiveTasks.RemoveAt(i);
+                    for (int i = 0; i &lt; s_pvActiveTasks.GetCount(); ++i) {
+                        if (s_pvActiveTasks[i].Get() == pTask) {
+                            s_pvActiveTasks.RemoveAt(i);
                             break;
                         }
                     }

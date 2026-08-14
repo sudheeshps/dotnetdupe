@@ -91,5 +91,40 @@ namespace SystemTests {
             sw.Write("");
             ASSERT_TRUE(sw.ToString().IsEmpty());
         }
+
+        TEST(StringWriterTest, Overloads_GivenPrimitiveTypes_FormatsAndAppendsCorrectly) {
+            StringWriter sw;
+            sw.Write(true);
+            sw.Write(false);
+            sw.Write('C');
+            sw.Write(42);
+            sw.Write(100LL);
+            sw.Write(3.14f);
+            sw.Write(2.718);
+            sw.WriteLine();
+
+            sw.WriteLine(true);
+            sw.WriteLine(false);
+            sw.WriteLine('D');
+            sw.WriteLine(99);
+            sw.WriteLine(500LL);
+            sw.WriteLine(1.23f);
+            sw.WriteLine(4.56);
+            sw.Flush();
+
+            EXPECT_FALSE(sw.ToString().IsEmpty());
+            sw.Close();
+        }
+
+        TEST(StringReaderTest, ReadBuffer_GivenCharArray_ReadsCorrectCount) {
+            StringReader sr("The quick brown fox");
+            char buffer[10] = { 0 };
+            int read = sr.Read(buffer, 0, 5);
+            EXPECT_EQ(read, 5);
+            EXPECT_EQ(buffer[0], 'T');
+            EXPECT_EQ(buffer[4], 'q');
+
+            sr.Close();
+        }
     }
 }

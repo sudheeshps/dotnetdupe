@@ -302,5 +302,42 @@ namespace DotNetDupeTests {
         EXPECT_EQ(resp.GetStatusCode(), HttpStatusCode::NotFound);
 
         EXPECT_THROW(resp.EnsureSuccessStatusCode(), HttpRequestException);
+
+        resp.SetReasonPhrase("Not Found Custom");
+        EXPECT_STREQ(resp.GetReasonPhrase().GetRawString(), "Not Found Custom");
+    }
+
+    TEST(HttpTests, GivenHttpRequestMessage_WhenConfigured_PropertiesAreRetained) {
+        HttpRequestMessage req(HttpMethod::Get, Uri("http://localhost:8080/test"));
+        EXPECT_TRUE(req.GetMethod() == HttpMethod::Get);
+        EXPECT_STREQ(req.GetRequestUri().ToString().GetRawString(), "http://localhost:8080/test");
+
+        req.SetMethod(HttpMethod::Post);
+        EXPECT_TRUE(req.GetMethod() == HttpMethod::Post);
+
+        req.SetRequestUri(Uri("http://localhost:8080/api"));
+        EXPECT_STREQ(req.GetRequestUri().ToString().GetRawString(), "http://localhost:8080/api");
+
+        SmartPointer<HttpContent> pContent = SmartPointer<StringContent>::NewShared("payload");
+        req.SetContent(pContent);
+        EXPECT_NE(req.GetContent().Get(), nullptr);
+        EXPECT_STREQ(req.GetContent()->ReadAsString().GetRawString(), "payload");
+
+        req.GetHeaders().Add("X-Test-Header", "Value123");
+        EXPECT_TRUE(req.GetHeaders().ContainsKey("X-Test-Header"));
+    }
+
+    TEST(HttpTests, GivenByteArrayContent_WhenRead_ReturnsCorrectBytesAndString) {
+        const char rawBytes[] = "Byte payload";
+        int len = static_cast<int>(std::strlen(rawBytes));
+        Array<char> arr(len);
+        for (int i = 0; i < len; ++i) arr[i] = rawBytes[i];
+
+        ByteArrayContent byteContent(arr);
+        EXPECT_STREQ(byteContent.ReadAsString().GetRawString(), "Byte payload");
+
+        Array<char> readArr = byteContent.ReadAsByteArray();
+        EXPECT_EQ(readArr.GetLength(), len);
+        EXPECT_EQ(readArr[0], 'B');
     }
 }

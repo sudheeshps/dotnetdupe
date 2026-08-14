@@ -17,11 +17,11 @@
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
 #include "System/IOException.h"
+#include "System/UnknownException.h"
 #include "System/Console.h"
 #include "System/Uri.h"
 #include "System/Convert.h"
 #include "System/IO/FileStream.h"
-#include "System/IO/File.h"
 #include "System/IO/File.h"
 #include "System/Threading/Thread.h"
 #include &lt;chrono&gt;
@@ -47,7 +47,7 @@ namespace DotNetDupe {
                     std::atomic&lt;double&gt; m_dDownloadRate{ 0.0 };
 
                     HttpClient m_httpClient;
-                    SmartPointer&lt;Threading::Thread&gt; m_workerThread;
+                    SmartPointer&lt;Threading::Thread&gt; m_pWorkerThread;
 
 <span style = "background-color:#dfd">                    long long CheckExistingFileSize() {
                         if (!IO::File::Exists(m_sDestinationPath)) return 0;</span>
@@ -131,34 +131,31 @@ namespace DotNetDupe {
                         return progress;
                     }
 
+                    void ProcessDownloadChunk(int iRead, const char* pBuffer, IO::FileStream&amp; outFile, long long&amp; llBytesSession, const std::chrono::steady_clock::time_point&amp; timeStart) {
+                        outFile.Write(pBuffer, 0, iRead);
+                        outFile.Flush();
+                        m_llDownloadedBytes += iRead;
+                        llBytesSession += iRead;
+                        UpdateRate(llBytesSession, timeStart);
+                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                    }
+
 <span style = "background-color:#dfd">                    bool ReadAndWriteData(const SmartPointer&lt;IO::Stream&gt;&amp; pStream, IO::FileStream&amp; outFile) {</span>
                         char pBuffer[8192];
 <span style = "background-color:#dfd">                        auto timeStart = std::chrono::steady_clock::now();
-                        long long llBytesDownloadedInSession = 0;</span>
-
-<span style = "background-color:#dfd">                        try {
+                        long long llBytesSession = 0;
+                        try {
                             while (!m_bPauseRequested.load()) {
                                 int iRead = pStream-&gt;Read(pBuffer, 0, sizeof(pBuffer));
-                                if (iRead &lt;= 0) break;</span>
-
-<span style = "background-color:#dfd">                                outFile.Write(pBuffer, 0, iRead);
-                                outFile.Flush();</span>
-
-<span style = "background-color:#dfd">                                m_llDownloadedBytes += iRead;
-                                llBytesDownloadedInSession += iRead;
-                                UpdateRate(llBytesDownloadedInSession, timeStart);</span>
-
-<span style = "background-color:#dfd">                                if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                                if (iRead &lt;= 0) break;
+                                ProcessDownloadChunk(iRead, pBuffer, outFile, llBytesSession, timeStart);
                             }</span>
-<span style = "background-color:#fdd">                        } catch (const IO::IOException&amp; ex) {
-                            Console::WriteLine(String("[FileDownloader] Stream I/O error during download: ") + ex.What());
-                            return false;
-                        } catch (const SystemException&amp; ex) {
-                            Console::WriteLine(String("[FileDownloader] Error reading response stream: ") + ex.What());
+<span style = "background-color:#fdd">                        } catch (const Exception&amp; ex) {
+                            Console::WriteLine(String("[FileDownloader] Stream error: ") + ex.What());
                             return false;</span>
                         }
-<span style = "background-color:#dfd">                        return !m_bPauseRequested.load();</span>
-<span style = "background-color:#fdd">                    }</span>
+<span style = "background-color:#dfd">                        return !m_bPauseRequested.load();
+                    }</span>
 
 <span style = "background-color:#dfd">                    void NotifyStateChange(DownloadStatus status) {
                         m_status = status;
@@ -240,11 +237,16 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                        try {
                             ExecuteDownload(llExistingBytes);</span>
-<span style = "background-color:#fdd">                        } catch (const SystemException&amp; ex) {
-                            Console::WriteLine(String("[FileDownloader] Download loop failed with DotNetDupe exception: ") + ex.What());
+<span style = "background-color:#fdd">                        } catch (const Exception&amp; ex) {
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + ex.What());
+                            NotifyStateChange(DownloadStatus::Failed);
+                        } catch (const std::exception&amp; ex) {
+                            UnknownException unk(ex.what());
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
                             NotifyStateChange(DownloadStatus::Failed);
                         } catch (...) {
-                            Console::WriteLine("[FileDownloader] Download loop failed with unknown error.");
+                            UnknownException unk("An unknown error occurred during download.");
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
                             NotifyStateChange(DownloadStatus::Failed);
                         }</span>
 <span style = "background-color:#dfd">                    }</span>
@@ -297,8 +299,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Starting download from ") + m_pImpl-&gt;m_sUrl);</span>
 
 <span style = "background-color:#dfd">                    auto pImpl = m_pImpl;
-                    m_pImpl-&gt;m_workerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
-                    m_pImpl-&gt;m_workerThread-&gt;Start();
+                    m_pImpl-&gt;m_pWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
+                    m_pImpl-&gt;m_pWorkerThread-&gt;Start();
                     return true;
                 }</span>
 
@@ -311,8 +313,8 @@ namespace DotNetDupe {
                     Console::WriteLine(String("[FileDownloader] Resuming download for ") + m_pImpl-&gt;m_sDestinationPath);</span>
 
 <span style = "background-color:#dfd">                    auto pImpl = m_pImpl;
-                    m_pImpl-&gt;m_workerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
-                    m_pImpl-&gt;m_workerThread-&gt;Start();
+                    m_pImpl-&gt;m_pWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
+                    m_pImpl-&gt;m_pWorkerThread-&gt;Start();
                     return true;
                 }</span>
 

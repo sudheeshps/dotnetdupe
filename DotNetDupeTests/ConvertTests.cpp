@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "gtest/gtest.h"
 #include "System/Convert.h"
+#include "System/Array.h"
 #include "System/OverflowException.h"
 #include "System/FormatException.h"
 
@@ -11,13 +12,9 @@ namespace DotNetDupeTests {
     // --- Boolean Tests ---
 
     TEST(ConvertTest, ToBoolean_Given_ValidStrings_When_Converted_Then_ReturnsCorrectBool) {
-        // Given
-        String trueStr("True");
-        String falseStr("False");
-
         // When & Then
-        EXPECT_TRUE(Convert::ToBoolean(trueStr));
-        EXPECT_FALSE(Convert::ToBoolean(falseStr));
+        EXPECT_TRUE(Convert::ToBoolean("True"));
+        EXPECT_FALSE(Convert::ToBoolean("False"));
     }
 
     TEST(ConvertTest, ToBoolean_Given_NumericValues_When_Converted_Then_ReturnsCorrectBool) {
@@ -31,11 +28,8 @@ namespace DotNetDupeTests {
     }
 
     TEST(ConvertTest, ToBoolean_Given_InvalidString_When_Converted_Then_ThrowsFormatException) {
-        // Given
-        String invalid("not-a-bool");
-
         // When & Then
-        EXPECT_THROW(Convert::ToBoolean(invalid), FormatException);
+        EXPECT_THROW(Convert::ToBoolean("not-a-bool"), FormatException);
     }
 
     // --- Byte Tests ---
@@ -62,11 +56,8 @@ namespace DotNetDupeTests {
     }
 
     TEST(ConvertTest, ToByte_Given_StringWithBase_When_Converted_Then_ReturnsCorrectByte) {
-        // Given
-        String hex("FF");
-
         // When
-        unsigned char result = Convert::ToByte(hex, 16);
+        unsigned char result = Convert::ToByte("FF", 16);
 
         // Then
         EXPECT_EQ(result, 255);
@@ -75,22 +66,16 @@ namespace DotNetDupeTests {
     // --- Int32 Tests ---
 
     TEST(ConvertTest, ToInt32_Given_ValidString_When_Converted_Then_ReturnsInt) {
-        // Given
-        String val("12345");
-
         // When
-        int result = Convert::ToInt32(val);
+        int result = Convert::ToInt32("12345");
 
         // Then
         EXPECT_EQ(result, 12345);
     }
 
     TEST(ConvertTest, ToInt32_Given_InvalidFormat_When_Converted_Then_ThrowsFormatException) {
-        // Given
-        String invalid("abc");
-
         // When & Then
-        EXPECT_THROW(Convert::ToInt32(invalid), FormatException);
+        EXPECT_THROW(Convert::ToInt32("abc"), FormatException);
     }
 
     TEST(ConvertTest, ToInt32_Given_LargeLong_When_Converted_Then_ThrowsOverflowException) {
@@ -104,22 +89,16 @@ namespace DotNetDupeTests {
     // --- Double/Single Tests ---
 
     TEST(ConvertTest, ToDouble_Given_ValidString_When_Converted_Then_ReturnsDouble) {
-        // Given
-        String val("123.45");
-
         // When
-        double result = Convert::ToDouble(val);
+        double result = Convert::ToDouble("123.45");
 
         // Then
         EXPECT_DOUBLE_EQ(result, 123.45);
     }
 
     TEST(ConvertTest, ToSingle_Given_ValidString_When_Converted_Then_ReturnsFloat) {
-        // Given
-        String val("12.34");
-
         // When
-        float result = Convert::ToSingle(val);
+        float result = Convert::ToSingle("12.34");
 
         // Then
         EXPECT_FLOAT_EQ(result, 12.34f);
@@ -128,22 +107,16 @@ namespace DotNetDupeTests {
     // --- Char Tests ---
 
     TEST(ConvertTest, ToChar_Given_ValidString_When_Converted_Then_ReturnsChar) {
-        // Given
-        String val("A");
-
         // When
-        char result = Convert::ToChar(val);
+        char result = Convert::ToChar("A");
 
         // Then
         EXPECT_EQ(result, 'A');
     }
 
     TEST(ConvertTest, ToChar_Given_InvalidStringLength_When_Converted_Then_ThrowsFormatException) {
-        // Given
-        String invalid("ABC");
-
         // When & Then
-        EXPECT_THROW(Convert::ToChar(invalid), FormatException);
+        EXPECT_THROW(Convert::ToChar("ABC"), FormatException);
     }
 
     // --- ToString Tests ---
@@ -176,5 +149,52 @@ namespace DotNetDupeTests {
 
         // When & Then
         EXPECT_THROW(Convert::ToString(val, 3), ArgumentException);
+    }
+
+    TEST(ConvertTest, NumericConversions_GivenVariousTypes_WhenConverted_ThenReturnsExpectedResults) {
+        EXPECT_EQ(Convert::ToSByte(127), 127);
+        EXPECT_EQ(Convert::ToSByte("120"), 120);
+        EXPECT_EQ(Convert::ToInt16(32000), 32000);
+        EXPECT_EQ(Convert::ToInt16("32000"), 32000);
+        EXPECT_EQ(Convert::ToInt16("7FFF", 16), 32767);
+        EXPECT_EQ(Convert::ToUInt16(65000), 65000);
+        EXPECT_EQ(Convert::ToUInt16("65000"), 65000);
+        EXPECT_EQ(Convert::ToUInt32(4000000000LL), 4000000000U);
+        EXPECT_EQ(Convert::ToUInt32("4000000000"), 4000000000U);
+        EXPECT_EQ(Convert::ToInt64(9000000000000LL), 9000000000000LL);
+        EXPECT_EQ(Convert::ToInt64("9000000000000"), 9000000000000LL);
+        EXPECT_EQ(Convert::ToUInt64("18000000000000000000"), 18000000000000000000ULL);
+
+        EXPECT_STREQ(Convert::ToString(true).GetRawString(), "True");
+        EXPECT_STREQ(Convert::ToString(false).GetRawString(), "False");
+        EXPECT_STREQ(Convert::ToString(static_cast<unsigned char>(65)).GetRawString(), "65");
+        EXPECT_STREQ(Convert::ToString('Z').GetRawString(), "Z");
+        EXPECT_STREQ(Convert::ToString(12.5).GetRawString(), "12.5");
+        EXPECT_STREQ(Convert::ToString(12.5f).GetRawString(), "12.5");
+        EXPECT_STREQ(Convert::ToString(static_cast<short>(42)).GetRawString(), "42");
+        EXPECT_STREQ(Convert::ToString(42LL).GetRawString(), "42");
+        EXPECT_STREQ(Convert::ToString(static_cast<unsigned short>(42)).GetRawString(), "42");
+        EXPECT_STREQ(Convert::ToString(42U).GetRawString(), "42");
+        EXPECT_STREQ(Convert::ToString(42ULL).GetRawString(), "42");
+        EXPECT_STREQ(Convert::ToString(255LL, 16).GetRawString(), "FF");
+        EXPECT_STREQ(Convert::ToString(255LL, 2).GetRawString(), "11111111");
+        EXPECT_STREQ(Convert::ToString(255LL, 8).GetRawString(), "377");
+        EXPECT_STREQ(Convert::ToString(255LL, 10).GetRawString(), "255");
+    }
+
+    TEST(ConvertTest, Base64_GivenByteArray_WhenEncodedAndDecoded_ThenMatchesOriginal) {
+        const char rawData[] = "DotNetDupe Base64 Test String!";
+        int len = static_cast<int>(std::strlen(rawData));
+        Array<char> arrIn(len);
+        for (int i = 0; i < len; ++i) arrIn[i] = rawData[i];
+
+        String base64 = Convert::ToBase64String(arrIn);
+        EXPECT_FALSE(base64.IsEmpty());
+
+        Array<char> arrOut = Convert::FromBase64String(base64);
+        EXPECT_EQ(arrOut.GetLength(), len);
+        for (int i = 0; i < len; ++i) {
+            EXPECT_EQ(arrOut[i], rawData[i]);
+        }
     }
 }

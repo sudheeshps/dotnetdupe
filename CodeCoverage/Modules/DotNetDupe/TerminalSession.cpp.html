@@ -73,55 +73,46 @@ namespace DotNetDupe {
                 info.sClientIpAddress = QueryWtsString(uSessionId, WTSClientAddress);
                 info.bIsRdpSession = !info.sClientName.IsEmpty() || info.sSessionName.Contains("RDP");
             }</span>
-#endif
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetSessions() {
-                Collections::Generic::List&lt;RdpSessionInfo&gt; lstResult;</span>
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                WTS_SESSION_INFOW* pSessionInfo = NULL;
-                DWORD dwCount = 0;</span>
-
-<span style = "background-color:#dfd">                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwCount)) {
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstResult;
+                WTS_SESSION_INFOW* pSessionInfo = NULL;
+                DWORD dwCount = 0;
+                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwCount)) {
                     for (DWORD i = 0; i &lt; dwCount; ++i) {
                         RdpSessionInfo info;
                         String sName = (pSessionInfo[i].pWinStationName != NULL) ? String(pSessionInfo[i].pWinStationName) : String("");
-                        RdpSessionState eState = ConvertWtsState(pSessionInfo[i].State);</span>
-
-<span style = "background-color:#dfd">                        QuerySessionDetails(pSessionInfo[i].SessionId, sName, eState, info);
+                        RdpSessionState eState = ConvertWtsState(pSessionInfo[i].State);
+                        QuerySessionDetails(pSessionInfo[i].SessionId, sName, eState, info);
                         lstResult.Add(info);
-                    }</span>
-
-<span style = "background-color:#dfd">                    ::WTSFreeMemory(pSessionInfo);</span>
+                    }
+                    ::WTSFreeMemory(pSessionInfo);</span>
 <span style = "background-color:#fdd">                } else if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied enumerating terminal sessions. Administrator privileges required.");</span>
                 }
-#endif
 <span style = "background-color:#dfd">                return lstResult;
             }</span>
+#else
+            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetSessions() {
+                return Collections::Generic::List&lt;RdpSessionInfo&gt;();
+            }
+#endif
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetActiveSessions() {
                 auto lstAll = GetSessions();
-                Collections::Generic::List&lt;RdpSessionInfo&gt; lstActive;</span>
-
-<span style = "background-color:#dfd">                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
-                    if (lstAll[i].eState == RdpSessionState::Active) {
-                        lstActive.Add(lstAll[i]);</span>
-                    }
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstActive;
+                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    if (lstAll[i].eState == RdpSessionState::Active) lstActive.Add(lstAll[i]);</span>
                 }
-
 <span style = "background-color:#dfd">                return lstActive;
             }</span>
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetDisconnectedSessions() {
                 auto lstAll = GetSessions();
-                Collections::Generic::List&lt;RdpSessionInfo&gt; lstDisconnected;</span>
-
-<span style = "background-color:#dfd">                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
-                    if (lstAll[i].eState == RdpSessionState::Disconnected) {
-                        lstDisconnected.Add(lstAll[i]);</span>
-                    }
+                Collections::Generic::List&lt;RdpSessionInfo&gt; lstDisconnected;
+                for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
+                    if (lstAll[i].eState == RdpSessionState::Disconnected) lstDisconnected.Add(lstAll[i]);</span>
                 }
-
 <span style = "background-color:#dfd">                return lstDisconnected;
             }</span>
 

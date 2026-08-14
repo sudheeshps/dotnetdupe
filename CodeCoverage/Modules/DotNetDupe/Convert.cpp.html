@@ -349,32 +349,32 @@ namespace DotNetDupe {
             }
         }
 
-<span style = "background-color:#dfd">        Array&lt;char&gt; Convert::FromBase64String(const String&amp; s) {
-            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+<span style = "background-color:#dfd">        void Convert::DecodeBase64Loop(const std::string&amp; sInput, std::vector&lt;char&gt;&amp; decoded) {
             size_t in_len = sInput.size();
             int i = 0, in_ = 0;</span>
             unsigned char char_array_4[4];
-<span style = "background-color:#dfd">            std::vector&lt;char&gt; decoded;</span>
-
-<span style = "background-color:#dfd">            while (in_len-- &amp;&amp; (sInput[in_] != '=') &amp;&amp; IsBase64(sInput[in_])) {
-                char_array_4[i++] = sInput[in_]; in_++;
+<span style = "background-color:#dfd">            while (in_len-- &amp;&amp; (sInput[in_] != '=') &amp;&amp; Convert::IsBase64(sInput[in_])) {
+                char_array_4[i++] = sInput[in_++];
                 if (i == 4) {
-                    DecodeBase64Chunk4(char_array_4, decoded);
+                    Convert::DecodeBase64Chunk4(char_array_4, decoded);
                     i = 0;</span>
                 }
             }
-<span style = "background-color:#dfd">            if (i) DecodeBase64Remainder(char_array_4, i, decoded);</span>
+<span style = "background-color:#dfd">            if (i) Convert::DecodeBase64Remainder(char_array_4, i, decoded);
+        }</span>
 
-<span style = "background-color:#dfd">            Array&lt;char&gt; result(static_cast&lt;int&gt;(decoded.size()));
+<span style = "background-color:#dfd">        Array&lt;char&gt; Convert::FromBase64String(const String&amp; s) {
+            std::string sInput(s.GetRawString() ? s.GetRawString() : "");
+            std::vector&lt;char&gt; decoded;
+            DecodeBase64Loop(sInput, decoded);
+            Array&lt;char&gt; result(static_cast&lt;int&gt;(decoded.size()));
             for (size_t idx = 0; idx &lt; decoded.size(); idx++) {
                 result[static_cast&lt;int&gt;(idx)] = decoded[idx];</span>
             }
 <span style = "background-color:#dfd">            return result;
         }</span>
     }
-}
-
-</pre>
+}</pre>
         <hr />
         <table width="100%">
             <thead>

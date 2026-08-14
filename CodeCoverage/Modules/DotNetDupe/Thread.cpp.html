@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "System/Threading/Thread.h"
 #include "System/TimeoutException.h"
+#include "System/UnknownException.h"
 #include "System/SmartPointer.h"
 #include &lt;chrono&gt;
 
@@ -27,7 +28,7 @@ namespace DotNetDupe {
         namespace Threading {
 
             thread_local Thread* Thread::_currentThread = nullptr;
-<span style = "background-color:#dfd">            static thread_local SmartPointer&lt;Thread&gt; _currentThreadStorage(nullptr);</span>
+<span style = "background-color:#dfd">            static thread_local SmartPointer&lt;Thread&gt; s_pCurrentThreadStorage(nullptr);</span>
 
 <span style = "background-color:#dfd">            Thread::Thread(ThreadStart start)
                 : _start(start), _isAlive(false), _completed(false) {
@@ -97,8 +98,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            Thread* Thread::GetCurrentThread() {
                 if (_currentThread == nullptr) {
-                    _currentThreadStorage = CreateCurrentThreadWrapper();
-                    _currentThread = _currentThreadStorage.Get();</span>
+                    s_pCurrentThreadStorage = CreateCurrentThreadWrapper();
+                    _currentThread = s_pCurrentThreadStorage.Get();</span>
                 }
                 return _currentThread;
 <span style = "background-color:#dfd">            }</span>
@@ -118,16 +119,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {
                 _currentThread = this;</span>
                 try {
-<span style = "background-color:#dfd">                    if (_start) {
-                        _start();
-                    }
-                    else if (_parameterizedStart) {
-                        _parameterizedStart(parameter);</span>
-                    }
-<span style = "background-color:#dfd">                } catch (...) {</span>
-                    // Silently absorb or handle thread-level exceptions if needed
+<span style = "background-color:#dfd">                    if (_start) _start();
+                    else if (_parameterizedStart) _parameterizedStart(parameter);
+                } catch (...) {</span>
+                    (void)0;
 <span style = "background-color:#dfd">                }</span>
-
                 {
 <span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(_joinMutex);
                     _completed = true;

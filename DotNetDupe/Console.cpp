@@ -24,6 +24,9 @@ namespace {
     static std::recursive_mutex s_mutex;
     static ConsoleColor s_defaultFore = ConsoleColor::Gray;
     static ConsoleColor s_defaultBack = ConsoleColor::Black;
+    static ConsoleColor s_currentFore = ConsoleColor::Gray;
+    static ConsoleColor s_currentBack = ConsoleColor::Black;
+    static String s_consoleTitle = String("");
     static bool s_colorsInitialized = false;
 
     void EnsureColorsInitialized() {
@@ -33,6 +36,8 @@ namespace {
             if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
                 s_defaultFore = (ConsoleColor)(csbi.wAttributes & 0x0F);
                 s_defaultBack = (ConsoleColor)((csbi.wAttributes & 0xF0) >> 4);
+                s_currentFore = s_defaultFore;
+                s_currentBack = s_defaultBack;
             }
 #endif
             s_colorsInitialized = true;
@@ -247,17 +252,24 @@ ConsoleColor Console::GetBackgroundColor() {
         return (ConsoleColor)((csbi.wAttributes & 0xF0) >> 4);
     }
 #endif
-    return s_defaultBack;
+    return s_currentBack;
 }
 
 void Console::SetBackgroundColor(ConsoleColor color) {
     EnsureColorsInitialized();
+    s_currentBack = color;
 #if defined(_WIN32)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
         WORD attributes = (csbi.wAttributes & 0xFF0F) | (((WORD)color << 4) & 0x00F0);
         SetConsoleTextAttribute(hConsole, attributes);
+    }
+#else
+    static const int ansiBack[] = { 40, 44, 42, 46, 41, 45, 43, 47, 100, 104, 102, 106, 101, 105, 103, 107 };
+    int idx = static_cast<int>(color);
+    if (idx >= 0 && idx < 16) {
+        std::cout << "\033[" << ansiBack[idx] << "m" << std::flush;
     }
 #endif
 }
@@ -270,17 +282,24 @@ ConsoleColor Console::GetForegroundColor() {
         return (ConsoleColor)(csbi.wAttributes & 0x0F);
     }
 #endif
-    return s_defaultFore;
+    return s_currentFore;
 }
 
 void Console::SetForegroundColor(ConsoleColor color) {
     EnsureColorsInitialized();
+    s_currentFore = color;
 #if defined(_WIN32)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
         WORD attributes = (csbi.wAttributes & 0xFFF0) | ((WORD)color & 0x000F);
         SetConsoleTextAttribute(hConsole, attributes);
+    }
+#else
+    static const int ansiFore[] = { 30, 34, 32, 36, 31, 35, 33, 37, 90, 94, 92, 96, 91, 95, 93, 97 };
+    int idx = static_cast<int>(color);
+    if (idx >= 0 && idx < 16) {
+        std::cout << "\033[" << ansiFore[idx] << "m" << std::flush;
     }
 #endif
 }
@@ -289,6 +308,9 @@ void Console::ResetColor() {
     EnsureColorsInitialized();
     SetForegroundColor(s_defaultFore);
     SetBackgroundColor(s_defaultBack);
+#if !defined(_WIN32)
+    std::cout << "\033[0m" << std::flush;
+#endif
 }
 
 String Console::GetTitle() {
@@ -298,10 +320,11 @@ String Console::GetTitle() {
         return String(WCharToUtf8(title).c_str());
     }
 #endif
-    return String("");
+    return s_consoleTitle;
 }
 
 void Console::SetTitle(const String& title) {
+    s_consoleTitle = title;
 #if defined(_WIN32)
     ::SetConsoleTitleW(Utf8ToWChar(title.GetRawString()).c_str());
 #else

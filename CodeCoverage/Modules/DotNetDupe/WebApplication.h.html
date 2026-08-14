@@ -51,21 +51,24 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String&amp; pattern, DotNetDupe::System::Func&lt;DotNetDupe::System::String, DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler);
                 DOTNETDUPE_API void MapWebSocket(const DotNetDupe::System::String&amp; pattern, DotNetDupe::System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; handler);
 
-<span style = "background-color:#fdd">                DOTNETDUPE_API void SetControllerRegistrars(std::vector&lt;std::function&lt;void(const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp;)&gt;&gt; registrars) {
-                    m_controllerRegistrars = std::move(registrars);
-                }</span>
-
-<span style = "background-color:#fdd">                DOTNETDUPE_API void SetSelfPointer(const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp; spSelf) {
-                    m_spSelf = spSelf;
-                }</span>
-
                 DOTNETDUPE_API void MapControllers();
 
                 DOTNETDUPE_API void Run(const DotNetDupe::System::String&amp; url = "http://127.0.0.1:5000", int threadCount = 10);
                 DOTNETDUPE_API void Stop();
 
             private:
+                friend class WebApplicationBuilder;
+
+                void SetControllerRegistrars(std::vector&lt;std::function&lt;void(const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp;)&gt;&gt; registrars) {
+                    m_controllerRegistrars = std::move(registrars);
+                }
+
+                void SetSelfPointer(const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp; spSelf) {
+                    m_spSelf = spSelf;
+                }
+
                 void HandleConnection(DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Net::Sockets::TcpClient&gt; spClient);
+                void QueueAcceptedClient(DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Net::Sockets::TcpClient&gt; pClient);
                 void StartServerLoop(const DotNetDupe::System::String&amp; host, int port);
 
                 DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; m_spServices;

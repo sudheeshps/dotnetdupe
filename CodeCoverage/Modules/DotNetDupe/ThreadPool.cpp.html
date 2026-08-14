@@ -17,6 +17,7 @@
 #include "System/Threading/Lock.h"
 #include "System/Threading/EventWaitHandle.h"
 #include "System/Collections/Generic/List.h"
+#include "System/UnknownException.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -59,10 +60,10 @@ namespace DotNetDupe {
                     if (iMinThreads &lt;= 0) return false;
                     Lock&lt;CriticalSection&gt; lock(m_csSync);
                     if (m_bIsShuttingDown) return false;
-                    while (m_vWorkerThreads.GetCount() &lt; iMinThreads) {</span>
+                    while (m_pvWorkerThreads.GetCount() &lt; iMinThreads) {</span>
 <span style = "background-color:#fdd">                        SmartPointer&lt;Thread&gt; pWorker = SmartPointer&lt;Thread&gt;::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker-&gt;Start();
-                        m_vWorkerThreads.Add(std::move(pWorker));
+                        m_pvWorkerThreads.Add(std::move(pWorker));
                     }</span>
 <span style = "background-color:#dfd">                    return true;
                 }</span>
@@ -77,7 +78,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    for (int i = 0; i &lt; iThreadCount; ++i) {
                         SmartPointer&lt;Thread&gt; pWorker = SmartPointer&lt;Thread&gt;::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker-&gt;Start();
-                        m_vWorkerThreads.Add(std::move(pWorker));
+                        m_pvWorkerThreads.Add(std::move(pWorker));
                     }
                 }</span>
 
@@ -88,12 +89,12 @@ namespace DotNetDupe {
                     }</span>
                     // Wake up all threads so they can exit. 
                     // AutoResetEvent only wakes one per Set(), so we need to set it for each thread.
-<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_vWorkerThreads.GetCount(); ++i) {
+<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_pvWorkerThreads.GetCount(); ++i) {
                         m_evtWorkAvailable.Set();</span>
                     }
 
-<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_vWorkerThreads.GetCount(); ++i) {
-                        SmartPointer&lt;Thread&gt; pWorker = m_vWorkerThreads[i];
+<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_pvWorkerThreads.GetCount(); ++i) {
+                        SmartPointer&lt;Thread&gt; pWorker = m_pvWorkerThreads[i];
                         if (!pWorker.IsNull()) {
                             pWorker-&gt;Join();</span>
                         }
@@ -127,18 +128,22 @@ namespace DotNetDupe {
                             if (objTask.Callback) {</span>
                                 try {
 <span style = "background-color:#dfd">                                    objTask.Callback(objTask.State);</span>
-<span style = "background-color:#fdd">                                } catch (...) {</span>
-                                    // Task exceptions are absorbed to prevent worker thread death
-<span style = "background-color:#fdd">                                }</span>
+<span style = "background-color:#fdd">                                } catch (const Exception&amp;) {</span>
+                                    // DotNetDupe exception
+<span style = "background-color:#fdd">                                } catch (const std::exception&amp; ex) {
+                                    (void)UnknownException(ex.what());
+                                } catch (...) {
+                                    (void)UnknownException("An unhandled exception occurred during ThreadPool task execution.");
+                                }</span>
                             }
-<span style = "background-color:#fdd">                        } else {</span>
+                        } else {
                             // Wait for work or shutdown signal
 <span style = "background-color:#dfd">                            m_evtWorkAvailable.WaitOne();</span>
                         }
 <span style = "background-color:#dfd">                    }</span>
 <span style = "background-color:#fdd">                }</span>
 
-                Collections::Generic::List&lt;SmartPointer&lt;Thread&gt;&gt; m_vWorkerThreads;
+                Collections::Generic::List&lt;SmartPointer&lt;Thread&gt;&gt; m_pvWorkerThreads;
                 Collections::Generic::List&lt;ThreadPoolTask&gt; m_qTasks;
                 CriticalSection m_csSync;
                 EventWaitHandle m_evtWorkAvailable;

@@ -77,8 +77,8 @@ namespace DotNetDupe {
                     if (err == ERROR_ACCESS_DENIED) {
                         throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");</span>
                     }
-                    char buf[256];
-<span style = "background-color:#fdd">                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
+<span style = "background-color:#fdd">                    char buf [256] = { 0 };
+                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
                     throw SystemException(buf);</span>
                 }
 <span style = "background-color:#dfd">                return hSub;
@@ -88,8 +88,8 @@ namespace DotNetDupe {
                 EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
                 if (hEnum == NULL) return;</span>
 
-                WCHAR wBuffer[512];
-<span style = "background-color:#dfd">                DWORD dwReturned = 0;
+<span style = "background-color:#dfd">                WCHAR wBuffer [512] = { 0 };
+                DWORD dwReturned = 0;
                 while (::EvtNextChannelPath(hEnum, 512, wBuffer, &amp;dwReturned)) {
                     std::wstring wPath(wBuffer);
                     std::string sPath;
@@ -127,104 +127,91 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
+<span style = "background-color:#dfd">            static void ParseEtwXmlDetails(const std::string&amp; sXml, EtwEvent&amp; evt) {
+                if (sXml.empty()) return;
+                size_t lStart = sXml.find("&lt;Level&gt;");
+                if (lStart != std::string::npos) {
+                    size_t lEnd = sXml.find("&lt;/Level&gt;", lStart);
+                    if (lEnd != std::string::npos) try { evt.iLevel = std::stoi(sXml.substr(lStart + 7, lEnd - lStart - 7)); } catch (...) { evt.iLevel = 4; }</span>
+                }
+<span style = "background-color:#dfd">                size_t idStart = sXml.find("&lt;EventID&gt;");
+                if (idStart != std::string::npos) {
+                    size_t idEnd = sXml.find("&lt;/EventID&gt;", idStart);
+                    if (idEnd != std::string::npos) try { evt.iEventId = std::stoi(sXml.substr(idStart + 9, idEnd - idStart - 9)); } catch (...) { evt.iEventId = 0; }</span>
+                }
+<span style = "background-color:#dfd">                size_t provStart = sXml.find("Provider Name=\"");</span>
+<span style = "background-color:#fdd">                if (provStart != std::string::npos) {
+                    size_t provEnd = sXml.find("\"", provStart + 15);
+                    if (provEnd != std::string::npos) evt.sProviderName = String(sXml.substr(provStart + 15, provEnd - provStart - 15).c_str());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
 <span style = "background-color:#dfd">            EtwEvent EtwLogReader::ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String&amp; sChannelName, int iIndex) {
                 EtwEvent evt;
                 evt.sChannelName = sChannelName;
                 evt.iEventId = 100 + iIndex;
                 evt.iLevel = 0;
                 evt.sProviderName = "Windows-ETW-Provider";
-                evt.dtTimeCreated = DateTimeOffset::Now();</span>
+                evt.dtTimeCreated = DateTimeOffset::Now();
+                FormatEtwEventXml(hEvt, evt);
+                FormatEtwEventMessage(hEvt, evt);
+                ParseEtwXmlDetails(evt.sRawXml.GetRawString() ? evt.sRawXml.GetRawString() : "", evt);
+                if (evt.iLevel == 0) evt.iLevel = 4;</span>
+                return evt;
+<span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">                FormatEtwEventXml(hEvt, evt);
-                FormatEtwEventMessage(hEvt, evt);</span>
+            static std::wstring BuildLevelQuery(EtwEventLevel level) {
+                if (level == EtwEventLevel::Critical) return L"*[System[Level=1]]";
+                if (level == EtwEventLevel::Error) return L"*[System[Level=2]]";
+                if (level == EtwEventLevel::Warning) return L"*[System[Level=3]]";
+                if (level == EtwEventLevel::Info) return L"*[System[Level=4 or Level=0 or not(Level)]]";
+                if (level == EtwEventLevel::Verbose) return L"*[System[Level=5]]";
+                return L"*";
+            }
 
-                // Parse XML to extract real properties
-<span style = "background-color:#dfd">                if (!evt.sRawXml.IsEmpty()) {
-                    std::string sXml(evt.sRawXml.GetRawString() ? evt.sRawXml.GetRawString() : "");</span>
-                    
-<span style = "background-color:#dfd">                    size_t levelStart = sXml.find("&lt;Level&gt;");
-                    if (levelStart != std::string::npos) {
-                        size_t levelEnd = sXml.find("&lt;/Level&gt;", levelStart);
-                        if (levelEnd != std::string::npos) {</span>
-                            try {
-<span style = "background-color:#dfd">                                evt.iLevel = std::stoi(sXml.substr(levelStart + 7, levelEnd - levelStart - 7));</span>
-<span style = "background-color:#fdd">                            } catch (...) {}</span>
-                        }
+            void EtwLogReader::IterateEvtResults(EVT_HANDLE hResults, const String&amp; sChannelName, int iMaxEvents, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
+                EVT_HANDLE hEvents[10];
+                DWORD dwReturned = 0;
+                int iCount = 0;
+                while (::EvtNext(hResults, 10, hEvents, INFINITE, 0, &amp;dwReturned)) {
+                    for (DWORD idx = 0; idx &lt; dwReturned; idx++) {
+                        lstEvents.Add(EtwLogReader::ProcessSingleEtwEvent(hEvents[idx], sChannelName, iCount++));
+                        ::EvtClose(hEvents[idx]);
+                        if (iMaxEvents &gt; 0 &amp;&amp; iCount &gt;= iMaxEvents) break;
                     }
-
-<span style = "background-color:#fdd">                    size_t idStart = sXml.find("&lt;EventID&gt;");</span>
-<span style = "background-color:#dfd">                    if (idStart != std::string::npos) {
-                        size_t idEnd = sXml.find("&lt;/EventID&gt;", idStart);
-                        if (idEnd != std::string::npos) {</span>
-                            try {
-<span style = "background-color:#dfd">                                evt.iEventId = std::stoi(sXml.substr(idStart + 9, idEnd - idStart - 9));</span>
-<span style = "background-color:#fdd">                            } catch (...) {}</span>
-                        }
-                    }
-
-<span style = "background-color:#dfd">                    size_t provStart = sXml.find("Provider Name=\"");</span>
-<span style = "background-color:#fdd">                    if (provStart != std::string::npos) {
-                        size_t provEnd = sXml.find("\"", provStart + 15);
-                        if (provEnd != std::string::npos) {
-                            evt.sProviderName = String(sXml.substr(provStart + 15, provEnd - provStart - 15).c_str());</span>
-                        }
-                    }
-<span style = "background-color:#dfd">                }</span>
-
-                // ETW commonly uses 0 (LogAlways) to represent generic Info events, map it back to 4 (Info)
-<span style = "background-color:#dfd">                if (evt.iLevel == 0) {</span>
-<span style = "background-color:#fdd">                    evt.iLevel = 4;</span>
+                    if (iMaxEvents &gt; 0 &amp;&amp; iCount &gt;= iMaxEvents) break;
                 }
-
-<span style = "background-color:#dfd">                return evt;
-            }</span>
+            }
 
 <span style = "background-color:#dfd">            void EtwLogReader::ReadWin32EvtChannel(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
-                DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);</span>
-
-<span style = "background-color:#dfd">                std::wstring wQuery = L"*";
-                if (level == EtwEventLevel::Critical) wQuery = L"*[System[Level=1]]";
-                else if (level == EtwEventLevel::Error) wQuery = L"*[System[Level=2]]";
-                else if (level == EtwEventLevel::Warning) wQuery = L"*[System[Level=3]]";
-                else if (level == EtwEventLevel::Info) wQuery = L"*[System[Level=4 or Level=0 or not(Level)]]";
-                else if (level == EtwEventLevel::Verbose) wQuery = L"*[System[Level=5]]";</span>
-
-<span style = "background-color:#dfd">                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), wQuery.c_str(), dwFlags);
-                if (hResults == NULL) {</span>
+                DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
+                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), BuildLevelQuery(level).c_str(), dwFlags);
+                if (!hResults) {</span>
 <span style = "background-color:#fdd">                    DWORD err = ::GetLastError();
                     if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;
-                    if (err == ERROR_ACCESS_DENIED) {
-                        throw UnauthorizedAccessException("Access denied querying ETW event channel. Administrator or Performance Log Users membership required.");</span>
-                    }
-                    char buf[256];
-<span style = "background-color:#fdd">                    snprintf(buf, sizeof(buf), "EvtQuery failed with error code %lu", err);
-                    throw SystemException(buf);</span>
+                    if (err == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying ETW event channel.");
+                    throw SystemException("EvtQuery failed.");</span>
                 }
-
-<span style = "background-color:#dfd">                if (iStartIndex &gt; 0) {
-                    ::EvtSeek(hResults, iStartIndex, NULL, 0, EvtSeekRelativeToFirst);</span>
-                }
-
-                EVT_HANDLE hEvents[10];
-<span style = "background-color:#dfd">                DWORD dwReturned = 0;
-                int iCount = 0;</span>
-
-<span style = "background-color:#dfd">                while (::EvtNext(hResults, 10, hEvents, INFINITE, 0, &amp;dwReturned)) {
-                    for (DWORD idx = 0; idx &lt; dwReturned; idx++) {
-                        EtwEvent evt = ProcessSingleEtwEvent(hEvents[idx], sChannelName, iCount);
-                        lstEvents.Add(evt);
-                        ::EvtClose(hEvents[idx]);</span>
-
-<span style = "background-color:#dfd">                        iCount++;
-                        if (iMaxEvents &gt; 0 &amp;&amp; iCount &gt;= iMaxEvents) break;
-                    }</span>
-<span style = "background-color:#fdd">                    if (iMaxEvents &gt; 0 &amp;&amp; iCount &gt;= iMaxEvents) break;</span>
-                }
-
-<span style = "background-color:#dfd">                ::EvtClose(hResults);
+<span style = "background-color:#dfd">                if (iStartIndex &gt; 0) ::EvtSeek(hResults, iStartIndex, NULL, 0, EvtSeekRelativeToFirst);
+                IterateEvtResults(hResults, sChannelName, iMaxEvents, lstEvents);
+                ::EvtClose(hResults);
             }</span>
+#endif
+
+#if defined(_WIN32)
+            static bool QueryWin32LogRecordCount(const std::wstring&amp; wChannel, unsigned long long&amp; uCount) {
+                EVT_HANDLE hLog = ::EvtOpenLog(NULL, wChannel.c_str(), EvtOpenChannelPath);
+                if (!hLog) return false;
+                DWORD dwBufferUsed = 0;
+                BYTE buf[sizeof(EVT_VARIANT) + sizeof(UINT64)] = { 0 };
+                auto pVar = reinterpret_cast&lt;PEVT_VARIANT&gt;(buf);
+                bool bOk = ::EvtGetLogInfo(hLog, EvtLogNumberOfLogRecords, sizeof(buf), pVar, &amp;dwBufferUsed) != FALSE;
+                if (bOk) uCount = static_cast&lt;unsigned long long&gt;(pVar-&gt;UInt64Val);
+                ::EvtClose(hLog);
+                return bOk;
+            }
 #endif
 
 <span style = "background-color:#dfd">            unsigned long long EtwLogReader::GetChannelEventCount(const String&amp; sChannelName) {
@@ -232,19 +219,9 @@ namespace DotNetDupe {
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
 #if defined(_WIN32) || defined(_WIN64)
 <span style = "background-color:#dfd">                std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
-                std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
-                EVT_HANDLE hLog = ::EvtOpenLog(NULL, wChannel.c_str(), EvtOpenChannelPath);
-                if (hLog != NULL) {
-                    DWORD dwBufferUsed = 0;
-                    BYTE buf[sizeof(EVT_VARIANT) + sizeof(UINT64)] = { 0 };</span>
-                    PEVT_VARIANT pVar = (PEVT_VARIANT)buf;
-<span style = "background-color:#dfd">                    if (::EvtGetLogInfo(hLog, EvtLogNumberOfLogRecords, sizeof(buf), pVar, &amp;dwBufferUsed)) {
-                        UINT64 uCount = pVar-&gt;UInt64Val;
-                        ::EvtClose(hLog);</span>
-                        return static_cast&lt;unsigned long long&gt;(uCount);
-                    }
-<span style = "background-color:#fdd">                    ::EvtClose(hLog);</span>
-                }
+                std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());</span>
+                unsigned long long uCount = 0;
+<span style = "background-color:#dfd">                if (QueryWin32LogRecordCount(wChannel, uCount)) return uCount;</span>
 #endif
 <span style = "background-color:#fdd">                return 1000;</span>
 <span style = "background-color:#dfd">            }</span>
@@ -268,21 +245,19 @@ namespace DotNetDupe {
                 counts.uCriticalCount = FastQueryLevelCount(wChannel, L"*[System[Level=1]]");
                 counts.uErrorCount = FastQueryLevelCount(wChannel, L"*[System[Level=2]]");
                 counts.uWarningCount = FastQueryLevelCount(wChannel, L"*[System[Level=3]]");
-                counts.uVerboseCount = FastQueryLevelCount(wChannel, L"*[System[Level=5]]");
                 counts.uInfoCount = FastQueryLevelCount(wChannel, L"*[System[Level=4 or Level=0 or not(Level)]]");
+                counts.uVerboseCount = FastQueryLevelCount(wChannel, L"*[System[Level=5]]");
             }</span>
 #endif
 
 <span style = "background-color:#dfd">            EtwEventLevelCounts EtwLogReader::GetChannelEventLevelCounts(const String&amp; sChannelName) {
-                EtwEventLevelCounts counts{ 0, 0, 0, 0, 0 };
+                EtwEventLevelCounts counts = { 0, 0, 0, 0, 0 };
                 if (sChannelName.IsEmpty()) return counts;
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
 <span style = "background-color:#dfd">                std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
-                CountWin32EventsByLevel(wChannel, counts);
-                std::printf("[ETW DEBUG] Channel: %s | Critical: %llu, Error: %llu, Warning: %llu, Info: %llu, Verbose: %llu\n",</span>
-                    sStdChannel.c_str(), counts.uCriticalCount, counts.uErrorCount, counts.uWarningCount, counts.uInfoCount, counts.uVerboseCount);
+                CountWin32EventsByLevel(wChannel, counts);</span>
 #endif
 <span style = "background-color:#dfd">                return counts;
             }</span>
@@ -303,53 +278,42 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return lstChannels;
             }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName) {
-                return ReadEvents(sChannelName, 0, 0, true, EtwEventLevel::All);</span>
-<span style = "background-color:#fdd">            }</span>
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName) { return ReadEvents(sChannelName, 0, 0, false, EtwEventLevel::All); }
+            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents) { return ReadEvents(sChannelName, iMaxEvents, 0, false, EtwEventLevel::All); }</span>
+<span style = "background-color:#fdd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex) { return ReadEvents(sChannelName, iMaxEvents, iStartIndex, false, EtwEventLevel::All); }</span>
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) { return ReadEvents(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, EtwEventLevel::All); }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents) {
-                return ReadEvents(sChannelName, iMaxEvents, 0, true, EtwEventLevel::All);
-            }</span>
+            static bool MatchEventLevelFilter(const EtwEvent&amp; evt, EtwEventLevel level) {
+                if (level == EtwEventLevel::All) return true;
+                if (level == EtwEventLevel::Critical) return evt.iLevel == 1;
+                if (level == EtwEventLevel::Error) return evt.iLevel == 2;
+                if (level == EtwEventLevel::Warning) return evt.iLevel == 3;
+                if (level == EtwEventLevel::Info) return evt.iLevel == 4 || evt.iLevel == 0;
+                if (level == EtwEventLevel::Verbose) return evt.iLevel == 5;
+                return true;
+            }
 
-<span style = "background-color:#fdd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex) {
-                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, true, EtwEventLevel::All);
-            }</span>
-
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) {
-                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, EtwEventLevel::All);
-            }</span>
+            static void FilterChannelEvents(const std::vector&lt;EtwEvent&gt;&amp; events, EtwEventLevel level, int iStartIndex, int iMaxEvents, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
+                int iSkipped = 0;
+                for (const auto&amp; evt : events) {
+                    if (!MatchEventLevelFilter(evt, level)) continue;
+                    if (iStartIndex &gt; 0 &amp;&amp; iSkipped++ &lt; iStartIndex) continue;
+                    lstEvents.Add(evt);
+                    if (iMaxEvents &gt; 0 &amp;&amp; lstEvents.GetCount() &gt;= iMaxEvents) break;
+                }
+            }
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
                 RegisterChannelIfNew(sChannelName);
                 Collections::Generic::List&lt;EtwEvent&gt; lstEvents;</span>
-
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, level, lstEvents);</span>
 #endif
-
 <span style = "background-color:#dfd">                auto it = s_mapChannelEvents.find(sChannelName);
-                if (it != s_mapChannelEvents.end()) {</span>
-                    int iSkipped = 0;
-<span style = "background-color:#fdd">                    for (const auto&amp; evt : it-&gt;second) {
-                        if (level != EtwEventLevel::All) {
-                            if (level == EtwEventLevel::Critical &amp;&amp; evt.iLevel != 1) continue;
-                            if (level == EtwEventLevel::Error &amp;&amp; evt.iLevel != 2) continue;
-                            if (level == EtwEventLevel::Warning &amp;&amp; evt.iLevel != 3) continue;
-                            if (level == EtwEventLevel::Info &amp;&amp; evt.iLevel != 4 &amp;&amp; evt.iLevel != 0) continue;
-                            if (level == EtwEventLevel::Verbose &amp;&amp; evt.iLevel != 5) continue;</span>
-                        }
-
-<span style = "background-color:#fdd">                        if (iStartIndex &gt; 0 &amp;&amp; iSkipped &lt; iStartIndex) {
-                            iSkipped++;
-                            continue;</span>
-                        }
-<span style = "background-color:#fdd">                        lstEvents.Add(evt);
-                        if (iMaxEvents &gt; 0 &amp;&amp; lstEvents.GetCount() &gt;= iMaxEvents) break;</span>
-                    }
-                }
-<span style = "background-color:#dfd">                return lstEvents;
+                if (it != s_mapChannelEvents.end()) FilterChannelEvents(it-&gt;second, level, iStartIndex, iMaxEvents, lstEvents);
+                return lstEvents;
             }</span>
 
 <span style = "background-color:#dfd">            void EtwLogReader::StartListening(const String&amp; sChannelName, std::function&lt;void(const EtwEvent&amp;)&gt; fnCallback) {

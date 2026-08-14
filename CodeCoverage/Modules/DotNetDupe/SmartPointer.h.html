@@ -121,16 +121,16 @@ namespace DotNetDupe {
              * @brief Copy constructor. Only permitted if the source is in Shared mode.
              * @throw SystemException If the source pointer is in Unique mode.
              */
-<span style = "background-color:#dfd">            SmartPointer(const SmartPointer&amp; objOther) : m_pObject(nullptr), m_pnRefCount(nullptr) {
-                if (objOther.m_pnRefCount == nullptr &amp;&amp; objOther.m_pObject != nullptr) {</span>
-<span style = "background-color:#fdd">                    throw SystemException("Cannot copy a Unique SmartPointer. Use Move semantics or initialize as Shared.");</span>
+            SmartPointer(const SmartPointer&amp; objOther) : m_pObject(nullptr), m_pnRefCount(nullptr) {
+                if (objOther.m_pnRefCount == nullptr &amp;&amp; objOther.m_pObject != nullptr) {
+                    throw SystemException("Cannot copy a Unique SmartPointer. Use Move semantics or initialize as Shared.");
                 }
-<span style = "background-color:#dfd">                m_pObject = objOther.m_pObject;
+                m_pObject = objOther.m_pObject;
                 m_pnRefCount = objOther.m_pnRefCount;
                 if (m_pnRefCount != nullptr) {
-                    (*m_pnRefCount)++;</span>
+                    (*m_pnRefCount)++;
                 }
-<span style = "background-color:#dfd">            }</span>
+            }
 
             template &lt;typename U&gt;
             SmartPointer(const SmartPointer&lt;U&gt;&amp; objOther) : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {

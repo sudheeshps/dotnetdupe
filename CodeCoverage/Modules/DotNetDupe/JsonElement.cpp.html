@@ -264,7 +264,7 @@ namespace DotNetDupe {
                         try {
 <span style = "background-color:#dfd">                            double val = std::stod(numStr);
                             return JsonElement(val);</span>
-<span style = "background-color:#fdd">                        } catch (...) {
+<span style = "background-color:#fdd">                        } catch (const std::exception&amp;) {
                             throw JsonException(("Invalid number format: " + numStr).c_str());</span>
                         }
 <span style = "background-color:#dfd">                    }</span>
@@ -414,50 +414,45 @@ namespace DotNetDupe {
                     return m_pImpl-&gt;dictObject.GetKeys();
                 }</span>
 
+<span style = "background-color:#dfd">                static String FormatJsonArray(const Collections::Generic::List&lt;JsonElement&gt;&amp; lstArray) {
+                    std::string sRes = "[";
+                    for (int i = 0; i &lt; lstArray.GetCount(); ++i) {
+                        if (i &gt; 0) sRes += ",";
+                        sRes += lstArray[i].ToString().GetRawString();</span>
+                    }
+<span style = "background-color:#dfd">                    return String((sRes + "]").c_str());
+                }</span>
+
+<span style = "background-color:#dfd">                static String FormatJsonObject(const Collections::Generic::Dictionary&lt;String, JsonElement&gt;&amp; dictObject) {
+                    std::string sRes = "{";
+                    auto keys = dictObject.GetKeys();
+                    for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                        if (i &gt; 0) sRes += ",";
+                        sRes += EscapeString(keys[i]).GetRawString();
+                        sRes += ":";
+                        sRes += dictObject[keys[i]].ToString().GetRawString();</span>
+                    }
+<span style = "background-color:#dfd">                    return String((sRes + "}").c_str());
+                }</span>
+
+<span style = "background-color:#dfd">                static String FormatJsonNumber(double dVal) {
+                    if (dVal == static_cast&lt;long long&gt;(dVal)) return String(std::to_string(static_cast&lt;long long&gt;(dVal)).c_str());
+                    return String(std::to_string(dVal).c_str());
+                }</span>
+
 <span style = "background-color:#dfd">                String JsonElement::ToString() const {
                     if (!m_pImpl) return "null";
                     switch (m_pImpl-&gt;eKind) {</span>
-                        case JsonValueKind::Null:
-                            return "null";
-                        case JsonValueKind::True:
-<span style = "background-color:#dfd">                            return "true";</span>
-                        case JsonValueKind::False:
-<span style = "background-color:#dfd">                            return "false";</span>
-                        case JsonValueKind::Number: {
-<span style = "background-color:#dfd">                            double dVal = m_pImpl-&gt;dNumValue;
-                            if (dVal == static_cast&lt;long long&gt;(dVal)) {
-                                return String(std::to_string(static_cast&lt;long long&gt;(dVal)).c_str());</span>
-                            } else {
-<span style = "background-color:#dfd">                                return String(std::to_string(dVal).c_str());</span>
-                            }
-                        }
-                        case JsonValueKind::String:
-<span style = "background-color:#dfd">                            return EscapeString(m_pImpl-&gt;sStrValue);</span>
-                        case JsonValueKind::Array: {
-<span style = "background-color:#dfd">                            std::string sRes = "[";
-                            for (int i = 0; i &lt; m_pImpl-&gt;lstArray.GetCount(); ++i) {
-                                if (i &gt; 0) sRes += ",";
-                                sRes += m_pImpl-&gt;lstArray[i].ToString().GetRawString();</span>
-                            }
-<span style = "background-color:#dfd">                            sRes += "]";
-                            return String(sRes.c_str());</span>
-                        }
-                        case JsonValueKind::Object: {
-<span style = "background-color:#dfd">                            std::string sRes = "{";
-                            auto keys = m_pImpl-&gt;dictObject.GetKeys();
-                            for (int i = 0; i &lt; keys.GetLength(); ++i) {
-                                if (i &gt; 0) sRes += ",";
-                                sRes += EscapeString(keys[i]).GetRawString();
-                                sRes += ":";
-                                sRes += m_pImpl-&gt;dictObject[keys[i]].ToString().GetRawString();</span>
-                            }
-<span style = "background-color:#dfd">                            sRes += "}";
-                            return String(sRes.c_str());</span>
-                        }
-                        default:
-                            return "null";
+                        case JsonValueKind::Null: return "null";
+<span style = "background-color:#dfd">                        case JsonValueKind::True: return "true";
+                        case JsonValueKind::False: return "false";
+                        case JsonValueKind::Number: return FormatJsonNumber(m_pImpl-&gt;dNumValue);
+                        case JsonValueKind::String: return EscapeString(m_pImpl-&gt;sStrValue);
+                        case JsonValueKind::Array: return FormatJsonArray(m_pImpl-&gt;lstArray);
+                        case JsonValueKind::Object: return FormatJsonObject(m_pImpl-&gt;dictObject);</span>
+                        default: return "null";
                     }
-<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                JsonElement JsonElement::Parse(const String&amp; sJson) {
                     return JsonParser::Parse(sJson);
