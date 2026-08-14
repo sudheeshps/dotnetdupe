@@ -253,7 +253,7 @@ namespace DotNetDupe {
                         try {
                             double val = std::stod(numStr);
                             return JsonElement(val);
-                        } catch (...) {
+                        } catch (const std::exception&) {
                             throw JsonException(("Invalid number format: " + numStr).c_str());
                         }
                     }

@@ -4,6 +4,8 @@
 #include "System/Threading/Lock.h"
 #include "System/Collections/Generic/List.h"
 #include "System/SystemException.h"
+#include "System/InvalidOperationException.h"
+#include "System/UnknownException.h"
 #include "System/TimeoutException.h"
 
 namespace DotNetDupe {
@@ -26,12 +28,12 @@ namespace DotNetDupe {
                     {
                         Lock<CriticalSection> lock(m_csSync);
                         if (m_eStatus != TaskStatus::Created) {
-                            throw SystemException("Task has already been started.");
+                            throw InvalidOperationException("Task has already been started or executed.");
                         }
                         m_eStatus = TaskStatus::WaitingToRun;
                     }
                     
-                    ThreadPool::QueueUserWorkItem(WaitCallback(&Task::ThreadPoolCallback), this);
+                    ThreadPool::QueueUserWorkItem(&Task::ThreadPoolCallback, this);
                 }
 
                 void Task::Wait() {
@@ -40,32 +42,31 @@ namespace DotNetDupe {
 
                 bool Task::Wait(int iMillisecondsTimeout) {
                     try {
-                        m_pCompletionEvent->WaitOne(iMillisecondsTimeout);
-                        return true;
+                        return m_pCompletionEvent->WaitOne(iMillisecondsTimeout);
                     } catch (const TimeoutException&) {
                         return false;
                     }
                 }
 
                 TaskStatus Task::GetStatus() const {
-                    Lock<CriticalSection> lock(m_csSync);
+                    Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus;
                 }
 
                 bool Task::GetIsCompleted() const {
-                    Lock<CriticalSection> lock(m_csSync);
+                    Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::RanToCompletion || 
                            m_eStatus == TaskStatus::Faulted || 
                            m_eStatus == TaskStatus::Canceled;
                 }
 
                 bool Task::GetIsFaulted() const {
-                    Lock<CriticalSection> lock(m_csSync);
+                    Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::Faulted;
                 }
 
                 bool Task::GetIsCanceled() const {
-                    Lock<CriticalSection> lock(m_csSync);
+                    Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::Canceled;
                 }
 
@@ -88,7 +89,15 @@ namespace DotNetDupe {
                         }
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::RanToCompletion;
+                    } catch (const Exception&) {
+                        Lock<CriticalSection> lock(m_csSync);
+                        m_eStatus = TaskStatus::Faulted;
+                    } catch (const std::exception& ex) {
+                        (void)UnknownException(ex.what());
+                        Lock<CriticalSection> lock(m_csSync);
+                        m_eStatus = TaskStatus::Faulted;
                     } catch (...) {
+                        (void)UnknownException("An unhandled exception occurred during task execution.");
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::Faulted;
                     }

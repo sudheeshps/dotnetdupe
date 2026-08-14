@@ -111,7 +111,13 @@ namespace DotNetDupe {
                         DotNetDupe::System::String contentStr;
                         try {
                             contentStr = DotNetDupe::System::IO::File::ReadAllText(targetFilePath);
-                        } catch (...) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
+                            DotNetDupe::System::Console::WriteLine(DotNetDupe::System::String("[WebAppServer] Failed to read static file: ") + ex.What());
+                            ctx->GetResponse()->SetStatusCode(500);
+                            ctx->GetResponse()->SetContentType("text/plain");
+                            return "500 Internal Server Error: Unable to open file";
+                        } catch (const std::exception& ex) {
+                            DotNetDupe::System::Console::WriteLine(DotNetDupe::System::String("[WebAppServer] Failed to read static file: ") + ex.what());
                             ctx->GetResponse()->SetStatusCode(500);
                             ctx->GetResponse()->SetContentType("text/plain");
                             return "500 Internal Server Error: Unable to open file";

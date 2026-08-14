@@ -104,7 +104,7 @@ namespace DotNetDupe {
                         }
                         try {
                             port = std::stoi(sPort);
-                        } catch (...) {
+                        } catch (const std::exception&) {
                             port = 5000;
                         }
                     } else {

@@ -6,6 +6,7 @@
 #include "System/Threading/Lock.h"
 #include "System/Threading/EventWaitHandle.h"
 #include "System/Collections/Generic/List.h"
+#include "System/UnknownException.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -116,8 +117,12 @@ namespace DotNetDupe {
                             if (objTask.Callback) {
                                 try {
                                     objTask.Callback(objTask.State);
+                                } catch (const Exception&) {
+                                    // DotNetDupe exception
+                                } catch (const std::exception& ex) {
+                                    (void)UnknownException(ex.what());
                                 } catch (...) {
-                                    // Task exceptions are absorbed to prevent worker thread death
+                                    (void)UnknownException("An unhandled exception occurred during ThreadPool task execution.");
                                 }
                             }
                         } else {

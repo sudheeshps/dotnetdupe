@@ -11,6 +11,7 @@
 #include "System/Convert.h"
 
 #include "System/Net/HttpStatusCode.h"
+#include "System/UnknownException.h"
 #include <string>
 #include <vector>
 #include <algorithm>
@@ -136,10 +137,14 @@ namespace DotNetDupe {
                                     System::Console::WriteLine("[Server] Calling HandleConnection...");
                                     spState->App->HandleConnection(std::move(spState->Client));
                                     System::Console::WriteLine("[Server] HandleConnection finished!");
-                                } catch (const DotNetDupe::System::SystemException& ex) {
+                                } catch (const DotNetDupe::System::Exception& ex) {
                                     System::Console::WriteLine(System::String("[Server Exception] HandleConnection: ") + ex.What());
+                                } catch (const std::exception& ex) {
+                                    System::UnknownException unk(ex.what());
+                                    System::Console::WriteLine(System::String("[Server Exception] HandleConnection: ") + unk.What());
                                 } catch (...) {
-                                    System::Console::WriteLine("[Server Exception] HandleConnection unknown");
+                                    System::UnknownException unk("An unknown error occurred during connection handling.");
+                                    System::Console::WriteLine(System::String("[Server Exception] HandleConnection: ") + unk.What());
                                 }
                             } else {
                                 System::Console::WriteLine("[Server Exception] ConnectionState is NULL or App is NULL");
@@ -152,10 +157,14 @@ namespace DotNetDupe {
                     }
                 } catch (const System::Net::Sockets::SocketException& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] AcceptTcpClient: ") + ex.What());
-                } catch (const System::SystemException& ex) {
+                } catch (const System::Exception& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] Run loop: ") + ex.What());
+                } catch (const std::exception& ex) {
+                    System::UnknownException unk(ex.what());
+                    System::Console::WriteLine(System::String("[Server Exception] Run loop: ") + unk.What());
                 } catch (...) {
-                    System::Console::WriteLine("[Server Exception] Run loop unknown");
+                    System::UnknownException unk("An unknown error occurred in server run loop.");
+                    System::Console::WriteLine(System::String("[Server Exception] Run loop: ") + unk.What());
                 }
                 System::Console::WriteLine("[Server] Run loop exited!");
             }
@@ -179,10 +188,14 @@ namespace DotNetDupe {
                     dummy.Connect(m_sHost, m_nPort);
                     dummy.Close();
                     System::Console::WriteLine("[Server] Dummy connection sent successfully.");
-                } catch (const System::SystemException& ex) {
+                } catch (const System::Exception& ex) {
                     System::Console::WriteLine(System::String("[Server Exception] Dummy connection failed: ") + ex.What());
+                } catch (const std::exception& ex) {
+                    System::UnknownException unk(ex.what());
+                    System::Console::WriteLine(System::String("[Server Exception] Dummy connection failed: ") + unk.What());
                 } catch (...) {
-                    System::Console::WriteLine("[Server Exception] Dummy connection failed unknown");
+                    System::UnknownException unk("Dummy connection failed with unknown error.");
+                    System::Console::WriteLine(System::String("[Server Exception] Dummy connection failed: ") + unk.What());
                 }
 
                 // Break the reference cycle
@@ -288,7 +301,7 @@ namespace DotNetDupe {
                         if (nameLower == "content-length") {
                             try {
                                 contentLength = std::stoi(value);
-                            } catch (...) {
+                            } catch (const std::exception&) {
                                 contentLength = 0;
                             }
                         }
@@ -366,84 +379,53 @@ namespace DotNetDupe {
                             while (pWebSocket->GetState() == System::Net::WebSockets::WebSocketState::Open && pWebSocket->ReceiveText(msg)) {
                                 wsHandler->OnMessage(pWsContext, msg);
                             }
-                        } catch (...) {}
+                        } catch (const DotNetDupe::System::Exception& ex) {
+                            System::Console::WriteLine(System::String("[WebSocket] Connection error: ") + ex.What());
+                        } catch (const std::exception& ex) {
+                            System::Console::WriteLine(System::String("[WebSocket] Connection error: ") + ex.what());
+                        }
                         try {
                             wsHandler->OnDisconnected(pWsContext);
-                        } catch (...) {}
+                        } catch (const DotNetDupe::System::Exception&) {
+                        } catch (const std::exception&) {
+                        }
 
                         spClient->Close();
                         return;
                     }
                 }
 
+                auto executeHandler = [&](const System::String& methodVerb) {
+                    try {
+                        System::Console::WriteLine(System::String("[Server] Found ") + methodVerb + " handler, invoking...");
+                        sBodyResult = handler(spContext);
+                        System::Console::WriteLine(System::String("[Server] ") + methodVerb + " handler invoked successfully.");
+                        bMatched = true;
+                    } catch (const DotNetDupe::System::Exception& ex) {
+                        spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                        sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
+                        bMatched = true;
+                    } catch (const std::exception& ex) {
+                        System::UnknownException unk(ex.what());
+                        spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                        sBodyResult = System::String("500 Internal Server Error: ") + unk.What();
+                        bMatched = true;
+                    } catch (...) {
+                        System::UnknownException unk("An unknown error occurred during request processing.");
+                        spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
+                        sBodyResult = "500 Internal Server Error";
+                        bMatched = true;
+                    }
+                };
+
                 if (method == "GET" || method == "HEAD") {
-                    if (findHandler(m_getHandlers)) {
-                        try {
-                            System::Console::WriteLine("[Server] Found GET/HEAD handler, invoking...");
-                            sBodyResult = handler(spContext);
-                            System::Console::WriteLine("[Server] GET/HEAD handler invoked successfully.");
-                            bMatched = true;
-                        } catch (const DotNetDupe::System::SystemException& ex) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
-                            bMatched = true;
-                        } catch (...) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = "500 Internal Server Error";
-                            bMatched = true;
-                        }
-                    }
+                    if (findHandler(m_getHandlers)) executeHandler("GET/HEAD");
                 } else if (method == "POST") {
-                    if (findHandler(m_postHandlers)) {
-                        try {
-                            System::Console::WriteLine("[Server] Found POST handler, invoking...");
-                            sBodyResult = handler(spContext);
-                            System::Console::WriteLine("[Server] POST handler invoked successfully.");
-                            bMatched = true;
-                        } catch (const DotNetDupe::System::SystemException& ex) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
-                            bMatched = true;
-                        } catch (...) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = "500 Internal Server Error";
-                            bMatched = true;
-                        }
-                    }
+                    if (findHandler(m_postHandlers)) executeHandler("POST");
                 } else if (method == "PUT") {
-                    if (findHandler(m_putHandlers)) {
-                        try {
-                            System::Console::WriteLine("[Server] Found PUT handler, invoking...");
-                            sBodyResult = handler(spContext);
-                            System::Console::WriteLine("[Server] PUT handler invoked successfully.");
-                            bMatched = true;
-                        } catch (const DotNetDupe::System::SystemException& ex) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
-                            bMatched = true;
-                        } catch (...) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = "500 Internal Server Error";
-                            bMatched = true;
-                        }
-                    }
+                    if (findHandler(m_putHandlers)) executeHandler("PUT");
                 } else if (method == "DELETE") {
-                    if (findHandler(m_deleteHandlers)) {
-                        try {
-                            System::Console::WriteLine("[Server] Found DELETE handler, invoking...");
-                            sBodyResult = handler(spContext);
-                            System::Console::WriteLine("[Server] DELETE handler invoked successfully.");
-                            bMatched = true;
-                        } catch (const DotNetDupe::System::SystemException& ex) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = System::String("500 Internal Server Error: ") + ex.What();
-                            bMatched = true;
-                        } catch (...) {
-                            spResponse->SetStatusCode(System::Net::HttpStatusCode::InternalServerError);
-                            sBodyResult = "500 Internal Server Error";
-                            bMatched = true;
-                        }
-                    }
+                    if (findHandler(m_deleteHandlers)) executeHandler("DELETE");
                 }
 
                 if (!bMatched) {

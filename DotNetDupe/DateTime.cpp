@@ -257,7 +257,8 @@ namespace DotNetDupe {
 				result = DateTime(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 				return true;
 			}
-			catch (...) { return false; }
+			catch (const Exception&) { return false; }
+			catch (const std::exception&) { return false; }
 		}
 
 		bool DateTime::TryParseExact(const String& s, const String& format, DateTime& result) {

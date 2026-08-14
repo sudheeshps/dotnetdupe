@@ -59,7 +59,12 @@ namespace DotNetDupe {
                             claims.Add(keys[i], payload[keys[i]]);
                         }
                         return true;
-                    } catch (...) {
+                    } catch (const DotNetDupe::System::Exception&) {
+                        Response()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
+                        Response()->SetContentType("application/json");
+                        Response()->SetBody("{\"error\":\"Unauthorized - Token parsing failed\"}");
+                        return false;
+                    } catch (const std::exception&) {
                         Response()->SetStatusCode(DotNetDupe::System::Net::HttpStatusCode::Unauthorized);
                         Response()->SetContentType("application/json");
                         Response()->SetBody("{\"error\":\"Unauthorized - Token parsing failed\"}");

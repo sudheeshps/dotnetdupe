@@ -9,8 +9,11 @@
 #if defined(_WIN32)
 #include <windows.h>
 #include <lm.h>
+#include <sddl.h>
 #include "Win32Internal.h"
+#include "System/ComponentModel/Win32Exception.h"
 #pragma comment(lib, "netapi32.lib")
+#pragma comment(lib, "advapi32.lib")
 using namespace DotNetDupe::System::Internal;
 #else
 #include <pwd.h>
@@ -18,6 +21,7 @@ using namespace DotNetDupe::System::Internal;
 #include <sys/types.h>
 #include <unistd.h>
 #include <cerrno>
+#include "System/SystemException.h"
 #endif
 
 namespace DotNetDupe {
@@ -51,17 +55,36 @@ namespace DotNetDupe {
                     if (nStatus == NERR_Success) {
                         for (DWORD i = 0; i < dwEntriesRead; i++) {
                             std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
-                            lstPermissions.Add(String("GroupMember:") + String(sGroup.c_str()));
-                            lstGroups.Add(String(sGroup.c_str()));
+                            lstPermissions.Add(String("GroupMember:") + sGroup.c_str());
+                            lstGroups.Add(sGroup.c_str());
                         }
                         ::NetApiBufferFree(pGroups);
+                    }
+                }
+
+                static void PopulateWin32SidAndDomain(LPCWSTR pwszUser, UserInfo& info) {
+                    BYTE sidBuffer[SECURITY_MAX_SID_SIZE];
+                    DWORD cbSid = sizeof(sidBuffer);
+                    WCHAR szDomain[256] = { 0 };
+                    DWORD cchDomain = 256;
+                    SID_NAME_USE peUse;
+
+                    if (::LookupAccountNameW(NULL, pwszUser, (PSID)sidBuffer, &cbSid, szDomain, &cchDomain, &peUse)) {
+                        LPWSTR pszStringSid = NULL;
+                        if (::ConvertSidToStringSidW((PSID)sidBuffer, &pszStringSid)) {
+                            info.sSidOrUid = StringConvertInternal::WCharToUtf8(pszStringSid).c_str();
+                            ::LocalFree(pszStringSid);
+                        }
+                        if (cchDomain > 0) {
+                            info.sDomain = StringConvertInternal::WCharToUtf8(szDomain).c_str();
+                        }
                     }
                 }
 
                 static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
                     UserInfo info;
                     std::string sName = StringConvertInternal::WCharToUtf8(pUi->usri1_name);
-                    info.sUsername = String(sName.c_str());
+                    info.sUsername = sName.c_str();
 
                     info.sDomain = "LOCAL";
                     info.sSidOrUid = "S-1-5-21-USER";
@@ -77,6 +100,7 @@ namespace DotNetDupe {
                         info.lstPermissions.Add("StandardUserRights");
                     }
 
+                    PopulateWin32SidAndDomain(pUi->usri1_name, info);
                     PopulateWin32UserGroups(pUi->usri1_name, info.lstGroups, info.lstPermissions);
                     return info;
                 }
@@ -103,9 +127,9 @@ namespace DotNetDupe {
 #else
                 static UserInfo BuildLinuxUserInfo(const struct passwd* pw) {
                     UserInfo info;
-                    info.sUsername = String(pw->pw_name);
+                    info.sUsername = pw->pw_name;
                     info.sDomain = "LOCAL";
-                    info.sSidOrUid = String(std::to_string(pw->pw_uid).c_str());
+                    info.sSidOrUid = std::to_string(pw->pw_uid).c_str();
                     info.bIsDisabled = false;
                     info.bIsPasswordRequired = true;
                     info.bIsAccountLocked = false;
@@ -157,23 +181,35 @@ namespace DotNetDupe {
                         throw ArgumentException("Username cannot be empty.");
                     }
 
-                    auto users = EnumerateUsers();
-                    for (int i = 0; i < users.GetCount(); i++) {
-                        if (users[i].sUsername.Equals(sUsername)) {
-                            return users[i];
-                        }
+#if defined(_WIN32)
+                    std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
+                    LPUSER_INFO_1 pBuf = NULL;
+                    NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&pBuf);
+
+                    if (nStatus == NERR_Success && pBuf != NULL) {
+                        UserInfo info = BuildWin32UserInfo(pBuf);
+                        ::NetApiBufferFree(pBuf);
+                        return info;
                     }
 
-                    UserInfo fallback;
-                    fallback.sUsername = sUsername;
-                    fallback.sDomain = "LOCAL";
-                    fallback.sSidOrUid = "S-1-5-UNKNOWN";
-                    fallback.eUserClass = UserClass::Normal;
-                    fallback.bIsDisabled = false;
-                    fallback.bIsPasswordRequired = true;
-                    fallback.bIsAccountLocked = false;
-                    fallback.lstPermissions.Add("StandardUserRights");
-                    return fallback;
+                    if (nStatus == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                    }
+                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) {
+                        throw ArgumentException("User not found: " + sUsername);
+                    }
+                    throw ComponentModel::Win32Exception(nStatus, "Failed to query user information for: " + sUsername);
+#else
+                    errno = 0;
+                    struct passwd* pw = getpwnam(sUsername.GetRawString());
+                    if (pw == NULL) {
+                        if (errno == EACCES || errno == EPERM) {
+                            throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                        }
+                        throw ArgumentException("User not found: " + sUsername);
+                    }
+                    return BuildLinuxUserInfo(pw);
+#endif
                 }
 
                 UserInfo UserPrincipal::GetCurrent() {
@@ -181,17 +217,26 @@ namespace DotNetDupe {
                     WCHAR szName[256] = { 0 };
                     DWORD dwSize = 256;
 
-                    if (::GetUserNameW(szName, &dwSize)) {
-                        return GetUser(String(StringConvertInternal::WCharToUtf8(szName).c_str()));
+                    if (!::GetUserNameW(szName, &dwSize)) {
+                        DWORD dwErr = ::GetLastError();
+                        if (dwErr == ERROR_ACCESS_DENIED) {
+                            throw UnauthorizedAccessException("Access denied querying current user name.");
+                        }
+                        throw ComponentModel::Win32Exception(dwErr, "Failed to get current user name.");
                     }
+                    return GetUser(StringConvertInternal::WCharToUtf8(szName).c_str());
 #else
+                    errno = 0;
                     uid_t uid = getuid();
                     struct passwd* pw = getpwuid(uid);
-                    if (pw != NULL) {
-                        return GetUser(String(pw->pw_name));
+                    if (pw == NULL) {
+                        if (errno == EACCES || errno == EPERM) {
+                            throw UnauthorizedAccessException("Access denied querying current user information.");
+                        }
+                        throw SystemException("Failed to query current user information.");
                     }
+                    return BuildLinuxUserInfo(pw);
 #endif
-                    return GetUser("CurrentSystemUser");
                 }
 
             }

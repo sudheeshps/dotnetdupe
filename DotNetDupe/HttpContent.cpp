@@ -175,7 +175,9 @@ namespace DotNetDupe {
                     if (!m_pStream.IsNull() && m_pStream->CanSeek()) {
                         try {
                             return m_pStream->GetLength();
-                        } catch (...) {
+                        } catch (const Exception&) {
+                            return -1;
+                        } catch (const std::exception&) {
                             return -1;
                         }
                     }

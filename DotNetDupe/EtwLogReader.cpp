@@ -66,7 +66,7 @@ namespace DotNetDupe {
                     if (err == ERROR_ACCESS_DENIED) {
                         throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");
                     }
-                    char buf[256];
+                    char buf [256] = { 0 };
                     snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
                     throw SystemException(buf);
                 }
@@ -77,7 +77,7 @@ namespace DotNetDupe {
                 EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
                 if (hEnum == NULL) return;
 
-                WCHAR wBuffer[512];
+                WCHAR wBuffer [512] = { 0 };
                 DWORD dwReturned = 0;
                 while (::EvtNextChannelPath(hEnum, 512, wBuffer, &dwReturned)) {
                     std::wstring wPath(wBuffer);
@@ -137,7 +137,9 @@ namespace DotNetDupe {
                         if (levelEnd != std::string::npos) {
                             try {
                                 evt.iLevel = std::stoi(sXml.substr(levelStart + 7, levelEnd - levelStart - 7));
-                            } catch (...) {}
+                            } catch (const std::exception&) {
+                                evt.iLevel = 4;
+                            }
                         }
                     }
 
@@ -147,7 +149,9 @@ namespace DotNetDupe {
                         if (idEnd != std::string::npos) {
                             try {
                                 evt.iEventId = std::stoi(sXml.substr(idStart + 9, idEnd - idStart - 9));
-                            } catch (...) {}
+                            } catch (const std::exception&) {
+                                evt.iEventId = 0;
+                            }
                         }
                     }
 

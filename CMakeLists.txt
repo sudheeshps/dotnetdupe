@@ -15,8 +15,7 @@ include_directories(Include)
 include_directories(DotNetDupe)
 
 # Library sources
-# Force re-configure to pick up new files (like Process.cpp, WebApplication.cpp, etc.)
-file(GLOB_RECURSE LIB_SOURCES "DotNetDupe/*.cpp")
+file(GLOB_RECURSE LIB_SOURCES CONFIGURE_DEPENDS "DotNetDupe/*.cpp")
 
 # Remove dllmain.cpp from non-Windows builds if necessary, 
 # but for now we'll keep it as it's often empty or has simple entry points.
@@ -62,8 +61,8 @@ if(Microsoft.GSL_FOUND)
     target_link_libraries(DotNetDupe PRIVATE Microsoft.GSL::GSL)
 endif()
 
-# Demo Application (Force reconfigure to pick up WebApplicationDemo.cpp and split demo files)
-file(GLOB DEMO_SOURCES "DotNetDupeDemo/*.cpp")
+# Demo Application
+file(GLOB DEMO_SOURCES CONFIGURE_DEPENDS "DotNetDupeDemo/*.cpp")
 add_executable(DotNetDupeDemo ${DEMO_SOURCES})
 target_link_libraries(DotNetDupeDemo PRIVATE DotNetDupe)
 
@@ -80,7 +79,7 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-file(GLOB TEST_SOURCES "DotNetDupeTests/*.cpp")
+file(GLOB TEST_SOURCES CONFIGURE_DEPENDS "DotNetDupeTests/*.cpp")
 # Remove pch.cpp if using CMake-native PCH or if not needed
 list(REMOVE_ITEM TEST_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/DotNetDupeTests/pch.cpp")
 

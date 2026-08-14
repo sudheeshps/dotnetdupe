@@ -6,11 +6,11 @@
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
 #include "System/IOException.h"
+#include "System/UnknownException.h"
 #include "System/Console.h"
 #include "System/Uri.h"
 #include "System/Convert.h"
 #include "System/IO/FileStream.h"
-#include "System/IO/File.h"
 #include "System/IO/File.h"
 #include "System/Threading/Thread.h"
 #include <chrono>
@@ -229,11 +229,16 @@ namespace DotNetDupe {
 
                         try {
                             ExecuteDownload(llExistingBytes);
-                        } catch (const SystemException& ex) {
-                            Console::WriteLine(String("[FileDownloader] Download loop failed with DotNetDupe exception: ") + ex.What());
+                        } catch (const Exception& ex) {
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + ex.What());
+                            NotifyStateChange(DownloadStatus::Failed);
+                        } catch (const std::exception& ex) {
+                            UnknownException unk(ex.what());
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
                             NotifyStateChange(DownloadStatus::Failed);
                         } catch (...) {
-                            Console::WriteLine("[FileDownloader] Download loop failed with unknown error.");
+                            UnknownException unk("An unknown error occurred during download.");
+                            Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
                             NotifyStateChange(DownloadStatus::Failed);
                         }
                     }

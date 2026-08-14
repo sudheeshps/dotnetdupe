@@ -93,6 +93,10 @@ namespace DotNetDupe {
 								if (argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
 								sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
 								i = end;
+							} catch (const FormatException&) {
+								throw;
+							} catch (const std::exception&) {
+								throw FormatException("Invalid format string");
 							} catch (...) {
 								throw FormatException("Invalid format string");
 							}
@@ -111,6 +115,8 @@ namespace DotNetDupe {
 				return String(sRes.c_str());
 			} catch (const FormatException&) {
 				throw;
+			} catch (const std::exception&) {
+				throw FormatException("Error formatting string.");
 			} catch (...) {
 				throw FormatException("Error formatting string.");
 			}

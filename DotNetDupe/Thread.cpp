@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Threading/Thread.h"
 #include "System/TimeoutException.h"
+#include "System/UnknownException.h"
 #include "System/SmartPointer.h"
 #include <chrono>
 
@@ -113,8 +114,12 @@ namespace DotNetDupe {
                     else if (_parameterizedStart) {
                         _parameterizedStart(parameter);
                     }
+                } catch (const Exception&) {
+                    // DotNetDupe exception
+                } catch (const std::exception& ex) {
+                    UnknownException unk(ex.what());
                 } catch (...) {
-                    // Silently absorb or handle thread-level exceptions if needed
+                    UnknownException unk("An unhandled exception occurred on worker thread.");
                 }
 
                 {

@@ -7,14 +7,53 @@
 #include "System/OutOfMemoryException.h"
 #include "System/ComponentModel/Win32Exception.h"
 #include "System/Security/SecurityException.h"
+#include "System/ArgumentException.h"
+#include "System/InvalidOperationException.h"
+#include "System/TimeoutException.h"
 #include "System/Diagnostics/Process.h"
+#include "System/Diagnostics/EventLog.h"
+#include "System/Diagnostics/EtwLogReader.h"
+#include "System/Security/Principal/UserPrincipal.h"
+#include "System/Threading/ManualResetEvent.h"
 #include "System/IO/FileNotFoundException.h"
+#include "System/IO/DirectoryNotFoundException.h"
+#include "System/IO/Directory.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/SocketException.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/Text/Json/JsonException.h"
 #include "System/String.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::ComponentModel;
 using namespace DotNetDupe::System::Security;
+using namespace DotNetDupe::System::Security::Principal;
 using namespace DotNetDupe::System::Diagnostics;
+using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::IO;
+using namespace DotNetDupe::System::Net::Sockets;
+using namespace DotNetDupe::System::Text::Json;
+
+#if defined(_WIN32)
+#include <windows.h>
+static bool IsElevatedProcess() {
+    BOOL bElevated = FALSE;
+    HANDLE hToken = NULL;
+    if (::OpenProcessToken(::GetCurrentProcess(), TOKEN_QUERY, &hToken)) {
+        TOKEN_ELEVATION elevation;
+        DWORD dwSize = sizeof(TOKEN_ELEVATION);
+        if (::GetTokenInformation(hToken, TokenElevation, &elevation, sizeof(elevation), &dwSize)) {
+            bElevated = elevation.TokenIsElevated != 0;
+        }
+        ::CloseHandle(hToken);
+    }
+    return bElevated != FALSE;
+}
+#else
+static bool IsElevatedProcess() {
+    return geteuid() == 0;
+}
+#endif
 
 TEST(ExceptionTests, GivenUnauthorizedAccessException_WhenDefaultConstructorCalled_ThenHasDefaultMessage) {
     UnauthorizedAccessException ex;
@@ -82,5 +121,58 @@ TEST(ExceptionTests, GivenWin32Exception_WhenCustomMessageOnlyProvided_ThenStore
 TEST(ExceptionTests, GivenProcessInstance_WhenNonExistentFileStarted_ThrowsFileNotFoundException) {
     Process proc;
     proc.SetStartInfo(ProcessStartInfo("C:\\NonExistentPath\\NonExistentBinary12345.exe"));
-    EXPECT_THROW(proc.Start(), DotNetDupe::System::IO::FileNotFoundException);
+    EXPECT_THROW(proc.Start(), FileNotFoundException);
+}
+
+TEST(ExceptionTests, GivenDirectory_WhenNonExistentDirectoryDeleted_ThrowsIOException) {
+    EXPECT_THROW(Directory::Delete("C:\\NonExistentPath_12345_XYZ"), IOException);
+}
+
+TEST(ExceptionTests, GivenManualResetEvent_WhenTimeoutExpires_ThrowsTimeoutException) {
+    ManualResetEvent evt(false);
+    EXPECT_THROW(evt.WaitOne(1), TimeoutException);
+}
+
+TEST(ExceptionTests, GivenEventLog_WhenEmptySourceProvided_ThrowsArgumentException) {
+    EXPECT_THROW(EventLog::WriteEntry("", "Test message"), ArgumentException);
+    EXPECT_THROW(EventLog::Delete(""), ArgumentException);
+    EXPECT_THROW(EventLog::CreateEventSource("", "Application"), ArgumentException);
+}
+
+TEST(ExceptionTests, GivenEtwLogReader_WhenEmptyChannelProvided_ThrowsArgumentException) {
+    EXPECT_THROW(EtwLogReader::ReadEvents(""), ArgumentException);
+}
+
+TEST(ExceptionTests, GivenEtwLogReader_WhenAlreadyListening_ThrowsInvalidOperationException) {
+    EtwLogReader reader;
+    reader.StartListening("Application", [](const EtwEvent&) {});
+    EXPECT_THROW(reader.StartListening("Application", [](const EtwEvent&) {}), InvalidOperationException);
+    reader.StopListening();
+}
+
+TEST(ExceptionTests, GivenTcpClient_WhenInvalidPortConnected_ThrowsSocketException) {
+    TcpClient client;
+    EXPECT_THROW(client.Connect("127.0.0.1", 1), SocketException);
+}
+
+TEST(ExceptionTests, GivenJsonSerializer_WhenInvalidJsonDeserialized_ThrowsJsonException) {
+    EXPECT_THROW(JsonSerializer::Deserialize<String>("{ unclosed invalid json"), JsonException);
+}
+
+TEST(ExceptionTests, GivenElevationPrivileges_WhenQueryingUserPrincipal_BehavesAccordingToPrivileges) {
+    bool bIsElevated = IsElevatedProcess();
+    if (bIsElevated) {
+        auto users = UserPrincipal::EnumerateUsers();
+        EXPECT_GE(users.GetCount(), 1);
+        UserInfo current = UserPrincipal::GetCurrent();
+        EXPECT_FALSE(current.sUsername.IsEmpty());
+        EXPECT_FALSE(current.sDomain.IsEmpty());
+    } else {
+        try {
+            auto users = UserPrincipal::EnumerateUsers();
+            EXPECT_GE(users.GetCount(), 1);
+        } catch (const UnauthorizedAccessException& ex) {
+            EXPECT_TRUE(String(ex.What()).Contains("Access denied"));
+        }
+    }
 }
