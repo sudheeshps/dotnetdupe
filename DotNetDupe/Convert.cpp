@@ -312,14 +312,14 @@ namespace DotNetDupe {
             for (int i = 0; i < 4; i++) ret += base64_chars[char_array_4[i]];
         }
 
-        static void EncodeBase64Remainder(unsigned char* char_array_3, int i, std::string& ret) {
+        static void EncodeBase64Remainder(unsigned char* char_array_3, int remainderLen, std::string& ret) {
             unsigned char char_array_4[4];
-            for (int j = i; j < 3; j++) char_array_3[j] = '\0';
+            for (int j = remainderLen; j < 3; ++j) char_array_3[j] = '\0';
             char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
             char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
             char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
-            for (int j = 0; j < i + 1; j++) ret += base64_chars[char_array_4[j]];
-            while (i++ < 3) ret += '=';
+            for (int j = 0; j < remainderLen + 1; ++j) ret += base64_chars[char_array_4[j]];
+            for (int pad = remainderLen; pad < 3; ++pad) ret += '=';
         }
 
         String Convert::ToBase64String(const Array<char>& inArray) {

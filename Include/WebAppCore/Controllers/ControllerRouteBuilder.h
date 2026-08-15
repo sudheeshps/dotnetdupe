@@ -47,38 +47,34 @@ namespace DotNetDupe {
                     return 0;
                 }
 
+                static char DecodeHexByte(char h1, char h2) {
+                    return static_cast<char>((HexCharToDecimal(h1) << 4) | HexCharToDecimal(h2));
+                }
+
                 static DotNetDupe::System::String UrlDecode(const DotNetDupe::System::String& input) {
                     const char* pStr = input.GetRawString();
-                    if (!pStr) return DotNetDupe::System::String("");
                     DotNetDupe::System::String decoded("");
-                    for (int i = 0; pStr[i] != '\0'; ++i) {
-                        if (pStr[i] == '%') {
-                            if (pStr[i + 1] != '\0' && pStr[i + 2] != '\0') {
-                                char ch = static_cast<char>((HexCharToDecimal(pStr[i + 1]) << 4) | HexCharToDecimal(pStr[i + 2]));
-                                decoded += ch;
-                                i += 2;
-                                continue;
-                            }
+                    int i = 0;
+                    while (pStr && pStr[i] != '\0') {
+                        if (pStr[i] == '%' && pStr[i + 1] != '\0' && pStr[i + 2] != '\0') {
+                            decoded += DecodeHexByte(pStr[i + 1], pStr[i + 2]);
+                            i += 3;
                         } else if (pStr[i] == '+') {
                             decoded += ' ';
-                            continue;
+                            i++;
+                        } else {
+                            decoded += pStr[i++];
                         }
-                        decoded += pStr[i];
                     }
                     return decoded;
                 }
 
-                static DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
-                    DotNetDupe::System::String val;
-                    // 1. Try route parameter "id" first
-                    if (ctx->GetRequest()->GetRouteValues().TryGetValue("id", val) && !val.IsEmpty()) {
-                        return UrlDecode(val);
-                    }
-                    // 2. Try extracting parameter name from subPath placeholder pattern, e.g., "/{channelName}"
+                static DotNetDupe::System::String ExtractFromSubPathPattern(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
                     int openBrace = subPath.IndexOf("{");
                     int closeBrace = subPath.IndexOf("}");
                     if (openBrace >= 0 && closeBrace > openBrace + 1) {
                         DotNetDupe::System::String paramName = subPath.Substring(openBrace + 1, closeBrace - openBrace - 1);
+                        DotNetDupe::System::String val;
                         if (ctx->GetRequest()->GetRouteValues().TryGetValue(paramName, val) && !val.IsEmpty()) {
                             return UrlDecode(val);
                         }
@@ -86,14 +82,21 @@ namespace DotNetDupe {
                             return UrlDecode(val);
                         }
                     }
-                    // 3. Fallback to query parameter "id"
+                    return DotNetDupe::System::String("");
+                }
+
+                static DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
+                    DotNetDupe::System::String val;
+                    if (ctx->GetRequest()->GetRouteValues().TryGetValue("id", val) && !val.IsEmpty()) {
+                        return UrlDecode(val);
+                    }
+                    DotNetDupe::System::String pathVal = ExtractFromSubPathPattern(ctx, subPath);
+                    if (!pathVal.IsEmpty()) return pathVal;
                     if (ctx->GetRequest()->GetQuery().TryGetValue("id", val) && !val.IsEmpty()) {
                         return UrlDecode(val);
                     }
-                    // 4. Fallback to first query parameter value if present
                     auto queryKeys = ctx->GetRequest()->GetQuery().GetKeys();
-                    if (queryKeys.GetLength() > 0) {
-                        ctx->GetRequest()->GetQuery().TryGetValue(queryKeys[0], val);
+                    if (queryKeys.GetLength() > 0 && ctx->GetRequest()->GetQuery().TryGetValue(queryKeys[0], val)) {
                         return UrlDecode(val);
                     }
                     return DotNetDupe::System::String("");

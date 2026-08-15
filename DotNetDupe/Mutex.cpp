@@ -24,7 +24,7 @@ namespace DotNetDupe {
             Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
 
             Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
-                if (bInitiallyOwned && _pImpl) {
+                if (bInitiallyOwned) {
                     _pImpl->mutex.lock();
                 }
             }

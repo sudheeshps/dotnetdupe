@@ -86,10 +86,7 @@ namespace DotNetDupe {
                 if constexpr (IsComplete<T>::value) {
                     if constexpr (!std::is_abstract_v<T> && std::is_default_constructible_v<T>) {
                         m_pObject = new T();
-                        m_pnRefCount = nullptr;
-                        if (bIsShared) {
-                            m_pnRefCount = new long(1);
-                        }
+                        m_pnRefCount = bIsShared ? new long(1) : nullptr;
                     } else {
                         m_pObject = nullptr;
                         m_pnRefCount = nullptr;
@@ -113,11 +110,9 @@ namespace DotNetDupe {
              * @param pPtr The raw pointer to take ownership of.
              * @param bIsShared If true, enables reference counting (Shared mode).
              */
-            SmartPointer(T* pPtr, bool bIsShared) : m_pObject(pPtr), m_pnRefCount(nullptr) {
-                if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new long(1);
-                }
-            }
+            SmartPointer(T* pPtr, bool bIsShared)
+                : m_pObject(pPtr),
+                  m_pnRefCount((bIsShared && pPtr != nullptr) ? new long(1) : nullptr) {}
 
             /**
              * @brief Explicit null constructor.
@@ -313,10 +308,7 @@ namespace DotNetDupe {
             void Reset(T* pPtr, bool bIsShared) {
                 InternalCleanup();
                 m_pObject = pPtr;
-                m_pnRefCount = nullptr;
-                if (bIsShared && pPtr != nullptr) {
-                    m_pnRefCount = new long(1);
-                }
+                m_pnRefCount = (bIsShared && pPtr != nullptr) ? new long(1) : nullptr;
             }
 
             /**
@@ -326,9 +318,7 @@ namespace DotNetDupe {
              */
             T* Detach() {
                 T* pTemp = m_pObject;
-                if (m_pnRefCount != nullptr) {
-                    m_pnRefCount = nullptr;
-                }
+                m_pnRefCount = nullptr;
                 m_pObject = nullptr;
                 return pTemp;
             }
@@ -385,17 +375,13 @@ namespace DotNetDupe {
 
         private:
             void InternalCleanup() {
-                if (m_pObject != nullptr) {
-                    if (m_pnRefCount == nullptr) {
-                        // Unique mode: Delete immediately
+                if (m_pnRefCount != nullptr) {
+                    if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
                         delete m_pObject;
-                    } else {
-                        // Shared mode: Decrement and delete if zero
-                        if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
-                            delete m_pObject;
-                            delete (long*)m_pnRefCount;
-                        }
+                        delete const_cast<long*>(m_pnRefCount);
                     }
+                } else if (m_pObject != nullptr) {
+                    delete m_pObject;
                 }
                 m_pObject = nullptr;
                 m_pnRefCount = nullptr;
