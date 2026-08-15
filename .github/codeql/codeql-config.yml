@@ -1,0 +1,11 @@
+name: "DotNetDupe CodeQL Configuration"
+
+# Exclude 3rd-party dependencies, packages, and build artifacts
+paths-ignore:
+  - 'external/**'
+  - 'packages/**'
+  - 'nuget_packages/**'
+  - 'bin/**'
+  - 'obj/**'
+  - 'out/**'
+  - 'build-wsl/**'
