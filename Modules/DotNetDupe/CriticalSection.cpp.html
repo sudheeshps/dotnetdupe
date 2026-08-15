@@ -11,26 +11,39 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Threading/CriticalSection.h"
+#include &lt;mutex&gt;
 
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-<span style = "background-color:#dfd">            CriticalSection::CriticalSection() {
-            }</span>
+
+            struct CriticalSection::Impl {
+                std::recursive_mutex mtx;
+            };
+
+<span style = "background-color:#dfd">            CriticalSection::CriticalSection() : m_pImpl(new Impl()) {}</span>
 
 <span style = "background-color:#dfd">            CriticalSection::~CriticalSection() {
-            }</span>
+                if (m_pImpl) {
+                    delete m_pImpl;
+                    m_pImpl = nullptr;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            void CriticalSection::Enter() {
-                _mutex.lock();
-            }</span>
+                if (m_pImpl) {
+                    m_pImpl-&gt;mtx.lock();</span>
+                }
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            void CriticalSection::Leave() {
-                _mutex.unlock();</span>
-            }
+                if (m_pImpl) {
+                    m_pImpl-&gt;mtx.unlock();</span>
+                }
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            bool CriticalSection::TryEnter() {
-                return _mutex.try_lock();
+                return m_pImpl ? m_pImpl-&gt;mtx.try_lock() : false;
             }</span>
         }
     }

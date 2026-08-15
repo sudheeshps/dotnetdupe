@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
 #include "Common.h"
+#include &lt;cstddef&gt;
 namespace DotNetDupe {
     namespace System {
         class Object {
@@ -19,10 +20,13 @@ namespace DotNetDupe {
             DOTNETDUPE_API bool operator == (const Object&amp; obj) const;
             DOTNETDUPE_API virtual bool Equals(const Object&amp; obj) const;
             DOTNETDUPE_API static bool Equals(const Object&amp; obj1, const Object&amp; obj2);
-            DOTNETDUPE_API int GetHashCode() const;
+            DOTNETDUPE_API virtual int GetHashCode() const;
             DOTNETDUPE_API wchar_t* ToStringW() const;
             DOTNETDUPE_API char* ToStringA() const;
         };
+
+        DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size);
+        DOTNETDUPE_API void FreeCollectionBuffer(void* p);
     }
 }</pre>
         <hr />

@@ -10,19 +10,18 @@
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
-#include "System/BasicException.h"
+#include "System/SystemException.h"
 
 namespace DotNetDupe {
     namespace System {
         namespace Text {
             namespace Json {
-
-                class JsonException : public BasicException&lt;char&gt; {
+                class JsonException : public SystemException {
                 public:
-<span style = "background-color:#dfd">                    explicit JsonException(const char* message)
-                        : BasicException&lt;char&gt;(message) {}</span>
+<span style = "background-color:#fdd">                    DOTNETDUPE_API JsonException() : SystemException(String("A JSON parse error occurred.")) {}</span>
+<span style = "background-color:#dfd">                    DOTNETDUPE_API JsonException(const String&amp; sMessage) : SystemException(sMessage) {}</span>
+<span style = "background-color:#fdd">                    DOTNETDUPE_API JsonException(const String&amp; sMessage, const Exception&amp; innerException) : SystemException(sMessage, innerException) {}</span>
                 };
-
             }
         }
     }

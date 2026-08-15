@@ -57,21 +57,21 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">                int UdpClient::Send(const char* buffer, int offset, int size) {
                     if (m_pClientSocket.IsNull()) {
-                        throw SocketException("UdpClient is closed.");</span>
+                        throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
 <span style = "background-color:#fdd">                    return m_pClientSocket-&gt;Send(buffer, offset, size);
                 }</span>
 
 <span style = "background-color:#dfd">                int UdpClient::Send(const char* buffer, int offset, int size, const String&amp; ip, int port) {
                     if (m_pClientSocket.IsNull()) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("UdpClient is closed.");</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
 <span style = "background-color:#dfd">                    return m_pClientSocket-&gt;SendTo(buffer, offset, size, ip, port);
                 }</span>
 
 <span style = "background-color:#dfd">                int UdpClient::Receive(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
                     if (m_pClientSocket.IsNull()) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("UdpClient is closed.");</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
 <span style = "background-color:#dfd">                    return m_pClientSocket-&gt;ReceiveFrom(buffer, offset, size, ip, port);
                 }</span>

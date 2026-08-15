@@ -13,8 +13,7 @@
 #include "Common.h"
 #include "Extensions/Logging/ILogger.h"
 #include "Extensions/Logging/LoggerConfiguration.h"
-#include &lt;string&gt;
-#include &lt;sstream&gt;
+
 
 namespace DotNetDupe {
     namespace Extensions {
@@ -25,11 +24,11 @@ namespace DotNetDupe {
                 DotNetDupe::System::String m_categoryName;
                 LoggerConfiguration m_config;
 
-                std::string FormatLogLine(const std::string&amp; fmt, const std::string&amp; timestamp, const std::string&amp; level, const std::string&amp; category, const std::string&amp; message, const std::string&amp; properties) const;
-                std::string GetFormattedTimestamp(const std::string&amp; formatFmt) const;
+                DotNetDupe::System::String FormatLogLine(const DotNetDupe::System::String&amp; fmt, const DotNetDupe::System::String&amp; timestamp, const DotNetDupe::System::String&amp; level, const DotNetDupe::System::String&amp; category, const DotNetDupe::System::String&amp; message, const DotNetDupe::System::String&amp; properties, const DotNetDupe::System::String&amp; processId, const DotNetDupe::System::String&amp; threadId) const;
+                DotNetDupe::System::String GetFormattedTimestamp(const DotNetDupe::System::String&amp; formatFmt) const;
                 const char* LogLevelToString(LogLevel level) const;
 
-                std::string BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
+                DotNetDupe::System::String BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
                                             const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) const;
 
             public:

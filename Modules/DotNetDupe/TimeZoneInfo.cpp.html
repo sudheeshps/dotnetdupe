@@ -25,11 +25,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            : _id(id), _baseUtcOffset(baseUtcOffset), _displayName(displayName), _standardName(standardName), _daylightName(daylightName), _supportsDaylightSavingTime(supportsDaylightSavingTime) {
         }</span>
 
-<span style = "background-color:#dfd">        String TimeZoneInfo::GetId() const { return _id; }</span>
-<span style = "background-color:#fdd">        String TimeZoneInfo::GetDisplayName() const { return _displayName; }
+<span style = "background-color:#dfd">        String TimeZoneInfo::GetId() const { return _id; }
+        String TimeZoneInfo::GetDisplayName() const { return _displayName; }
         String TimeZoneInfo::GetStandardName() const { return _standardName; }
-        String TimeZoneInfo::GetDaylightName() const { return _daylightName; }</span>
-<span style = "background-color:#dfd">        TimeSpan TimeZoneInfo::GetBaseUtcOffset() const { return _baseUtcOffset; }
+        String TimeZoneInfo::GetDaylightName() const { return _daylightName; }
+        TimeSpan TimeZoneInfo::GetBaseUtcOffset() const { return _baseUtcOffset; }
         bool TimeZoneInfo::SupportsDaylightSavingTime() const { return _supportsDaylightSavingTime; }</span>
 
 <span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::Local() {</span>
@@ -56,7 +56,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">        TimeSpan TimeZoneInfo::GetUtcOffset(const DateTimeOffset&amp; dateTimeOffset) const {
             if (_id == "UTC") return TimeSpan(0);</span>
-<span style = "background-color:#fdd">            return _baseUtcOffset; </span>
+            return _baseUtcOffset; 
 <span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        bool TimeZoneInfo::IsDaylightSavingTime(const DateTimeOffset&amp; dateTimeOffset) const {</span>

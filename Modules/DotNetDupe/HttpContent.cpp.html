@@ -15,6 +15,7 @@
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
 #include &lt;cstring&gt;
+#include &lt;vector&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -97,14 +98,15 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                String ByteArrayContent::ReadAsString() {
                     String s;
                     if (m_iCount &gt; 0) {
-                        s.GetString().assign(m_arrContent.GetData() + m_iOffset, m_iCount);</span>
+                        std::string temp(m_arrContent.GetData() + m_iOffset, m_iCount);
+                        s = String(temp.c_str());
                     }
                     return s;
-<span style = "background-color:#dfd">                }</span>
+                }</span>
 
 <span style = "background-color:#dfd">                Array&lt;char&gt; ByteArrayContent::ReadAsByteArray() {
-                    if (m_iOffset == 0 &amp;&amp; m_iCount == m_arrContent.GetLength()) {</span>
-<span style = "background-color:#fdd">                        return m_arrContent;</span>
+                    if (m_iOffset == 0 &amp;&amp; m_iCount == m_arrContent.GetLength()) {
+                        return m_arrContent;</span>
                     }
 <span style = "background-color:#dfd">                    Array&lt;char&gt; arr(m_iCount);
                     if (m_iCount &gt; 0) {
@@ -129,6 +131,70 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                long ByteArrayContent::GetLength() const {
                     return m_iCount;
                 }</span>
+
+                // --- StreamContent ---
+
+                StreamContent::StreamContent(const SmartPointer&lt;IO::Stream&gt;&amp; stream)
+<span style = "background-color:#dfd">                    : m_pStream(stream) {
+                    if (stream.IsNull()) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentNullException("stream");</span>
+                    }
+<span style = "background-color:#dfd">                    GetHeaders().Add("Content-Type", "application/octet-stream");
+                }</span>
+
+<span style = "background-color:#fdd">                String StreamContent::ReadAsString() {
+                    Array&lt;char&gt; bytes = ReadAsByteArray();
+                    String s;
+                    if (bytes.GetLength() &gt; 0) {
+                        std::string temp(bytes.GetData(), bytes.GetLength());
+                        s = String(temp.c_str());
+                    }
+                    return s;
+                }</span>
+
+<span style = "background-color:#fdd">                Array&lt;char&gt; StreamContent::ReadAsByteArray() {
+                    if (m_pStream.IsNull()) return Array&lt;char&gt;(0);
+                    std::vector&lt;char&gt; vecData;</span>
+                    char buf[4096];
+                    int iRead = 0;
+<span style = "background-color:#fdd">                    while ((iRead = m_pStream-&gt;Read(buf, 0, sizeof(buf))) &gt; 0) {
+                        vecData.insert(vecData.end(), buf, buf + iRead);</span>
+                    }
+<span style = "background-color:#fdd">                    Array&lt;char&gt; arr(static_cast&lt;int&gt;(vecData.size()));
+                    if (!vecData.empty()) {
+                        std::memcpy(arr.GetData(), vecData.data(), vecData.size());</span>
+                    }
+<span style = "background-color:#fdd">                    return arr;
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;IO::Stream&gt; StreamContent::ReadAsStream() {
+                    return m_pStream;
+                }</span>
+
+<span style = "background-color:#fdd">                void StreamContent::CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream) {
+                    if (stream.IsNull()) {
+                        throw ArgumentNullException("stream");</span>
+                    }
+<span style = "background-color:#fdd">                    if (m_pStream.IsNull()) return;</span>
+                    char buf[4096];
+                    int iRead = 0;
+<span style = "background-color:#fdd">                    while ((iRead = m_pStream-&gt;Read(buf, 0, sizeof(buf))) &gt; 0) {
+                        stream-&gt;Write(buf, 0, iRead);</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#fdd">                long StreamContent::GetLength() const {
+                    if (!m_pStream.IsNull() &amp;&amp; m_pStream-&gt;CanSeek()) {</span>
+                        try {
+<span style = "background-color:#fdd">                            return m_pStream-&gt;GetLength();
+                        } catch (const Exception&amp;) {
+                            return -1;
+                        } catch (const std::exception&amp;) {
+                            return -1;</span>
+                        }
+                    }
+                    return -1;
+<span style = "background-color:#fdd">                }</span>
 
             }
         }

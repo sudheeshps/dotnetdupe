@@ -23,63 +23,63 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(bool bValue) {
             Array&lt;byte&gt; result(1);
-            result[0] = bValue ? 1 : 0;
+            result[0] = bValue ? 1 : 0;</span>
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(char chValue) {
             Array&lt;byte&gt; result(1);
-            result[0] = (byte)chValue;
+            result[0] = (byte)chValue;</span>
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(double value) {
             Array&lt;byte&gt; result(8);
-            std::memcpy(result.GetData(), &amp;value, 8);
+            std::memcpy(result.GetData(), &amp;value, 8);</span>
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(short iValue) {
-            Array&lt;byte&gt; result(2);
+            Array&lt;byte&gt; result(2);</span>
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(int iValue) {
-            Array&lt;byte&gt; result(4);
+            Array&lt;byte&gt; result(4);</span>
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(long long llValue) {
-            Array&lt;byte&gt; result(8);
+            Array&lt;byte&gt; result(8);</span>
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(float value) {
             Array&lt;byte&gt; result(4);
-            std::memcpy(result.GetData(), &amp;value, 4);
+            std::memcpy(result.GetData(), &amp;value, 4);</span>
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned short iValue) {
-            Array&lt;byte&gt; result(2);
+            Array&lt;byte&gt; result(2);</span>
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned int iValue) {
-            Array&lt;byte&gt; result(4);
+            Array&lt;byte&gt; result(4);</span>
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned long long llValue) {
-            Array&lt;byte&gt; result(8);
+            Array&lt;byte&gt; result(8);</span>
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
-        }</span>
+<span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        bool BitConverter::ToBoolean(Array&lt;byte&gt;&amp; value, int iStartIndex) {
             if (value.GetLength() == 0) throw ArgumentNullException("value");

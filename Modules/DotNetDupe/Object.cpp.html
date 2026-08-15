@@ -34,7 +34,13 @@ namespace DotNetDupe {
             return nullptr;
         }</span>
     }
-}</pre>
+}
+
+namespace DotNetDupe::System {
+<span style = "background-color:#dfd">    DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size) { return ::operator new(size); }
+    DOTNETDUPE_API void FreeCollectionBuffer(void* p) { ::operator delete(p); }</span>
+}
+</pre>
         <hr />
         <table width="100%">
             <thead>

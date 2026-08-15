@@ -34,30 +34,26 @@ namespace DotNetDupe {
             AutoResetEvent::AutoResetEvent(bool initialState, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
 <span style = "background-color:#dfd">                : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {}</span>
 
-<span style = "background-color:#dfd">            AutoResetEvent* AutoResetEvent::OpenExisting(const String&amp; sName) {</span>
-                AutoResetEvent* pResult = nullptr;
-<span style = "background-color:#dfd">                if (TryOpenExisting(sName, pResult)) {
+<span style = "background-color:#dfd">            SmartPointer&lt;AutoResetEvent&gt; AutoResetEvent::OpenExisting(const String&amp; sName) {
+                SmartPointer&lt;AutoResetEvent&gt; pResult = nullptr;
+                if (TryOpenExisting(sName, pResult)) {
                     return pResult;</span>
                 }
 <span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No AutoResetEvent handle of the given name exists.");
             }</span>
 
-<span style = "background-color:#dfd">            bool AutoResetEvent::TryOpenExisting(const String&amp; sName, AutoResetEvent*&amp; pResult) {
+<span style = "background-color:#dfd">            bool AutoResetEvent::TryOpenExisting(const String&amp; sName, SmartPointer&lt;AutoResetEvent&gt;&amp; pResult) {
                 pResult = nullptr;
-                if (sName.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    return false;</span>
-                }
+                if (sName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer&lt;AutoResetEvent&gt; spEvt = SmartPointer&lt;AutoResetEvent&gt;::New(false);
-                    spEvt-&gt;_name = sName;
-                    spEvt-&gt;_hHandle = h;
-                    pResult = spEvt.Detach();</span>
-                    return true;
-                }
-<span style = "background-color:#dfd">                return false;</span>
+                if (!h) return false;
+                auto spEvt = SmartPointer&lt;AutoResetEvent&gt;::NewShared(false);
+                spEvt-&gt;_name = sName;
+                spEvt-&gt;_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;</span>
 #else
                 return false;
 #endif

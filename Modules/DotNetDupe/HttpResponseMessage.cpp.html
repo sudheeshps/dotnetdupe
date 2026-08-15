@@ -22,7 +22,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    : m_statusCode(HttpStatusCode::OK), m_pContent(nullptr) {}</span>
 
                 HttpResponseMessage::HttpResponseMessage(HttpStatusCode statusCode)
-<span style = "background-color:#fdd">                    : m_statusCode(statusCode), m_pContent(nullptr) {}</span>
+<span style = "background-color:#dfd">                    : m_statusCode(statusCode), m_pContent(nullptr) {}</span>
 
 <span style = "background-color:#dfd">                HttpStatusCode HttpResponseMessage::GetStatusCode() const {
                     return m_statusCode;
@@ -45,11 +45,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return code &gt;= 200 &amp;&amp; code &lt;= 299;
                 }</span>
 
-<span style = "background-color:#dfd">                SmartPointer&lt;HttpContent&gt; HttpResponseMessage::GetContent() const {
+<span style = "background-color:#dfd">                HttpContentPtr HttpResponseMessage::GetContent() const {
                     return m_pContent;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpResponseMessage::SetContent(const SmartPointer&lt;HttpContent&gt;&amp; content) {
+<span style = "background-color:#fdd">                void HttpResponseMessage::SetContent(const HttpContentPtr&amp; content) {
                     m_pContent = content;</span>
                 }
 

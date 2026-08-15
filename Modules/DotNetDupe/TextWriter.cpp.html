@@ -17,7 +17,7 @@
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-<span style = "background-color:#fdd">            void TextWriter::Close() {
+<span style = "background-color:#dfd">            void TextWriter::Close() {
                 Dispose();</span>
             }
 
@@ -29,7 +29,7 @@ namespace DotNetDupe {
                 // Base implementation does nothing
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(bool bValue) {
+<span style = "background-color:#dfd">            void TextWriter::Write(bool bValue) {
                 Write(Convert::ToString(bValue));
             }</span>
 
@@ -48,19 +48,19 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(int iValue) {
+<span style = "background-color:#dfd">            void TextWriter::Write(int iValue) {
                 Write(Convert::ToString(iValue));
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(long long llValue) {
+<span style = "background-color:#dfd">            void TextWriter::Write(long long llValue) {
                 Write(Convert::ToString(llValue));
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(float fValue) {
+<span style = "background-color:#dfd">            void TextWriter::Write(float fValue) {
                 Write(Convert::ToString(fValue));
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(double dValue) {
+<span style = "background-color:#dfd">            void TextWriter::Write(double dValue) {
                 Write(Convert::ToString(dValue));
             }</span>
 
@@ -68,12 +68,12 @@ namespace DotNetDupe {
                 Write(GetNewLine());
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(bool bValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(bool bValue) {
                 Write(bValue);
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(char chValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(char chValue) {
                 Write(chValue);
                 WriteLine();
             }</span>
@@ -83,35 +83,35 @@ namespace DotNetDupe {
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(const String&amp; sValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(const String&amp; sValue) {
                 Write(sValue);
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(int iValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(int iValue) {
                 Write(iValue);
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(long long llValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(long long llValue) {
                 Write(llValue);
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(float fValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(float fValue) {
                 Write(fValue);
                 WriteLine();
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::WriteLine(double dValue) {
+<span style = "background-color:#dfd">            void TextWriter::WriteLine(double dValue) {
                 Write(dValue);
                 WriteLine();
             }</span>
 
 <span style = "background-color:#dfd">            const String&amp; TextWriter::GetNewLine() {
-                static String sNewLine("\r\n");
+                static String sNewLine("\r\n");</span>
                 return sNewLine;
-            }</span>
+<span style = "background-color:#dfd">            }</span>
         }
     }
 }</pre>

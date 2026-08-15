@@ -10,6 +10,7 @@
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
+#include "System/String.h"
 #include "System/Net/Sockets/Socket.h"
 #include "System/Net/Sockets/SocketException.h"
 #include "System/ArgumentException.h"
@@ -88,7 +89,7 @@ namespace DotNetDupe {
                     if (!bInitialized) {</span>
                         WSADATA wsaData;
 <span style = "background-color:#dfd">                        if (WSAStartup(MAKEWORD(2, 2), &amp;wsaData) != 0) {</span>
-<span style = "background-color:#fdd">                            throw SocketException("WSAStartup failed", GetLastErrorCode());</span>
+<span style = "background-color:#fdd">                            throw SocketException(GetLastErrorCode(), "WSAStartup failed");</span>
                         }
 <span style = "background-color:#dfd">                        bInitialized = true;
                         std::atexit([]() { WSACleanup(); });</span>
@@ -96,26 +97,36 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#dfd">                }</span>
 
+                static SOCKET CreateNativeSocket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType) {
+                    int af = (addressFamily == AddressFamily::InterNetworkV6) ? AF_INET6 : AF_INET;
+                    int type = (socketType == SocketType::Dgram) ? SOCK_DGRAM : SOCK_STREAM;
+                    int proto = (protocolType == ProtocolType::Udp) ? IPPROTO_UDP : IPPROTO_TCP;
+#if defined(_WIN32)
+                    return socket(af, type, proto);
+#else
+                    return ::socket(af, type, proto);
+#endif
+                }
+
+<span style = "background-color:#dfd">                static void InitSockAddrIn(const String&amp; ip, int port, sockaddr_in&amp; addr) {
+                    std::memset(&amp;addr, 0, sizeof(addr));
+                    addr.sin_family = AF_INET;
+                    addr.sin_port = htons(static_cast&lt;u_short&gt;(port));
+                    if (ip.IsEmpty() || ip == "0.0.0.0") {
+                        addr.sin_addr.s_addr = INADDR_ANY;</span>
+                    } else {
+<span style = "background-color:#dfd">                        if (inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {</span>
+<span style = "background-color:#fdd">                            throw ArgumentException("Invalid IP address.");</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                }</span>
+
                 Socket::Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
 <span style = "background-color:#dfd">                    : m_pImpl(new SocketImpl()) {
-                    InitializeSockets();</span>
-
-                    int af = AF_INET;
-                    if (addressFamily == AddressFamily::InterNetworkV6) af = AF_INET6;
-
-<span style = "background-color:#dfd">                    int type = SOCK_STREAM;</span>
-                    if (socketType == SocketType::Dgram) type = SOCK_DGRAM;
-
-<span style = "background-color:#dfd">                    int proto = IPPROTO_TCP;</span>
-                    if (protocolType == ProtocolType::Udp) proto = IPPROTO_UDP;
-
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                    m_pImpl-&gt;hSocket = socket(af, type, proto);</span>
-#else
-                    m_pImpl-&gt;hSocket = ::socket(af, type, proto);
-#endif
-<span style = "background-color:#dfd">                    if (m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to create native socket.", GetLastErrorCode());</span>
+                    InitializeSockets();
+                    m_pImpl-&gt;hSocket = CreateNativeSocket(addressFamily, socketType, protocolType);
+                    if (m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to create native socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
@@ -129,69 +140,42 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#dfd">                Socket::~Socket() {
-                }</span>
+<span style = "background-color:#dfd">                Socket::~Socket() {}</span>
 
-                Socket::Socket(Socket&amp;&amp; other) noexcept
-<span style = "background-color:#fdd">                    : m_pImpl(std::move(other.m_pImpl)) {
-                }</span>
+<span style = "background-color:#fdd">                Socket::Socket(Socket&amp;&amp; other) noexcept : m_pImpl(std::move(other.m_pImpl)) {}</span>
 
 <span style = "background-color:#fdd">                Socket&amp; Socket::operator=(Socket&amp;&amp; other) noexcept {
-                    if (this != &amp;other) {
-                        m_pImpl = std::move(other.m_pImpl);</span>
-                    }
-<span style = "background-color:#fdd">                    return *this;
+                    if (this != &amp;other) m_pImpl = std::move(other.m_pImpl);
+                    return *this;
                 }</span>
 
 <span style = "background-color:#dfd">                void Socket::Bind(const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {
-                        throw SocketException("Socket is closed.");</span>
-                    }
-
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, String("Socket is closed."));</span>
                     sockaddr_in addr;
-                    std::memset(&amp;addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-<span style = "background-color:#dfd">                    addr.sin_port = htons(static_cast&lt;u_short&gt;(port));</span>
-
-<span style = "background-color:#dfd">                    if (ip.IsEmpty() || ip == "0.0.0.0") {
-                        addr.sin_addr.s_addr = INADDR_ANY;</span>
-                    } else {
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                        if (inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {</span>
-<span style = "background-color:#fdd">                            throw ArgumentException("Invalid IP address.");</span>
-                        }
-#else
-                        if (::inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {
-                            throw ArgumentException("Invalid IP address.");
-                        }
-#endif
-                    }
-
-                    // Set SO_REUSEADDR to avoid EADDRINUSE on rapid restarts
-                    int optval = 1;
+<span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
+                    int optval = 1;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                    setsockopt(m_pImpl-&gt;hSocket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast&lt;const char*&gt;(&amp;optval), sizeof(optval));</span>
 #else
                     ::setsockopt(m_pImpl-&gt;hSocket, SOL_SOCKET, SO_REUSEADDR, &amp;optval, sizeof(optval));
 #endif
-
 <span style = "background-color:#dfd">                    if (bind(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to bind socket.", GetLastErrorCode());</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to bind socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                void Socket::Listen(int backlog) {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 <span style = "background-color:#dfd">                    if (listen(m_pImpl-&gt;hSocket, backlog) == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to listen on socket.", GetLastErrorCode());</span>
+<span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to listen on socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                SmartPointer&lt;Socket&gt; Socket::Accept() {
                     if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
+<span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
                     sockaddr_in clientAddr;
@@ -202,218 +186,119 @@ namespace DotNetDupe {
                     int clientSocket = ::accept(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;clientAddr), &amp;clientSize);
 #endif
 <span style = "background-color:#dfd">                    if (clientSocket == INVALID_SOCKET) {
-                        throw SocketException("Failed to accept connection.", GetLastErrorCode());</span>
+                        throw SocketException(GetLastErrorCode(), "Failed to accept connection.");</span>
                     }
 
 <span style = "background-color:#dfd">                    return SmartPointer&lt;Socket&gt;(new Socket(reinterpret_cast&lt;void*&gt;(clientSocket)), true);
                 }</span>
 
 <span style = "background-color:#dfd">                void Socket::Connect(const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
-                    }
-
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
                     sockaddr_in addr;
-<span style = "background-color:#dfd">                    std::memset(&amp;addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-                    addr.sin_port = htons(static_cast&lt;u_short&gt;(port));</span>
-
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                    if (inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {</span>
-<span style = "background-color:#fdd">                        throw ArgumentException("Invalid IP address.");</span>
-                    }
-#else
-                    if (::inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#endif
-
-<span style = "background-color:#dfd">                    if (connect(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {
-                        throw SocketException("Failed to connect to host.", GetLastErrorCode());</span>
+<span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
+                    if (connect(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {
+                        throw SocketException(GetLastErrorCode(), "Failed to connect to host.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::Send(const char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
-                    }
-<span style = "background-color:#dfd">                    int bytesSent = send(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
-                    if (bytesSent == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to send data.", GetLastErrorCode());</span>
-                    }
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+                    int bytesSent = send(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
+                    if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data.");</span>
                     return bytesSent;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::Receive(char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
-                    }
-<span style = "background-color:#dfd">                    int bytesReceived = recv(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
-                    if (bytesReceived == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to receive data.", GetLastErrorCode());</span>
-                    }
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+                    int bytesReceived = recv(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
+                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data.");</span>
                     return bytesReceived;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                int Socket::SendTo(const char* buffer, int offset, int size, const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
-                    }
-
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
                     sockaddr_in addr;
-                    std::memset(&amp;addr, 0, sizeof(addr));
-                    addr.sin_family = AF_INET;
-<span style = "background-color:#dfd">                    addr.sin_port = htons(static_cast&lt;u_short&gt;(port));</span>
-
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                    if (inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {</span>
-<span style = "background-color:#fdd">                        throw ArgumentException("Invalid IP address.");</span>
-                    }
-#else
-                    if (::inet_pton(AF_INET, ip.GetRawString(), &amp;addr.sin_addr) != 1) {
-                        throw ArgumentException("Invalid IP address.");
-                    }
-#endif
-
-<span style = "background-color:#dfd">                    int bytesSent = sendto(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr));
-                    if (bytesSent == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to send data to host.", GetLastErrorCode());</span>
-                    }
+<span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
+                    int bytesSent = sendto(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr));
+                    if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data to host.");</span>
                     return bytesSent;
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                int Socket::ReceiveFrom(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Socket is closed.");</span>
-                    }
-
-                    sockaddr_in addr;
-<span style = "background-color:#dfd">                    SockLen addrSize = sizeof(addr);
-                    std::memset(&amp;addr, 0, sizeof(addr));</span>
-
-<span style = "background-color:#dfd">                    int bytesReceived = recvfrom(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), &amp;addrSize);
-                    if (bytesReceived == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("Failed to receive data from host.", GetLastErrorCode());</span>
-                    }
-
+                static void FormatSockAddrIp(const sockaddr_in&amp; addr, String&amp; ip, int&amp; port) {
                     char ipBuf[INET_ADDRSTRLEN];
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                    if (inet_ntop(AF_INET, &amp;addr.sin_addr, ipBuf, sizeof(ipBuf)) != nullptr) {
-                        ip = String(ipBuf);</span>
-                    }
-#else
-                    if (::inet_ntop(AF_INET, &amp;addr.sin_addr, ipBuf, sizeof(ipBuf)) != nullptr) {
+                    if (inet_ntop(AF_INET, &amp;addr.sin_addr, ipBuf, sizeof(ipBuf)) != nullptr) {
                         ip = String(ipBuf);
                     }
-#endif
-<span style = "background-color:#dfd">                    port = ntohs(addr.sin_port);
+                    port = ntohs(addr.sin_port);
+                }
+
+<span style = "background-color:#dfd">                int Socket::ReceiveFrom(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+                    sockaddr_in addr;
+<span style = "background-color:#dfd">                    SockLen addrSize = sizeof(addr);
+                    std::memset(&amp;addr, 0, sizeof(addr));
+                    int bytesReceived = recvfrom(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), &amp;addrSize);
+                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");
+                    FormatSockAddrIp(addr, ip, port);
                     return bytesReceived;
                 }</span>
 
 <span style = "background-color:#dfd">                void Socket::Close() {
-                    if (m_pImpl) {
-                        m_pImpl-&gt;Cleanup();</span>
-                    }
-<span style = "background-color:#dfd">                }</span>
+                    if (m_pImpl) m_pImpl-&gt;Cleanup();
+                }</span>
 
 <span style = "background-color:#fdd">                void Socket::Shutdown(SocketShutdown how) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-                        return;
-                    }
-<span style = "background-color:#fdd">                    int nativeHow = SD_BOTH;
-                    if (how == SocketShutdown::Receive) {
-                        nativeHow = SD_RECEIVE;
-                    } else if (how == SocketShutdown::Send) {</span>
-                        nativeHow = SD_SEND;
-                    }
-
-<span style = "background-color:#fdd">                    shutdown(m_pImpl-&gt;hSocket, nativeHow);
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) return;
+                    int nativeHow = (how == SocketShutdown::Receive) ? SD_RECEIVE : ((how == SocketShutdown::Send) ? SD_SEND : SD_BOTH);
+                    shutdown(m_pImpl-&gt;hSocket, nativeHow);
                 }</span>
 
-<span style = "background-color:#fdd">                bool Socket::Poll(int microSeconds, SelectMode mode) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {
-                        return false;</span>
-                    }
-
-                    fd_set fds;
-<span style = "background-color:#fdd">                    FD_ZERO(&amp;fds);
-                    FD_SET(m_pImpl-&gt;hSocket, &amp;fds);</span>
-
-                    timeval timeout;
-<span style = "background-color:#fdd">                    timeout.tv_sec = microSeconds / 1000000;
-                    timeout.tv_usec = microSeconds % 1000000;</span>
-
-<span style = "background-color:#fdd">                    fd_set* readFds = (mode == SelectMode::SelectRead) ? &amp;fds : nullptr;</span>
-                    fd_set* writeFds = (mode == SelectMode::SelectWrite) ? &amp;fds : nullptr;
-                    fd_set* errorFds = (mode == SelectMode::SelectError) ? &amp;fds : nullptr;
-
-#if defined(_WIN32)
-<span style = "background-color:#fdd">                    int result = select(0, readFds, writeFds, errorFds, &amp;timeout);</span>
-#else
-                    int result = select(m_pImpl-&gt;hSocket + 1, readFds, writeFds, errorFds, &amp;timeout);
-#endif
-<span style = "background-color:#fdd">                    return result &gt; 0;
-                }</span>
-
-<span style = "background-color:#dfd">                bool Socket::Connected() const {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
-<span style = "background-color:#fdd">                        return false;</span>
-                    }
-
-                    // Check if the socket is actually connected (and not listening, closed, or never connected)
-                    sockaddr_in peerAddr;
-<span style = "background-color:#dfd">                    SockLen peerLen = sizeof(peerAddr);</span>
-#if defined(_WIN32)
-<span style = "background-color:#dfd">                    if (getpeername(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;peerAddr), &amp;peerLen) == SOCKET_ERROR) {</span>
-                        return false;
-                    }
-#else
-                    if (::getpeername(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;peerAddr), &amp;peerLen) == SOCKET_ERROR) {
-                        return false;
-                    }
-#endif
-
-                    // Check readability with select (timeout 0) to ensure recv won't block
+<span style = "background-color:#dfd">                static int SelectSingleSocket(SOCKET hSocket, int microSeconds, SelectMode mode) {</span>
                     fd_set fds;
                     FD_ZERO(&amp;fds);
-<span style = "background-color:#dfd">                    FD_SET(m_pImpl-&gt;hSocket, &amp;fds);</span>
-
-                    timeval timeout;
-                    timeout.tv_sec = 0;
-                    timeout.tv_usec = 0;
-
+<span style = "background-color:#dfd">                    FD_SET(hSocket, &amp;fds);
+                    timeval timeout{ microSeconds / 1000000, microSeconds % 1000000 };
+                    fd_set* pRead = (mode == SelectMode::SelectRead) ? &amp;fds : nullptr;</span>
+                    fd_set* pWrite = (mode == SelectMode::SelectWrite) ? &amp;fds : nullptr;
+<span style = "background-color:#dfd">                    fd_set* pErr = (mode == SelectMode::SelectError) ? &amp;fds : nullptr;</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                    int selResult = select(0, &amp;fds, nullptr, nullptr, &amp;timeout);</span>
+<span style = "background-color:#dfd">                    return select(0, pRead, pWrite, pErr, &amp;timeout);</span>
 #else
-                    int selResult = ::select(m_pImpl-&gt;hSocket + 1, &amp;fds, nullptr, nullptr, &amp;timeout);
+                    return select(hSocket + 1, pRead, pWrite, pErr, &amp;timeout);
 #endif
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                    if (selResult == SOCKET_ERROR) {</span>
-                        return false;
-                    }
+<span style = "background-color:#fdd">                bool Socket::Poll(int microSeconds, SelectMode mode) {
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) return false;
+                    return SelectSingleSocket(m_pImpl-&gt;hSocket, microSeconds, mode) &gt; 0;
+                }</span>
 
-<span style = "background-color:#dfd">                    if (selResult == 0) {</span>
-                        // Not readable, but no error or closure detected -&gt; still connected
-                        return true;
-                    }
+                static bool IsPeerConnected(SOCKET hSocket) {
+                    sockaddr_in peerAddr;
+                    SockLen peerLen = sizeof(peerAddr);
+                    return (getpeername(hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;peerAddr), &amp;peerLen) != SOCKET_ERROR);
+                }
 
+                static bool IsSocketActivePeek(SOCKET hSocket) {
                     char buf;
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                    int result = recv(m_pImpl-&gt;hSocket, &amp;buf, 1, MSG_PEEK);
+                    int result = recv(hSocket, &amp;buf, 1, MSG_PEEK);
                     if (result == 0) return false;
-                    if (result == SOCKET_ERROR) {</span>
-<span style = "background-color:#fdd">                        int err = WSAGetLastError();
-                        if (err != WSAEWOULDBLOCK) return false;</span>
-                    }
+                    return (result != SOCKET_ERROR || WSAGetLastError() == WSAEWOULDBLOCK);
 #else
-                    int result = ::recv(m_pImpl-&gt;hSocket, &amp;buf, 1, MSG_PEEK | MSG_DONTWAIT);
+                    int result = ::recv(hSocket, &amp;buf, 1, MSG_PEEK | MSG_DONTWAIT);
                     if (result == 0) return false;
-                    if (result == SOCKET_ERROR) {
-                        if (errno != EAGAIN &amp;&amp; errno != EWOULDBLOCK) return false;
-                    }
+                    return (result != SOCKET_ERROR || (errno == EAGAIN || errno == EWOULDBLOCK));
 #endif
-                    return true;
-<span style = "background-color:#dfd">                }</span>
+                }
+
+<span style = "background-color:#dfd">                bool Socket::Connected() const {
+                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET || !IsPeerConnected(m_pImpl-&gt;hSocket)) return false;
+                    int sel = SelectSingleSocket(m_pImpl-&gt;hSocket, 0, SelectMode::SelectRead);
+                    if (sel == SOCKET_ERROR) return false;
+                    if (sel == 0) return true;
+                    return IsSocketActivePeek(m_pImpl-&gt;hSocket);
+                }</span>
 
 <span style = "background-color:#fdd">                void* Socket::GetNativeHandle() const {
                     return m_pImpl ? reinterpret_cast&lt;void*&gt;(m_pImpl-&gt;hSocket) : nullptr;

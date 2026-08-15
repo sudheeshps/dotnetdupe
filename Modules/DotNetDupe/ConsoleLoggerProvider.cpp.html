@@ -12,10 +12,14 @@
 #include "pch.h"
 #include "Extensions/Logging/ConsoleLoggerProvider.h"
 #include "Extensions/Logging/ConsoleLogger.h"
+#include "Extensions/Logging/LogManager.h"
 
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
+
+            ConsoleLoggerProvider::ConsoleLoggerProvider()
+<span style = "background-color:#fdd">                : ConsoleLoggerProvider(LogManager::GetConfiguration()) {}</span>
 
             ConsoleLoggerProvider::ConsoleLoggerProvider(const LoggerConfiguration&amp; config)
 <span style = "background-color:#fdd">                : m_config(config) {}</span>

@@ -21,85 +21,78 @@ namespace DotNetDupe {
             ParseUri();
         }</span>
 
-<span style = "background-color:#dfd">        void Uri::ParseUri() {
-            std::string rawUri = (const char*)_uriString;
-            size_t schemeEnd = rawUri.find(':');</span>
-            
-<span style = "background-color:#dfd">            if (schemeEnd != std::string::npos) {
-                _scheme = String(rawUri.substr(0, schemeEnd).c_str());</span>
-                
-<span style = "background-color:#dfd">                size_t authorityStart = schemeEnd + 1;
-                if (authorityStart + 1 &lt; rawUri.length() &amp;&amp; rawUri.substr(authorityStart, 2) == "//") {
-                    authorityStart += 2;
-                    size_t authorityEnd = rawUri.find_first_of("/?#", authorityStart);
-                    if (authorityEnd == std::string::npos) {
-                        _authority = String(rawUri.substr(authorityStart).c_str());
-                    } else {
-                        _authority = String(rawUri.substr(authorityStart, authorityEnd - authorityStart).c_str());</span>
-                    }
-                }
+<span style = "background-color:#dfd">        static void ParseSchemeAndAuthority(const std::string&amp; rawUri, String&amp; scheme, String&amp; authority) {
+            size_t schemeEnd = rawUri.find(':');
+            if (schemeEnd == std::string::npos) return;
+            scheme = String(rawUri.substr(0, schemeEnd).c_str());
+            size_t authStart = schemeEnd + 1;
+            if (authStart + 1 &lt; rawUri.length() &amp;&amp; rawUri.substr(authStart, 2) == "//") {
+                authStart += 2;
+                size_t authEnd = rawUri.find_first_of("/?#", authStart);
+                authority = (authEnd == std::string::npos) </span>
+                    ? String(rawUri.substr(authStart).c_str())
+                    : String(rawUri.substr(authStart, authEnd - authStart).c_str());
             }
+<span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">            size_t pathStart = rawUri.find("//");
+<span style = "background-color:#dfd">        static void ParsePath(const std::string&amp; rawUri, const String&amp; scheme, String&amp; path) {
+            size_t pathStart = rawUri.find("//");
             if (pathStart != std::string::npos) {
                 pathStart = rawUri.find('/', pathStart + 2);
             } else {
-                pathStart = rawUri.find(':');
-                if (pathStart != std::string::npos) {
-                    if (_scheme.Equals("mailto")) {</span>
-                        pathStart++; // For mailto, the path starts right after the colon
-                    } else {
-<span style = "background-color:#fdd">                        pathStart = rawUri.find('/', pathStart + 1);</span>
-                    }
-                } else {
-<span style = "background-color:#fdd">                    pathStart = 0;</span>
-                }
+                size_t colon = rawUri.find(':');
+                pathStart = (colon != std::string::npos) </span>
+                    ? (scheme.Equals("mailto") ? colon + 1 : rawUri.find('/', colon + 1)) 
+                    : 0;
             }
-
 <span style = "background-color:#dfd">            if (pathStart != std::string::npos) {
                 size_t pathEnd = rawUri.find_first_of("?#", pathStart);
-                if (pathEnd == std::string::npos) {
-                    _path = String(rawUri.substr(pathStart).c_str());
-                } else {
-                    _path = String(rawUri.substr(pathStart, pathEnd - pathStart).c_str());</span>
-                }
+                path = (pathEnd == std::string::npos)</span>
+                    ? String(rawUri.substr(pathStart).c_str())
+                    : String(rawUri.substr(pathStart, pathEnd - pathStart).c_str());
             }
-<span style = "background-color:#dfd">            if (_path.IsEmpty()) _path = String("/");</span>
+<span style = "background-color:#dfd">            if (path.IsEmpty()) path = String("/");
+        }</span>
 
-<span style = "background-color:#dfd">            size_t queryStart = rawUri.find('?');
-            if (queryStart != std::string::npos) {
-                size_t queryEnd = rawUri.find('#', queryStart);
-                if (queryEnd == std::string::npos) {
-                    _query = String(rawUri.substr(queryStart + 1).c_str());
-                } else {
-                    _query = String(rawUri.substr(queryStart + 1, queryEnd - queryStart - 1).c_str());</span>
-                }
+<span style = "background-color:#dfd">        static void ParseQueryAndFragment(const std::string&amp; rawUri, String&amp; query, String&amp; fragment) {
+            size_t qStart = rawUri.find('?');
+            if (qStart != std::string::npos) {
+                size_t qEnd = rawUri.find('#', qStart);
+                query = (qEnd == std::string::npos)</span>
+                    ? String(rawUri.substr(qStart + 1).c_str())
+                    : String(rawUri.substr(qStart + 1, qEnd - qStart - 1).c_str());
             }
-
-<span style = "background-color:#dfd">            size_t fragmentStart = rawUri.find('#');
-            if (fragmentStart != std::string::npos) {
-                _fragment = String(rawUri.substr(fragmentStart + 1).c_str());</span>
-            }
-
-            // Simple Authority parsing
-<span style = "background-color:#dfd">            std::string authorityStr = (const char*)_authority;
-            if (!authorityStr.empty()) {
-                size_t userInfoEnd = authorityStr.find('@');
-                if (userInfoEnd != std::string::npos) {</span>
-<span style = "background-color:#fdd">                    _userInfo = String(authorityStr.substr(0, userInfoEnd).c_str());
-                    authorityStr = authorityStr.substr(userInfoEnd + 1);</span>
-                }
-
-<span style = "background-color:#dfd">                size_t portStart = authorityStr.find(':');
-                if (portStart != std::string::npos) {
-                    _host = String(authorityStr.substr(0, portStart).c_str());
-                    _port = std::stoi(authorityStr.substr(portStart + 1));
-                } else {
-                    _host = String(authorityStr.c_str());
-                    _port = 80; // Default</span>
-                }
+<span style = "background-color:#dfd">            size_t fStart = rawUri.find('#');
+            if (fStart != std::string::npos) {
+                fragment = String(rawUri.substr(fStart + 1).c_str());</span>
             }
 <span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        static void ParseAuthorityComponents(const String&amp; authority, const String&amp; scheme, String&amp; userInfo, String&amp; host, int&amp; port) {
+            std::string authStr = (const char*)authority;
+            if (authStr.empty()) return;
+            size_t userEnd = authStr.find('@');
+            if (userEnd != std::string::npos) {</span>
+<span style = "background-color:#fdd">                userInfo = String(authStr.substr(0, userEnd).c_str());
+                authStr = authStr.substr(userEnd + 1);</span>
+            }
+<span style = "background-color:#dfd">            size_t portStart = authStr.find(':');
+            if (portStart != std::string::npos) {
+                host = String(authStr.substr(0, portStart).c_str());
+                port = std::stoi(authStr.substr(portStart + 1));
+            } else {
+                host = String(authStr.c_str());
+                port = (scheme.ToLower() == "https") ? 443 : 80;</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+        void Uri::ParseUri() {
+            std::string rawUri = (const char*)_uriString;
+            ParseSchemeAndAuthority(rawUri, _scheme, _authority);
+            ParsePath(rawUri, _scheme, _path);
+            ParseQueryAndFragment(rawUri, _query, _fragment);
+            ParseAuthorityComponents(_authority, _scheme, _userInfo, _host, _port);
+        }
 
 <span style = "background-color:#dfd">        String Uri::GetScheme() const { return _scheme; }
         String Uri::GetAbsoluteUri() const { return _uriString; }
@@ -116,7 +109,7 @@ namespace DotNetDupe {
             return _uriString;
         }</span>
 
-<span style = "background-color:#fdd">        bool Uri::IsDefaultPort() const {
+<span style = "background-color:#dfd">        bool Uri::IsDefaultPort() const {
             if (_scheme.Equals("http") &amp;&amp; _port == 80) return true;
             if (_scheme.Equals("https") &amp;&amp; _port == 443) return true;
             return false;
@@ -145,23 +138,27 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            return String(escaped.c_str());
         }</span>
 
+        static void UnescapePercentChar(const std::string&amp; s, size_t&amp; i, std::string&amp; unescaped) {
+            int value;
+#if defined(_WIN32)
+            if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &amp;value) == 1) {
+#else
+            if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &amp;value) == 1) {
+#endif
+                unescaped += static_cast&lt;char&gt;(value);
+                i += 2;
+            } else {
+                unescaped += s[i];
+            }
+        }
+
 <span style = "background-color:#fdd">        String Uri::UnescapeDataString(const String&amp; stringToUnescape) {
             std::string s = (const char*)stringToUnescape;
             std::string unescaped;
             for (size_t i = 0; i &lt; s.length(); ++i) {
-                if (s[i] == '%' &amp;&amp; i + 2 &lt; s.length()) {</span>
-                    int value;
-#if defined(_WIN32)
-<span style = "background-color:#fdd">                    if (sscanf_s(s.substr(i + 1, 2).c_str(), "%x", &amp;value) == 1) {</span>
-#else
-                    if (sscanf(s.substr(i + 1, 2).c_str(), "%x", &amp;value) == 1) {
-#endif
-<span style = "background-color:#fdd">                        unescaped += static_cast&lt;char&gt;(value);
-                        i += 2;
-                    } else {
-                        unescaped += s[i];</span>
-                    }
-<span style = "background-color:#fdd">                } else {
+                if (s[i] == '%' &amp;&amp; i + 2 &lt; s.length()) {
+                    UnescapePercentChar(s, i, unescaped);
+                } else {
                     unescaped += s[i];</span>
                 }
             }

@@ -16,7 +16,6 @@
 #include "System/String.h"
 #include "System/SmartPointer.h"
 #include "WebAppCore/Builder/WebApplication.h"
-#include &lt;vector&gt;
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -32,7 +31,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API WebAppServer(WebAppServer&amp;&amp;) noexcept;
                 DOTNETDUPE_API WebAppServer&amp; operator=(WebAppServer&amp;&amp;) noexcept;
 
-<span style = "background-color:#fdd">                DOTNETDUPE_API void SetWebRoot(const DotNetDupe::System::String&amp; webRoot) { m_sWebRoot = webRoot; }
+<span style = "background-color:#dfd">                DOTNETDUPE_API void SetWebRoot(const DotNetDupe::System::String&amp; webRoot) { m_sWebRoot = webRoot; }
                 DOTNETDUPE_API DotNetDupe::System::String GetWebRoot() const { return m_sWebRoot; }</span>
 
                 DOTNETDUPE_API void EnableStaticFiles(const DotNetDupe::System::String&amp; defaultDocument = "index.html");

@@ -17,7 +17,7 @@ namespace DotNetDupe {
     namespace System {
         namespace Text {
             // Static member initialization
-<span style = "background-color:#dfd">            std::shared_ptr&lt;UTF8Encoding&gt; TextEncoding::s_utf8EncodingInstance = nullptr;</span>
+<span style = "background-color:#dfd">            UTF8EncodingPtr TextEncoding::s_utf8EncodingInstance(nullptr);</span>
 
 <span style = "background-color:#dfd">            Array&lt;char&gt; UTF8Encoding::GetBytes(const String&amp; s) {
                 const char* raw = (const char*)s;
@@ -43,11 +43,11 @@ namespace DotNetDupe {
                 return String(tempString.c_str());
             }</span>
 
-<span style = "background-color:#dfd">            std::shared_ptr&lt;Encoding&gt; TextEncoding::UTF8() {
-                if (s_utf8EncodingInstance == nullptr) {
-                    s_utf8EncodingInstance = std::make_shared&lt;UTF8Encoding&gt;();</span>
+<span style = "background-color:#dfd">            EncodingPtr TextEncoding::UTF8() {
+                if (s_utf8EncodingInstance.IsNull()) {
+                    s_utf8EncodingInstance = SmartPointer&lt;UTF8Encoding&gt;::NewShared();</span>
                 }
-<span style = "background-color:#dfd">                return s_utf8EncodingInstance;
+<span style = "background-color:#dfd">                return s_utf8EncodingInstance.DynamicCast&lt;Encoding&gt;();
             }</span>
         }
     }

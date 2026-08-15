@@ -20,7 +20,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                : m_sSource(sSource), m_iPos(0), m_nLength(sSource.GetLength()) {
             }</span>
 
-<span style = "background-color:#fdd">            void StringReader::Close() {
+<span style = "background-color:#dfd">            void StringReader::Close() {
                 m_iPos = m_nLength;
             }</span>
 
@@ -38,36 +38,37 @@ namespace DotNetDupe {
                 return (int)(unsigned char)m_sSource[m_iPos++];
             }</span>
 
-<span style = "background-color:#fdd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {
+<span style = "background-color:#dfd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {
                 if (pBuffer == nullptr) return 0;
                 int nRead = (std::min)(nCount, m_nLength - m_iPos);
                 for (int i = 0; i &lt; nRead; i++) {
                     pBuffer[iIndex + i] = (char)m_sSource[m_iPos + i];</span>
                 }
-<span style = "background-color:#fdd">                m_iPos += nRead;
+<span style = "background-color:#dfd">                m_iPos += nRead;
                 return nRead;
             }</span>
 
-<span style = "background-color:#dfd">            String StringReader::ReadLine() {
-                int iIdx = m_iPos;
-                while (iIdx &lt; m_nLength) {
-                    char chCurrent = (char)m_sSource[iIdx];
-                    if (chCurrent == '\r' || chCurrent == '\n') {
-                        String sResult = m_sSource.Substring(m_iPos, iIdx - m_iPos);
-                        m_iPos = iIdx + 1;
-                        if (chCurrent == '\r' &amp;&amp; m_iPos &lt; m_nLength &amp;&amp; (char)m_sSource[m_iPos] == '\n') {
-                            m_iPos++;</span>
-                        }
-<span style = "background-color:#dfd">                        return sResult;</span>
-                    }
-<span style = "background-color:#dfd">                    iIdx++;</span>
+            static int FindNewlineIndex(const String&amp; sSource, int startPos, int length) {
+                for (int i = startPos; i &lt; length; ++i) {
+                    char c = (char)sSource[i];
+                    if (c == '\r' || c == '\n') return i;
                 }
-<span style = "background-color:#dfd">                if (iIdx &gt; m_iPos) {
-                    String sResult = m_sSource.Substring(m_iPos, iIdx - m_iPos);
-                    m_iPos = iIdx;
+                return -1;
+            }
+
+<span style = "background-color:#dfd">            String StringReader::ReadLine() {
+                if (m_iPos &gt;= m_nLength) return String("");
+                int nlIdx = FindNewlineIndex(m_sSource, m_iPos, m_nLength);
+                if (nlIdx != -1) {
+                    String sResult = m_sSource.Substring(m_iPos, nlIdx - m_iPos);
+                    char c = (char)m_sSource[nlIdx];
+                    m_iPos = nlIdx + 1;
+                    if (c == '\r' &amp;&amp; m_iPos &lt; m_nLength &amp;&amp; (char)m_sSource[m_iPos] == '\n') m_iPos++;
                     return sResult;</span>
                 }
-<span style = "background-color:#dfd">                return String("");
+<span style = "background-color:#dfd">                String sResult = m_sSource.Substring(m_iPos, m_nLength - m_iPos);
+                m_iPos = m_nLength;
+                return sResult;
             }</span>
 
 <span style = "background-color:#dfd">            String StringReader::ReadToEnd() {

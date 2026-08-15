@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "System/Text/StringBuilder.h"
 #include &lt;algorithm&gt;
+#include &lt;string&gt;
 
 #ifdef UNICODE
 #define TO_TSTRING std::to_wstring
@@ -23,71 +24,86 @@ namespace DotNetDupe {
     namespace System {
         namespace Text {
 
-<span style = "background-color:#dfd">            StringBuilder::StringBuilder() {}</span>
+            struct StringBuilder::Impl {
+                std::string buffer;
+            };
 
-<span style = "background-color:#fdd">            StringBuilder::StringBuilder(int nCapacity) {
-                m_strBuffer.reserve(nCapacity);
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder() : m_pImpl(new Impl()) {}</span>
+
+<span style = "background-color:#fdd">            StringBuilder::StringBuilder(int nCapacity) : m_pImpl(new Impl()) {
+                if (nCapacity &gt; 0) {
+                    m_pImpl-&gt;buffer.reserve(nCapacity);</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder(const String&amp; sValue) : m_pImpl(new Impl()) {
+                m_pImpl-&gt;buffer = (const char*)sValue;
             }</span>
 
-<span style = "background-color:#dfd">            StringBuilder::StringBuilder(const String&amp; sValue) : m_strBuffer((const char*)sValue) {}</span>
+<span style = "background-color:#dfd">            StringBuilder::~StringBuilder() {
+                if (m_pImpl) {
+                    delete m_pImpl;
+                    m_pImpl = nullptr;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            int StringBuilder::GetLength() const {
-                return (int)m_strBuffer.length();
+                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length()) : 0;
             }</span>
 
 <span style = "background-color:#fdd">            void StringBuilder::SetLength(int nLength) {
-                if (nLength &lt; 0) return;
-                m_strBuffer.resize(nLength);
+                if (nLength &lt; 0 || !m_pImpl) return;
+                m_pImpl-&gt;buffer.resize(nLength);
             }</span>
 
 <span style = "background-color:#dfd">            int StringBuilder::GetCapacity() const {
-                return (int)m_strBuffer.capacity();
+                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.capacity()) : 0;
             }</span>
 
 <span style = "background-color:#dfd">            void StringBuilder::SetCapacity(int nCapacity) {
-                if (nCapacity &lt; (int)m_strBuffer.length()) return;
-                m_strBuffer.reserve(nCapacity);</span>
+                if (!m_pImpl || nCapacity &lt; static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length())) return;
+                m_pImpl-&gt;buffer.reserve(nCapacity);</span>
 <span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(const String&amp; sValue) {
-                m_strBuffer.append((const char*)sValue);
+                if (m_pImpl) m_pImpl-&gt;buffer.append((const char*)sValue);</span>
                 return *this;
-            }</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(const char* pValue) {
-                if (pValue) m_strBuffer.append(pValue);</span>
+                if (m_pImpl &amp;&amp; pValue) m_pImpl-&gt;buffer.append(pValue);</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(char chValue) {
-                m_strBuffer.append(1, chValue);
+                if (m_pImpl) m_pImpl-&gt;buffer.append(1, chValue);</span>
                 return *this;
-            }</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(int iValue) {
-                m_strBuffer.append(std::to_string(iValue));
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(iValue));</span>
                 return *this;
-            }</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(long long llValue) {
-                m_strBuffer.append(std::to_string(llValue));
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(llValue));</span>
                 return *this;
-            }</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(double value) {
-                m_strBuffer.append(std::to_string(value));
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(value));</span>
                 return *this;
-            }</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(bool bValue) {
-                m_strBuffer.append(bValue ? "True" : "False");
+                if (m_pImpl) m_pImpl-&gt;buffer.append(bValue ? "True" : "False");</span>
                 return *this;
-            }</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::AppendLine() {
-                m_strBuffer.append("\r\n");
+                if (m_pImpl) m_pImpl-&gt;buffer.append("\r\n");</span>
                 return *this;
-            }</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::AppendLine(const String&amp; sValue) {
                 Append(sValue);
@@ -95,12 +111,12 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Clear() {
-                m_strBuffer.clear();</span>
+                if (m_pImpl) m_pImpl-&gt;buffer.clear();</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            String StringBuilder::ToString() const {
-                return String(m_strBuffer);
+                return m_pImpl ? String(m_pImpl-&gt;buffer.c_str()) : String("");
             }</span>
         }
     }

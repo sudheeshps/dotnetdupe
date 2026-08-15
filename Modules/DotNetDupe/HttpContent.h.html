@@ -34,7 +34,7 @@ namespace DotNetDupe {
                     DOTNETDUPE_API virtual void CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream);
                     DOTNETDUPE_API virtual long GetLength() const;
 
-<span style = "background-color:#dfd">                    DOTNETDUPE_API Collections::Generic::Dictionary&lt;String, String&gt;&amp; GetHeaders() { return m_headers; }
+<span style = "background-color:#fdd">                    DOTNETDUPE_API Collections::Generic::Dictionary&lt;String, String&gt;&amp; GetHeaders() { return m_headers; }
                     DOTNETDUPE_API const Collections::Generic::Dictionary&lt;String, String&gt;&amp; GetHeaders() const { return m_headers; }</span>
 
                 protected:
@@ -43,6 +43,8 @@ namespace DotNetDupe {
                 private:
                     Collections::Generic::Dictionary&lt;String, String&gt; m_headers;
                 };
+
+                using HttpContentPtr = SmartPointer&lt;HttpContent&gt;;
 
                 class StringContent : public HttpContent {
                 public:
@@ -76,6 +78,21 @@ namespace DotNetDupe {
                     Array&lt;char&gt; m_arrContent;
                     int m_iOffset;
                     int m_iCount;
+                };
+
+                class StreamContent : public HttpContent {
+                public:
+                    DOTNETDUPE_API explicit StreamContent(const SmartPointer&lt;IO::Stream&gt;&amp; stream);
+
+                    DOTNETDUPE_API String ReadAsString() override;
+                    DOTNETDUPE_API Array&lt;char&gt; ReadAsByteArray() override;
+                    DOTNETDUPE_API SmartPointer&lt;IO::Stream&gt; ReadAsStream() override;
+
+                    DOTNETDUPE_API void CopyTo(const SmartPointer&lt;IO::Stream&gt;&amp; stream) override;
+                    DOTNETDUPE_API long GetLength() const override;
+
+                private:
+                    SmartPointer&lt;IO::Stream&gt; m_pStream;
                 };
 
             }

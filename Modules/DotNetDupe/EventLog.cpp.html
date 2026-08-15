@@ -13,6 +13,8 @@
 #include "System/Diagnostics/EventLog.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
+#include "System/ComponentModel/Win32Exception.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
 #include "System/Environment.h"
@@ -113,11 +115,38 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            void EventLog::ReadWin32EventLog(const String&amp; sLogName, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+            static WORD MapEventLogEntryTypeToWin32(EventLogEntryType eType) {
+                if (eType == EventLogEntryType::Error) return EVENTLOG_ERROR_TYPE;
+                if (eType == EventLogEntryType::Warning) return EVENTLOG_WARNING_TYPE;
+                if (eType == EventLogEntryType::SuccessAudit) return EVENTLOG_AUDIT_SUCCESS;
+                if (eType == EventLogEntryType::FailureAudit) return EVENTLOG_AUDIT_FAILURE;
+                return EVENTLOG_INFORMATION_TYPE;
+            }
+
+            static void ValidateWin32ReportResult(BOOL bReported, DWORD dwErr, const String&amp; sSource) {
+                if (!bReported) {
+                    if (dwErr == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied writing to EventLog for source: " + sSource);
+                    }
+                    throw ComponentModel::Win32Exception(dwErr, "Failed to report event to EventLog: " + sSource);
+                }
+            }
+
+<span style = "background-color:#dfd">            static HANDLE OpenWin32EventLogHandle(const String&amp; sLogName) {
                 std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
-                HANDLE hEventLog = ::OpenEventLogW(NULL, wLogName.c_str());
-                if (hEventLog == NULL) return;
+                HANDLE h = ::OpenEventLogW(NULL, wLogName.c_str());
+                if (!h) {</span>
+<span style = "background-color:#fdd">                    DWORD dwErr = ::GetLastError();
+                    if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied opening EventLog: " + sLogName);
+                    if (dwErr == ERROR_FILE_NOT_FOUND || dwErr == ERROR_PATH_NOT_FOUND) throw ArgumentException("EventLog not found: " + sLogName);
+                    throw ComponentModel::Win32Exception(dwErr, "Failed to open EventLog: " + sLogName);</span>
+                }
+<span style = "background-color:#dfd">                return h;
+            }</span>
+
+<span style = "background-color:#dfd">            void EventLog::ReadWin32EventLog(const String&amp; sLogName, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                HANDLE hEventLog = OpenWin32EventLogHandle(sLogName);
                 DWORD dwBytesRead = 0, dwNeeded = 0;</span>
                 BYTE buffer[0x10000];
 <span style = "background-color:#dfd">                while (::ReadEventLogW(hEventLog, EVENTLOG_SEQUENTIAL_READ | EVENTLOG_BACKWARDS_READ, 0, buffer, sizeof(buffer), &amp;dwBytesRead, &amp;dwNeeded)) {
@@ -126,21 +155,27 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                ::CloseEventLog(hEventLog);
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::WriteWin32EventLog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
+<span style = "background-color:#dfd">            static HANDLE RegisterWin32EventSourceHandle(const String&amp; sSource) {
                 std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSource(sStdSource.begin(), sStdSource.end());
-                HANDLE hEventLog = ::RegisterEventSourceW(NULL, wSource.c_str());
-                if (hEventLog == NULL) return;
-                WORD wType = EVENTLOG_INFORMATION_TYPE;
-                if (eType == EventLogEntryType::Error) wType = EVENTLOG_ERROR_TYPE;
-                else if (eType == EventLogEntryType::Warning) wType = EVENTLOG_WARNING_TYPE;
-                else if (eType == EventLogEntryType::SuccessAudit) wType = EVENTLOG_AUDIT_SUCCESS;
-                else if (eType == EventLogEntryType::FailureAudit) wType = EVENTLOG_AUDIT_FAILURE;
+                HANDLE h = ::RegisterEventSourceW(NULL, wSource.c_str());
+                if (!h) {</span>
+<span style = "background-color:#fdd">                    DWORD dwErr = ::GetLastError();
+                    if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied registering EventSource: " + sSource);
+                    throw ComponentModel::Win32Exception(dwErr, "Failed to register EventSource: " + sSource);</span>
+                }
+<span style = "background-color:#dfd">                return h;
+            }</span>
+
+<span style = "background-color:#dfd">            void EventLog::WriteWin32EventLog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
+                HANDLE hEventLog = RegisterWin32EventSourceHandle(sSource);
                 std::string sStdMsg(sMessage.GetRawString() ? sMessage.GetRawString() : "");
                 std::wstring wMsg(sStdMsg.begin(), sStdMsg.end());
                 LPCWSTR pStrings[1] = { wMsg.c_str() };
-                ::ReportEventW(hEventLog, wType, 0, (DWORD)iEventID, NULL, 1, 0, pStrings, NULL);
+                BOOL bReported = ::ReportEventW(hEventLog, MapEventLogEntryTypeToWin32(eType), 0, (DWORD)iEventID, NULL, 1, 0, pStrings, NULL);
+                DWORD dwErr = ::GetLastError();
                 ::DeregisterEventSource(hEventLog);
+                ValidateWin32ReportResult(bReported, dwErr, sSource);
             }</span>
 
 <span style = "background-color:#dfd">            bool EventLog::CreateWin32EventSource(const String&amp; sSource, const String&amp; sLogName) {
@@ -152,8 +187,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                HKEY hKey = NULL;
                 LONG lRes = ::RegCreateKeyExW(HKEY_LOCAL_MACHINE, wSubKey.c_str(), 0, NULL, 0, KEY_WRITE, NULL, &amp;hKey, NULL);
                 if (lRes == ERROR_SUCCESS) {
-                    ::RegCloseKey(hKey);</span>
-                    return true;
+                    ::RegCloseKey(hKey);
+                    return true;</span>
+                }
+<span style = "background-color:#fdd">                if (lRes == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating EventLog source in registry under HKLM. Administrator privileges required.");</span>
                 }
 <span style = "background-color:#fdd">                return false;</span>
 <span style = "background-color:#dfd">            }</span>
@@ -175,9 +213,12 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            void EventLog::DeleteWin32EventSource(const String&amp; sSource) {
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
-                    std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.begin(), sSource.end());
-                    ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
-                }
+                    std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
+                    LONG lRes = ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
+                    if (lRes == ERROR_ACCESS_DENIED) {</span>
+<span style = "background-color:#fdd">                        throw UnauthorizedAccessException("Access denied deleting EventLog source from registry under HKLM. Administrator privileges required.");</span>
+                    }
+<span style = "background-color:#dfd">                }
             }</span>
 #else
             void EventLog::WriteLinuxSyslog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
@@ -194,8 +235,9 @@ namespace DotNetDupe {
                 closelog();
             }
 
-            EventLogEntry EventLog::ParseSyslogLine(const std::string&amp; line) {
+            EventLogEntry EventLog::ParseSyslogLine(const String&amp; sLine) {
                 EventLogEntryType eType = EventLogEntryType::Information;
+                std::string line = sLine.GetRawString() ? sLine.GetRawString() : "";
 
                 if (line.find("error") != std::string::npos || line.find("ERR") != std::string::npos || line.find("err") != std::string::npos || line.find("Error") != std::string::npos) {
                     eType = EventLogEntryType::Error;
@@ -209,17 +251,17 @@ namespace DotNetDupe {
                     iEventId = std::atoi(line.c_str() + posId + 9);
                 }
 
-                return EventLogEntry(String(line.c_str()), eType, iEventId, "syslog", DateTimeOffset::Now());
+                return EventLogEntry(sLine, eType, iEventId, "syslog", DateTimeOffset::Now());
             }
 
-            void EventLog::ReadLinuxSyslogFile(const std::string&amp; sFilePath, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
-                std::ifstream infile(sFilePath);
+            void EventLog::ReadLinuxSyslogFile(const String&amp; sFilePath, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                std::ifstream infile(sFilePath.GetRawString() ? sFilePath.GetRawString() : "");
                 if (!infile.is_open()) return;
 
                 std::string line;
                 while (std::getline(infile, line)) {
                     if (line.empty()) continue;
-                    lstEntries.Add(ParseSyslogLine(line));
+                    lstEntries.Add(ParseSyslogLine(String(line.c_str())));
                 }
             }
 
@@ -253,12 +295,12 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#fdd">            void EventLog::WriteEntry(const String&amp; sMessage) {
-                WriteEntry(sMessage, EventLogEntryType::Information, 0);
-            }</span>
+                WriteEntry(sMessage, EventLogEntryType::Information, 0);</span>
+            }
 
 <span style = "background-color:#fdd">            void EventLog::WriteEntry(const String&amp; sMessage, EventLogEntryType eType) {
-                WriteEntry(sMessage, eType, 0);
-            }</span>
+                WriteEntry(sMessage, eType, 0);</span>
+            }
 
 <span style = "background-color:#dfd">            void EventLog::WriteEntry(const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
                 String sEffectiveSource = m_sSource.IsEmpty() ? m_sLogName : m_sSource;
@@ -315,7 +357,11 @@ namespace DotNetDupe {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
                 String sEffectiveLog = sLogName.IsEmpty() ? String("Application") : sLogName;</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                CreateWin32EventSource(sSource, sEffectiveLog);</span>
+                try {
+<span style = "background-color:#dfd">                    CreateWin32EventSource(sSource, sEffectiveLog);</span>
+<span style = "background-color:#fdd">                } catch (const UnauthorizedAccessException&amp;) {</span>
+                    // Fallback to in-memory store in non-elevated environments
+<span style = "background-color:#fdd">                }</span>
 #endif
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 auto it = s_mapSourceToLog.find(sSource);
@@ -361,7 +407,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            void EventLog::DeleteEventSource(const String&amp; sSource, const String&amp; sMachineName) {
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                DeleteWin32EventSource(sSource);</span>
+                try {
+<span style = "background-color:#dfd">                    DeleteWin32EventSource(sSource);</span>
+<span style = "background-color:#fdd">                } catch (const UnauthorizedAccessException&amp;) {</span>
+                    // Fallback to in-memory store in non-elevated environments
+<span style = "background-color:#fdd">                }</span>
 #endif
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 if (s_mapSourceToLog.find(sSource) == s_mapSourceToLog.end()) {</span>

@@ -19,7 +19,7 @@ namespace DotNetDupe {
             namespace Sockets {
 
                 TcpListener::TcpListener(int port)
-<span style = "background-color:#fdd">                    : m_sIp("0.0.0.0"), m_nPort(port), m_bActive(false) {
+<span style = "background-color:#dfd">                    : m_sIp("0.0.0.0"), m_nPort(port), m_bActive(false) {
                 }</span>
 
                 TcpListener::TcpListener(const String&amp; ip, int port)
@@ -34,9 +34,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    : m_sIp(std::move(other.m_sIp)),
                       m_nPort(other.m_nPort),
                       m_pListenerSocket(std::move(other.m_pListenerSocket)),
-                      m_bActive(other.m_bActive) {</span>
+                      m_bActive(other.m_bActive) {
                     other.m_bActive = false;
-<span style = "background-color:#fdd">                }</span>
+                }</span>
 
 <span style = "background-color:#fdd">                TcpListener&amp; TcpListener::operator=(TcpListener&amp;&amp; other) noexcept {
                     if (this != &amp;other) {
@@ -74,24 +74,24 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                SmartPointer&lt;TcpClient&gt; TcpListener::AcceptTcpClient() {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
-                        throw SocketException("TcpListener is not started.");</span>
+                        throw SocketException(-1, String("TcpListener is not started."));</span>
                     }
-<span style = "background-color:#dfd">                    SmartPointer&lt;Socket&gt; listenerSocket = m_pListenerSocket;
-                    SmartPointer&lt;Socket&gt; clientSocket = listenerSocket-&gt;Accept();
-                    return SmartPointer&lt;TcpClient&gt;(new TcpClient(clientSocket));
+<span style = "background-color:#dfd">                    SmartPointer&lt;Socket&gt; pListenerSocket = m_pListenerSocket;
+                    SmartPointer&lt;Socket&gt; pClientSocket = pListenerSocket-&gt;Accept();
+                    return SmartPointer&lt;TcpClient&gt;(new TcpClient(pClientSocket));
                 }</span>
 
 <span style = "background-color:#fdd">                SmartPointer&lt;Socket&gt; TcpListener::AcceptSocket() {
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
-                        throw SocketException("TcpListener is not started.");</span>
+                        throw SocketException(-1, String("TcpListener is not started."));</span>
                     }
-<span style = "background-color:#fdd">                    SmartPointer&lt;Socket&gt; listenerSocket = m_pListenerSocket;
-                    return listenerSocket-&gt;Accept();
+<span style = "background-color:#fdd">                    SmartPointer&lt;Socket&gt; pListenerSocket = m_pListenerSocket;
+                    return pListenerSocket-&gt;Accept();
                 }</span>
 
 <span style = "background-color:#fdd">                bool TcpListener::Pending() {
-                    if (!m_bActive || m_pListenerSocket.IsNull()) {
-                        return false;</span>
+                    if (!m_bActive || m_pListenerSocket.IsNull()) {</span>
+                        return false;
                     }
 <span style = "background-color:#fdd">                    return m_pListenerSocket-&gt;Poll(0, SelectMode::SelectRead);
                 }</span>

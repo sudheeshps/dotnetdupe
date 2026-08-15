@@ -34,40 +34,58 @@ namespace DotNetDupe {
 
             const bool Stopwatch::IsHighResolution = true;
 
-<span style = "background-color:#dfd">            Stopwatch::Stopwatch() : Stopwatch(TimeProvider::GetSystem()) {}</span>
+            struct Stopwatch::Impl {
+                TimeProviderPtr timeProvider;
+                long long elapsedTicks;
+                long long startTimeStamp;
+                bool isRunning;
+            };
 
-            Stopwatch::Stopwatch(const std::shared_ptr&lt;TimeProvider&gt;&amp; timeProvider)
-<span style = "background-color:#dfd">                : _timeProvider(timeProvider), _elapsedTicks(0), _startTimeStamp(0), _isRunning(false) {}</span>
+<span style = "background-color:#fdd">            Stopwatch::Stopwatch() : Stopwatch(TimeProvider::GetSystem()) {}</span>
+
+            Stopwatch::Stopwatch(const TimeProviderPtr&amp; timeProvider)
+<span style = "background-color:#dfd">                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {
+                m_pImpl-&gt;timeProvider = timeProvider;
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;startTimeStamp = 0;
+                m_pImpl-&gt;isRunning = false;
+            }</span>
+
+<span style = "background-color:#dfd">            Stopwatch::~Stopwatch() = default;</span>
 
 <span style = "background-color:#dfd">            void Stopwatch::Start() {
-                if (!_isRunning) {
-                    _startTimeStamp = _timeProvider-&gt;GetTimestamp();
-                    _isRunning = true;</span>
+                if (!m_pImpl-&gt;isRunning) {
+                    m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                    m_pImpl-&gt;isRunning = true;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            void Stopwatch::Stop() {
-                if (_isRunning) {
-                    long long endTimeStamp = _timeProvider-&gt;GetTimestamp();
-                    _elapsedTicks += (endTimeStamp - _startTimeStamp);
-                    _isRunning = false;</span>
+                if (m_pImpl-&gt;isRunning) {
+                    long long endTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                    m_pImpl-&gt;elapsedTicks += (endTimeStamp - m_pImpl-&gt;startTimeStamp);
+                    m_pImpl-&gt;isRunning = false;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            void Stopwatch::Reset() {
-                _elapsedTicks = 0;
-                _isRunning = false;
-                _startTimeStamp = 0;
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;isRunning = false;
+                m_pImpl-&gt;startTimeStamp = 0;
             }</span>
 
 <span style = "background-color:#dfd">            void Stopwatch::Restart() {
-                _elapsedTicks = 0;
-                _startTimeStamp = _timeProvider-&gt;GetTimestamp();
-                _isRunning = true;
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                m_pImpl-&gt;isRunning = true;
+            }</span>
+
+<span style = "background-color:#dfd">            bool Stopwatch::IsRunning() const {
+                return m_pImpl-&gt;isRunning;
             }</span>
 
 <span style = "background-color:#dfd">            TimeSpan Stopwatch::Elapsed() const {
-                return _timeProvider-&gt;GetElapsedTime(0, GetRawElapsedTicks());
+                return m_pImpl-&gt;timeProvider-&gt;GetElapsedTime(0, GetRawElapsedTicks());
             }</span>
 
 <span style = "background-color:#fdd">            long long Stopwatch::ElapsedMilliseconds() const {
@@ -79,9 +97,9 @@ namespace DotNetDupe {
             }</span>
 
             long long Stopwatch::GetRawElapsedTicks() const {
-                long long elapsed = _elapsedTicks;
-                if (_isRunning) {
-                    elapsed += (_timeProvider-&gt;GetTimestamp() - _startTimeStamp);
+                long long elapsed = m_pImpl-&gt;elapsedTicks;
+                if (m_pImpl-&gt;isRunning) {
+                    elapsed += (m_pImpl-&gt;timeProvider-&gt;GetTimestamp() - m_pImpl-&gt;startTimeStamp);
                 }
                 return elapsed;
             }
@@ -92,11 +110,11 @@ namespace DotNetDupe {
                 return sw;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            Stopwatch Stopwatch::StartNew(const std::shared_ptr&lt;TimeProvider&gt;&amp; timeProvider) {
+<span style = "background-color:#fdd">            Stopwatch Stopwatch::StartNew(const TimeProviderPtr&amp; timeProvider) {
                 Stopwatch sw(timeProvider);
-                sw.Start();
+                sw.Start();</span>
                 return sw;
-            }</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            long long Stopwatch::GetTimestamp() {</span>
 #if defined(_WIN32)

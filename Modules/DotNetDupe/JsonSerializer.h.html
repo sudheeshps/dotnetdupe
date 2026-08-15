@@ -114,21 +114,21 @@ namespace DotNetDupe {
                 // List&lt;U&gt;
                 template &lt;typename U&gt;
                 struct JsonConverter&lt;Collections::Generic::List&lt;U&gt;&gt; {
-<span style = "background-color:#dfd">                    static JsonElement Write(const Collections::Generic::List&lt;U&gt;&amp; value) {
+                    static JsonElement Write(const Collections::Generic::List&lt;U&gt;&amp; value) {
                         JsonElement arr(JsonValueKind::Array);
                         for (int i = 0; i &lt; value.GetCount(); ++i) {
-                            arr.AddArrayElement(JsonConverter&lt;U&gt;::Write(value[i]));</span>
+                            arr.AddArrayElement(JsonConverter&lt;U&gt;::Write(value[i]));
                         }
-<span style = "background-color:#dfd">                        return arr;
+                        return arr;
                     }
                     static Collections::Generic::List&lt;U&gt; Read(const JsonElement&amp; element) {
                         Collections::Generic::List&lt;U&gt; lst;
                         int iLen = element.GetArrayLength();
                         for (int i = 0; i &lt; iLen; ++i) {
-                            lst.Add(JsonConverter&lt;U&gt;::Read(element.GetArrayElement(i)));</span>
+                            lst.Add(JsonConverter&lt;U&gt;::Read(element.GetArrayElement(i)));
                         }
-<span style = "background-color:#dfd">                        return lst;
-                    }</span>
+                        return lst;
+                    }
                 };
 
                 // Dictionary&lt;String, U&gt;

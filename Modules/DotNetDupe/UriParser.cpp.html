@@ -13,6 +13,8 @@
 #include "pch.h"
 #include "System/UriParser.h"
 #include "System/Uri.h"
+#include &lt;map&gt;
+#include &lt;utility&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -33,8 +35,8 @@ namespace DotNetDupe {
             if (it != _parsers.end()) {
                 return it-&gt;second.first;</span>
             }
-            return nullptr;
-<span style = "background-color:#fdd">        }</span>
+<span style = "background-color:#fdd">            return nullptr;
+        }</span>
 
 <span style = "background-color:#fdd">        String UriParser::GetComponents(const Uri&amp; uri, UriComponents components, UriFormat format) {</span>
             // This is a base implementation that can be overridden.

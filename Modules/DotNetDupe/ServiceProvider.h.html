@@ -18,8 +18,7 @@
 #include "Extensions/DependencyInjection/ServiceDescriptor.h"
 #include "Extensions/DependencyInjection/IServiceScopeFactory.h"
 #include &lt;typeindex&gt;
-#include &lt;unordered_map&gt;
-#include &lt;vector&gt;
+#include &lt;typeindex&gt;
 
 namespace DotNetDupe {
     namespace Extensions {
@@ -40,23 +39,20 @@ namespace DotNetDupe {
                 bool m_bIsRoot;
                 ServiceProvider* m_pRootProvider;
                 
-                std::unordered_map&lt;std::type_index, ServiceDescriptor&gt; m_mapDescriptors;
-                std::unordered_map&lt;std::type_index, DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt;&gt; m_mapSingletons;
-                std::unordered_map&lt;std::type_index, DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Object&gt;&gt; m_mapScoped;
-                std::vector&lt;DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IO::IDisposable&gt;&gt; m_vDisposables;
-                DotNetDupe::System::Threading::CriticalSection m_csLock;
+                struct Impl;
+                DotNetDupe::System::SmartPointer&lt;Impl&gt; m_pImpl;
             };
 
             class ServiceScope : public IServiceScope {
             public:
-                DOTNETDUPE_API ServiceScope(DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt; spProvider);
+                DOTNETDUPE_API ServiceScope(DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt; pProvider);
                 DOTNETDUPE_API ~ServiceScope() override;
 
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; GetServiceProvider() const override;
                 DOTNETDUPE_API void Dispose() override;
 
             private:
-                DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt; m_spProvider;
+                DotNetDupe::System::SmartPointer&lt;ServiceProvider&gt; m_pProvider;
             };
 
             class ServiceScopeFactory : public IServiceScopeFactory {

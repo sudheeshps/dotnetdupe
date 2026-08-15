@@ -163,57 +163,37 @@ namespace DotNetDupe {
                     return ComputeHash(buffer, m_key);
                 }</span>
 
-<span style = "background-color:#dfd">                Array&lt;char&gt; HMACSHA256::ComputeHash(const Array&lt;char&gt;&amp; buffer, const Array&lt;char&gt;&amp; key) {</span>
-                    unsigned char k_ipad[64];
-                    unsigned char k_opad[64];
+<span style = "background-color:#dfd">                static void PrepareHmacPads(const Array&lt;char&gt;&amp; key, unsigned char* k_ipad, unsigned char* k_opad) {</span>
                     unsigned char key_hashed[32];
-
 <span style = "background-color:#dfd">                    int key_len = key.GetLength();</span>
                     const unsigned char* key_data = reinterpret_cast&lt;const unsigned char*&gt;(key.GetData());
-
 <span style = "background-color:#dfd">                    if (key_len &gt; 64) {</span>
-                        SHA256Impl sha;
-<span style = "background-color:#fdd">                        sha.Init();
-                        sha.Update(key_data, key_len);
-                        sha.Final(key_hashed);</span>
-                        key_data = key_hashed;
-<span style = "background-color:#fdd">                        key_len = 32;</span>
+<span style = "background-color:#fdd">                        SHA256Impl sha; sha.Init(); sha.Update(key_data, key_len); sha.Final(key_hashed);
+                        key_data = key_hashed; key_len = 32;</span>
                     }
-
-<span style = "background-color:#dfd">                    std::memset(k_ipad, 0, 64);
-                    std::memset(k_opad, 0, 64);
-                    if (key_len &gt; 0) {
-                        std::memcpy(k_ipad, key_data, key_len);
-                        std::memcpy(k_opad, key_data, key_len);</span>
-                    }
-
-                    for (int i = 0; i &lt; 64; i++) {
-<span style = "background-color:#dfd">                        k_ipad[i] ^= 0x36;
-                        k_opad[i] ^= 0x5c;</span>
-                    }
-
-                    // Inner hash
-                    unsigned char inner_digest[32];
-                    SHA256Impl sha_inner;
-<span style = "background-color:#dfd">                    sha_inner.Init();
-                    sha_inner.Update(k_ipad, 64);
-                    if (buffer.GetLength() &gt; 0) {
-                        sha_inner.Update(reinterpret_cast&lt;const unsigned char*&gt;(buffer.GetData()), buffer.GetLength());</span>
-                    }
-<span style = "background-color:#dfd">                    sha_inner.Final(inner_digest);</span>
-
-                    // Outer hash
-                    unsigned char outer_digest[32];
-                    SHA256Impl sha_outer;
-<span style = "background-color:#dfd">                    sha_outer.Init();
-                    sha_outer.Update(k_opad, 64);
-                    sha_outer.Update(inner_digest, 32);
-                    sha_outer.Final(outer_digest);</span>
-
-<span style = "background-color:#dfd">                    Array&lt;char&gt; result(32);
-                    std::memcpy(result.GetData(), outer_digest, 32);
-                    return result;
+<span style = "background-color:#dfd">                    std::memset(k_ipad, 0, 64); std::memset(k_opad, 0, 64);
+                    if (key_len &gt; 0) { std::memcpy(k_ipad, key_data, key_len); std::memcpy(k_opad, key_data, key_len); }
+                    for (int i = 0; i &lt; 64; i++) { k_ipad[i] ^= 0x36; k_opad[i] ^= 0x5c; }
                 }</span>
+
+                static void ComputeHmacDigests(const unsigned char* k_ipad, const unsigned char* k_opad, const Array&lt;char&gt;&amp; buffer, unsigned char* outer_digest) {
+                    unsigned char inner_digest[32];
+                    SHA256Impl sha_inner; sha_inner.Init(); sha_inner.Update(k_ipad, 64);
+                    if (buffer.GetLength() &gt; 0) sha_inner.Update(reinterpret_cast&lt;const unsigned char*&gt;(buffer.GetData()), buffer.GetLength());
+                    sha_inner.Final(inner_digest);
+
+                    SHA256Impl sha_outer; sha_outer.Init(); sha_outer.Update(k_opad, 64); sha_outer.Update(inner_digest, 32);
+                    sha_outer.Final(outer_digest);
+                }
+
+<span style = "background-color:#dfd">                Array&lt;char&gt; HMACSHA256::ComputeHash(const Array&lt;char&gt;&amp; buffer, const Array&lt;char&gt;&amp; key) {</span>
+                    unsigned char k_ipad[64], k_opad[64], outer_digest[32];
+<span style = "background-color:#dfd">                    PrepareHmacPads(key, k_ipad, k_opad);
+                    ComputeHmacDigests(k_ipad, k_opad, buffer, outer_digest);
+                    Array&lt;char&gt; result(32);
+                    for (int i = 0; i &lt; 32; i++) result[i] = static_cast&lt;char&gt;(outer_digest[i]);</span>
+                    return result;
+<span style = "background-color:#dfd">                }</span>
 
             }
         }

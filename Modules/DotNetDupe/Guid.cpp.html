@@ -29,33 +29,30 @@ namespace DotNetDupe {
             }
 <span style = "background-color:#fdd">        }</span>
 
-<span style = "background-color:#dfd">        Guid::Guid(const Array&lt;uint8_t&gt;&amp; b) {
+<span style = "background-color:#fdd">        Guid::Guid(const Array&lt;uint8_t&gt;&amp; b) {
             if (b.GetLength() != 16) throw ArgumentException("Guid should be 16 bytes.");</span>
             for (size_t i = 0; i &lt; 16; ++i) {
-<span style = "background-color:#dfd">                _data[i] = b[static_cast&lt;int&gt;(i)];</span>
+<span style = "background-color:#fdd">                _data[i] = b[static_cast&lt;int&gt;(i)];</span>
             }
-<span style = "background-color:#dfd">        }</span>
+<span style = "background-color:#fdd">        }</span>
 
 <span style = "background-color:#dfd">        Guid::Guid(const String&amp; g) {
-            std::string s = (const char*)g;</span>
-            // Remove braces or hyphens if needed
-<span style = "background-color:#dfd">            s.erase(std::remove(s.begin(), s.end(), '{'), s.end());
-            s.erase(std::remove(s.begin(), s.end(), '}'), s.end());
-            s.erase(std::remove(s.begin(), s.end(), '-'), s.end());</span>
+            String s = g.Replace("{", "").Replace("}", "").Replace("-", "");</span>
 
-<span style = "background-color:#dfd">            if (s.length() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");</span>
+<span style = "background-color:#dfd">            if (s.GetLength() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");</span>
 
 <span style = "background-color:#dfd">            for (size_t i = 0; i &lt; 16; ++i) {</span>
                 unsigned int byteVal;
+<span style = "background-color:#dfd">                String sub = s.Substring(static_cast&lt;int&gt;(i * 2), 2);</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &amp;byteVal) != 1)</span>
+<span style = "background-color:#dfd">                if (sscanf_s(sub.GetRawString(), "%02x", &amp;byteVal) != 1)</span>
 #else
-                if (sscanf(s.substr(i * 2, 2).c_str(), "%02x", &amp;byteVal) != 1)
+                if (sscanf(sub.GetRawString(), "%02x", &amp;byteVal) != 1)
 #endif
 <span style = "background-color:#fdd">                    throw FormatException("Guid string should only contain 32 hexadecimal characters.");</span>
-<span style = "background-color:#dfd">                _data[i] = (uint8_t)byteVal;</span>
+<span style = "background-color:#dfd">                _data[i] = (uint8_t)byteVal;
             }
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Guid Guid::NewGuid() {</span>
             // Very simple random Guid for now

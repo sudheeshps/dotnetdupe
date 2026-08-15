@@ -86,9 +86,9 @@ namespace DotNetDupe {
             return TimeSpan((int64_t)ticks);
         }</span>
 
-<span style = "background-color:#dfd">        std::shared_ptr&lt;TimeProvider&gt; TimeProvider::GetSystem() {
-            static auto system = std::make_shared&lt;SystemTimeProvider&gt;();
-            return system;
+<span style = "background-color:#dfd">        TimeProviderPtr TimeProvider::GetSystem() {
+            static auto system = SmartPointer&lt;SystemTimeProvider&gt;::NewShared();
+            return system.template DynamicCast&lt;TimeProvider&gt;();
         }</span>
     }
 }</pre>

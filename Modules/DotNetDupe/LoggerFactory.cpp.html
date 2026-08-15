@@ -10,6 +10,8 @@
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
+#include &lt;mutex&gt;
+#include &lt;vector&gt;
 #include "Extensions/Logging/LoggerFactory.h"
 #include "Extensions/Logging/AggregateLogger.h"
 
@@ -17,21 +19,31 @@ namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
 
-<span style = "background-color:#dfd">            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; provider) {
-                std::lock_guard&lt;std::mutex&gt; lock(m_mutex);
-                m_providers.push_back(provider);
+            struct LoggerFactory::Impl {
+                std::vector&lt;DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&gt; pProviders;
+                std::mutex mutex;
+            };
+
+            LoggerFactory::LoggerFactory()
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+                
+<span style = "background-color:#fdd">            LoggerFactory::~LoggerFactory() = default;</span>
+
+<span style = "background-color:#dfd">            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {
+                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
+                m_pImpl-&gt;pProviders.push_back(pProvider);
             }</span>
 
 <span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LoggerFactory::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
-                std::lock_guard&lt;std::mutex&gt; lock(m_mutex);
-                std::vector&lt;DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; loggers;
-                for (auto&amp; provider : m_providers) {
-                    auto logger = provider-&gt;CreateLogger(categoryName);
-                    if (!logger.IsNull()) {
-                        loggers.push_back(logger);</span>
+                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
+                auto aggregate = DotNetDupe::System::SmartPointer&lt;AggregateLogger&gt;::NewShared();
+                for (auto&amp; pProvider : m_pImpl-&gt;pProviders) {
+                    auto pLogger = pProvider-&gt;CreateLogger(categoryName);
+                    if (!pLogger.IsNull()) {
+                        aggregate-&gt;AddLogger(pLogger);</span>
                     }
 <span style = "background-color:#dfd">                }
-                return DotNetDupe::System::SmartPointer&lt;AggregateLogger&gt;::NewShared(loggers);
+                return aggregate;
             }</span>
 
         }

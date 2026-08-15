@@ -33,9 +33,9 @@ namespace DotNetDupe {
                         _syncObject.WaitOne(millisecondsTimeout);
                     }
                 }
-<span style = "background-color:#fdd">                ~Lock() {
+                ~Lock() {
                     _syncObject.Release(_releaseCount);
-                }</span>
+                }
             private:
                 T&amp; _syncObject;
                 int _releaseCount;
@@ -51,7 +51,7 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">                ~Lock() {
                     _cs.Leave();</span>
-                }
+<span style = "background-color:#fdd">                }</span>
             private:
                 CriticalSection&amp; _cs;
             };

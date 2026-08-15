@@ -15,8 +15,10 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/ArgumentException.h"
-#include &lt;unordered_map&gt;
-#include &lt;stdexcept&gt;
+#include "System/InvalidOperationException.h"
+#include "System/HashHelper.h"
+#include &lt;new&gt;
+#include &lt;utility&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -27,73 +29,314 @@ namespace DotNetDupe {
                 struct KeyValuePair {
                     TKey Key;
                     TValue Value;
+                    KeyValuePair() {}
                     KeyValuePair(TKey k, TValue v) : Key(k), Value(v) {}
+                };
+
+                struct HashHelpers {
+                    inline static const int s_primes[] = {
+                        3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
+                        1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
+                        17519, 21023, 25229, 30293, 36353, 43627, 52361, 62851, 75431, 90523, 108631, 130363, 156437,
+                        187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
+                        1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
+                    };
+                    static int GetPrime(int min) {
+                        for (int i = 0; i &lt; (int)(sizeof(s_primes) / sizeof(s_primes[0])); ++i) {
+                            if (s_primes[i] &gt;= min) return s_primes[i];
+                        }
+                        return min;
+                    }
                 };
 
                 template &lt;typename TKey, typename TValue&gt;
                 class Dictionary : public Object {
-                public:
-<span style = "background-color:#dfd">                    Dictionary() {}</span>
+                private:
+                    struct Entry {
+                        int hashCode;
+                        int next;
+                        TKey key;
+                        TValue value;
+                        
+                        Entry() : hashCode(-1), next(-1) {}
+                        Entry(int h, int n, const TKey&amp; k, const TValue&amp; v) : hashCode(h), next(n), key(k), value(v) {}
+                        Entry(const Entry&amp; other) : hashCode(other.hashCode), next(other.next), key(other.key), value(other.value) {}
+                        Entry(Entry&amp;&amp; other) noexcept : hashCode(other.hashCode), next(other.next), key(std::move(other.key)), value(std::move(other.value)) {}
+                    };
 
-                    int GetCount() const { return (int)m_uMap.size(); }
+                    int* m_pBuckets;
+                    Entry* m_pEntries;
+                    int m_iCount;
+                    int m_iFreeList;
+                    int m_iFreeCount;
+                    int m_iCapacity;
 
-                    TValue&amp; operator[](const TKey&amp; key) {
-                        return m_uMap[key];
+                    void Initialize(int capacity) {
+                        m_iCapacity = HashHelpers::GetPrime(capacity);
+                        m_pBuckets = (int*)AllocateCollectionBuffer(m_iCapacity * sizeof(int));
+                        for (int i = 0; i &lt; m_iCapacity; i++) m_pBuckets[i] = -1;
+                        m_pEntries = (Entry*)AllocateCollectionBuffer(m_iCapacity * sizeof(Entry));
+                        m_iFreeList = -1;
+                        m_iFreeCount = 0;
+                        m_iCount = 0;
                     }
 
-                    const TValue&amp; operator[](const TKey&amp; key) const {
-                        return m_uMap.at(key);
-                    }
-
-<span style = "background-color:#dfd">                    void Add(const TKey&amp; key, const TValue&amp; value) {
-                        if (ContainsKey(key)) throw System::ArgumentException("An item with the same key has already been added.");
-                        m_uMap[key] = value;
+<span style = "background-color:#dfd">                    void FreeBuffer() {
+                        if (m_pBuckets) FreeCollectionBuffer(m_pBuckets);
+                        if (m_pEntries) {
+                            for (int i = 0; i &lt; m_iCount; ++i) {
+                                if (m_pEntries[i].hashCode &gt;= 0) m_pEntries[i].~Entry();</span>
+                            }
+<span style = "background-color:#dfd">                            FreeCollectionBuffer(m_pEntries);</span>
+                        }
+                        m_pBuckets = nullptr;
+<span style = "background-color:#dfd">                        m_pEntries = nullptr;
                     }</span>
 
+                    void Resize() {
+                        Resize(m_iCount &gt; 0 ? m_iCount * 2 : 4);
+                    }
+
+<span style = "background-color:#dfd">                    void Resize(int newSize) {
+                        int newCapacity = HashHelpers::GetPrime(newSize);
+                        int* pNewBuckets = (int*)AllocateCollectionBuffer(newCapacity * sizeof(int));
+                        for (int i = 0; i &lt; newCapacity; i++) pNewBuckets[i] = -1;
+                        Entry* pNewEntries = (Entry*)AllocateCollectionBuffer(newCapacity * sizeof(Entry));
+                        for (int i = 0; i &lt; m_iCount; i++) {
+                            if (m_pEntries[i].hashCode &gt;= 0) {
+                                ::new ((void*)&amp;pNewEntries[i]) Entry(std::move(m_pEntries[i]));
+                                m_pEntries[i].~Entry();
+                            } else {</span>
+<span style = "background-color:#fdd">                                ::new ((void*)&amp;pNewEntries[i]) Entry();</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                        for (int i = 0; i &lt; m_iCount; i++) {
+                            if (pNewEntries[i].hashCode &gt;= 0) {
+                                int bucket = pNewEntries[i].hashCode % newCapacity;
+                                pNewEntries[i].next = pNewBuckets[bucket];
+                                pNewBuckets[bucket] = i;</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                        if (m_pBuckets) FreeCollectionBuffer(m_pBuckets);
+                        if (m_pEntries) FreeCollectionBuffer(m_pEntries);
+                        m_pBuckets = pNewBuckets;
+                        m_pEntries = pNewEntries;
+                        m_iCapacity = newCapacity;
+                    }</span>
+
+<span style = "background-color:#dfd">                    int FindEntry(const TKey&amp; key) const {
+                        if (m_pBuckets != nullptr) {
+                            int hashCode = HashHelper&lt;TKey&gt;::GetHashCode(key) &amp; 0x7FFFFFFF;
+                            for (int i = m_pBuckets[hashCode % m_iCapacity]; i &gt;= 0; i = m_pEntries[i].next) {
+                                if (m_pEntries[i].hashCode == hashCode &amp;&amp; m_pEntries[i].key == key) return i;</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                        return -1;
+                    }</span>
+
+<span style = "background-color:#dfd">                    bool Insert(const TKey&amp; key, const TValue&amp; value, bool add) {
+                        if (m_pBuckets == nullptr) Initialize(0);
+                        int hashCode = HashHelper&lt;TKey&gt;::GetHashCode(key) &amp; 0x7FFFFFFF;
+                        int targetBucket = hashCode % m_iCapacity;</span>
+
+<span style = "background-color:#dfd">                        for (int i = m_pBuckets[targetBucket]; i &gt;= 0; i = m_pEntries[i].next) {
+                            if (m_pEntries[i].hashCode == hashCode &amp;&amp; m_pEntries[i].key == key) {</span>
+<span style = "background-color:#fdd">                                if (add) throw System::ArgumentException("An item with the same key has already been added.");
+                                m_pEntries[i].value = value;
+                                return false;</span>
+                            }
+                        }
+
+                        int index;
+<span style = "background-color:#dfd">                        if (m_iFreeCount &gt; 0) {</span>
+<span style = "background-color:#fdd">                            index = m_iFreeList;
+                            m_iFreeList = m_pEntries[index].next;
+                            m_iFreeCount--;
+                        } else {</span>
+<span style = "background-color:#dfd">                            if (m_iCount == m_iCapacity) {
+                                Resize();
+                                targetBucket = hashCode % m_iCapacity;</span>
+                            }
+<span style = "background-color:#dfd">                            index = m_iCount;
+                            m_iCount++;</span>
+                        }
+<span style = "background-color:#dfd">                        ::new ((void*)&amp;m_pEntries[index]) Entry(hashCode, m_pBuckets[targetBucket], key, value);
+                        m_pBuckets[targetBucket] = index;
+                        return true;
+                    }</span>
+
+                public:
+                    Dictionary() : m_pBuckets(nullptr), m_pEntries(nullptr), m_iCount(0), m_iFreeList(-1), m_iFreeCount(0), m_iCapacity(0) {}
+                    
+<span style = "background-color:#dfd">                    ~Dictionary() override {
+                        FreeBuffer();
+                    }</span>
+
+                    Dictionary(const Dictionary&amp; other) : Dictionary() {
+                        if (other.m_iCount &gt; 0) {
+                            Initialize(other.m_iCount);
+                            for (int i = 0; i &lt; other.m_iCount; i++) {
+                                if (other.m_pEntries[i].hashCode &gt;= 0) {
+                                    Add(other.m_pEntries[i].key, other.m_pEntries[i].value);
+                                }
+                            }
+                        }
+                    }
+
+                    Dictionary&amp; operator=(const Dictionary&amp; other) {
+                        if (this != &amp;other) {
+                            Clear();
+                            if (other.m_iCount &gt; 0) {
+                                Initialize(other.m_iCount);
+                                for (int i = 0; i &lt; other.m_iCount; i++) {
+                                    if (other.m_pEntries[i].hashCode &gt;= 0) {
+                                        Add(other.m_pEntries[i].key, other.m_pEntries[i].value);
+                                    }
+                                }
+                            }
+                        }
+                        return *this;
+                    }
+
+                    Dictionary(Dictionary&amp;&amp; other) noexcept : m_pBuckets(other.m_pBuckets), m_pEntries(other.m_pEntries), m_iCount(other.m_iCount), m_iFreeList(other.m_iFreeList), m_iFreeCount(other.m_iFreeCount), m_iCapacity(other.m_iCapacity) {
+                        other.m_pBuckets = nullptr;
+                        other.m_pEntries = nullptr;
+                        other.m_iCount = 0;
+                        other.m_iFreeList = -1;
+                        other.m_iFreeCount = 0;
+                        other.m_iCapacity = 0;
+                    }
+
+                    Dictionary&amp; operator=(Dictionary&amp;&amp; other) noexcept {
+                        if (this != &amp;other) {
+                            FreeBuffer();
+                            m_pBuckets = other.m_pBuckets;
+                            m_pEntries = other.m_pEntries;
+                            m_iCount = other.m_iCount;
+                            m_iFreeList = other.m_iFreeList;
+                            m_iFreeCount = other.m_iFreeCount;
+                            m_iCapacity = other.m_iCapacity;
+                            other.m_pBuckets = nullptr;
+                            other.m_pEntries = nullptr;
+                            other.m_iCount = 0;
+                            other.m_iFreeList = -1;
+                            other.m_iFreeCount = 0;
+                            other.m_iCapacity = 0;
+                        }
+                        return *this;
+                    }
+
+                    int GetCount() const { return m_iCount - m_iFreeCount; }
+
+                    void Add(const TKey&amp; key, const TValue&amp; value) {
+                        Insert(key, value, true);
+                    }
+
+                    bool Remove(const TKey&amp; key) {
+                        if (m_pBuckets != nullptr) {
+                            int hashCode = HashHelper&lt;TKey&gt;::GetHashCode(key) &amp; 0x7FFFFFFF;
+                            int bucket = hashCode % m_iCapacity;
+                            int last = -1;
+                            for (int i = m_pBuckets[bucket]; i &gt;= 0; last = i, i = m_pEntries[i].next) {
+                                if (m_pEntries[i].hashCode == hashCode &amp;&amp; m_pEntries[i].key == key) {
+                                    if (last &lt; 0) m_pBuckets[bucket] = m_pEntries[i].next;
+                                    else m_pEntries[last].next = m_pEntries[i].next;
+                                    m_pEntries[i].~Entry();
+                                    m_pEntries[i].hashCode = -1;
+                                    m_pEntries[i].next = m_iFreeList;
+                                    m_iFreeList = i;
+                                    m_iFreeCount++;
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    }
+
                     void Clear() {
-                        m_uMap.clear();
+                        if (m_iCount &gt; 0) {
+                            for (int i = 0; i &lt; m_iCapacity; i++) m_pBuckets[i] = -1;
+                            for (int i = 0; i &lt; m_iCount; i++) {
+                                if (m_pEntries[i].hashCode &gt;= 0) m_pEntries[i].~Entry();
+                            }
+                            m_iFreeList = -1;
+                            m_iCount = 0;
+                            m_iFreeCount = 0;
+                        }
                     }
 
                     bool ContainsKey(const TKey&amp; key) const {
-                        return m_uMap.find(key) != m_uMap.end();
+                        return FindEntry(key) &gt;= 0;
                     }
 
-<span style = "background-color:#dfd">                    bool Remove(const TKey&amp; key) {
-                        return m_uMap.erase(key) &gt; 0;
-                    }</span>
-
 <span style = "background-color:#dfd">                    bool TryGetValue(const TKey&amp; key, TValue&amp; value) const {
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            value = it-&gt;second;
+                        int i = FindEntry(key);</span>
+                        if (i &gt;= 0) {
+<span style = "background-color:#dfd">                            value = m_pEntries[i].value;
                             return true;</span>
                         }
 <span style = "background-color:#dfd">                        return false;
                     }</span>
 
+<span style = "background-color:#dfd">                    TValue&amp; operator[](const TKey&amp; key) {
+                        int i = FindEntry(key);
+                        if (i &gt;= 0) return m_pEntries[i].value;
+                        Insert(key, TValue(), false);
+                        return m_pEntries[FindEntry(key)].value;
+                    }</span>
+
+                    const TValue&amp; operator[](const TKey&amp; key) const {
+                        int i = FindEntry(key);
+                        if (i &gt;= 0) return m_pEntries[i].value;
+                        throw System::ArgumentException("Key not found.");
+                    }
+
 <span style = "background-color:#dfd">                    Array&lt;TKey&gt; GetKeys() const {
                         Array&lt;TKey&gt; arrKeys(GetCount());</span>
-                        int iIdx = 0;
-<span style = "background-color:#dfd">                        for (auto const&amp; [key, val] : m_uMap) arrKeys[iIdx++] = key;
+                        int index = 0;
+<span style = "background-color:#dfd">                        for (int i = 0; i &lt; m_iCount; ++i) {
+                            if (m_pEntries[i].hashCode &gt;= 0) arrKeys[index++] = m_pEntries[i].key;</span>
+                        }
                         return arrKeys;
-                    }</span>
+<span style = "background-color:#dfd">                    }</span>
 
 <span style = "background-color:#dfd">                    Array&lt;TValue&gt; GetValues() const {
                         Array&lt;TValue&gt; arrValues(GetCount());</span>
-                        int iIdx = 0;
-<span style = "background-color:#dfd">                        for (auto const&amp; [key, val] : m_uMap) arrValues[iIdx++] = val;</span>
+                        int index = 0;
+<span style = "background-color:#dfd">                        for (int i = 0; i &lt; m_iCount; ++i) {
+                            if (m_pEntries[i].hashCode &gt;= 0) arrValues[index++] = m_pEntries[i].value;</span>
+                        }
                         return arrValues;
 <span style = "background-color:#dfd">                    }</span>
 
-                    // Iterator support for range-based for loops
-                    auto begin() { return m_uMap.begin(); }
-                    auto end() { return m_uMap.end(); }
-                    auto begin() const { return m_uMap.begin(); }
-                    auto end() const { return m_uMap.end(); }
+                    class Iterator {
+                    private:
+                        const Dictionary* m_pDict;
+                        int m_iIndex;
+                        void AdvanceToValid() {
+                            while (m_pDict &amp;&amp; m_iIndex &lt; m_pDict-&gt;m_iCount &amp;&amp; m_pDict-&gt;m_pEntries[m_iIndex].hashCode &lt; 0) {
+                                m_iIndex++;
+                            }
+                        }
+                    public:
+                        Iterator(const Dictionary* dict, int index) : m_pDict(dict), m_iIndex(index) {
+                            AdvanceToValid();
+                        }
+                        bool operator!=(const Iterator&amp; other) const { return m_iIndex != other.m_iIndex; }
+                        Iterator&amp; operator++() {
+                            m_iIndex++;
+                            AdvanceToValid();
+                            return *this;
+                        }
+<span style = "background-color:#dfd">                        KeyValuePair&lt;TKey, TValue&gt; operator*() const {
+                            return KeyValuePair&lt;TKey, TValue&gt;(m_pDict-&gt;m_pEntries[m_iIndex].key, m_pDict-&gt;m_pEntries[m_iIndex].value);
+                        }</span>
+                    };
 
-                private:
-                    std::unordered_map&lt;TKey, TValue&gt; m_uMap;
+                    Iterator begin() const { return Iterator(this, 0); }
+                    Iterator end() const { return Iterator(this, m_iCount); }
                 };
+
             }
         }
     }

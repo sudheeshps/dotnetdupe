@@ -56,8 +56,8 @@ namespace DotNetDupe {
                 }</span>
 
 <span style = "background-color:#dfd">                SmartPointer&lt;NetworkStream&gt; TcpClient::GetStream() {
-                    if (m_pClientSocket.IsNull() || !m_pClientSocket-&gt;Connected()) {</span>
-<span style = "background-color:#fdd">                        throw SocketException("TcpClient is not connected.");</span>
+                    if (m_pClientSocket.IsNull() || !m_pClientSocket-&gt;Connected()) {
+                        throw SocketException(-1, String("TcpClient is not connected."));</span>
                     }
 <span style = "background-color:#dfd">                    if (m_pNetworkStream.IsNull()) {
                         m_pNetworkStream.Attach(new NetworkStream(m_pClientSocket, true), true);</span>
@@ -76,7 +76,7 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#fdd">                bool TcpClient::Connected() const {
+<span style = "background-color:#dfd">                bool TcpClient::Connected() const {
                     return !m_pClientSocket.IsNull() &amp;&amp; m_pClientSocket-&gt;Connected();
                 }</span>
 

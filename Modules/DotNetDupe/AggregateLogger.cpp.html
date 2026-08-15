@@ -11,30 +11,41 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "Extensions/Logging/AggregateLogger.h"
+#include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
 
-            AggregateLogger::AggregateLogger(const std::vector&lt;DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt;&amp; loggers)
-<span style = "background-color:#dfd">                : m_loggers(loggers) {}</span>
+            struct AggregateLogger::Impl {
+                DotNetDupe::System::Collections::Generic::List&lt;DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; pLoggers;
+            };
+
+            AggregateLogger::AggregateLogger()
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+                
+<span style = "background-color:#fdd">            AggregateLogger::~AggregateLogger() = default;</span>
+
+<span style = "background-color:#fdd">            void AggregateLogger::AddLogger(const DotNetDupe::System::SmartPointer&lt;ILogger&gt;&amp; pLogger) {
+                m_pImpl-&gt;pLoggers.Add(pLogger);</span>
+            }
 
 <span style = "background-color:#dfd">            void AggregateLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
-                for (auto&amp; logger : m_loggers) {
-                    logger-&gt;Log(logLevel, message);</span>
+                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
+                    m_pImpl-&gt;pLoggers[i]-&gt;Log(logLevel, message);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
             void AggregateLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
 <span style = "background-color:#dfd">                                     const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
-                for (auto&amp; logger : m_loggers) {
-                    logger-&gt;Log(logLevel, message, properties);</span>
+                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
+                    m_pImpl-&gt;pLoggers[i]-&gt;Log(logLevel, message, properties);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            bool AggregateLogger::IsEnabled(LogLevel logLevel) const {
-                for (auto&amp; logger : m_loggers) {
-                    if (logger-&gt;IsEnabled(logLevel)) return true;</span>
+                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
+                    if (m_pImpl-&gt;pLoggers[i]-&gt;IsEnabled(logLevel)) return true;</span>
                 }
 <span style = "background-color:#dfd">                return false;
             }</span>

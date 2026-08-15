@@ -14,11 +14,10 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/SmartPointer.h"
+#include "System/Collections/Generic/List.h"
 #include "Extensions/DependencyInjection/ServiceCollection.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
-#include &lt;vector&gt;
-#include &lt;functional&gt;
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -34,27 +33,27 @@ namespace DotNetDupe {
                 DOTNETDUPE_API WebApplicationBuilder(WebApplicationBuilder&amp;&amp;) noexcept;
                 DOTNETDUPE_API WebApplicationBuilder&amp; operator=(WebApplicationBuilder&amp;&amp;) noexcept;
 
-<span style = "background-color:#dfd">                DOTNETDUPE_API DotNetDupe::Extensions::DependencyInjection::ServiceCollection&amp; GetServices() { return m_services; }</span>
+<span style = "background-color:#fdd">                DOTNETDUPE_API DotNetDupe::Extensions::DependencyInjection::ServiceCollection&amp; GetServices() { return m_services; }</span>
 
                 template &lt;typename TController&gt;
-<span style = "background-color:#dfd">                DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder&lt;TController&gt;&amp; AddController(const DotNetDupe::System::String&amp; prefix) {</span>
+                DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder&lt;TController&gt;&amp; AddController(const DotNetDupe::System::String&amp; prefix) {
                     // Create route builder
-<span style = "background-color:#dfd">                    auto routeBuilder = DotNetDupe::System::SmartPointer&lt;DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder&lt;TController&gt;&gt;::NewShared(prefix);</span>
+                    auto routeBuilder = DotNetDupe::System::SmartPointer&lt;DotNetDupe::WebAppCore::Controllers::ControllerRouteBuilder&lt;TController&gt;&gt;::NewShared(prefix);
                     auto&amp; ref = *routeBuilder;
 
                     // Capture lambda to bind routes later on WebApplication
-<span style = "background-color:#dfd">                    m_controllerRegistrars.push_back([routeBuilder](const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp; app) {</span>
+                    m_controllerRegistrars.Add([routeBuilder](const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp; app) {
                         routeBuilder-&gt;Register(app);
                     });
 
-<span style = "background-color:#dfd">                    return ref;
-                }</span>
+                    return ref;
+                }
 
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer&lt;WebApplication&gt; Build();
 
             private:
                 DotNetDupe::Extensions::DependencyInjection::ServiceCollection m_services;
-                std::vector&lt;std::function&lt;void(const DotNetDupe::System::SmartPointer&lt;WebApplication&gt;&amp;)&gt;&gt; m_controllerRegistrars;
+                DotNetDupe::System::Collections::Generic::List&lt;WebApplication::ControllerRegistrar&gt; m_controllerRegistrars;
             };
 
         }

@@ -13,10 +13,12 @@
 #include "System/Threading/Mutex.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/TimeoutException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include &lt;chrono&gt;
+#include &lt;mutex&gt;
 
 #if defined(_WIN32)
 #include &lt;windows.h&gt;
@@ -25,11 +27,16 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-<span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr) {}</span>
 
-<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr) {
+            struct Mutex::Impl {
+                std::timed_mutex mutex;
+            };
+
+<span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}</span>
+
+<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
                 if (bInitiallyOwned) {
-                    _mutex.lock();</span>
+                    _pImpl-&gt;mutex.lock();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
@@ -40,35 +47,47 @@ namespace DotNetDupe {
             Mutex::Mutex(bool bInitiallyOwned, const String&amp; sName, bool openAlways)
 <span style = "background-color:#dfd">                : Mutex(bInitiallyOwned, sName, openAlways, s_mutexDummyCreatedNew) {}</span>
 
+#if defined(_WIN32)
+            static HANDLE OpenOrCreateWin32Mutex(const std::wstring&amp; wsName, bool bInitiallyOwned, bool openAlways, bool&amp; bCreatedNew) {
+                HANDLE hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
+                if (hHandle != NULL) {
+                    bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
+                    return hHandle;
+                }
+                if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating Mutex synchronization object.");
+                }
+                bCreatedNew = false;
+                if (!openAlways) {
+                    throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");
+                }
+                hHandle = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
+                if (hHandle == NULL) {
+                    if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied opening existing Mutex synchronization object.");
+                    }
+                    throw WaitHandleCannotBeOpenedException("Failed to open existing mutex with SYNCHRONIZE access.");
+                }
+                return hHandle;
+            }
+#endif
+
             Mutex::Mutex(bool bInitiallyOwned, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
-<span style = "background-color:#dfd">                : _name(sName), _hHandle(nullptr) {</span>
+<span style = "background-color:#dfd">                : _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
-                    _hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
-                    if (_hHandle != NULL) {
-                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);</span>
-                    } else {
-<span style = "background-color:#fdd">                        bCreatedNew = false;
-                        if (openAlways) {
-                            _hHandle = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
-                            if (_hHandle == NULL) {
-                                throw WaitHandleCannotBeOpenedException("Failed to open existing mutex with SYNCHRONIZE access.");</span>
-                            }
-                        } else {
-<span style = "background-color:#fdd">                            throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");</span>
-                        }
-                    }
-<span style = "background-color:#dfd">                } else {</span>
+                    _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
+                } else {</span>
 <span style = "background-color:#fdd">                    bCreatedNew = true;
                     if (bInitiallyOwned) {
-                        _mutex.lock();</span>
+                        _pImpl-&gt;mutex.lock();</span>
                     }
                 }
 #else
                 bCreatedNew = true;
                 if (bInitiallyOwned) {
-                    _mutex.lock();
+                    _pImpl-&gt;mutex.lock();
                 }
 #endif
 <span style = "background-color:#dfd">            }</span>
@@ -80,32 +99,32 @@ namespace DotNetDupe {
                     _hHandle = nullptr;</span>
                 }
 #endif
+<span style = "background-color:#dfd">                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;</span>
+                }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            Mutex* Mutex::OpenExisting(const String&amp; sName) {</span>
-                Mutex* pResult = nullptr;
-<span style = "background-color:#dfd">                if (TryOpenExisting(sName, pResult)) {
+<span style = "background-color:#dfd">            SmartPointer&lt;Mutex&gt; Mutex::OpenExisting(const String&amp; sName) {
+                SmartPointer&lt;Mutex&gt; pResult = nullptr;
+                if (TryOpenExisting(sName, pResult)) {
                     return pResult;</span>
                 }
 <span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No mutex handle of the given name exists.");
             }</span>
 
-<span style = "background-color:#dfd">            bool Mutex::TryOpenExisting(const String&amp; sName, Mutex*&amp; pResult) {
-                pResult = nullptr;
-                if (sName.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    return false;</span>
-                }
+<span style = "background-color:#dfd">            bool Mutex::TryOpenExisting(const String&amp; sName, SmartPointer&lt;Mutex&gt;&amp; pResult) {
+                pResult = SmartPointer&lt;Mutex&gt;();
+                if (sName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer&lt;Mutex&gt; spM = SmartPointer&lt;Mutex&gt;::New();
-                    spM-&gt;_name = sName;
-                    spM-&gt;_hHandle = h;
-                    pResult = spM.Detach();</span>
-                    return true;
-                }
-<span style = "background-color:#dfd">                return false;</span>
+                if (h == NULL) return false;
+                SmartPointer&lt;Mutex&gt; spM = SmartPointer&lt;Mutex&gt;::NewShared();
+                spM-&gt;_name = sName;
+                spM-&gt;_hHandle = h;
+                pResult = std::move(spM);
+                return true;</span>
 #else
                 return false;
 #endif
@@ -118,7 +137,7 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                _mutex.lock();
+<span style = "background-color:#dfd">                if (_pImpl) _pImpl-&gt;mutex.lock();
                 return true;
             }</span>
 
@@ -132,7 +151,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return (dwWaitResult == WAIT_OBJECT_0 || dwWaitResult == WAIT_ABANDONED);</span>
                 }
 #endif
-<span style = "background-color:#dfd">                if (!_mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
+<span style = "background-color:#dfd">                if (!_pImpl || !_pImpl-&gt;mutex.try_lock_for(std::chrono::milliseconds(millisecondsTimeout))) {
                     throw TimeoutException("The wait operation timed out.");</span>
                 }
 <span style = "background-color:#dfd">                return true;
@@ -145,7 +164,7 @@ namespace DotNetDupe {
                     return 0;
                 }
 #endif
-<span style = "background-color:#dfd">                _mutex.unlock();</span>
+<span style = "background-color:#dfd">                if (_pImpl) _pImpl-&gt;mutex.unlock();</span>
                 return 0;
 <span style = "background-color:#dfd">            }</span>
         }
