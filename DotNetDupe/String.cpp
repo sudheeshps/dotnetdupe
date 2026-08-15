@@ -554,28 +554,38 @@ namespace DotNetDupe {
 			}
 		}
 
-		static std::set<char> PopulateSplitCharSet(String sSeparator[], int iCount) {
+		static std::set<char> PopulateSplitCharSet(const String* pSeparator, int iCount) {
 			std::set<char> charSet;
+			if (!pSeparator || iCount <= 0) return charSet;
 			for (int i = 0; i < iCount; ++i) {
-				const char* raw = sSeparator[i].GetRawString();
+				const char* raw = pSeparator[i].GetRawString();
 				if (raw) { while (*raw) charSet.insert(*raw++); }
 			}
 			return charSet;
 		}
 
-		Array<String> String::Split(String sSeparator[], int iCount, StringSplitOptions eOptions) const {
-			std::set<char> charSet = PopulateSplitCharSet(sSeparator, iCount);
-			std::vector<String> vTempResult;
+		static std::vector<String> SplitByCharSet(const std::string& sText, const std::set<char>& charSet, StringSplitOptions eOptions) {
+			std::vector<String> vResult;
 			std::string sCurrent;
-			for (auto c : m_pImpl->s) {
+			for (char c : sText) {
 				if (charSet.find(c) == charSet.end()) {
 					sCurrent += c;
 				} else {
-					AddSplitToken(sCurrent, eOptions, vTempResult);
+					AddSplitToken(sCurrent, eOptions, vResult);
 					sCurrent.clear();
 				}
 			}
-			AddSplitToken(sCurrent, eOptions, vTempResult);
+			AddSplitToken(sCurrent, eOptions, vResult);
+			return vResult;
+		}
+
+		Array<String> String::Split(const Array<String>& arrSeparators, StringSplitOptions eOptions) const {
+			return Split(arrSeparators.GetData(), arrSeparators.GetLength(), eOptions);
+		}
+
+		Array<String> String::Split(const String* pSeparator, int iCount, StringSplitOptions eOptions) const {
+			std::set<char> charSet = PopulateSplitCharSet(pSeparator, iCount);
+			std::vector<String> vTempResult = SplitByCharSet(m_pImpl->s, charSet, eOptions);
 			Array<String> result(static_cast<int>(vTempResult.size()));
 			for (int i = 0; i < result.GetLength(); i++) result[i] = vTempResult[i];
 			return result;

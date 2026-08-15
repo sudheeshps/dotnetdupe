@@ -1,5 +1,6 @@
 #pragma once
 #include <type_traits>
+#include <utility>
 
 namespace DotNetDupe {
     namespace System {
@@ -122,11 +123,11 @@ namespace DotNetDupe {
             }
             
             void Invoke(Arg1 arg1, Args... args) const {
-                if (m_pHolder) m_pHolder->Invoke(std::forward<Arg1>(arg1), std::forward<Args>(args)...);
+                if (m_pHolder) m_pHolder->Invoke(arg1, args...);
             }
             
             void operator()(Arg1 arg1, Args... args) const {
-                Invoke(std::forward<Arg1>(arg1), std::forward<Args>(args)...);
+                Invoke(arg1, args...);
             }
             
             explicit operator bool() const { return m_pHolder != nullptr; }

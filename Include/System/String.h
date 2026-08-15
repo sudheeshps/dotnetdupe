@@ -228,7 +228,9 @@ namespace DotNetDupe {
             DOTNETDUPE_API String Replace(const String& sOriginalStr,
                                        const String& sReplaceStr) const;
             DOTNETDUPE_API Array<String> Split(char chSeparator) const;
-            DOTNETDUPE_API Array<String> Split(String sSeparator[], int iCount,
+            DOTNETDUPE_API Array<String> Split(const Array<String>& arrSeparators,
+                                                  StringSplitOptions eOptions = StringSplitOptions::None) const;
+            DOTNETDUPE_API Array<String> Split(const String* pSeparator, int iCount,
                                                   StringSplitOptions eOptions) const;
             DOTNETDUPE_API bool StartsWith(const String& sPrefix) const;
             DOTNETDUPE_API bool StartsWith(const String& sPrefix, bool bIgnoreCase) const;
