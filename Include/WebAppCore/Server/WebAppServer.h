@@ -5,7 +5,6 @@
 #include "System/String.h"
 #include "System/SmartPointer.h"
 #include "WebAppCore/Builder/WebApplication.h"
-#include <vector>
 
 namespace DotNetDupe {
     namespace WebAppCore {

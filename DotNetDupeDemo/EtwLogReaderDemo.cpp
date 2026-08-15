@@ -29,11 +29,12 @@ void DemonstrateEtwLogReader() {
     EtwLogReader::GetChannelEventLevelCounts("Setup");
     EtwLogReader::GetChannelEventLevelCounts("Application");
 
-    Console::WriteLine("\nReading events from channel: " + sTargetChannel);
-    auto lstEvents = EtwLogReader::ReadEvents(sTargetChannel, 3);
+    Console::WriteLine("\nReading up to 3 'Error' events from channel: System");
+    auto lstEvents = EtwLogReader::ReadEvents("System", 3, 0, true, EtwEventLevel::Error);
     for (int iIdx = 0; iIdx < lstEvents.GetCount(); iIdx++) {
         const auto& evt = lstEvents[iIdx];
         Console::Write(" [ID " + Convert::ToString(evt.iEventId) + "] ");
+        Console::Write("Level: Error | ");
         Console::Write("Provider: " + evt.sProviderName + " | ");
         Console::Write("Message: " + evt.sMessage + "\n");
     }

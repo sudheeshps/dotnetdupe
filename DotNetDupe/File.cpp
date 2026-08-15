@@ -142,37 +142,36 @@ namespace DotNetDupe {
                 }
             }
 
+#if !defined(_WIN32)
+            static int ComputeLinuxFileAttributes(const fs::path& pPath, const fs::file_status& statusInfo) {
+                int iAttrs = static_cast<int>(FileAttributes::Normal);
+                if ((statusInfo.permissions() & fs::perms::owner_write) == fs::perms::none) iAttrs |= static_cast<int>(FileAttributes::ReadOnly);
+                if (fs::is_directory(statusInfo)) iAttrs |= static_cast<int>(FileAttributes::Directory);
+                if (!pPath.filename().empty() && pPath.filename().string()[0] == '.') iAttrs |= static_cast<int>(FileAttributes::Hidden);
+                return iAttrs;
+            }
+
+            static fs::perms ComputeLinuxFilePermissions(FileAttributes eAttributes, fs::perms permsCurrent) {
+                if ((static_cast<int>(eAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
+                    return permsCurrent & ~(fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write);
+                }
+                return permsCurrent | fs::perms::owner_write;
+            }
+#endif
+
             bool File::GetAttributes(const String& sPath, FileAttributes& eAttributes) {
             #if defined(_WIN32)
                 std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
                 DWORD iAttrs = GetFileAttributesW(sWPath.c_str());
-                if (iAttrs == INVALID_FILE_ATTRIBUTES) {
-                    return false;
-                }
+                if (iAttrs == INVALID_FILE_ATTRIBUTES) return false;
                 eAttributes = static_cast<FileAttributes>(iAttrs);
                 return true;
             #else
                 fs::path pPath = ToFsPath(sPath);
-                std::error_code ecError;
-                auto statusInfo = fs::status(pPath, ecError);
-                if (ecError) {
-                    return false;
-                }
-
-                int iAttrs = static_cast<int>(FileAttributes::Normal);
-                if ((statusInfo.permissions() & fs::perms::owner_write) == fs::perms::none) {
-                    iAttrs |= static_cast<int>(FileAttributes::ReadOnly);
-                }
-                if (fs::is_directory(statusInfo)) {
-                    iAttrs |= static_cast<int>(FileAttributes::Directory);
-                }
-
-                // On Linux, we consider files starting with '.' as hidden
-                if (!pPath.filename().empty() && pPath.filename().string()[0] == '.') {
-                    iAttrs |= static_cast<int>(FileAttributes::Hidden);
-                }
-
-                eAttributes = static_cast<FileAttributes>(iAttrs);
+                std::error_code ec;
+                auto statusInfo = fs::status(pPath, ec);
+                if (ec) return false;
+                eAttributes = static_cast<FileAttributes>(ComputeLinuxFileAttributes(pPath, statusInfo));
                 return true;
             #endif
             }
@@ -180,27 +179,14 @@ namespace DotNetDupe {
             bool File::SetAttributes(const String& sPath, FileAttributes eAttributes) {
             #if defined(_WIN32)
                 std::wstring sWPath = Utf8ToWChar(sPath.GetRawString());
-                if (::SetFileAttributesW(sWPath.c_str(), static_cast<DWORD>(eAttributes))) {
-                    return true;
-                }
-                return false;
+                return ::SetFileAttributesW(sWPath.c_str(), static_cast<DWORD>(eAttributes)) != FALSE;
             #else
                 fs::path pPath = ToFsPath(sPath);
-                std::error_code ecError;
-                auto statusInfo = fs::status(pPath, ecError);
-                if (ecError) {
-                    return false;
-                }
-
-                auto permsCurrent = statusInfo.permissions();
-                if ((static_cast<int>(eAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
-                    permsCurrent &= ~(fs::perms::owner_write | fs::perms::group_write | fs::perms::others_write);
-                } else {
-                    permsCurrent |= fs::perms::owner_write;
-                }
-
-                fs::permissions(pPath, permsCurrent, fs::perm_options::replace, ecError);
-                return !ecError;
+                std::error_code ec;
+                auto statusInfo = fs::status(pPath, ec);
+                if (ec) return false;
+                fs::permissions(pPath, ComputeLinuxFilePermissions(eAttributes, statusInfo.permissions()), fs::perm_options::replace, ec);
+                return !ec;
             #endif
             }
         }

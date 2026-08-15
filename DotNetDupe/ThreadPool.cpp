@@ -6,6 +6,7 @@
 #include "System/Threading/Lock.h"
 #include "System/Threading/EventWaitHandle.h"
 #include "System/Collections/Generic/List.h"
+#include "System/UnknownException.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -48,10 +49,10 @@ namespace DotNetDupe {
                     if (iMinThreads <= 0) return false;
                     Lock<CriticalSection> lock(m_csSync);
                     if (m_bIsShuttingDown) return false;
-                    while (m_vWorkerThreads.GetCount() < iMinThreads) {
+                    while (m_pvWorkerThreads.GetCount() < iMinThreads) {
                         SmartPointer<Thread> pWorker = SmartPointer<Thread>::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker->Start();
-                        m_vWorkerThreads.Add(std::move(pWorker));
+                        m_pvWorkerThreads.Add(std::move(pWorker));
                     }
                     return true;
                 }
@@ -66,7 +67,7 @@ namespace DotNetDupe {
                     for (int i = 0; i < iThreadCount; ++i) {
                         SmartPointer<Thread> pWorker = SmartPointer<Thread>::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker->Start();
-                        m_vWorkerThreads.Add(std::move(pWorker));
+                        m_pvWorkerThreads.Add(std::move(pWorker));
                     }
                 }
 
@@ -77,12 +78,12 @@ namespace DotNetDupe {
                     }
                     // Wake up all threads so they can exit. 
                     // AutoResetEvent only wakes one per Set(), so we need to set it for each thread.
-                    for (int i = 0; i < m_vWorkerThreads.GetCount(); ++i) {
+                    for (int i = 0; i < m_pvWorkerThreads.GetCount(); ++i) {
                         m_evtWorkAvailable.Set();
                     }
 
-                    for (int i = 0; i < m_vWorkerThreads.GetCount(); ++i) {
-                        SmartPointer<Thread> pWorker = m_vWorkerThreads[i];
+                    for (int i = 0; i < m_pvWorkerThreads.GetCount(); ++i) {
+                        SmartPointer<Thread> pWorker = m_pvWorkerThreads[i];
                         if (!pWorker.IsNull()) {
                             pWorker->Join();
                         }
@@ -116,8 +117,12 @@ namespace DotNetDupe {
                             if (objTask.Callback) {
                                 try {
                                     objTask.Callback(objTask.State);
+                                } catch (const Exception&) {
+                                    // DotNetDupe exception
+                                } catch (const std::exception& ex) {
+                                    (void)UnknownException(ex.what());
                                 } catch (...) {
-                                    // Task exceptions are absorbed to prevent worker thread death
+                                    (void)UnknownException("An unhandled exception occurred during ThreadPool task execution.");
                                 }
                             }
                         } else {
@@ -127,7 +132,7 @@ namespace DotNetDupe {
                     }
                 }
 
-                Collections::Generic::List<SmartPointer<Thread>> m_vWorkerThreads;
+                Collections::Generic::List<SmartPointer<Thread>> m_pvWorkerThreads;
                 Collections::Generic::List<ThreadPoolTask> m_qTasks;
                 CriticalSection m_csSync;
                 EventWaitHandle m_evtWorkAvailable;

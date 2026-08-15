@@ -7,13 +7,12 @@
 #include "System/Threading/Interlocked.h"
 #include "System/Threading/SemaphoreFullException.h"
 #include "System/TimeoutException.h"
-#include <iostream>
-#include <iomanip>
-#include <vector>
-#include <atomic>
+#include "System/Collections/Generic/List.h"
+#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Collections::Generic;
 
 #include "Demos.h"
 
@@ -49,18 +48,17 @@ void DemonstrateSynchronization() {
     // 2. Interlocked
     Console::WriteLine("\nDemonstrating Interlocked...");
     Interlocked<int> objCounter = 0;
-    std::vector<Thread*> lstThreads;
+    List<SmartPointer<Thread>> lstThreads;
     for (int iI = 0; iI < 5; ++iI) {
-        lstThreads.push_back(new Thread([&objCounter]() {
+        lstThreads.Add(SmartPointer<Thread>::NewShared([&objCounter]() {
             for (int iJ = 0; iJ < 1000; ++iJ) {
                 objCounter++; // Atomic increment via operator++
             }
         }));
     }
-    for (auto pT : lstThreads) pT->Start();
-    for (auto pT : lstThreads) {
-        pT->Join();
-        delete pT;
+    for (int iI = 0; iI < lstThreads.GetCount(); ++iI) lstThreads[iI]->Start();
+    for (int iI = 0; iI < lstThreads.GetCount(); ++iI) {
+        lstThreads[iI]->Join();
     }
     Console::Write("  Counter value (expected 5000): ");
     Console::WriteLine((int)objCounter);
@@ -136,11 +134,16 @@ void DemonstrateSynchronization() {
     Console::Write(bCreatedNewEvent ? "true" : "false");
     Console::WriteLine(")");
 
-    ManualResetEvent* pOpenedEvent = ManualResetEvent::OpenExisting("GlobalDemoEvent");
-    if (pOpenedEvent != nullptr) {
-        Console::WriteLine("  Successfully opened existing named ManualResetEvent via OpenExisting.");
+    try {
+        SmartPointer<ManualResetEvent> mre3 = ManualResetEvent::OpenExisting("GlobalDemoEvent");
+        if (mre3.Get() != nullptr) {
+            Console::WriteLine("Successfully opened existing ManualResetEvent.");
+            mre3->WaitOne(100);
+        }
+    } catch (const Exception& e) {
+        Console::WriteLine(String("Failed to open named event: ") + e.What());
     }
-
+    
     bool bCreatedNewMutex = false;
     Mutex objNamedMutex(false, "GlobalDemoMutex", true, bCreatedNewMutex);
     Console::Write("  Created named Mutex (bCreatedNew=");

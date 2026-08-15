@@ -45,7 +45,7 @@ void DemonstrateSockets() {
             } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
                 Console::Write("  [Server] SocketException: ");
                 Console::WriteLine(ex.What());
-            } catch (const DotNetDupe::System::BasicException<char>& ex) {
+            } catch (const DotNetDupe::System::SystemException& ex) {
                 Console::Write("  [Server] BasicException: ");
                 Console::WriteLine(ex.What());
             } catch (const std::exception& ex) {
@@ -77,7 +77,7 @@ void DemonstrateSockets() {
         } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
             Console::Write("  [Client] SocketException: ");
             Console::WriteLine(ex.What());
-        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+        } catch (const DotNetDupe::System::SystemException& ex) {
             Console::Write("  [Client] BasicException: ");
             Console::WriteLine(ex.What());
         } catch (const std::exception& ex) {
@@ -91,7 +91,7 @@ void DemonstrateSockets() {
     } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
         Console::Write("  [Demo] SocketException: ");
         Console::WriteLine(ex.What());
-    } catch (const DotNetDupe::System::BasicException<char>& ex) {
+    } catch (const DotNetDupe::System::SystemException& ex) {
         Console::Write("  [Demo] BasicException: ");
         Console::WriteLine(ex.What());
     } catch (const std::exception& ex) {

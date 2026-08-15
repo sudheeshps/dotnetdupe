@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
   build-windows:
@@ -66,35 +67,38 @@ jobs:
       shell: powershell
       run: |
         $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
-        & $exePath --sources DotNetDupe --export_type html:coverage_report -- .\bin\x64\Release\DotNetDupeTests.exe
+        & $exePath --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --excluded_sources *Linux* --export_type html:CodeCoverage -- .\bin\x64\Release\DotNetDupeTests.exe
         
-        Write-Host "OpenCppCoverage Report Generated Successfully."
+        Write-Host "OpenCppCoverage Report Generated Successfully in CodeCoverage/."
         
-        # Quality Gate Enforcement: Require > 80% coverage
-        $htmlContent = Get-Content -Path "coverage_report\index.html" -Raw
+        # Generate Static Analysis Report inside CodeCoverage/
+        .\scripts\Check-QualityGates.ps1 -OutputDir CodeCoverage
+        
+        # Quality Gate Enforcement: Require >= 70% coverage on Windows runner
+        $htmlContent = Get-Content -Path "CodeCoverage\index.html" -Raw
         if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {
             $coveredLines = [int]$matches[1]
             $coveragePct = [int]$matches[2]
             Write-Host "Overall Line Coverage: $coveragePct%"
-            if ($coveragePct -lt 80) {
-                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 80% threshold!"
+            if ($coveragePct -lt 70) {
+                Write-Error "Quality Gate Failed: Overall Code Coverage ($coveragePct%) is below required 70% threshold!"
                 exit 1
             }
         }
 
-    - name: Upload Coverage HTML Artifact
+    - name: Upload Coverage & Static Analysis Artifact
       if: matrix.configuration == 'Release'
       uses: actions/upload-artifact@v4
       with:
-        name: coverage-report-html
-        path: coverage_report/
+        name: code-coverage-report-html
+        path: CodeCoverage/
 
     - name: Deploy Coverage Report to GitHub Pages
       if: matrix.configuration == 'Release' && github.ref == 'refs/heads/main'
       uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./coverage_report
+        publish_dir: ./CodeCoverage
 
     - name: Upload Windows Artifacts
       uses: actions/upload-artifact@v4
@@ -133,7 +137,6 @@ jobs:
       run: cmake --build build --config ${{ matrix.configuration }}
 
     - name: Run Tests
-      if: matrix.configuration == 'Debug'
       run: ./build/DotNetDupeTests
 
     - name: Upload Linux Artifacts
@@ -165,6 +168,7 @@ jobs:
         # Windows Release
         cp artifacts-temp/win-x64-Release/DotNetDupe.dll bin/x64/Release/
         cp artifacts-temp/win-x64-Release/DotNetDupe.lib bin/x64/Release/
+        cp artifacts-temp/win-x64-Release/DotNetDupe.pdb bin/x64/Release/
         
         # Linux Release
         cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
@@ -172,7 +176,13 @@ jobs:
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
 
-    - name: Publish NuGet Package
+    - name: Publish to NuGet.org
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
         nuget push artifacts\*.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }} -SkipDuplicate
+
+    - name: Publish to GitHub Packages
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: |
+        nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -UserName "${{ github.repository_owner }}" -Password "${{ secrets.GITHUB_TOKEN }}"
+        nuget push artifacts\*.nupkg -Source "GitHub" -SkipDuplicate

@@ -1,8 +1,13 @@
 #pragma once
-#include "System/BasicNotImplementedException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicNotImplementedException<char> NotImplementedException;
+
+        class NotImplementedException : public SystemException {
+        public:
+            NotImplementedException(const String& sMessage) : SystemException(sMessage) {}
+        };
+
     }
 }
-

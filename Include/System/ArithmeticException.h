@@ -1,8 +1,11 @@
 #pragma once
-#include "System/BasicArithmeticException.h"
-namespace DotNetDupe {
-    namespace System {
-        typedef BasicArithmeticException<char> ArithmeticException;
-    }
-}
+#include "System/SystemException.h"
 
+namespace DotNetDupe {
+	namespace System {
+		class ArithmeticException : public SystemException {
+		public:
+			ArithmeticException(const String& sMessage) : SystemException(sMessage) { }
+		};
+	}
+}

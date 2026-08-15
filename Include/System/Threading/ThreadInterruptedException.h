@@ -1,9 +1,13 @@
 #pragma once
-#include "System/Threading/BasicThreadInterruptedException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
-            typedef BasicThreadInterruptedException<char> ThreadInterruptedException;
+            class ThreadInterruptedException : public SystemException {
+            public:
+                ThreadInterruptedException(const String& sMessage) : SystemException(sMessage) {}
+            };
         }
     }
 }

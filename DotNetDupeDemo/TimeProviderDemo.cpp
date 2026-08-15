@@ -15,7 +15,7 @@ using namespace DotNetDupe::System::Threading;
 void DemonstrateTimeProvider() {
     Console::WriteLine("\n--- TimeProvider Demonstration ---");
 
-    std::shared_ptr<TimeProvider> pProvider = TimeProvider::GetSystem();
+    TimeProviderPtr pProvider = TimeProvider::GetSystem();
     DateTimeOffset dtNow = pProvider->GetUtcNow();
     
     Console::Write("UTC Ticks: ");

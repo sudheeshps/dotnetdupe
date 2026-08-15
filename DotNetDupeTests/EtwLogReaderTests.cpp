@@ -79,6 +79,21 @@ TEST_F(EtwLogReaderTests, GivenPaginationParameters_WhenReadEventsCalled_ThenRet
     EXPECT_GE(lstOffset.GetCount(), 0);
 }
 
+TEST_F(EtwLogReaderTests, GivenEtwEventLevel_WhenReadEventsCalled_ThenReturnsFilteredEvents) {
+    // Given
+    String sChannel = "Application";
+    int iRequestedCount = 5;
+
+    // When - request exactly 5 Error level events
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, iRequestedCount, 0, true, EtwEventLevel::Error);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    for (int i = 0; i < lstEvents.GetCount(); i++) {
+        EXPECT_EQ(lstEvents[i].iLevel, 2); // 2 corresponds to EtwEventLevel::Error
+    }
+}
+
 TEST_F(EtwLogReaderTests, GivenEtwLogReader_WhenStartAndStopListening_ThenStateUpdatesCorrectly) {
     // Given
     EtwLogReader reader;

@@ -1,9 +1,15 @@
 #pragma once
-#include "System/Threading/BasicWaitHandleCannotBeOpenedException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
-    namespace System {
-        namespace Threading {
-            typedef BasicWaitHandleCannotBeOpenedException<char> WaitHandleCannotBeOpenedException;
-        }
-    }
+	namespace System {
+		namespace Threading {
+
+			class WaitHandleCannotBeOpenedException : public SystemException {
+			public:
+				DOTNETDUPE_API WaitHandleCannotBeOpenedException(const String& sMessage) : SystemException(sMessage) { }
+			};
+		}
+
+	}
 }

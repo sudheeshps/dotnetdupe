@@ -1,5 +1,5 @@
 #pragma once
-#include <functional>
+#include "System/Func.h"
 #include <type_traits>
 
 namespace DotNetDupe {
@@ -7,24 +7,24 @@ namespace DotNetDupe {
         template<typename T>
         class Predicate {
         public:
-            Predicate() = default;
-            Predicate(std::nullptr_t) : _func(nullptr) {}
+            Predicate() : m_func() {}
+            Predicate(decltype(nullptr)) : m_func(nullptr) {}
             
-            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Predicate> && std::is_invocable_r_v<bool, F, T>>>
-            Predicate(F&& func) : _func(std::forward<F>(func)) {}
+            template<typename F, typename = std::enable_if_t<!std::is_same_v<std::decay_t<F>, Predicate> && std::is_invocable_r_v<bool, std::decay_t<F>, T>>>
+            Predicate(F&& func) : m_func(static_cast<F&&>(func)) {}
             
             bool Invoke(T obj) const {
-                return _func(obj);
+                return m_func ? m_func.Invoke(obj) : false;
             }
             
             bool operator()(T obj) const {
                 return Invoke(obj);
             }
             
-            explicit operator bool() const { return (bool)_func; }
+            explicit operator bool() const { return static_cast<bool>(m_func); }
 
         private:
-            std::function<bool(T)> _func;
+            Func<bool, T> m_func;
         };
     }
 }

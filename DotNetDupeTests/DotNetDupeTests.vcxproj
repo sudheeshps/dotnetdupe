@@ -117,6 +117,7 @@
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -130,6 +131,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="HashHelperTests.cpp" />
     <ClCompile Include="ArrayTests.cpp" />
     <ClCompile Include="ArrayTests2.cpp" />
     <ClCompile Include="BitConverterTests.cpp" />
@@ -140,6 +142,7 @@
     <ClCompile Include="EnvironmentTests.cpp" />
     <ClCompile Include="FileStreamTests.cpp" />
     <ClCompile Include="FileTests.cpp" />
+    <ClCompile Include="DirectoryTests.cpp" />
     <ClCompile Include="OperatingSystemTests.cpp" />
     <ClCompile Include="PathTests.cpp" />
     <ClCompile Include="ProcessTests.cpp" />
@@ -176,6 +179,7 @@
     <ClCompile Include="JsonSerializerTests.cpp" />
     <ClCompile Include="SocketsTests.cpp" />
     <ClCompile Include="HttpTests.cpp" />
+    <ClCompile Include="FileDownloaderTests.cpp" />
     <ClCompile Include="JWTTokenTests.cpp" />
     <ClCompile Include="SslStreamTests.cpp" />
     <ClCompile Include="DependencyInjectionTests.cpp" />
@@ -187,6 +191,8 @@
     <ClCompile Include="RealtimeTelemetryTests.cpp" />
     <ClCompile Include="UserPrincipalTests.cpp" />
     <ClCompile Include="TerminalSessionTests.cpp" />
+    <ClCompile Include="ExceptionTests.cpp" />
+    <ClCompile Include="WebSocketTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">
@@ -195,6 +201,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Natvis Include="..\DotNetDupe.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

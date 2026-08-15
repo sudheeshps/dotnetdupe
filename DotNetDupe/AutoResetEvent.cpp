@@ -23,30 +23,26 @@ namespace DotNetDupe {
             AutoResetEvent::AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)
                 : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {}
 
-            AutoResetEvent* AutoResetEvent::OpenExisting(const String& sName) {
-                AutoResetEvent* pResult = nullptr;
+            SmartPointer<AutoResetEvent> AutoResetEvent::OpenExisting(const String& sName) {
+                SmartPointer<AutoResetEvent> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No AutoResetEvent handle of the given name exists.");
             }
 
-            bool AutoResetEvent::TryOpenExisting(const String& sName, AutoResetEvent*& pResult) {
+            bool AutoResetEvent::TryOpenExisting(const String& sName, SmartPointer<AutoResetEvent>& pResult) {
                 pResult = nullptr;
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<AutoResetEvent> spEvt = SmartPointer<AutoResetEvent>::New(false);
-                    spEvt->_name = sName;
-                    spEvt->_hHandle = h;
-                    pResult = spEvt.Detach();
-                    return true;
-                }
-                return false;
+                if (!h) return false;
+                auto spEvt = SmartPointer<AutoResetEvent>::NewShared(false);
+                spEvt->_name = sName;
+                spEvt->_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;
 #else
                 return false;
 #endif

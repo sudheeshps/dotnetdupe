@@ -31,7 +31,7 @@ namespace DotNetDupeTests {
         auto provider = TimeProvider::GetSystem();
 
         // When & Then
-        EXPECT_NE(provider, nullptr);
+        EXPECT_FALSE(provider.IsNull());
     }
 
     TEST(TimeProviderTest, GetUtcNow_Should_ReturnCurrentTime) {
@@ -50,7 +50,7 @@ namespace DotNetDupeTests {
     TEST(TimeProviderTest, GetElapsedTime_Should_ReturnCorrectDuration_With_Mock) {
         // Given
         DateTimeOffset initialTime(1000000);
-        auto mock = std::make_shared<MockTimeProvider>(initialTime);
+        auto mock = SmartPointer<MockTimeProvider>::NewShared(initialTime);
         int64_t start = mock->GetTimestamp();
 
         // When
@@ -63,7 +63,7 @@ namespace DotNetDupeTests {
 
     TEST(TimeProviderTest, GetElapsedTime_BetweenTwoTimestamps_Should_ReturnCorrectDuration) {
         // Given
-        auto mock = std::make_shared<MockTimeProvider>(DateTimeOffset(0));
+        auto mock = SmartPointer<MockTimeProvider>::NewShared(DateTimeOffset(0));
         int64_t start = 1000;
         int64_t end = 2000; // 1000 ticks = 1/10000 second if frequency is TicksPerSecond? 
         // Mock frequency is TicksPerSecond (10,000,000). 1000 ticks = 0.0001 seconds.
@@ -79,7 +79,7 @@ namespace DotNetDupeTests {
 
     TEST(TimeProviderTest, GetElapsedTime_With_EndBeforeStart_Should_ReturnNegativeDuration) {
         // Given
-        auto mock = std::make_shared<MockTimeProvider>(DateTimeOffset(0));
+        auto mock = SmartPointer<MockTimeProvider>::NewShared(DateTimeOffset(0));
         int64_t start = 2000;
         int64_t end = 1000;
 

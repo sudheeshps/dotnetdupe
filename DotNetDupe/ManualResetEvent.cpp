@@ -23,30 +23,26 @@ namespace DotNetDupe {
             ManualResetEvent::ManualResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)
                 : EventWaitHandle(initialState, true, sName, openAlways, bCreatedNew) {}
 
-            ManualResetEvent* ManualResetEvent::OpenExisting(const String& sName) {
-                ManualResetEvent* pResult = nullptr;
+            SmartPointer<ManualResetEvent> ManualResetEvent::OpenExisting(const String& sName) {
+                SmartPointer<ManualResetEvent> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No ManualResetEvent handle of the given name exists.");
             }
 
-            bool ManualResetEvent::TryOpenExisting(const String& sName, ManualResetEvent*& pResult) {
-                pResult = nullptr;
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+            bool ManualResetEvent::TryOpenExisting(const String& sName, SmartPointer<ManualResetEvent>& pResult) {
+                pResult = SmartPointer<ManualResetEvent>();
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<ManualResetEvent> spEvt = SmartPointer<ManualResetEvent>::New(false);
-                    spEvt->_name = sName;
-                    spEvt->_hHandle = h;
-                    pResult = spEvt.Detach();
-                    return true;
-                }
-                return false;
+                if (h == NULL) return false;
+                SmartPointer<ManualResetEvent> spEvt = SmartPointer<ManualResetEvent>::NewShared(false);
+                spEvt->_name = sName;
+                spEvt->_hHandle = h;
+                pResult = std::move(spEvt);
+                return true;
 #else
                 return false;
 #endif

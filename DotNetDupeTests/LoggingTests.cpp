@@ -6,14 +6,91 @@
 #include "Extensions/Logging/ConsoleLoggerProvider.h"
 #include "Extensions/Logging/FileLoggerProvider.h"
 #include "System/IO/File.h"
+#include "System/IO/Path.h"
 #include "System/IOException.h"
 #include "System/ArgumentException.h"
 #include "Extensions/Logging/LoggerConfiguration.h"
+#include "Extensions/Logging/LogManager.h"
+#include "Extensions/Logging/LoggerTextWriter.h"
+#include "System/Console.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::Extensions::Logging;
 
 namespace LoggingTests {
+
+    class TestLogService {};
+
+    TEST(LoggingTests, GivenCategoryName_WhenLogManagerGetLogger_ReturnsValidLogger) {
+        // Given
+        LogManager::Reset();
+        String category = "OrderService";
+
+        // When
+        auto logger = LogManager::GetLogger(category);
+
+        // Then
+        ASSERT_FALSE(logger.IsNull());
+        
+        // Caching verification
+        auto loggerCached = LogManager::GetLogger(category);
+        ASSERT_TRUE(logger == loggerCached);
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenTypeT_WhenLogManagerGetLoggerTyped_ReturnsTypedLoggerInstance) {
+        // Given
+        LogManager::Reset();
+
+        // When
+        auto typedLogger = LogManager::GetLogger<TestLogService>();
+
+        // Then
+        ASSERT_FALSE(typedLogger.IsNull());
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenCategory_WhenGetConsoleLogger_ReturnsDedicatedConsoleLogger) {
+        // Given
+        LogManager::Reset();
+        LoggerConfiguration config;
+        config.MinLevel = LogLevel::Debug;
+        LogManager::Configure(config);
+
+        // When
+        auto consoleLogger = LogManager::GetConsoleLogger("UIEvents");
+
+        // Then
+        ASSERT_FALSE(consoleLogger.IsNull());
+        ASSERT_TRUE(consoleLogger->IsEnabled(LogLevel::Debug));
+
+        LogManager::Reset();
+    }
+
+    TEST(LoggingTests, GivenCategory_WhenGetFileLogger_ReturnsDedicatedFileLogger) {
+        // Given
+        LogManager::Reset();
+        String filePath = "logmanager_file_test.log";
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.MinLevel = LogLevel::Information;
+        LogManager::Configure(config);
+
+        // When
+        auto fileLogger = LogManager::GetFileLogger("AuditCategory");
+
+        // Then
+        ASSERT_FALSE(fileLogger.IsNull());
+        fileLogger->Log(LogLevel::Information, "LogManager direct file test");
+
+        // Cleanup
+        LogManager::Reset();
+        if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+    }
 
     TEST(LoggingTests, GivenLoggerFactory_WhenProviderAdded_LogsSuccessfully) {
         String logFilePath = "test_output.log";
@@ -217,6 +294,188 @@ namespace LoggingTests {
         EXPECT_THROW({
             ParseLogLevel("invalid_log_level_value");
         }, DotNetDupe::System::ArgumentException);
+    }
+
+    TEST(LoggingTests, GivenEmptyFilePath_WhenFileLoggerProviderCreated_AutoGeneratesPathAndDirectory) {
+        // Given
+        String emptyPath = "";
+
+        // When
+        FileLoggerProvider* pProv = new FileLoggerProvider(emptyPath);
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
+        String resolvedPath = provider->GetFilePath();
+
+        // Then
+        ASSERT_TRUE(resolvedPath.EndsWith("logs/app.log", false) || resolvedPath.EndsWith("logs\\app.log", false));
+        ASSERT_TRUE(IO::File::Exists(resolvedPath));
+
+        // Cleanup
+        provider = nullptr;
+        try {
+            if (IO::File::Exists(resolvedPath)) IO::File::Delete(resolvedPath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenRelativeFilePath_WhenFileLoggerProviderCreated_ResolvesFullPathAndCreatesDirectory) {
+        // Given
+        String relativePath = "custom_dir/test_relative.log";
+
+        // When
+        FileLoggerProvider* pProv = new FileLoggerProvider(relativePath);
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
+        String resolvedPath = provider->GetFilePath();
+
+        // Then
+        ASSERT_TRUE(IO::Path::IsPathFullyQualified(resolvedPath));
+        ASSERT_TRUE(IO::File::Exists(resolvedPath));
+
+        // Cleanup
+        provider = nullptr;
+        try {
+            if (IO::File::Exists(resolvedPath)) IO::File::Delete(resolvedPath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenDefaultConstructor_WhenFileLoggerProviderCreated_InheritsLogManagerConfiguration) {
+        // Given
+        LogManager::Reset();
+        LoggerConfiguration config;
+        config.FilePath = "inherited_provider.log";
+        config.MinLevel = LogLevel::Warning;
+        LogManager::Configure(config);
+
+        try {
+            if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        } catch (...) {}
+
+        // When
+        FileLoggerProvider* pProv = new FileLoggerProvider();
+        SmartPointer<FileLoggerProvider> provider(pProv, true);
+        auto logger = provider->CreateLogger("InheritedCategory");
+
+        // Then
+        ASSERT_FALSE(logger->IsEnabled(LogLevel::Information));
+        ASSERT_TRUE(logger->IsEnabled(LogLevel::Warning));
+
+        // Cleanup
+        logger = nullptr;
+        provider = nullptr;
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(config.FilePath)) IO::File::Delete(config.FilePath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenLoggerTextWriter_WhenConsoleSetOut_RedirectsToLogger) {
+        // Given
+        LogManager::Reset();
+        String filePath = "redirect_textwriter_test.log";
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        LogManager::Configure(config);
+
+        FileLoggerProvider* pProvRaw = new FileLoggerProvider(config);
+        SmartPointer<FileLoggerProvider> fileProv(pProvRaw, true);
+        auto redirector = SmartPointer<LoggerTextWriter>::NewShared("Redirector", LogLevel::Information);
+        Console::SetOut(redirector);
+
+        // When
+        Console::WriteLine("Redirected message test");
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+
+        // Cleanup
+        Console::SetOut(nullptr);
+        redirector = nullptr;
+        fileProv = nullptr;
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenProcessIdAndThreadId_WhenPlainTextOrJsonFormatSpecified_IncludesIdsInLogOutput) {
+        // Given
+        LogManager::Reset();
+        String filePath = "proc_thread_id_test.log";
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.PlainTextFormat = "[PID:{ProcessId}] [TID:{ThreadId}] [{Level}] {Message}";
+        config.IsJsonFormat = false;
+
+        FileLoggerProvider* pProvRaw = new FileLoggerProvider(config);
+        SmartPointer<FileLoggerProvider> fileProv(pProvRaw, true);
+        auto logger = fileProv->CreateLogger("TestProcessThreadCategory");
+
+        // When
+        logger->Log(LogLevel::Information, "Test message with IDs");
+
+        // Force flush/close
+        fileProv = nullptr;
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+        String fileContent = IO::File::ReadAllText(filePath);
+        EXPECT_TRUE(fileContent.Contains("PID:"));
+        EXPECT_TRUE(fileContent.Contains("TID:"));
+        EXPECT_TRUE(fileContent.Contains("Test message with IDs"));
+
+        // Cleanup
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+    }
+
+    TEST(LoggingTests, GivenDynamicPropertiesInFormat_WhenLogged_InterpolatesCustomPropertiesCorrectly) {
+        // Given
+        LogManager::Reset();
+        String filePath = "dynamic_props_test.log";
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
+
+        LoggerConfiguration config;
+        config.FilePath = filePath;
+        config.PlainTextFormat = "[TRACE:{TraceId}] [{Level}] [{Category}] => {Message} [{Properties}]";
+        config.IsJsonFormat = false;
+
+        auto fileProv = DotNetDupe::System::SmartPointer<FileLoggerProvider>::NewShared(config);
+        auto logger = fileProv->CreateLogger("OrderService");
+
+        Collections::Generic::Dictionary<String, String> props;
+        props.Add("TraceId", "tx_98765");
+        props.Add("UserId", "user_42");
+
+        // When
+        logger->Log(LogLevel::Information, "Order placed successfully", props);
+
+        // Force flush/close
+        fileProv = nullptr;
+
+        // Then
+        ASSERT_TRUE(IO::File::Exists(filePath));
+        String fileContent = IO::File::ReadAllText(filePath);
+        EXPECT_TRUE(fileContent.Contains("[TRACE:tx_98765]"));
+        EXPECT_TRUE(fileContent.Contains("[OrderService]"));
+        EXPECT_TRUE(fileContent.Contains("Order placed successfully"));
+        EXPECT_TRUE(fileContent.Contains("UserId: user_42"));
+        EXPECT_FALSE(fileContent.Contains("{TraceId}"));
+
+        // Cleanup
+        LogManager::Reset();
+        try {
+            if (IO::File::Exists(filePath)) IO::File::Delete(filePath);
+        } catch (...) {}
     }
 }
 

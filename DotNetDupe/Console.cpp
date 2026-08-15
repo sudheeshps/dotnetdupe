@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "System/Console.h"
+#include "System/IO/TextWriter.h"
+#include "System/IO/TextReader.h"
 #include <mutex>
 #include <iostream>
 #include <string>
@@ -19,9 +21,12 @@ namespace {
     static std::vector<String> s_outputs;
     static std::vector<String> s_inputs;
     static String s_accumulator = String("");
-    static std::mutex s_mutex;
+    static std::recursive_mutex s_mutex;
     static ConsoleColor s_defaultFore = ConsoleColor::Gray;
     static ConsoleColor s_defaultBack = ConsoleColor::Black;
+    static ConsoleColor s_currentFore = ConsoleColor::Gray;
+    static ConsoleColor s_currentBack = ConsoleColor::Black;
+    static String s_consoleTitle = String("");
     static bool s_colorsInitialized = false;
 
     void EnsureColorsInitialized() {
@@ -31,29 +36,51 @@ namespace {
             if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
                 s_defaultFore = (ConsoleColor)(csbi.wAttributes & 0x0F);
                 s_defaultBack = (ConsoleColor)((csbi.wAttributes & 0xF0) >> 4);
+                s_currentFore = s_defaultFore;
+                s_currentBack = s_defaultBack;
             }
 #endif
             s_colorsInitialized = true;
         }
     }
+    static SmartPointer<IO::TextWriter> s_pOutWriter = nullptr;
+    static SmartPointer<IO::TextWriter> s_pErrorWriter = nullptr;
+    static SmartPointer<IO::TextReader> s_pInReader = nullptr;
 }
 
 void InternalWrite(const String& sValue) {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + sValue;
-    std::cout << sValue.GetRawString() << std::flush;
+    SmartPointer<IO::TextWriter> pWriter = nullptr;
+    {
+        std::lock_guard<std::recursive_mutex> lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout << sValue.GetRawString() << std::flush;
+            return;
+        }
+    }
+    pWriter->Write(sValue);
 }
 
 void InternalWriteLine(const String& sValue) {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    s_accumulator = s_accumulator + sValue;
-    s_outputs.push_back(s_accumulator);
-    std::cout << sValue.GetRawString() << std::endl;
-    s_accumulator = "";
+    SmartPointer<IO::TextWriter> pWriter = nullptr;
+    {
+        std::lock_guard<std::recursive_mutex> lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        s_outputs.push_back(s_accumulator);
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout << sValue.GetRawString() << std::endl;
+            s_accumulator = "";
+            return;
+        }
+        s_accumulator = "";
+    }
+    pWriter->WriteLine(sValue);
 }
 
 void Console::Write(bool value) { InternalWrite(value ? "True" : "False"); }
-void Console::Write(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWrite(buf); }
+void Console::Write(Char value) { char buf[2] = { static_cast<char>(value.GetChar()), 0 }; InternalWrite(buf); }
 void Console::Write(double value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(int value) { InternalWrite(String(std::to_string(value).c_str())); }
 void Console::Write(long value) { InternalWrite(String(std::to_string(value).c_str())); }
@@ -64,7 +91,7 @@ void Console::Write(const char* value) { InternalWrite(value); }
 
 void Console::WriteLine() { InternalWriteLine(""); }
 void Console::WriteLine(bool value) { InternalWriteLine(value ? "True" : "False"); }
-void Console::WriteLine(Char value) { char buf[2] = { value.GetChar(), 0 }; InternalWriteLine(String(buf)); }
+void Console::WriteLine(Char value) { char buf[2] = { static_cast<char>(value.GetChar()), 0 }; InternalWriteLine(String(buf)); }
 void Console::WriteLine(double value) { InternalWriteLine(String(std::to_string(value).c_str())); }
 void Console::WriteLine(int value) { InternalWriteLine(String(std::to_string(value).c_str())); }
 void Console::WriteLine(long value) { InternalWriteLine(String(std::to_string(value).c_str())); }
@@ -74,11 +101,18 @@ void Console::WriteLine(const String& value) { InternalWriteLine(value); }
 void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }
 
 int Console::Read() {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader->Read();
+    }
     return std::cin.get();
 }
 
 String Console::ReadLine() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader->ReadLine();
+    }
     if (!s_inputs.empty()) {
         String v = s_inputs.front();
         s_inputs.erase(s_inputs.begin());
@@ -218,17 +252,24 @@ ConsoleColor Console::GetBackgroundColor() {
         return (ConsoleColor)((csbi.wAttributes & 0xF0) >> 4);
     }
 #endif
-    return s_defaultBack;
+    return s_currentBack;
 }
 
 void Console::SetBackgroundColor(ConsoleColor color) {
     EnsureColorsInitialized();
+    s_currentBack = color;
 #if defined(_WIN32)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
         WORD attributes = (csbi.wAttributes & 0xFF0F) | (((WORD)color << 4) & 0x00F0);
         SetConsoleTextAttribute(hConsole, attributes);
+    }
+#else
+    static const int ansiBack[] = { 40, 44, 42, 46, 41, 45, 43, 47, 100, 104, 102, 106, 101, 105, 103, 107 };
+    int idx = static_cast<int>(color);
+    if (idx >= 0 && idx < 16) {
+        std::cout << "\033[" << ansiBack[idx] << "m" << std::flush;
     }
 #endif
 }
@@ -241,17 +282,24 @@ ConsoleColor Console::GetForegroundColor() {
         return (ConsoleColor)(csbi.wAttributes & 0x0F);
     }
 #endif
-    return s_defaultFore;
+    return s_currentFore;
 }
 
 void Console::SetForegroundColor(ConsoleColor color) {
     EnsureColorsInitialized();
+    s_currentFore = color;
 #if defined(_WIN32)
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
         WORD attributes = (csbi.wAttributes & 0xFFF0) | ((WORD)color & 0x000F);
         SetConsoleTextAttribute(hConsole, attributes);
+    }
+#else
+    static const int ansiFore[] = { 30, 34, 32, 36, 31, 35, 33, 37, 90, 94, 92, 96, 91, 95, 93, 97 };
+    int idx = static_cast<int>(color);
+    if (idx >= 0 && idx < 16) {
+        std::cout << "\033[" << ansiFore[idx] << "m" << std::flush;
     }
 #endif
 }
@@ -260,6 +308,9 @@ void Console::ResetColor() {
     EnsureColorsInitialized();
     SetForegroundColor(s_defaultFore);
     SetBackgroundColor(s_defaultBack);
+#if !defined(_WIN32)
+    std::cout << "\033[0m" << std::flush;
+#endif
 }
 
 String Console::GetTitle() {
@@ -269,10 +320,11 @@ String Console::GetTitle() {
         return String(WCharToUtf8(title).c_str());
     }
 #endif
-    return String("");
+    return s_consoleTitle;
 }
 
 void Console::SetTitle(const String& title) {
+    s_consoleTitle = title;
 #if defined(_WIN32)
     ::SetConsoleTitleW(Utf8ToWChar(title.GetRawString()).c_str());
 #else
@@ -288,44 +340,79 @@ void Console::Beep() {
 #endif
 }
 
-void Console::Clear() {
-    std::lock_guard<std::mutex> lk(s_mutex);
-    s_outputs.clear();
-    s_inputs.clear();
-    s_accumulator = String("");
-
+static void ClearConsoleScreenNative() {
 #if defined(_WIN32)
-    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFO csbi;
-    DWORD count;
-    DWORD cellCount;
-    COORD homeCoords = { 0, 0 };
-
-    if (GetConsoleScreenBufferInfo(hConsole, &csbi)) {
+    DWORD count, cellCount;
+    COORD home = { 0, 0 };
+    if (GetConsoleScreenBufferInfo(h, &csbi)) {
         cellCount = csbi.dwSize.X * csbi.dwSize.Y;
-        if (FillConsoleOutputCharacterW(hConsole, (wchar_t) ' ', cellCount, homeCoords, &count)) {
-            if (FillConsoleOutputAttribute(hConsole, csbi.wAttributes, cellCount, homeCoords, &count)) {
-                SetConsoleCursorPosition(hConsole, homeCoords);
-            }
-        }
+        FillConsoleOutputCharacterW(h, (wchar_t)' ', cellCount, home, &count);
+        FillConsoleOutputAttribute(h, csbi.wAttributes, cellCount, home, &count);
+        SetConsoleCursorPosition(h, home);
     }
 #else
     std::cout << "\033[2J\033[1;1H" << std::flush;
 #endif
 }
 
+void Console::Clear() {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    s_outputs.clear();
+    s_inputs.clear();
+    s_accumulator = String("");
+    s_pOutWriter = nullptr;
+    s_pErrorWriter = nullptr;
+    s_pInReader = nullptr;
+    ClearConsoleScreenNative();
+}
+
+void Console::SetOut(const SmartPointer<IO::TextWriter>& pOutWriter) {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    s_pOutWriter = pOutWriter;
+}
+
+void Console::SetError(const SmartPointer<IO::TextWriter>& pErrorWriter) {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    s_pErrorWriter = pErrorWriter;
+}
+
+void Console::SetIn(const SmartPointer<IO::TextReader>& pInReader) {
+    if (!pInReader) {
+        throw ArgumentException("pInReader cannot be null.");
+    }
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    s_pInReader = pInReader;
+}
+
+SmartPointer<IO::TextWriter> Console::Out() {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    return s_pOutWriter;
+}
+
+SmartPointer<IO::TextWriter> Console::Error() {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    return s_pErrorWriter;
+}
+
+SmartPointer<IO::TextReader> Console::In() {
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
+    return s_pInReader;
+}
+
 void Console::SetIn(const String& value) {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_inputs.push_back(value);
 }
 
 void Console::ClearInputs() {
-    std::lock_guard<std::mutex> lk(s_mutex);
+    std::lock_guard<std::recursive_mutex> lk(s_mutex);
     s_inputs.clear();
 }
 
 Array<String> Console::GetOutputs() {
-    std::lock_guard<std::mutex> lock(s_mutex);
+    std::lock_guard<std::recursive_mutex> lock(s_mutex);
     Array<String> result((int)s_outputs.size());
     for (int i = 0; i < (int)s_outputs.size(); i++) result[i] = s_outputs[i];
     return result;

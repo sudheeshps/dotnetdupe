@@ -25,8 +25,8 @@ namespace DotNetDupe {
                     DOTNETDUPE_API Uri GetRequestUri() const;
                     DOTNETDUPE_API void SetRequestUri(const Uri& requestUri);
 
-                    DOTNETDUPE_API SmartPointer<HttpContent> GetContent() const;
-                    DOTNETDUPE_API void SetContent(const SmartPointer<HttpContent>& content);
+                    DOTNETDUPE_API HttpContentPtr GetContent() const;
+                    DOTNETDUPE_API void SetContent(const HttpContentPtr& content);
 
                     DOTNETDUPE_API Collections::Generic::Dictionary<String, String>& GetHeaders();
                     DOTNETDUPE_API const Collections::Generic::Dictionary<String, String>& GetHeaders() const;
@@ -34,9 +34,11 @@ namespace DotNetDupe {
                 private:
                     HttpMethod m_method;
                     Uri m_requestUri;
-                    SmartPointer<HttpContent> m_pContent;
+                    HttpContentPtr m_pContent;
                     Collections::Generic::Dictionary<String, String> m_headers;
                 };
+
+                using HttpRequestMessagePtr = SmartPointer<HttpRequestMessage>;
 
             }
         }

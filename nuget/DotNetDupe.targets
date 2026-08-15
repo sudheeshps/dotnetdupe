@@ -20,9 +20,15 @@
     </Link>
   </ItemDefinitionGroup>
 
-  <!-- Copy DLLs to output for Windows -->
+  <!-- Inject Natvis Visualizer into Consumer Projects -->
+  <ItemGroup>
+    <Natvis Include="$(MSBuildThisFileDirectory)DotNetDupe.natvis" />
+  </ItemGroup>
+
+  <!-- Copy DLLs and PDBs to output for Windows -->
   <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\DotNetDupe.dll" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\DotNetDupe.pdb" Condition="Exists('$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\DotNetDupe.pdb')" />
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\libssl*.dll" />
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\libcrypto*.dll" />
   </ItemGroup>

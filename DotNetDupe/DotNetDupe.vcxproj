@@ -193,17 +193,8 @@
     <ClInclude Include="..\Include\System\ArithmeticException.h" />
     <ClInclude Include="..\Include\System\BitConverter.h" />
     <ClInclude Include="..\Include\System\Array.h" />
-    <ClInclude Include="..\Include\System\BasicArgumentException.h" />
-    <ClInclude Include="..\Include\System\BasicArgumentOutOfRangeException.h" />
-    <ClInclude Include="..\Include\System\BasicArithmeticException.h" />
-    <ClInclude Include="..\Include\System\BasicException.h" />
-    <ClInclude Include="..\Include\System\BasicNotImplementedException.h" />
-    <ClInclude Include="..\Include\System\BasicOverflowException.h" />
-    <ClInclude Include="..\Include\System\BasicString.h" />
-    <ClInclude Include="..\Include\System\BasicSystemException.h" />
     <ClInclude Include="..\Include\System\Buffer.h" />
     <ClInclude Include="..\Include\System\Char.h" />
-    <ClInclude Include="..\Include\System\BasicChar.h" />
     <ClInclude Include="..\Include\System\CharUnicodeInfo.h" />
     <ClInclude Include="..\Include\System\Clonable.h" />
     <ClInclude Include="Common.h" />
@@ -215,6 +206,7 @@
     <ClInclude Include="..\Include\System\Exception.h" />
     <ClInclude Include="..\Include\System\IOException.h" />
     <ClInclude Include="..\Include\System\IO\File.h" />
+    <ClInclude Include="..\Include\System\IO\Directory.h" />
     <ClInclude Include="..\Include\System\IO\FileStream.h" />
     <ClInclude Include="..\Include\System\IO\IDisposable.h" />
     <ClInclude Include="..\Include\System\IO\Stream.h" />
@@ -237,6 +229,11 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
+    <ClInclude Include="..\Include\System\UnauthorizedAccessException.h" />
+    <ClInclude Include="..\Include\System\UnknownException.h" />
+    <ClInclude Include="..\Include\System\OutOfMemoryException.h" />
+    <ClInclude Include="..\Include\System\ComponentModel\Win32Exception.h" />
+    <ClInclude Include="..\Include\System\Security\SecurityException.h" />
     <ClInclude Include="InternalStringConvert.h" />
     <ClInclude Include="..\Include\System\Text\TextEncoding.h" />
     <ClInclude Include="..\Include\System\Utils\StringConvert.h" />
@@ -254,6 +251,7 @@
     <ClInclude Include="..\Include\System\IdentityModel\Tokens\Jwt\JWTToken.h" />
     <ClInclude Include="..\Include\System\Net\HttpStatusCode.h" />
     <ClInclude Include="..\Include\System\Net\Dns.h" />
+    <ClInclude Include="..\Include\System\Net\Http\FileDownloader.h" />
     <ClInclude Include="..\Include\System\IO\MemoryStream.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpMethod.h" />
     <ClInclude Include="..\Include\System\Net\Http\HttpContent.h" />
@@ -284,8 +282,6 @@
     <ClInclude Include="..\Include\System\TimeProvider.h" />
     <ClInclude Include="..\Include\System\TimeSpan.h" />
     <ClInclude Include="..\Include\System\FormatException.h" />
-    <ClInclude Include="..\Include\System\BasicFormatException.h" />
-    <ClInclude Include="..\Include\System\BasicInvalidOperationException.h" />
     <ClInclude Include="..\Include\System\InvalidOperationException.h" />
     <ClInclude Include="..\Include\System\UriEnums.h" />
     <ClInclude Include="..\Include\System\DaylightTime.h" />
@@ -296,7 +292,6 @@
     <ClInclude Include="..\Include\System\IO\StringReader.h" />
     <ClInclude Include="..\Include\System\IO\StringWriter.h" />
     <ClInclude Include="..\Include\System\Threading\Thread.h" />
-    <ClInclude Include="..\Include\System\BasicTimeoutException.h" />
     <ClInclude Include="..\Include\System\TimeoutException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadPool.h" />
     <ClInclude Include="..\Include\System\Threading\Tasks\TaskStatus.h" />
@@ -311,12 +306,6 @@
     <ClInclude Include="..\Include\System\Threading\CriticalSection.h" />
     <ClInclude Include="..\Include\System\Threading\Interlocked.h" />
     <ClInclude Include="..\Include\System\Threading\Lock.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicThreadStateException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicThreadInterruptedException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicSynchronizationLockException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicAbandonedMutexException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicWaitHandleCannotBeOpenedException.h" />
-    <ClInclude Include="..\Include\System\Threading\BasicSemaphoreFullException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadStateException.h" />
     <ClInclude Include="..\Include\System\Threading\ThreadInterruptedException.h" />
     <ClInclude Include="..\Include\System\Threading\SynchronizationLockException.h" />
@@ -345,14 +334,18 @@
     <ClInclude Include="..\Include\Extensions\Logging\FileLogger.h" />
     <ClInclude Include="..\Include\Extensions\Logging\LoggerBase.h" />
     <ClInclude Include="..\Include\Extensions\Logging\AggregateLogger.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\LogManager.h" />
+    <ClInclude Include="..\Include\Extensions\Logging\LoggerTextWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
     <ClCompile Include="Convert.cpp" />
+    <ClCompile Include="DateTime.cpp" />
     <ClCompile Include="TimeProvider.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="File.cpp" />
+    <ClCompile Include="Directory.cpp" />
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
@@ -362,8 +355,11 @@
     </ClCompile>
     <ClCompile Include="StringBuilder.cpp" />
     <ClCompile Include="InternalStringConvert.cpp" />
-    <ClCompile Include="BasicStringTranscode.cpp" />
-    <ClCompile Include="System\Utils\StringConvert.cpp" />
+    <ClCompile Include="String.cpp" />
+    <ClCompile Include="Char.cpp" />
+    <ClCompile Include="Exception.cpp" />
+    <ClCompile Include="Win32Exception.cpp" />
+    <ClCompile Include="SocketException.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="Socket.cpp" />
@@ -380,6 +376,7 @@
     <ClCompile Include="HttpRequestMessage.cpp" />
     <ClCompile Include="HttpResponseMessage.cpp" />
     <ClCompile Include="HttpClient.cpp" />
+    <ClCompile Include="FileDownloader.cpp" />
     <ClCompile Include="OperatingSystem.cpp" />
     <ClCompile Include="Uri.cpp" />
     <ClCompile Include="UriBuilder.cpp" />
@@ -398,6 +395,7 @@
     <ClCompile Include="EventLog.cpp" />
     <ClCompile Include="EtwLogReader.cpp" />
     <ClCompile Include="SystemMetrics.cpp" />
+    <ClCompile Include="SystemMetricsLinux.cpp" />
     <ClCompile Include="ActiveUserSession.cpp" />
     <ClCompile Include="DateTimeOffset.cpp" />
     <ClCompile Include="Random.cpp" />
@@ -417,10 +415,12 @@
     <ClCompile Include="Task.cpp" />
     <ClCompile Include="EventWaitHandle.cpp" />
     <ClCompile Include="ManualResetEvent.cpp" />
+    <ClCompile Include="MockStream.cpp" />
     <ClCompile Include="AutoResetEvent.cpp" />
     <ClCompile Include="Mutex.cpp" />
     <ClCompile Include="Semaphore.cpp" />
     <ClCompile Include="SemaphoreSlim.cpp" />
+    <ClCompile Include="ConditionVariable.cpp" />
     <ClCompile Include="CriticalSection.cpp" />
     <ClCompile Include="Interlocked.cpp" />
     <ClCompile Include="SslStream.cpp" />
@@ -434,6 +434,7 @@
     <ClCompile Include="HttpResponse.cpp" />
     <ClCompile Include="WebSocket.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
+    <ClCompile Include="SqlDataReader.cpp" />
     <ClCompile Include="SqlConnection.cpp" />
     <ClCompile Include="DatabaseEngine.cpp" />
     <ClCompile Include="InMemoryDatabaseBackend.cpp" />
@@ -446,12 +447,15 @@
     <ClCompile Include="LoggerBase.cpp" />
     <ClCompile Include="AggregateLogger.cpp" />
     <ClCompile Include="LoggerConfiguration.cpp" />
+    <ClCompile Include="LogManager.cpp" />
+    <ClCompile Include="LoggerTextWriter.cpp" />
     <ClCompile Include="UserPrincipal.cpp" />
     <ClCompile Include="TerminalSession.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DotNetDupe.rc" />
     <None Include="cpp.hint" />
+    <Natvis Include="..\DotNetDupe.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

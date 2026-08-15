@@ -4,15 +4,14 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/SmartPointer.h"
+#include "System/Action.h"
 #include "System/Func.h"
 #include "System/IServiceProvider.h"
 #include "WebAppCore/Http/HttpContext.h"
 #include "WebAppCore/WebSockets/WebSocketContext.h"
 #include "System/Collections/Generic/Dictionary.h"
+#include "System/Collections/Generic/List.h"
 #include "System/Net/Sockets/TcpListener.h"
-#include <atomic>
-#include <vector>
-#include <functional>
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -22,6 +21,8 @@ namespace DotNetDupe {
 
             class WebApplication : public virtual DotNetDupe::System::Object {
             public:
+                using ControllerRegistrar = DotNetDupe::System::Action<const DotNetDupe::System::SmartPointer<WebApplication>&>;
+
                 DOTNETDUPE_API explicit WebApplication(const DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider>& spServices);
                 DOTNETDUPE_API ~WebApplication() override;
 
@@ -40,21 +41,24 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapWebSocket(const DotNetDupe::System::String& pattern, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler> handler);
 
-                DOTNETDUPE_API void SetControllerRegistrars(std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> registrars) {
-                    m_controllerRegistrars = std::move(registrars);
-                }
-
-                DOTNETDUPE_API void SetSelfPointer(const DotNetDupe::System::SmartPointer<WebApplication>& spSelf) {
-                    m_spSelf = spSelf;
-                }
-
                 DOTNETDUPE_API void MapControllers();
 
                 DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000", int threadCount = 10);
                 DOTNETDUPE_API void Stop();
 
             private:
+                friend class WebApplicationBuilder;
+
+                void SetControllerRegistrars(DotNetDupe::System::Collections::Generic::List<ControllerRegistrar> registrars) {
+                    m_controllerRegistrars = std::move(registrars);
+                }
+
+                void SetSelfPointer(const DotNetDupe::System::SmartPointer<WebApplication>& spSelf) {
+                    m_spSelf = spSelf;
+                }
+
                 void HandleConnection(DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpClient> spClient);
+                void QueueAcceptedClient(DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpClient> pClient);
                 void StartServerLoop(const DotNetDupe::System::String& host, int port);
 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> m_spServices;
@@ -65,10 +69,10 @@ namespace DotNetDupe {
                 DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler>> m_wsHandlers;
                 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Net::Sockets::TcpListener> m_pListener;
-                std::atomic<bool> m_bRunning;
+                bool m_bRunning;
                 DotNetDupe::System::String m_sHost;
                 int m_nPort;
-                std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> m_controllerRegistrars;
+                DotNetDupe::System::Collections::Generic::List<ControllerRegistrar> m_controllerRegistrars;
                 DotNetDupe::System::SmartPointer<WebApplication> m_spSelf;
             };
 

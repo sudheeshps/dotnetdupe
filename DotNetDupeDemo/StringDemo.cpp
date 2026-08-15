@@ -55,6 +55,6 @@ void DemonstrateString() {
     // StringConvert Demonstration
     Console::WriteLine("\nStringConvert Demonstration:");
     const wchar_t* pwszWide = L"Wide-character string to UTF8 conversion";
-    String sUtf8 = Utils::StringConvert::WCharToUtf8(pwszWide);
+    String sUtf8(pwszWide);
     Console::WriteLine(sUtf8);
 }

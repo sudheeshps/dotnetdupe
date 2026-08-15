@@ -11,9 +11,11 @@
 #include <string>
 
 #include "System/SystemException.h"
+#include "System/IOException.h"
 #include "System/Net/Sockets/SocketException.h"
 
 using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
 using namespace DotNetDupe::System::Net::Sockets;
 using namespace DotNetDupe::System::Threading;
 
@@ -177,6 +179,26 @@ namespace DotNetDupeTests {
 
         // When & Then
         EXPECT_THROW(listener.AcceptTcpClient(), SocketException);
+    }
+
+    TEST(SocketsTests, GivenUnconnectedTcpClient_WhenGetStreamOrConnectFailed_ThenThrowsSocketException) {
+        TcpClient client;
+        EXPECT_FALSE(client.Connected());
+        EXPECT_THROW(client.GetStream(), SocketException);
+        EXPECT_THROW(client.Connect("127.0.0.1", 59999), SocketException);
+    }
+
+    TEST(SocketsTests, GivenDisposedNetworkStream_WhenReadWriteAttempted_ThenThrowsIOException) {
+        SmartPointer<Socket> pSock = SmartPointer<Socket>::NewShared(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp);
+        SmartPointer<NetworkStream> pNetStream = SmartPointer<NetworkStream>::NewShared(pSock, true);
+        pNetStream->Close();
+
+        char buf[10] = { 0 };
+        EXPECT_FALSE(pNetStream->CanRead());
+        EXPECT_FALSE(pNetStream->CanWrite());
+        EXPECT_FALSE(pNetStream->CanSeek());
+        EXPECT_THROW(pNetStream->Read(buf, 0, 10), IOException);
+        EXPECT_THROW(pNetStream->Write("test", 0, 4), IOException);
     }
 
 }

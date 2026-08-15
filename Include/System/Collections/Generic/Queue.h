@@ -4,8 +4,7 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/InvalidOperationException.h"
-#include <queue>
-#include <stdexcept>
+#include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,73 +14,60 @@ namespace DotNetDupe {
                 template <typename T>
                 class Queue : public Object {
                 private:
-                    std::queue<T> m_qItems;
+                    List<T> m_lstItems;
 
                 public:
                     Queue() = default;
 
-                    int GetCount() const { return (int)m_qItems.size(); }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     void Enqueue(const T& item) {
-                        m_qItems.push(item);
+                        m_lstItems.Add(item);
                     }
 
                     T Dequeue() {
-                        if (m_qItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("Queue is empty.");
                         }
-                        T item = m_qItems.front();
-                        m_qItems.pop();
+                        T item = m_lstItems[0];
+                        m_lstItems.RemoveAt(0);
                         return item;
                     }
 
                     T Peek() const {
-                        if (m_qItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             throw System::InvalidOperationException("Queue is empty.");
                         }
-                        return m_qItems.front();
+                        return m_lstItems[0];
                     }
 
                     bool TryDequeue(T& result) {
-                        if (m_qItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             return false;
                         }
-                        result = m_qItems.front();
-                        m_qItems.pop();
+                        result = m_lstItems[0];
+                        m_lstItems.RemoveAt(0);
                         return true;
                     }
 
                     bool TryPeek(T& result) const {
-                        if (m_qItems.empty()) {
+                        if (m_lstItems.GetCount() == 0) {
                             return false;
                         }
-                        result = m_qItems.front();
+                        result = m_lstItems[0];
                         return true;
                     }
 
                     void Clear() {
-                        std::queue<T> emptyQueue;
-                        std::swap(m_qItems, emptyQueue);
+                        m_lstItems.Clear();
                     }
 
                     bool Contains(const T& item) const {
-                        std::queue<T> qCopy = m_qItems;
-                        while (!qCopy.empty()) {
-                            if (qCopy.front() == item) return true;
-                            qCopy.pop();
-                        }
-                        return false;
+                        return m_lstItems.Contains(item);
                     }
 
                     Array<T> ToArray() const {
-                        Array<T> arrResult((int)m_qItems.size());
-                        std::queue<T> qCopy = m_qItems;
-                        int iIndex = 0;
-                        while (!qCopy.empty()) {
-                            arrResult[iIndex++] = qCopy.front();
-                            qCopy.pop();
-                        }
-                        return arrResult;
+                        return m_lstItems.ToArray();
                     }
                 };
 

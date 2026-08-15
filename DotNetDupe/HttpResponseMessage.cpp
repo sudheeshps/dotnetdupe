@@ -34,11 +34,11 @@ namespace DotNetDupe {
                     return code >= 200 && code <= 299;
                 }
 
-                SmartPointer<HttpContent> HttpResponseMessage::GetContent() const {
+                HttpContentPtr HttpResponseMessage::GetContent() const {
                     return m_pContent;
                 }
 
-                void HttpResponseMessage::SetContent(const SmartPointer<HttpContent>& content) {
+                void HttpResponseMessage::SetContent(const HttpContentPtr& content) {
                     m_pContent = content;
                 }
 

@@ -3,9 +3,9 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
-#include <vector>
-#include <mutex>
-#include <algorithm>
+#include "System/Collections/Generic/LinkedList.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Lock.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,64 +15,54 @@ namespace DotNetDupe {
                 template <typename T>
                 class ConcurrentBag : public Object {
                 private:
-                    mutable std::mutex m_mtxLock;
-                    std::vector<T> m_vItems;
+                    mutable Threading::CriticalSection m_csLock;
+                    Generic::LinkedList<T> m_list;
 
                 public:
                     ConcurrentBag() = default;
+                    
+                    ~ConcurrentBag() override = default;
 
                     void Add(const T& item) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        m_vItems.push_back(item);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_list.AddFirst(item);
                     }
 
                     bool TryTake(T& result) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_list.GetCount() == 0) return false;
                         
-                        if (m_vItems.empty()) {
-                            return false;
-                        }
-
-                        result = m_vItems.back();
-                        m_vItems.pop_back();
+                        result = m_list.GetFirst()->Value;
+                        m_list.RemoveFirst();
                         return true;
                     }
 
                     bool TryPeek(T& result) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_list.GetCount() == 0) return false;
                         
-                        if (m_vItems.empty()) {
-                            return false;
-                        }
-
-                        result = m_vItems.back();
+                        result = m_list.GetFirst()->Value;
                         return true;
                     }
 
                     void Clear() {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        m_vItems.clear();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_list.Clear();
                     }
 
                     int GetCount() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return (int)m_vItems.size();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.GetCount();
                     }
 
                     bool IsEmpty() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_vItems.empty();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.GetCount() == 0;
                     }
 
                     Array<T> ToArray() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        Array<T> arrResult((int)m_vItems.size());
-                        for (size_t i = 0; i < m_vItems.size(); i++) {
-                            arrResult[(int)i] = m_vItems[i];
-                        }
-
-                        return arrResult;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.ToArray();
                     }
                 };
 

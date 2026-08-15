@@ -1,8 +1,13 @@
 #pragma once
-#include "System/BasicArgumentException.h"
-namespace DotNetDupe {
-    namespace System {
-        typedef BasicArgumentException<char> ArgumentException;
-    }
-}
+#include "System/SystemException.h"
 
+namespace DotNetDupe {
+	namespace System {
+
+		class ArgumentException : public SystemException {
+		public:
+			ArgumentException(const String& sMessage) : SystemException(sMessage) { }
+		};
+
+	}
+}

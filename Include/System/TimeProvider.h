@@ -4,10 +4,13 @@
 #include "System/Object.h"
 #include "System/DateTimeOffset.h"
 #include "System/TimeSpan.h"
-#include <memory>
+#include "System/SmartPointer.h"
 
 namespace DotNetDupe {
     namespace System {
+        class TimeProvider;
+        using TimeProviderPtr = SmartPointer<TimeProvider>;
+
         class TimeProvider : public Object {
         public:
             virtual ~TimeProvider() = default;
@@ -20,7 +23,7 @@ namespace DotNetDupe {
             DOTNETDUPE_API TimeSpan GetElapsedTime(int64_t startingTimestamp) const;
             DOTNETDUPE_API TimeSpan GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const;
 
-            DOTNETDUPE_API static std::shared_ptr<TimeProvider> GetSystem();
+            DOTNETDUPE_API static TimeProviderPtr GetSystem();
         };
     }
 }

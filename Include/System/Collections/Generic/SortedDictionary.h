@@ -5,7 +5,7 @@
 #include "System/Array.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
-#include <map>
+#include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,61 +15,94 @@ namespace DotNetDupe {
                 template <typename TKey, typename TValue>
                 class SortedDictionary : public Object {
                 private:
-                    std::map<TKey, TValue> m_mMap;
+                    struct KeyValuePair {
+                        TKey Key;
+                        TValue Value;
+                        
+                        bool operator==(const KeyValuePair& other) const {
+                            return Key == other.Key;
+                        }
+                        
+                        bool operator<(const KeyValuePair& other) const {
+                            return Key < other.Key;
+                        }
+
+                        bool operator>(const KeyValuePair& other) const {
+                            return Key > other.Key;
+                        }
+                    };
+                    
+                    List<KeyValuePair> m_lstItems;
 
                 public:
                     SortedDictionary() = default;
 
-                    int GetCount() const { return (int)m_mMap.size(); }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     TValue& operator[](const TKey& key) {
-                        return m_mMap[key];
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            return m_lstItems[index].Value;
+                        }
+
+                        m_lstItems.Insert(~index, KeyValuePair{ key, TValue() });
+                        return m_lstItems[~index].Value;
                     }
 
                     const TValue& operator[](const TKey& key) const {
-                        return m_mMap.at(key);
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            return m_lstItems[index].Value;
+                        }
+                        throw System::ArgumentException("Key not found.");
                     }
 
                     void Add(const TKey& key, const TValue& value) {
-                        if (ContainsKey(key)) throw System::ArgumentException("An item with the same key has already been added.");
-                        m_mMap[key] = value;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) throw System::ArgumentException("An item with the same key has already been added.");
+
+                        m_lstItems.Insert(~index, KeyValuePair{ key, value });
                     }
 
                     void Clear() {
-                        m_mMap.clear();
+                        m_lstItems.Clear();
                     }
 
                     bool ContainsKey(const TKey& key) const {
-                        return m_mMap.find(key) != m_mMap.end();
+                        return m_lstItems.BinarySearch(KeyValuePair{ key, TValue() }) >= 0;
                     }
 
                     bool Remove(const TKey& key) {
-                        return m_mMap.erase(key) > 0;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index < 0) return false;
+
+                        m_lstItems.RemoveAt(index);
+                        return true;
                     }
 
                     bool TryGetValue(const TKey& key, TValue& value) const {
-                        auto it = m_mMap.find(key);
-                        if (it != m_mMap.end()) {
-                            value = it->second;
+                        int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
+                        if (index >= 0) {
+                            value = m_lstItems[index].Value;
                             return true;
                         }
                         return false;
                     }
 
                     Array<TKey> GetKeys() const {
-                        Array<TKey> arrKeys((int)m_mMap.size());
-                        int iIndex = 0;
-                        for (const auto& kvp : m_mMap) {
-                            arrKeys[iIndex++] = kvp.first;
+                        int count = m_lstItems.GetCount();
+                        Array<TKey> arrKeys(count);
+                        for (int i = 0; i < count; ++i) {
+                            arrKeys[i] = m_lstItems[i].Key;
                         }
                         return arrKeys;
                     }
 
                     Array<TValue> GetValues() const {
-                        Array<TValue> arrValues((int)m_mMap.size());
-                        int iIndex = 0;
-                        for (const auto& kvp : m_mMap) {
-                            arrValues[iIndex++] = kvp.second;
+                        int count = m_lstItems.GetCount();
+                        Array<TValue> arrValues(count);
+                        for (int i = 0; i < count; ++i) {
+                            arrValues[i] = m_lstItems[i].Value;
                         }
                         return arrValues;
                     }

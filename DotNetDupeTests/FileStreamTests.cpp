@@ -8,6 +8,7 @@
 #include "System/IOException.h"
 #include "System/Text/TextEncoding.h"
 #include "System/Array.h"
+#include "System/IO/MockStream.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
@@ -216,6 +217,37 @@ namespace SystemTests {
             EXPECT_EQ(1, fs.GetPosition());
             
             fs.Dispose();
+        }
+
+        TEST(MockStreamTest, MockStream_ReadWriteAndFaults_Should_BehaveAsExpected) {
+            MockStream stream(true, true, true);
+
+            const char writeData[] = "Mock Stream Content";
+            stream.Write(writeData, 0, sizeof(writeData) - 1);
+            EXPECT_EQ(stream.GetLength(), static_cast<long>(sizeof(writeData) - 1));
+
+            stream.SetPosition(0);
+            char readBuffer[64] = { 0 };
+            int bytesRead = stream.Read(readBuffer, 0, 64);
+            EXPECT_EQ(bytesRead, static_cast<int>(sizeof(writeData) - 1));
+            EXPECT_STREQ(readBuffer, "Mock Stream Content");
+
+            // Test Simulated Faults
+            stream.SetThrowOnRead(true);
+            EXPECT_THROW(stream.Read(readBuffer, 0, 10), IOException);
+
+            stream.SetThrowOnWrite(true);
+            EXPECT_THROW(stream.Write("Test", 0, 4), IOException);
+
+            // Test Disposed Stream
+            stream.Dispose();
+            EXPECT_TRUE(stream.IsDisposed());
+            EXPECT_FALSE(stream.CanRead());
+            EXPECT_FALSE(stream.CanWrite());
+            EXPECT_FALSE(stream.CanSeek());
+            EXPECT_THROW(stream.GetLength(), IOException);
+            EXPECT_THROW(stream.GetPosition(), IOException);
+            EXPECT_THROW(stream.SetPosition(0), IOException);
         }
     }
 }

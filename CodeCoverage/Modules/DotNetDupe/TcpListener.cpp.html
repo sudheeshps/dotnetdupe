@@ -1,0 +1,117 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>TcpListener.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/SocketException.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Net {
+            namespace Sockets {
+
+                TcpListener::TcpListener(int port)
+<span style = "background-color:#dfd">                    : m_sIp("0.0.0.0"), m_nPort(port), m_bActive(false) {
+                }</span>
+
+                TcpListener::TcpListener(const String&amp; ip, int port)
+<span style = "background-color:#dfd">                    : m_sIp(ip), m_nPort(port), m_bActive(false) {
+                }</span>
+
+<span style = "background-color:#dfd">                TcpListener::~TcpListener() {
+                    Stop();
+                }</span>
+
+                TcpListener::TcpListener(TcpListener&amp;&amp; other) noexcept
+<span style = "background-color:#fdd">                    : m_sIp(std::move(other.m_sIp)),
+                      m_nPort(other.m_nPort),
+                      m_pListenerSocket(std::move(other.m_pListenerSocket)),
+                      m_bActive(other.m_bActive) {
+                    other.m_bActive = false;
+                }</span>
+
+<span style = "background-color:#fdd">                TcpListener&amp; TcpListener::operator=(TcpListener&amp;&amp; other) noexcept {
+                    if (this != &amp;other) {
+                        Stop();
+                        m_sIp = std::move(other.m_sIp);
+                        m_nPort = other.m_nPort;
+                        m_pListenerSocket = std::move(other.m_pListenerSocket);
+                        m_bActive = other.m_bActive;
+                        other.m_bActive = false;</span>
+                    }
+                    return *this;
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                void TcpListener::Start() {
+                    Start(100);</span>
+                }
+
+<span style = "background-color:#dfd">                void TcpListener::Start(int backlog) {
+                    if (m_bActive) return;</span>
+
+<span style = "background-color:#dfd">                    m_pListenerSocket.Attach(new Socket(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp), true);
+                    m_pListenerSocket-&gt;Bind(m_sIp, m_nPort);
+                    m_pListenerSocket-&gt;Listen(backlog);
+                    m_bActive = true;
+                }</span>
+
+<span style = "background-color:#dfd">                void TcpListener::Stop() {
+                    if (m_bActive) {
+                        m_bActive = false;
+                        if (!m_pListenerSocket.IsNull()) {
+                            m_pListenerSocket-&gt;Close();</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;TcpClient&gt; TcpListener::AcceptTcpClient() {
+                    if (!m_bActive || m_pListenerSocket.IsNull()) {
+                        throw SocketException(-1, String("TcpListener is not started."));</span>
+                    }
+<span style = "background-color:#dfd">                    SmartPointer&lt;Socket&gt; pListenerSocket = m_pListenerSocket;
+                    SmartPointer&lt;Socket&gt; pClientSocket = pListenerSocket-&gt;Accept();
+                    return SmartPointer&lt;TcpClient&gt;(new TcpClient(pClientSocket));
+                }</span>
+
+<span style = "background-color:#fdd">                SmartPointer&lt;Socket&gt; TcpListener::AcceptSocket() {
+                    if (!m_bActive || m_pListenerSocket.IsNull()) {
+                        throw SocketException(-1, String("TcpListener is not started."));</span>
+                    }
+<span style = "background-color:#fdd">                    SmartPointer&lt;Socket&gt; pListenerSocket = m_pListenerSocket;
+                    return pListenerSocket-&gt;Accept();
+                }</span>
+
+<span style = "background-color:#fdd">                bool TcpListener::Pending() {
+                    if (!m_bActive || m_pListenerSocket.IsNull()) {</span>
+                        return false;
+                    }
+<span style = "background-color:#fdd">                    return m_pListenerSocket-&gt;Poll(0, SelectMode::SelectRead);
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

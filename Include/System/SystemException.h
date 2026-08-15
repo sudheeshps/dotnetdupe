@@ -1,8 +1,14 @@
 #pragma once
-#include "System/BasicSystemException.h"
+#include "System/Exception.h"
+#include "Common.h"
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicSystemException<char> SystemException;
+        class SystemException : public Exception {
+        public:
+            DOTNETDUPE_API SystemException();
+            DOTNETDUPE_API SystemException(const String& sMessage);
+            DOTNETDUPE_API SystemException(const String& sMessage, const Exception& innerException);
+        };
     }
 }
-

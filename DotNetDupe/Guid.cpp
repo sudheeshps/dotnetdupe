@@ -26,20 +26,17 @@ namespace DotNetDupe {
         }
 
         Guid::Guid(const String& g) {
-            std::string s = (const char*)g;
-            // Remove braces or hyphens if needed
-            s.erase(std::remove(s.begin(), s.end(), '{'), s.end());
-            s.erase(std::remove(s.begin(), s.end(), '}'), s.end());
-            s.erase(std::remove(s.begin(), s.end(), '-'), s.end());
+            String s = g.Replace("{", "").Replace("}", "").Replace("-", "");
 
-            if (s.length() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");
+            if (s.GetLength() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");
 
             for (size_t i = 0; i < 16; ++i) {
                 unsigned int byteVal;
+                String sub = s.Substring(static_cast<int>(i * 2), 2);
 #if defined(_WIN32)
-                if (sscanf_s(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+                if (sscanf_s(sub.GetRawString(), "%02x", &byteVal) != 1)
 #else
-                if (sscanf(s.substr(i * 2, 2).c_str(), "%02x", &byteVal) != 1)
+                if (sscanf(sub.GetRawString(), "%02x", &byteVal) != 1)
 #endif
                     throw FormatException("Guid string should only contain 32 hexadecimal characters.");
                 _data[i] = (uint8_t)byteVal;

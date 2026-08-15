@@ -1,4 +1,7 @@
 #pragma once
+
+typedef unsigned char byte;
+
 #if defined(_WIN32)
     #pragma warning(disable: 4251) // dll-interface warning for private template members
     #pragma warning(disable: 4275) // non dll-interface class used as base for dll-interface class
@@ -6,6 +9,12 @@
         #define DOTNETDUPE_API __declspec(dllexport)
     #else
         #define DOTNETDUPE_API __declspec(dllimport)
+    #endif
+    #ifdef SetPort
+        #undef SetPort
+    #endif
+    #ifdef GetPort
+        #undef GetPort
     #endif
 #else
     #if __GNUC__ >= 4

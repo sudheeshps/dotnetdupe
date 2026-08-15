@@ -45,7 +45,7 @@ void DemonstrateJwt() {
         Console::Write("Verifying signature with incorrect key: ");
         Console::WriteLine(parsedToken->Verify("some-other-secret-key") ? "VALID" : "INVALID");
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("Error during JWT demonstration: ");
         Console::WriteLine(ex.What());
     }

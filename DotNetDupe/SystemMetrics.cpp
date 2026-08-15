@@ -14,10 +14,20 @@
 #include <psapi.h>
 #include <iphlpapi.h>
 #include <pdh.h>
+#include <winsvc.h>
 #pragma comment(lib, "ws2_32.lib")
 #pragma comment(lib, "iphlpapi.lib")
 #pragma comment(lib, "psapi.lib")
 #pragma comment(lib, "pdh.lib")
+#pragma comment(lib, "advapi32.lib")
+#else
+#include <fstream>
+#include <sstream>
+#include <dirent.h>
+#include <unistd.h>
+#include <sys/statvfs.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
 #endif
 
 namespace DotNetDupe {
@@ -34,339 +44,430 @@ namespace DotNetDupe {
             };
             static std::map<int, ProcessCpuSample> s_mapProcessCpuSamples;
 
-            void SystemMetrics::ReadWin32Memory(RealTimeSystemInfo& data) {
-                MEMORYSTATUSEX memStatus;
-                memStatus.dwLength = sizeof(MEMORYSTATUSEX);
-
-                if (::GlobalMemoryStatusEx(&memStatus)) {
-                    data.dMemoryUsagePercent = static_cast<double>(memStatus.dwMemoryLoad);
-                    data.uMemoryTotalBytes = static_cast<unsigned long long>(memStatus.ullTotalPhys);
-                    data.uMemoryUsedBytes = static_cast<unsigned long long>(memStatus.ullTotalPhys - memStatus.ullAvailPhys);
+            struct SystemMetricsWin32Helper {
+                static MemoryInfo GetSystemMemory() {
+                    MemoryInfo info;
+                    MEMORYSTATUSEX memStatus;
+                    memStatus.dwLength = sizeof(MEMORYSTATUSEX);
+                    if (::GlobalMemoryStatusEx(&memStatus)) {
+                        info.dMemoryUsagePercent = static_cast<double>(memStatus.dwMemoryLoad);
+                        info.uMemoryTotalBytes = static_cast<unsigned long long>(memStatus.ullTotalPhys);
+                        info.uMemoryUsedBytes = static_cast<unsigned long long>(memStatus.ullTotalPhys - memStatus.ullAvailPhys);
+                    }
+                    return info;
                 }
-            }
 
-            void SystemMetrics::ReadWin32Cpu(RealTimeSystemInfo& data) {
-                static uint64_t s_uPrevIdle = 0, s_uPrevTotal = 0;
-                FILETIME ftIdle, ftKernel, ftUser;
-
-                if (::GetSystemTimes(&ftIdle, &ftKernel, &ftUser)) {
-                    uint64_t uIdle = (static_cast<uint64_t>(ftIdle.dwHighDateTime) << 32) | ftIdle.dwLowDateTime;
-                    uint64_t uKernel = (static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime;
-                    uint64_t uUser = (static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime;
+                static double CalculateCpuDelta(uint64_t uIdle, uint64_t uKernel, uint64_t uUser) {
+                    static uint64_t s_uPrevIdle = 0, s_uPrevTotal = 0;
                     uint64_t uTotal = uKernel + uUser;
-
+                    double dCpu = 0.0;
                     if (s_uPrevTotal > 0 && uTotal > s_uPrevTotal) {
                         uint64_t uTotalDiff = uTotal - s_uPrevTotal;
                         uint64_t uIdleDiff = uIdle - s_uPrevIdle;
-                        data.dCpuUsagePercent = static_cast<double>((uTotalDiff - uIdleDiff) * 100.0 / uTotalDiff);
+                        dCpu = static_cast<double>((uTotalDiff - uIdleDiff) * 100.0 / uTotalDiff);
                     } else if (uTotal > 0) {
-                        data.dCpuUsagePercent = static_cast<double>((uTotal - uIdle) * 100.0 / uTotal);
+                        dCpu = static_cast<double>((uTotal - uIdle) * 100.0 / uTotal);
                     }
-
-                    if (data.dCpuUsagePercent < 0.0) data.dCpuUsagePercent = 0.0;
-                    if (data.dCpuUsagePercent > 100.0) data.dCpuUsagePercent = 100.0;
-
-                    s_uPrevIdle = uIdle;
-                    s_uPrevTotal = uTotal;
+                    s_uPrevIdle = uIdle; s_uPrevTotal = uTotal;
+                    return (dCpu < 0.0) ? 0.0 : ((dCpu > 100.0) ? 100.0 : dCpu);
                 }
-            }
 
-            void SystemMetrics::ReadWin32Disk(RealTimeSystemInfo& data) {
-                data.uDiskReadBytes = 0;
-                data.uDiskWriteBytes = 0;
-                static HQUERY s_hQuery = NULL;
-                static HCOUNTER s_hCounterRead = NULL;
-                static HCOUNTER s_hCounterWrite = NULL;
-                static bool s_bPdhInitialized = false;
+                static double GetSystemCpu() {
+                    FILETIME ftIdle, ftKernel, ftUser;
+                    if (!::GetSystemTimes(&ftIdle, &ftKernel, &ftUser)) return 0.0;
+                    uint64_t uIdle = (static_cast<uint64_t>(ftIdle.dwHighDateTime) << 32) | ftIdle.dwLowDateTime;
+                    uint64_t uKernel = (static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime;
+                    uint64_t uUser = (static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime;
+                    return CalculateCpuDelta(uIdle, uKernel, uUser);
+                }
 
-                if (!s_bPdhInitialized) {
-                    if (::PdhOpenQueryW(NULL, 0, &s_hQuery) == ERROR_SUCCESS) {
-                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec", 0, &s_hCounterRead);
-                        ::PdhAddEnglishCounterW(s_hQuery, L"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec", 0, &s_hCounterWrite);
-                        ::PdhCollectQueryData(s_hQuery);
+                static void InitDiskQuery(HQUERY& hQuery, HCOUNTER& hRead, HCOUNTER& hWrite) {
+                    static bool s_bPdhInitialized = false;
+                    if (!s_bPdhInitialized && ::PdhOpenQueryW(NULL, 0, &hQuery) == ERROR_SUCCESS) {
+                        ::PdhAddEnglishCounterW(hQuery, L"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec", 0, &hRead);
+                        ::PdhAddEnglishCounterW(hQuery, L"\\PhysicalDisk(_Total)\\Disk Write Bytes/sec", 0, &hWrite);
+                        ::PdhCollectQueryData(hQuery);
                         s_bPdhInitialized = true;
                     }
                 }
 
-                if (s_bPdhInitialized && s_hQuery != NULL) {
-                    if (::PdhCollectQueryData(s_hQuery) == ERROR_SUCCESS) {
+                static DiskInfo GetSystemDisk() {
+                    DiskInfo info;
+                    static HQUERY s_hQuery = NULL; static HCOUNTER s_hRead = NULL, s_hWrite = NULL;
+                    InitDiskQuery(s_hQuery, s_hRead, s_hWrite);
+                    if (s_hQuery && ::PdhCollectQueryData(s_hQuery) == ERROR_SUCCESS) {
                         PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
-
-                        if (::PdhGetFormattedCounterValue(s_hCounterRead, PDH_FMT_LARGE, NULL, &fmtRead) == ERROR_SUCCESS)
-                            data.uDiskReadBytes = static_cast<unsigned long long>(fmtRead.largeValue);
-
-                        if (::PdhGetFormattedCounterValue(s_hCounterWrite, PDH_FMT_LARGE, NULL, &fmtWrite) == ERROR_SUCCESS)
-                            data.uDiskWriteBytes = static_cast<unsigned long long>(fmtWrite.largeValue);
+                        if (::PdhGetFormattedCounterValue(s_hRead, PDH_FMT_LARGE, NULL, &fmtRead) == ERROR_SUCCESS) info.lDiskReadBytes = static_cast<long long>(fmtRead.largeValue);
+                        if (::PdhGetFormattedCounterValue(s_hWrite, PDH_FMT_LARGE, NULL, &fmtWrite) == ERROR_SUCCESS) info.lDiskWriteBytes = static_cast<long long>(fmtWrite.largeValue);
                     }
+                    return info;
                 }
-            }
 
-            void SystemMetrics::ReadWin32Network(RealTimeSystemInfo& data) {
-                static uint64_t s_uPrevOctets = 0;
-                static DWORD s_dwPrevTick = 0;
-                DWORD dwSize = 0;
-
-                if (::GetIfTable(NULL, &dwSize, FALSE) == ERROR_INSUFFICIENT_BUFFER) {
-                    std::vector<uint8_t> ifTableBuffer(dwSize, 0);
-                    MIB_IFTABLE* pIfTable = reinterpret_cast<MIB_IFTABLE*>(ifTableBuffer.data());
-
-                    if (::GetIfTable(pIfTable, &dwSize, FALSE) == NO_ERROR) {
-                        uint64_t totalOctets = 0;
-
-                        for (DWORD i = 0; i < pIfTable->dwNumEntries; ++i) {
-                            if (pIfTable->table[i].dwType != IF_TYPE_SOFTWARE_LOOPBACK && pIfTable->table[i].dwOperStatus == IF_OPER_STATUS_OPERATIONAL)
-                                totalOctets += pIfTable->table[i].dwInOctets + pIfTable->table[i].dwOutOctets;
-                        }
-
-                        DWORD dwNow = ::GetTickCount();
-
-                        if (s_dwPrevTick > 0 && dwNow > s_dwPrevTick && totalOctets >= s_uPrevOctets) {
-                            double dElapsedSec = (dwNow - s_dwPrevTick) / 1000.0;
-                            double dBytesPerSec = (totalOctets - s_uPrevOctets) / dElapsedSec;
-                            data.dNetworkUsageMbps = (dBytesPerSec * 8.0) / 1000000.0;
-                        }
-
-                        s_uPrevOctets = totalOctets;
-                        s_dwPrevTick = dwNow;
+                static double CalculateNetRate(uint64_t totalOctets) {
+                    static uint64_t s_uPrevOctets = 0; static DWORD s_dwPrevTick = 0;
+                    DWORD dwNow = ::GetTickCount(); double dMbps = 0.0;
+                    if (s_dwPrevTick > 0 && dwNow > s_dwPrevTick && totalOctets >= s_uPrevOctets) {
+                        double dElapsedSec = (dwNow - s_dwPrevTick) / 1000.0;
+                        dMbps = ((totalOctets - s_uPrevOctets) / dElapsedSec * 8.0) / 1000000.0;
                     }
+                    s_uPrevOctets = totalOctets; s_dwPrevTick = dwNow;
+                    return dMbps;
                 }
-            }
 
-            void SystemMetrics::ReadProcessCommandLine(void* hProc, void* pPebBaseAddress, ProcessResourceInfo& proc, bool& bCmdRead) {
-                typedef NTSTATUS(NTAPI* pfnNtQueryInformationProcess)(HANDLE, ULONG, PVOID, ULONG, PULONG);
-                HMODULE hNtDll = ::GetModuleHandleW(L"ntdll.dll");
-                pfnNtQueryInformationProcess fnNtQuery = hNtDll ? (pfnNtQueryInformationProcess)::GetProcAddress(hNtDll, "NtQueryInformationProcess") : NULL;
+                static double GetSystemNetwork() {
+                    DWORD dwSize = 0;
+                    if (::GetIfTable(NULL, &dwSize, FALSE) != ERROR_INSUFFICIENT_BUFFER) return 0.0;
+                    std::vector<uint8_t> buf(dwSize, 0);
+                    MIB_IFTABLE* pTable = reinterpret_cast<MIB_IFTABLE*>(buf.data());
+                    if (::GetIfTable(pTable, &dwSize, FALSE) != NO_ERROR) return 0.0;
+                    uint64_t totalOctets = 0;
+                    for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                        if (pTable->table[i].dwType != IF_TYPE_SOFTWARE_LOOPBACK && pTable->table[i].dwOperStatus == IF_OPER_STATUS_OPERATIONAL)
+                            totalOctets += pTable->table[i].dwInOctets + pTable->table[i].dwOutOctets;
+                    }
+                    return CalculateNetRate(totalOctets);
+                }
 
-                if (fnNtQuery) {
-                    PROCESS_BASIC_INFORMATION pbi;
-                    DWORD dwLen = 0;
+                static HANDLE FindProcessHandle(HANDLE hSnapshot, const std::wstring& wTarget, unsigned long dwAccess, int& iOutPid) {
+                    PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
+                    if (!::Process32FirstW(hSnapshot, &pe32)) return NULL;
+                    do {
+                        std::wstring wExeFile(pe32.szExeFile);
+                        std::transform(wExeFile.begin(), wExeFile.end(), wExeFile.begin(), ::tolower);
+                        if (wExeFile == wTarget || wExeFile == wTarget + L".exe") {
+                            iOutPid = pe32.th32ProcessID;
+                            return ::OpenProcess(dwAccess, FALSE, pe32.th32ProcessID);
+                        }
+                    } while (::Process32NextW(hSnapshot, &pe32));
+                    return NULL;
+                }
 
+                static void* OpenProcByName(const String& sProcessName, unsigned long dwAccess, int& iOutPid) {
+                    iOutPid = -1;
+                    HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                    if (hSnapshot == INVALID_HANDLE_VALUE) return NULL;
+                    std::string sTarget = sProcessName.GetRawString() ? sProcessName.GetRawString() : "";
+                    std::wstring wTarget(sTarget.begin(), sTarget.end());
+                    std::transform(wTarget.begin(), wTarget.end(), wTarget.begin(), ::tolower);
+                    HANDLE hResult = FindProcessHandle(hSnapshot, wTarget, dwAccess, iOutPid);
+                    ::CloseHandle(hSnapshot);
+                    return hResult;
+                }
+
+                static String ReadPebCommandLine(HANDLE hProc, PVOID pebBase) {
+                    PEB peb; SIZE_T bytesRead = 0;
+                    if (!::ReadProcessMemory(hProc, pebBase, &peb, sizeof(peb), &bytesRead)) return String("");
+                    RTL_USER_PROCESS_PARAMETERS upp;
+                    if (!::ReadProcessMemory(hProc, peb.ProcessParameters, &upp, sizeof(upp), &bytesRead) || !upp.CommandLine.Buffer || upp.CommandLine.Length == 0) return String("");
+                    std::vector<wchar_t> wCmd(upp.CommandLine.Length / sizeof(wchar_t) + 1, 0);
+                    if (::ReadProcessMemory(hProc, upp.CommandLine.Buffer, wCmd.data(), upp.CommandLine.Length, &bytesRead)) return String(wCmd.data());
+                    return String("");
+                }
+
+                static String ReadProcCmdLine(void* hProc) {
+                    typedef NTSTATUS(NTAPI* pfnNtQuery)(HANDLE, ULONG, PVOID, ULONG, PULONG);
+                    HMODULE hNtDll = ::GetModuleHandleW(L"ntdll.dll");
+                    pfnNtQuery fnNtQuery = hNtDll ? (pfnNtQuery)::GetProcAddress(hNtDll, "NtQueryInformationProcess") : NULL;
+                    if (!fnNtQuery || !hProc) return String("");
+                    PROCESS_BASIC_INFORMATION pbi; DWORD dwLen = 0;
                     if (fnNtQuery(static_cast<HANDLE>(hProc), 0, &pbi, sizeof(pbi), &dwLen) == 0 && pbi.PebBaseAddress) {
-                        PEB peb;
-                        SIZE_T bytesRead = 0;
+                        return ReadPebCommandLine(static_cast<HANDLE>(hProc), pbi.PebBaseAddress);
+                    }
+                    return String("");
+                }
 
-                        if (::ReadProcessMemory(static_cast<HANDLE>(hProc), pbi.PebBaseAddress, &peb, sizeof(peb), &bytesRead)) {
-                            RTL_USER_PROCESS_PARAMETERS upp;
-
-                            if (::ReadProcessMemory(static_cast<HANDLE>(hProc), peb.ProcessParameters, &upp, sizeof(upp), &bytesRead) && upp.CommandLine.Buffer && upp.CommandLine.Length > 0) {
-                                std::vector<wchar_t> wCmd(upp.CommandLine.Length / sizeof(wchar_t) + 1, 0);
-
-                                if (::ReadProcessMemory(static_cast<HANDLE>(hProc), upp.CommandLine.Buffer, wCmd.data(), upp.CommandLine.Length, &bytesRead)) {
-                                    proc.sCommandLine = String(wCmd.data());
-                                    bCmdRead = true;
-                                }
-                            }
+                static MemoryInfo ReadProcMemory(void* hProc) {
+                    MemoryInfo info;
+                    if (hProc) {
+                        PROCESS_MEMORY_COUNTERS_EX pmc;
+                        if (::GetProcessMemoryInfo(static_cast<HANDLE>(hProc), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&pmc), sizeof(pmc))) {
+                            info.lPhysicalMemoryBytes = static_cast<long long>(pmc.WorkingSetSize);
+                            info.lPrivateBytes = static_cast<long long>(pmc.PrivateUsage);
                         }
                     }
-                }
-            }
-
-            void SystemMetrics::ReadProcessIoAndTimes(void* hProc, ProcessResourceInfo& proc) {
-                std::string sStdProc(proc.sName.GetRawString() ? proc.sName.GetRawString() : "");
-                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
-                size_t nExtPos = wProcName.rfind(L'.');
-
-                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);
-
-                std::wstring wReadCounterPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
-                std::wstring wWriteCounterPath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";
-
-                HQUERY hProcQuery = NULL;
-                HCOUNTER hProcRead = NULL, hProcWrite = NULL;
-
-                if (::PdhOpenQueryW(NULL, 0, &hProcQuery) == ERROR_SUCCESS) {
-                    bool bReadOk = (::PdhAddEnglishCounterW(hProcQuery, wReadCounterPath.c_str(), 0, &hProcRead) == ERROR_SUCCESS);
-                    bool bWriteOk = (::PdhAddEnglishCounterW(hProcQuery, wWriteCounterPath.c_str(), 0, &hProcWrite) == ERROR_SUCCESS);
-
-                    if (::PdhCollectQueryData(hProcQuery) == ERROR_SUCCESS) {
-                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
-
-                        if (bReadOk && ::PdhGetFormattedCounterValue(hProcRead, PDH_FMT_LARGE, NULL, &fmtRead) == ERROR_SUCCESS)
-                            proc.lDiskReadBytes = static_cast<long long>(fmtRead.largeValue);
-
-                        if (bWriteOk && ::PdhGetFormattedCounterValue(hProcWrite, PDH_FMT_LARGE, NULL, &fmtWrite) == ERROR_SUCCESS)
-                            proc.lDiskWriteBytes = static_cast<long long>(fmtWrite.largeValue);
-                    }
-
-                    ::PdhCloseQuery(hProcQuery);
+                    return info;
                 }
 
-                if (proc.lDiskReadBytes == -1 || proc.lDiskWriteBytes == -1) {
-                    IO_COUNTERS io;
-
-                    if (::GetProcessIoCounters(static_cast<HANDLE>(hProc), &io)) {
-                        if (proc.lDiskReadBytes == -1) proc.lDiskReadBytes = static_cast<long long>(io.ReadTransferCount);
-                        if (proc.lDiskWriteBytes == -1) proc.lDiskWriteBytes = static_cast<long long>(io.WriteTransferCount);
-                    }
-                }
-
-                FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser;
-
-                if (::GetProcessTimes(static_cast<HANDLE>(hProc), &ftCreate, &ftExit, &ftKernel, &ftUser) && ::GetSystemTimes(&ftSysIdle, &ftSysKernel, &ftSysUser)) {
-                    uint64_t uProcTime = ((static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime) +
-                                         ((static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime);
-                    uint64_t uSysTime = ((static_cast<uint64_t>(ftSysKernel.dwHighDateTime) << 32) | ftSysKernel.dwLowDateTime) +
-                                        ((static_cast<uint64_t>(ftSysUser.dwHighDateTime) << 32) | ftSysUser.dwLowDateTime);
-
-                    auto it = s_mapProcessCpuSamples.find(proc.iProcessId);
-
-                    if (it != s_mapProcessCpuSamples.end() && uSysTime > it->second.uSystemTime && uProcTime >= it->second.uProcessTime) {
-                        uint64_t uProcDiff = uProcTime - it->second.uProcessTime;
-                        uint64_t uSysDiff = uSysTime - it->second.uSystemTime;
-                        double dCpu = (static_cast<double>(uProcDiff) * 100.0 / static_cast<double>(uSysDiff));
-
-                        if (dCpu > 100.0) dCpu = 100.0;
-                        if (dCpu < 0.0) dCpu = 0.0;
-
-                        proc.dCpuUsagePercent = dCpu;
-                    } else {
-                        proc.dCpuUsagePercent = 0.0;
-                    }
-
-                    s_mapProcessCpuSamples[proc.iProcessId] = { uProcTime, uSysTime };
-                }
-            }
-
-            void SystemMetrics::ReadProcessNetwork(void* hProc, ProcessResourceInfo& proc) {
-                proc.lNetworkReadBytes = -1;
-                proc.lNetworkWriteBytes = -1;
-
-                std::string sStdProc(proc.sName.GetRawString() ? proc.sName.GetRawString() : "");
-                std::wstring wProcName(sStdProc.begin(), sStdProc.end());
-                size_t nExtPos = wProcName.rfind(L'.');
-
-                if (nExtPos != std::wstring::npos) wProcName = wProcName.substr(0, nExtPos);
-
-                std::wstring wReadPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
-                std::wstring wWritePath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";
-
-                HQUERY hQuery = NULL;
-                HCOUNTER hCounterRead = NULL, hCounterWrite = NULL;
-
-                if (::PdhOpenQueryW(NULL, 0, &hQuery) == ERROR_SUCCESS) {
-                    bool bReadOk = (::PdhAddEnglishCounterW(hQuery, wReadPath.c_str(), 0, &hCounterRead) == ERROR_SUCCESS);
-                    bool bWriteOk = (::PdhAddEnglishCounterW(hQuery, wWritePath.c_str(), 0, &hCounterWrite) == ERROR_SUCCESS);
-
+                static void QueryPdhIoCounters(const std::wstring& wProcName, DiskInfo& info) {
+                    std::wstring rPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
+                    std::wstring wPath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";
+                    HQUERY hQuery = NULL; HCOUNTER hRead = NULL, hWrite = NULL;
+                    if (::PdhOpenQueryW(NULL, 0, &hQuery) != ERROR_SUCCESS) return;
+                    bool rOk = (::PdhAddEnglishCounterW(hQuery, rPath.c_str(), 0, &hRead) == ERROR_SUCCESS);
+                    bool wOk = (::PdhAddEnglishCounterW(hQuery, wPath.c_str(), 0, &hWrite) == ERROR_SUCCESS);
                     if (::PdhCollectQueryData(hQuery) == ERROR_SUCCESS) {
-                        PDH_FMT_COUNTERVALUE fmtRead, fmtWrite;
-
-                        if (bReadOk && ::PdhGetFormattedCounterValue(hCounterRead, PDH_FMT_LARGE, NULL, &fmtRead) == ERROR_SUCCESS)
-                            proc.lNetworkReadBytes = static_cast<long long>(fmtRead.largeValue);
-
-                        if (bWriteOk && ::PdhGetFormattedCounterValue(hCounterWrite, PDH_FMT_LARGE, NULL, &fmtWrite) == ERROR_SUCCESS)
-                            proc.lNetworkWriteBytes = static_cast<long long>(fmtWrite.largeValue);
+                        PDH_FMT_COUNTERVALUE fmtR, fmtW;
+                        if (rOk && ::PdhGetFormattedCounterValue(hRead, PDH_FMT_LARGE, NULL, &fmtR) == ERROR_SUCCESS) info.lDiskReadBytes = static_cast<long long>(fmtR.largeValue);
+                        if (wOk && ::PdhGetFormattedCounterValue(hWrite, PDH_FMT_LARGE, NULL, &fmtW) == ERROR_SUCCESS) info.lDiskWriteBytes = static_cast<long long>(fmtW.largeValue);
                     }
-
                     ::PdhCloseQuery(hQuery);
                 }
-            }
 
-            void SystemMetrics::ReadProcessPortsAndConnections(int iProcessId, ProcessResourceInfo& proc) {
-                proc.bHasEstablishedInboundConnection = false;
-                DWORD dwSize = 0;
-
-                if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
-                    std::vector<uint8_t> tcpTableBuffer(dwSize, 0);
-                    MIB_TCPTABLE_OWNER_PID* pTcpTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(tcpTableBuffer.data());
-
-                    if (::GetExtendedTcpTable(pTcpTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
-                        for (DWORD i = 0; i < pTcpTable->dwNumEntries; ++i) {
-                            if (pTcpTable->table[i].dwOwningPid == static_cast<DWORD>(iProcessId)) {
-                                if (pTcpTable->table[i].dwState == MIB_TCP_STATE_LISTEN) {
-                                    int iPort = ntohs(static_cast<u_short>(pTcpTable->table[i].dwLocalPort));
-                                    if (!proc.lstOpenPorts.Contains(iPort)) {
-                                        proc.lstOpenPorts.Add(iPort);
-                                    }
-                                } else if (pTcpTable->table[i].dwState == MIB_TCP_STATE_ESTAB) {
-                                    proc.bHasEstablishedInboundConnection = true;
-                                }
-                            }
+                static DiskInfo ReadProcDisk(void* hProc, const String& sProcessName) {
+                    DiskInfo info;
+                    std::string sStd(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
+                    std::wstring wProc(sStd.begin(), sStd.end());
+                    size_t pos = wProc.rfind(L'.'); if (pos != std::wstring::npos) wProc = wProc.substr(0, pos);
+                    QueryPdhIoCounters(wProc, info);
+                    if ((info.lDiskReadBytes == -1 || info.lDiskWriteBytes == -1) && hProc) {
+                        IO_COUNTERS io;
+                        if (::GetProcessIoCounters(static_cast<HANDLE>(hProc), &io)) {
+                            if (info.lDiskReadBytes == -1) info.lDiskReadBytes = static_cast<long long>(io.ReadTransferCount);
+                            if (info.lDiskWriteBytes == -1) info.lDiskWriteBytes = static_cast<long long>(io.WriteTransferCount);
                         }
                     }
+                    return info;
                 }
-            }
 
-            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessResourceInfo& proc) {
-                PROCESSENTRY32W* pe32 = static_cast<PROCESSENTRY32W*>(pEntry32);
-                proc.iProcessId = pe32->th32ProcessID;
-                proc.dCpuUsagePercent = -1.0;
-                proc.lMemoryUsageBytes = -1;
-                proc.lDiskReadBytes = -1;
-                proc.lDiskWriteBytes = -1;
-                proc.lNetworkReadBytes = -1;
-                proc.lNetworkWriteBytes = -1;
-                proc.bHasEstablishedInboundConnection = false;
-                proc.sName = String(pe32->szExeFile);
+                static NetworkUsageInfo ReadProcNetwork(void* hProc, const String& sProcessName) {
+                    NetworkUsageInfo info;
+                    std::string sStd(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
+                    std::wstring wProc(sStd.begin(), sStd.end());
+                    size_t pos = wProc.rfind(L'.'); if (pos != std::wstring::npos) wProc = wProc.substr(0, pos);
+                    DiskInfo di;
+                    QueryPdhIoCounters(wProc, di);
+                    info.lNetworkReadBytes = di.lDiskReadBytes;
+                    info.lNetworkWriteBytes = di.lDiskWriteBytes;
+                    return info;
+                }
 
-                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32->th32ProcessID);
-
-                if (hProc != NULL) {
-                    WCHAR szPath[MAX_PATH] = { 0 };
-                    DWORD dwPathLen = MAX_PATH;
-
-                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwPathLen)) {
-                        proc.sPath = String(szPath);
+                static Collections::Generic::List<int> ReadProcPorts(int iPid) {
+                    Collections::Generic::List<int> lst;
+                    if (iPid <= 0) return lst;
+                    DWORD dwSize = 0;
+                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) return lst;
+                    std::vector<uint8_t> buf(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
+                    if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) return lst;
+                    for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid) && pTable->table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                            int p = ntohs(static_cast<u_short>(pTable->table[i].dwLocalPort));
+                            if (!lst.Contains(p)) lst.Add(p);
+                        }
                     }
+                    return lst;
+                }
 
-                    bool bCmdRead = false;
-                    ReadProcessCommandLine(hProc, NULL, proc, bCmdRead);
+                static void ExtractTcpConnection(MIB_TCPROW_OWNER_PID& row, NetworkConnectionInfo& conn) {
+                    in_addr lAddr, rAddr;
+                    lAddr.S_un.S_addr = row.dwLocalAddr; rAddr.S_un.S_addr = row.dwRemoteAddr;
+                    char szL[INET_ADDRSTRLEN] = { 0 }, szR[INET_ADDRSTRLEN] = { 0 };
+                    ::inet_ntop(AF_INET, &lAddr, szL, sizeof(szL));
+                    ::inet_ntop(AF_INET, &rAddr, szR, sizeof(szR));
+                    conn.sLocalAddress = String(szL); conn.iLocalPort = ntohs(static_cast<u_short>(row.dwLocalPort));
+                    conn.sRemoteAddress = String(szR); conn.iRemotePort = ntohs(static_cast<u_short>(row.dwRemotePort));
+                    conn.sState = (row.dwState == MIB_TCP_STATE_LISTEN) ? "LISTEN" : ((row.dwState == MIB_TCP_STATE_ESTAB) ? "ESTABLISHED" : "OTHER");
+                }
 
-                    if (!bCmdRead) proc.sCommandLine = proc.sPath;
+                static ProcessNetworkConnectionInfo ReadProcNetInfo(int iPid) {
+                    ProcessNetworkConnectionInfo info;
+                    if (iPid <= 0) return info;
+                    DWORD dwSize = 0;
+                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) return info;
+                    std::vector<uint8_t> buf(dwSize, 0);
+                    MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
+                    if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) return info;
+                    for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid)) {
+                            NetworkConnectionInfo conn;
+                            ExtractTcpConnection(pTable->table[i], conn);
+                            info.lstConnections.Add(conn);
+                            if (pTable->table[i].dwState == MIB_TCP_STATE_LISTEN && !info.lstOpenPorts.Contains(conn.iLocalPort)) info.lstOpenPorts.Add(conn.iLocalPort);
+                            else if (pTable->table[i].dwState == MIB_TCP_STATE_ESTAB) info.bHasEstablishedInboundConnection = true;
+                        }
+                    }
+                    return info;
+                }
 
-                    PROCESS_MEMORY_COUNTERS pmc;
+                static void CalculateProcessCpu(HANDLE hProc, int iPid, double& dCpu) {
+                    FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser;
+                    if (!::GetProcessTimes(hProc, &ftCreate, &ftExit, &ftKernel, &ftUser) || !::GetSystemTimes(&ftSysIdle, &ftSysKernel, &ftSysUser)) return;
+                    uint64_t uProc = ((static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime) + ((static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime);
+                    uint64_t uSys = ((static_cast<uint64_t>(ftSysKernel.dwHighDateTime) << 32) | ftSysKernel.dwLowDateTime) + ((static_cast<uint64_t>(ftSysUser.dwHighDateTime) << 32) | ftSysUser.dwLowDateTime);
+                    auto it = s_mapProcessCpuSamples.find(iPid);
+                    if (it != s_mapProcessCpuSamples.end() && uSys > it->second.uSystemTime && uProc >= it->second.uProcessTime) {
+                        double c = (static_cast<double>(uProc - it->second.uProcessTime) * 100.0 / static_cast<double>(uSys - it->second.uSystemTime));
+                        dCpu = (c > 100.0) ? 100.0 : ((c < 0.0) ? 0.0 : c);
+                    }
+                    s_mapProcessCpuSamples[iPid] = { uProc, uSys };
+                }
 
-                    if (::GetProcessMemoryInfo(hProc, &pmc, sizeof(pmc)))
-                        proc.lMemoryUsageBytes = static_cast<long long>(pmc.WorkingSetSize);
-
-                    ReadProcessIoAndTimes(hProc, proc);
-                    ReadProcessNetwork(hProc, proc);
-
+                static void PopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
+                    proc.iProcessId = pe32->th32ProcessID; proc.sName = String(pe32->szExeFile); proc.dCpuUsagePercent = 0.0;
+                    DWORD dwSess = 0;
+                    if (::ProcessIdToSessionId(pe32->th32ProcessID, &dwSess)) proc.iSessionId = static_cast<int>(dwSess);
+                    HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32->th32ProcessID);
+                    if (!hProc) return;
+                    WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwLen)) proc.sPath = String(szPath);
+                    proc.sCommandLine = ReadProcCmdLine(hProc);
+                    if (proc.sCommandLine.IsEmpty()) proc.sCommandLine = proc.sPath;
+                    proc.memory = ReadProcMemory(hProc);
+                    proc.disk = ReadProcDisk(hProc, proc.sName);
+                    proc.network = ReadProcNetwork(hProc, proc.sName);
+                    CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
                     ::CloseHandle(hProc);
                 }
 
-                ReadProcessPortsAndConnections(proc.iProcessId, proc);
-            }
-
-            void SystemMetrics::ReadWin32TopProcesses(RealTimeSystemInfo& data) {
-                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
-                if (hSnapshot == INVALID_HANDLE_VALUE) return;
-
-                PROCESSENTRY32W pe32;
-                pe32.dwSize = sizeof(PROCESSENTRY32W);
-
-                if (::Process32FirstW(hSnapshot, &pe32)) {
-                    std::vector<ProcessResourceInfo> tempProcList;
-
-                    do {
-                        ProcessResourceInfo proc;
-                        PopulateProcessInfo(&pe32, proc);
-                        tempProcList.push_back(proc);
-                    } while (::Process32NextW(hSnapshot, &pe32));
-
-                    std::sort(tempProcList.begin(), tempProcList.end(), [](const ProcessResourceInfo& a, const ProcessResourceInfo& b) {
-                        return a.dCpuUsagePercent > b.dCpuUsagePercent;
-                    });
-
-                    for (size_t i = 0; i < tempProcList.size() && i < 8; ++i)
-                        data.lstTopProcesses.Add(tempProcList[i]);
+                static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
+                    SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
+                    if (!hService) return "Manual";
+                    BYTE buffer[1024]; DWORD dwNeeded = 0;
+                    QUERY_SERVICE_CONFIGW* pConfig = reinterpret_cast<QUERY_SERVICE_CONFIGW*>(buffer);
+                    String sType = "Manual";
+                    if (::QueryServiceConfigW(hService, pConfig, sizeof(buffer), &dwNeeded)) {
+                        switch (pConfig->dwStartType) {
+                        case SERVICE_AUTO_START: sType = "Automatic"; break;
+                        case SERVICE_DEMAND_START: sType = "Manual"; break;
+                        case SERVICE_DISABLED: sType = "Disabled"; break;
+                        case SERVICE_BOOT_START: sType = "Boot"; break;
+                        case SERVICE_SYSTEM_START: sType = "System"; break;
+                        default: sType = "Manual"; break;
+                        }
+                    }
+                    ::CloseServiceHandle(hService);
+                    return sType;
                 }
 
-                ::CloseHandle(hSnapshot);
-            }
-#endif
+                static void ParseServiceStatus(ENUM_SERVICE_STATUS_PROCESSW& svc, SC_HANDLE hSCM, ServiceInfo& info) {
+                    info.sServiceName = String(svc.lpServiceName); info.sDisplayName = String(svc.lpDisplayName);
+                    info.iProcessId = static_cast<int>(svc.ServiceStatusProcess.dwProcessId);
+                    switch (svc.ServiceStatusProcess.dwCurrentState) {
+                    case SERVICE_RUNNING: info.sStatus = "Running"; break;
+                    case SERVICE_STOPPED: info.sStatus = "Stopped"; break;
+                    case SERVICE_PAUSED: info.sStatus = "Paused"; break;
+                    case SERVICE_START_PENDING: info.sStatus = "StartPending"; break;
+                    case SERVICE_STOP_PENDING: info.sStatus = "StopPending"; break;
+                    default: info.sStatus = "Unknown"; break;
+                    }
+                    info.sStartType = GetServiceStartType(hSCM, svc.lpServiceName);
+                }
+            };
 
-            RealTimeSystemInfo SystemMetrics::GetSystemMetrics() {
-                RealTimeSystemInfo data;
-#if defined(_WIN32)
-                ReadWin32Memory(data);
-                ReadWin32Cpu(data);
-                ReadWin32Disk(data);
-                ReadWin32Network(data);
-                ReadWin32TopProcesses(data);
-#endif
-                return data;
+            MemoryInfo SystemMetrics::GetSystemMemoryUsage() { return SystemMetricsWin32Helper::GetSystemMemory(); }
+            double SystemMetrics::GetSystemCpuUsage() { return SystemMetricsWin32Helper::GetSystemCpu(); }
+            DiskInfo SystemMetrics::GetSystemDiskUsage() { return SystemMetricsWin32Helper::GetSystemDisk(); }
+            double SystemMetrics::GetSystemNetworkUsage() { return SystemMetricsWin32Helper::GetSystemNetwork(); }
+
+            void* SystemMetrics::OpenProcessByName(const String& sProcessName, unsigned long dwDesiredAccess, int& iOutProcessId) {
+                return SystemMetricsWin32Helper::OpenProcByName(sProcessName, dwDesiredAccess, iOutProcessId);
             }
+
+            String SystemMetrics::ReadProcessCommandLineHandle(void* hProc) {
+                return SystemMetricsWin32Helper::ReadProcCmdLine(hProc);
+            }
+
+            String SystemMetrics::GetProcessCommandLine(const String& sProcessName) {
+                int iPid = -1;
+                HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+                if (!hProc) return String("");
+                String sCmd = ReadProcessCommandLineHandle(hProc);
+                if (sCmd.IsEmpty()) {
+                    WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwLen)) sCmd = String(szPath);
+                }
+                ::CloseHandle(hProc);
+                return sCmd;
+            }
+
+            MemoryInfo SystemMetrics::ReadProcessMemoryHandle(void* hProc) { return SystemMetricsWin32Helper::ReadProcMemory(hProc); }
+            MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String& sProcessName) {
+                int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+                if (!hProc) return MemoryInfo();
+                MemoryInfo mem = ReadProcessMemoryHandle(hProc);
+                ::CloseHandle(hProc);
+                return mem;
+            }
+
+            DiskInfo SystemMetrics::ReadProcessDiskHandle(void* hProc, const String& sProcessName) { return SystemMetricsWin32Helper::ReadProcDisk(hProc, sProcessName); }
+            DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName) {
+                int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                DiskInfo di = ReadProcessDiskHandle(hProc, sProcessName);
+                if (hProc) ::CloseHandle(hProc);
+                return di;
+            }
+
+            NetworkUsageInfo SystemMetrics::ReadProcessNetworkHandle(void* hProc, const String& sProcessName) { return SystemMetricsWin32Helper::ReadProcNetwork(hProc, sProcessName); }
+            NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName) {
+                int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                NetworkUsageInfo net = ReadProcessNetworkHandle(hProc, sProcessName);
+                if (hProc) ::CloseHandle(hProc);
+                return net;
+            }
+
+            Collections::Generic::List<int> SystemMetrics::ReadProcessNetworkPortInternal(int iProcessId) { return SystemMetricsWin32Helper::ReadProcPorts(iProcessId); }
+            Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName) {
+                int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                if (hProc) ::CloseHandle(hProc);
+                return ReadProcessNetworkPortInternal(iPid);
+            }
+
+            ProcessNetworkConnectionInfo SystemMetrics::ReadProcessNetworkInfoInternal(int iProcessId) { return SystemMetricsWin32Helper::ReadProcNetInfo(iProcessId); }
+            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName) {
+                int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
+                if (hProc) ::CloseHandle(hProc);
+                return ReadProcessNetworkInfoInternal(iPid);
+            }
+
+            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo& proc) {
+                SystemMetricsWin32Helper::PopulateProc(static_cast<PROCESSENTRY32W*>(pEntry32), proc);
+            }
+
+            Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {
+                Collections::Generic::List<ProcessInfo> lst;
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return lst;
+                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
+                if (::Process32FirstW(hSnapshot, &pe32)) {
+                    do {
+                        ProcessInfo proc; PopulateProcessInfo(&pe32, proc);
+                        if (iSessionId == -1 || proc.iSessionId == iSessionId) lst.Add(proc);
+                    } while (::Process32NextW(hSnapshot, &pe32));
+                }
+                ::CloseHandle(hSnapshot);
+                return lst;
+            }
+
+            static bool CompareProcessResource(const ProcessInfo& a, const ProcessInfo& b, SystemResource eResource) {
+                if (eResource == SystemResource::Cpu) return a.dCpuUsagePercent > b.dCpuUsagePercent;
+                if (eResource == SystemResource::Memory) return a.memory.lPhysicalMemoryBytes > b.memory.lPhysicalMemoryBytes;
+                if (eResource == SystemResource::Disk) return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) > (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
+                if (eResource == SystemResource::Network) return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) > (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
+                return a.dCpuUsagePercent > b.dCpuUsagePercent;
+            }
+
+            Collections::Generic::List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
+                Collections::Generic::List<ProcessInfo> lstAll = GetAllProcesses(-1);
+                std::vector<ProcessInfo> vec;
+                for (int i = 0; i < lstAll.GetCount(); ++i) vec.push_back(lstAll[i]);
+                std::sort(vec.begin(), vec.end(), [eResource](const ProcessInfo& a, const ProcessInfo& b) {
+                    return CompareProcessResource(a, b, eResource);
+                });
+                Collections::Generic::List<ProcessInfo> lstResult;
+                for (size_t i = 0; i < vec.size() && static_cast<int>(i) < iCount; ++i) lstResult.Add(vec[i]);
+                return lstResult;
+            }
+
+            Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
+                Collections::Generic::List<ServiceInfo> lst;
+                SC_HANDLE hSCM = ::OpenSCManagerW(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
+                if (!hSCM) return lst;
+                DWORD dwNeeded = 0, dwReturned = 0, dwResume = 0;
+                ::EnumServicesStatusExW(hSCM, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_STATE_ALL, NULL, 0, &dwNeeded, &dwReturned, &dwResume, NULL);
+                if (dwNeeded > 0) {
+                    std::vector<uint8_t> buf(dwNeeded, 0);
+                    ENUM_SERVICE_STATUS_PROCESSW* pSvcs = reinterpret_cast<ENUM_SERVICE_STATUS_PROCESSW*>(buf.data());
+                    if (::EnumServicesStatusExW(hSCM, SC_ENUM_PROCESS_INFO, SERVICE_WIN32, SERVICE_STATE_ALL, buf.data(), dwNeeded, &dwNeeded, &dwReturned, &dwResume, NULL)) {
+                        for (DWORD i = 0; i < dwReturned; ++i) {
+                            ServiceInfo svc; SystemMetricsWin32Helper::ParseServiceStatus(pSvcs[i], hSCM, svc);
+                            lst.Add(svc);
+                        }
+                    }
+                }
+                ::CloseServiceHandle(hSCM);
+                return lst;
+            }
+#endif
 
         }
     }

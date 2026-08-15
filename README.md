@@ -2,11 +2,11 @@
 
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
+[![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
+[![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
 [![Latest Release](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://github.com/sudheeshps/DotNetDupe/tags)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
-[![Code Coverage](https://img.shields.io/badge/Coverage-82.2%25-brightgreen?style=flat-square&logo=codecov)](https://sudheeshps.github.io/dotnetdupe/)
-[![Quality Gate](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&label=Quality%20Gate&logo=github)](https://sudheeshps.github.io/dotnetdupe/)
 [![License](https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&color=orange)](LICENSE)
 
 Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, **DotNetDupe**, bridges that gap! 🌉
@@ -14,13 +14,16 @@ Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While th
 Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨
 
 > [!IMPORTANT]
-> **Major Update ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe is now fully cross-platform! 🌐 Key highlights in this release include:
-> - ⚡ **C++ Standard:** Language version upgraded to C++20.
-> - 🌐 **Mini WebAppServer:** Built-in web application server capabilities.
-> - 📊 **System Metrics Collector:** Comprehensive hardware and process resource monitoring.
-> - 🖥️ **Active Session Enumerator:** Enumerate active user and system sessions.
-> - 👥 **System User Enumeration:** Enumerate local system users.
-> - 🔒 **Named Synchronization:** Enhanced sync primitives with cross-process named support (`Mutex`, `EventWaitHandle`, etc.).
+> **Major Update v4.0.0 ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe 4.0.0 is a major architectural release with header STL decoupling and expanded core services! 🌐 Key highlights in this release include:
+> - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
+> - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, and all concurrent collections.
+> - 📄 **Console I/O Redirection:** Standard stream redirection via `Console::SetOut`, `Console::SetError`, and `Console::SetIn` using `SmartPointer`.
+> - 🖊️ **LoggerTextWriter Log Redirector:** Bridge standard `TextWriter` stream calls directly into `LogManager` logging providers without per-call lookup overhead.
+> - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
+> - 📥 **FileDownloader Utility:** High-level download utility with robust lifecycle and prompt file handle release.
+> - 🌲 **Recursive Directory Creation:** Overloaded `Directory::CreateDirectory(path, recursive)` to automatically construct missing parent directory structures.
+> - 📂 **Resilient File Logging:** Enhanced `FileLoggerProvider` to resolve relative log paths to full paths and auto-create missing log directories.
+> - 🧩 **ServiceCollection DI Enhancements:** Improved lifetime management and container registration.
 
 We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
 
@@ -58,6 +61,7 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
   - [Project Status 🚧](#project-status-)
   - [Contributions 👋](#contributions-)
   - [CI/CD Pipeline 🚀](#cicd-pipeline-)
+    - [Code Coverage & Static Analysis 📊](#code-coverage--static-analysis-)
   - [License 📄](#license-)
   - [Generated Content 🤖](#generated-content-)
   - [Contact 📧](#contact-)
@@ -70,14 +74,57 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
 *   **Enhance Readability:** Promote cleaner and more readable code by adopting well-known C# API patterns.
 *   **Boost Productivity:** Accelerate development cycles by offering intuitive and efficient tools for common operations.
 
-## Features ✨
+## Features & Library Capabilities ✨
 
-*   **C#-like API Design:** Intuitive and familiar interfaces for common programming constructs.
-*   **Exception Handling:** Robust exception classes mimicking .NET's exception hierarchy.
-*   **String Manipulation:** Powerful `String` class with comprehensive methods for text processing.
-*   **Path Utilities:** Convenient functions for file system path operations.
-*   **Time and Time Zone Support:** Core classes like `DateTimeOffset`, `TimeSpan`, `TimeZone`, and `TimeZoneInfo` for accurate time management.
-*   **Type System Enhancements:** (Add more specific features as they are implemented, e.g., `Object` base class, `IComparable`, `IClonable` etc.)
+DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Library (BCL) offering an extensive suite of modern capabilities:
+
+- 🧠 **Memory & Object Management (`System`)**:
+  - `SmartPointer<T>`: Exception-safe RAII reference-counted smart pointer with `NewShared()` and `NewUnique()` factory helpers.
+  - Base `Object` type system with `ToString()`, `GetType()`, `Equals()`, and `GetHashCode()`.
+
+- 🔤 **String Manipulation & Utilities (`System::BasicString`)**:
+  - Full-featured `String` (`BasicString<char>`) & `WString` (`BasicString<wchar_t>`) with UTF-8 / UTF-16 cross-transcoding.
+  - Methods: `Format()`, `Split()`, `Join()`, `Replace()`, `Contains()`, `StartsWith()`, `EndsWith()`, `Trim()`, `PadLeft()`, `PadRight()`.
+
+- 📦 **Generic Collections (`System::Collections::Generic`)**:
+  - Type-safe container wrappers: `List<T>`, `Dictionary<K, V>`, `Queue<T>`, `Stack<T>`, `HashSet<T>`, and `KeyValuePair<K, V>`.
+
+- 📁 **File I/O & System Services (`System::IO`)**:
+  - High-level static primitives: `File` (`ReadAllText`, `WriteAllText`, `AppendAllText`, `Exists`, `Delete`) and `Directory` (`CreateDirectory(path, recursive)`, `Exists`, `EnumerateFiles`).
+  - Cross-platform path calculations: `Path` (`Combine`, `GetFullPath`, `GetDirectoryName`, `GetFileName`, `GetExtension`).
+  - Stream & Reader/Writer hierarchy: `FileStream`, `MemoryStream`, `BufferedStream`, `StreamReader`, `StreamWriter`, `BinaryReader`, `BinaryWriter`, `StringReader`, `StringWriter`.
+
+- 📟 **Console & Stream Redirection (`System::Console`)**:
+  - Rich console text & background color controls (`SetForegroundColor`, `SetBackgroundColor`, `ResetColor`).
+  - Full stream redirection via `SetOut()`, `SetError()`, and `SetIn()` accepting `SmartPointer<TextWriter>` and `SmartPointer<TextReader>`.
+
+- 🌲 **Enterprise Logging & Diagnostics (`Extensions::Logging`)**:
+  - Structured & Plaintext logging (`ILogger`, `ILoggerProvider`, `LoggerFactory`).
+  - Formats: Custom plaintext layout templates & JSON structured payloads with key-value metadata properties.
+  - Providers: `ConsoleLoggerProvider` and `FileLoggerProvider` with automatic relative path resolution & recursive parent directory creation.
+  - `LogManager`: Category logger caching factory (`GetLogger("Category")`, `GetLogger<T>()`, `GetConsoleLogger`, `GetFileLogger`).
+  - `LoggerTextWriter`: High-performance stream redirector bridging `TextWriter` output into `LogManager`.
+
+- 🧵 **Multi-Threading & Process Management (`System::Threading` / `System::Diagnostics`)**:
+  - Thread lifecycle (`Thread`), high-throughput `ThreadPool`, and task parallelism (`Task`, `Task<T>`).
+  - Synchronization primitives: `Mutex`, `AutoResetEvent`, `ManualResetEvent`, `EventWaitHandle`, `CriticalSection`, `ReaderWriterLockSlim`.
+  - Process orchestration: `Process`, `ProcessStartInfo` for executing sub-processes with stdin/stdout/stderr piping.
+
+- 🌐 **Networking, HTTP & Web App Hosting (`System::Net` / `Extensions::Hosting`)**:
+  - Low-level socket abstractions (`TcpClient`, `TcpListener`, `UdpClient`, `Socket`).
+  - High-level HTTP client: `HttpClient`, `HttpRequestMessage`, `HttpResponseMessage`, `HttpContent`, `StringContent`, `ByteArrayContent`.
+  - SSL/TLS security: `SslStream` backed by OpenSSL.
+  - Embedded Web Server & Hosting: `WebAppServer` and `HostBuilder` for serving static Web UI files and REST API controllers.
+
+- 💉 **Dependency Injection (`Extensions::DependencyInjection`)**:
+  - Full-featured DI container (`ServiceCollection`, `ServiceProvider`, `ServiceDescriptor`).
+  - Lifetimes: `Transient`, `Scoped`, `Singleton`.
+
+- 🔐 **Security & Principal (`System::Security::Principal`)**:
+  - `UserPrincipal` and `WindowsIdentity` for cross-platform OS user enumeration and privilege inspection.
+
+- ⚡ **Database Data Access (`System::Data`)**:
+  - Abstract ADO.NET-style data provider interfaces (`IDbConnection`, `IDbCommand`, `IDataReader`, `IDataParameterCollection`).
 
 ## Getting Started 🚀
 
@@ -99,7 +146,7 @@ The core objective of DotNetDupe is to bridge the gap between the power and perf
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.3.0.6.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.0.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -226,7 +273,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.3.0.6.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.0.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -236,9 +283,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.3.0.6.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.0.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.3.0.6.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -742,8 +789,8 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [List](docs/GenericCollections.md) | Represents a strongly typed list of objects that can be accessed by index. |
 | [Dictionary](docs/GenericCollections.md) | Represents a collection of keys and values. |
-| [Queue](docs/GenericCollections.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
-| [Stack](docs/GenericCollections.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
+| [Queue](docs/Queue.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
+| [Stack](docs/Stack.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
 | [HashSet](docs/GenericCollections.md) | Represents a set of unique values using a hash table. |
 | [SortedDictionary](docs/GenericCollections.md) | Represents a collection of key/value pairs that are sorted on the key. |
 | [SortedSet](docs/GenericCollections.md) | Represents a collection of objects that is maintained in sorted order. |
@@ -778,6 +825,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [Path](docs/Path.md) | A class for path-related operations. |
 | [File](docs/File.md) | Provides static methods for the creation, copying, deletion, moving, and opening of a single file. |
+| [Directory](docs/Directory.md) | Exposes static methods for creating, moving, deleting, and enumerating directories and files. |
 | [FileStream](docs/FileStream.md) | Provides a `Stream` for a file, supporting both synchronous and asynchronous read and write operations. |
 | [Stream](docs/Stream.md) | Provides a generic view of a sequence of bytes. |
 | [TextReader](docs/TextReader.md) | Represents a reader that can read a sequential series of characters. |
@@ -833,6 +881,7 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
 | [RestClient](docs/RestClient.md) | Represents a strongly-typed REST client that simplifies resource-oriented Web API interactions by automatically serializing/deserializing payloads to and from C++ structures. |
+| [FileDownloader](docs/FileDownloader.md) | Provides HTTP/HTTPS file downloading with pause/resume support, auto-resumption of partial downloads, and real-time speed/progress tracking built upon `HttpClient`. |
 | [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
 | [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
 | [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |
@@ -939,6 +988,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
+| [LogManager](docs/LogManager.md) | Global static factory for obtaining and caching category-based ConsoleLogger and FileLogger instances. |
 | [LoggerFactory](docs/Logging.md) | The concrete implementation of the logging factory. |
 | [Logger<T>](docs/Logging.md) | A generic template wrapper for class-specific category logging. |
 | [ConsoleLoggerProvider](docs/Logging.md) | Renders structured console outputs (Plain or JSON format). |
@@ -966,8 +1016,18 @@ Contributions to the DotNetDupe project are highly welcome! Whether it's bug rep
 This repository uses GitHub Actions to automate the build, test, and release process.
 
 ### Workflow Details
-- **Build & Test**: Every push to `main` and all pull requests trigger a full build (Debug & Release) and execution of all unit tests.
+- **Build & Test Matrix**: Every push to `main` and all pull requests trigger a full build (Debug & Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.
+- **GitHub CodeQL Analysis**: Continuous semantic security vulnerability scanning on every push, pull request, and weekly schedule via `github/codeql-action`.
+- **Quality Gates & Static Analysis**: Automated enforcement of 11 Quality Gate metrics (LLOC $\le 15$, CCN $\le 10$, Nesting depth $\le 4$, Hungarian SmartPointers, zero empty catch blocks, zero standard `throw std::*` exceptions, zero raw pointer ownership).
+- **Code Coverage**: Automated code coverage measurement via OpenCppCoverage (> 80% line coverage required) and static analysis HTML report generation.
 - **NuGet Release**: Pushing a tag (e.g., `v1.0.0`) triggers the creation and publishing of the NuGet package to [nuget.org](https://www.nuget.org/).
+
+### Code Coverage & Static Analysis 📊
+- **Local Git Repository Reports:**
+  - 📈 [OpenCppCoverage HTML Report](CodeCoverage/index.html)
+  - 🔍 [Static Analysis & Quality Gate Report](CodeCoverage/StaticAnalysis.html)
+- **Live Web Report:** [https://sudheeshps.github.io/DotNetDupe/](https://sudheeshps.github.io/DotNetDupe/)
+- **Local Generation:** Run `powershell .\scripts\Generate-CoverageReport.ps1` to execute tests under OpenCppCoverage and refresh the `CodeCoverage/` folder.
 
 ### How to Release
 1. Update the version in `DotNetDupe.nuspec`.

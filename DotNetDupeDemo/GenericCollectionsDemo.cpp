@@ -1,5 +1,6 @@
 #include "System/Console.h"
 #include "System/String.h"
+#include "System/Collections/Generic/Dictionary.h"
 #include "System/Collections/Generic/Queue.h"
 #include "System/Collections/Generic/Stack.h"
 #include "System/Collections/Generic/HashSet.h"
@@ -14,6 +15,18 @@ using namespace DotNetDupe::System::Collections::Generic;
 void RunGenericCollectionsDemo() {
     Console::WriteLine("=== System.Collections.Generic Expanded Demo ===");
 
+    // Dictionary (O(1) lookups)
+    Dictionary<String, int> dict;
+    dict.Add("Alice", 30);
+    dict["Bob"] = 25;
+    Console::WriteLine("Dictionary Lookup (Alice): {0}", dict["Alice"]);
+
+    // HashSet
+    HashSet<String> set;
+    set.Add("User1");
+    set.Add("User2");
+    Console::WriteLine("HashSet Contains 'User1': {0}", set.Contains("User1") ? "True" : "False");
+
     // Queue
     Queue<String> q;
     q.Enqueue("First");
@@ -25,12 +38,6 @@ void RunGenericCollectionsDemo() {
     s.Push("Page1");
     s.Push("Page2");
     Console::WriteLine("Stack Popped: {0}", s.Pop());
-
-    // HashSet
-    HashSet<String> set;
-    set.Add("User1");
-    set.Add("User2");
-    Console::WriteLine("HashSet Contains 'User1': {0}", set.Contains("User1") ? "True" : "False");
 
     // SortedDictionary
     SortedDictionary<int, String> sortedDict;

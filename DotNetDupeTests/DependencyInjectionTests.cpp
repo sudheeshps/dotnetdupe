@@ -142,7 +142,7 @@ namespace DependencyInjectionTests {
         // Given
         ServiceCollection services;
         services.AddTransient<IMyService, MyService>();
-        services.AddTransient<INestedService>([](const SmartPointer<IServiceProvider>& sp) {
+        services.AddTransient<INestedService>([](const SmartPointer<DotNetDupe::System::IServiceProvider>& sp) {
             auto spMyService = sp->GetRequiredService<IMyService>();
             return SmartPointer<Object>(SmartPointer<NestedService>::NewShared(spMyService));
         });

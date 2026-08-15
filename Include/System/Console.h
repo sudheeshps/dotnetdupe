@@ -5,9 +5,16 @@
 #include "System/String.h"
 #include "System/Char.h"
 #include "System/Array.h"
+#include "System/SmartPointer.h"
+#include "System/IO/TextWriter.h"
+#include "System/IO/TextReader.h"
 
 namespace DotNetDupe {
     namespace System {
+        namespace IO {
+            class TextWriter;
+            class TextReader;
+        }
 
         enum class ConsoleColor {
             Black = 0,
@@ -106,6 +113,14 @@ namespace DotNetDupe {
 
             DOTNETDUPE_API static void Beep();
             DOTNETDUPE_API static void Clear();
+
+            // Standard I/O redirection APIs
+            DOTNETDUPE_API static void SetOut(const SmartPointer<IO::TextWriter>& pOutWriter);
+            DOTNETDUPE_API static void SetError(const SmartPointer<IO::TextWriter>& pErrorWriter);
+            DOTNETDUPE_API static void SetIn(const SmartPointer<IO::TextReader>& pInReader);
+            DOTNETDUPE_API static SmartPointer<IO::TextWriter> Out();
+            DOTNETDUPE_API static SmartPointer<IO::TextWriter> Error();
+            DOTNETDUPE_API static SmartPointer<IO::TextReader> In();
 
             // Test helpers
             DOTNETDUPE_API static void SetIn(const String& sValue);

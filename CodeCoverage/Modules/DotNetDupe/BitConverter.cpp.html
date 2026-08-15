@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>BitConverter.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/BitConverter.h"
+#include &lt;cstring&gt;
+#include &lt;iomanip&gt;
+#include &lt;sstream&gt;
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
+
+namespace DotNetDupe {
+    namespace System {
+        const bool BitConverter::IsLittleEndian = true; // Most modern systems are little-endian
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(bool bValue) {
+            Array&lt;byte&gt; result(1);
+            result[0] = bValue ? 1 : 0;</span>
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(char chValue) {
+            Array&lt;byte&gt; result(1);
+            result[0] = (byte)chValue;</span>
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(double value) {
+            Array&lt;byte&gt; result(8);
+            std::memcpy(result.GetData(), &amp;value, 8);</span>
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(short iValue) {
+            Array&lt;byte&gt; result(2);</span>
+            std::memcpy(result.GetData(), &amp;iValue, 2);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(int iValue) {
+            Array&lt;byte&gt; result(4);</span>
+            std::memcpy(result.GetData(), &amp;iValue, 4);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(long long llValue) {
+            Array&lt;byte&gt; result(8);</span>
+            std::memcpy(result.GetData(), &amp;llValue, 8);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(float value) {
+            Array&lt;byte&gt; result(4);
+            std::memcpy(result.GetData(), &amp;value, 4);</span>
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned short iValue) {
+            Array&lt;byte&gt; result(2);</span>
+            std::memcpy(result.GetData(), &amp;iValue, 2);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned int iValue) {
+            Array&lt;byte&gt; result(4);</span>
+            std::memcpy(result.GetData(), &amp;iValue, 4);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned long long llValue) {
+            Array&lt;byte&gt; result(8);</span>
+            std::memcpy(result.GetData(), &amp;llValue, 8);
+            return result;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        bool BitConverter::ToBoolean(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");
+            return value[iStartIndex] != 0;
+        }</span>
+
+<span style = "background-color:#dfd">        char BitConverter::ToChar(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");
+            return (char)value[iStartIndex];
+        }</span>
+
+<span style = "background-color:#dfd">        double BitConverter::ToDouble(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            double result;
+<span style = "background-color:#dfd">            std::memcpy(&amp;result, value.GetData() + iStartIndex, 8);
+            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        short BitConverter::ToInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            short iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
+            return iResult;
+        }</span>
+
+<span style = "background-color:#dfd">        int BitConverter::ToInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            int iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
+            return iResult;
+        }</span>
+
+<span style = "background-color:#dfd">        long long BitConverter::ToInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            long long llResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
+            return llResult;
+        }</span>
+
+<span style = "background-color:#dfd">        float BitConverter::ToSingle(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            float result;
+<span style = "background-color:#dfd">            std::memcpy(&amp;result, value.GetData() + iStartIndex, 4);
+            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        unsigned short BitConverter::ToUInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            unsigned short iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
+            return iResult;
+        }</span>
+
+<span style = "background-color:#dfd">        unsigned int BitConverter::ToUInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            unsigned int iResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
+            return iResult;
+        }</span>
+
+<span style = "background-color:#dfd">        unsigned long long BitConverter::ToUInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            unsigned long long llResult;
+<span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
+            return llResult;
+        }</span>
+
+<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value) {
+            return ToString(value, 0, value.GetLength());
+        }</span>
+
+<span style = "background-color:#fdd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex) {
+            return ToString(value, iStartIndex, value.GetLength() - iStartIndex);
+        }</span>
+
+<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex, int nLength) {
+            int nArrayLength = value.GetLength();
+            if (iStartIndex &lt; 0 || (iStartIndex &gt;= nArrayLength &amp;&amp; nArrayLength &gt; 0))</span>
+<span style = "background-color:#fdd">                throw ArgumentOutOfRangeException("iStartIndex");</span>
+<span style = "background-color:#dfd">            if (nLength &lt; 0)</span>
+<span style = "background-color:#fdd">                throw ArgumentOutOfRangeException("nLength");</span>
+<span style = "background-color:#dfd">            if (iStartIndex + nLength &gt; nArrayLength)
+                throw ArgumentException("iStartIndex + nLength &gt; value.Length");</span>
+
+<span style = "background-color:#dfd">            if (nLength == 0) return String("");</span>
+
+<span style = "background-color:#dfd">            std::stringstream ss;
+            for (int iIndex = 0; iIndex &lt; nLength; ++iIndex) {
+                if (iIndex &gt; 0) ss &lt;&lt; "-";
+                ss &lt;&lt; std::uppercase &lt;&lt; std::hex &lt;&lt; std::setw(2) &lt;&lt; std::setfill('0') &lt;&lt; (int)value [iStartIndex + iIndex];</span>
+            }
+<span style = "background-color:#dfd">            return String(ss.str().c_str());
+        }</span>
+
+<span style = "background-color:#dfd">        long long BitConverter::DoubleToInt64Bits(double value) {</span>
+            long long llResult;
+            std::memcpy(&amp;llResult, &amp;value, sizeof(double));
+<span style = "background-color:#dfd">            return llResult;
+        }</span>
+
+<span style = "background-color:#dfd">        double BitConverter::Int64BitsToDouble(long long llValue) {</span>
+            double result;
+<span style = "background-color:#dfd">            std::memcpy(&amp;result, &amp;llValue, sizeof(long long));
+            return result;
+        }</span>
+
+<span style = "background-color:#dfd">        int BitConverter::SingleToInt32Bits(float value) {</span>
+            int iResult;
+            std::memcpy(&amp;iResult, &amp;value, sizeof(float));
+<span style = "background-color:#dfd">            return iResult;
+        }</span>
+
+<span style = "background-color:#dfd">        float BitConverter::Int32BitsToSingle(int iValue) {</span>
+            float result;
+<span style = "background-color:#dfd">            std::memcpy(&amp;result, &amp;iValue, sizeof(int));
+            return result;
+        }</span>
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

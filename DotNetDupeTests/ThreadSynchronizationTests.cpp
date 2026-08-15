@@ -267,17 +267,17 @@ namespace SystemTests {
             ASSERT_FALSE(createdNew2);
 
             // When: Opening existing handle
-            EventWaitHandle* pOpened = EventWaitHandle::OpenExisting("Global\\MyTestEvent");
-            ASSERT_NE(pOpened, nullptr);
+            SmartPointer<EventWaitHandle> pOpened = EventWaitHandle::OpenExisting("Global\\MyTestEvent");
+            ASSERT_NE(pOpened.Get(), nullptr);
 
             // Then: Signaling event1 should unblock wait on opened handle
             event1.Set();
             ASSERT_TRUE(pOpened->WaitOne(100));
 
             // When: Trying to open non-existent handle
-            EventWaitHandle* pNotFound = nullptr;
+            SmartPointer<EventWaitHandle> pNotFound = nullptr;
             ASSERT_FALSE(EventWaitHandle::TryOpenExisting("Global\\NonExistentEvent", pNotFound));
-            ASSERT_EQ(pNotFound, nullptr);
+            ASSERT_EQ(pNotFound.Get(), nullptr);
             ASSERT_THROW(EventWaitHandle::OpenExisting("Global\\NonExistentEvent"), WaitHandleCannotBeOpenedException);
         }
 
@@ -288,8 +288,8 @@ namespace SystemTests {
             ASSERT_TRUE(createdNew);
 
             // When: Opening existing AutoResetEvent
-            AutoResetEvent* pOpened = AutoResetEvent::OpenExisting("Global\\MyAutoResetEvent");
-            ASSERT_NE(pOpened, nullptr);
+            SmartPointer<AutoResetEvent> pOpened = AutoResetEvent::OpenExisting("Global\\MyAutoResetEvent");
+            ASSERT_NE(pOpened.Get(), nullptr);
 
             // Then: Signal and wait
             autoEvt.Set();
@@ -303,8 +303,8 @@ namespace SystemTests {
             ASSERT_TRUE(createdNew);
 
             // When: Opening existing ManualResetEvent
-            ManualResetEvent* pOpened = ManualResetEvent::OpenExisting("Global\\MyManualResetEvent");
-            ASSERT_NE(pOpened, nullptr);
+            SmartPointer<ManualResetEvent> pOpened = ManualResetEvent::OpenExisting("Global\\MyManualResetEvent");
+            ASSERT_NE(pOpened.Get(), nullptr);
 
             // Then: Signal and wait
             manualEvt.Set();
@@ -322,8 +322,8 @@ namespace SystemTests {
             ASSERT_FALSE(createdNew2);
 
             // When: Opening existing Mutex
-            Mutex* pOpened = Mutex::OpenExisting("Global\\MyTestMutex");
-            ASSERT_NE(pOpened, nullptr);
+            SmartPointer<Mutex> pOpened = Mutex::OpenExisting("Global\\MyTestMutex");
+            ASSERT_NE(pOpened.Get(), nullptr);
 
             // Then: Acquire via opened pointer
             ASSERT_TRUE(pOpened->WaitOne(100));
@@ -341,13 +341,12 @@ namespace SystemTests {
             ASSERT_FALSE(createdNew2);
 
             // When: Opening existing Semaphore
-            Semaphore* pOpened = Semaphore::OpenExisting("Global\\MyTestSemaphore");
-            ASSERT_NE(pOpened, nullptr);
+            SmartPointer<Semaphore> pOpened = Semaphore::OpenExisting("Global\\MyTestSemaphore");
+            ASSERT_NE(pOpened.Get(), nullptr);
 
             // Then: Wait and release
             ASSERT_TRUE(pOpened->WaitOne(100));
             ASSERT_EQ(pOpened->Release(1), 1);
-            delete pOpened;
         }
 
         TEST(NamedKernelObjectTest, Mutex_Should_Succeed_When_OpenAlwaysIsTrue) {
@@ -402,6 +401,24 @@ namespace SystemTests {
             ASSERT_THROW(ManualResetEvent::OpenExisting("Global\\DoesNotExist_Manual"), WaitHandleCannotBeOpenedException);
             ASSERT_THROW(Mutex::OpenExisting("Global\\DoesNotExist_Mutex"), WaitHandleCannotBeOpenedException);
             ASSERT_THROW(Semaphore::OpenExisting("Global\\DoesNotExist_Sem"), WaitHandleCannotBeOpenedException);
+        }
+
+        TEST(InterlockedTest, Given32And64BitInterlocked_WhenAtomicOperationsInvoked_PerformsOperationsCorrectly) {
+            Interlocked<int> val32(10);
+            EXPECT_EQ(val32.Increment(), 11);
+            EXPECT_EQ(val32.Decrement(), 10);
+            EXPECT_EQ(val32.Add(5), 15);
+            EXPECT_EQ(val32.Exchange(50), 15);
+            EXPECT_EQ(val32.CompareExchange(100, 50), 50);
+            EXPECT_EQ(static_cast<int>(val32), 100);
+
+            Interlocked<long long> val64(1000LL);
+            EXPECT_EQ(val64.Increment(), 1001LL);
+            EXPECT_EQ(val64.Decrement(), 1000LL);
+            EXPECT_EQ(val64.Add(500LL), 1500LL);
+            EXPECT_EQ(val64.Exchange(5000LL), 1500LL);
+            EXPECT_EQ(val64.CompareExchange(10000LL, 5000LL), 5000LL);
+            EXPECT_EQ(static_cast<long long>(val64), 10000LL);
         }
     }
 }

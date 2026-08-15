@@ -1,9 +1,15 @@
 #pragma once
-#include "System/Threading/BasicThreadStateException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
-    namespace System {
-        namespace Threading {
-            typedef BasicThreadStateException<char> ThreadStateException;
-        }
-    }
+	namespace System {
+		namespace Threading {
+
+			class ThreadStateException : public SystemException {
+			public:
+				ThreadStateException(const String& sMessage) : SystemException(sMessage) { }
+			};
+		}
+
+	}
 }

@@ -16,7 +16,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Close() override;
                 DOTNETDUPE_API void Dispose() override;
                 DOTNETDUPE_API void Flush() override;
-                DOTNETDUPE_API std::shared_ptr<Text::Encoding> GetEncoding() const override;
+                DOTNETDUPE_API virtual Text::EncodingPtr GetEncoding() const override;
 
                 DOTNETDUPE_API virtual String ToString() const;
 

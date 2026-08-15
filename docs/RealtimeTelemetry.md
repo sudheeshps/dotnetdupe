@@ -1,30 +1,41 @@
 ### class `SystemMetrics` & `ActiveUserSession`
 
-Provides real-time system resource usage telemetry (CPU, Memory, Disk Read/Write Bytes, Network, Top Processes) and active user session metrics.
+Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Network), process and service enumeration, resource-based top processes ranking, and process-level handle-based resource metrics.
 
 ---
 
-#### Structs
+#### Enums & Structs
 
-##### `RealTimeSystemInfo`
-- `double dCpuUsagePercent`
-- `double dMemoryUsagePercent`
-- `unsigned long long uMemoryTotalBytes` (total physical memory in raw bytes)
-- `unsigned long long uMemoryUsedBytes` (used physical memory in raw bytes)
-- `unsigned long long uDiskReadBytes` (system-wide total disk read transfer in raw bytes)
-- `unsigned long long uDiskWriteBytes` (system-wide total disk write transfer in raw bytes)
-- `double dNetworkUsageMbps`
-- `List<ProcessResourceInfo> lstTopProcesses`
+- `enum class SystemResource { Cpu, Memory, Disk, Network }`
+- `MemoryInfo`: `double dMemoryUsagePercent`, `unsigned long long uMemoryTotalBytes`, `unsigned long long uMemoryUsedBytes`, `long long lPrivateBytes`, `long long lPhysicalMemoryBytes` (working set)
+- `DiskInfo`: `long long lDiskReadBytes`, `long long lDiskWriteBytes`
+- `NetworkUsageInfo`: `long long lNetworkReadBytes`, `long long lNetworkWriteBytes`
+- `ProcessNetworkConnectionInfo`: `List<int> lstOpenPorts`, `List<NetworkConnectionInfo> lstConnections`, `bool bHasEstablishedInboundConnection`
+- `ProcessInfo`: `iProcessId`, `iSessionId`, `sName`, `sPath`, `sCommandLine`, `dCpuUsagePercent`, `MemoryInfo memory`, `DiskInfo disk`, `NetworkUsageInfo network`
+- `ServiceInfo`: `sServiceName`, `sDisplayName`, `sStatus`, `sStartType`, `iProcessId`
 
-##### `ProcessResourceInfo`
-- `int iProcessId`
-- `String sName`
-- `String sPath`
-- `String sCommandLine` (full command line arguments)
-- `double dCpuUsagePercent` (differential real-time CPU %)
-- `long long lMemoryUsageBytes` (raw working set memory in bytes; `-1` if unqueryable)
-- `long long lDiskReadBytes` (cumulative disk read transfer in raw bytes; `-1` if unqueryable)
-- `long long lDiskWriteBytes` (cumulative disk write transfer in raw bytes; `-1` if unqueryable)
+---
+
+#### Methods
+
+##### System-Wide Metrics
+- `MemoryInfo SystemMetrics::GetSystemMemoryUsage()`
+- `double SystemMetrics::GetSystemCpuUsage()`
+- `DiskInfo SystemMetrics::GetSystemDiskUsage()`
+- `double SystemMetrics::GetSystemNetworkUsage()`
+
+##### Process-Specific Metrics (Handle-Based)
+- `String SystemMetrics::GetProcessCommandLine(const String& sProcessName)`
+- `MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String& sProcessName)`
+- `DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName)`
+- `NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName)`
+- `List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName)`
+- `ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName)`
+
+##### Process & Service Listing / Ranking
+- `List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount)`
+- `List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId = -1)`
+- `List<ServiceInfo> SystemMetrics::GetAllServices()`
 
 ---
 
@@ -33,20 +44,25 @@ Provides real-time system resource usage telemetry (CPU, Memory, Disk Read/Write
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/SystemMetrics.h"
-#include "System/Diagnostics/ActiveUserSession.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    // Query system hardware metrics
-    RealTimeSystemInfo metrics = SystemMetrics::GetSystemMetrics();
-    Console::WriteLine("Disk Read Bytes: " + Convert::ToString(metrics.uDiskReadBytes));
-    Console::WriteLine("Disk Write Bytes: " + Convert::ToString(metrics.uDiskWriteBytes));
+    // Query system-wide metrics
+    MemoryInfo mem = SystemMetrics::GetSystemMemoryUsage();
+    double dCpu = SystemMetrics::GetSystemCpuUsage();
+    DiskInfo disk = SystemMetrics::GetSystemDiskUsage();
 
-    // Query active user sessions
-    auto sessions = ActiveUserSession::GetAllSessions();
-    Console::WriteLine("Sessions: " + Convert::ToString(sessions.GetCount()));
+    // Process specific handle-based metrics
+    String sCmd = SystemMetrics::GetProcessCommandLine(String("svchost.exe"));
+    ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(String("svchost.exe"));
+
+    // Process & service listing APIs
+    auto lstTopCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 5);
+    auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
+    auto lstServices = SystemMetrics::GetAllServices();
+
     return 0;
 }
 ```

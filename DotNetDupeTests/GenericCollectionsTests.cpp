@@ -46,6 +46,39 @@ namespace SystemTests {
             EXPECT_FALSE(set.Contains("Alpha"));
         }
 
+        TEST(HashSetTest, ResizingAndLargeLoads) {
+            HashSet<int> set;
+            for (int i = 0; i < 1000; i++) {
+                set.Add(i);
+            }
+            EXPECT_EQ(set.GetCount(), 1000);
+            for (int i = 0; i < 1000; i++) {
+                EXPECT_TRUE(set.Contains(i));
+            }
+            for (int i = 0; i < 500; i++) {
+                set.Remove(i);
+            }
+            EXPECT_EQ(set.GetCount(), 500);
+        }
+
+        TEST(HashSetTest, SetOperations) {
+            HashSet<int> set1;
+            set1.Add(1); set1.Add(2); set1.Add(3);
+            HashSet<int> set2;
+            set2.Add(3); set2.Add(4); set2.Add(5);
+            
+            set1.UnionWith(set2);
+            EXPECT_EQ(set1.GetCount(), 5);
+            
+            HashSet<int> set3;
+            set3.Add(3); set3.Add(4);
+            set1.IntersectWith(set3);
+            EXPECT_EQ(set1.GetCount(), 2);
+            
+            set1.ExceptWith(set2);
+            EXPECT_EQ(set1.GetCount(), 0);
+        }
+
         TEST(SortedDictionaryTest, Add_OrderedTraversal_WorksCorrectly) {
             SortedDictionary<int, String> dict;
             dict.Add(3, "Three");

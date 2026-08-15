@@ -3,6 +3,8 @@
 #include "System/Console.h"
 #include "System/String.h"
 #include "System/ArgumentException.h"
+#include "System/IO/StringWriter.h"
+#include "System/IO/StringReader.h"
 #include <limits>
 
 #if defined(_WIN32)
@@ -288,6 +290,99 @@ namespace SystemTests {
 			auto outputs = Console::GetOutputs();
 			ASSERT_TRUE(outputs.GetLength() == 1);
 			ASSERT_TRUE(outputs[0] == "Value: 42");
+		}
+
+		TEST(ConsoleTest, SetOut_Should_RedirectOutput_When_StringWriterProvided) {
+			// Given
+			Console::Clear();
+			SmartPointer<DotNetDupe::System::IO::StringWriter> writer(true);
+			Console::SetOut(writer);
+
+			// When
+			Console::WriteLine("Redirected message");
+
+			// Then
+			ASSERT_TRUE(Console::Out() == writer);
+			ASSERT_EQ(writer->ToString(), "Redirected message\r\n");
+
+			// Cleanup
+			Console::Clear();
+		}
+
+		TEST(ConsoleTest, SetIn_Should_RedirectInput_When_StringReaderProvided) {
+			// Given
+			Console::Clear();
+			DotNetDupe::System::IO::StringReader* pReaderRaw = new DotNetDupe::System::IO::StringReader("Custom input line");
+			SmartPointer<DotNetDupe::System::IO::TextReader> reader(pReaderRaw, true);
+			Console::SetIn(reader);
+
+			// When
+			String inputLine = Console::ReadLine();
+
+			// Then
+			ASSERT_TRUE(Console::In().Get() == pReaderRaw);
+			ASSERT_EQ(inputLine, "Custom input line");
+
+			// Cleanup
+			Console::Clear();
+		}
+
+		TEST(ConsoleTest, SetError_Should_StoreErrorWriter_When_WriterProvided) {
+			// Given
+			Console::Clear();
+			SmartPointer<DotNetDupe::System::IO::StringWriter> writer(true);
+
+			// When
+			Console::SetError(writer);
+
+			// Then
+			ASSERT_TRUE(Console::Error() == writer);
+
+			// Cleanup
+			Console::Clear();
+		}
+
+		TEST(ConsoleTest, ConsoleColors_WhenSetAndReset_BehavesCorrectly) {
+			Console::SetForegroundColor(ConsoleColor::Cyan);
+			EXPECT_EQ(Console::GetForegroundColor(), ConsoleColor::Cyan);
+
+			Console::SetBackgroundColor(ConsoleColor::DarkBlue);
+			EXPECT_EQ(Console::GetBackgroundColor(), ConsoleColor::DarkBlue);
+
+			Console::ResetColor();
+		}
+
+		TEST(ConsoleTest, ConsoleTitleAndLocks_WhenQueried_DoesNotThrow) {
+			Console::SetTitle("DotNetDupe Console Test");
+			String title = Console::GetTitle();
+			EXPECT_FALSE(title.IsEmpty());
+
+			bool bCaps = Console::GetCapsLock();
+			(void)bCaps;
+			bool bNum = Console::GetNumberLock();
+			(void)bNum;
+		}
+
+		TEST(ConsoleTest, WriteAndWriteLineOverloads_GivenNumericAndCharTypes_FormatsCorrectly) {
+			Console::Clear();
+			Console::Write(static_cast<long>(100));
+			Console::Write(static_cast<long long>(200));
+			Console::Write(1.5f);
+			Console::Write(2.5);
+			Console::Write(Char('X'));
+			Console::Write("ConstStr");
+			Console::WriteLine();
+
+			Console::WriteLine(static_cast<long>(300));
+			Console::WriteLine(static_cast<long long>(400));
+			Console::WriteLine(3.5f);
+			Console::WriteLine(4.5);
+			Console::WriteLine(Char('Y'));
+			Console::WriteLine("ConstStr2");
+
+			auto outputs = Console::GetOutputs();
+			EXPECT_GE(outputs.GetLength(), 6);
+			Console::Clear();
 		}
 	}
 }

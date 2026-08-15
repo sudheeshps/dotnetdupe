@@ -3,10 +3,13 @@
 #include "System/Threading/SemaphoreFullException.h"
 #include "System/Threading/WaitHandleCannotBeOpenedException.h"
 #include "System/TimeoutException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/Char.h"
 #include "System/Utils/StringConvert.h"
 #include "System/SmartPointer.h"
 #include <chrono>
+#include <mutex>
+#include <condition_variable>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -15,8 +18,14 @@
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
+
+            struct Semaphore::Impl {
+                std::mutex mutex;
+                std::condition_variable cv;
+            };
+
             Semaphore::Semaphore(int initialCount, int maximumCount)
-                : _count(initialCount), _maxCount(maximumCount), _name(""), _hHandle(nullptr) {}
+                : _count(initialCount), _maxCount(maximumCount), _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
 
             static bool s_semDummyCreatedNew = false;
             Semaphore::Semaphore(const String& sName, int initialCount, int maximumCount, bool openAlways)
@@ -25,25 +34,37 @@ namespace DotNetDupe {
             Semaphore::Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways)
                 : Semaphore(initialCount, maximumCount, sName, openAlways, s_semDummyCreatedNew) {}
 
+#if defined(_WIN32)
+            static HANDLE OpenOrCreateWin32Semaphore(const std::wstring& wsName, int initialCount, int maximumCount, bool openAlways, bool& bCreatedNew) {
+                HANDLE hHandle = ::CreateSemaphoreW(NULL, initialCount, maximumCount, wsName.c_str());
+                if (hHandle != NULL) {
+                    bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
+                    return hHandle;
+                }
+                if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                    throw UnauthorizedAccessException("Access denied creating Semaphore synchronization object.");
+                }
+                bCreatedNew = false;
+                if (!openAlways) {
+                    throw WaitHandleCannotBeOpenedException("Semaphore creation returned null handle and openAlways is false.");
+                }
+                hHandle = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
+                if (hHandle == NULL) {
+                    if (::GetLastError() == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied opening existing Semaphore synchronization object.");
+                    }
+                    throw WaitHandleCannotBeOpenedException("Failed to open existing semaphore with SYNCHRONIZE access.");
+                }
+                return hHandle;
+            }
+#endif
+
             Semaphore::Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways, bool& bCreatedNew)
-                : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr) {
+                : _count(initialCount), _maxCount(maximumCount), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
-                    _hHandle = ::CreateSemaphoreW(NULL, initialCount, maximumCount, wsName.c_str());
-                    if (_hHandle != NULL) {
-                        bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
-                    } else {
-                        bCreatedNew = false;
-                        if (openAlways) {
-                            _hHandle = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                            if (_hHandle == NULL) {
-                                throw WaitHandleCannotBeOpenedException("Failed to open existing semaphore with SYNCHRONIZE access.");
-                            }
-                        } else {
-                            throw WaitHandleCannotBeOpenedException("Semaphore creation returned null handle and openAlways is false.");
-                        }
-                    }
+                    _hHandle = OpenOrCreateWin32Semaphore(wsName, initialCount, maximumCount, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
                 }
@@ -59,32 +80,32 @@ namespace DotNetDupe {
                     _hHandle = nullptr;
                 }
 #endif
+                if (_pImpl != nullptr) {
+                    delete _pImpl;
+                    _pImpl = nullptr;
+                }
             }
 
-            Semaphore* Semaphore::OpenExisting(const String& sName) {
-                Semaphore* pResult = nullptr;
+            SmartPointer<Semaphore> Semaphore::OpenExisting(const String& sName) {
+                SmartPointer<Semaphore> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
                 }
                 throw WaitHandleCannotBeOpenedException("No semaphore handle of the given name exists.");
             }
 
-            bool Semaphore::TryOpenExisting(const String& sName, Semaphore*& pResult) {
-                pResult = nullptr;
-                if (sName.IsEmpty()) {
-                    return false;
-                }
+            bool Semaphore::TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult) {
+                pResult = SmartPointer<Semaphore>();
+                if (sName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenSemaphoreW(SEMAPHORE_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h != NULL) {
-                    SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::New(0, 1);
-                    spSem->_name = sName;
-                    spSem->_hHandle = h;
-                    pResult = spSem.Detach();
-                    return true;
-                }
-                return false;
+                if (h == NULL) return false;
+                SmartPointer<Semaphore> spSem = SmartPointer<Semaphore>::NewShared(0, 1);
+                spSem->_name = sName;
+                spSem->_hHandle = h;
+                pResult = std::move(spSem);
+                return true;
 #else
                 return false;
 #endif
@@ -97,10 +118,30 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                _cv.wait(lock, [this]() { return _count > 0; });
+                if (!_pImpl) return false;
+                std::unique_lock<std::mutex> lock(_pImpl->mutex);
+                _pImpl->cv.wait(lock, [this]() { return _count > 0; });
                 --_count;
                 return true;
+            }
+
+            static bool WaitForSemaphoreCv(Semaphore::Impl* pImpl, int& count, int msTimeout) {
+                std::unique_lock<std::mutex> lock(pImpl->mutex);
+                bool bRes = pImpl->cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&count]() { return count > 0; });
+                if (!bRes) throw TimeoutException("The wait operation timed out.");
+                --count;
+                return true;
+            }
+
+            static int ReleaseSemaphoreCv(Semaphore::Impl* pImpl, int& count, int maxCount, int releaseCount) {
+                std::lock_guard<std::mutex> lock(pImpl->mutex);
+                if (count + releaseCount > maxCount) {
+                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");
+                }
+                int prev = count;
+                count += releaseCount;
+                for (int i = 0; i < releaseCount; ++i) pImpl->cv.notify_one();
+                return prev;
             }
 
             bool Semaphore::WaitOne(int millisecondsTimeout) {
@@ -113,14 +154,8 @@ namespace DotNetDupe {
                     return (dwWaitResult == WAIT_OBJECT_0);
                 }
 #endif
-                std::unique_lock<std::mutex> lock(_mutex);
-                bool result = _cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count > 0; });
-                if (result) {
-                    --_count;
-                } else {
-                    throw TimeoutException("The wait operation timed out.");
-                }
-                return result;
+                if (!_pImpl) return false;
+                return WaitForSemaphoreCv(_pImpl, _count, millisecondsTimeout);
             }
 
             int Semaphore::Release(int releaseCount) {
@@ -133,14 +168,8 @@ namespace DotNetDupe {
                     return (int)previousCount;
                 }
 #endif
-                std::lock_guard<std::mutex> lock(_mutex);
-                if (_count + releaseCount > _maxCount) {
-                    throw SemaphoreFullException("Semaphore count exceeded maximum count.");
-                }
-                int prev = _count;
-                _count += releaseCount;
-                for (int i = 0; i < releaseCount; ++i) _cv.notify_one();
-                return prev;
+                if (!_pImpl) return 0;
+                return ReleaseSemaphoreCv(_pImpl, _count, _maxCount, releaseCount);
             }
         }
     }

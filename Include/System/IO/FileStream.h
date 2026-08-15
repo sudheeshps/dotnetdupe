@@ -3,7 +3,6 @@
 #include "Common.h"
 #include "System/IO/Stream.h"
 #include "System/String.h"
-#include <fstream>
 
 namespace DotNetDupe {
     namespace System {
@@ -11,7 +10,7 @@ namespace DotNetDupe {
             class FileStream : public Stream {
             public:
                 DOTNETDUPE_API FileStream(const String& sPath, int iMode);
-                DOTNETDUPE_API ~FileStream();
+                DOTNETDUPE_API ~FileStream() override;
 
                 // Stream overrides
                 DOTNETDUPE_API bool CanRead() const override;
@@ -31,7 +30,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void Dispose() override;
 
             private:
-                mutable std::fstream m_fsFileStream;
+                struct Impl;
+                Impl* m_pImpl;
                 String m_sPath;
                 int m_iMode;
                 bool m_bCanRead;

@@ -4,8 +4,9 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/ArgumentException.h"
-#include <unordered_map>
-#include <mutex>
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Lock.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -15,134 +16,106 @@ namespace DotNetDupe {
                 template <typename TKey, typename TValue>
                 class ConcurrentDictionary : public Object {
                 private:
-                    mutable std::mutex m_mtxLock;
-                    std::unordered_map<TKey, TValue> m_uMap;
+                    mutable Threading::CriticalSection m_csLock;
+                    Generic::Dictionary<TKey, TValue> m_dict;
 
                 public:
                     ConcurrentDictionary() = default;
 
+                    ~ConcurrentDictionary() override {
+                        Clear();
+                    }
+
                     bool TryAdd(const TKey& key, const TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        if (m_uMap.find(key) != m_uMap.end()) {
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.ContainsKey(key)) {
                             return false;
                         }
-
-                        m_uMap[key] = value;
+                        m_dict.Add(key, value);
                         return true;
                     }
 
                     bool TryGetValue(const TKey& key, TValue& value) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            value = it->second;
-                            return true;
-                        }
-
-                        return false;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.TryGetValue(key, value);
                     }
 
                     bool TryRemove(const TKey& key, TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            value = it->second;
-                            m_uMap.erase(it);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.TryGetValue(key, value)) {
+                            m_dict.Remove(key);
                             return true;
                         }
-
                         return false;
                     }
 
                     bool ContainsKey(const TKey& key) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_uMap.find(key) != m_uMap.end();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.ContainsKey(key);
                     }
 
                     void Clear() {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        m_uMap.clear();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_dict.Clear();
                     }
 
                     int GetCount() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return (int)m_uMap.size();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetCount();
                     }
 
                     bool IsEmpty() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_uMap.empty();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetCount() == 0;
                     }
 
                     TValue GetOrAdd(const TKey& key, const TValue& value) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            return it->second;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        TValue existingVal;
+                        if (m_dict.TryGetValue(key, existingVal)) {
+                            return existingVal;
                         }
-
-                        m_uMap[key] = value;
+                        m_dict.Add(key, value);
                         return value;
                     }
 
                     template <typename F>
                     TValue GetOrAdd(const TKey& key, F valueFactory) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            return it->second;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        TValue existingVal;
+                        if (m_dict.TryGetValue(key, existingVal)) {
+                            return existingVal;
                         }
-
                         TValue val = valueFactory(key);
-                        m_uMap[key] = val;
+                        m_dict.Add(key, val);
                         return val;
                     }
 
                     TValue AddOrUpdate(const TKey& key, const TValue& addValue, const TValue& updateValue) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        auto it = m_uMap.find(key);
-                        if (it != m_uMap.end()) {
-                            it->second = updateValue;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_dict.ContainsKey(key)) {
+                            m_dict[key] = updateValue;
                             return updateValue;
                         }
-
-                        m_uMap[key] = addValue;
+                        m_dict.Add(key, addValue);
                         return addValue;
                     }
 
                     TValue& operator[](const TKey& key) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_uMap[key];
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        // Be careful returning a reference while lock is released.
+                        // The user must synchronize external accesses to this reference.
+                        return m_dict[key];
                     }
 
                     Array<TKey> GetKeys() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        Array<TKey> arrKeys((int)m_uMap.size());
-                        int iIndex = 0;
-                        for (const auto& kvp : m_uMap) {
-                            arrKeys[iIndex++] = kvp.first;
-                        }
-
-                        return arrKeys;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetKeys();
                     }
 
                     Array<TValue> GetValues() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        Array<TValue> arrValues((int)m_uMap.size());
-                        int iIndex = 0;
-                        for (const auto& kvp : m_uMap) {
-                            arrValues[iIndex++] = kvp.second;
-                        }
-
-                        return arrValues;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_dict.GetValues();
                     }
                 };
 

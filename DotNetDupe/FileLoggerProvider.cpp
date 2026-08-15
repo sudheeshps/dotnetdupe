@@ -1,38 +1,77 @@
 #include "pch.h"
 #include "Extensions/Logging/FileLoggerProvider.h"
 #include "Extensions/Logging/FileLogger.h"
+#include "Extensions/Logging/LogManager.h"
+#include "System/IO/Path.h"
+#include "System/IO/Directory.h"
 #include "System/IOException.h"
+#include "FileLoggerContext.h"
 
 namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
 
-            FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration& config)
-                : m_config(config) {
-                
-                m_fileMutex = std::make_shared<std::mutex>();
-                m_fileStream = std::make_shared<std::ofstream>(config.FilePath.GetRawString(), std::ios::out | std::ios::app);
-                
-                if (!m_fileStream->is_open()) {
-                    throw DotNetDupe::System::IO::IOException(("Failed to open file for logging: " + config.FilePath).GetRawString());
-                }
+            FileLoggerProvider::FileLoggerProvider()
+                : FileLoggerProvider(LogManager::GetConfiguration()) {
             }
 
-            FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel) {
-                m_config.FilePath = filePath;
-                m_config.IsJsonFormat = isJsonFormat;
-                m_config.MinLevel = minLevel;
+            static DotNetDupe::System::String ResolveAndPrepareLogPath(const DotNetDupe::System::String& rawFilePath) {
+                using namespace DotNetDupe::System::IO;
+                DotNetDupe::System::String targetPath = rawFilePath;
 
-                m_fileMutex = std::make_shared<std::mutex>();
-                m_fileStream = std::make_shared<std::ofstream>(filePath.GetRawString(), std::ios::out | std::ios::app);
-                
-                if (!m_fileStream->is_open()) {
-                    throw DotNetDupe::System::IO::IOException(("Failed to open file for logging: " + filePath).GetRawString());
+                if (targetPath.IsEmpty()) {
+                    targetPath = "logs/app.log";
                 }
+
+                DotNetDupe::System::String fullPath = Path::GetFullPath(targetPath);
+                DotNetDupe::System::String parentDir = Path::GetDirectoryName(fullPath);
+
+                if (!parentDir.IsEmpty() && !Directory::Exists(parentDir)) {
+                    Directory::CreateDirectory(parentDir, true);
+                }
+
+                return fullPath;
+            }
+
+            struct FileLoggerProvider::Impl {
+                LoggerConfiguration config;
+                DotNetDupe::System::SmartPointer<FileLoggerContext> pContext;
+            };
+
+            FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration& config)
+                : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                m_pImpl->config = config;
+                m_pImpl->config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
+                m_pImpl->pContext = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->pContext->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->pContext->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+            }
+
+            FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String& filePath, bool isJsonFormat, LogLevel minLevel)
+                : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {
+                m_pImpl->config.FilePath = ResolveAndPrepareLogPath(filePath);
+                m_pImpl->config.IsJsonFormat = isJsonFormat;
+                m_pImpl->config.MinLevel = minLevel;
+                m_pImpl->pContext = DotNetDupe::System::SmartPointer<FileLoggerContext>::NewShared();
+                m_pImpl->pContext->fileMutex = std::make_shared<std::mutex>();
+                m_pImpl->pContext->fileStream = std::make_shared<std::ofstream>(m_pImpl->config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+            }
+
+            FileLoggerProvider::~FileLoggerProvider() {
+                if (m_pImpl && m_pImpl->pContext && m_pImpl->pContext->fileMutex && m_pImpl->pContext->fileStream) {
+                    std::lock_guard<std::mutex> lock(*(m_pImpl->pContext->fileMutex));
+                    if (m_pImpl->pContext->fileStream->is_open()) {
+                        m_pImpl->pContext->fileStream->close();
+                    }
+                }
+            }
+            
+            const DotNetDupe::System::String& FileLoggerProvider::GetFilePath() const {
+                return m_pImpl->config.FilePath;
             }
 
             DotNetDupe::System::SmartPointer<ILogger> FileLoggerProvider::CreateLogger(const DotNetDupe::System::String& categoryName) {
-                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_config, m_fileStream, m_fileMutex);
+                return DotNetDupe::System::SmartPointer<FileLogger>::NewShared(categoryName, m_pImpl->config, m_pImpl->pContext);
             }
 
         }

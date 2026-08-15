@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FileStream.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/FileStream.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/IOException.h"
+#include &lt;filesystem&gt;
+#include &lt;fstream&gt;
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPath(const DotNetDupe::System::String&amp; sPath) {
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+            struct FileStream::Impl {
+                std::fstream fs;
+            };
+
+<span style = "background-color:#dfd">            static std::ios_base::openmode DetermineOpenMode(int iMode, const String&amp; sPath, bool&amp; bCanRead, bool&amp; bCanWrite, bool&amp; bCanSeek) {
+                if (iMode &lt; 0 || iMode &gt; 5) throw ArgumentException("Invalid FileMode");
+                if (iMode == 0 &amp;&amp; fs::exists(ToFsPath(sPath))) throw IOException("File already exists.");
+                if (iMode == 5) {
+                    bCanRead = false; bCanWrite = true; bCanSeek = false;
+                    return std::ios_base::binary | std::ios_base::out | std::ios_base::app;</span>
+                }
+<span style = "background-color:#dfd">                bCanRead = true; bCanWrite = true; bCanSeek = true;
+                std::ios_base::openmode m = std::ios_base::binary | std::ios_base::in | std::ios_base::out;
+                if (iMode == 0 || iMode == 1 || iMode == 4) m |= std::ios_base::trunc;
+                return m;
+            }</span>
+
+<span style = "background-color:#dfd">            FileStream::FileStream(const String&amp; sPath, int iMode) : m_pImpl(new Impl()), m_sPath(sPath), m_iMode(iMode) {
+                std::ios_base::openmode openMode = DetermineOpenMode(iMode, sPath, m_bCanRead, m_bCanWrite, m_bCanSeek);
+                m_pImpl-&gt;fs.open(ToFsPath(sPath), openMode);
+                if (!m_pImpl-&gt;fs.is_open()) throw IOException("Could not open file.");
+            }</span>
+
+<span style = "background-color:#dfd">            FileStream::~FileStream() {
+                Dispose();
+                if (m_pImpl) {</span>
+                    delete m_pImpl;
+<span style = "background-color:#dfd">                    m_pImpl = nullptr;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool FileStream::CanRead() const {
+                return m_bCanRead;
+            }</span>
+
+<span style = "background-color:#dfd">            bool FileStream::CanSeek() const {
+                return m_bCanSeek;
+            }</span>
+
+<span style = "background-color:#dfd">            bool FileStream::CanWrite() const {
+                return m_bCanWrite;
+            }</span>
+
+<span style = "background-color:#dfd">            long FileStream::GetLength() const {
+                if (!CanSeek() || !m_pImpl) {
+                    throw IOException("Stream does not support seeking.");</span>
+                }
+                auto&amp; mutableStream = m_pImpl-&gt;fs;
+<span style = "background-color:#dfd">                long iCurrentPos = static_cast&lt;long&gt;(mutableStream.tellg());
+                mutableStream.seekg(0, std::ios_base::end);
+                long iLength = static_cast&lt;long&gt;(mutableStream.tellg());
+                mutableStream.seekg(iCurrentPos);
+                return iLength;
+            }</span>
+
+<span style = "background-color:#dfd">            long FileStream::GetPosition() const {
+                if (!CanSeek() || !m_pImpl) {
+                    throw IOException("Stream does not support seeking.");</span>
+                }
+<span style = "background-color:#dfd">                return static_cast&lt;long&gt;(m_pImpl-&gt;fs.tellg());
+            }</span>
+
+<span style = "background-color:#dfd">            void FileStream::SetPosition(long llValue) {
+                if (!CanSeek() || !m_pImpl) {
+                    throw IOException("Stream does not support seeking.");</span>
+                }
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.seekg(llValue);
+            }</span>
+
+<span style = "background-color:#dfd">            void FileStream::Flush() {
+                if (!m_pImpl) return;
+                m_pImpl-&gt;fs.flush();
+                if (m_pImpl-&gt;fs.bad()) {</span>
+<span style = "background-color:#fdd">                    throw IOException("Flush failed.");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            int FileStream::Read(char* pBuffer, int iOffset, int nCount) {
+                if (!CanRead() || !m_pImpl) {
+                    throw IOException("Stream does not support reading.");</span>
+                }
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.read(pBuffer + iOffset, nCount);
+                if (m_pImpl-&gt;fs.bad()) {</span>
+<span style = "background-color:#fdd">                    throw IOException("A read error occurred.");</span>
+                }
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;fs.eof()) {</span>
+<span style = "background-color:#fdd">                    m_pImpl-&gt;fs.clear();</span>
+                }
+<span style = "background-color:#dfd">                return static_cast&lt;int&gt;(m_pImpl-&gt;fs.gcount());
+            }</span>
+
+<span style = "background-color:#dfd">            long FileStream::Seek(long llOffset, int iOrigin) {
+                if (!CanSeek() || !m_pImpl) {
+                    throw IOException("Stream does not support seeking.");</span>
+                }
+                std::ios_base::seekdir dir;
+<span style = "background-color:#dfd">                if (iOrigin == 0) {
+                    dir = std::ios_base::beg;</span>
+<span style = "background-color:#fdd">                } else if (iOrigin == 1) {
+                    dir = std::ios_base::cur;
+                } else if (iOrigin == 2) {
+                    dir = std::ios_base::end;</span>
+                } else {
+<span style = "background-color:#fdd">                    throw ArgumentException("Invalid SeekOrigin");</span>
+                }
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.seekg(llOffset, dir);
+                return static_cast&lt;long&gt;(m_pImpl-&gt;fs.tellg());
+            }</span>
+
+<span style = "background-color:#dfd">            void FileStream::SetLength(long llValue) {
+                throw IOException("SetLength is not supported.");</span>
+            }
+
+<span style = "background-color:#dfd">            void FileStream::Write(const char* pBuffer, int iOffset, int nCount) {
+                if (!CanWrite() || !m_pImpl) {</span>
+<span style = "background-color:#fdd">                    throw IOException("Stream does not support writing.");</span>
+                }
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.write(pBuffer + iOffset, nCount);
+                if (m_pImpl-&gt;fs.bad() || m_pImpl-&gt;fs.fail()) {</span>
+<span style = "background-color:#fdd">                    throw IOException("A write error occurred.");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void FileStream::Dispose() {
+                if (m_pImpl &amp;&amp; m_pImpl-&gt;fs.is_open()) {
+                    m_pImpl-&gt;fs.close();</span>
+                }
+<span style = "background-color:#dfd">                m_bCanRead = false;</span>
+                m_bCanWrite = false;
+<span style = "background-color:#dfd">                m_bCanSeek = false;
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

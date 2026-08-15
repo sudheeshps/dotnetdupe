@@ -3,7 +3,7 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
-#include <set>
+#include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -13,58 +13,59 @@ namespace DotNetDupe {
                 template <typename T>
                 class SortedSet : public Object {
                 private:
-                    std::set<T> m_sSet;
+                    List<T> m_lstItems;
 
                 public:
                     SortedSet() = default;
 
-                    int GetCount() const { return (int)m_sSet.size(); }
+                    int GetCount() const { return m_lstItems.GetCount(); }
 
                     bool Add(const T& item) {
-                        return m_sSet.insert(item).second;
+                        int index = m_lstItems.BinarySearch(item);
+                        if (index >= 0) return false;
+
+                        m_lstItems.Insert(~index, item);
+                        return true;
                     }
 
                     bool Remove(const T& item) {
-                        return m_sSet.erase(item) > 0;
+                        int index = m_lstItems.BinarySearch(item);
+                        if (index < 0) return false;
+
+                        m_lstItems.RemoveAt(index);
+                        return true;
                     }
 
                     bool Contains(const T& item) const {
-                        return m_sSet.find(item) != m_sSet.end();
+                        return m_lstItems.BinarySearch(item) >= 0;
                     }
 
                     void Clear() {
-                        m_sSet.clear();
+                        m_lstItems.Clear();
                     }
 
                     void UnionWith(const SortedSet<T>& other) {
-                        for (const auto& item : other.m_sSet) {
-                            m_sSet.insert(item);
+                        for (int i = 0; i < other.m_lstItems.GetCount(); ++i) {
+                            Add(other.m_lstItems[i]);
                         }
                     }
 
                     void IntersectWith(const SortedSet<T>& other) {
-                        std::set<T> sNewSet;
-                        for (const auto& item : m_sSet) {
-                            if (other.m_sSet.find(item) != other.m_sSet.end()) {
-                                sNewSet.insert(item);
+                        for (int i = m_lstItems.GetCount() - 1; i >= 0; --i) {
+                            if (!other.Contains(m_lstItems[i])) {
+                                Remove(m_lstItems[i]);
                             }
                         }
-                        m_sSet = std::move(sNewSet);
                     }
 
                     void ExceptWith(const SortedSet<T>& other) {
-                        for (const auto& item : other.m_sSet) {
-                            m_sSet.erase(item);
+                        for (int i = 0; i < other.m_lstItems.GetCount(); ++i) {
+                            Remove(other.m_lstItems[i]);
                         }
                     }
 
                     Array<T> ToArray() const {
-                        Array<T> arrResult((int)m_sSet.size());
-                        int iIndex = 0;
-                        for (const auto& item : m_sSet) {
-                            arrResult[iIndex++] = item;
-                        }
-                        return arrResult;
+                        return m_lstItems.ToArray();
                     }
                 };
 

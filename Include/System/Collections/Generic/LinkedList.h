@@ -4,7 +4,6 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/InvalidOperationException.h"
-#include <list>
 
 namespace DotNetDupe {
     namespace System {
@@ -19,6 +18,13 @@ namespace DotNetDupe {
                     LinkedListNode<T>* Previous;
 
                     LinkedListNode(const T& val) : Value(val), Next(nullptr), Previous(nullptr) {}
+
+                    void* operator new(size_t size) {
+                        return System::AllocateCollectionBuffer(size);
+                    }
+                    void operator delete(void* p) {
+                        System::FreeCollectionBuffer(p);
+                    }
                 };
 
                 template <typename T>
@@ -31,7 +37,7 @@ namespace DotNetDupe {
                 public:
                     LinkedList() : m_pHead(nullptr), m_pTail(nullptr), m_iCount(0) {}
 
-                    ~LinkedList() {
+                    ~LinkedList() override {
                         Clear();
                     }
 

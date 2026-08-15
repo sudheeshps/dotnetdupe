@@ -123,26 +123,29 @@ namespace DotNetDupe {
             return GetMachineName();
         }
 
-        int64_t Environment::GetWorkingSet() {
-#if defined(_WIN32)
-            PROCESS_MEMORY_COUNTERS pmc;
-            if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) {
-                return (int64_t)pmc.WorkingSetSize;
-            }
-#else
+#if !defined(_WIN32)
+        static int64_t ReadLinuxWorkingSet() {
             std::ifstream statusFile("/proc/self/status");
             std::string sLine;
             while (std::getline(statusFile, sLine)) {
                 if (sLine.compare(0, 6, "VmRSS:") == 0) {
                     size_t nStart = sLine.find_first_of("0123456789");
                     size_t nEnd = sLine.find_first_not_of("0123456789", nStart);
-                    if (nStart != std::string::npos) {
-                        return std::stoll(sLine.substr(nStart, nEnd - nStart)) * 1024;
-                    }
+                    if (nStart != std::string::npos) return std::stoll(sLine.substr(nStart, nEnd - nStart)) * 1024;
                 }
             }
-#endif
             return 0;
+        }
+#endif
+
+        int64_t Environment::GetWorkingSet() {
+#if defined(_WIN32)
+            PROCESS_MEMORY_COUNTERS pmc;
+            if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) return (int64_t)pmc.WorkingSetSize;
+            return 0;
+#else
+            return ReadLinuxWorkingSet();
+#endif
         }
 
         void Environment::Exit(int iExitCode) {
@@ -158,7 +161,6 @@ namespace DotNetDupe {
             ::ExpandEnvironmentStringsW(sWName.c_str(), buffer.data(), nSize);
             return String(WCharToUtf8(buffer.data()).c_str());
 #else
-            // Simple implementation: check if name is exactly a variable
             if (sName.StartsWith("%", false) && sName.EndsWith("%", false)) {
                 const char* pVal = getenv(sName.Substring(1, sName.GetLength() - 2).GetRawString());
                 return pVal ? String(pVal) : sName;
@@ -167,24 +169,25 @@ namespace DotNetDupe {
 #endif
         }
 
-        Array<String> Environment::GetCommandLineArgs() {
+        static std::vector<String> ReadCommandLineTokens() {
             std::vector<String> tempArgs;
 #if defined(_WIN32)
             int nArgs;
             LPWSTR* pSzArglist = CommandLineToArgvW(GetCommandLineW(), &nArgs);
             if (pSzArglist != NULL) {
-                for (int iIndex = 0; iIndex < nArgs; iIndex++) {
-                    tempArgs.push_back(String(WCharToUtf8(pSzArglist[iIndex]).c_str()));
-                }
+                for (int iIndex = 0; iIndex < nArgs; iIndex++) tempArgs.push_back(String(WCharToUtf8(pSzArglist[iIndex]).c_str()));
                 LocalFree(pSzArglist);
             }
 #else
             std::ifstream cmdline("/proc/self/cmdline", std::ios::binary);
             std::string sArg;
-            while (std::getline(cmdline, sArg, '\0')) {
-                tempArgs.push_back(String(sArg.c_str()));
-            }
+            while (std::getline(cmdline, sArg, '\0')) tempArgs.push_back(String(sArg.c_str()));
 #endif
+            return tempArgs;
+        }
+
+        Array<String> Environment::GetCommandLineArgs() {
+            std::vector<String> tempArgs = ReadCommandLineTokens();
             Array<String> result((int)tempArgs.size());
             for (int iIndex = 0; iIndex < (int)tempArgs.size(); iIndex++) result[iIndex] = tempArgs[iIndex];
             return result;
@@ -204,78 +207,73 @@ namespace DotNetDupe {
 #endif
         }
 
+        static void ParseAndAddEnvEntry(const String& sLine, Collections::Generic::Dictionary<String, String>& result) {
+            int iEqIdx = sLine.IndexOf("=");
+            if (iEqIdx != -1) {
+                result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));
+            }
+        }
+
         Collections::Generic::Dictionary<String, String> Environment::GetEnvironmentVariables() {
             Collections::Generic::Dictionary<String, String> result;
 #if defined(_WIN32)
             wchar_t* pLpvEnv = GetEnvironmentStringsW();
-            for (wchar_t* pLpszVariable = pLpvEnv; *pLpszVariable; ) {
-                std::string sLineUtf8 = WCharToUtf8(pLpszVariable);
-                String sLine(sLineUtf8.c_str());
-                int iEqIdx = sLine.IndexOf("=");
-                if (iEqIdx != -1) {
-                    result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));
-                }
-                pLpszVariable += wcslen(pLpszVariable) + 1;
+            for (wchar_t* pLpszVariable = pLpvEnv; *pLpszVariable; pLpszVariable += wcslen(pLpszVariable) + 1) {
+                ParseAndAddEnvEntry(String(WCharToUtf8(pLpszVariable).c_str()), result);
             }
             FreeEnvironmentStringsW(pLpvEnv);
 #else
             for (char** ppEnv = environ; *ppEnv; ++ppEnv) {
-                std::string sLine(*ppEnv);
-                size_t nEqPos = sLine.find('=');
-                if (nEqPos != std::string::npos) {
-                    result.Add(String(sLine.substr(0, nEqPos).c_str()), String(sLine.substr(nEqPos + 1).c_str()));
-                }
+                ParseAndAddEnvEntry(String(*ppEnv), result);
             }
 #endif
             return result;
         }
 
+#if defined(_WIN32)
+        static int GetCsidlForFolder(Environment::SpecialFolder eFolder) {
+            using SF = Environment::SpecialFolder;
+            switch (eFolder) {
+            case SF::ApplicationData: return CSIDL_APPDATA;
+            case SF::CommonApplicationData: return CSIDL_COMMON_APPDATA;
+            case SF::CommonProgramFiles: return CSIDL_PROGRAM_FILES_COMMON;
+            case SF::Cookies: return CSIDL_COOKIES;
+            case SF::Desktop: return CSIDL_DESKTOP;
+            case SF::Favorites: return CSIDL_FAVORITES;
+            case SF::History: return CSIDL_HISTORY;
+            case SF::InternetCache: return CSIDL_INTERNET_CACHE;
+            case SF::LocalApplicationData: return CSIDL_LOCAL_APPDATA;
+            case SF::MyComputer: return CSIDL_DRIVES;
+            case SF::MyDocuments: return CSIDL_MYDOCUMENTS;
+            case SF::MyMusic: return CSIDL_MYMUSIC;
+            case SF::MyPictures: return CSIDL_MYPICTURES;
+            case SF::MyVideos: return CSIDL_MYVIDEO;
+            case SF::ProgramFiles: return CSIDL_PROGRAM_FILES;
+            case SF::Programs: return CSIDL_PROGRAMS;
+            case SF::Recent: return CSIDL_RECENT;
+            case SF::SendTo: return CSIDL_SENDTO;
+            case SF::StartMenu: return CSIDL_STARTMENU;
+            case SF::Startup: return CSIDL_STARTUP;
+            case SF::System: return CSIDL_SYSTEM;
+            case SF::Templates: return CSIDL_TEMPLATES;
+            case SF::UserProfile: return CSIDL_PROFILE;
+            default: return 0;
+            }
+        }
+#endif
+
         String Environment::GetFolderPath(SpecialFolder eFolder) {
 #if defined(_WIN32)
-            int iCsidl = 0;
-            switch (eFolder) {
-            case SpecialFolder::ApplicationData: iCsidl = CSIDL_APPDATA; break;
-            case SpecialFolder::CommonApplicationData: iCsidl = CSIDL_COMMON_APPDATA; break;
-            case SpecialFolder::CommonProgramFiles: iCsidl = CSIDL_PROGRAM_FILES_COMMON; break;
-            case SpecialFolder::Cookies: iCsidl = CSIDL_COOKIES; break;
-            case SpecialFolder::Desktop: iCsidl = CSIDL_DESKTOP; break;
-            case SpecialFolder::Favorites: iCsidl = CSIDL_FAVORITES; break;
-            case SpecialFolder::History: iCsidl = CSIDL_HISTORY; break;
-            case SpecialFolder::InternetCache: iCsidl = CSIDL_INTERNET_CACHE; break;
-            case SpecialFolder::LocalApplicationData: iCsidl = CSIDL_LOCAL_APPDATA; break;
-            case SpecialFolder::MyComputer: iCsidl = CSIDL_DRIVES; break;
-            case SpecialFolder::MyDocuments: iCsidl = CSIDL_MYDOCUMENTS; break;
-            case SpecialFolder::MyMusic: iCsidl = CSIDL_MYMUSIC; break;
-            case SpecialFolder::MyPictures: iCsidl = CSIDL_MYPICTURES; break;
-            case SpecialFolder::MyVideos: iCsidl = CSIDL_MYVIDEO; break;
-            case SpecialFolder::ProgramFiles: iCsidl = CSIDL_PROGRAM_FILES; break;
-            case SpecialFolder::Programs: iCsidl = CSIDL_PROGRAMS; break;
-            case SpecialFolder::Recent: iCsidl = CSIDL_RECENT; break;
-            case SpecialFolder::SendTo: iCsidl = CSIDL_SENDTO; break;
-            case SpecialFolder::StartMenu: iCsidl = CSIDL_STARTMENU; break;
-            case SpecialFolder::Startup: iCsidl = CSIDL_STARTUP; break;
-            case SpecialFolder::System: iCsidl = CSIDL_SYSTEM; break;
-            case SpecialFolder::Templates: iCsidl = CSIDL_TEMPLATES; break;
-            case SpecialFolder::UserProfile: iCsidl = CSIDL_PROFILE; break;
-            }
-
-            wchar_t buffer [MAX_PATH];
-            if (SHGetFolderPathW(NULL, iCsidl, NULL, 0, buffer) == S_OK) {
+            wchar_t buffer[MAX_PATH];
+            if (SHGetFolderPathW(NULL, GetCsidlForFolder(eFolder), NULL, 0, buffer) == S_OK) {
                 return String(WCharToUtf8(buffer).c_str());
             }
-#else
-            // Simple POSIX mapping
-            switch (eFolder) {
-            case SpecialFolder::UserProfile:
-            case SpecialFolder::MyDocuments:
-                return String(getenv("HOME"));
-            case SpecialFolder::LocalApplicationData:
-                return String(getenv("HOME")) + "/.local/share";
-            default:
-                break;
-            }
-#endif
             return String("");
+#else
+            if (eFolder == SpecialFolder::UserProfile || eFolder == SpecialFolder::MyDocuments) return String(getenv("HOME"));
+            if (eFolder == SpecialFolder::LocalApplicationData) return String(getenv("HOME")) + "/.local/share";
+            return String("");
+#endif
         }
 
         Array<String> Environment::GetLogicalDrives() {
@@ -284,7 +282,7 @@ namespace DotNetDupe {
             DWORD nDrives = ::GetLogicalDrives();
             for (int iIndex = 0; iIndex < 26; iIndex++) {
                 if ((nDrives >> iIndex) & 1) {
-                    char chDriveName [4] = { (char)('A' + iIndex), ':', '\\', 0 };
+                    char chDriveName[4] = { (char)('A' + iIndex), ':', '\\', 0 };
                     tempDrives.push_back(String(chDriveName));
                 }
             }
@@ -312,16 +310,11 @@ namespace DotNetDupe {
             ZeroMemory(&info, sizeof(OSVERSIONINFOEXW));
             info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);
             GetVersionExW((LPOSVERSIONINFOW)&info);
-
-            Version version(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, 0);
-            PlatformID ePlatform = PlatformID::Win32NT;
-            return OperatingSystem(ePlatform, version);
+            return OperatingSystem(PlatformID::Win32NT, Version(info.dwMajorVersion, info.dwMinorVersion, info.dwBuildNumber, 0));
 #else
             struct utsname name;
             uname(&name);
-            Version version(0, 0, 0, 0); // Need better parsing
-            PlatformID ePlatform = PlatformID::Unix;
-            return OperatingSystem(ePlatform, version);
+            return OperatingSystem(PlatformID::Unix, Version(0, 0, 0, 0));
 #endif
         }
     }

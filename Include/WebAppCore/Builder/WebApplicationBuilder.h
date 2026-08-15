@@ -3,11 +3,10 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/SmartPointer.h"
+#include "System/Collections/Generic/List.h"
 #include "Extensions/DependencyInjection/ServiceCollection.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Controllers/ControllerRouteBuilder.h"
-#include <vector>
-#include <functional>
 
 namespace DotNetDupe {
     namespace WebAppCore {
@@ -32,7 +31,7 @@ namespace DotNetDupe {
                     auto& ref = *routeBuilder;
 
                     // Capture lambda to bind routes later on WebApplication
-                    m_controllerRegistrars.push_back([routeBuilder](const DotNetDupe::System::SmartPointer<WebApplication>& app) {
+                    m_controllerRegistrars.Add([routeBuilder](const DotNetDupe::System::SmartPointer<WebApplication>& app) {
                         routeBuilder->Register(app);
                     });
 
@@ -43,7 +42,7 @@ namespace DotNetDupe {
 
             private:
                 DotNetDupe::Extensions::DependencyInjection::ServiceCollection m_services;
-                std::vector<std::function<void(const DotNetDupe::System::SmartPointer<WebApplication>&)>> m_controllerRegistrars;
+                DotNetDupe::System::Collections::Generic::List<WebApplication::ControllerRegistrar> m_controllerRegistrars;
             };
 
         }

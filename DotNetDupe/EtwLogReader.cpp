@@ -2,6 +2,7 @@
 #include "System/Diagnostics/EtwLogReader.h"
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
+#include "System/UnauthorizedAccessException.h"
 #include "System/TimeProvider.h"
 
 #include <mutex>
@@ -40,7 +41,7 @@ namespace DotNetDupe {
 #if defined(_WIN32)
             DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
                 if (action == EvtSubscribeActionDeliver && pUserContext != nullptr) {
-                    auto pCallback = static_cast<std::function<void(const EtwEvent&)>*>(pUserContext);
+                    auto pCallback = static_cast<Action<const EtwEvent&>*>(pUserContext);
                     if (pCallback && *pCallback) {
                         EtwEvent evt;
                         evt.sChannelName = "Windows-ETW";
@@ -56,10 +57,19 @@ namespace DotNetDupe {
                 return 0;
             }
 
-            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String& sChannelName, std::function<void(const EtwEvent&)>* pCallback) {
+            EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String& sChannelName, Action<const EtwEvent&>* pCallback) {
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
+                if (!hSub) {
+                    DWORD err = ::GetLastError();
+                    if (err == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");
+                    }
+                    char buf [256] = { 0 };
+                    snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
+                    throw SystemException(buf);
+                }
                 return hSub;
             }
 
@@ -67,7 +77,7 @@ namespace DotNetDupe {
                 EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
                 if (hEnum == NULL) return;
 
-                WCHAR wBuffer[512];
+                WCHAR wBuffer [512] = { 0 };
                 DWORD dwReturned = 0;
                 while (::EvtNextChannelPath(hEnum, 512, wBuffer, &dwReturned)) {
                     std::wstring wPath(wBuffer);
@@ -106,48 +116,90 @@ namespace DotNetDupe {
                 }
             }
 
+            static void ParseEtwXmlDetails(const std::string& sXml, EtwEvent& evt) {
+                if (sXml.empty()) return;
+                size_t lStart = sXml.find("<Level>");
+                if (lStart != std::string::npos) {
+                    size_t lEnd = sXml.find("</Level>", lStart);
+                    if (lEnd != std::string::npos) try { evt.iLevel = std::stoi(sXml.substr(lStart + 7, lEnd - lStart - 7)); } catch (...) { evt.iLevel = 4; }
+                }
+                size_t idStart = sXml.find("<EventID>");
+                if (idStart != std::string::npos) {
+                    size_t idEnd = sXml.find("</EventID>", idStart);
+                    if (idEnd != std::string::npos) try { evt.iEventId = std::stoi(sXml.substr(idStart + 9, idEnd - idStart - 9)); } catch (...) { evt.iEventId = 0; }
+                }
+                size_t provStart = sXml.find("Provider Name=\"");
+                if (provStart != std::string::npos) {
+                    size_t provEnd = sXml.find("\"", provStart + 15);
+                    if (provEnd != std::string::npos) evt.sProviderName = String(sXml.substr(provStart + 15, provEnd - provStart - 15).c_str());
+                }
+            }
+
             EtwEvent EtwLogReader::ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex) {
                 EtwEvent evt;
                 evt.sChannelName = sChannelName;
                 evt.iEventId = 100 + iIndex;
-                evt.iLevel = 4;
+                evt.iLevel = 0;
                 evt.sProviderName = "Windows-ETW-Provider";
                 evt.dtTimeCreated = DateTimeOffset::Now();
-
                 FormatEtwEventXml(hEvt, evt);
                 FormatEtwEventMessage(hEvt, evt);
+                ParseEtwXmlDetails(evt.sRawXml.GetRawString() ? evt.sRawXml.GetRawString() : "", evt);
+                if (evt.iLevel == 0) evt.iLevel = 4;
                 return evt;
             }
 
-            void EtwLogReader::ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, Collections::Generic::List<EtwEvent>& lstEvents) {
-                std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
-                std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
-                DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
+            static std::wstring BuildLevelQuery(EtwEventLevel level) {
+                if (level == EtwEventLevel::Critical) return L"*[System[Level=1]]";
+                if (level == EtwEventLevel::Error) return L"*[System[Level=2]]";
+                if (level == EtwEventLevel::Warning) return L"*[System[Level=3]]";
+                if (level == EtwEventLevel::Info) return L"*[System[Level=4 or Level=0 or not(Level)]]";
+                if (level == EtwEventLevel::Verbose) return L"*[System[Level=5]]";
+                return L"*";
+            }
 
-                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), L"*", dwFlags);
-                if (hResults == NULL) return;
-
-                if (iStartIndex > 0) {
-                    ::EvtSeek(hResults, iStartIndex, NULL, 0, EvtSeekRelativeToFirst);
-                }
-
+            void EtwLogReader::IterateEvtResults(EVT_HANDLE hResults, const String& sChannelName, int iMaxEvents, Collections::Generic::List<EtwEvent>& lstEvents) {
                 EVT_HANDLE hEvents[10];
                 DWORD dwReturned = 0;
                 int iCount = 0;
-
                 while (::EvtNext(hResults, 10, hEvents, INFINITE, 0, &dwReturned)) {
                     for (DWORD idx = 0; idx < dwReturned; idx++) {
-                        EtwEvent evt = ProcessSingleEtwEvent(hEvents[idx], sChannelName, iCount);
-                        lstEvents.Add(evt);
+                        lstEvents.Add(EtwLogReader::ProcessSingleEtwEvent(hEvents[idx], sChannelName, iCount++));
                         ::EvtClose(hEvents[idx]);
-
-                        iCount++;
                         if (iMaxEvents > 0 && iCount >= iMaxEvents) break;
                     }
                     if (iMaxEvents > 0 && iCount >= iMaxEvents) break;
                 }
+            }
 
+            void EtwLogReader::ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List<EtwEvent>& lstEvents) {
+                std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
+                std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
+                DWORD dwFlags = EvtQueryChannelPath | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
+                EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), BuildLevelQuery(level).c_str(), dwFlags);
+                if (!hResults) {
+                    DWORD err = ::GetLastError();
+                    if (err == ERROR_EVT_CHANNEL_NOT_FOUND) return;
+                    if (err == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying ETW event channel.");
+                    throw SystemException("EvtQuery failed.");
+                }
+                if (iStartIndex > 0) ::EvtSeek(hResults, iStartIndex, NULL, 0, EvtSeekRelativeToFirst);
+                IterateEvtResults(hResults, sChannelName, iMaxEvents, lstEvents);
                 ::EvtClose(hResults);
+            }
+#endif
+
+#if defined(_WIN32)
+            static bool QueryWin32LogRecordCount(const std::wstring& wChannel, unsigned long long& uCount) {
+                EVT_HANDLE hLog = ::EvtOpenLog(NULL, wChannel.c_str(), EvtOpenChannelPath);
+                if (!hLog) return false;
+                DWORD dwBufferUsed = 0;
+                BYTE buf[sizeof(EVT_VARIANT) + sizeof(UINT64)] = { 0 };
+                auto pVar = reinterpret_cast<PEVT_VARIANT>(buf);
+                bool bOk = ::EvtGetLogInfo(hLog, EvtLogNumberOfLogRecords, sizeof(buf), pVar, &dwBufferUsed) != FALSE;
+                if (bOk) uCount = static_cast<unsigned long long>(pVar->UInt64Val);
+                ::EvtClose(hLog);
+                return bOk;
             }
 #endif
 
@@ -157,18 +209,8 @@ namespace DotNetDupe {
 #if defined(_WIN32) || defined(_WIN64)
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
-                EVT_HANDLE hLog = ::EvtOpenLog(NULL, wChannel.c_str(), EvtOpenChannelPath);
-                if (hLog != NULL) {
-                    DWORD dwBufferUsed = 0;
-                    BYTE buf[sizeof(EVT_VARIANT) + sizeof(UINT64)] = { 0 };
-                    PEVT_VARIANT pVar = (PEVT_VARIANT)buf;
-                    if (::EvtGetLogInfo(hLog, EvtLogNumberOfLogRecords, sizeof(buf), pVar, &dwBufferUsed)) {
-                        UINT64 uCount = pVar->UInt64Val;
-                        ::EvtClose(hLog);
-                        return static_cast<unsigned long long>(uCount);
-                    }
-                    ::EvtClose(hLog);
-                }
+                unsigned long long uCount = 0;
+                if (QueryWin32LogRecordCount(wChannel, uCount)) return uCount;
 #endif
                 return 1000;
             }
@@ -192,21 +234,19 @@ namespace DotNetDupe {
                 counts.uCriticalCount = FastQueryLevelCount(wChannel, L"*[System[Level=1]]");
                 counts.uErrorCount = FastQueryLevelCount(wChannel, L"*[System[Level=2]]");
                 counts.uWarningCount = FastQueryLevelCount(wChannel, L"*[System[Level=3]]");
-                counts.uVerboseCount = FastQueryLevelCount(wChannel, L"*[System[Level=5]]");
                 counts.uInfoCount = FastQueryLevelCount(wChannel, L"*[System[Level=4 or Level=0 or not(Level)]]");
+                counts.uVerboseCount = FastQueryLevelCount(wChannel, L"*[System[Level=5]]");
             }
 #endif
 
             EtwEventLevelCounts EtwLogReader::GetChannelEventLevelCounts(const String& sChannelName) {
-                EtwEventLevelCounts counts{ 0, 0, 0, 0, 0 };
+                EtwEventLevelCounts counts = { 0, 0, 0, 0, 0 };
                 if (sChannelName.IsEmpty()) return counts;
                 std::lock_guard<std::mutex> lock(s_mtxEtw);
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(_WIN64)
                 std::string sStdChannel(sChannelName.GetRawString() ? sChannelName.GetRawString() : "");
                 std::wstring wChannel(sStdChannel.begin(), sStdChannel.end());
                 CountWin32EventsByLevel(wChannel, counts);
-                std::printf("[ETW DEBUG] Channel: %s | Critical: %llu, Error: %llu, Warning: %llu, Info: %llu, Verbose: %llu\n",
-                    sStdChannel.c_str(), counts.uCriticalCount, counts.uErrorCount, counts.uWarningCount, counts.uInfoCount, counts.uVerboseCount);
 #endif
                 return counts;
             }
@@ -227,44 +267,45 @@ namespace DotNetDupe {
                 return lstChannels;
             }
 
-            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName) {
-                return ReadEvents(sChannelName, 0, 0, true);
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName) { return ReadEvents(sChannelName, 0, 0, false, EtwEventLevel::All); }
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents) { return ReadEvents(sChannelName, iMaxEvents, 0, false, EtwEventLevel::All); }
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex) { return ReadEvents(sChannelName, iMaxEvents, iStartIndex, false, EtwEventLevel::All); }
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) { return ReadEvents(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, EtwEventLevel::All); }
+
+            static bool MatchEventLevelFilter(const EtwEvent& evt, EtwEventLevel level) {
+                if (level == EtwEventLevel::All) return true;
+                if (level == EtwEventLevel::Critical) return evt.iLevel == 1;
+                if (level == EtwEventLevel::Error) return evt.iLevel == 2;
+                if (level == EtwEventLevel::Warning) return evt.iLevel == 3;
+                if (level == EtwEventLevel::Info) return evt.iLevel == 4 || evt.iLevel == 0;
+                if (level == EtwEventLevel::Verbose) return evt.iLevel == 5;
+                return true;
             }
 
-            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents) {
-                return ReadEvents(sChannelName, iMaxEvents, 0, true);
+            static void FilterChannelEvents(const std::vector<EtwEvent>& events, EtwEventLevel level, int iStartIndex, int iMaxEvents, Collections::Generic::List<EtwEvent>& lstEvents) {
+                int iSkipped = 0;
+                for (const auto& evt : events) {
+                    if (!MatchEventLevelFilter(evt, level)) continue;
+                    if (iStartIndex > 0 && iSkipped++ < iStartIndex) continue;
+                    lstEvents.Add(evt);
+                    if (iMaxEvents > 0 && lstEvents.GetCount() >= iMaxEvents) break;
+                }
             }
 
-            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex) {
-                return ReadEvents(sChannelName, iMaxEvents, iStartIndex, true);
-            }
-
-            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) {
+            Collections::Generic::List<EtwEvent> EtwLogReader::ReadEvents(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 std::lock_guard<std::mutex> lock(s_mtxEtw);
                 RegisterChannelIfNew(sChannelName);
                 Collections::Generic::List<EtwEvent> lstEvents;
-
 #if defined(_WIN32)
-                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, lstEvents);
+                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, level, lstEvents);
 #endif
-
                 auto it = s_mapChannelEvents.find(sChannelName);
-                if (it != s_mapChannelEvents.end()) {
-                    int iSkipped = 0;
-                    for (const auto& evt : it->second) {
-                        if (iStartIndex > 0 && iSkipped < iStartIndex) {
-                            iSkipped++;
-                            continue;
-                        }
-                        lstEvents.Add(evt);
-                        if (iMaxEvents > 0 && lstEvents.GetCount() >= iMaxEvents) break;
-                    }
-                }
+                if (it != s_mapChannelEvents.end()) FilterChannelEvents(it->second, level, iStartIndex, iMaxEvents, lstEvents);
                 return lstEvents;
             }
 
-            void EtwLogReader::StartListening(const String& sChannelName, std::function<void(const EtwEvent&)> fnCallback) {
+            void EtwLogReader::StartListening(const String& sChannelName, Action<const EtwEvent&> fnCallback) {
                 if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 if (m_bListening) throw InvalidOperationException("Already listening to an event channel.");
 

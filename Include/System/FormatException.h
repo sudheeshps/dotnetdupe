@@ -1,7 +1,13 @@
 #pragma once
-#include "System/BasicFormatException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
-    namespace System {
-        typedef BasicFormatException<char> FormatException;
-    }
+	namespace System {
+
+		class FormatException : public SystemException {
+		public:
+			FormatException(const String& sMessage) : SystemException(sMessage) { }
+		};
+
+	}
 }

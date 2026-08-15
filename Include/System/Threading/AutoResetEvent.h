@@ -1,5 +1,6 @@
 #pragma once
 #include "System/Threading/EventWaitHandle.h"
+#include "System/SmartPointer.h"
 namespace DotNetDupe {
     namespace System {
         namespace Threading {
@@ -10,8 +11,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API AutoResetEvent(bool initialState, const String& sName, bool openAlways = true);
                 DOTNETDUPE_API AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew);
 
-                DOTNETDUPE_API static AutoResetEvent* OpenExisting(const String& sName);
-                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, AutoResetEvent*& pResult);
+                DOTNETDUPE_API static SmartPointer<AutoResetEvent> OpenExisting(const String& sName);
+                DOTNETDUPE_API static bool TryOpenExisting(const String& sName, SmartPointer<AutoResetEvent>& pResult);
             };
         }
     }

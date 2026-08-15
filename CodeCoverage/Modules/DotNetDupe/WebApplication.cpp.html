@@ -1,0 +1,332 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>WebApplication.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/Builder/WebApplicationBuilder.h"
+#include "System/Net/WebSockets/WebSocket.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
+#include "System/Console.h"
+#include "System/Net/Sockets/TcpListener.h"
+#include "System/Net/Sockets/TcpClient.h"
+#include "System/Net/Sockets/SocketException.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Convert.h"
+#include "System/Net/HttpStatusCode.h"
+#include "System/UnknownException.h"
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;algorithm&gt;
+
+namespace DotNetDupe {
+    namespace WebAppCore {
+        namespace Builder {
+
+            namespace Internal {
+                std::vector&lt;std::string&gt; GetPathSegments(const std::string&amp; path);
+                bool MatchRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams);
+                void ParseServerUrl(const std::string&amp; sUrl, std::string&amp; host, int&amp; port);
+            }
+
+            WebApplication::WebApplication(const System::SmartPointer&lt;System::IServiceProvider&gt;&amp; spServices)
+<span style = "background-color:#dfd">                : m_spServices(spServices), m_bRunning(false), m_nPort(0) {}</span>
+
+<span style = "background-color:#dfd">            WebApplication::~WebApplication() {
+                Stop();
+            }</span>
+
+            WebApplication::WebApplication(WebApplication&amp;&amp; other) noexcept
+<span style = "background-color:#fdd">                : m_spServices(std::move(other.m_spServices)),
+                  m_getHandlers(std::move(other.m_getHandlers)),
+                  m_postHandlers(std::move(other.m_postHandlers)),
+                  m_putHandlers(std::move(other.m_putHandlers)),
+                  m_deleteHandlers(std::move(other.m_deleteHandlers)),
+                  m_pListener(std::move(other.m_pListener)),
+                  m_bRunning(other.m_bRunning),
+                  m_sHost(std::move(other.m_sHost)),
+                  m_nPort(other.m_nPort),
+                  m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
+
+<span style = "background-color:#fdd">            WebApplication&amp; WebApplication::operator=(WebApplication&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    m_spServices = std::move(other.m_spServices);
+                    m_getHandlers = std::move(other.m_getHandlers);
+                    m_postHandlers = std::move(other.m_postHandlers);
+                    m_putHandlers = std::move(other.m_putHandlers);
+                    m_deleteHandlers = std::move(other.m_deleteHandlers);
+                    m_pListener = std::move(other.m_pListener);
+                    m_bRunning = other.m_bRunning;
+                    m_sHost = std::move(other.m_sHost);
+                    m_nPort = other.m_nPort;
+                    m_controllerRegistrars = std::move(other.m_controllerRegistrars);</span>
+                }
+<span style = "background-color:#fdd">                return *this;
+            }</span>
+
+<span style = "background-color:#dfd">            System::SmartPointer&lt;WebApplicationBuilder&gt; WebApplication::CreateBuilder() {
+                return System::SmartPointer&lt;WebApplicationBuilder&gt;::NewShared();
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapGet(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_getHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapPost(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_postHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapPut(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_putHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapDelete(const System::String&amp; pattern, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; handler) {
+                m_deleteHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#fdd">            void WebApplication::MapWebSocket(const System::String&amp; pattern, System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; handler) {
+                m_wsHandlers.Add(pattern, handler);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::MapControllers() {
+                for (int i = 0; i &lt; m_controllerRegistrars.GetCount(); ++i) {
+                    m_controllerRegistrars[i](m_spSelf);</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            struct ConnectionContext : public System::Object {
+                System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; pClient;
+                ConnectionContext(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; pC) : pClient(std::move(pC)) {}
+            };
+
+<span style = "background-color:#dfd">            void WebApplication::Run(const System::String&amp; url, int threadCount) {
+                if (threadCount &gt; 0) System::Threading::ThreadPool::SetMinThreads(threadCount);
+                std::string host; int port = 5000;
+                Internal::ParseServerUrl(url.GetRawString(), host, port);
+                StartServerLoop(System::String(host.c_str()), port);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::QueueAcceptedClient(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; pClient) {
+                auto spCtx = System::SmartPointer&lt;ConnectionContext&gt;::NewShared(std::move(pClient));
+                System::Threading::ThreadPool::QueueUserWorkItem([this, spCtx](System::Object*) {
+                    try { HandleConnection(std::move(spCtx-&gt;pClient)); }</span>
+<span style = "background-color:#fdd">                    catch (const DotNetDupe::System::Exception&amp; ex) { System::Console::WriteLine(System::String("[Server] ") + ex.What()); }
+                    catch (const std::exception&amp; ex) { System::Console::WriteLine(System::String("[Server] ") + ex.what()); }</span>
+<span style = "background-color:#dfd">                }, nullptr);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::StartServerLoop(const System::String&amp; host, int port) {
+                m_sHost = host; m_nPort = port;
+                m_pListener = System::SmartPointer&lt;System::Net::Sockets::TcpListener&gt;::NewShared(m_sHost, port);
+                m_pListener-&gt;Start();
+                m_bRunning = true;</span>
+                try {
+<span style = "background-color:#dfd">                    while (m_bRunning) {
+                        auto pClient = m_pListener-&gt;AcceptTcpClient();
+                        if (!pClient.IsNull()) QueueAcceptedClient(std::move(pClient));
+                    }
+                } catch (...) { (void)0; }
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::Stop() {
+                if (!m_bRunning) return;
+                m_bRunning = false;
+                if (!m_pListener.IsNull()) m_pListener-&gt;Stop();</span>
+                try {
+<span style = "background-color:#dfd">                    System::Net::Sockets::TcpClient dummy;
+                    dummy.Connect(m_sHost, m_nPort);</span>
+<span style = "background-color:#fdd">                    dummy.Close();</span>
+<span style = "background-color:#dfd">                } catch (...) { (void)0; }
+                m_spSelf = nullptr;
+            }</span>
+
+            static bool ReadHeaderLines(const System::SmartPointer&lt;System::IO::Stream&gt;&amp; stream, std::vector&lt;std::string&gt;&amp; lines, bool isRunning) {
+                char c; std::string currentLine;
+                while (isRunning &amp;&amp; stream-&gt;Read(&amp;c, 0, 1) &gt; 0) {
+                    if (c == '\n') {
+                        if (!currentLine.empty() &amp;&amp; currentLine.back() == '\r') currentLine.pop_back();
+                        if (currentLine.empty()) break;
+                        lines.push_back(currentLine);
+                        currentLine.clear();
+                    } else {
+                        currentLine += c;
+                    }
+                }
+                return !lines.empty();
+            }
+
+<span style = "background-color:#dfd">            static void ParseQueryParams(const std::string&amp; queryStr, Http::HttpRequest* req) {
+                size_t start = 0;
+                while (start &lt; queryStr.length()) {
+                    size_t ampersand = queryStr.find('&amp;', start);
+                    std::string pair = (ampersand == std::string::npos) ? queryStr.substr(start) : queryStr.substr(start, ampersand - start);
+                    size_t equals = pair.find('=');
+                    if (equals != std::string::npos) {
+                        req-&gt;GetQuery()[System::String(pair.substr(0, equals).c_str())] = System::String(pair.substr(equals + 1).c_str());
+                    } else if (!pair.empty()) {</span>
+<span style = "background-color:#fdd">                        req-&gt;GetQuery()[System::String(pair.c_str())] = System::String("");</span>
+                    }
+<span style = "background-color:#dfd">                    if (ampersand == std::string::npos) break;</span>
+<span style = "background-color:#fdd">                    start = ampersand + 1;
+                }</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            static std::string ParseRequestLine(const std::string&amp; reqLine, Http::HttpRequest* req) {
+                size_t sp1 = reqLine.find(' '), sp2 = reqLine.find(' ', sp1 + 1);
+                if (sp1 == std::string::npos || sp2 == std::string::npos) return "";
+                std::string method = reqLine.substr(0, sp1);
+                std::string fullPath = reqLine.substr(sp1 + 1, sp2 - sp1 - 1);
+                req-&gt;SetMethod(System::String(method.c_str()));
+                size_t q = fullPath.find('?');
+                std::string path = (q != std::string::npos) ? fullPath.substr(0, q) : fullPath;
+                if (q != std::string::npos) ParseQueryParams(fullPath.substr(q + 1), req);
+                req-&gt;SetPath(System::String(path.c_str()));
+                return method;
+            }</span>
+
+<span style = "background-color:#dfd">            static void ReadHeadersAndBody(const System::SmartPointer&lt;System::IO::Stream&gt;&amp; stream, const std::vector&lt;std::string&gt;&amp; lines, Http::HttpRequest* req) {
+                int contentLength = 0;
+                for (size_t i = 1; i &lt; lines.size(); ++i) {
+                    size_t colon = lines[i].find(':');
+                    if (colon == std::string::npos) continue;
+                    std::string name = lines[i].substr(0, colon);
+                    std::string val = lines[i].substr(colon + 1);
+                    size_t f = val.find_first_not_of(" \t");
+                    if (f != std::string::npos) val = val.substr(f, val.find_last_not_of(" \t\r\n") - f + 1);
+                    std::string nameLower = name;
+                    std::transform(nameLower.begin(), nameLower.end(), nameLower.begin(), ::tolower);
+                    req-&gt;GetHeaders()[System::String(nameLower.c_str())] = System::String(val.c_str());
+                    if (nameLower == "content-length") try { contentLength = std::stoi(val); } catch (...) { contentLength = 0; }
+                }
+                if (contentLength &gt; 0) {
+                    std::string body(contentLength, '\0');
+                    stream-&gt;Read(body.data(), 0, contentLength);
+                    req-&gt;SetBody(System::String(body.c_str()));
+                }
+            }</span>
+
+<span style = "background-color:#fdd">            static bool ProcessWsSession(const System::SmartPointer&lt;System::Net::Sockets::NetworkStream&gt;&amp; stream, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext, const System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt;&amp; pWsHandler, const System::String&amp; sSecKey) {
+                System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
+                std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: " + std::string(sAcceptKey.GetRawString() ? sAcceptKey.GetRawString() : "") + "\r\n\r\n";
+                stream-&gt;Write(hsResponse.data(), 0, static_cast&lt;int&gt;(hsResponse.length()));
+                auto pWebSocket = System::SmartPointer&lt;System::Net::WebSockets::WebSocket&gt;::NewShared(stream);
+                auto pWsContext = System::SmartPointer&lt;WebSockets::WebSocketContext&gt;::NewShared(spContext, pWebSocket);
+                try { pWsHandler-&gt;OnConnected(pWsContext); } catch (...) { (void)0; }
+                System::String msg;
+                while (pWebSocket-&gt;ReceiveText(msg)) {
+                    if (msg.IsEmpty() || msg == "__DISCONNECT__") break;
+                    try { pWsHandler-&gt;OnMessage(pWsContext, msg); } catch (...) { (void)0; }
+                }
+                try { pWsHandler-&gt;OnDisconnected(pWsContext); } catch (...) { (void)0; }
+                return true;
+            }</span>
+
+<span style = "background-color:#dfd">            static void SendHttpResponseData(const System::SmartPointer&lt;System::IO::Stream&gt;&amp; stream, Http::HttpResponse* resp, const std::string&amp; method) {
+                std::string respBody = resp-&gt;GetBody().GetRawString();
+                int code = resp-&gt;GetStatusCode();
+                std::string statusMsg = (code == 404) ? "Not Found" : ((code == 500) ? "Internal Server Error" : ((code == 201) ? "Created" : ((code == 204) ? "No Content" : "OK")));
+                std::string respStr = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\nContent-Type: " + std::string(resp-&gt;GetContentType().GetRawString() ? resp-&gt;GetContentType().GetRawString() : "") + "\r\nContent-Length: " + std::to_string(respBody.length()) + "\r\nConnection: close\r\nServer: DotNetDupeWebApplication/1.0\r\n";
+                auto keys = resp-&gt;GetHeaders().GetKeys(); auto values = resp-&gt;GetHeaders().GetValues();
+                for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                    respStr += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";</span>
+                }
+<span style = "background-color:#dfd">                respStr += "\r\n";
+                stream-&gt;Write(respStr.data(), 0, static_cast&lt;int&gt;(respStr.length()));
+                if (!respBody.empty() &amp;&amp; method != "HEAD") stream-&gt;Write(respBody.data(), 0, static_cast&lt;int&gt;(respBody.length()));
+            }</span>
+
+<span style = "background-color:#dfd">            static bool MatchAndFindHandler(Http::HttpRequest* req, const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; map, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&amp; pHandler) {
+                if (map.TryGetValue(req-&gt;GetPath(), pHandler)) return true;
+                std::vector&lt;std::string&gt; pathSegs = Internal::GetPathSegments(req-&gt;GetPath().GetRawString());
+                auto keys = map.GetKeys();
+                for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                    std::vector&lt;std::string&gt; patternSegs = Internal::GetPathSegments(keys[i].GetRawString());
+                    std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt; extractedParams;
+                    if (Internal::MatchRoute(patternSegs, pathSegs, extractedParams)) {
+                        for (const auto&amp; pair : extractedParams) req-&gt;GetRouteValues()[System::String(pair.first.c_str())] = System::String(pair.second.c_str());
+                        return map.TryGetValue(keys[i], pHandler);</span>
+                    }
+<span style = "background-color:#dfd">                }
+                return false;
+            }</span>
+
+<span style = "background-color:#dfd">            static bool TryHandleWebSocket(const System::SmartPointer&lt;System::Net::Sockets::NetworkStream&gt;&amp; stream, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext, const System::Collections::Generic::Dictionary&lt;System::String, System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt;&gt;&amp; wsMap) {
+                auto spRequest = spContext-&gt;GetRequest();
+                System::String sUpgrade, sSecKey;
+                if (spRequest-&gt;GetHeaders().TryGetValue("upgrade", sUpgrade) &amp;&amp; sUpgrade.GetRawString() == "websocket" &amp;&amp; spRequest-&gt;GetHeaders().TryGetValue("sec-websocket-key", sSecKey)) {</span>
+<span style = "background-color:#fdd">                    System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; spWsHandler;
+                    if (wsMap.TryGetValue(spRequest-&gt;GetPath(), spWsHandler) &amp;&amp; !spWsHandler.IsNull()) {
+                        ProcessWsSession(stream, spContext, spWsHandler, sSecKey);
+                        return true;</span>
+                    }
+<span style = "background-color:#fdd">                }
+                return false;</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            static void DispatchResponse(Http::HttpResponse* pResp, bool bFound, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&amp; pHandler, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext) {
+                if (bFound) {
+                    try { pResp-&gt;SetBody(pHandler(spContext)); }</span>
+<span style = "background-color:#fdd">                    catch (const DotNetDupe::System::Exception&amp; ex) { pResp-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError); pResp-&gt;SetBody(System::String("500 Internal Server Error: ") + ex.What()); }
+                    catch (...) { pResp-&gt;SetStatusCode(System::Net::HttpStatusCode::InternalServerError); pResp-&gt;SetBody("500 Internal Server Error"); }</span>
+                } else {
+<span style = "background-color:#dfd">                    pResp-&gt;SetStatusCode(System::Net::HttpStatusCode::NotFound);
+                    pResp-&gt;SetBody("404 Not Found");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            static void RouteAndSendResponse(const std::string&amp; method, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext, const System::SmartPointer&lt;System::IO::Stream&gt;&amp; spBaseStream,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; getHandlers,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; postHandlers,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; putHandlers,
+<span style = "background-color:#dfd">                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; deleteHandlers) {
+                System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; pHandler;
+                bool bFound = false;
+                if (method == "GET" || method == "HEAD") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), getHandlers, pHandler);
+                else if (method == "POST") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), postHandlers, pHandler);
+                else if (method == "PUT") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), putHandlers, pHandler);
+                else if (method == "DELETE") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), deleteHandlers, pHandler);
+                DispatchResponse(spContext-&gt;GetResponse().Get(), bFound, pHandler, spContext);
+                if (spContext-&gt;GetResponse()-&gt;IsHeadersSent()) spContext-&gt;GetResponse()-&gt;Flush();
+                else SendHttpResponseData(spBaseStream, spContext-&gt;GetResponse().Get(), method);
+            }</span>
+
+<span style = "background-color:#dfd">            void WebApplication::HandleConnection(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; spClient) {
+                auto stream = spClient-&gt;GetStream();
+                if (stream.IsNull()) return;
+                std::vector&lt;std::string&gt; lines;
+                System::SmartPointer&lt;System::IO::Stream&gt; spBaseStream = stream;
+                if (!ReadHeaderLines(spBaseStream, lines, m_bRunning)) return;
+                auto spContext = System::SmartPointer&lt;Http::HttpContext&gt;::NewShared();
+                std::string method = ParseRequestLine(lines[0], spContext-&gt;GetRequest().Get());
+                ReadHeadersAndBody(spBaseStream, lines, spContext-&gt;GetRequest().Get());
+                spContext-&gt;GetResponse()-&gt;BindStream(stream);
+                if (TryHandleWebSocket(stream, spContext, m_wsHandlers)) { spClient-&gt;Close(); return; }
+                RouteAndSendResponse(method, spContext, spBaseStream, m_getHandlers, m_postHandlers, m_putHandlers, m_deleteHandlers);
+                spClient-&gt;Close();
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

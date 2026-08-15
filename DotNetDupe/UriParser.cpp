@@ -2,6 +2,8 @@
 #include "pch.h"
 #include "System/UriParser.h"
 #include "System/Uri.h"
+#include <map>
+#include <utility>
 
 namespace DotNetDupe {
     namespace System {

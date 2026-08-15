@@ -1,21 +1,16 @@
 #pragma once
-#include "System/BasicException.h"
+#include "System/Exception.h"
 
 namespace DotNetDupe {
-    namespace System {
-        namespace Net {
-            namespace Http {
+	namespace System {
+		namespace Net {
+			namespace Http {
+				class HttpRequestException : public Exception {
+				public:
+					HttpRequestException(const String& sMessage) : Exception(sMessage) { }
+				};
+			}
+		}
 
-                template <class CharT>
-                class BasicHttpRequestException : public BasicException<CharT> {
-                public:
-                    BasicHttpRequestException(const CharT* pchMessage) : BasicException<CharT>(pchMessage) {}
-                    BasicHttpRequestException(const BasicString<CharT>& sMessage) : BasicException<CharT>(sMessage) {}
-                };
-
-                typedef BasicHttpRequestException<char> HttpRequestException;
-
-            }
-        }
-    }
+	}
 }

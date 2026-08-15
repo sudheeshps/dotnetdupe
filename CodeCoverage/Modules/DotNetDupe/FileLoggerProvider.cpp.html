@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FileLoggerProvider.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/FileLoggerProvider.h"
+#include "Extensions/Logging/FileLogger.h"
+#include "Extensions/Logging/LogManager.h"
+#include "System/IO/Path.h"
+#include "System/IO/Directory.h"
+#include "System/IOException.h"
+#include "FileLoggerContext.h"
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+            FileLoggerProvider::FileLoggerProvider()
+<span style = "background-color:#dfd">                : FileLoggerProvider(LogManager::GetConfiguration()) {
+            }</span>
+
+<span style = "background-color:#dfd">            static DotNetDupe::System::String ResolveAndPrepareLogPath(const DotNetDupe::System::String&amp; rawFilePath) {</span>
+                using namespace DotNetDupe::System::IO;
+<span style = "background-color:#dfd">                DotNetDupe::System::String targetPath = rawFilePath;</span>
+
+<span style = "background-color:#dfd">                if (targetPath.IsEmpty()) {
+                    targetPath = "logs/app.log";</span>
+                }
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String fullPath = Path::GetFullPath(targetPath);
+                DotNetDupe::System::String parentDir = Path::GetDirectoryName(fullPath);</span>
+
+<span style = "background-color:#dfd">                if (!parentDir.IsEmpty() &amp;&amp; !Directory::Exists(parentDir)) {</span>
+<span style = "background-color:#fdd">                    Directory::CreateDirectory(parentDir, true);</span>
+                }
+
+<span style = "background-color:#dfd">                return fullPath;
+            }</span>
+
+            struct FileLoggerProvider::Impl {
+                LoggerConfiguration config;
+                DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt; pContext;
+            };
+
+            FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration&amp; config)
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                m_pImpl-&gt;config = config;
+                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
+                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+                m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
+                m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+            }</span>
+
+            FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String&amp; filePath, bool isJsonFormat, LogLevel minLevel)
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(filePath);
+                m_pImpl-&gt;config.IsJsonFormat = isJsonFormat;
+                m_pImpl-&gt;config.MinLevel = minLevel;
+                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+                m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
+                m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
+            }</span>
+
+<span style = "background-color:#dfd">            FileLoggerProvider::~FileLoggerProvider() {
+                if (m_pImpl &amp;&amp; m_pImpl-&gt;pContext &amp;&amp; m_pImpl-&gt;pContext-&gt;fileMutex &amp;&amp; m_pImpl-&gt;pContext-&gt;fileStream) {
+                    std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;pContext-&gt;fileMutex));
+                    if (m_pImpl-&gt;pContext-&gt;fileStream-&gt;is_open()) {
+                        m_pImpl-&gt;pContext-&gt;fileStream-&gt;close();</span>
+                    }
+<span style = "background-color:#dfd">                }
+            }</span>
+            
+<span style = "background-color:#dfd">            const DotNetDupe::System::String&amp; FileLoggerProvider::GetFilePath() const {
+                return m_pImpl-&gt;config.FilePath;
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; FileLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
+                return DotNetDupe::System::SmartPointer&lt;FileLogger&gt;::NewShared(categoryName, m_pImpl-&gt;config, m_pImpl-&gt;pContext);
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

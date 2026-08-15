@@ -48,3 +48,8 @@ TEST(UserPrincipalTests, GivenEmptyUsername_WhenGetUserCalled_ThenThrowsArgument
     // Given, When & Then
     EXPECT_THROW(UserPrincipal::GetUser(""), ArgumentException);
 }
+
+TEST(UserPrincipalTests, GivenNonExistentUsername_WhenGetUserCalled_ThenThrowsArgumentException) {
+    // Given, When & Then
+    EXPECT_THROW(UserPrincipal::GetUser("NonExistentUser_12345_XYZ"), ArgumentException);
+}

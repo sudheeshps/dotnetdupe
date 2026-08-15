@@ -253,7 +253,7 @@ namespace DotNetDupe {
                         try {
                             double val = std::stod(numStr);
                             return JsonElement(val);
-                        } catch (...) {
+                        } catch (const std::exception&) {
                             throw JsonException(("Invalid number format: " + numStr).c_str());
                         }
                     }
@@ -403,48 +403,45 @@ namespace DotNetDupe {
                     return m_pImpl->dictObject.GetKeys();
                 }
 
+                static String FormatJsonArray(const Collections::Generic::List<JsonElement>& lstArray) {
+                    std::string sRes = "[";
+                    for (int i = 0; i < lstArray.GetCount(); ++i) {
+                        if (i > 0) sRes += ",";
+                        sRes += lstArray[i].ToString().GetRawString();
+                    }
+                    return String((sRes + "]").c_str());
+                }
+
+                static String FormatJsonObject(const Collections::Generic::Dictionary<String, JsonElement>& dictObject) {
+                    std::string sRes = "{";
+                    auto keys = dictObject.GetKeys();
+                    for (int i = 0; i < keys.GetLength(); ++i) {
+                        if (i > 0) sRes += ",";
+                        sRes += EscapeString(keys[i]).GetRawString();
+                        sRes += ":";
+                        sRes += dictObject[keys[i]].ToString().GetRawString();
+                    }
+                    return String((sRes + "}").c_str());
+                }
+
+                static String FormatJsonNumber(double dVal) {
+                    if (dVal == static_cast<long long>(dVal)) return String(std::to_string(static_cast<long long>(dVal)).c_str());
+                    char buf[64];
+                    snprintf(buf, sizeof(buf), "%g", dVal);
+                    return String(buf);
+                }
+
                 String JsonElement::ToString() const {
                     if (!m_pImpl) return "null";
                     switch (m_pImpl->eKind) {
-                        case JsonValueKind::Null:
-                            return "null";
-                        case JsonValueKind::True:
-                            return "true";
-                        case JsonValueKind::False:
-                            return "false";
-                        case JsonValueKind::Number: {
-                            double dVal = m_pImpl->dNumValue;
-                            if (dVal == static_cast<long long>(dVal)) {
-                                return String(std::to_string(static_cast<long long>(dVal)).c_str());
-                            } else {
-                                return String(std::to_string(dVal).c_str());
-                            }
-                        }
-                        case JsonValueKind::String:
-                            return EscapeString(m_pImpl->sStrValue);
-                        case JsonValueKind::Array: {
-                            std::string sRes = "[";
-                            for (int i = 0; i < m_pImpl->lstArray.GetCount(); ++i) {
-                                if (i > 0) sRes += ",";
-                                sRes += m_pImpl->lstArray[i].ToString().GetRawString();
-                            }
-                            sRes += "]";
-                            return String(sRes.c_str());
-                        }
-                        case JsonValueKind::Object: {
-                            std::string sRes = "{";
-                            auto keys = m_pImpl->dictObject.GetKeys();
-                            for (int i = 0; i < keys.GetLength(); ++i) {
-                                if (i > 0) sRes += ",";
-                                sRes += EscapeString(keys[i]).GetRawString();
-                                sRes += ":";
-                                sRes += m_pImpl->dictObject[keys[i]].ToString().GetRawString();
-                            }
-                            sRes += "}";
-                            return String(sRes.c_str());
-                        }
-                        default:
-                            return "null";
+                        case JsonValueKind::Null: return "null";
+                        case JsonValueKind::True: return "true";
+                        case JsonValueKind::False: return "false";
+                        case JsonValueKind::Number: return FormatJsonNumber(m_pImpl->dNumValue);
+                        case JsonValueKind::String: return EscapeString(m_pImpl->sStrValue);
+                        case JsonValueKind::Array: return FormatJsonArray(m_pImpl->lstArray);
+                        case JsonValueKind::Object: return FormatJsonObject(m_pImpl->dictObject);
+                        default: return "null";
                     }
                 }
 

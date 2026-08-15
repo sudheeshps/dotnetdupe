@@ -28,11 +28,16 @@ void DemonstrateEventLog() {
     // 3. Read Entries (Reads OS EventLog on Windows / In-memory store)
     Console::WriteLine("\nReading entries from EventLog '" + sLogName + "':");
     auto lstEntries = objLog.GetEntries();
+    int iPrinted = 0;
     for (int iIdx = 0; iIdx < lstEntries.GetCount(); iIdx++) {
         const auto& entry = lstEntries[iIdx];
-        Console::Write(" [ID " + Convert::ToString(entry.GetInstanceId()) + "] ");
-        Console::Write("Source: " + entry.GetSource() + " | ");
-        Console::Write("Message: " + entry.GetMessage() + "\n");
+        if (entry.GetSource() == sSource) {
+            Console::Write(" [ID " + Convert::ToString(entry.GetInstanceId()) + "] ");
+            Console::Write("Source: " + entry.GetSource() + " | ");
+            Console::Write("Message: " + entry.GetMessage() + "\n");
+            iPrinted++;
+            if (iPrinted >= 10) break; // Limit to 10 to avoid console flood
+        }
     }
 
     objLog.Clear();

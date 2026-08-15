@@ -10,12 +10,23 @@ void DemonstrateRealtimeTelemetry() {
     Console::WriteLine("\n--- Realtime Telemetry & Session Info Demonstration ---");
 
     // 1. Query Hardware System Metrics
-    RealTimeSystemInfo metrics = SystemMetrics::GetSystemMetrics();
-    Console::WriteLine("Memory Load: " + Convert::ToString(static_cast<int>(metrics.dMemoryUsagePercent)) + "% (" + Convert::ToString(static_cast<long long>(metrics.uMemoryUsedBytes)) + " Bytes / " + Convert::ToString(static_cast<long long>(metrics.uMemoryTotalBytes)) + " Bytes)");
-    Console::WriteLine("CPU Usage: " + Convert::ToString(static_cast<int>(metrics.dCpuUsagePercent)) + "%");
-    Console::WriteLine("Disk Read Bytes: " + Convert::ToString(static_cast<long long>(metrics.uDiskReadBytes)) + " Bytes");
-    Console::WriteLine("Disk Write Bytes: " + Convert::ToString(static_cast<long long>(metrics.uDiskWriteBytes)) + " Bytes");
-    Console::WriteLine("Top Processes Count: " + Convert::ToString(metrics.lstTopProcesses.GetCount()));
+    MemoryInfo mem = SystemMetrics::GetSystemMemoryUsage();
+    double dCpu = SystemMetrics::GetSystemCpuUsage();
+    DiskInfo disk = SystemMetrics::GetSystemDiskUsage();
+    Console::WriteLine("Memory Load: " + Convert::ToString(static_cast<int>(mem.dMemoryUsagePercent)) + "% (" + Convert::ToString(static_cast<long long>(mem.uMemoryUsedBytes)) + " Bytes / " + Convert::ToString(static_cast<long long>(mem.uMemoryTotalBytes)) + " Bytes)");
+    Console::WriteLine("CPU Usage: " + Convert::ToString(static_cast<int>(dCpu)) + "%");
+    Console::WriteLine("Disk Read Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskReadBytes)) + " Bytes");
+    Console::WriteLine("Disk Write Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskWriteBytes)) + " Bytes");
+
+    // 2. Query Top Processes & Services
+    auto lstTopCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 3);
+    Console::WriteLine("Top CPU Processes Count: " + Convert::ToString(lstTopCpu.GetCount()));
+
+    auto lstAllProcesses = SystemMetrics::GetAllProcesses(-1);
+    Console::WriteLine("Total Processes Count: " + Convert::ToString(lstAllProcesses.GetCount()));
+
+    auto lstServices = SystemMetrics::GetAllServices();
+    Console::WriteLine("Total Services Count: " + Convert::ToString(lstServices.GetCount()));
 
     // 2. Query Active & Total Sessions
     auto lstSessions = ActiveUserSession::GetAllSessions();

@@ -170,6 +170,16 @@ function Find-NuGet {
     return $null
 }
 
+function Find-OpenCppCoverage {
+    $cmd = Get-Command OpenCppCoverage -ErrorAction SilentlyContinue
+    if ($cmd) { return $cmd.Source }
+    foreach ($p in @("$env:ProgramFiles\OpenCppCoverage\OpenCppCoverage.exe",
+                     "${env:ProgramFiles(x86)}\OpenCppCoverage\OpenCppCoverage.exe")) {
+        if (Test-Path $p) { return $p }
+    }
+    return $null
+}
+
 function Test-WslAvailable {
     if (-not (Get-Command wsl -ErrorAction SilentlyContinue)) { return $false }
     $distros = (wsl --list --quiet 2>$null) | Where-Object { $_ -match '\S' }
@@ -246,6 +256,38 @@ function Invoke-MSBuildTests {
             return
         }
         & $exe
+    }
+}
+
+function Invoke-CodeCoverageAndQualityGates {
+    param([string]$CoverageExe)
+
+    Invoke-Step "Code Coverage & Static Analysis" {
+        $outDir = Join-Path $Script:RootDir "CodeCoverage"
+        $testsExe = Join-Path $Script:RootDir "bin\x64\Release\DotNetDupeTests.exe"
+        if (-not (Test-Path $testsExe)) {
+            Write-Fail "Release tests binary not found: $testsExe"
+            cmd /c "exit 1"
+            return
+        }
+
+        if ($CoverageExe) {
+            Write-Info "Running OpenCppCoverage -> $outDir"
+            Push-Location $Script:RootDir
+            try {
+                & $CoverageExe --modules DotNetDupe.dll --sources DotNetDupe --excluded_sources DotNetDupeTests --export_type "html:CodeCoverage" -- $testsExe
+            } finally {
+                Pop-Location
+            }
+        } else {
+            Write-Info "OpenCppCoverage not found; skipping binary coverage execution."
+        }
+
+        $qualityGateScript = Join-Path $Script:RootDir "scripts\Check-QualityGates.ps1"
+        if (Test-Path $qualityGateScript) {
+            Write-Info "Running Check-QualityGates -> $outDir\StaticAnalysis.html"
+            & $qualityGateScript -RootDir $Script:RootDir -OutputDir $outDir
+        }
     }
 }
 
@@ -402,6 +444,7 @@ $cmakePath    = Find-CMake
 $vsGenerator  = Find-VSGenerator -CMakePath $cmakePath
 $ctestPath    = if ($cmakePath) { Join-Path (Split-Path $cmakePath) 'ctest.exe' } else { 'ctest' }
 $nugetPath    = Find-NuGet
+$coveragePath = Find-OpenCppCoverage
 $wslAvailable = Test-WslAvailable
 
 if ($cmakePath) {
@@ -446,6 +489,7 @@ $msBuildRelOk = Invoke-MSBuild -Configuration Release
 if (-not $SkipTests) {
     if ($msBuildRelOk) {
         Invoke-MSBuildTests -Configuration Release
+        Invoke-CodeCoverageAndQualityGates -CoverageExe $coveragePath
     } else {
         Write-StepHeader 'Tests - MSBuild x64 Release'
         Write-Skip 'Skipped - MSBuild Release failed'

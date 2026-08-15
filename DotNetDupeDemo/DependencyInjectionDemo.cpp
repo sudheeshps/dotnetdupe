@@ -72,7 +72,7 @@ void DemonstrateDependencyInjection() {
         services.AddScoped<IDatabaseConnection, SqlDatabaseConnection>();
 
         // Register IRepository as Transient, using a lambda factory to inject IDatabaseConnection
-        services.AddTransient<IRepository>([](const SmartPointer<IServiceProvider>& sp) {
+        services.AddTransient<IRepository>([](const SmartPointer<DotNetDupe::System::IServiceProvider>& sp) {
             auto spConn = sp->GetRequiredService<IDatabaseConnection>();
             return SmartPointer<Object>(SmartPointer<SqlRepository>::NewShared(spConn));
         });
@@ -106,7 +106,7 @@ void DemonstrateDependencyInjection() {
             spRepo->SaveData("User3");
         } // Scope 2 disposed, SqlDatabaseConnection should be disposed
 
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("Error during Dependency Injection demonstration: ");
         Console::WriteLine(ex.What());
     }

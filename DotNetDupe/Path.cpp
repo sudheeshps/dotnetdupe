@@ -6,6 +6,8 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <initializer_list>
+#include <vector>
 
 #if defined(_WIN32)
 #include <windows.h>
@@ -200,32 +202,26 @@ namespace DotNetDupe {
                 return FromFsPath(fs::relative(fsPath, fsRelativeTo));
             }
 
-            String Path::GetTempFileName() {
-                String sTempDirPath = GetTempPath();
-
+            static String GenerateRandomTempFileName(const String& sTempDir) {
                 std::random_device rd;
                 std::mt19937 generator(rd());
-                std::uniform_int_distribution<int> distribution(0, 35);
-                const char alphabet [] = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-                for (int iIndex = 0; iIndex < 100; ++iIndex) {
-                    char chRandomName [9];
-                    for (int jIndex = 0; jIndex < 8; ++jIndex) {
-                        chRandomName [jIndex] = alphabet [distribution(generator)];
-                    }
-                    chRandomName [8] = '\0';
-
-                    fs::path file_path = ToFsPath(sTempDirPath) / (String(chRandomName) + ".tmp").GetRawString();
-
-                    if (!fs::exists(file_path)) {
-                        std::ofstream ofs(file_path);
-                        if (ofs) {
-                            return FromFsPath(file_path);
-                        }
+                std::uniform_int_distribution<int> dist(0, 35);
+                const char alphabet[] = "abcdefghijklmnopqrstuvwxyz0123456789";
+                for (int i = 0; i < 100; ++i) {
+                    char name[9];
+                    for (int j = 0; j < 8; ++j) name[j] = alphabet[dist(generator)];
+                    name[8] = '\0';
+                    fs::path fp = ToFsPath(sTempDir) / (String(name) + ".tmp").GetRawString();
+                    if (!fs::exists(fp)) {
+                        std::ofstream ofs(fp);
+                        if (ofs) return FromFsPath(fp);
                     }
                 }
-
                 throw IOException("Could not create a unique temporary file.");
+            }
+
+            String Path::GetTempFileName() {
+                return GenerateRandomTempFileName(GetTempPath());
             }
 
             String Path::GetTempPath() {
@@ -244,108 +240,67 @@ namespace DotNetDupe {
             }
 
             bool Path::HasExtension(const String& sPath) {
-                if (sPath.IsEmpty()) {
-                    return false;
-                }
-
+                if (sPath.IsEmpty()) return false;
                 String sFilenameStr = GetFileName(sPath);
-
-                if (sFilenameStr.IsEmpty() || sFilenameStr == "." || sFilenameStr == "..") {
-                    return false;
-                }
-
+                if (sFilenameStr.IsEmpty() || sFilenameStr == "." || sFilenameStr == "..") return false;
                 std::string sFilename((const char*)sFilenameStr);
-
                 auto nDotPos = sFilename.rfind('.');
-
-                if (nDotPos == std::string::npos || nDotPos == sFilename.length() - 1) {
-                    return false;
-                }
-
-                return true;
+                return (nDotPos != std::string::npos && nDotPos != sFilename.length() - 1);
             }
 
             bool Path::IsPathFullyQualified(const String& sPath) {
-                if (sPath.IsEmpty()) {
-                    return false;
-                }
+                if (sPath.IsEmpty()) return false;
                 return ToFsPath(sPath).is_absolute();
             }
 
             bool Path::IsPathRooted(const String& sPath) {
-                if (sPath.IsEmpty()) {
-                    return false;
-                }
-
+                if (sPath.IsEmpty()) return false;
                 int nLen = sPath.GetLength();
-
-                if (nLen >= 1) {
-                    char chFirst = sPath[0];
-                    if (chFirst == '\\' || chFirst == '/') {
-                        return true;
-                    }
+                if (sPath[0] == '\\' || sPath[0] == '/') return true;
+                if (nLen >= 2 && sPath[1] == ':' && std::isalpha(static_cast<unsigned char>(sPath[0]))) {
+                    return (nLen >= 3 && (sPath[2] == '\\' || sPath[2] == '/'));
                 }
-
-                if (nLen >= 2) {
-                    char chFirst = sPath[0];
-                    char chSecond = sPath[1];
-                    if (chSecond == ':' && ((chFirst >= 'a' && chFirst <= 'z') || (chFirst >= 'A' && chFirst <= 'Z'))) {
-                        if (nLen >= 3) {
-                            char chThird = sPath[2];
-                            if (chThird == '\\' || chThird == '/') {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }
-                }
-
                 return false;
             }
 
             String Path::Join(const std::initializer_list<String> sPaths) {
                 String sResult("");
-                if (TryJoin(sPaths, sResult)) {
-                    return sResult;
-                }
+                if (TryJoin(sPaths, sResult)) return sResult;
                 throw ArgumentException("Invalid character in path.");
             }
 
+            static bool ValidatePathChars(const std::initializer_list<String>& sPaths) {
+                auto invalidPathChars = Path::GetInvalidPathChars();
+                for (const auto& sPath : sPaths) {
+                    for (auto ch : invalidPathChars) {
+                        if (sPath.Contains(ch)) return false;
+                    }
+                }
+                return true;
+            }
+
+            static void AppendPathSegment(String& sJoined, const String& sPath) {
+                if (sPath.IsEmpty()) return;
+                if (sJoined.IsEmpty()) {
+                    sJoined = sPath;
+                } else {
+                    char chLast = sJoined[sJoined.GetLength() - 1];
+                    if (chLast != '\\' && chLast != '/') sJoined.Append(static_cast<char>(fs::path::preferred_separator));
+                    if (sPath[0] == '\\' || sPath[0] == '/') {
+                        sJoined.Append(sPath.Substring(1, sPath.GetLength() - 1));
+                    } else {
+                        sJoined.Append(sPath);
+                    }
+                }
+            }
+
             bool Path::TryJoin(const std::initializer_list<String> sPaths, String& sResult) {
-                auto invalidPathChars = GetInvalidPathChars();
-                for (const auto& sPath : sPaths) {
-                    for (auto chInvalidChar : invalidPathChars) {
-                        if (sPath.Contains(chInvalidChar)) {
-                            sResult = String("");
-                            return false;
-                        }
-                    }
+                if (!ValidatePathChars(sPaths)) {
+                    sResult = String("");
+                    return false;
                 }
-
                 String sJoinedPath("");
-                for (const auto& sPath : sPaths) {
-                    if (sPath.IsEmpty()) {
-                        continue;
-                    }
-
-                    if (sJoinedPath.IsEmpty()) {
-                        sJoinedPath = sPath;
-                    }
-                    else {
-                        char chLastChar = sJoinedPath [sJoinedPath.GetLength() - 1];
-                        if (chLastChar != '\\' && chLastChar != '/') {
-                            sJoinedPath.Append(static_cast<char>(fs::path::preferred_separator));
-                        }
-
-                        if (sPath [0] == '\\' || sPath [0] == '/') {
-                            sJoinedPath.Append(sPath.Substring(1, sPath.GetLength() - 1));
-                        }
-                        else {
-                            sJoinedPath.Append(sPath);
-                        }
-                    }
-                }
-
+                for (const auto& sPath : sPaths) AppendPathSegment(sJoinedPath, sPath);
                 sResult = sJoinedPath;
                 return true;
             }

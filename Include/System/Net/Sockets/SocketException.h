@@ -1,28 +1,22 @@
 #pragma once
-#include "System/BasicException.h"
+#include "Common.h"
+#include "System/SystemException.h"
 
 namespace DotNetDupe {
     namespace System {
         namespace Net {
             namespace Sockets {
 
-                template <class CharT>
-                class BasicSocketException : public BasicException<CharT> {
-                public:
-                    BasicSocketException(const CharT* pchMessage) : BasicException<CharT>(pchMessage), m_errorCode(0) {}
-                    BasicSocketException(const CharT* pchMessage, int errorCode) : BasicException<CharT>(pchMessage), m_errorCode(errorCode) {}
-                    BasicSocketException(const BasicString<CharT>& sMessage) : BasicException<CharT>(sMessage), m_errorCode(0) {}
-                    BasicSocketException(const BasicString<CharT>& sMessage, int errorCode) : BasicException<CharT>(sMessage), m_errorCode(errorCode) {}
-
-                    int GetErrorCode() const { return m_errorCode; }
-
+                class SocketException : public SystemException {
                 private:
                     int m_errorCode;
+
+                public:
+                    DOTNETDUPE_API SocketException(int errorCode, const String& message);
+                    DOTNETDUPE_API int GetErrorCode() const;
                 };
-
-                typedef BasicSocketException<char> SocketException;
-
             }
         }
+
     }
 }

@@ -5,7 +5,7 @@
 #include "System/String.h"
 #include "System/IO/IDisposable.h"
 #include "System/Text/TextEncoding.h"
-#include <memory>
+
 
 namespace DotNetDupe {
     namespace System {
@@ -18,7 +18,7 @@ namespace DotNetDupe {
                 DOTNETDUPE_API virtual void Dispose() override = 0;
                 DOTNETDUPE_API virtual void Flush() = 0;
 
-                DOTNETDUPE_API virtual std::shared_ptr<Text::Encoding> GetEncoding() const = 0;
+                DOTNETDUPE_API virtual Text::EncodingPtr GetEncoding() const = 0;
 
                 DOTNETDUPE_API virtual void Write(bool bValue) = 0;
                 DOTNETDUPE_API virtual void Write(char chValue) = 0;

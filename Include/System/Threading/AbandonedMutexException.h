@@ -1,9 +1,13 @@
 #pragma once
-#include "System/Threading/BasicAbandonedMutexException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
-    namespace System {
-        namespace Threading {
-            typedef BasicAbandonedMutexException<char> AbandonedMutexException;
-        }
-    }
+	namespace System {
+		namespace Threading {
+			class AbandonedMutexException : public SystemException {
+			public:
+				AbandonedMutexException(const String& sMessage) : SystemException(sMessage) { }
+			};
+		}
+	}
 }

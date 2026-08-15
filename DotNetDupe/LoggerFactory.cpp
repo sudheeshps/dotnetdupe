@@ -1,4 +1,6 @@
 #include "pch.h"
+#include <mutex>
+#include <vector>
 #include "Extensions/Logging/LoggerFactory.h"
 #include "Extensions/Logging/AggregateLogger.h"
 
@@ -6,21 +8,31 @@ namespace DotNetDupe {
     namespace Extensions {
         namespace Logging {
 
-            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer<ILoggerProvider>& provider) {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                m_providers.push_back(provider);
+            struct LoggerFactory::Impl {
+                std::vector<DotNetDupe::System::SmartPointer<ILoggerProvider>> pProviders;
+                std::mutex mutex;
+            };
+
+            LoggerFactory::LoggerFactory()
+                : m_pImpl(DotNetDupe::System::SmartPointer<Impl>::NewShared()) {}
+                
+            LoggerFactory::~LoggerFactory() = default;
+
+            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer<ILoggerProvider>& pProvider) {
+                std::lock_guard<std::mutex> lock(m_pImpl->mutex);
+                m_pImpl->pProviders.push_back(pProvider);
             }
 
             DotNetDupe::System::SmartPointer<ILogger> LoggerFactory::CreateLogger(const DotNetDupe::System::String& categoryName) {
-                std::lock_guard<std::mutex> lock(m_mutex);
-                std::vector<DotNetDupe::System::SmartPointer<ILogger>> loggers;
-                for (auto& provider : m_providers) {
-                    auto logger = provider->CreateLogger(categoryName);
-                    if (!logger.IsNull()) {
-                        loggers.push_back(logger);
+                std::lock_guard<std::mutex> lock(m_pImpl->mutex);
+                auto aggregate = DotNetDupe::System::SmartPointer<AggregateLogger>::NewShared();
+                for (auto& pProvider : m_pImpl->pProviders) {
+                    auto pLogger = pProvider->CreateLogger(categoryName);
+                    if (!pLogger.IsNull()) {
+                        aggregate->AddLogger(pLogger);
                     }
                 }
-                return DotNetDupe::System::SmartPointer<AggregateLogger>::NewShared(loggers);
+                return aggregate;
             }
 
         }

@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ThreadPool.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Thread.h"
+#include "System/Environment.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Lock.h"
+#include "System/Threading/EventWaitHandle.h"
+#include "System/Collections/Generic/List.h"
+#include "System/UnknownException.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Threading {
+
+            /**
+             * @brief Represents a single task in the thread pool queue.
+             */
+            struct ThreadPoolTask {
+                WaitCallback Callback;
+                Object* State;
+            };
+
+            /**
+             * @brief Internal implementation of the thread pool manager.
+             * Manages worker threads and task dispatching using DotNetDupe primitives.
+             */
+            class ThreadPoolInternal {
+            public:
+<span style = "background-color:#dfd">                static ThreadPoolInternal&amp; GetInstance() {
+                    static ThreadPoolInternal instance;</span>
+                    return instance;
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                bool QueueTask(WaitCallback callback, Object* pState) {</span>
+                    {
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        if (m_bIsShuttingDown) return false;</span>
+                        
+<span style = "background-color:#dfd">                        ThreadPoolTask objTask;
+                        objTask.Callback = callback;
+                        objTask.State = pState;
+                        m_qTasks.Add(objTask);
+                    }
+                    m_evtWorkAvailable.Set();
+                    return true;
+                }</span>
+
+<span style = "background-color:#dfd">                bool SetMinThreads(int iMinThreads) {
+                    if (iMinThreads &lt;= 0) return false;
+                    Lock&lt;CriticalSection&gt; lock(m_csSync);
+                    if (m_bIsShuttingDown) return false;
+                    while (m_pvWorkerThreads.GetCount() &lt; iMinThreads) {</span>
+<span style = "background-color:#fdd">                        SmartPointer&lt;Thread&gt; pWorker = SmartPointer&lt;Thread&gt;::NewShared(ThreadStart([this]() { WorkerLoop(); }));
+                        pWorker-&gt;Start();
+                        m_pvWorkerThreads.Add(std::move(pWorker));
+                    }</span>
+<span style = "background-color:#dfd">                    return true;
+                }</span>
+
+            private:
+<span style = "background-color:#dfd">                ThreadPoolInternal() 
+                    : m_bIsShuttingDown(false), m_evtWorkAvailable(false, false) {</span>
+                    
+<span style = "background-color:#dfd">                    int iThreadCount = Environment::GetProcessorCount();
+                    if (iThreadCount &lt; 10) iThreadCount = 10;</span>
+
+<span style = "background-color:#dfd">                    for (int i = 0; i &lt; iThreadCount; ++i) {
+                        SmartPointer&lt;Thread&gt; pWorker = SmartPointer&lt;Thread&gt;::NewShared(ThreadStart([this]() { WorkerLoop(); }));
+                        pWorker-&gt;Start();
+                        m_pvWorkerThreads.Add(std::move(pWorker));
+                    }
+                }</span>
+
+<span style = "background-color:#dfd">                ~ThreadPoolInternal() {</span>
+                    {
+<span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
+                        m_bIsShuttingDown = true;
+                    }</span>
+                    // Wake up all threads so they can exit. 
+                    // AutoResetEvent only wakes one per Set(), so we need to set it for each thread.
+<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_pvWorkerThreads.GetCount(); ++i) {
+                        m_evtWorkAvailable.Set();</span>
+                    }
+
+<span style = "background-color:#dfd">                    for (int i = 0; i &lt; m_pvWorkerThreads.GetCount(); ++i) {
+                        SmartPointer&lt;Thread&gt; pWorker = m_pvWorkerThreads[i];
+                        if (!pWorker.IsNull()) {
+                            pWorker-&gt;Join();</span>
+                        }
+<span style = "background-color:#dfd">                    }
+                }</span>
+
+<span style = "background-color:#dfd">                void WorkerLoop() {</span>
+                    while (true) {
+<span style = "background-color:#dfd">                        ThreadPoolTask objTask;
+                        bool bHasTask = false;</span>
+
+                        {
+<span style = "background-color:#dfd">                            Lock&lt;CriticalSection&gt; lock(m_csSync);
+                            if (m_qTasks.GetCount() &gt; 0) {
+                                objTask = m_qTasks[0];
+                                m_qTasks.RemoveAt(0);
+                                bHasTask = true;</span>
+                                
+                                // If there's more work, signal another thread
+<span style = "background-color:#dfd">                                if (m_qTasks.GetCount() &gt; 0) {
+                                    m_evtWorkAvailable.Set();</span>
+                                }
+<span style = "background-color:#dfd">                            } else if (m_bIsShuttingDown) {</span>
+                                // Signal the next thread to wake up and exit
+<span style = "background-color:#fdd">                                m_evtWorkAvailable.Set();
+                                return;</span>
+                            }
+<span style = "background-color:#dfd">                        }</span>
+
+<span style = "background-color:#dfd">                        if (bHasTask) {
+                            if (objTask.Callback) {</span>
+                                try {
+<span style = "background-color:#dfd">                                    objTask.Callback(objTask.State);</span>
+<span style = "background-color:#fdd">                                } catch (const Exception&amp;) {</span>
+                                    // DotNetDupe exception
+<span style = "background-color:#fdd">                                } catch (const std::exception&amp; ex) {
+                                    (void)UnknownException(ex.what());
+                                } catch (...) {
+                                    (void)UnknownException("An unhandled exception occurred during ThreadPool task execution.");
+                                }</span>
+                            }
+                        } else {
+                            // Wait for work or shutdown signal
+<span style = "background-color:#dfd">                            m_evtWorkAvailable.WaitOne();</span>
+                        }
+<span style = "background-color:#dfd">                    }</span>
+<span style = "background-color:#fdd">                }</span>
+
+                Collections::Generic::List&lt;SmartPointer&lt;Thread&gt;&gt; m_pvWorkerThreads;
+                Collections::Generic::List&lt;ThreadPoolTask&gt; m_qTasks;
+                CriticalSection m_csSync;
+                EventWaitHandle m_evtWorkAvailable;
+                bool m_bIsShuttingDown;
+            };
+
+<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback) {
+                return QueueUserWorkItem(callback, nullptr);
+            }</span>
+
+<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback, Object* pState) {
+                return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
+            }</span>
+
+<span style = "background-color:#fdd">            bool ThreadPool::SetMinThreads(int iMinThreads) {
+                return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

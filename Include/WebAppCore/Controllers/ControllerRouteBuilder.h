@@ -5,11 +5,11 @@
 #include "System/SmartPointer.h"
 #include "System/String.h"
 #include "System/Func.h"
+#include "System/Convert.h"
+#include "System/Collections/Generic/List.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Http/HttpContext.h"
 #include "System/Text/Json/JsonSerializer.h"
-#include <vector>
-#include <functional>
 #include <type_traits>
 
 namespace DotNetDupe {
@@ -30,67 +30,73 @@ namespace DotNetDupe {
                 struct RouteInfo {
                     DotNetDupe::System::String Method;
                     DotNetDupe::System::String SubPath;
-                    std::function<DotNetDupe::System::String(const DotNetDupe::System::SmartPointer<Builder::WebApplication>&, const DotNetDupe::System::SmartPointer<Http::HttpContext>&)> Handler;
+                    DotNetDupe::System::Func<DotNetDupe::System::String, const DotNetDupe::System::SmartPointer<Builder::WebApplication>&, const DotNetDupe::System::SmartPointer<Http::HttpContext>&> Handler;
                 };
-                std::vector<RouteInfo> m_routes;
+                DotNetDupe::System::Collections::Generic::List<RouteInfo> m_routes;
 
-                DotNetDupe::System::SmartPointer<TController> ResolveController(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& context) {
+                static DotNetDupe::System::SmartPointer<TController> ResolveController(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& context) {
                     auto controller = app->GetServices()->GetRequiredService<TController>();
                     controller->Initialize(context);
                     return controller;
                 }
 
-                static DotNetDupe::System::String UrlDecode(const DotNetDupe::System::String& input) {
-                    std::string str = input.GetRawString();
-                    std::string decoded;
-                    decoded.reserve(str.length());
-                    for (size_t i = 0; i < str.length(); ++i) {
-                        if (str[i] == '%') {
-                            if (i + 2 < str.length()) {
-                                int hexVal = 0;
-                                std::istringstream iss(str.substr(i + 1, 2));
-                                if (iss >> std::hex >> hexVal) {
-                                    decoded += static_cast<char>(hexVal);
-                                    i += 2;
-                                    continue;
-                                }
-                            }
-                        } else if (str[i] == '+') {
-                            decoded += ' ';
-                            continue;
-                        }
-                        decoded += str[i];
-                    }
-                    return DotNetDupe::System::String(decoded.c_str());
+                static int HexCharToDecimal(char c) {
+                    if (c >= '0' && c <= '9') return c - '0';
+                    if (c >= 'a' && c <= 'f') return c - 'a' + 10;
+                    if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+                    return 0;
                 }
 
-                DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
+                static char DecodeHexByte(char h1, char h2) {
+                    return static_cast<char>((HexCharToDecimal(h1) << 4) | HexCharToDecimal(h2));
+                }
+
+                static DotNetDupe::System::String UrlDecode(const DotNetDupe::System::String& input) {
+                    const char* pStr = input.GetRawString();
+                    DotNetDupe::System::String decoded("");
+                    int i = 0;
+                    while (pStr && pStr[i] != '\0') {
+                        if (pStr[i] == '%' && pStr[i + 1] != '\0' && pStr[i + 2] != '\0') {
+                            decoded += DecodeHexByte(pStr[i + 1], pStr[i + 2]);
+                            i += 3;
+                        } else if (pStr[i] == '+') {
+                            decoded += ' ';
+                            i++;
+                        } else {
+                            decoded += pStr[i++];
+                        }
+                    }
+                    return decoded;
+                }
+
+                static DotNetDupe::System::String ExtractFromSubPathPattern(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
+                    int openBrace = subPath.IndexOf("{");
+                    int closeBrace = subPath.IndexOf("}");
+                    if (openBrace >= 0 && closeBrace > openBrace + 1) {
+                        DotNetDupe::System::String paramName = subPath.Substring(openBrace + 1, closeBrace - openBrace - 1);
+                        DotNetDupe::System::String val;
+                        if (ctx->GetRequest()->GetRouteValues().TryGetValue(paramName, val) && !val.IsEmpty()) {
+                            return UrlDecode(val);
+                        }
+                        if (ctx->GetRequest()->GetQuery().TryGetValue(paramName, val) && !val.IsEmpty()) {
+                            return UrlDecode(val);
+                        }
+                    }
+                    return DotNetDupe::System::String("");
+                }
+
+                static DotNetDupe::System::String ExtractRouteOrQueryParam(const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& subPath) {
                     DotNetDupe::System::String val;
-                    // 1. Try route parameter "id" first
                     if (ctx->GetRequest()->GetRouteValues().TryGetValue("id", val) && !val.IsEmpty()) {
                         return UrlDecode(val);
                     }
-                    // 2. Try extracting parameter name from subPath placeholder pattern, e.g., "/{channelName}"
-                    std::string pathStr = subPath.GetRawString();
-                    size_t openBrace = pathStr.find('{');
-                    size_t closeBrace = pathStr.find('}', openBrace);
-                    if (openBrace != std::string::npos && closeBrace != std::string::npos && closeBrace > openBrace + 1) {
-                        std::string paramName = pathStr.substr(openBrace + 1, closeBrace - openBrace - 1);
-                        if (ctx->GetRequest()->GetRouteValues().TryGetValue(DotNetDupe::System::String(paramName.c_str()), val) && !val.IsEmpty()) {
-                            return UrlDecode(val);
-                        }
-                        if (ctx->GetRequest()->GetQuery().TryGetValue(DotNetDupe::System::String(paramName.c_str()), val) && !val.IsEmpty()) {
-                            return UrlDecode(val);
-                        }
-                    }
-                    // 3. Fallback to query parameter "id"
+                    DotNetDupe::System::String pathVal = ExtractFromSubPathPattern(ctx, subPath);
+                    if (!pathVal.IsEmpty()) return pathVal;
                     if (ctx->GetRequest()->GetQuery().TryGetValue("id", val) && !val.IsEmpty()) {
                         return UrlDecode(val);
                     }
-                    // 4. Fallback to first query parameter value if present
                     auto queryKeys = ctx->GetRequest()->GetQuery().GetKeys();
-                    if (queryKeys.GetLength() > 0) {
-                        ctx->GetRequest()->GetQuery().TryGetValue(queryKeys[0], val);
+                    if (queryKeys.GetLength() > 0 && ctx->GetRequest()->GetQuery().TryGetValue(queryKeys[0], val)) {
                         return UrlDecode(val);
                     }
                     return DotNetDupe::System::String("");
@@ -106,7 +112,7 @@ namespace DotNetDupe {
 
                 // 1. Returns String
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)()) {
-                    m_routes.push_back({"GET", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         return (controller.Get()->*action)();
                     }});
@@ -116,7 +122,7 @@ namespace DotNetDupe {
                 // 2. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)()) {
-                    m_routes.push_back({"GET", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         auto result = (controller.Get()->*action)();
                         ctx->GetResponse()->SetContentType("application/json");
@@ -129,7 +135,7 @@ namespace DotNetDupe {
 
                 // 3. Returns String
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.push_back({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         return (controller.Get()->*action)(id);
@@ -140,7 +146,7 @@ namespace DotNetDupe {
                 // 4. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.push_back({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         auto result = (controller.Get()->*action)(id);
@@ -153,7 +159,7 @@ namespace DotNetDupe {
                 // 4b. Returns TResult (action with page & pageSize parameters)
                 template <typename TResult, typename TString, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && std::is_same_v<std::decay_t<TString>, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapGet(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const TString&, size_t, size_t)) {
-                    m_routes.push_back({"GET", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"GET", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String channelName = ExtractRouteOrQueryParam(ctx, subPath);
                         
@@ -162,10 +168,10 @@ namespace DotNetDupe {
                         
                         DotNetDupe::System::String sPage, sPageSize;
                         if (ctx->GetRequest()->GetQuery().TryGetValue("page", sPage) || ctx->GetRequest()->GetRouteValues().TryGetValue("page", sPage)) {
-                            page = static_cast<size_t>(std::stoul(sPage.GetRawString()));
+                            page = static_cast<size_t>(DotNetDupe::System::Convert::ToInt32(sPage));
                         }
                         if (ctx->GetRequest()->GetQuery().TryGetValue("pageSize", sPageSize) || ctx->GetRequest()->GetRouteValues().TryGetValue("pageSize", sPageSize)) {
-                            pageSize = static_cast<size_t>(std::stoul(sPageSize.GetRawString()));
+                            pageSize = static_cast<size_t>(DotNetDupe::System::Convert::ToInt32(sPageSize));
                         }
                         
                         auto result = (controller.Get()->*action)(channelName, page, pageSize);
@@ -180,20 +186,16 @@ namespace DotNetDupe {
                 // 5. Returns String, parameter const TResource&
                 template <typename TResource>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const TResource&)) {
-                    m_routes.push_back({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -202,20 +204,16 @@ namespace DotNetDupe {
                 // 6. Returns String, parameter TResource (by value)
                 template <typename TResource, typename = std::enable_if_t<!std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(TResource)) {
-                    m_routes.push_back({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -224,7 +222,7 @@ namespace DotNetDupe {
                 // 7. Returns TResult (not String), parameter const TResource&
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const TResource&)) {
-                    m_routes.push_back({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -232,14 +230,10 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -248,7 +242,7 @@ namespace DotNetDupe {
                 // 8. Returns TResult (not String), parameter TResource (by value)
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && !std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPost(const DotNetDupe::System::String& subPath, TResult (TController::*action)(TResource)) {
-                    m_routes.push_back({"POST", subPath, [this, action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"POST", subPath, [action](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             auto body = ctx->GetRequest()->GetBody();
@@ -256,14 +250,10 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -274,21 +264,17 @@ namespace DotNetDupe {
                 // 9. Returns String, parameter const TResource&
                 template <typename TResource>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&, const TResource&)) {
-                    m_routes.push_back({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(id, payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -297,21 +283,17 @@ namespace DotNetDupe {
                 // 10. Returns String, parameter TResource (by value)
                 template <typename TResource, typename = std::enable_if_t<!std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&, TResource)) {
-                    m_routes.push_back({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                             auto body = ctx->GetRequest()->GetBody();
                             TResource payload = DotNetDupe::System::Text::Json::JsonSerializer::template Deserialize<TResource>(body);
                             return (controller.Get()->*action)(id, payload);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -320,7 +302,7 @@ namespace DotNetDupe {
                 // 11. Returns TResult (not String), parameter const TResource&
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&, const TResource&)) {
-                    m_routes.push_back({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -329,14 +311,10 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(id, payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -345,7 +323,7 @@ namespace DotNetDupe {
                 // 12. Returns TResult (not String), parameter TResource (by value)
                 template <typename TResult, typename TResource, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String> && !std::is_reference_v<TResource>>>
                 ControllerRouteBuilder& MapPut(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&, TResource)) {
-                    m_routes.push_back({"PUT", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"PUT", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         try {
                             auto controller = ResolveController(app, ctx);
                             DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
@@ -354,14 +332,10 @@ namespace DotNetDupe {
                             auto result = (controller.Get()->*action)(id, payload);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::Text::Json::JsonSerializer::Serialize(result);
-                        } catch (const DotNetDupe::System::BasicException<char>& ex) {
+                        } catch (const DotNetDupe::System::Exception& ex) {
                             ctx->GetResponse()->SetStatusCode(400);
                             ctx->GetResponse()->SetContentType("application/json");
                             return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body: ") + ex.What() + "\"}";
-                        } catch (...) {
-                            ctx->GetResponse()->SetStatusCode(400);
-                            ctx->GetResponse()->SetContentType("application/json");
-                            return DotNetDupe::System::String("{\"error\":\"Invalid JSON request body\"}");
                         }
                     }});
                     return *this;
@@ -371,7 +345,7 @@ namespace DotNetDupe {
 
                 // 13. Returns String
                 ControllerRouteBuilder& MapDelete(const DotNetDupe::System::String& subPath, DotNetDupe::System::String (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.push_back({"DELETE", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"DELETE", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         return (controller.Get()->*action)(id);
@@ -382,7 +356,7 @@ namespace DotNetDupe {
                 // 14. Returns TResult (not String)
                 template <typename TResult, typename = std::enable_if_t<!std::is_same_v<TResult, DotNetDupe::System::String>>>
                 ControllerRouteBuilder& MapDelete(const DotNetDupe::System::String& subPath, TResult (TController::*action)(const DotNetDupe::System::String&)) {
-                    m_routes.push_back({"DELETE", subPath, [this, action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
+                    m_routes.Add({"DELETE", subPath, [action, subPath](const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx) {
                         auto controller = ResolveController(app, ctx);
                         DotNetDupe::System::String id = ExtractRouteOrQueryParam(ctx, subPath);
                         auto result = (controller.Get()->*action)(id);
@@ -394,7 +368,8 @@ namespace DotNetDupe {
 
                 // Registers recorded routes onto WebApplication
                 void Register(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app) override {
-                    for (const auto& r : m_routes) {
+                    for (int i = 0; i < m_routes.GetCount(); ++i) {
+                        const auto& r = m_routes[i];
                         if (r.Method == "GET") {
                             app->MapGet(m_routePrefix + r.SubPath, [r, app](DotNetDupe::System::SmartPointer<Http::HttpContext> ctx) {
                                 return r.Handler(app, ctx);

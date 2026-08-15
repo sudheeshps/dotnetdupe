@@ -1,7 +1,13 @@
 #pragma once
-#include "System/BasicTimeoutException.h"
+#include "System/SystemException.h"
+
 namespace DotNetDupe {
     namespace System {
-        typedef BasicTimeoutException<char> TimeoutException;
+
+        class TimeoutException : public SystemException {
+        public:
+            TimeoutException(const String& sMessage) : SystemException(sMessage) {}
+        };
+
     }
 }

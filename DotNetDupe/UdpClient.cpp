@@ -46,21 +46,21 @@ namespace DotNetDupe {
 
                 int UdpClient::Send(const char* buffer, int offset, int size) {
                     if (m_pClientSocket.IsNull()) {
-                        throw SocketException("UdpClient is closed.");
+                        throw SocketException(-1, String("UdpClient is closed."));
                     }
                     return m_pClientSocket->Send(buffer, offset, size);
                 }
 
                 int UdpClient::Send(const char* buffer, int offset, int size, const String& ip, int port) {
                     if (m_pClientSocket.IsNull()) {
-                        throw SocketException("UdpClient is closed.");
+                        throw SocketException(-1, String("UdpClient is closed."));
                     }
                     return m_pClientSocket->SendTo(buffer, offset, size, ip, port);
                 }
 
                 int UdpClient::Receive(char* buffer, int offset, int size, String& ip, int& port) {
                     if (m_pClientSocket.IsNull()) {
-                        throw SocketException("UdpClient is closed.");
+                        throw SocketException(-1, String("UdpClient is closed."));
                     }
                     return m_pClientSocket->ReceiveFrom(buffer, offset, size, ip, port);
                 }

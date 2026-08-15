@@ -1,8 +1,13 @@
 #pragma once
-#include "System/BasicArgumentOutOfRangeException.h"
-namespace DotNetDupe {
-    namespace System {
-        typedef BasicArgumentOutOfRangeException<char> ArgumentOutOfRangeException;
-    }
-}
+#include "System/ArgumentException.h"
 
+namespace DotNetDupe {
+	namespace System {
+
+		class ArgumentOutOfRangeException : public ArgumentException {
+		public:
+			ArgumentOutOfRangeException(const String& sMessage) : ArgumentException(sMessage) { }
+		};
+
+	}
+}

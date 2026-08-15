@@ -3,8 +3,9 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
-#include <queue>
-#include <mutex>
+#include "System/Collections/Generic/LinkedList.h"
+#include "System/Threading/CriticalSection.h"
+#include "System/Threading/Lock.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -14,69 +15,56 @@ namespace DotNetDupe {
                 template <typename T>
                 class ConcurrentQueue : public Object {
                 private:
-                    mutable std::mutex m_mtxLock;
-                    std::queue<T> m_qQueue;
+                    mutable Threading::CriticalSection m_csLock;
+                    Generic::LinkedList<T> m_list;
 
                 public:
                     ConcurrentQueue() = default;
 
                     void Enqueue(const T& item) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        m_qQueue.push(item);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_list.AddLast(item);
                     }
 
                     bool TryDequeue(T& result) {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        if (m_qQueue.empty()) {
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_list.GetCount() == 0) {
                             return false;
                         }
 
-                        result = m_qQueue.front();
-                        m_qQueue.pop();
+                        result = m_list.GetFirst()->Value;
+                        m_list.RemoveFirst();
                         return true;
                     }
 
                     bool TryPeek(T& result) const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        if (m_qQueue.empty()) {
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        if (m_list.GetCount() == 0) {
                             return false;
                         }
 
-                        result = m_qQueue.front();
+                        result = m_list.GetFirst()->Value;
                         return true;
                     }
 
                     void Clear() {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        std::queue<T> emptyQueue;
-                        std::swap(m_qQueue, emptyQueue);
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        m_list.Clear();
                     }
 
                     int GetCount() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return (int)m_qQueue.size();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.GetCount();
                     }
 
                     bool IsEmpty() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        return m_qQueue.empty();
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.GetCount() == 0;
                     }
 
                     Array<T> ToArray() const {
-                        std::lock_guard<std::mutex> lock(m_mtxLock);
-                        
-                        Array<T> arrResult((int)m_qQueue.size());
-                        std::queue<T> qTemp = m_qQueue;
-                        int iIndex = 0;
-
-                        while (!qTemp.empty()) {
-                            arrResult[iIndex++] = qTemp.front();
-                            qTemp.pop();
-                        }
-
-                        return arrResult;
+                        Threading::CriticalSectionLock lock(m_csLock);
+                        return m_list.ToArray();
                     }
                 };
 

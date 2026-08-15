@@ -142,6 +142,7 @@
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/FS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -161,6 +162,7 @@
     <ClCompile Include="ConsoleDemo.cpp" />
     <ClCompile Include="ConvertDemo.cpp" />
     <ClCompile Include="DependencyInjectionDemo.cpp" />
+    <ClCompile Include="DirectoryDemo.cpp" />
     <ClCompile Include="EnvironmentDemo.cpp" />
     <ClCompile Include="FileAttributesDemo.cpp" />
     <ClCompile Include="GuidDemo.cpp" />
@@ -191,9 +193,11 @@
     <ClCompile Include="PushNotificationsDemo.cpp" />
     <ClCompile Include="UserPrincipalDemo.cpp" />
     <ClCompile Include="TerminalSessionDemo.cpp" />
+    <ClCompile Include="FileDownloaderDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />
+    <Natvis Include="..\DotNetDupe.natvis" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

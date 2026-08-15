@@ -122,7 +122,7 @@ void DemonstrateHttps() {
             } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
                 Console::Write("  [Server] SocketException: ");
                 Console::WriteLine(ex.What());
-            } catch (const BasicException<char>& ex) {
+            } catch (const SystemException& ex) {
                 Console::Write("  [Server] BasicException: ");
                 Console::WriteLine(ex.What());
             } catch (const std::exception& ex) {
@@ -162,7 +162,7 @@ void DemonstrateHttps() {
         } catch (const DotNetDupe::System::Net::Sockets::SocketException& ex) {
             Console::Write("  [Client] HTTPS SocketException: ");
             Console::WriteLine(ex.What());
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             Console::Write("  [Client] HTTPS Exception: ");
             Console::WriteLine(ex.What());
         }
@@ -170,7 +170,7 @@ void DemonstrateHttps() {
         serverThread.Join();
         listener.Stop();
         Console::WriteLine("Mock HTTPS server stopped.");
-    } catch (const BasicException<char>& ex) {
+    } catch (const SystemException& ex) {
         Console::Write("  [Demo] HTTPS Exception: ");
         Console::WriteLine(ex.What());
     }

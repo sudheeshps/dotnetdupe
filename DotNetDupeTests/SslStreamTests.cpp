@@ -112,7 +112,7 @@ namespace DotNetDupeTests {
             auto spCert = SmartPointer<X509Certificate2>::NewShared(m_sCertPath, m_sKeyPath);
             EXPECT_NE(spCert->GetInternalCert(), nullptr);
             EXPECT_NE(spCert->GetInternalKey(), nullptr);
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "BasicException caught: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception caught: " << ex.what();
@@ -227,7 +227,7 @@ namespace DotNetDupeTests {
             // Then
             EXPECT_EQ(sServerReceivedData, "Secure Hello");
             EXPECT_EQ(sClientReceivedData, "Secure World");
-        } catch (const BasicException<char>& ex) {
+        } catch (const SystemException& ex) {
             FAIL() << "Library Exception: " << ex.What();
         } catch (const std::exception& ex) {
             FAIL() << "std::exception: " << ex.what();

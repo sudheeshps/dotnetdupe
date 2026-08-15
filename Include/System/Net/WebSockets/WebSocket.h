@@ -7,8 +7,8 @@
 #include "System/Net/Sockets/NetworkStream.h"
 #include "System/Threading/CriticalSection.h"
 #include "System/Threading/Lock.h"
-#include <vector>
-
+#include "System/Array.h"
+#include <cstdint>
 namespace DotNetDupe {
     namespace System {
         namespace Net {
@@ -27,22 +27,21 @@ namespace DotNetDupe {
                 class WebSocket : public virtual Object {
                 public:
                     DOTNETDUPE_API explicit WebSocket(SmartPointer<Sockets::NetworkStream> pStream);
-                    DOTNETDUPE_API ~WebSocket() override = default;
+                    DOTNETDUPE_API ~WebSocket() override;
 
-                    DOTNETDUPE_API WebSocketState GetState() const { return m_eState; }
-                    DOTNETDUPE_API void SetState(WebSocketState state) { m_eState = state; }
+                    DOTNETDUPE_API WebSocketState GetState() const;
+                    DOTNETDUPE_API void SetState(WebSocketState state);
 
                     DOTNETDUPE_API bool SendAsync(const String& message);
-                    DOTNETDUPE_API bool SendBytes(const std::vector<uint8_t>& data);
+                    DOTNETDUPE_API bool SendBytes(const Array<uint8_t>& data);
                     DOTNETDUPE_API bool ReceiveText(String& outMessage);
                     DOTNETDUPE_API void Close();
 
                     DOTNETDUPE_API static String ComputeSecWebSocketAccept(const String& secWebSocketKey);
 
                 private:
-                    SmartPointer<Sockets::NetworkStream> m_pStream;
-                    WebSocketState m_eState;
-                    Threading::CriticalSection m_csLock;
+                    class Impl;
+                    SmartPointer<Impl> m_pImpl;
                 };
 
             }

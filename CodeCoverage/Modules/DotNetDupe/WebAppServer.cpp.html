@@ -1,0 +1,140 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>WebAppServer.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "WebAppCore/Server/WebAppServer.h"
+#include "WebAppCore/Http/HttpContext.h"
+#include "System/IO/File.h"
+#include "System/IO/Path.h"
+#include "System/ArgumentException.h"
+#include "System/Console.h"
+#include &lt;fstream&gt;
+#include &lt;sstream&gt;
+#include &lt;algorithm&gt;
+#include &lt;filesystem&gt;
+#include &lt;unordered_map&gt;
+
+namespace DotNetDupe {
+    namespace WebAppCore {
+        namespace Server {
+
+            WebAppServer::WebAppServer(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; app, const DotNetDupe::System::String&amp; webRoot)
+<span style = "background-color:#dfd">                : m_spApp(app), m_sWebRoot(webRoot), m_sDefaultDocument("index.html"), m_bStaticFilesEnabled(true) {
+                if (app.IsNull()) {</span>
+<span style = "background-color:#fdd">                    throw DotNetDupe::System::ArgumentException("WebApplication cannot be null");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            WebAppServer::WebAppServer(WebAppServer&amp;&amp; other) noexcept
+<span style = "background-color:#fdd">                : m_spApp(std::move(other.m_spApp)),
+                  m_sWebRoot(std::move(other.m_sWebRoot)),
+                  m_sDefaultDocument(std::move(other.m_sDefaultDocument)),
+                  m_bStaticFilesEnabled(other.m_bStaticFilesEnabled) {
+            }</span>
+
+<span style = "background-color:#fdd">            WebAppServer&amp; WebAppServer::operator=(WebAppServer&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    m_spApp = std::move(other.m_spApp);
+                    m_sWebRoot = std::move(other.m_sWebRoot);
+                    m_sDefaultDocument = std::move(other.m_sDefaultDocument);
+                    m_bStaticFilesEnabled = other.m_bStaticFilesEnabled;</span>
+                }
+                return *this;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            void WebAppServer::EnableStaticFiles(const DotNetDupe::System::String&amp; defaultDocument) {
+                m_bStaticFilesEnabled = true;
+                m_sDefaultDocument = defaultDocument;</span>
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::String WebAppServer::GetMimeType(const DotNetDupe::System::String&amp; filePath) {
+                DotNetDupe::System::String ext = DotNetDupe::System::IO::Path::GetExtension(filePath);
+                std::string s = ext.GetRawString();
+                std::transform(s.begin(), s.end(), s.begin(), ::tolower);
+                if (s.rfind('.', 0) == 0) s = s.substr(1);
+                static const std::unordered_map&lt;std::string, const char*&gt; mimeMap = {</span>
+                    {"html", "text/html; charset=utf-8"}, {"htm", "text/html; charset=utf-8"},
+                    {"css", "text/css; charset=utf-8"}, {"js", "application/javascript; charset=utf-8"},
+                    {"json", "application/json; charset=utf-8"}, {"png", "image/png"},
+                    {"jpg", "image/jpeg"}, {"jpeg", "image/jpeg"}, {"gif", "image/gif"},
+                    {"svg", "image/svg+xml"}, {"ico", "image/x-icon"}, {"txt", "text/plain; charset=utf-8"},
+                    {"pdf", "application/pdf"}, {"woff", "font/woff"}, {"woff2", "font/woff2"}
+                };
+<span style = "background-color:#dfd">                auto it = mimeMap.find(s);
+                return (it != mimeMap.end()) ? it-&gt;second : "application/octet-stream";
+            }</span>
+
+<span style = "background-color:#dfd">            static DotNetDupe::System::String ResolveStaticPath(const DotNetDupe::System::String&amp; reqPath, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
+                std::string rel = reqPath.GetRawString();
+                if (!rel.empty() &amp;&amp; (rel[0] == '/' || rel[0] == '\\')) rel = rel.substr(1);
+                if (rel.empty()) rel = defaultDoc.GetRawString();
+                if (rel.find("..") != std::string::npos) return "";
+                DotNetDupe::System::String target = DotNetDupe::System::IO::Path::Combine({webRoot, DotNetDupe::System::String(rel.c_str())});</span>
+                DotNetDupe::System::IO::FileAttributes attr;
+<span style = "background-color:#dfd">                if (DotNetDupe::System::IO::File::GetAttributes(target, attr) &amp;&amp; (static_cast&lt;int&gt;(attr) &amp; static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::Directory)) != 0) {</span>
+<span style = "background-color:#fdd">                    target = DotNetDupe::System::IO::Path::Combine({target, defaultDoc});</span>
+                }
+<span style = "background-color:#dfd">                return target;
+            }</span>
+
+<span style = "background-color:#dfd">            static DotNetDupe::System::String ServeStaticFile(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; spContext, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
+                DotNetDupe::System::String target = ResolveStaticPath(spContext-&gt;GetRequest()-&gt;GetPath(), webRoot, defaultDoc);
+                if (target.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(403); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
+                    return "403 Forbidden: Invalid file path";</span>
+                }
+<span style = "background-color:#dfd">                if (!DotNetDupe::System::IO::File::Exists(target)) {</span>
+<span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(404); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
+                    return "404 Not Found";</span>
+                }
+<span style = "background-color:#dfd">                try {
+                    DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
+                    spContext-&gt;GetResponse()-&gt;SetStatusCode(200);
+                    spContext-&gt;GetResponse()-&gt;SetContentType(WebAppServer::GetMimeType(target));
+                    spContext-&gt;GetResponse()-&gt;GetHeaders()["Content-Disposition"] = "inline";
+                    return content;</span>
+<span style = "background-color:#fdd">                } catch (...) {
+                    spContext-&gt;GetResponse()-&gt;SetStatusCode(500); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
+                    return "500 Internal Server Error: Unable to open file";</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void WebAppServer::Run(const DotNetDupe::System::String&amp; url, int threadCount) {
+                if (m_bStaticFilesEnabled) {
+                    m_spApp-&gt;MapGet("/{*filepath}", [this](DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; ctx) {</span>
+                        return ServeStaticFile(ctx, m_sWebRoot, m_sDefaultDocument);
+                    });
+                }
+<span style = "background-color:#dfd">                m_spApp-&gt;Run(url, threadCount);
+            }</span>
+
+<span style = "background-color:#fdd">            void WebAppServer::Stop() {
+                m_spApp-&gt;Stop();</span>
+            }
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
