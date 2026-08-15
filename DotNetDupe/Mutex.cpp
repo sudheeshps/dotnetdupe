@@ -69,13 +69,13 @@ namespace DotNetDupe {
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
                 } else {
                     bCreatedNew = true;
-                    if (bInitiallyOwned && _pImpl) {
+                    if (bInitiallyOwned) {
                         _pImpl->mutex.lock();
                     }
                 }
 #else
                 bCreatedNew = true;
-                if (bInitiallyOwned && _pImpl) {
+                if (bInitiallyOwned) {
                     _pImpl->mutex.lock();
                 }
 #endif
