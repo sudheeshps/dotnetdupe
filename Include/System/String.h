@@ -196,17 +196,20 @@ namespace DotNetDupe {
 
             DOTNETDUPE_API static String InternalFormat(const char* pFormat, const String* pArgs, int iArgCount);
 
-            template <typename... Args>
-            static String Format(const char* pFormat, const Args&... args) {
-                String arrArgs[] = { FormatArgHelper(args)... };
-                return InternalFormat(pFormat, arrArgs, sizeof...(Args));
+            template <typename Arg1, typename... Args>
+            static String Format(const char* pFormat, const Arg1& arg1, const Args&... args) {
+                String arrArgs[] = { FormatArgHelper(arg1), FormatArgHelper(args)... };
+                return InternalFormat(pFormat, arrArgs, 1 + sizeof...(Args));
             }
             static String Format(const char* pFormat) {
                 return InternalFormat(pFormat, nullptr, 0);
             }
-            template <typename... Args>
-            static String Format(const String& sFormat, const Args&... args) {
-                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "", args...);
+            static String Format(const String& sFormat) {
+                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "");
+            }
+            template <typename Arg1, typename... Args>
+            static String Format(const String& sFormat, const Arg1& arg1, const Args&... args) {
+                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "", arg1, args...);
             }
 
             DOTNETDUPE_API int LastIndexOf(const String& sStr, bool bIgnoreCase);

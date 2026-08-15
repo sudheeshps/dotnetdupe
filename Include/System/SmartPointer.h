@@ -234,47 +234,82 @@ namespace DotNetDupe {
             // --- Factory Methods ---
 
             /**
+             * @brief Creates a Unique SmartPointer, default constructing T.
+             */
+            static SmartPointer<T> NewUnique() {
+                return SmartPointer<T>(new T(), false);
+            }
+
+            /**
              * @brief Creates a Unique SmartPointer, forwarding arguments to T's constructor.
              */
-            template <typename... Args>
-            static SmartPointer<T> NewUnique(Args&&... args) {
-                return SmartPointer<T>(new T(std::forward<Args>(args)...), false);
+            template <typename Arg1, typename... Args>
+            static SmartPointer<T> NewUnique(Arg1&& arg1, Args&&... args) {
+                return SmartPointer<T>(new T(std::forward<Arg1>(arg1), std::forward<Args>(args)...), false);
+            }
+
+            /**
+             * @brief Creates a Shared SmartPointer, default constructing T.
+             */
+            static SmartPointer<T> NewShared() {
+                return SmartPointer<T>(new T(), true);
             }
 
             /**
              * @brief Creates a Shared SmartPointer, forwarding arguments to T's constructor.
              */
-            template <typename... Args>
-            static SmartPointer<T> NewShared(Args&&... args) {
-                return SmartPointer<T>(new T(std::forward<Args>(args)...), true);
+            template <typename Arg1, typename... Args>
+            static SmartPointer<T> NewShared(Arg1&& arg1, Args&&... args) {
+                return SmartPointer<T>(new T(std::forward<Arg1>(arg1), std::forward<Args>(args)...), true);
             }
 
             // --- Static Factory Helpers (C#-like instantiation) ---
 
             /**
+             * @brief Creates a new SmartPointer (default construction).
+             */
+            static SmartPointer<T> New() {
+                return NewUnique();
+            }
+
+            /**
              * @brief Creates a new SmartPointer with variadic arguments for T's constructor.
              */
-            template <typename... Args>
-            static SmartPointer<T> New(Args&&... args) {
-                return NewUnique(std::forward<Args>(args)...);
+            template <typename Arg1, typename... Args>
+            static SmartPointer<T> New(Arg1&& arg1, Args&&... args) {
+                return NewUnique(std::forward<Arg1>(arg1), std::forward<Args>(args)...);
             }
 
             // --- Conversion / Compatibility Aliases ---
 
             /**
+             * @brief Alias for NewUnique (default construction).
+             */
+            static SmartPointer<T> MakeUnique() {
+                return NewUnique();
+            }
+
+            /**
              * @brief Alias for NewUnique. Provided for compatibility.
              */
-            template <typename... Args>
-            static SmartPointer<T> MakeUnique(Args&&... args) {
-                return NewUnique(std::forward<Args>(args)...);
+            template <typename Arg1, typename... Args>
+            static SmartPointer<T> MakeUnique(Arg1&& arg1, Args&&... args) {
+                return NewUnique(std::forward<Arg1>(arg1), std::forward<Args>(args)...);
+            }
+
+            /**
+             * @brief Alias for NewShared (default construction).
+             */
+            static SmartPointer<T> MakeShared() {
+                return NewShared();
             }
 
             /**
              * @brief Alias for NewShared. Provided for compatibility.
              */
-            template <typename... Args>
-            static SmartPointer<T> MakeShared(Args&&... args) {
-                return NewShared(std::forward<Args>(args)...);
+            template <typename Arg1, typename... Args>
+            static SmartPointer<T> MakeShared(Arg1&& arg1, Args&&... args) {
+                return NewShared(std::forward<Arg1>(arg1), std::forward<Args>(args)...);
             }
 
             // --- API Methods ---
