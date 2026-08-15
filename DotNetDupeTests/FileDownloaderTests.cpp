@@ -110,9 +110,9 @@ namespace DotNetDupeTests {
         bool bStarted = downloader.Start();
         EXPECT_TRUE(bStarted);
 
-        // Wait for failure
+        // Wait for failure (allow sufficient time for OS DNS resolution timeout)
         int iRetries = 0;
-        while (downloader.GetStatus() == DownloadStatus::Downloading && iRetries < 50) {
+        while (downloader.GetStatus() == DownloadStatus::Downloading && iRetries < 200) {
             Thread::Sleep(50);
             iRetries++;
         }

@@ -22,8 +22,9 @@
     <file src="LICENSE" target="LICENSE" />
     <file src="external\openssl-4.0.1\LICENSE.txt" target="licenses\OPENSSL_LICENSE.txt" />
     <file src="external\openssl-4.0.1\version.txt" target="OPENSSL_VERSION.txt" />
-    <!-- Build targets -->
+    <!-- Build targets & Debugger Visualizers -->
     <file src="nuget\DotNetDupe.targets" target="build\native\DotNetDupe.targets" />
+    <file src="DotNetDupe.natvis" target="build\native\DotNetDupe.natvis" />
 
     <!-- Headers -->
     <file src="Include\**\*.h" target="include" />

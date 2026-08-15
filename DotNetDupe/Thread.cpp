@@ -50,11 +50,22 @@ namespace DotNetDupe {
                 m_pImpl->isAlive = true;
             }
 
+            static void SafelyJoinOrDetach(const std::unique_ptr<std::thread>& pThread) {
+                if (!pThread || !pThread->joinable()) return;
+                try {
+                    if (pThread->get_id() == std::this_thread::get_id()) {
+                        pThread->detach();
+                    } else {
+                        pThread->join();
+                    }
+                } catch (...) {
+                    (void)0; // Suppress exceptions during thread teardown to ensure noexcept safety
+                }
+            }
+
             Thread::~Thread() {
                 if (m_pImpl) {
-                    if (m_pImpl->internalThread && m_pImpl->internalThread->joinable()) {
-                        m_pImpl->internalThread->join();
-                    }
+                    SafelyJoinOrDetach(m_pImpl->internalThread);
                     delete m_pImpl;
                     m_pImpl = nullptr;
                 }
@@ -72,9 +83,9 @@ namespace DotNetDupe {
             }
 
             void Thread::Join() {
-                if (m_pImpl && m_pImpl->internalThread && m_pImpl->internalThread->joinable()) {
-                    m_pImpl->internalThread->join();
-                }
+                if (!m_pImpl || !m_pImpl->internalThread || !m_pImpl->internalThread->joinable()) return;
+                if (m_pImpl->internalThread->get_id() == std::this_thread::get_id()) return;
+                m_pImpl->internalThread->join();
             }
 
             bool Thread::Join(int millisecondsTimeout) {
@@ -126,7 +137,7 @@ namespace DotNetDupe {
             }
 
             SmartPointer<Thread> Thread::CreateCurrentThreadWrapper() {
-                return SmartPointer<Thread>(new Thread());
+                return SmartPointer<Thread>(new Thread(), true);
             }
 
             void Thread::ThreadMain(Object* parameter) {

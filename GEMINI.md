@@ -100,9 +100,10 @@ When generating a new class or modifying existing code, you must strictly follow
 4. **Link Documentation in README.md**: Link the documentation in `README.md` under the appropriate namespace section.
 5. **Add Demo Code in DotNetDupeDemo**: Add a compile-ready demo file in `DotNetDupeDemo/` and invoke it from `DotNetDupeDemo/DotNetDupeDemo.cpp`.
 6. **No STL Threading/Timing in Demos**: Use library types (`Thread`, `ThreadPool`, `Task`, `Thread::Sleep()`) rather than STL concurrency primitives.
-7. **Verify Solution Build**: Run `msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64` to verify 0 errors and 0 warnings.
-8. **Verify Unit Tests**: Run `.\bin\x64\Release\DotNetDupeTests.exe` to verify 100% test pass rate.
-9. **Verify Quality Gates**: Run `powershell -ExecutionPolicy Bypass -File .\scripts\Check-QualityGates.ps1 -RootDir . -OutputDir CodeCoverage` to verify 0 errors and 0 warnings.
+7. **Update Natvis Debugger Visualizer (`DotNetDupe.natvis`)**: When adding or modifying a class (especially classes using the Pimpl pattern or encapsulating internal buffers/handles), add or update its corresponding `<Type>` visualizer in `DotNetDupe.natvis` to ensure clean, human-readable inspection during debugging.
+8. **Verify Solution Build**: Run `msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64` to verify 0 errors and 0 warnings.
+9. **Verify Unit Tests**: Run `.\bin\x64\Release\DotNetDupeTests.exe` to verify 100% test pass rate.
+10. **Verify Quality Gates**: Run `powershell -ExecutionPolicy Bypass -File .\scripts\Check-QualityGates.ps1 -RootDir . -OutputDir CodeCoverage` to verify 0 errors and 0 warnings.
 
 ## Contextual Precedence
 The instructions and quality gate rules in this file are foundational and take precedence for all code generation, refactoring, and static analysis verification across the DotNetDupe codebase.

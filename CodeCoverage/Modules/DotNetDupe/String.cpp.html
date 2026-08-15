@@ -565,28 +565,38 @@ namespace DotNetDupe {
 			}
 <span style = "background-color:#dfd">		}</span>
 
-<span style = "background-color:#dfd">		static std::set&lt;char&gt; PopulateSplitCharSet(String sSeparator[], int iCount) {
+<span style = "background-color:#dfd">		static std::set&lt;char&gt; PopulateSplitCharSet(const String* pSeparator, int iCount) {
 			std::set&lt;char&gt; charSet;
+			if (!pSeparator || iCount &lt;= 0) return charSet;
 			for (int i = 0; i &lt; iCount; ++i) {
-				const char* raw = sSeparator[i].GetRawString();
+				const char* raw = pSeparator[i].GetRawString();
 				if (raw) { while (*raw) charSet.insert(*raw++); }</span>
 			}
-<span style = "background-color:#dfd">			return charSet;
-		}</span>
+			return charSet;
+<span style = "background-color:#dfd">		}</span>
 
-<span style = "background-color:#dfd">		Array&lt;String&gt; String::Split(String sSeparator[], int iCount, StringSplitOptions eOptions) const {
-			std::set&lt;char&gt; charSet = PopulateSplitCharSet(sSeparator, iCount);
-			std::vector&lt;String&gt; vTempResult;
+<span style = "background-color:#dfd">		static std::vector&lt;String&gt; SplitByCharSet(const std::string&amp; sText, const std::set&lt;char&gt;&amp; charSet, StringSplitOptions eOptions) {
+			std::vector&lt;String&gt; vResult;
 			std::string sCurrent;
-			for (auto c : m_pImpl-&gt;s) {
+			for (char c : sText) {
 				if (charSet.find(c) == charSet.end()) {
-					sCurrent += c;
+					sCurrent += c;</span>
 				} else {
-					AddSplitToken(sCurrent, eOptions, vTempResult);
+<span style = "background-color:#dfd">					AddSplitToken(sCurrent, eOptions, vResult);
 					sCurrent.clear();</span>
 				}
 			}
-<span style = "background-color:#dfd">			AddSplitToken(sCurrent, eOptions, vTempResult);
+<span style = "background-color:#dfd">			AddSplitToken(sCurrent, eOptions, vResult);
+			return vResult;
+		}</span>
+
+<span style = "background-color:#fdd">		Array&lt;String&gt; String::Split(const Array&lt;String&gt;&amp; arrSeparators, StringSplitOptions eOptions) const {
+			return Split(arrSeparators.GetData(), arrSeparators.GetLength(), eOptions);
+		}</span>
+
+<span style = "background-color:#dfd">		Array&lt;String&gt; String::Split(const String* pSeparator, int iCount, StringSplitOptions eOptions) const {
+			std::set&lt;char&gt; charSet = PopulateSplitCharSet(pSeparator, iCount);
+			std::vector&lt;String&gt; vTempResult = SplitByCharSet(m_pImpl-&gt;s, charSet, eOptions);
 			Array&lt;String&gt; result(static_cast&lt;int&gt;(vTempResult.size()));
 			for (int i = 0; i &lt; result.GetLength(); i++) result[i] = vTempResult[i];
 			return result;

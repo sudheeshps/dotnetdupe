@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
 #include &lt;type_traits&gt;
+#include &lt;utility&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -38,14 +39,72 @@ namespace DotNetDupe {
             };
         }
 
+        // Primary Template
         template&lt;typename TResult, typename... Args&gt;
-        class Func {
+        class Func;
+
+        // Specialization: Parameterless Func (0 Arguments)
+        template&lt;typename TResult&gt;
+        class Func&lt;TResult&gt; {
         public:
             Func() : m_pHolder(nullptr) {}
             Func(decltype(nullptr)) : m_pHolder(nullptr) {}
             
-            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Func&gt; &amp;&amp; std::is_invocable_r_v&lt;TResult, std::decay_t&lt;F&gt;, Args...&gt;&gt;&gt;
-            Func(F&amp;&amp; func) : m_pHolder(new Internal::FunctorHolder&lt;std::decay_t&lt;F&gt;, TResult, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
+            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Func&gt; &amp;&amp; std::is_invocable_r_v&lt;TResult, std::decay_t&lt;F&gt;&gt;&gt;&gt;
+            Func(F&amp;&amp; func) : m_pHolder(new Internal::FunctorHolder&lt;std::decay_t&lt;F&gt;, TResult&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
+
+            Func(const Func&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
+
+            Func(Func&amp;&amp; other) noexcept : m_pHolder(other.m_pHolder) {
+                other.m_pHolder = nullptr;
+            }
+
+            Func&amp; operator=(const Func&amp; other) {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr;
+                }
+                return *this;
+            }
+
+            Func&amp; operator=(Func&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder;
+                    other.m_pHolder = nullptr;
+                }
+                return *this;
+            }
+
+            ~Func() {
+                delete m_pHolder;
+                m_pHolder = nullptr;
+            }
+            
+            TResult Invoke() const {
+                if (m_pHolder) return m_pHolder-&gt;Invoke();
+                return TResult();
+            }
+            
+            TResult operator()() const {
+                return Invoke();
+            }
+            
+            explicit operator bool() const { return m_pHolder != nullptr; }
+
+        private:
+            Internal::IFunctorHolder&lt;TResult&gt;* m_pHolder;
+        };
+
+        // Partial Specialization: Parameterized Func (1 or more arguments)
+        template&lt;typename TResult, typename Arg1, typename... Args&gt;
+        class Func&lt;TResult, Arg1, Args...&gt; {
+        public:
+            Func() : m_pHolder(nullptr) {}
+            Func(decltype(nullptr)) : m_pHolder(nullptr) {}
+            
+            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Func&gt; &amp;&amp; std::is_invocable_r_v&lt;TResult, std::decay_t&lt;F&gt;, Arg1, Args...&gt;&gt;&gt;
+            Func(F&amp;&amp; func) : m_pHolder(new Internal::FunctorHolder&lt;std::decay_t&lt;F&gt;, TResult, Arg1, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
 
             Func(const Func&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
 
@@ -75,19 +134,19 @@ namespace DotNetDupe {
                 m_pHolder = nullptr;
 <span style = "background-color:#dfd">            }</span>
             
-            TResult Invoke(Args... args) const {
-                if (m_pHolder) return m_pHolder-&gt;Invoke(args...);
+            TResult Invoke(Arg1 arg1, Args... args) const {
+                if (m_pHolder) return m_pHolder-&gt;Invoke(arg1, args...);
                 return TResult();
             }
             
-<span style = "background-color:#dfd">            TResult operator()(Args... args) const {
-                return Invoke(args...);
+<span style = "background-color:#dfd">            TResult operator()(Arg1 arg1, Args... args) const {
+                return Invoke(arg1, args...);
             }</span>
             
             explicit operator bool() const { return m_pHolder != nullptr; }
 
         private:
-            Internal::IFunctorHolder&lt;TResult, Args...&gt;* m_pHolder;
+            Internal::IFunctorHolder&lt;TResult, Arg1, Args...&gt;* m_pHolder;
         };
     }
 }</pre>

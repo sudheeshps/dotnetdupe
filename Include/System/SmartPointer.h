@@ -412,7 +412,7 @@ namespace DotNetDupe {
             void InternalCleanup() {
                 if (m_pnRefCount != nullptr) {
                     if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
-                        delete m_pObject;
+                        if (m_pObject != nullptr) delete m_pObject;
                         delete const_cast<long*>(m_pnRefCount);
                     }
                 } else if (m_pObject != nullptr) {

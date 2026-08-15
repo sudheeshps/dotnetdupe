@@ -134,8 +134,8 @@ namespace DotNetDupe {
             return GetMachineName();
         }</span>
 
-        static int64_t ReadLinuxWorkingSet() {
 #if !defined(_WIN32)
+        static int64_t ReadLinuxWorkingSet() {
             std::ifstream statusFile("/proc/self/status");
             std::string sLine;
             while (std::getline(statusFile, sLine)) {
@@ -145,9 +145,9 @@ namespace DotNetDupe {
                     if (nStart != std::string::npos) return std::stoll(sLine.substr(nStart, nEnd - nStart)) * 1024;
                 }
             }
-#endif
             return 0;
         }
+#endif
 
 <span style = "background-color:#dfd">        int64_t Environment::GetWorkingSet() {</span>
 #if defined(_WIN32)

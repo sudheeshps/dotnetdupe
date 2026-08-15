@@ -61,12 +61,23 @@ namespace DotNetDupe {
                 m_pImpl-&gt;isAlive = true;
             }
 
+<span style = "background-color:#dfd">            static void SafelyJoinOrDetach(const std::unique_ptr&lt;std::thread&gt;&amp; pThread) {
+                if (!pThread || !pThread-&gt;joinable()) return;</span>
+                try {
+<span style = "background-color:#fdd">                    if (pThread-&gt;get_id() == std::this_thread::get_id()) {
+                        pThread-&gt;detach();</span>
+                    } else {
+<span style = "background-color:#fdd">                        pThread-&gt;join();</span>
+                    }
+<span style = "background-color:#dfd">                } catch (...) {</span>
+                    (void)0; // Suppress exceptions during thread teardown to ensure noexcept safety
+<span style = "background-color:#dfd">                }
+            }</span>
+
 <span style = "background-color:#dfd">            Thread::~Thread() {
                 if (m_pImpl) {
-                    if (m_pImpl-&gt;internalThread &amp;&amp; m_pImpl-&gt;internalThread-&gt;joinable()) {</span>
-<span style = "background-color:#fdd">                        m_pImpl-&gt;internalThread-&gt;join();</span>
-                    }
-<span style = "background-color:#dfd">                    delete m_pImpl;
+                    SafelyJoinOrDetach(m_pImpl-&gt;internalThread);
+                    delete m_pImpl;
                     m_pImpl = nullptr;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
@@ -83,10 +94,10 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void Thread::Join() {
-                if (m_pImpl &amp;&amp; m_pImpl-&gt;internalThread &amp;&amp; m_pImpl-&gt;internalThread-&gt;joinable()) {
-                    m_pImpl-&gt;internalThread-&gt;join();</span>
-                }
-<span style = "background-color:#dfd">            }</span>
+                if (!m_pImpl || !m_pImpl-&gt;internalThread || !m_pImpl-&gt;internalThread-&gt;joinable()) return;
+                if (m_pImpl-&gt;internalThread-&gt;get_id() == std::this_thread::get_id()) return;
+                m_pImpl-&gt;internalThread-&gt;join();
+            }</span>
 
 <span style = "background-color:#fdd">            bool Thread::Join(int millisecondsTimeout) {
                 if (!m_pImpl) return true;
@@ -137,7 +148,7 @@ namespace DotNetDupe {
             }
 
             SmartPointer&lt;Thread&gt; Thread::CreateCurrentThreadWrapper() {
-                return SmartPointer&lt;Thread&gt;(new Thread());
+                return SmartPointer&lt;Thread&gt;(new Thread(), true);
             }
 
 <span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {

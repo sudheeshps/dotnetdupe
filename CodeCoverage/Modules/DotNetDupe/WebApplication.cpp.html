@@ -266,9 +266,9 @@ namespace DotNetDupe {
                         ProcessWsSession(stream, spContext, spWsHandler, sSecKey);
                         return true;</span>
                     }
-<span style = "background-color:#fdd">                }</span>
-<span style = "background-color:#dfd">                return false;
-            }</span>
+<span style = "background-color:#fdd">                }
+                return false;</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            static void DispatchResponse(Http::HttpResponse* pResp, bool bFound, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&amp; pHandler, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext) {
                 if (bFound) {

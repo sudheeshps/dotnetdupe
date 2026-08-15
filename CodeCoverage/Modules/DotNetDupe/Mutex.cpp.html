@@ -35,7 +35,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}</span>
 
 <span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
-                if (bInitiallyOwned &amp;&amp; _pImpl) {
+                if (bInitiallyOwned) {
                     _pImpl-&gt;mutex.lock();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
@@ -80,13 +80,13 @@ namespace DotNetDupe {
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
                 } else {</span>
 <span style = "background-color:#fdd">                    bCreatedNew = true;
-                    if (bInitiallyOwned &amp;&amp; _pImpl) {
+                    if (bInitiallyOwned) {
                         _pImpl-&gt;mutex.lock();</span>
                     }
                 }
 #else
                 bCreatedNew = true;
-                if (bInitiallyOwned &amp;&amp; _pImpl) {
+                if (bInitiallyOwned) {
                     _pImpl-&gt;mutex.lock();
                 }
 #endif

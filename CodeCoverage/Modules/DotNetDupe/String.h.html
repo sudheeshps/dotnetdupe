@@ -207,17 +207,20 @@ namespace DotNetDupe {
 
             DOTNETDUPE_API static String InternalFormat(const char* pFormat, const String* pArgs, int iArgCount);
 
-            template &lt;typename... Args&gt;
-            static String Format(const char* pFormat, const Args&amp;... args) {
-                String arrArgs[] = { FormatArgHelper(args)... };
-                return InternalFormat(pFormat, arrArgs, sizeof...(Args));
+            template &lt;typename Arg1, typename... Args&gt;
+            static String Format(const char* pFormat, const Arg1&amp; arg1, const Args&amp;... args) {
+                String arrArgs[] = { FormatArgHelper(arg1), FormatArgHelper(args)... };
+                return InternalFormat(pFormat, arrArgs, 1 + sizeof...(Args));
             }
             static String Format(const char* pFormat) {
                 return InternalFormat(pFormat, nullptr, 0);
             }
-            template &lt;typename... Args&gt;
-            static String Format(const String&amp; sFormat, const Args&amp;... args) {
-                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "", args...);
+            static String Format(const String&amp; sFormat) {
+                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "");
+            }
+            template &lt;typename Arg1, typename... Args&gt;
+            static String Format(const String&amp; sFormat, const Arg1&amp; arg1, const Args&amp;... args) {
+                return Format(sFormat.GetRawString() ? sFormat.GetRawString() : "", arg1, args...);
             }
 
             DOTNETDUPE_API int LastIndexOf(const String&amp; sStr, bool bIgnoreCase);
@@ -236,7 +239,9 @@ namespace DotNetDupe {
             DOTNETDUPE_API String Replace(const String&amp; sOriginalStr,
                                        const String&amp; sReplaceStr) const;
             DOTNETDUPE_API Array&lt;String&gt; Split(char chSeparator) const;
-            DOTNETDUPE_API Array&lt;String&gt; Split(String sSeparator[], int iCount,
+            DOTNETDUPE_API Array&lt;String&gt; Split(const Array&lt;String&gt;&amp; arrSeparators,
+                                                  StringSplitOptions eOptions = StringSplitOptions::None) const;
+            DOTNETDUPE_API Array&lt;String&gt; Split(const String* pSeparator, int iCount,
                                                   StringSplitOptions eOptions) const;
             DOTNETDUPE_API bool StartsWith(const String&amp; sPrefix) const;
             DOTNETDUPE_API bool StartsWith(const String&amp; sPrefix, bool bIgnoreCase) const;

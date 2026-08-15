@@ -97,10 +97,7 @@ namespace DotNetDupe {
                 if constexpr (IsComplete&lt;T&gt;::value) {
                     if constexpr (!std::is_abstract_v&lt;T&gt; &amp;&amp; std::is_default_constructible_v&lt;T&gt;) {
                         m_pObject = new T();
-                        m_pnRefCount = nullptr;
-                        if (bIsShared) {
-                            m_pnRefCount = new long(1);
-                        }
+                        m_pnRefCount = bIsShared ? new long(1) : nullptr;
                     } else {
                         m_pObject = nullptr;
                         m_pnRefCount = nullptr;
@@ -124,11 +121,9 @@ namespace DotNetDupe {
              * @param pPtr The raw pointer to take ownership of.
              * @param bIsShared If true, enables reference counting (Shared mode).
              */
-            SmartPointer(T* pPtr, bool bIsShared) : m_pObject(pPtr), m_pnRefCount(nullptr) {
-                if (bIsShared &amp;&amp; pPtr != nullptr) {
-                    m_pnRefCount = new long(1);
-                }
-            }
+            SmartPointer(T* pPtr, bool bIsShared)
+                : m_pObject(pPtr),
+                  m_pnRefCount((bIsShared &amp;&amp; pPtr != nullptr) ? new long(1) : nullptr) {}
 
             /**
              * @brief Explicit null constructor.
@@ -250,47 +245,82 @@ namespace DotNetDupe {
             // --- Factory Methods ---
 
             /**
+             * @brief Creates a Unique SmartPointer, default constructing T.
+             */
+            static SmartPointer&lt;T&gt; NewUnique() {
+                return SmartPointer&lt;T&gt;(new T(), false);
+            }
+
+            /**
              * @brief Creates a Unique SmartPointer, forwarding arguments to T's constructor.
              */
-            template &lt;typename... Args&gt;
-            static SmartPointer&lt;T&gt; NewUnique(Args&amp;&amp;... args) {
-                return SmartPointer&lt;T&gt;(new T(std::forward&lt;Args&gt;(args)...), false);
+            template &lt;typename Arg1, typename... Args&gt;
+            static SmartPointer&lt;T&gt; NewUnique(Arg1&amp;&amp; arg1, Args&amp;&amp;... args) {
+                return SmartPointer&lt;T&gt;(new T(std::forward&lt;Arg1&gt;(arg1), std::forward&lt;Args&gt;(args)...), false);
             }
+
+            /**
+             * @brief Creates a Shared SmartPointer, default constructing T.
+             */
+<span style = "background-color:#dfd">            static SmartPointer&lt;T&gt; NewShared() {
+                return SmartPointer&lt;T&gt;(new T(), true);
+            }</span>
 
             /**
              * @brief Creates a Shared SmartPointer, forwarding arguments to T's constructor.
              */
-            template &lt;typename... Args&gt;
-<span style = "background-color:#dfd">            static SmartPointer&lt;T&gt; NewShared(Args&amp;&amp;... args) {
-                return SmartPointer&lt;T&gt;(new T(std::forward&lt;Args&gt;(args)...), true);
+            template &lt;typename Arg1, typename... Args&gt;
+<span style = "background-color:#dfd">            static SmartPointer&lt;T&gt; NewShared(Arg1&amp;&amp; arg1, Args&amp;&amp;... args) {
+                return SmartPointer&lt;T&gt;(new T(std::forward&lt;Arg1&gt;(arg1), std::forward&lt;Args&gt;(args)...), true);
             }</span>
 
             // --- Static Factory Helpers (C#-like instantiation) ---
 
             /**
+             * @brief Creates a new SmartPointer (default construction).
+             */
+<span style = "background-color:#dfd">            static SmartPointer&lt;T&gt; New() {
+                return NewUnique();
+            }</span>
+
+            /**
              * @brief Creates a new SmartPointer with variadic arguments for T's constructor.
              */
-            template &lt;typename... Args&gt;
-<span style = "background-color:#dfd">            static SmartPointer&lt;T&gt; New(Args&amp;&amp;... args) {
-                return NewUnique(std::forward&lt;Args&gt;(args)...);
-            }</span>
+            template &lt;typename Arg1, typename... Args&gt;
+            static SmartPointer&lt;T&gt; New(Arg1&amp;&amp; arg1, Args&amp;&amp;... args) {
+                return NewUnique(std::forward&lt;Arg1&gt;(arg1), std::forward&lt;Args&gt;(args)...);
+            }
 
             // --- Conversion / Compatibility Aliases ---
 
             /**
+             * @brief Alias for NewUnique (default construction).
+             */
+            static SmartPointer&lt;T&gt; MakeUnique() {
+                return NewUnique();
+            }
+
+            /**
              * @brief Alias for NewUnique. Provided for compatibility.
              */
-            template &lt;typename... Args&gt;
-            static SmartPointer&lt;T&gt; MakeUnique(Args&amp;&amp;... args) {
-                return NewUnique(std::forward&lt;Args&gt;(args)...);
+            template &lt;typename Arg1, typename... Args&gt;
+            static SmartPointer&lt;T&gt; MakeUnique(Arg1&amp;&amp; arg1, Args&amp;&amp;... args) {
+                return NewUnique(std::forward&lt;Arg1&gt;(arg1), std::forward&lt;Args&gt;(args)...);
+            }
+
+            /**
+             * @brief Alias for NewShared (default construction).
+             */
+            static SmartPointer&lt;T&gt; MakeShared() {
+                return NewShared();
             }
 
             /**
              * @brief Alias for NewShared. Provided for compatibility.
              */
-            template &lt;typename... Args&gt;
-            static SmartPointer&lt;T&gt; MakeShared(Args&amp;&amp;... args) {
-                return NewShared(std::forward&lt;Args&gt;(args)...);
+            template &lt;typename Arg1, typename... Args&gt;
+            static SmartPointer&lt;T&gt; MakeShared(Arg1&amp;&amp; arg1, Args&amp;&amp;... args) {
+                return NewShared(std::forward&lt;Arg1&gt;(arg1), std::forward&lt;Args&gt;(args)...);
             }
 
             // --- API Methods ---
@@ -324,10 +354,7 @@ namespace DotNetDupe {
             void Reset(T* pPtr, bool bIsShared) {
                 InternalCleanup();
                 m_pObject = pPtr;
-                m_pnRefCount = nullptr;
-                if (bIsShared &amp;&amp; pPtr != nullptr) {
-                    m_pnRefCount = new long(1);
-                }
+                m_pnRefCount = (bIsShared &amp;&amp; pPtr != nullptr) ? new long(1) : nullptr;
             }
 
             /**
@@ -337,9 +364,7 @@ namespace DotNetDupe {
              */
             T* Detach() {
                 T* pTemp = m_pObject;
-                if (m_pnRefCount != nullptr) {
-                    m_pnRefCount = nullptr;
-                }
+                m_pnRefCount = nullptr;
                 m_pObject = nullptr;
                 return pTemp;
             }
@@ -396,21 +421,17 @@ namespace DotNetDupe {
 
         private:
 <span style = "background-color:#dfd">            void InternalCleanup() {
-                if (m_pObject != nullptr) {
-                    if (m_pnRefCount == nullptr) {</span>
-                        // Unique mode: Delete immediately
-<span style = "background-color:#dfd">                        delete m_pObject;</span>
-                    } else {
-                        // Shared mode: Decrement and delete if zero
-<span style = "background-color:#dfd">                        if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
-                            delete m_pObject;
-                            delete (long*)m_pnRefCount;</span>
-                        }
-                    }
+                if (m_pnRefCount != nullptr) {
+                    if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
+                        if (m_pObject != nullptr) delete m_pObject;
+                        delete const_cast&lt;long*&gt;(m_pnRefCount);</span>
+<span style = "background-color:#fdd">                    }</span>
+<span style = "background-color:#dfd">                } else if (m_pObject != nullptr) {
+                    delete m_pObject;</span>
                 }
-<span style = "background-color:#dfd">                m_pObject = nullptr;
+                m_pObject = nullptr;
                 m_pnRefCount = nullptr;
-            }</span>
+<span style = "background-color:#dfd">            }</span>
 
             T* m_pObject;
             volatile long* m_pnRefCount;

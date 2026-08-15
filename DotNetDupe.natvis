@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+
+  <!-- ======================================================= -->
+  <!-- Core System Types                                       -->
+  <!-- ======================================================= -->
+
+  <!-- DotNetDupe::System::String (Pimpl casting to known std::string) -->
+  <Type Name="DotNetDupe::System::String">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>{*(std::string*)m_pImpl}</DisplayString>
+    <StringView>*(std::string*)m_pImpl</StringView>
+    <Expand>
+      <Item Name="Value">*(std::string*)m_pImpl</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::SmartPointer<T> -->
+  <Type Name="DotNetDupe::System::SmartPointer&lt;*&gt;">
+    <DisplayString Condition="m_pObject == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>{*m_pObject}</DisplayString>
+    <Expand>
+      <Item Name="[Target]">m_pObject</Item>
+      <Item Name="[RefCount]" Condition="m_pnRefCount != 0">*m_pnRefCount</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Array<T> -->
+  <Type Name="DotNetDupe::System::Array&lt;*&gt;">
+    <DisplayString>{{ size={m_iLength} }}</DisplayString>
+    <Expand>
+      <Item Name="[Length]">m_iLength</Item>
+      <ArrayItems>
+        <Size>m_iLength</Size>
+        <ValuePointer>m_pData</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Generic::List<T> -->
+  <Type Name="DotNetDupe::System::Collections::Generic::List&lt;*&gt;">
+    <DisplayString>{{ size={m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_iCount</Item>
+      <Item Name="[Capacity]">m_iCapacity</Item>
+      <ArrayItems>
+        <Size>m_iCount</Size>
+        <ValuePointer>m_pData</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Generic::KeyValuePair<TKey, TValue> -->
+  <Type Name="DotNetDupe::System::Collections::Generic::KeyValuePair&lt;*,*&gt;">
+    <DisplayString>[{Key}, {Value}]</DisplayString>
+    <Expand>
+      <Item Name="Key">Key</Item>
+      <Item Name="Value">Value</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Text::StringBuilder (Pimpl casting to known std::string) -->
+  <Type Name="DotNetDupe::System::Text::StringBuilder">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>{*(std::string*)m_pImpl}</DisplayString>
+    <StringView>*(std::string*)m_pImpl</StringView>
+    <Expand>
+      <Item Name="Value">*(std::string*)m_pImpl</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::DateTimeOffset -->
+  <Type Name="DotNetDupe::System::DateTimeOffset">
+    <DisplayString>Ticks={_ticks}</DisplayString>
+    <Expand>
+      <Item Name="Ticks">_ticks</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::TimeSpan -->
+  <Type Name="DotNetDupe::System::TimeSpan">
+    <DisplayString>Ticks={_ticks}</DisplayString>
+    <Expand>
+      <Item Name="Ticks">_ticks</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Guid -->
+  <Type Name="DotNetDupe::System::Guid">
+    <DisplayString>{_guidStr}</DisplayString>
+  </Type>
+
+  <!-- DotNetDupe::System::Version -->
+  <Type Name="DotNetDupe::System::Version">
+    <DisplayString>{_major}.{_minor}.{_build}.{_revision}</DisplayString>
+    <Expand>
+      <Item Name="Major">_major</Item>
+      <Item Name="Minor">_minor</Item>
+      <Item Name="Build">_build</Item>
+      <Item Name="Revision">_revision</Item>
+    </Expand>
+  </Type>
+
+</AutoVisualizer>

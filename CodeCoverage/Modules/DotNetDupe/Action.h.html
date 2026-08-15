@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #pragma once
 #include &lt;type_traits&gt;
+#include &lt;utility&gt;
 
 namespace DotNetDupe {
     namespace System {
@@ -38,14 +39,19 @@ namespace DotNetDupe {
             };
         }
 
+        // Primary Template
         template&lt;typename... Args&gt;
-        class Action {
+        class Action;
+
+        // Specialization: Parameterless Action (0 Arguments)
+        template&lt;&gt;
+        class Action&lt;&gt; {
         public:
             Action() : m_pHolder(nullptr) {}
             Action(decltype(nullptr)) : m_pHolder(nullptr) {}
             
-            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, Args...&gt;&gt;&gt;
-            Action(F&amp;&amp; func) : m_pHolder(new Internal::ActionHolder&lt;std::decay_t&lt;F&gt;, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
+            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;&gt;&gt;&gt;
+            Action(F&amp;&amp; func) : m_pHolder(new Internal::ActionHolder&lt;std::decay_t&lt;F&gt;&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
 
             Action(const Action&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
 
@@ -75,18 +81,70 @@ namespace DotNetDupe {
                 m_pHolder = nullptr;
 <span style = "background-color:#dfd">            }</span>
             
-            void Invoke(Args... args) const {
-                if (m_pHolder) m_pHolder-&gt;Invoke(args...);
+            void Invoke() const {
+                if (m_pHolder) m_pHolder-&gt;Invoke();
             }
             
-            void operator()(Args... args) const {
-                Invoke(args...);
+            void operator()() const {
+                Invoke();
             }
             
             explicit operator bool() const { return m_pHolder != nullptr; }
 
         private:
-            Internal::IActionHolder&lt;Args...&gt;* m_pHolder;
+            Internal::IActionHolder&lt;&gt;* m_pHolder;
+        };
+
+        // Partial Specialization: Parameterized Action (1 or more arguments)
+        template&lt;typename Arg1, typename... Args&gt;
+        class Action&lt;Arg1, Args...&gt; {
+        public:
+            Action() : m_pHolder(nullptr) {}
+            Action(decltype(nullptr)) : m_pHolder(nullptr) {}
+            
+            template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, Arg1, Args...&gt;&gt;&gt;
+            Action(F&amp;&amp; func) : m_pHolder(new Internal::ActionHolder&lt;std::decay_t&lt;F&gt;, Arg1, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
+
+            Action(const Action&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
+
+            Action(Action&amp;&amp; other) noexcept : m_pHolder(other.m_pHolder) {
+                other.m_pHolder = nullptr;
+            }
+
+            Action&amp; operator=(const Action&amp; other) {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr;
+                }
+                return *this;
+            }
+
+            Action&amp; operator=(Action&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    delete m_pHolder;
+                    m_pHolder = other.m_pHolder;
+                    other.m_pHolder = nullptr;
+                }
+                return *this;
+            }
+
+<span style = "background-color:#dfd">            ~Action() {
+                delete m_pHolder;</span>
+                m_pHolder = nullptr;
+<span style = "background-color:#dfd">            }</span>
+            
+            void Invoke(Arg1 arg1, Args... args) const {
+                if (m_pHolder) m_pHolder-&gt;Invoke(arg1, args...);
+            }
+            
+            void operator()(Arg1 arg1, Args... args) const {
+                Invoke(arg1, args...);
+            }
+            
+            explicit operator bool() const { return m_pHolder != nullptr; }
+
+        private:
+            Internal::IActionHolder&lt;Arg1, Args...&gt;* m_pHolder;
         };
     }
 }</pre>
