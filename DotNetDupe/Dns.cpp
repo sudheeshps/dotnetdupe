@@ -28,8 +28,9 @@ namespace DotNetDupe {
                 std::lock_guard<std::mutex> lock(mutexInit);
                 if (!bInitialized) {
                     WSADATA wsaData;
-                    if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
-                        // Ignore or throw internally
+                    int iErr = WSAStartup(MAKEWORD(2, 2), &wsaData);
+                    if (iErr != 0) {
+                        throw Sockets::SocketException(iErr, "WSAStartup failed in Dns initialization.");
                     }
                     bInitialized = true;
                 }
