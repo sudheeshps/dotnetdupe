@@ -99,6 +99,18 @@
       <Item Name="Build">_build</Item>
       <Item Name="Revision">_revision</Item>
     </Expand>
+  <!-- DotNetDupe::System::Diagnostics::EtwEvent -->
+  <Type Name="DotNetDupe::System::Diagnostics::EtwEvent">
+    <DisplayString>[ID={iEventId}, Level={iLevel}] Provider={sProviderName}</DisplayString>
+    <Expand>
+      <Item Name="EventId">iEventId</Item>
+      <Item Name="Level">iLevel</Item>
+      <Item Name="ProviderName">sProviderName</Item>
+      <Item Name="ChannelName">sChannelName</Item>
+      <Item Name="TimeCreated">dtTimeCreated</Item>
+      <Item Name="Message">sMessage</Item>
+      <Item Name="RawXml">sRawXml</Item>
+    </Expand>
   </Type>
 
 </AutoVisualizer>

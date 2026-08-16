@@ -8,6 +8,7 @@
 #include "System/IO/Path.h"
 #include "System/Environment.h"
 #include "System/TimeProvider.h"
+#include "System/Utils/StringConvert.h"
 
 #include <mutex>
 #include <vector>
@@ -81,18 +82,14 @@ namespace DotNetDupe {
 
             EventLogEntry EventLog::ParseWin32Record(const PEVENTLOGRECORD pRec) {
                 EventLogEntryType eType = MapWin32EventType(pRec->EventType);
-                std::wstring wSrc((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
+                std::string sSrc = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
                 String sMsg = "";
                 if (pRec->NumStrings > 0) {
-                    std::wstring wMsg((wchar_t*)((BYTE*)pRec + pRec->StringOffset));
-                    std::string sNarrowMsg;
-                    for (wchar_t wc : wMsg) { sNarrowMsg += static_cast<char>(wc); }
+                    std::string sNarrowMsg = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + pRec->StringOffset));
                     sMsg = String(sNarrowMsg.c_str());
                 }
                 int64_t iTicks = ((int64_t)pRec->TimeGenerated + 62135596800LL) * 10000000LL;
-                std::string sNarrowSrc;
-                for (wchar_t wc : wSrc) { sNarrowSrc += static_cast<char>(wc); }
-                return EventLogEntry(sMsg, eType, (int)pRec->EventID, String(sNarrowSrc.c_str()), DateTimeOffset(iTicks));
+                return EventLogEntry(sMsg, eType, (int)pRec->EventID, String(sSrc.c_str()), DateTimeOffset(iTicks));
             }
 
             void EventLog::ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries) {
