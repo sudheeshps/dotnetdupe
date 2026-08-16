@@ -43,6 +43,8 @@ Blocks the calling thread until the thread represented by this instance terminat
 Blocks the calling thread until the thread terminates or the specified time elapses.
 - **Returns:**
   - `bool`: `true` if the thread has terminated; `false` if the thread has not terminated after `millisecondsTimeout` milliseconds.
+- **Throws:**
+  - `TimeoutException`: If a wait failure occurs before the thread terminates.
 
 ### `bool IsAlive() const`
 Gets a value indicating the execution status of the current thread.

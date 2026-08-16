@@ -73,7 +73,8 @@ using namespace DotNetDupe::System;
 int main() {
     Random objRng;
 
-    Console::WriteLine("Random roll (1-6): {0}", objRng.Next(1, 7));
+    int iRoll = objRng.Next(1, 7);
+    Console::WriteLine("Random roll (1-6): {0}", iRoll);
     Console::WriteLine("Random double:     {0}", objRng.NextDouble());
 
     return 0;
