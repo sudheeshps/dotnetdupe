@@ -78,8 +78,9 @@ namespace DotNetDupe {
                 static void EnumerateWin32Channels(Collections::Generic::List<String>& lstChannels);
                 static void FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent& evt);
                 static void FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent& evt);
-                static EtwEvent ProcessSingleEtwEvent(EVT_HANDLE hEvt, const String& sChannelName, int iIndex);
-                static void IterateEvtResults(EVT_HANDLE hResults, const String& sChannelName, int iMaxEvents, Collections::Generic::List<EtwEvent>& lstEvents);
+                static EtwEvent ProcessSingleEtwEvent(EVT_HANDLE hContext, EVT_HANDLE hEvt, const String& sChannelName);
+                static bool IterateEvtBatch(EVT_HANDLE hContext, EVT_HANDLE* arrEvents, DWORD dwReturned, const String& sChannelName, int iMaxEvents, EtwEventLevel level, Collections::Generic::List<EtwEvent>& lstEvents);
+                static void IterateEvtResults(EVT_HANDLE hContext, EVT_HANDLE hResults, const String& sChannelName, int iMaxEvents, EtwEventLevel level, Collections::Generic::List<EtwEvent>& lstEvents);
                 static void ReadWin32EvtChannel(const String& sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List<EtwEvent>& lstEvents);
                 static unsigned long long FastQueryLevelCount(const std::wstring& wChannel, const wchar_t* pwszFilter);
                 static void CountWin32EventsByLevel(const std::wstring& wChannel, EtwEventLevelCounts& counts);

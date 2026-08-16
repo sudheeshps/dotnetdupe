@@ -32,7 +32,7 @@ TEST_F(EtwLogReaderTests, GivenChannelName_WhenGetChannelEventCountCalled_ThenRe
     EXPECT_GE(uCount, 0ULL);
 }
 
-TEST_F(EtwLogReaderTests, GivenChannelName_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {
+TEST_F(EtwLogReaderTests, GivenApplicationChannel_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {
     // Given
     String sChannel = "Application";
 
@@ -45,6 +45,66 @@ TEST_F(EtwLogReaderTests, GivenChannelName_WhenGetChannelEventLevelCountsCalled_
     EXPECT_GE(counts.uWarningCount, 0ULL);
     EXPECT_GE(counts.uInfoCount, 0ULL);
     EXPECT_GE(counts.uVerboseCount, 0ULL);
+}
+
+TEST_F(EtwLogReaderTests, GivenSystemChannel_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {
+    // Given
+    String sChannel = "System";
+
+    // When
+    auto counts = EtwLogReader::GetChannelEventLevelCounts(sChannel);
+
+    // Then
+    EXPECT_GE(counts.uCriticalCount, 0ULL);
+    EXPECT_GE(counts.uErrorCount, 0ULL);
+    EXPECT_GE(counts.uWarningCount, 0ULL);
+    EXPECT_GE(counts.uInfoCount, 0ULL);
+    EXPECT_GE(counts.uVerboseCount, 0ULL);
+}
+
+TEST_F(EtwLogReaderTests, GivenSecurityChannel_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {
+    // Given
+    String sChannel = "Security";
+
+    // When
+    auto counts = EtwLogReader::GetChannelEventLevelCounts(sChannel);
+
+    // Then
+    EXPECT_GE(counts.uCriticalCount, 0ULL);
+    EXPECT_GE(counts.uErrorCount, 0ULL);
+    EXPECT_GE(counts.uWarningCount, 0ULL);
+    EXPECT_GE(counts.uInfoCount, 0ULL);
+    EXPECT_GE(counts.uVerboseCount, 0ULL);
+}
+
+TEST_F(EtwLogReaderTests, GivenSetupChannel_WhenGetChannelEventLevelCountsCalled_ThenReturnsLevelCounts) {
+    // Given
+    String sChannel = "Setup";
+
+    // When
+    auto counts = EtwLogReader::GetChannelEventLevelCounts(sChannel);
+
+    // Then
+    EXPECT_GE(counts.uCriticalCount, 0ULL);
+    EXPECT_GE(counts.uErrorCount, 0ULL);
+    EXPECT_GE(counts.uWarningCount, 0ULL);
+    EXPECT_GE(counts.uInfoCount, 0ULL);
+    EXPECT_GE(counts.uVerboseCount, 0ULL);
+}
+
+TEST_F(EtwLogReaderTests, GivenEmptyChannel_WhenGetChannelEventLevelCountsCalled_ThenReturnsZeroCounts) {
+    // Given
+    String sChannel = "";
+
+    // When
+    auto counts = EtwLogReader::GetChannelEventLevelCounts(sChannel);
+
+    // Then
+    EXPECT_EQ(counts.uCriticalCount, 0ULL);
+    EXPECT_EQ(counts.uErrorCount, 0ULL);
+    EXPECT_EQ(counts.uWarningCount, 0ULL);
+    EXPECT_EQ(counts.uInfoCount, 0ULL);
+    EXPECT_EQ(counts.uVerboseCount, 0ULL);
 }
 
 TEST_F(EtwLogReaderTests, GivenValidChannel_WhenReadEventsCalled_ThenReturnsEvents) {
@@ -79,18 +139,73 @@ TEST_F(EtwLogReaderTests, GivenPaginationParameters_WhenReadEventsCalled_ThenRet
     EXPECT_GE(lstOffset.GetCount(), 0);
 }
 
-TEST_F(EtwLogReaderTests, GivenEtwEventLevel_WhenReadEventsCalled_ThenReturnsFilteredEvents) {
+TEST_F(EtwLogReaderTests, GivenCriticalEventLevel_WhenReadEventsCalled_ThenReturnsCriticalEvents) {
     // Given
     String sChannel = "Application";
-    int iRequestedCount = 5;
 
-    // When - request exactly 5 Error level events
-    auto lstEvents = EtwLogReader::ReadEvents(sChannel, iRequestedCount, 0, true, EtwEventLevel::Error);
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true, EtwEventLevel::Critical);
 
     // Then
     EXPECT_GE(lstEvents.GetCount(), 0);
     for (int i = 0; i < lstEvents.GetCount(); i++) {
-        EXPECT_EQ(lstEvents[i].iLevel, 2); // 2 corresponds to EtwEventLevel::Error
+        EXPECT_EQ(lstEvents[i].iLevel, 1);
+    }
+}
+
+TEST_F(EtwLogReaderTests, GivenErrorEventLevel_WhenReadEventsCalled_ThenReturnsErrorEvents) {
+    // Given
+    String sChannel = "Application";
+
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true, EtwEventLevel::Error);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    for (int i = 0; i < lstEvents.GetCount(); i++) {
+        EXPECT_EQ(lstEvents[i].iLevel, 2);
+    }
+}
+
+TEST_F(EtwLogReaderTests, GivenWarningEventLevel_WhenReadEventsCalled_ThenReturnsWarningEvents) {
+    // Given
+    String sChannel = "Application";
+
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true, EtwEventLevel::Warning);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    for (int i = 0; i < lstEvents.GetCount(); i++) {
+        EXPECT_EQ(lstEvents[i].iLevel, 3);
+    }
+}
+
+TEST_F(EtwLogReaderTests, GivenInfoEventLevel_WhenReadEventsCalled_ThenReturnsInfoEvents) {
+    // Given
+    String sChannel = "Application";
+
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true, EtwEventLevel::Info);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    for (int i = 0; i < lstEvents.GetCount(); i++) {
+        EXPECT_TRUE(lstEvents[i].iLevel == 4 || lstEvents[i].iLevel == 0);
+    }
+}
+
+TEST_F(EtwLogReaderTests, GivenVerboseEventLevel_WhenReadEventsCalled_ThenReturnsVerboseEvents) {
+    // Given
+    String sChannel = "Application";
+
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true, EtwEventLevel::Verbose);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    for (int i = 0; i < lstEvents.GetCount(); i++) {
+        EXPECT_EQ(lstEvents[i].iLevel, 5);
     }
 }
 
@@ -124,4 +239,30 @@ TEST_F(EtwLogReaderTests, GivenAlreadyListeningReader_WhenStartListeningCalled_T
 
     // When & Then
     EXPECT_THROW(reader.StartListening("System", [](const EtwEvent&) {}), InvalidOperationException);
+}
+
+TEST_F(EtwLogReaderTests, GivenValidChannel_WhenReadEventsCalled_ThenPopulatesEventProperties) {
+    // Given
+    String sChannel = "Application";
+
+    // When
+    auto lstEvents = EtwLogReader::ReadEvents(sChannel, 5, 0, true);
+
+    // Then
+    EXPECT_GE(lstEvents.GetCount(), 0);
+    if (lstEvents.GetCount() > 0) {
+        EXPECT_GE(lstEvents[0].iEventId, 0);
+        EXPECT_GE(lstEvents[0].iLevel, 0);
+        EXPECT_FALSE(lstEvents[0].sProviderName.IsEmpty());
+        EXPECT_GT(lstEvents[0].dtTimeCreated.GetTicks(), 0);
+        EXPECT_FALSE(lstEvents[0].sRawXml.IsEmpty());
+    }
+}
+
+TEST_F(EtwLogReaderTests, GivenEmptyChannel_WhenStartListeningCalled_ThenThrowsArgumentException) {
+    // Given
+    EtwLogReader reader;
+
+    // When & Then
+    EXPECT_THROW(reader.StartListening("", [](const EtwEvent&) {}), ArgumentException);
 }
