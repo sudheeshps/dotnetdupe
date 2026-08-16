@@ -28,7 +28,7 @@ Initializes a new instance of the `List<T>` class that is empty and has the spec
 Initializes a `List<T>` populated with elements from an initializer list.
 
 ```cpp
-List<int> numbers = { 10, 20, 30, 40 };
+List<int> listNumbers = { 10, 20, 30, 40 };
 ```
 
 ### `List(const List& lstOther)` / `List(List&& lstOther) noexcept`
@@ -75,6 +75,9 @@ Removes the element at the specified index of the `List<T>`.
 ### `void Clear()`
 Removes all elements from the `List<T>`.
 
+### `void SwapElements(T& a, T& b)`
+Swaps the values of two elements in place.
+
 ---
 
 ## Searching & Sorting
@@ -105,7 +108,7 @@ Searches for an element that matches the conditions defined by the specified pre
 Retrieves all the elements that match the conditions defined by the specified predicate.
 
 ```cpp
-auto evens = numbers.FindAll([](int n) { return n % 2 == 0; });
+auto listEvens = listNumbers.FindAll([](int n) { return n % 2 == 0; });
 ```
 
 ### `template <typename Predicate> bool TrueForAll(Predicate fnMatch) const`
@@ -134,20 +137,20 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Collections::Generic;
 
 int main() {
-    List<String> cities = { "London", "Tokyo", "Paris", "New York" };
-    cities.Add("San Francisco");
+    List<String> listCities = { "London", "Tokyo", "Paris", "New York" };
+    listCities.Add("San Francisco");
 
-    Console::WriteLine("Total cities: {0}", cities.GetCount());
+    Console::WriteLine("Total cities: {0}", listCities.GetCount());
 
     // Filter using FindAll lambda
-    auto shortNames = cities.FindAll([](const String& s) { return s.GetLength() <= 5; });
+    auto listShortNames = listCities.FindAll([](const String& s) { return s.GetLength() <= 5; });
     Console::WriteLine("Short city names:");
-    for (const auto& city : shortNames) {
-        Console::WriteLine(" - {0}", city);
+    for (const auto& sCity : listShortNames) {
+        Console::WriteLine(" - {0}", sCity);
     }
 
-    cities.Sort();
-    Console::WriteLine("BinarySearch 'Paris': index {0}", cities.BinarySearch("Paris"));
+    listCities.Sort();
+    Console::WriteLine("BinarySearch 'Paris': index {0}", listCities.BinarySearch("Paris"));
 
     return 0;
 }

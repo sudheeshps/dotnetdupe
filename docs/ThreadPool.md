@@ -24,16 +24,20 @@ Queues a method for execution. The method executes when a thread pool worker bec
 - **Parameters:**
   - `callback` (`WaitCallback`): An `Action<Object*>` that represents the delegate to execute.
 - **Returns:**
-  - `bool`: `true` if the method is successfully queued; otherwise, `false`.
+  - `bool`: `true` if the method is successfully queued.
+- **Throws:**
+  - `NotSupportedException`: If the work item could not be queued.
 
 ```cpp
-ThreadPool::QueueUserWorkItem([](Object* state) {
+ThreadPool::QueueUserWorkItem([](Object* pState) {
     Console::WriteLine("Executing async background task on thread pool");
 });
 ```
 
 ### `static bool QueueUserWorkItem(WaitCallback callback, Object* pState)`
 Queues a method for execution, and specifies an object containing context data to be used by the method.
+- **Throws:**
+  - `NotSupportedException`: If the work item could not be queued.
 
 ### `static bool SetMinThreads(int iMinThreads)`
 Sets the minimum number of worker threads the thread pool creates on demand.
@@ -53,8 +57,8 @@ using namespace DotNetDupe::System::Threading;
 int main() {
     ThreadPool::SetMinThreads(4);
 
-    for (int i = 1; i <= 3; ++i) {
-        ThreadPool::QueueUserWorkItem([](Object* state) {
+    for (int iIdx = 1; iIdx <= 3; ++iIdx) {
+        ThreadPool::QueueUserWorkItem([](Object* pState) {
             Console::WriteLine("Running worker task on Thread #{0}", Thread::GetCurrentThreadId());
             Thread::Sleep(50);
         });

@@ -45,8 +45,6 @@ Determines whether the specified object is equal to the current object (referenc
   - `obj` (`const Object&`): The object to compare with the current object.
 - **Returns:**
   - `bool`: `true` if the specified object is equal to the current object; otherwise, `false`.
-- **Exceptions:**
-  - None.
 
 ```cpp
 bool bEqual = objA.Equals(objB);
@@ -82,7 +80,7 @@ int iHash = objA.GetHashCode();
 ---
 
 ### `char* ToStringA() const`
-Returns a string that represents the current object as an ANSI/UTF-8 character buffer. Caller is responsible for lifetime or converting to `DotNetDupe::System::String`.
+Returns a string that represents the current object as an ANSI/UTF-8 character buffer.
 
 - **Returns:**
   - `char*`: A null-terminated C-string containing the type name and address.
@@ -94,6 +92,26 @@ Returns a string that represents the current object as a wide character buffer.
 
 - **Returns:**
   - `wchar_t*`: A null-terminated wide C-string containing the type name and address.
+
+---
+
+## Low-Level Memory Helpers
+
+### `void* AllocateCollectionBuffer(size_t size)`
+Allocates raw memory for internal collection storage buffers.
+
+- **Parameters:**
+  - `size` (`size_t`): Number of bytes to allocate.
+- **Returns:**
+  - `void*`: Pointer to the allocated memory block.
+
+---
+
+### `void FreeCollectionBuffer(void* p)`
+Releases memory previously allocated with `AllocateCollectionBuffer`.
+
+- **Parameters:**
+  - `p` (`void*`): Pointer to the memory block to free.
 
 ---
 
@@ -126,13 +144,13 @@ public:
 };
 
 int main() {
-    Person p1(101);
-    Person p2(101);
-    Person p3(202);
+    Person objPerson1(101);
+    Person objPerson2(101);
+    Person objPerson3(202);
 
-    Console::WriteLine("p1 == p2: {0}", p1.Equals(p2)); // true
-    Console::WriteLine("p1 == p3: {0}", p1.Equals(p3)); // false
-    Console::WriteLine("p1 HashCode: {0}", p1.GetHashCode());
+    Console::WriteLine("p1 == p2: {0}", objPerson1.Equals(objPerson2)); // true
+    Console::WriteLine("p1 == p3: {0}", objPerson1.Equals(objPerson3)); // false
+    Console::WriteLine("p1 HashCode: {0}", objPerson1.GetHashCode());
 
     return 0;
 }

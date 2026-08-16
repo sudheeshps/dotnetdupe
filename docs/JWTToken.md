@@ -24,6 +24,10 @@ Represents an X.509 certificate and private key pair for TLS servers.
 ### Constructors
 - `X509Certificate2(const String& certPath, const String& keyPath)`: Loads PEM certificate and private key from files.
 
+### Member Functions
+- `void* GetInternalCert() const`: Returns the internal OpenSSL `X509*` handle.
+- `void* GetInternalKey() const`: Returns the internal OpenSSL `EVP_PKEY*` handle.
+
 ---
 
 ## `JWTToken` Class
@@ -31,8 +35,8 @@ Represents an X.509 certificate and private key pair for TLS servers.
 Encapsulates JSON Web Token (JWT) encoding, header/claims inspection, and HMAC-SHA256 signature verification.
 
 ### Methods
-- `Dictionary<String, String>& GetHeader()`: Gets token headers (e.g. `alg`, `typ`).
-- `Dictionary<String, String>& GetPayload()`: Gets token claims (e.g. `sub`, `name`, `role`, `exp`).
+- `Dictionary<String, String>& GetHeader()` / `const Dictionary<String, String>& GetHeader() const`: Gets token headers (e.g. `alg`, `typ`).
+- `Dictionary<String, String>& GetPayload()` / `const Dictionary<String, String>& GetPayload() const`: Gets token claims (e.g. `sub`, `name`, `role`, `exp`).
 - `String GetSignature() const`: Returns raw signature string.
 - `String CreateToken(const String& secretKey)`: Signs and encodes the JWT token into a compact `header.payload.signature` string.
 - `static SmartPointer<JWTToken> Parse(const String& tokenStr)`: Parses an encoded JWT string into a `JWTToken` object.
@@ -51,24 +55,24 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IdentityModel::Tokens::Jwt;
 
 int main() {
-    String secret = "SuperSecretSigningKey123456789!";
+    String sSecret = "SuperSecretSigningKey123456789!";
 
     // Create Token
-    JWTToken token;
-    token.GetPayload().Add("sub", "user_1029");
-    token.GetPayload().Add("role", "Administrator");
-    token.GetPayload().Add("iss", "DotNetDupeAuth");
+    JWTToken jwtToken;
+    jwtToken.GetPayload().Add("sub", "user_1029");
+    jwtToken.GetPayload().Add("role", "Administrator");
+    jwtToken.GetPayload().Add("iss", "DotNetDupeAuth");
 
-    String jwtString = token.CreateToken(secret);
-    Console::WriteLine("Generated JWT:\n{0}", jwtString);
+    String sJwtString = jwtToken.CreateToken(sSecret);
+    Console::WriteLine("Generated JWT:\n{0}", sJwtString);
 
     // Parse and Verify Token
-    auto parsedToken = JWTToken::Parse(jwtString);
-    bool isValid = parsedToken->Verify(secret);
+    auto spParsedToken = JWTToken::Parse(sJwtString);
+    bool bIsValid = spParsedToken->Verify(sSecret);
 
-    Console::WriteLine("Signature Valid: {0}", isValid);
-    Console::WriteLine("Subject Claim:   {0}", parsedToken->GetPayload()["sub"]);
-    Console::WriteLine("Role Claim:      {0}", parsedToken->GetPayload()["role"]);
+    Console::WriteLine("Signature Valid: {0}", bIsValid);
+    Console::WriteLine("Subject Claim:   {0}", spParsedToken->GetPayload()["sub"]);
+    Console::WriteLine("Role Claim:      {0}", spParsedToken->GetPayload()["role"]);
 
     return 0;
 }

@@ -74,9 +74,9 @@ Returns an `OperatingSystem` object containing platform and version metadata.
 Returns an array of strings containing the command-line arguments for the current process.
 
 ```cpp
-Array<String> args = Environment::GetCommandLineArgs();
-for (int i = 0; i < args.GetLength(); ++i) {
-    Console::WriteLine("Arg[{0}]: {1}", i, args[i]);
+Array<String> arrArgs = Environment::GetCommandLineArgs();
+for (int iIdx = 0; iIdx < arrArgs.GetLength(); ++iIdx) {
+    Console::WriteLine("Arg[{0}]: {1}", iIdx, arrArgs[iIdx]);
 }
 ```
 
@@ -84,7 +84,7 @@ for (int i = 0; i < args.GetLength(); ++i) {
 Replaces the name of each environment variable embedded in the specified string with the string equivalent of the value of the variable (e.g. `"%PATH%;%TEMP%"` or `"$HOME"`).
 
 ```cpp
-String expanded = Environment::ExpandEnvironmentVariables("%TEMP%\\myapp.log");
+String sExpanded = Environment::ExpandEnvironmentVariables("%TEMP%\\myapp.log");
 ```
 
 ### `static String GetEnvironmentVariable(const String& sVariable)`

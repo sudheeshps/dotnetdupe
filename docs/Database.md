@@ -78,26 +78,26 @@ int main() {
     conn.Open();
 
     // Create table & Insert
-    auto cmd = conn.CreateCommand();
-    cmd->SetCommandText("CREATE TABLE Users (Id INTEGER PRIMARY KEY, Username TEXT, Balance REAL);");
-    cmd->ExecuteNonQuery();
+    auto spCmd = conn.CreateCommand();
+    spCmd->SetCommandText("CREATE TABLE Users (Id INTEGER PRIMARY KEY, Username TEXT, Balance REAL);");
+    spCmd->ExecuteNonQuery();
 
-    auto insertCmd = conn.CreateCommand();
-    insertCmd->SetCommandText("INSERT INTO Users (Username, Balance) VALUES (@user, @bal);");
-    insertCmd->GetParameters()->Add(new SqlParameter("@user", "Alice"));
-    insertCmd->GetParameters()->Add(new SqlParameter("@bal", "1500.75"));
-    insertCmd->ExecuteNonQuery();
+    auto spInsertCmd = conn.CreateCommand();
+    spInsertCmd->SetCommandText("INSERT INTO Users (Username, Balance) VALUES (@user, @bal);");
+    spInsertCmd->GetParameters()->AddWithValue("@user", "Alice");
+    spInsertCmd->GetParameters()->AddWithValue("@bal", "1500.75");
+    spInsertCmd->ExecuteNonQuery();
 
     // Query Data
-    auto selectCmd = conn.CreateCommand();
-    selectCmd->SetCommandText("SELECT Id, Username, Balance FROM Users;");
-    auto reader = selectCmd->ExecuteReader();
+    auto spSelectCmd = conn.CreateCommand();
+    spSelectCmd->SetCommandText("SELECT Id, Username, Balance FROM Users;");
+    auto spReader = spSelectCmd->ExecuteReader();
 
-    while (reader->Read()) {
-        int id = reader->GetInt32(0);
-        String name = reader->GetString(1);
-        double balance = reader->GetDouble(2);
-        Console::WriteLine("User #{0}: {1} | Balance: ${2:F2}", id, name, balance);
+    while (spReader->Read()) {
+        int iId = spReader->GetInt32(0);
+        String sName = spReader->GetString(1);
+        double dBalance = spReader->GetDouble(2);
+        Console::WriteLine("User #{0}: {1} | Balance: ${2}", iId, sName, dBalance);
     }
 
     conn.Close();

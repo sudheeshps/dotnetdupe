@@ -21,7 +21,7 @@ class TimeZoneInfo : public Object;
 Gets a `TimeZoneInfo` object that represents the local time zone.
 
 ```cpp
-TimeZoneInfo localTz = TimeZoneInfo::Local();
+TimeZoneInfo tziLocal = TimeZoneInfo::Local();
 ```
 
 ### `static TimeZoneInfo Utc()`
@@ -35,6 +35,9 @@ Retrieves a `TimeZoneInfo` object from the registry or system time zone database
 
 ### `static DateTimeOffset ConvertTime(const DateTimeOffset& dateTimeOffset, const TimeZoneInfo& destinationTimeZone)`
 Converts a `DateTimeOffset` value to the time in a destination time zone.
+
+### `static DateTimeOffset ConvertTime(const DateTimeOffset& dateTimeOffset, const TimeZoneInfo& sourceTimeZone, const TimeZoneInfo& destinationTimeZone)`
+Converts a `DateTimeOffset` value from a source time zone to a destination time zone.
 
 ---
 
@@ -52,6 +55,12 @@ Gets a value indicating whether the time zone has any daylight saving time rules
 ### `TimeSpan GetUtcOffset(const DateTimeOffset& dateTimeOffset) const`
 Calculates the offset from UTC for a specific point in time in this time zone.
 
+### `bool IsDaylightSavingTime(const DateTimeOffset& dateTimeOffset) const`
+Indicates whether a specified date and time in a particular time zone is in daylight saving time.
+
+### `bool Equals(const TimeZoneInfo& other) const`
+Determines whether the current `TimeZoneInfo` object and another `TimeZoneInfo` object are equal.
+
 ---
 
 ## Example
@@ -64,13 +73,13 @@ Calculates the offset from UTC for a specific point in time in this time zone.
 using namespace DotNetDupe::System;
 
 int main() {
-    TimeZoneInfo localTz = TimeZoneInfo::Local();
-    Console::WriteLine("Local Zone ID: {0}", localTz.GetId());
-    Console::WriteLine("Display Name: {0}", localTz.GetDisplayName());
-    Console::WriteLine("Base UTC Offset: {0} hours", localTz.GetBaseUtcOffset().GetTotalHours());
+    TimeZoneInfo tziLocal = TimeZoneInfo::Local();
+    Console::WriteLine("Local Zone ID: {0}", tziLocal.GetId());
+    Console::WriteLine("Display Name: {0}", tziLocal.GetDisplayName());
+    Console::WriteLine("Base UTC Offset: {0} hours", tziLocal.GetBaseUtcOffset().GetTotalHours());
 
-    DateTimeOffset now = DateTimeOffset::Now();
-    Console::WriteLine("Is DST: {0}", localTz.IsDaylightSavingTime(now));
+    DateTimeOffset dtoNow = DateTimeOffset::Now();
+    Console::WriteLine("Is DST: {0}", tziLocal.IsDaylightSavingTime(dtoNow));
 
     return 0;
 }

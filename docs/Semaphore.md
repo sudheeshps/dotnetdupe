@@ -17,11 +17,18 @@ class Semaphore : public LockWaitHandle;
 ### Constructors
 - `Semaphore(int initialCount, int maximumCount)`: Initializes an unnamed semaphore with initial and maximum concurrent counts.
 - `Semaphore(const String& sName, int initialCount = 0, int maximumCount = 1, bool openAlways = true)`: Initializes a named system semaphore.
+- `Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways = true)`: Initializes a named semaphore specifying initial/max counts and open flag.
 - `Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways, bool& bCreatedNew)`: Initializes a named semaphore and indicates whether it was created or opened.
 
 ### Member Functions
 - `bool WaitOne() override`: Blocks until the semaphore counter is decremented (slot acquired).
+  - **Throws:**
+    - `UnauthorizedAccessException`: If access is denied by OS permissions.
+    - `WaitHandleCannotBeOpenedException`: If the handle is invalid.
 - `bool WaitOne(int millisecondsTimeout) override`: Blocks until acquired or timeout elapses.
+  - **Throws:**
+    - `TimeoutException`: If a wait failure occurs.
+    - `UnauthorizedAccessException`: If access is denied.
 - `int Release(int releaseCount = 1) override`: Exits the semaphore and returns the previous count.
   - **Throws:**
     - `SemaphoreFullException`: If the release count exceeds the maximum semaphore capacity.
@@ -64,15 +71,15 @@ using namespace DotNetDupe::System::Threading;
 
 int main() {
     // Allow at most 2 concurrent workers
-    SemaphoreSlim throttler(2, 2);
+    SemaphoreSlim semThrottler(2, 2);
 
-    for (int i = 1; i <= 5; ++i) {
-        ThreadPool::QueueUserWorkItem([&throttler, i](Object* state) {
-            throttler.WaitOne();
-            Console::WriteLine("Worker {0} entered critical section (Slots left: {1})", i, throttler.GetCurrentCount());
+    for (int iIdx = 1; iIdx <= 5; ++iIdx) {
+        ThreadPool::QueueUserWorkItem([&semThrottler, iIdx](Object* pState) {
+            semThrottler.WaitOne();
+            Console::WriteLine("Worker {0} entered critical section (Slots left: {1})", iIdx, semThrottler.GetCurrentCount());
             Thread::Sleep(50);
-            throttler.Release();
-            Console::WriteLine("Worker {0} released slot.", i);
+            semThrottler.Release();
+            Console::WriteLine("Worker {0} released slot.", iIdx);
         });
     }
 

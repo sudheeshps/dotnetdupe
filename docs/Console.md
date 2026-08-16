@@ -3,7 +3,7 @@
 **Namespace:** `DotNetDupe::System`  
 **Header:** `#include "System/Console.h"`
 
-Provides static methods for reading from and writing to standard input, standard output, and standard error streams with color controls, cursor positioning, and stream redirection via `SmartPointer<TextWriter>` and `SmartPointer<TextReader>`.
+Provides static methods for reading from and writing to standard input, standard output, and standard error streams with color controls, cursor positioning, window sizing, and stream redirection via `SmartPointer<TextWriter>` and `SmartPointer<TextReader>`.
 
 ---
 
@@ -22,24 +22,38 @@ class Console : public Object;
 
 ## Static Output Methods
 
-### `static void Write(const String& sValue)` / `int` / `double` / `bool` / `char`
+### `static void Write(...)`
 Writes the text representation of the specified value to the standard output stream.
 
-### `template <typename... Args> static void Write(const char* sFormat, const Args&... args)`
-Writes the formatted string to the standard output stream using composite formatting.
+Overloads:
+- `static void Write(bool bValue)`
+- `static void Write(Char chValue)`
+- `static void Write(int iValue)`
+- `static void Write(long iValue)`
+- `static void Write(long long llValue)`
+- `static void Write(float fValue)`
+- `static void Write(double dValue)`
+- `static void Write(const String& sValue)`
+- `static void Write(const char* sValue)`
+- `template <class... Args> static void Write(const String& sFormat, const Args&... args)`
+- `template <class... Args> static void Write(const char* sFormat, const Args&... args)`
 
-### `static void WriteLine()`
-Writes the current line terminator to the standard output stream.
-
-### `static void WriteLine(const String& sValue)` / `int` / `double` / `bool`
+### `static void WriteLine(...)`
 Writes the text representation of the specified value, followed by the current line terminator, to the standard output stream.
 
-### `template <typename... Args> static void WriteLine(const char* sFormat, const Args&... args)`
-Writes the formatted string and newline to standard output.
-
-```cpp
-Console::WriteLine("Server status: {0} on port {1}", "Active", 8080);
-```
+Overloads:
+- `static void WriteLine()`
+- `static void WriteLine(bool bValue)`
+- `static void WriteLine(Char chValue)`
+- `static void WriteLine(int iValue)`
+- `static void WriteLine(long iValue)`
+- `static void WriteLine(long long llValue)`
+- `static void WriteLine(float fValue)`
+- `static void WriteLine(double dValue)`
+- `static void WriteLine(const String& sValue)`
+- `static void WriteLine(const char* sValue)`
+- `template <class... Args> static void WriteLine(const String& sFormat, const Args&... args)`
+- `template <class... Args> static void WriteLine(const char* sFormat, const Args&... args)`
 
 ---
 
@@ -51,54 +65,79 @@ Reads the next character from standard input. Returns `-1` if no more characters
 ### `static String ReadLine()`
 Reads the next line of characters from the standard input stream.
 
-```cpp
-String sInput = Console::ReadLine();
-```
-
 ---
 
-## Colors & Cursor
+## Colors, Cursor & Window Properties
 
-### `static void SetForegroundColor(ConsoleColor enumColor)` / `GetForegroundColor()`
-Sets or gets the foreground color of the console.
+### `static ConsoleColor GetForegroundColor()` / `static void SetForegroundColor(ConsoleColor enumColor)`
+Gets or sets the foreground color of the console.
 
-### `static void SetBackgroundColor(ConsoleColor enumColor)` / `GetBackgroundColor()`
-Sets or gets the background color of the console.
+### `static ConsoleColor GetBackgroundColor()` / `static void SetBackgroundColor(ConsoleColor enumColor)`
+Gets or sets the background color of the console.
 
 ### `static void ResetColor()`
 Sets the foreground and background console colors to their defaults.
 
-```cpp
-Console::SetForegroundColor(ConsoleColor::Green);
-Console::WriteLine("Success!");
-Console::ResetColor();
-```
+### `static int GetCursorLeft()` / `static void SetCursorLeft(int iLeft)`
+Gets or sets the column position of the cursor within the buffer area.
+
+### `static int GetCursorTop()` / `static void SetCursorTop(int iTop)`
+Gets or sets the row position of the cursor within the buffer area.
 
 ### `static void SetCursorPosition(int iLeft, int iTop)`
-Sets the position of the console cursor.
+Sets the position of the cursor.
+
+### `static bool GetCursorVisible()` / `static void SetCursorVisible(bool bVisible)`
+Gets or sets a value indicating whether the cursor is visible.
+
+### `static int GetWindowWidth()` / `static void SetWindowWidth(int iWidth)`
+Gets or sets the width of the console window.
+
+### `static int GetWindowHeight()` / `static void SetWindowHeight(int iHeight)`
+Gets or sets the height of the console window.
+
+### `static bool GetCapsLock()` / `static bool GetNumberLock()`
+Gets a value indicating whether the CAPS LOCK or NUM LOCK keyboard toggle is turned on.
+
+### `static String GetTitle()` / `static void SetTitle(const String& sTitle)`
+Gets or sets the title to display in the console title bar.
+
+### `static void Beep()`
+Plays the sound of a beep through the console speaker.
 
 ### `static void Clear()`
 Clears the console buffer and corresponding console window of display information.
 
 ---
 
-## Standard Stream Redirection
+## Standard Stream Redirection & Accessors
+
+### `static SmartPointer<IO::TextWriter> Out()`
+Gets the standard output stream.
+
+### `static SmartPointer<IO::TextWriter> Error()`
+Gets the standard error output stream.
+
+### `static SmartPointer<IO::TextReader> In()`
+Gets the standard input stream.
 
 ### `static void SetOut(const SmartPointer<IO::TextWriter>& pOutWriter)`
-Redirects the standard output stream to a custom `TextWriter` (e.g. `StringWriter`, `FileStream`, or `LoggerTextWriter`).
-
-```cpp
-auto spWriter = SmartPointer<StringWriter>::NewShared();
-Console::SetOut(spWriter);
-Console::WriteLine("Redirected message");
-String output = spWriter->ToString();
-```
+Redirects the standard output stream to a custom `TextWriter`.
 
 ### `static void SetError(const SmartPointer<IO::TextWriter>& pErrorWriter)`
-Redirects standard error stream.
+Redirects standard error stream to a custom `TextWriter`.
 
 ### `static void SetIn(const SmartPointer<IO::TextReader>& pInReader)`
-Redirects standard input stream.
+Redirects standard input stream to a custom `TextReader`.
+
+### `static void SetIn(const String& sValue)`
+Simulates standard input by buffering the specified string (useful for testing).
+
+### `static void ClearInputs()`
+Clears buffered test inputs.
+
+### `static Array<String> GetOutputs()`
+Retrieves captured test outputs.
 
 ---
 
@@ -116,10 +155,10 @@ int main() {
     Console::ResetColor();
 
     Console::Write("Enter your username: ");
-    String user = Console::ReadLine();
+    String sUser = Console::ReadLine();
 
     Console::SetForegroundColor(ConsoleColor::Yellow);
-    Console::WriteLine("Hello, {0}!", user);
+    Console::WriteLine("Hello, {0}!", sUser);
     Console::ResetColor();
 
     return 0;

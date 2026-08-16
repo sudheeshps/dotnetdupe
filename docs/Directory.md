@@ -24,7 +24,7 @@ Determines whether the given path refers to an existing directory on disk.
 bool bExists = Directory::Exists("C:\\Logs");
 ```
 
-### `static void CreateDirectory(const String& sPath, bool bRecursive = false)`
+### `static void CreateDirectory(const String& sPath)` / `static void CreateDirectory(const String& sPath, bool bRecursive)`
 Creates all directories and subdirectories in the specified path unless they already exist.
 - **Parameters:**
   - `sPath` (`const String&`): The directory to create.
@@ -34,7 +34,7 @@ Creates all directories and subdirectories in the specified path unless they alr
 Directory::CreateDirectory("var/log/myapp/archived", true);
 ```
 
-### `static void Delete(const String& sPath, bool bRecursive = false)`
+### `static void Delete(const String& sPath)` / `static void Delete(const String& sPath, bool bRecursive)`
 Deletes the specified directory and, if indicated, any subdirectories and files in the directory.
 - **Throws:**
   - `IOException`: If the directory is not empty and `bRecursive` is `false`.
@@ -42,17 +42,17 @@ Deletes the specified directory and, if indicated, any subdirectories and files 
 ### `static void Move(const String& sSourceDirName, const String& sDestDirName)`
 Moves a file or a directory and its contents to a new location.
 
-### `static Array<String> GetFiles(const String& sPath, const String& sSearchPattern = "*")`
+### `static Array<String> GetFiles(const String& sPath)` / `static Array<String> GetFiles(const String& sPath, const String& sSearchPattern)`
 Returns the names of files (including their paths) that match the specified search pattern in the specified directory.
 
 ```cpp
-Array<String> txtFiles = Directory::GetFiles("C:\\Logs", "*.txt");
+Array<String> arrTxtFiles = Directory::GetFiles("C:\\Logs", "*.txt");
 ```
 
-### `static Array<String> GetDirectories(const String& sPath, const String& sSearchPattern = "*")`
+### `static Array<String> GetDirectories(const String& sPath)` / `static Array<String> GetDirectories(const String& sPath, const String& sSearchPattern)`
 Returns the names of subdirectories (including their paths) in the specified directory.
 
-### `static Array<String> GetFileSystemEntries(const String& sPath, const String& sSearchPattern = "*")`
+### `static Array<String> GetFileSystemEntries(const String& sPath)` / `static Array<String> GetFileSystemEntries(const String& sPath, const String& sSearchPattern)`
 Returns the names of all files and subdirectories in the specified directory.
 
 ### `static String GetCurrentDirectory()`
@@ -87,15 +87,15 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
 
 int main() {
-    String workingDir = Directory::GetCurrentDirectory();
-    Console::WriteLine("Current Working Directory: {0}", workingDir);
+    String sWorkingDir = Directory::GetCurrentDirectory();
+    Console::WriteLine("Current Working Directory: {0}", sWorkingDir);
 
-    String newFolder = "TempLogs/2026/08";
-    Directory::CreateDirectory(newFolder, true);
-    Console::WriteLine("Created folder: {0} (Exists: {1})", newFolder, Directory::Exists(newFolder));
+    String sNewFolder = "TempLogs/2026/08";
+    Directory::CreateDirectory(sNewFolder, true);
+    Console::WriteLine("Created folder: {0} (Exists: {1})", sNewFolder, Directory::Exists(sNewFolder));
 
-    Array<String> files = Directory::GetFiles(workingDir);
-    Console::WriteLine("Total files found: {0}", files.GetLength());
+    Array<String> arrFiles = Directory::GetFiles(sWorkingDir);
+    Console::WriteLine("Total files found: {0}", arrFiles.GetLength());
 
     Directory::Delete("TempLogs", true);
     Console::WriteLine("Cleaned up TempLogs.");

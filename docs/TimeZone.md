@@ -3,7 +3,7 @@
 **Namespace:** `DotNetDupe::System`  
 **Header:** `#include "System/TimeZone.h"`
 
-Represents a time zone. Provides conversions between UTC and local time, daylight saving status, and standard/daylight names.
+Represents a time zone. Provides conversions between UTC and local time, daylight saving status, daylight changes, and standard/daylight names.
 
 ---
 
@@ -37,6 +37,9 @@ Gets the standard time zone name.
 ### `virtual String GetDaylightName() const = 0`
 Gets the daylight saving time zone name.
 
+### `virtual DaylightTime GetDaylightChanges(int year) = 0`
+Returns the daylight saving time changes for a particular year.
+
 ### `virtual TimeSpan GetUtcOffset(const DateTimeOffset& time) = 0`
 Returns the Coordinated Universal Time (UTC) offset for the specified local time.
 
@@ -66,8 +69,8 @@ int main() {
         Console::WriteLine("Standard Name: {0}", pTz->GetStandardName());
         Console::WriteLine("Daylight Name: {0}", pTz->GetDaylightName());
 
-        DateTimeOffset now = DateTimeOffset::Now();
-        Console::WriteLine("Is Daylight Saving: {0}", pTz->IsDaylightSavingTime(now));
+        DateTimeOffset dtoNow = DateTimeOffset::Now();
+        Console::WriteLine("Is Daylight Saving: {0}", pTz->IsDaylightSavingTime(dtoNow));
     }
 
     return 0;

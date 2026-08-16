@@ -24,7 +24,7 @@ A read-only instance of the `Guid` structure whose value is all zeros (`00000000
 Generates a new RFC-4122 compliant version 4 random `Guid`.
 
 ```cpp
-Guid id = Guid::NewGuid();
+Guid objId = Guid::NewGuid();
 ```
 
 ---
@@ -45,17 +45,23 @@ Initializes a `Guid` from a 16-element byte array.
 
 ---
 
-## Member Functions
+## Member Functions & Operators
 
 ### `String ToString() const`
 Returns a string representation of the value of this instance in standard `8-4-4-4-12` format.
 
 ```cpp
-String s = id.ToString(); // "d3b07384-d113-40e1-95c5-7f4c029b936d"
+String sId = objId.ToString(); // "d3b07384-d113-40e1-95c5-7f4c029b936d"
 ```
 
 ### `Array<uint8_t> ToByteArray() const`
 Returns a 16-element byte array that contains the value of this instance.
+
+### `bool operator==(const Guid& other) const`
+Returns `true` if this instance and `other` represent the same GUID value.
+
+### `bool operator!=(const Guid& other) const`
+Returns `true` if this instance and `other` represent different GUID values.
 
 ---
 
@@ -68,12 +74,12 @@ Returns a 16-element byte array that contains the value of this instance.
 using namespace DotNetDupe::System;
 
 int main() {
-    Guid id1 = Guid::NewGuid();
-    Guid id2 = Guid::NewGuid();
+    Guid objId1 = Guid::NewGuid();
+    Guid objId2 = Guid::NewGuid();
 
-    Console::WriteLine("Generated GUID 1: {0}", id1.ToString());
-    Console::WriteLine("Generated GUID 2: {0}", id2.ToString());
-    Console::WriteLine("Are Equal: {0}", id1 == id2);
+    Console::WriteLine("Generated GUID 1: {0}", objId1.ToString());
+    Console::WriteLine("Generated GUID 2: {0}", objId2.ToString());
+    Console::WriteLine("Are Equal: {0}", objId1 == objId2);
 
     return 0;
 }

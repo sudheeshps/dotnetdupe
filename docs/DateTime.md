@@ -26,17 +26,26 @@ class DateTime : public Object;
 ### `DateTime()`
 Initializes a new `DateTime` instance set to 0 ticks (`0001-01-01 00:00:00`).
 
-### `DateTime(int64_t nTicks, DateTimeKind kind = DateTimeKind::Unspecified)`
-Initializes a new `DateTime` instance with specified 100-nanosecond ticks and time kind.
+### `DateTime(int64_t nTicks)`
+Initializes a new `DateTime` instance with specified 100-nanosecond ticks.
+
+### `DateTime(int64_t nTicks, DateTimeKind kind)`
+Initializes a new `DateTime` instance with specified 100-nanosecond ticks and kind.
 
 ### `DateTime(int year, int month, int day)`
 Initializes a `DateTime` to a specified year, month, and day with time set to midnight (`00:00:00`).
 
-### `DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind = DateTimeKind::Unspecified)`
+### `DateTime(int year, int month, int day, int hour, int minute, int second)`
 Initializes a `DateTime` to a specified date and time.
 
-### `DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind = DateTimeKind::Unspecified)`
+### `DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)`
+Initializes a `DateTime` to a specified date, time, and kind.
+
+### `DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond)`
 Initializes a `DateTime` to a specified date, time, and millisecond precision.
+
+### `DateTime(int year, int month, int day, int hour, int minute, int second, int millisecond, DateTimeKind kind)`
+Initializes a `DateTime` to a specified date, time, millisecond precision, and kind.
 
 ---
 

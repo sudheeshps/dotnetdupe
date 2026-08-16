@@ -24,7 +24,7 @@ Initializes a new instance of the `Random` class using a time-dependent default 
 Initializes a new instance of the `Random` class using the specified seed value for reproducible sequences.
 
 ```cpp
-Random rng(12345);
+Random objRng(12345);
 ```
 
 ---
@@ -41,7 +41,7 @@ Returns a non-negative random integer that is less than the specified maximum.
   - `ArgumentOutOfRangeException`: If `maxValue < 0`.
 
 ```cpp
-int roll = rng.Next(6) + 1; // 1 to 6
+int iRoll = objRng.Next(6) + 1; // 1 to 6
 ```
 
 ### `virtual int Next(int minValue, int maxValue)`
@@ -51,7 +51,7 @@ Returns a random integer that is within a specified range (`minValue <= value < 
   - `ArgumentOutOfRangeException`: If `minValue > maxValue`.
 
 ```cpp
-int temp = rng.Next(-10, 40);
+int iTemp = objRng.Next(-10, 40);
 ```
 
 ### `virtual double NextDouble()`
@@ -71,10 +71,10 @@ Fills the elements of a specified byte buffer with random numbers.
 using namespace DotNetDupe::System;
 
 int main() {
-    Random rng;
+    Random objRng;
 
-    Console::WriteLine("Random roll (1-6): {0}", rng.Next(1, 7));
-    Console::WriteLine("Random double:     {0}", rng.NextDouble());
+    Console::WriteLine("Random roll (1-6): {0}", objRng.Next(1, 7));
+    Console::WriteLine("Random double:     {0}", objRng.NextDouble());
 
     return 0;
 }

@@ -27,7 +27,7 @@ TimeProviderPtr spTime = TimeProvider::GetSystem();
 
 ---
 
-## Virtual Member Functions
+## Member Functions
 
 ### `virtual DateTimeOffset GetUtcNow() const = 0`
 Gets the current Coordinated Universal Time (UTC) date and time.
@@ -42,7 +42,10 @@ Gets the high-frequency counter timestamp.
 Gets the frequency of the high-frequency counter in ticks per second.
 
 ### `TimeSpan GetElapsedTime(int64_t startingTimestamp) const`
-Gets the elapsed time interval since `startingTimestamp`.
+Gets the elapsed time interval between `startingTimestamp` and the current timestamp retrieved from `GetTimestamp()`.
+
+### `TimeSpan GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const`
+Gets the elapsed time interval between `startingTimestamp` and `endingTimestamp`.
 
 ---
 
@@ -59,11 +62,11 @@ using namespace DotNetDupe::System::Threading;
 int main() {
     TimeProviderPtr spTime = TimeProvider::GetSystem();
 
-    int64_t start = spTime->GetTimestamp();
+    int64_t llStart = spTime->GetTimestamp();
     Thread::Sleep(50);
-    TimeSpan elapsed = spTime->GetElapsedTime(start);
+    TimeSpan tsElapsed = spTime->GetElapsedTime(llStart);
 
-    Console::WriteLine("Elapsed Milliseconds: {0}", elapsed.GetTotalMilliseconds());
+    Console::WriteLine("Elapsed Milliseconds: {0}", tsElapsed.GetTotalMilliseconds());
     return 0;
 }
 ```

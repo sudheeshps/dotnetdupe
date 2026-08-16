@@ -25,6 +25,15 @@ enum class EventLogEntryType {
 
 Encapsulates an individual recorded event log record.
 
+### Syntax
+```cpp
+class EventLogEntry : public Object;
+```
+
+### Constructors
+- `EventLogEntry()`: Initializes an empty event log entry.
+- `EventLogEntry(const String& sMessage, EventLogEntryType eType, int iInstanceId, const String& sSource, const DateTimeOffset& dtTimeGenerated)`: Initializes an event log entry with full metadata.
+
 ### Properties
 - `String GetMessage() const`: Gets the event description text.
 - `EventLogEntryType GetEntryType() const`: Gets the severity level of the event entry.
@@ -92,22 +101,22 @@ Closes the event log handle and releases resources.
 ### `static void WriteEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID)`
 Writes an entry directly into the system event log using a static helper.
 
-### `static bool SourceExists(const String& sSource, const String& sMachineName = ".")`
+### `static bool SourceExists(const String& sSource)` / `static bool SourceExists(const String& sSource, const String& sMachineName)`
 Determines whether an event source is registered on the computer.
 
 ### `static void CreateEventSource(const String& sSource, const String& sLogName)`
 Establishes a valid event source for writing localized event messages.
 
-### `static void Delete(const String& sLogName, const String& sMachineName = ".")`
+### `static void Delete(const String& sLogName)` / `static void Delete(const String& sLogName, const String& sMachineName)`
 Removes an event log from the computer.
 
-### `static void DeleteEventSource(const String& sSource, const String& sMachineName = ".")`
+### `static void DeleteEventSource(const String& sSource)` / `static void DeleteEventSource(const String& sSource, const String& sMachineName)`
 Removes the event source registration.
 
-### `static bool Exists(const String& sLogName, const String& sMachineName = ".")`
+### `static bool Exists(const String& sLogName)` / `static bool Exists(const String& sLogName, const String& sMachineName)`
 Determines whether the specified log exists on the computer.
 
-### `static List<EventLog> GetEventLogs(const String& sMachineName = ".")`
+### `static List<EventLog> GetEventLogs()` / `static List<EventLog> GetEventLogs(const String& sMachineName)`
 Enumerates all available event logs on the machine.
 
 ---
@@ -122,19 +131,19 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    String sourceName = "DotNetDupeApp";
+    String sSourceName = "DotNetDupeApp";
 
-    if (!EventLog::SourceExists(sourceName)) {
-        EventLog::CreateEventSource(sourceName, "Application");
+    if (!EventLog::SourceExists(sSourceName)) {
+        EventLog::CreateEventSource(sSourceName, "Application");
     }
 
     // Write diagnostic records
-    EventLog::WriteEntry(sourceName, "Service started successfully.", EventLogEntryType::Information, 1001);
-    EventLog::WriteEntry(sourceName, "High memory pressure detected.", EventLogEntryType::Warning, 2002);
+    EventLog::WriteEntry(sSourceName, "Service started successfully.", EventLogEntryType::Information, 1001);
+    EventLog::WriteEntry(sSourceName, "High memory pressure detected.", EventLogEntryType::Warning, 2002);
 
-    EventLog appLog("Application");
-    auto entries = appLog.GetEntries();
-    Console::WriteLine("Total entries read: {0}", entries.GetCount());
+    EventLog logApp("Application");
+    auto listEntries = logApp.GetEntries();
+    Console::WriteLine("Total entries read: {0}", listEntries.GetCount());
 
     return 0;
 }

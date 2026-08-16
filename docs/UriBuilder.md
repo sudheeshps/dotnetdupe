@@ -20,14 +20,20 @@ class UriBuilder : public Object;
 ### `UriBuilder()`
 Initializes a new instance of the `UriBuilder` class.
 
-### `UriBuilder(const String& uri)` / `UriBuilder(const Uri& uri)`
-Initializes a new instance of the `UriBuilder` class with the specified URI.
+### `UriBuilder(const String& uri)`
+Initializes a new instance of the `UriBuilder` class with the specified URI string.
 
-### `UriBuilder(const String& scheme, const String& host, int port = -1)`
-Initializes a new instance of the `UriBuilder` class with the specified scheme, host, and port.
+### `UriBuilder(const Uri& uri)`
+Initializes a new instance of the `UriBuilder` class with the specified `Uri` instance.
+
+### `UriBuilder(const String& scheme, const String& host)`
+Initializes a new instance of the `UriBuilder` class with the specified scheme and host.
+
+### `UriBuilder(const String& scheme, const String& host, int port)`
+Initializes a new instance of the `UriBuilder` class with the specified scheme, host, and port number.
 
 ```cpp
-UriBuilder builder("https", "api.example.com", 443);
+UriBuilder objBuilder("https", "api.example.com", 443);
 ```
 
 ---
@@ -46,6 +52,9 @@ UriBuilder builder("https", "api.example.com", 443);
 ### `Uri GetUri()`
 Gets the `Uri` instance constructed by the `UriBuilder`.
 
+### `String ToString()`
+Gets the string representation of the constructed URI.
+
 ---
 
 ## Example
@@ -57,15 +66,15 @@ Gets the `Uri` instance constructed by the `UriBuilder`.
 using namespace DotNetDupe::System;
 
 int main() {
-    UriBuilder builder;
-    builder.SetScheme("https");
-    builder.SetHost("localhost");
-    builder.SetPort(5001);
-    builder.SetPath("api/v1/health");
-    builder.SetQuery("check=full");
+    UriBuilder objBuilder;
+    objBuilder.SetScheme("https");
+    objBuilder.SetHost("localhost");
+    objBuilder.SetPort(5001);
+    objBuilder.SetPath("api/v1/health");
+    objBuilder.SetQuery("check=full");
 
-    Uri uri = builder.GetUri();
-    Console::WriteLine("Built URI: {0}", uri.ToString());
+    Uri objUri = objBuilder.GetUri();
+    Console::WriteLine("Built URI: {0}", objUri.ToString());
 
     return 0;
 }

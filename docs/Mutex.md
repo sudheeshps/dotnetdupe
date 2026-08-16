@@ -26,6 +26,9 @@ Initializes a new, unnamed instance with a value indicating whether the calling 
 ### `Mutex(const String& sName, bool bInitiallyOwned = false, bool openAlways = true)`
 Initializes a new named instance of the `Mutex` class.
 
+### `Mutex(bool bInitiallyOwned, const String& sName, bool openAlways = true)`
+Initializes a new named instance specifying initial ownership and whether to open an existing named mutex.
+
 ### `Mutex(bool bInitiallyOwned, const String& sName, bool openAlways, bool& bCreatedNew)`
 Initializes a named `Mutex` and returns whether a new mutex was created or an existing one was opened.
 
@@ -36,15 +39,19 @@ Initializes a named `Mutex` and returns whether a new mutex was created or an ex
 ### `bool WaitOne() override`
 Blocks the calling thread until the thread acquires ownership of the `Mutex`.
 - **Throws:**
-  - `AbandonedMutexException`: If another thread terminated while holding ownership of the mutex.
+  - `UnauthorizedAccessException`: If access is denied by OS permissions.
+  - `WaitHandleCannotBeOpenedException`: If the handle is invalid.
 
 ### `bool WaitOne(int millisecondsTimeout) override`
 Blocks the calling thread until ownership is acquired or the timeout elapses.
+- **Returns:**
+  - `bool`: `true` if ownership was acquired; otherwise, `false`.
+- **Throws:**
+  - `TimeoutException`: If a wait failure occurs.
+  - `UnauthorizedAccessException`: If access is denied by OS permissions.
 
 ### `int Release(int releaseCount = 1) override`
-Releases the `Mutex` once.
-- **Throws:**
-  - `SynchronizationLockException`: If the calling thread does not own the mutex.
+Releases the `Mutex`.
 
 ---
 
@@ -71,10 +78,10 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
 int main() {
-    bool createdNew = false;
-    Mutex singleInstanceMutex(true, "Global_MyApplication_SingleInstanceLock", true, createdNew);
+    bool bCreatedNew = false;
+    Mutex mtxSingleInstance(true, "Global_MyApplication_SingleInstanceLock", true, bCreatedNew);
 
-    if (!createdNew) {
+    if (!bCreatedNew) {
         Console::WriteLine("Another instance of this application is already running!");
         return 1;
     }
@@ -82,7 +89,7 @@ int main() {
     Console::WriteLine("Acquired single-instance application mutex. Application running.");
     Thread::Sleep(100);
 
-    singleInstanceMutex.Release();
+    mtxSingleInstance.Release();
     return 0;
 }
 ```

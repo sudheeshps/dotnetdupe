@@ -27,13 +27,14 @@ Copies a specified number of bytes from a source array starting at a particular 
   - `dstOffset` (`int`): The zero-based byte offset into `dst`.
   - `count` (`int`): The number of bytes to copy.
 - **Throws:**
+  - `ArgumentNullException`: If `src` or `dst` is empty/null.
   - `ArgumentOutOfRangeException`: If offsets or count are negative.
   - `ArgumentException`: If copying exceeds array byte capacity.
 
 ```cpp
-Array<int> src = { 10, 20, 30 };
-Array<int> dst(3);
-Buffer::BlockCopy(src, 0, dst, 0, 3 * sizeof(int));
+Array<int> arrSrc = { 10, 20, 30 };
+Array<int> arrDst(3);
+Buffer::BlockCopy(arrSrc, 0, arrDst, 0, 3 * sizeof(int));
 ```
 
 ---
@@ -45,10 +46,12 @@ Returns the total number of bytes in the specified array.
   - `array` (`Array<T>&`): An array of primitive types.
 - **Returns:**
   - `int`: The number of bytes in the array (`GetLength() * sizeof(T)`).
+- **Throws:**
+  - `ArgumentNullException`: If `array` is empty/null.
 
 ```cpp
-Array<int> arr(5);
-int bytes = Buffer::ByteLength(arr); // 20 bytes
+Array<int> arrNumbers(5);
+int iBytes = Buffer::ByteLength(arrNumbers); // 20 bytes
 ```
 
 ---
@@ -79,13 +82,13 @@ Assigns a specified value to a byte at a particular location in a specified arra
 using namespace DotNetDupe::System;
 
 int main() {
-    Array<short> src = { 100, 200, 300 };
-    Array<short> dst(3);
+    Array<short> arrSrc = { 100, 200, 300 };
+    Array<short> arrDst(3);
 
-    Buffer::BlockCopy(src, 0, dst, 0, Buffer::ByteLength(src));
+    Buffer::BlockCopy(arrSrc, 0, arrDst, 0, Buffer::ByteLength(arrSrc));
 
-    for (int i = 0; i < dst.GetLength(); ++i) {
-        Console::WriteLine("dst[{0}] = {1}", i, dst[i]);
+    for (int iIdx = 0; iIdx < arrDst.GetLength(); ++iIdx) {
+        Console::WriteLine("dst[{0}] = {1}", iIdx, arrDst[iIdx]);
     }
 
     return 0;

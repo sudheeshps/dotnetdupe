@@ -24,6 +24,13 @@ class OperatingSystem : public Object;
 
 ---
 
+## Constructors
+
+### `OperatingSystem(PlatformID platform, const Version& version)`
+Initializes a new instance of the `OperatingSystem` class using the specified platform identifier and version object.
+
+---
+
 ## Static Methods
 
 ### `static bool IsWindows()`
@@ -40,7 +47,7 @@ Indicates whether the current application is running on Linux.
 
 ---
 
-## Properties
+## Properties & Methods
 
 ### `PlatformID GetPlatform() const`
 Gets a `PlatformID` enumeration value that identifies the operating system platform.
@@ -50,6 +57,9 @@ Gets a `Version` object that identifies the operating system.
 
 ### `String GetVersionString() const`
 Gets the concatenated string representation of the platform identifier, version, and service pack that are currently installed on the operating system.
+
+### `String GetServicePack() const`
+Gets the service pack version represented by this `OperatingSystem` object.
 
 ---
 
@@ -63,11 +73,12 @@ Gets the concatenated string representation of the platform identifier, version,
 using namespace DotNetDupe::System;
 
 int main() {
-    OperatingSystem os = Environment::GetOperatingSystem();
+    OperatingSystem objOS = Environment::GetOperatingSystem();
 
-    Console::WriteLine("OS Version String: {0}", os.GetVersionString());
-    Console::WriteLine("Is Windows: {0}", OperatingSystem::IsWindows());
-    Console::WriteLine("Is Linux:   {0}", OperatingSystem::IsLinux());
+    Console::WriteLine("OS Version String: {0}", objOS.GetVersionString());
+    Console::WriteLine("Service Pack:      {0}", objOS.GetServicePack());
+    Console::WriteLine("Is Windows:        {0}", OperatingSystem::IsWindows());
+    Console::WriteLine("Is Linux:          {0}", OperatingSystem::IsLinux());
 
     return 0;
 }

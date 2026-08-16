@@ -27,7 +27,7 @@ class Stopwatch : public Object;
 ### `Stopwatch()`
 Initializes a new instance of the `Stopwatch` class using the system high-resolution clock.
 
-### `Stopwatch(const SmartPointer<TimeProvider>& timeProvider)`
+### `Stopwatch(const TimeProviderPtr& timeProvider)`
 Initializes a new instance of the `Stopwatch` class using a testable `TimeProvider` instance.
 
 ---
@@ -65,7 +65,7 @@ Gets the total elapsed time measured by the current instance, in timer ticks.
 ### `static Stopwatch StartNew()`
 Initializes a new `Stopwatch` instance, sets the elapsed time property to zero, and starts measuring elapsed time.
 
-### `static Stopwatch StartNew(const SmartPointer<TimeProvider>& timeProvider)`
+### `static Stopwatch StartNew(const TimeProviderPtr& timeProvider)`
 Initializes and starts a new `Stopwatch` using a custom `TimeProvider`.
 
 ### `static long long GetTimestamp()`
@@ -85,16 +85,16 @@ using namespace DotNetDupe::System::Diagnostics;
 using namespace DotNetDupe::System::Threading;
 
 int main() {
-    Stopwatch sw = Stopwatch::StartNew();
+    Stopwatch swTimer = Stopwatch::StartNew();
 
     // Perform operations
     Thread::Sleep(120);
 
-    sw.Stop();
+    swTimer.Stop();
 
-    Console::WriteLine("Elapsed Milliseconds: {0} ms", sw.ElapsedMilliseconds());
-    Console::WriteLine("Elapsed Ticks:        {0} ticks", sw.ElapsedTicks());
-    Console::WriteLine("Total Seconds:        {0:F3} s", sw.Elapsed().GetTotalSeconds());
+    Console::WriteLine("Elapsed Milliseconds: {0} ms", swTimer.ElapsedMilliseconds());
+    Console::WriteLine("Elapsed Ticks:        {0} ticks", swTimer.ElapsedTicks());
+    Console::WriteLine("Total Seconds:        {0}", swTimer.Elapsed().GetTotalSeconds());
 
     return 0;
 }

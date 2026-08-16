@@ -715,7 +715,7 @@ void AccessDatabase() {
         }
 
         conn.Close();
-    } catch (const BasicException<char>& ex) {
+    } catch (const Exception& ex) {
         Console::Write("Database Error: ");
         Console::WriteLine(ex.What());
     }
@@ -815,6 +815,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [SortedDictionary&lt;TKey, TValue&gt;](docs/SortedDictionary.md) | Key/value collection sorted by key. |
 | [SortedSet&lt;T&gt;](docs/SortedSet.md) | Ordered unique collection maintained in sorted order. |
 | [LinkedList&lt;T&gt;](docs/LinkedList.md) | Doubly-linked list collection. |
+| [Generic Collections Overview](docs/GenericCollections.md) | Comprehensive guide and comparison of generic collection types. |
 
 ---
 
@@ -829,6 +830,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [ConcurrentStack&lt;T&gt;](docs/ConcurrentStack.md) | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
 | [ConcurrentBag&lt;T&gt;](docs/ConcurrentBag.md) | Thread-safe unordered object container with thread-local storage. |
 | [BlockingCollection&lt;T&gt;](docs/BlockingCollection.md) | Thread-safe collection providing blocking producer-consumer capabilities. |
+| [Concurrent Collections Overview](docs/ConcurrentCollections.md) | Comprehensive guide and architecture of lock-free and thread-safe collections. |
 
 ---
 
@@ -906,6 +908,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [EventLog](docs/EventLog.md) | Interacts with OS diagnostic event logs and writes operational entries. |
 | [EtwLogReader](docs/EtwLogReader.md) | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
 | [SystemMetrics](docs/SystemMetrics.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
+| [RealtimeTelemetry](docs/RealtimeTelemetry.md) | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
 | [ActiveUserSession](docs/ActiveUserSession.md) | Enumerates active and terminal user sessions across the system. |
 | [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
 

@@ -39,7 +39,7 @@ DateTimeOffset dto = DateTimeOffset::UtcNow();
 
 ---
 
-## Member Functions
+## Member Functions & Operators
 
 ### `int64_t GetTicks() const`
 Gets the number of ticks that represent the date and time of the current `DateTimeOffset` object.
@@ -49,6 +49,9 @@ Converts the value of the current `DateTimeOffset` object to its equivalent stri
 
 ### `TimeSpan operator-(const DateTimeOffset& other) const`
 Subtracts one `DateTimeOffset` object from another to yield a time interval (`TimeSpan`).
+
+### `bool operator==(const DateTimeOffset& other) const` / `!=` / `<` / `<=` / `>` / `>=`
+Relational and equality comparison operators comparing tick values.
 
 ---
 

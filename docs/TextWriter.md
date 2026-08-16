@@ -23,6 +23,9 @@ class TextWriter : public Object, public IDisposable;
 - `virtual void Dispose() override = 0`: Releases all resources used by the `TextWriter` object.
 - `virtual Text::EncodingPtr GetEncoding() const = 0`: Returns the character encoding in which the output is written.
 
+### Protected Static Methods
+- `static const String& GetNewLine()`: Returns the newline string for the current environment.
+
 ---
 
 ## `StringWriter`
@@ -52,15 +55,15 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IO;
 
 int main() {
-    StringWriter writer;
-    writer.WriteLine("Header: Application Report");
-    writer.Write("Result Code: ");
-    writer.WriteLine(200);
-    writer.Write("Status: ");
-    writer.WriteLine("Active");
+    StringWriter objWriter;
+    objWriter.WriteLine("Header: Application Report");
+    objWriter.Write("Result Code: ");
+    objWriter.WriteLine(200);
+    objWriter.Write("Status: ");
+    objWriter.WriteLine("Active");
 
-    String result = writer.ToString();
-    Console::WriteLine("Buffered Report:\n{0}", result);
+    String sResult = objWriter.ToString();
+    Console::WriteLine("Buffered Report:\n{0}", sResult);
 
     return 0;
 }

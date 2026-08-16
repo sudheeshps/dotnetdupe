@@ -16,6 +16,10 @@ public:
     T Value;
     LinkedListNode<T>* Next;
     LinkedListNode<T>* Previous;
+
+    LinkedListNode(const T& val);
+    void* operator new(size_t size);
+    void operator delete(void* p);
 };
 
 template <typename T>
@@ -89,23 +93,23 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Collections::Generic;
 
 int main() {
-    LinkedList<String> train;
-    train.AddLast("Engine");
-    train.AddLast("Passenger Car A");
-    train.AddLast("Caboose");
-    train.AddFirst("Pilot");
+    LinkedList<String> listTrain;
+    listTrain.AddLast("Engine");
+    listTrain.AddLast("Passenger Car A");
+    listTrain.AddLast("Caboose");
+    listTrain.AddFirst("Pilot");
 
-    Console::WriteLine("Total cars: {0}", train.GetCount());
+    Console::WriteLine("Total cars: {0}", listTrain.GetCount());
 
-    LinkedListNode<String>* pNode = train.GetFirst();
+    LinkedListNode<String>* pNode = listTrain.GetFirst();
     while (pNode != nullptr) {
         Console::WriteLine("Car: {0}", pNode->Value);
         pNode = pNode->Next;
     }
 
-    train.RemoveFirst();
-    train.RemoveLast();
-    Console::WriteLine("After removing extremities, count = {0}", train.GetCount());
+    listTrain.RemoveFirst();
+    listTrain.RemoveLast();
+    Console::WriteLine("After removing extremities, count = {0}", listTrain.GetCount());
 
     return 0;
 }

@@ -10,13 +10,13 @@ Provides methods for creating, manipulating, searching, and sorting fixed-size c
 ## Syntax
 
 ```cpp
-template <typename T>
+template <class T>
 class Array : public Object;
 ```
 
 ---
 
-## Constructors
+## Constructors & Destructors
 
 ### `Array()`
 Initializes an empty `Array<T>` instance of length 0.
@@ -25,71 +25,107 @@ Initializes an empty `Array<T>` instance of length 0.
 Initializes an `Array<T>` with the specified number of default-constructed elements.
 
 ```cpp
-Array<int> arr(10);
+Array<int> arrNumbers(10);
 ```
 
-### `Array(const std::initializer_list<T>& list)`
+### `Array(const T* pData, int iLength)`
+Initializes an `Array<T>` with `iLength` elements copied from the contiguous buffer `pData`.
+
+### `Array(const std::initializer_list<T>& vItems)`
 Initializes an `Array<T>` containing elements copied from an initializer list.
 
 ```cpp
-Array<String> fruits = { "Apple", "Banana", "Cherry" };
+Array<String> arrFruits = { "Apple", "Banana", "Cherry" };
 ```
+
+### `Array(const Array& other)` / `Array& operator=(const Array& other)`
+Copy constructor and copy assignment operator.
+
+### `Array(Array&& other) noexcept` / `Array& operator=(Array&& other) noexcept`
+Move constructor and move assignment operator.
+
+### `~Array() override`
+Destructor that cleans up allocated elements and buffers.
 
 ---
 
-## Properties & Indexing
+## Properties & Elements
 
 ### `int GetLength() const`
-Gets the total number of elements in all the dimensions of the `Array<T>`.
+Gets the total number of elements in the `Array<T>`.
+
+### `bool IsNull() const`
+Returns `true` if the array has a length of 0.
+
+### `T* GetData()` / `const T* GetData() const`
+Returns a direct pointer to the underlying contiguous buffer.
+
+### `T* begin()` / `T* end()` / `const T* begin() const` / `const T* end() const`
+Returns iterator pointers to support range-based for loops.
 
 ### `T& operator[](int iIndex)` / `const T& operator[](int iIndex) const`
 Gets or sets the element at the specified index.
 
-- **Throws:**
-  - `ArgumentOutOfRangeException`: If `iIndex < 0` or `iIndex >= GetLength()`.
+---
 
-```cpp
-fruits[0] = "Avocado";
-```
+## Searching & Predicates
 
-### `T* GetData()` / `const T* GetData() const`
-Returns a pointer to the contiguous buffer of elements.
+### `int IndexOf(const T& value) const`
+Searches for the specified value and returns the zero-based index of the first occurrence within the array. Returns `-1` if not found.
+
+### `int LastIndexOf(const T& value) const`
+Searches for the specified value and returns the zero-based index of the last occurrence within the array. Returns `-1` if not found.
+
+### `bool Exists(const Predicate<T>& fnPredicate) const`
+Determines whether the array contains elements that match the conditions defined by the specified predicate.
+
+### `T Find(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the first occurrence. Returns `T()` if not found.
+
+### `Array<T> FindAll(const Predicate<T>& fnPredicate) const`
+Retrieves all the elements that match the conditions defined by the specified predicate.
+
+### `int FindIndex(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence. Returns `-1` if not found.
+
+### `T FindLast(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the last occurrence. Returns `T()` if not found.
+
+### `int FindLastIndex(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence. Returns `-1` if not found.
+
+### `bool TrueForAll(const Predicate<T>& fnPredicate) const`
+Determines whether every element in the array matches the conditions defined by the specified predicate.
 
 ---
 
-## Static Methods
+## Operations & Transformations
 
-### `static void Copy(const Array<T>& sourceArray, int sourceIndex, Array<T>& destinationArray, int destinationIndex, int length)`
-Copies a range of elements from an `Array` starting at the specified source index and pastes them to another `Array` starting at the specified destination index.
+### `void Sort()`
+Sorts the elements in the array in ascending order using their `operator>`.
 
-```cpp
-Array<int> src = { 1, 2, 3 };
-Array<int> dst(3);
-Array<int>::Copy(src, 0, dst, 0, 3);
-```
+### `void Reverse()`
+Reverses the order of the elements in the entire array.
 
-### `static void Clear(Array<T>& array, int index, int length)`
-Sets a range of elements in an array to default values.
+### `void Clear()`
+Resets each element in the array to its default value `T()`.
 
-### `static void Reverse(Array<T>& array)` / `static void Reverse(Array<T>& array, int index, int length)`
-Reverses the sequence of the elements in the entire array or a sub-range.
+### `void ForEach(const Action<T>& fnAction)`
+Performs the specified action on each element of the array.
 
-```cpp
-Array<int>::Reverse(dst);
-```
+### `void CopyTo(Array<T>& arrTarget, int iIndex)`
+Copies all elements of the current array into the target array starting at the specified destination index.
 
-### `static void Sort(Array<T>& array)` / `static void Sort(Array<T>& array, int index, int length)`
-Sorts the elements in an entire array or sub-range into ascending order.
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `iIndex < 0`.
+  - `ArgumentException`: If the destination array is not large enough.
 
-```cpp
-Array<int>::Sort(dst);
-```
+### `static void Copy(Array<T>& arrSource, Array<T>& arrDestination, int iLength)`
+Copies a specified number of elements from the source array to the destination array.
 
-### `static int IndexOf(const Array<T>& array, const T& value)`
-Searches for the specified object and returns the index of the first occurrence within the entire `Array`. Returns `-1` if not found.
-
-### `static int BinarySearch(const Array<T>& array, const T& value)`
-Searches a sorted `Array` for a specific element using a binary search algorithm.
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `iLength < 0`.
+  - `ArgumentException`: If the source or destination array is not large enough.
 
 ---
 
@@ -103,18 +139,21 @@ Searches a sorted `Array` for a specific element using a binary search algorithm
 using namespace DotNetDupe::System;
 
 int main() {
-    Array<int> numbers = { 42, 17, 99, 8, 23 };
+    Array<int> arrNumbers = { 42, 17, 99, 8, 23 };
 
-    Console::WriteLine("Original Array Length: {0}", numbers.GetLength());
+    Console::WriteLine("Original Array Length: {0}", arrNumbers.GetLength());
 
-    Array<int>::Sort(numbers);
+    arrNumbers.Sort();
     Console::WriteLine("Sorted elements:");
-    for (int i = 0; i < numbers.GetLength(); ++i) {
-        Console::WriteLine(" - {0}", numbers[i]);
+    for (int iIdx = 0; iIdx < arrNumbers.GetLength(); ++iIdx) {
+        Console::WriteLine(" - {0}", arrNumbers[iIdx]);
     }
 
-    int idx = Array<int>::BinarySearch(numbers, 23);
-    Console::WriteLine("Found 23 at index: {0}", idx);
+    int iFoundIndex = arrNumbers.IndexOf(23);
+    Console::WriteLine("Found 23 at index: {0}", iFoundIndex);
+
+    int iFirstEven = arrNumbers.Find([](int iVal) { return iVal % 2 == 0; });
+    Console::WriteLine("First even number: {0}", iFirstEven);
 
     return 0;
 }

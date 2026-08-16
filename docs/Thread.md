@@ -32,8 +32,6 @@ Initializes a new instance of the `Thread` class with a delegate that takes an `
 
 ### `void Start()`
 Causes the operating system to change the state of the current instance to Running.
-- **Throws:**
-  - `ThreadStateException`: If the thread has already been started.
 
 ### `void Start(Object* parameter)`
 Causes the operating system to change the state of the current instance to Running, supplying an object containing data to be used by the thread method.
@@ -84,12 +82,12 @@ void WorkerTask() {
 }
 
 int main() {
-    Thread workerThread(WorkerTask);
-    workerThread.SetName("BackgroundWorker");
-    workerThread.Start();
+    Thread thWorker(WorkerTask);
+    thWorker.SetName("BackgroundWorker");
+    thWorker.Start();
 
-    Console::WriteLine("Main thread waiting on {0}...", workerThread.GetName());
-    workerThread.Join();
+    Console::WriteLine("Main thread waiting on {0}...", thWorker.GetName());
+    thWorker.Join();
     Console::WriteLine("Worker thread joined successfully.");
 
     return 0;

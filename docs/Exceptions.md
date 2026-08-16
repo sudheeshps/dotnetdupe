@@ -43,13 +43,16 @@ Exception (System/Exception.h)
 
 ### Syntax
 ```cpp
-class Exception : public Object;
+class Exception : public std::runtime_error;
 ```
 
-### Constructors
+### Constructors & Assignment
 - `Exception()`: Initializes a new instance of the `Exception` class with a default system message.
 - `Exception(const String& sMessage)`: Initializes a new instance of the `Exception` class with a specified error message.
 - `Exception(const String& sMessage, const Exception& innerException)`: Initializes a new instance of the `Exception` class with a specified error message and a reference to the inner exception that is the cause of this exception.
+- `Exception(const Exception& other)`: Copy constructor.
+- `Exception& operator=(const Exception& other)`: Copy assignment operator.
+- `virtual ~Exception()`: Virtual destructor.
 
 ### Member Functions
 - `const char* What() const`: Gets a message that describes the current exception.
@@ -103,16 +106,16 @@ using namespace DotNetDupe::System::IO;
 int main() {
     // Collection boundary checking
     try {
-        List<int> numbers;
-        numbers.Add(10);
-        int invalid = numbers[5]; // Index 5 out of range
+        List<int> listNumbers;
+        listNumbers.Add(10);
+        int iInvalid = listNumbers[5]; // Index 5 out of range
     } catch (const ArgumentOutOfRangeException& ex) {
         Console::WriteLine("Caught Collection Exception: {0}", ex.What());
     }
 
     // File I/O checking
     try {
-        String data = File::ReadAllText("non_existent_file.txt");
+        String sData = File::ReadAllText("non_existent_file.txt");
     } catch (const FileNotFoundException& ex) {
         Console::WriteLine("Caught File Not Found: {0}", ex.What());
     } catch (const IOException& ex) {
