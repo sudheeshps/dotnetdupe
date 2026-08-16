@@ -1,70 +1,61 @@
-### class `TextReader` (Abstract)
+# TextReader &amp; StringReader
 
-Represents a reader that can read a sequential series of characters. This is an **abstract base class**; use a derived class like `StringReader` for actual reading operations.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/TextReader.h"`, `#include "System/IO/StringReader.h"`
 
-#### Methods
+`TextReader` represents an abstract reader that can read a sequential series of characters. `StringReader` implements `TextReader` to read characters sequentially from a `String`.
 
-##### `virtual void Close() = 0`
+---
 
-Closes the `TextReader` and releases any system resources associated with the reader.
+## `TextReader` (Abstract Base Class)
 
-**Usage:**
+### Syntax
 ```cpp
-pReader->Close();
+class TextReader : public Object, public IDisposable;
 ```
 
-##### `virtual void Dispose() = 0`
+### Pure Virtual Members
+- `virtual int Read() = 0`: Reads the next character from the text reader and advances the character position by one character. Returns `-1` if no characters remain.
+- `virtual int Read(char* pBuffer, int iIndex, int nCount) = 0`: Reads a specified maximum number of characters from the current reader and writes the data to a buffer.
+- `virtual int Peek() = 0`: Reads the next character without advancing the character position.
+- `virtual String ReadLine() = 0`: Reads a line of characters from the text reader and returns the data as a `String`.
+- `virtual String ReadToEnd() = 0`: Reads all characters from the current position to the end of the text reader and returns them as one string.
+- `virtual void Close() = 0`: Closes the `TextReader` and releases any system resources.
+- `virtual void Dispose() override = 0`: Releases all resources used by the `TextReader` object.
 
-Releases all resources used by the `TextReader` object.
+---
 
-**Usage:**
+## `StringReader`
+
+### Syntax
 ```cpp
-pReader->Dispose();
+class StringReader : public TextReader;
 ```
 
-##### `virtual int Peek() = 0`
+### Constructors
+- `StringReader(const String& sSource)`: Initializes a new instance of the `StringReader` class that reads from the specified string.
 
-Reads the next character without changing the state of the reader or the character source. Returns -1 if no more characters are available.
+---
 
-**Usage:**
+## Example
+
 ```cpp
-int nNextChar = pReader->Peek();
+#include "System/Console.h"
+#include "System/IO/StringReader.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    String text = "First Line\nSecond Line\nThird Line";
+    StringReader reader(text);
+
+    String line;
+    while ((line = reader.ReadLine()).GetLength() > 0) {
+        Console::WriteLine("Read Line: {0}", line);
+    }
+
+    return 0;
+}
 ```
-
-##### `virtual int Read() = 0`
-
-Reads the next character from the text reader and advances the character position by one character. Returns -1 if no more characters are available.
-
-**Usage:**
-```cpp
-int nCh = pReader->Read();
-```
-
-##### `virtual int Read(char* pBuffer, int nIndex, int nCount) = 0`
-
-Reads a specified maximum number of characters from the current reader and writes the data to a buffer, beginning at the specified nIndex.
-
-**Usage:**
-```cpp
-char pBuffer[100];
-int nBytesRead = pReader->Read(pBuffer, 0, 100);
-```
-
-##### `virtual String ReadLine() = 0`
-
-Reads a line of characters from the text reader and returns the data as a string. Returns an empty string if the end of the input stream is reached.
-
-**Usage:**
-```cpp
-String sLine = pReader->ReadLine();
-```
-
-##### `virtual String ReadToEnd() = 0`
-
-Reads all characters from the current position to the end of the text reader and returns them as one string.
-
-**Usage:**
-```cpp
-String sContent = pReader->ReadToEnd();
-```
-

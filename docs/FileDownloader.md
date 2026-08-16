@@ -1,103 +1,113 @@
-# FileDownloader
+# FileDownloader, DownloadProgress &amp; DownloadStatus
 
-The `FileDownloader` class in `DotNetDupe::System::Net::Http` provides resilient HTTP/HTTPS file downloading support built upon `HttpClient` with pause, resume, auto-resumption of partial downloads via HTTP Range headers, and progress tracking including total/downloaded/remaining bytes and real-time download rates.
+**Namespace:** `DotNetDupe::System::Net::Http`  
+**Header:** `#include "System/Net/Http/FileDownloader.h"`
 
-## Class Definition
+A high-level HTTP/HTTPS file download manager with progress tracking, transfer speed measurement, pause/resume capability, custom HTTP headers, and deterministic file handle closing.
+
+---
+
+## `DownloadStatus` Enum
 
 ```cpp
-namespace DotNetDupe {
-    namespace System {
-        namespace Net {
-            namespace Http {
-                enum class DownloadStatus {
-                    NotStarted,
-                    Downloading,
-                    Paused,
-                    Completed,
-                    Failed
-                };
-
-                struct DownloadProgress {
-                    long long TotalBytes;
-                    long long DownloadedBytes;
-                    long long RemainingBytes;
-                    double DownloadRateBytesPerSec;
-                    DownloadStatus Status;
-                };
-
-                class FileDownloader : public Object {
-                public:
-                    DOTNETDUPE_API FileDownloader(const String& sUrl, const String& sDestinationPath);
-                    DOTNETDUPE_API ~FileDownloader();
-
-                    DOTNETDUPE_API bool Start();
-                    DOTNETDUPE_API void Pause();
-                    DOTNETDUPE_API bool Resume();
-
-                    DOTNETDUPE_API DownloadProgress GetProgress() const;
-                    DOTNETDUPE_API DownloadStatus GetStatus() const;
-
-                    DOTNETDUPE_API void SetProgressCallback(const Action<DownloadProgress>& callback);
-                };
-            }
-        }
-    }
-}
+enum class DownloadStatus {
+    NotStarted,
+    Downloading,
+    Paused,
+    Completed,
+    Failed
+};
 ```
 
-## Features
+---
 
-- **Pause and Resume Support**: Safely request pause at any time during an active download.
-- **Resilient Resume (HTTP Range)**: Automatically detects existing partially downloaded files on disk and requests HTTP Range byte offsets (`Range: bytes=X-`) to resume seamlessly without redownloading previously fetched content.
-- **Real-time Download Metrics**: Calculates total bytes, downloaded bytes, remaining bytes, and live download speed in bytes per second (`DownloadRateBytesPerSec`).
-- **Progress Callbacks**: Receive real-time progress updates via `System::Action<DownloadProgress>`.
-
-## Usage Example
+## `DownloadProgress` Struct
 
 ```cpp
-#include "System/Net/FileDownloader.h"
+struct DownloadProgress {
+    long long TotalBytes;
+    long long DownloadedBytes;
+    long long RemainingBytes;
+    double DownloadRateBytesPerSec;
+    DownloadStatus Status;
+};
+```
+
+---
+
+## `FileDownloader` Class
+
+### Syntax
+```cpp
+class FileDownloader : public Object;
+```
+
+---
+
+## Constructors
+
+### `FileDownloader(const String& sUrl, const String& sDestinationPath)`
+Initializes a new `FileDownloader` targeting a remote URL and saving to a local destination file path.
+
+---
+
+## Member Functions
+
+### `bool Start()`
+Begins downloading the file. Returns `true` upon completion or `false` on failure.
+
+### `void Pause()`
+Pauses the active download.
+
+### `bool Resume()`
+Resumes a paused download, requesting remaining bytes using HTTP range requests.
+
+### `DownloadProgress GetProgress() const`
+Gets the current progress snapshot (total bytes, bytes transferred, speed in B/s, status).
+
+### `DownloadStatus GetStatus() const`
+Gets the current download state.
+
+### `void SetProgressCallback(const Action<DownloadProgress>& callback)`
+Registers a delegate to be notified as download chunks are transferred.
+
+### `void AddHeaders(const Dictionary<String, String>& headers)`
+Appends custom request headers to the download connection.
+
+### `void SetUserAgent(const String& sUserAgent)`
+Sets a custom `User-Agent` header for the download request.
+
+---
+
+## Example
+
+```cpp
 #include "System/Console.h"
-#include "System/Threading/Thread.h"
+#include "System/Net/Http/FileDownloader.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
-using namespace DotNetDupe::System::Net;
-using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Net::Http;
 
 int main() {
-    String url = "http://example.com/largefile.zip";
-    String dest = "C:\\Downloads\\largefile.zip";
+    FileDownloader downloader(
+        "https://speed.cloudflare.com/__down?bytes=10485760", 
+        "downloaded_10mb.dat"
+    );
 
-    FileDownloader downloader(url, dest);
+    downloader.SetUserAgent("DotNetDupe-Downloader/4.0");
 
     downloader.SetProgressCallback([](DownloadProgress progress) {
-        Console::WriteLine(String::Format("Downloaded: {0}/{1} bytes | Rate: {2} B/s",
-            String::FromInt64(progress.DownloadedBytes),
-            String::FromInt64(progress.TotalBytes),
-            String::FromInt32(static_cast<int>(progress.DownloadRateBytesPerSec))));
+        double pct = (progress.TotalBytes > 0) 
+            ? ((double)progress.DownloadedBytes / progress.TotalBytes * 100.0) 
+            : 0.0;
+        double speedKbps = progress.DownloadRateBytesPerSec / 1024.0;
+        Console::WriteLine("Progress: {0:F1}% ({1} KB/s)", pct, speedKbps);
     });
 
-    // Start downloading asynchronously
-    downloader.Start();
-
-    Thread::Sleep(2000);
-
-    // Pause download
-    downloader.Pause();
-    Console::WriteLine("Download paused.");
-
-    Thread::Sleep(1000);
-
-    // Resume download from saved byte offset
-    downloader.Resume();
-    Console::WriteLine("Download resumed.");
-
-    while (downloader.GetStatus() == DownloadStatus::Downloading) {
-        Thread::Sleep(100);
-    }
-
-    if (downloader.GetStatus() == DownloadStatus::Completed) {
-        Console::WriteLine("Download finished successfully!");
-    }
+    Console::WriteLine("Starting file download...");
+    bool success = downloader.Start();
+    Console::WriteLine("Download result: {0}", success ? "Success" : "Failed");
 
     return 0;
 }

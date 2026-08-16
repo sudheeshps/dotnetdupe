@@ -1,298 +1,72 @@
-### class `UriBuilder`
+# UriBuilder
 
-Provides a convenient way to modify the contents of a `Uri` instance.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/UriBuilder.h"`
 
-#### Methods
+Provides a custom constructor for uniform resource identifiers (URIs) and modifies URIs for the `Uri` class.
 
-##### `UriBuilder()`
+---
 
-Initializes a new instance of the `UriBuilder` class.
+## Syntax
 
-**Usage:**
 ```cpp
-UriBuilder builder;
-```
-
-##### `UriBuilder(const String& uri)`
-
-Initializes a new instance of the `UriBuilder` class with the specified URI string.
-
-**Parameters:**
-- `uri`: A URI string.
-
-**Usage:**
-```cpp
-UriBuilder builder("http://example.com");
-```
-
-##### `UriBuilder(const Uri& uri)`
-
-Initializes a new instance of the `UriBuilder` class with the specified `Uri` instance.
-
-**Parameters:**
-- `uri`: An instance of the `Uri` class.
-
-**Usage:**
-```cpp
-Uri myUri("http://example.com");
-UriBuilder builder(myUri);
-```
-
-##### `String GetScheme() const`
-
-Gets the scheme name of the URI.
-
-**Returns:**
-- The scheme of the URI.
-
-**Usage:**
-```cpp
-String scheme = builder.GetScheme();
-```
-
-##### `void SetScheme(const String& scheme)`
-
-Sets the scheme name of the URI.
-
-**Parameters:**
-- `scheme`: The scheme name.
-
-**Usage:**
-```cpp
-builder.SetScheme("https");
-```
-
-##### `String GetHost() const`
-
-Gets the Domain Name System (DNS) host name or IP address of a server.
-
-**Returns:**
-- The host name or IP address of the URI.
-
-**Usage:**
-```cpp
-String host = builder.GetHost();
-```
-
-##### `void SetHost(const String& host)`
-
-Sets the Domain Name System (DNS) host name or IP address of a server.
-
-**Parameters:**
-- `host`: The host name or IP address.
-
-**Usage:**
-```cpp
-builder.SetHost("www.example.com");
-```
-
-##### `int GetPort() const`
-
-Gets the port number of the URI.
-
-**Returns:**
-- The port number of the URI.
-
-**Usage:**
-```cpp
-int port = builder.GetPort();
-```
-
-##### `void SetPortValue(int port)`
-
-Sets the port number of the URI.
-
-**Parameters:**
-- `port`: The port number.
-
-**Usage:**
-```cpp
-builder.SetPortValue(8080);
-```
-
-##### `String GetPath() const`
-
-Gets the path to the resource referenced by the URI.
-
-**Returns:**
-- The path to the resource.
-
-**Usage:**
-```cpp
-String path = builder.GetPath();
-```
-
-##### `void SetPath(const String& path)`
-
-Sets the path to the resource referenced by the URI.
-
-**Parameters:**
-- `path`: The path to the resource.
-
-**Usage:**
-```cpp
-builder.SetPath("/api/v1/data");
-```
-
-##### `String GetQuery() const`
-
-Gets any query information included in the URI.
-
-**Returns:**
-- The query information included in the URI.
-
-**Usage:**
-```cpp
-String query = builder.GetQuery();
-```
-
-##### `void SetQuery(const String& query)`
-
-Sets any query information included in the URI.
-
-**Parameters:**
-- `query`: The query information.
-
-**Usage:**
-```cpp
-builder.SetQuery("id=123");
-```
-
-##### `String GetFragment() const`
-
-Gets the fragment portion of the URI.
-
-**Returns:**
-- The fragment portion of the URI.
-
-**Usage:**
-```cpp
-String fragment = builder.GetFragment();
-```
-
-##### `void SetFragment(const String& fragment)`
-
-Sets the fragment portion of the URI.
-
-**Parameters:**
-- `fragment`: The fragment portion.
-
-**Usage:**
-```cpp
-builder.SetFragment("section1");
-```
-
-##### `String GetUserName() const`
-
-Gets the user name associated with the URI.
-
-**Returns:**
-- The user name associated with the URI.
-
-**Usage:**
-```cpp
-String user = builder.GetUserName();
-```
-
-##### `void SetUserName(const String& userName)`
-
-Sets the user name associated with the URI.
-
-**Parameters:**
-- `userName`: The user name.
-
-**Usage:**
-```cpp
-builder.SetUserName("admin");
-```
-
-##### `String GetPassword() const`
-
-Gets the password associated with the URI.
-
-**Returns:**
-- The password associated with the URI.
-
-**Usage:**
-```cpp
-String password = builder.GetPassword();
-```
-
-##### `void SetPassword(const String& password)`
-
-Sets the password associated with the URI.
-
-**Parameters:**
-- `password`: The password.
-
-**Usage:**
-```cpp
-builder.SetPassword("secret");
-```
-
-##### `Uri GetUri() const`
-
-Gets the `Uri` instance constructed by the `UriBuilder`.
-
-**Returns:**
-- A `Uri` containing the URI constructed by the `UriBuilder`.
-
-**Usage:**
-```cpp
-Uri finalUri = builder.GetUri();
-```
-
-##### `String ToString() const`
-
-Returns the display string for the specified `UriBuilder` instance.
-
-**Returns:**
-- The string that contains the unescaped display string of the `UriBuilder`.
-
-**Usage:**
-```cpp
-String uriStr = builder.ToString();
+class UriBuilder : public Object;
 ```
 
 ---
 
-## Code Example
+## Constructors
 
-The following example demonstrates how to build a complex URI using `UriBuilder` dynamically with `SmartPointer`, convert it to a `Uri` instance, and print its components.
+### `UriBuilder()`
+Initializes a new instance of the `UriBuilder` class.
+
+### `UriBuilder(const String& uri)` / `UriBuilder(const Uri& uri)`
+Initializes a new instance of the `UriBuilder` class with the specified URI.
+
+### `UriBuilder(const String& scheme, const String& host, int port = -1)`
+Initializes a new instance of the `UriBuilder` class with the specified scheme, host, and port.
+
+```cpp
+UriBuilder builder("https", "api.example.com", 443);
+```
+
+---
+
+## Properties & Mutators
+
+- `String GetScheme() const` / `void SetScheme(const String& value)`
+- `String GetHost() const` / `void SetHost(const String& value)`
+- `int GetPort() const` / `void SetPort(int value)`
+- `String GetPath() const` / `void SetPath(const String& value)`
+- `String GetQuery() const` / `void SetQuery(const String& value)`
+- `String GetFragment() const` / `void SetFragment(const String& value)`
+- `String GetUserName() const` / `void SetUserName(const String& value)`
+- `String GetPassword() const` / `void SetPassword(const String& value)`
+
+### `Uri GetUri()`
+Gets the `Uri` instance constructed by the `UriBuilder`.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
-#include "System/Uri.h"
 #include "System/UriBuilder.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    // Dynamic memory management using SmartPointer
-    auto pBuilder = SmartPointer<UriBuilder>::New();
+    UriBuilder builder;
+    builder.SetScheme("https");
+    builder.SetHost("localhost");
+    builder.SetPort(5001);
+    builder.SetPath("api/v1/health");
+    builder.SetQuery("check=full");
 
-    // Configure URI components using UriBuilder
-    pBuilder->SetScheme("https");
-    pBuilder->SetHost("www.example.com");
-    pBuilder->SetPort(8080);
-    pBuilder->SetPath("/api/v1/users");
-    pBuilder->SetQuery("id=42");
-    pBuilder->SetFragment("profile");
-    pBuilder->SetUserName("user");
-    pBuilder->SetPassword("pass");
-
-    // Output raw builder state
-    Console::Write("Builder string representation: ");
-    Console::WriteLine(pBuilder->ToString());
-
-    // Build the final Uri
-    Uri finalUri = pBuilder->GetUri();
-    Console::Write("Constructed Absolute URI: ");
-    Console::WriteLine(finalUri.GetAbsoluteUri());
+    Uri uri = builder.GetUri();
+    Console::WriteLine("Built URI: {0}", uri.ToString());
 
     return 0;
 }
 ```
-
-

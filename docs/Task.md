@@ -1,91 +1,112 @@
-### class `Task`
+# Task &amp; TaskStatus
 
-Represents an asynchronous operation.
+**Namespace:** `DotNetDupe::System::Threading::Tasks`  
+**Header:** `#include "System/Threading/Tasks/Task.h"`
 
-#### Methods
+Represents an asynchronous operation that can be scheduled, queried for lifecycle state, and waited on for completion.
 
-##### `static SmartPointer<Task> Run(Action<> objAction)`
-Queues the specified work to run on the ThreadPool and returns a Task object that represents that work.
+---
 
-**Usage:**
+## `TaskStatus` Enum
+
 ```cpp
-auto pTask = Task::Run(Action<>([]() {
-    Console::WriteLine("Task is running in background.");
-}));
-pTask->Wait();
+enum class TaskStatus {
+    Created,
+    WaitingToRun,
+    Running,
+    RanToCompletion,
+    Canceled,
+    Faulted
+};
 ```
 
-##### `void Start()`
-Starts the Task, scheduling it for execution to the current TaskScheduler (mapped to ThreadPool).
+---
 
-##### `void Wait()`
-Waits for the Task to complete execution.
+## `Task` Class
 
-##### `bool Wait(int iMillisecondsTimeout)`
-Waits for the Task to complete execution within a specified time interval.
-
-##### `TaskStatus GetStatus()`
-Gets the `TaskStatus` of this task.
-
-##### `bool GetIsCompleted()`
-Gets whether the task has completed (successfully, faulted, or canceled).
-
-##### `bool GetIsFaulted()`
-Gets whether the task completed due to an unhandled exception.
-
-##### `bool GetIsCanceled()`
-Gets whether this Task instance has completed execution due to being canceled.
+### Syntax
+```cpp
+class Task : public Object;
+```
 
 ---
 
-### enum class `TaskStatus`
-Represents the current stage in the lifecycle of a Task.
+## Constructors
 
-- `Created`: The task has been initialized but has not yet been scheduled.
-- `WaitingToRun`: The task has been scheduled for execution but has not yet begun executing.
-- `Running`: The task is running but has not yet completed.
-- `RanToCompletion`: The task completed execution successfully.
-- `Canceled`: The task acknowledged cancellation by throwing OperationCanceledException.
-- `Faulted`: The task completed due to an unhandled exception.
+### `Task(Action<> objAction)`
+Initializes a new `Task` with the specified action delegate.
 
 ---
 
-## Code Example
+## Member Functions
 
-The following example shows how to dispatch an asynchronous operation to the ThreadPool using `Task::Run`, do concurrent work, and wait for its completion.
+### `void Start()`
+Starts the `Task`, scheduling it for execution on the `ThreadPool`.
+
+### `void Wait()`
+Waits for the `Task` to complete execution synchronously.
+
+### `bool Wait(int iMillisecondsTimeout)`
+Waits for the `Task` to complete execution within a specified time interval.
+- **Returns:**
+  - `bool`: `true` if the `Task` completed execution within the allotted time; otherwise, `false`.
+
+### `TaskStatus GetStatus() const`
+Gets the `TaskStatus` lifecycle state of this task.
+
+### `bool GetIsCompleted() const`
+Gets whether this `Task` has completed (RanToCompletion, Faulted, or Canceled).
+
+### `bool GetIsFaulted() const`
+Gets whether the `Task` completed due to an unhandled exception.
+
+### `bool GetIsCanceled() const`
+Gets whether this `Task` completed execution due to being canceled.
+
+---
+
+## Static Methods
+
+### `static SmartPointer<Task> Run(Action<> objAction)`
+Queues the specified work to run on the `ThreadPool` and returns a `SmartPointer<Task>` representing that work.
+
+```cpp
+auto spTask = Task::Run([]() {
+    Console::WriteLine("Running background computation");
+});
+spTask->Wait();
+```
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Threading/Tasks/Task.h"
 #include "System/Threading/Thread.h"
 #include "System/SmartPointer.h"
-#include "System/Action.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 using namespace DotNetDupe::System::Threading::Tasks;
 
 int main() {
-    Console::WriteLine("Main: Starting task...");
+    Console::WriteLine("Dispatching async task...");
 
-    // Run an asynchronous task on the ThreadPool
-    SmartPointer<Task> pTask = Task::Run(Action<>([]() {
-        Console::WriteLine("Task: Background work started.");
+    auto spTask = Task::Run([]() {
+        Console::WriteLine("Task is executing on background thread pool.");
         Thread::Sleep(100);
-        Console::WriteLine("Task: Background work completed.");
-    }));
+        Console::WriteLine("Task execution finished.");
+    });
 
-    Console::WriteLine("Main: Task is queued. Doing other work...");
-    Thread::Sleep(50);
+    Console::WriteLine("Is Completed before wait: {0}", spTask->GetIsCompleted());
 
-    Console::WriteLine("Main: Waiting for task to complete...");
-    pTask->Wait();
+    spTask->Wait();
 
-    if (pTask->GetStatus() == TaskStatus::RanToCompletion) {
-        Console::WriteLine("Main: Task completed successfully!");
-    }
+    Console::WriteLine("Is Completed after wait: {0}", spTask->GetIsCompleted());
+    Console::WriteLine("Task Status: {0}", (spTask->GetStatus() == TaskStatus::RanToCompletion ? "RanToCompletion" : "Other"));
 
     return 0;
 }
 ```
-

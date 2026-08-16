@@ -1,83 +1,77 @@
-# CriticalSection
+# CriticalSection &amp; Lock&lt;T&gt;
 
-A high-performance user-mode synchronization primitive using Win32 `CRITICAL_SECTION`.
+**Namespace:** `DotNetDupe::System::Threading`  
+**Header:** `#include "System/Threading/CriticalSection.h"`, `#include "System/Threading/Lock.h"`
 
-## Methods
+`CriticalSection` provides a lightweight, recursive synchronization primitive for threads within the same process. `Lock<T>` provides exception-safe RAII scoping for synchronization objects.
 
-### `CriticalSection()`
-Initializes a new instance of the `CriticalSection` class with a spin count for optimized performance.
+---
 
-### `void Enter()`
-Enters the critical section. Blocks if another thread has entered.
+## `CriticalSection`
 
-### `void Leave()`
-Leaves the critical section.
+### Syntax
+```cpp
+class CriticalSection : public Object;
+```
 
-### `bool TryEnter()`
-Attempts to enter the critical section without blocking.
+### Constructors
+- `CriticalSection()`: Initializes a new critical section object.
 
-**Returns:**
-- `true` if the thread successfully entered; otherwise, `false`.
+### Member Functions
+- `void Enter()`: Waits for ownership of the specified critical section object.
+- `void Leave()`: Releases ownership of the critical section object.
+- `bool TryEnter()`: Attempts to enter a critical section without blocking. Returns `true` if the thread entered successfully; otherwise, `false`.
 
-## Code Example
+---
+
+## `Lock<T>` (RAII Lock Wrapper)
+
+### Syntax
+```cpp
+template <typename T>
+class Lock;
+
+typedef Lock<CriticalSection> CriticalSectionLock;
+typedef Lock<Mutex> MutexLock;
+typedef Lock<Semaphore> SemaphoreLock;
+typedef Lock<SemaphoreSlim> SemaphoreSlimLock;
+```
+
+### Constructors
+- `Lock(T& syncObject, int millisecondsTimeout = -1, int releaseCount = -1)`: Acquires `syncObject` upon construction.
+- `~Lock()`: Releases `syncObject` automatically when leaving scope (even if an exception is thrown).
+
+---
+
+## Example
 
 ```cpp
+#include "System/Console.h"
 #include "System/Threading/CriticalSection.h"
 #include "System/Threading/Lock.h"
-#include "System/Threading/Thread.h"
-#include "System/Console.h"
-#include "System/SmartPointer.h"
+#include "System/Threading/ThreadPool.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
+CriticalSection g_cs;
+int g_counter = 0;
+
+void IncrementSharedData() {
+    // RAII Lock acquisition
+    CriticalSectionLock lock(g_cs);
+    g_counter++;
+    Console::WriteLine("Counter updated safely to: {0}", g_counter);
+}
+
 int main() {
-    Console::WriteLine("CriticalSection demo started.");
-
-    // Create a shared CriticalSection using SmartPointer
-    auto pCs = SmartPointer<CriticalSection>::NewShared();
-    
-    // Shared resource
-    int iSharedData = 0;
-
-    // Spawn worker threads to update shared resource
-    auto runWorker = [pCs, &iSharedData](Object* pState) {
-        int iId = (int)(intptr_t)pState;
-        
-        for (int iI = 0; iI < 3; ++iI) {
-            // Using CriticalSectionLock for RAII-based safety
-            {
-                CriticalSectionLock lock(*pCs);
-                iSharedData++;
-                Console::Write("Thread ");
-                Console::Write(iId);
-                Console::Write(" updated data to: ");
-                Console::WriteLine(iSharedData);
-            }
-            Thread::Sleep(30);
-        }
-    };
-
-    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New(runWorker);
-    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New(runWorker);
-
-    pT1->Start(reinterpret_cast<Object*>(1));
-    pT2->Start(reinterpret_cast<Object*>(2));
-
-    pT1->Join();
-    pT2->Join();
-
-    // Demonstration of direct TryEnter / Enter / Leave
-    if (pCs->TryEnter()) {
-        Console::WriteLine("Main thread successfully entered CriticalSection via TryEnter.");
-        pCs->Leave();
-    } else {
-        Console::WriteLine("Main thread failed to enter CriticalSection (unexpected).");
+    for (int i = 0; i < 5; ++i) {
+        ThreadPool::QueueUserWorkItem([](Object* state) {
+            IncrementSharedData();
+        });
     }
 
-    Console::WriteLine("CriticalSection demo completed.");
+    Thread::Sleep(150);
     return 0;
 }
 ```
-
-

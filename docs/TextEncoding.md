@@ -1,39 +1,55 @@
-### class `Encoding`
+# TextEncoding &amp; Encoding
 
-Abstract base class for character encodings.
+**Namespace:** `DotNetDupe::System::Text`  
+**Header:** `#include "System/Text/TextEncoding.h"`
 
-#### Methods
+Represents character encodings (UTF-8, ASCII, Unicode), providing bidirectional transcoding between `String` objects and byte arrays.
 
-##### `virtual Array<char> GetBytes(const String& s)`
+---
 
-When overridden in a derived class, encodes all the characters in the specified string into a sequence of bytes.
+## `Encoding` (Abstract Base Class)
 
-**Usage:**
+### Syntax
 ```cpp
-auto bytes = encoding->GetBytes("Hello");
+class Encoding : public Object;
+using EncodingPtr = SmartPointer<Encoding>;
 ```
 
-##### `virtual String GetString(const Array<char>& bytes)`
+### Pure Virtual Members
+- `virtual Array<char> GetBytes(const String& s) = 0`: Encodes a set of characters from the specified `String` into an array of bytes.
+- `virtual String GetString(const Array<char>& bytes) = 0`: Decodes an array of bytes into a `String`.
+- `virtual String GetString(const char* bytes, int byteCount) = 0`: Decodes a sequence of bytes from the specified character pointer into a `String`.
 
-When overridden in a derived class, decodes all the bytes in the specified byte array into a string.
+---
 
-**Usage:**
+## `UTF8Encoding` & `TextEncoding`
+
+### Static Factory
+- `static EncodingPtr TextEncoding::UTF8()`: Returns an encoding for the UTF-8 format.
+
+---
+
+## Example
+
 ```cpp
-String s = encoding->GetString(bytes);
+#include "System/Console.h"
+#include "System/Text/TextEncoding.h"
+#include "System/Array.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Text;
+
+int main() {
+    auto utf8 = TextEncoding::UTF8();
+
+    String original = "DotNetDupe UTF-8 Encoding 🚀";
+    Array<char> bytes = utf8->GetBytes(original);
+    Console::WriteLine("Encoded to {0} bytes.", bytes.GetLength());
+
+    String decoded = utf8->GetString(bytes);
+    Console::WriteLine("Decoded String: {0}", decoded);
+
+    return 0;
+}
 ```
-
-### class `TextEncoding`
-
-Provides static factory methods for standard encodings.
-
-#### Methods
-
-##### `static std::shared_ptr<Encoding> UTF8()`
-
-Returns an encoding for the UTF-8 format.
-
-**Usage:**
-```cpp
-auto encoding = TextEncoding::UTF8();
-```
-

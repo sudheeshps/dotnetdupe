@@ -1,118 +1,96 @@
-# Interlocked<T>
+# Interlocked&lt;T&gt;
 
-Provides atomic operations for variables that are shared by multiple threads.
+**Namespace:** `DotNetDupe::System::Threading`  
+**Header:** `#include "System/Threading/Interlocked.h"`
 
-## Template Parameters
+Provides atomic hardware-level operations for variables that are shared by multiple threads (32-bit and 64-bit integers).
 
-- `T`: The type of the value to perform atomic operations on. Supported sizes are 4 bytes (e.g., `long`, `int`) and 8 bytes (e.g., `long long`, `__int64`).
+---
+
+## Syntax
+
+```cpp
+template <typename T>
+class Interlocked : public Object;
+```
+
+---
 
 ## Constructors
 
 ### `Interlocked(T initialValue = 0)`
-Initializes a new instance of the `Interlocked` class with the specified initial value.
+Initializes a new atomic variable with the given initial value.
 
-## Methods
+---
+
+## Atomic Operations
 
 ### `T Increment()`
-Increments the value and returns the new value, as an atomic operation.
+Increments a specified variable and stores the result, as an atomic operation.
+- **Returns:**
+  - `T`: The incremented value.
 
 ### `T Decrement()`
-Decrements the value and returns the new value, as an atomic operation.
+Decrements a specified variable and stores the result, as an atomic operation.
+- **Returns:**
+  - `T`: The decremented value.
 
 ### `T Add(T value)`
-Adds a value to the current value and returns the new value, as an atomic operation.
+Adds a value to the current variable and stores the result atomically.
+- **Returns:**
+  - `T`: The new total value.
 
 ### `T Exchange(T value)`
-Sets the value to a specified value as an atomic operation and returns the original value.
+Sets the variable to a specified value and returns the original value, as an atomic operation.
+- **Returns:**
+  - `T`: The original value before assignment.
 
 ### `T CompareExchange(T value, T comparand)`
-Compares the current value with `comparand` for equality and, if they are equal, replaces it with `value`. Returns the original value.
+Compares the variable with `comparand` and, if they are equal, replaces the value with `value`.
+- **Returns:**
+  - `T`: The original value that was stored in the variable.
 
-## Operator Overloading
+---
 
-### `T operator++()`
-Prefix increment operator. Calls `Increment()`.
+## Operator Overloads
 
-### `T operator++(int)`
-Postfix increment operator. Increments the value atomically and returns the original value.
+- `T operator++()`: Prefix increment (`++atomicVar`).
+- `T operator++(int)`: Postfix increment (`atomicVar++`).
+- `T operator--()`: Prefix decrement (`--atomicVar`).
+- `T operator--(int)`: Postfix decrement (`atomicVar--`).
+- `T operator+=(T value)`: Atomic addition (`atomicVar += 5`).
+- `operator T() const`: Implicit read conversion to type `T`.
+- `T operator=(T value)`: Atomic assignment (`atomicVar = 100`).
 
-### `T operator--()`
-Prefix decrement operator. Calls `Decrement()`.
+---
 
-### `T operator--(int)`
-Postfix decrement operator. Decrements the value atomically and returns the original value.
-
-### `T operator+=(T value)`
-Addition assignment operator. Calls `Add(value)`.
-
-### `operator T() const`
-Implicit conversion to the underlying type `T`.
-
-### `T operator=(T value)`
-Assignment operator. Calls `Exchange(value)`.
-
-## Remarks
-
-The `Interlocked` class provides a thread-safe way to perform common operations on shared variables without requiring explicit locks. It uses hardware-intrinsic atomic operations to ensure that the updates are performed atomically across all processors.
-
-The implementation uses `_Interlocked` intrinsics from the Windows header, ensuring high performance and reliability on Windows platforms.
-
-## Code Example
+## Example
 
 ```cpp
-#include "System/Threading/Interlocked.h"
-#include "System/Threading/Thread.h"
 #include "System/Console.h"
-#include "System/SmartPointer.h"
+#include "System/Threading/Interlocked.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Thread.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
+Interlocked<int> g_atomicHits(0);
+
 int main() {
-    Console::WriteLine("Interlocked demo started.");
+    for (int i = 0; i < 10; ++i) {
+        ThreadPool::QueueUserWorkItem([](Object* state) {
+            g_atomicHits++;
+        });
+    }
 
-    // Create a shared atomic counter using SmartPointer and Interlocked
-    auto pCounter = SmartPointer<Interlocked<int>>::NewShared(0);
+    Thread::Sleep(100);
 
-    // Spawn threads that increment the counter atomically without locks
-    auto runIncrement = [pCounter]() {
-        for (int iI = 0; iI < 1000; ++iI) {
-            (*pCounter)++; // Atomic increment
-        }
-    };
+    Console::WriteLine("Total atomic hits: {0}", (int)g_atomicHits);
 
-    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New(runIncrement);
-    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New(runIncrement);
+    int prev = g_atomicHits.CompareExchange(100, 10);
+    Console::WriteLine("CompareExchange (if 10 -> 100): Prev was {0}, Now is {1}", prev, (int)g_atomicHits);
 
-    pT1->Start();
-    pT2->Start();
-
-    pT1->Join();
-    pT2->Join();
-
-    // Verify counter value (expected to be 2000)
-    int iFinalVal = *pCounter;
-    Console::Write("Final counter value (expected 2000): ");
-    Console::WriteLine(iFinalVal);
-
-    // Demonstrate CompareExchange
-    // If current value is 2000, exchange it with 5000
-    int iOriginal = pCounter->CompareExchange(5000, 2000);
-    Console::Write("Original value returned from CompareExchange: ");
-    Console::WriteLine(iOriginal);
-    Console::Write("New counter value after CompareExchange: ");
-    Console::WriteLine((int)*pCounter);
-
-    // Demonstrate Exchange
-    int iPrevVal = pCounter->Exchange(999);
-    Console::Write("Previous value returned from Exchange: ");
-    Console::WriteLine(iPrevVal);
-    Console::Write("New counter value after Exchange: ");
-    Console::WriteLine((int)*pCounter);
-
-    Console::WriteLine("Interlocked demo completed.");
     return 0;
 }
 ```
-
-

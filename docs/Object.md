@@ -1,135 +1,139 @@
-### class `Object`
+# Object
 
-Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. This is the ultimate base class of all classes in the .NET Framework; it is the root of the type hierarchy.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Object.h"`
 
-#### Methods
+Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. This is the ultimate base class of all classes in the DotNetDupe library; it is the root of the type hierarchy.
 
-##### `bool operator == (const Object& obj) const`
+---
 
-Determines whether the specified `Object` is equal to the current `Object`.
+## Syntax
 
-**Parameters:**
-- `obj`: The object to compare with the current object.
-
-**Returns:**
-- `true` if the specified object is equal to the current object; otherwise, `false`.
-
-**Usage:**
 ```cpp
-Object obj1, obj2;
-bool isEqual = (obj1 == obj2);
+class Object;
 ```
 
-##### `virtual bool Equals(const Object& obj)`
+---
 
-Determines whether the specified `Object` is equal to the current `Object`.
+## Member Functions
 
-**Parameters:**
-- `obj`: The object to compare with the current object.
+### `virtual ~Object() = default`
+Destructor. Ensures proper polymorphic destruction of derived instances.
 
-**Returns:**
-- `true` if the specified object is equal to the current object; otherwise, `false`.
+---
 
-**Usage:**
+### `bool operator==(const Object& obj) const`
+Determines whether two `Object` instances are equal by delegating to `Equals()`.
+
+- **Parameters:**
+  - `obj` (`const Object&`): The object to compare with the current object.
+- **Returns:**
+  - `bool`: `true` if the specified object is equal to the current object; otherwise, `false`.
+
 ```cpp
-Object obj1, obj2;
-bool result = obj1.Equals(obj2);
+Object objA;
+Object objB;
+bool bEqual = (objA == objB);
 ```
 
-##### `static bool Equals(const Object& obj1, const Object& obj2)`
+---
 
-Determines whether the specified `Object` instances are considered equal.
+### `virtual bool Equals(const Object& obj) const`
+Determines whether the specified object is equal to the current object (reference equality by default).
 
-**Parameters:**
-- `obj1`: The first object to compare.
-- `obj2`: The second object to compare.
+- **Parameters:**
+  - `obj` (`const Object&`): The object to compare with the current object.
+- **Returns:**
+  - `bool`: `true` if the specified object is equal to the current object; otherwise, `false`.
+- **Exceptions:**
+  - None.
 
-**Returns:**
-- `true` if the objects are considered equal; otherwise, `false`.
-
-**Usage:**
 ```cpp
-Object obj1, obj2;
-bool result = Object::Equals(obj1, obj2);
+bool bEqual = objA.Equals(objB);
 ```
 
-##### `int GetHashCode()`
+---
 
-Serves as the default hash function.
+### `static bool Equals(const Object& obj1, const Object& obj2)`
+Determines whether the specified object instances are considered equal.
 
-**Returns:**
-- A hash code for the current object.
+- **Parameters:**
+  - `obj1` (`const Object&`): The first object to compare.
+  - `obj2` (`const Object&`): The second object to compare.
+- **Returns:**
+  - `bool`: `true` if the objects are considered equal; otherwise, `false`.
 
-**Usage:**
 ```cpp
-Object obj;
-int hash = obj.GetHashCode();
+bool bEqual = Object::Equals(objA, objB);
 ```
 
-##### `wchar_t* ToStringW()`
+---
 
-Returns a string that represents the current object (wide character version).
+### `virtual int GetHashCode() const`
+Serves as the default hash function. Computes a hash code based on the object instance address.
 
-**Returns:**
-- A wide character string that represents the current object.
+- **Returns:**
+  - `int`: A hash code for the current object.
 
-**Usage:**
 ```cpp
-Object obj;
-wchar_t* str = obj.ToStringW();
+int iHash = objA.GetHashCode();
 ```
 
-##### `char* ToStringA()`
+---
 
-Returns a string that represents the current object (ASCII character version).
+### `char* ToStringA() const`
+Returns a string that represents the current object as an ANSI/UTF-8 character buffer. Caller is responsible for lifetime or converting to `DotNetDupe::System::String`.
 
-**Returns:**
-- An ASCII string that represents the current object.
+- **Returns:**
+  - `char*`: A null-terminated C-string containing the type name and address.
 
-**Usage:**
+---
+
+### `wchar_t* ToStringW() const`
+Returns a string that represents the current object as a wide character buffer.
+
+- **Returns:**
+  - `wchar_t*`: A null-terminated wide C-string containing the type name and address.
+
+---
+
+## Example
+
 ```cpp
-Object obj;
-char* str = obj.ToStringA();
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Object`.
-
-```cpp
-#include "System/Object.h"
 #include "System/Console.h"
-#include "System/Exception.h"
+#include "System/Object.h"
 
 using namespace DotNetDupe::System;
 
-int main() {
-    try {
-        Object obj1;
-        Object obj2;
+class Person : public Object {
+private:
+    int m_iId;
 
-        // Equals comparison
-        bool isEqual = obj1.Equals(obj2);
-        Console::Write("obj1.Equals(obj2): ");
-        Console::WriteLine(isEqual);
+public:
+    explicit Person(int iId) : m_iId(iId) {}
 
-        // Get hash code
-        int hash1 = obj1.GetHashCode();
-        Console::Write("obj1 HashCode: ");
-        Console::WriteLine(hash1);
-
-        // Convert to string representations
-        char* strA = obj1.ToStringA();
-        Console::Write("obj1.ToStringA(): ");
-        Console::WriteLine(strA);
-
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
+    bool Equals(const Object& obj) const override {
+        const Person* pOther = dynamic_cast<const Person*>(&obj);
+        if (pOther == nullptr) {
+            return false;
+        }
+        return m_iId == pOther->m_iId;
     }
+
+    int GetHashCode() const override {
+        return m_iId;
+    }
+};
+
+int main() {
+    Person p1(101);
+    Person p2(101);
+    Person p3(202);
+
+    Console::WriteLine("p1 == p2: {0}", p1.Equals(p2)); // true
+    Console::WriteLine("p1 == p3: {0}", p1.Equals(p3)); // false
+    Console::WriteLine("p1 HashCode: {0}", p1.GetHashCode());
+
     return 0;
 }
 ```
-
-

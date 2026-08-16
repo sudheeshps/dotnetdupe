@@ -1,70 +1,68 @@
-### class `ThreadPool`
+# ThreadPool
 
-Provides a pool of threads that can be used to execute tasks, post work items, process asynchronous I/O, wait on behalf of other threads, and process timers.
+**Namespace:** `DotNetDupe::System::Threading`  
+**Header:** `#include "System/Threading/ThreadPool.h"`
 
-#### Methods
+Provides a pool of threads that can be used to execute tasks, post work items, wait on behalf of other threads, and process concurrent operations efficiently without thread-spawning overhead.
 
-##### `static bool QueueUserWorkItem(WaitCallback callback)`
+---
 
-Queues a method for execution. The method executes when a thread pool thread becomes available.
+## Syntax
 
-**Usage:**
 ```cpp
-ThreadPool::QueueUserWorkItem(WaitCallback([](Object* state) {
-    Console::WriteLine("Running on thread pool...");
-}));
+typedef Action<Object*> WaitCallback;
+
+class ThreadPool : public Object;
 ```
 
-##### `static bool QueueUserWorkItem(WaitCallback callback, Object* pState)`
+---
 
-Queues a method for execution, and specifies an object containing data to be used by the method. The method executes when a thread pool thread becomes available.
+## Static Methods
 
-**Usage:**
+### `static bool QueueUserWorkItem(WaitCallback callback)`
+Queues a method for execution. The method executes when a thread pool worker becomes available.
+- **Parameters:**
+  - `callback` (`WaitCallback`): An `Action<Object*>` that represents the delegate to execute.
+- **Returns:**
+  - `bool`: `true` if the method is successfully queued; otherwise, `false`.
+
 ```cpp
-Object* pData = reinterpret_cast<Object*>(42);
-ThreadPool::QueueUserWorkItem(WaitCallback([](Object* state) {
-    int iVal = (int)(intptr_t)state;
-    Console::Write("Received value: ");
-    Console::WriteLine(iVal);
-}), pData);
+ThreadPool::QueueUserWorkItem([](Object* state) {
+    Console::WriteLine("Executing async background task on thread pool");
+});
 ```
 
-##### `typedef Action<Object*> WaitCallback`
+### `static bool QueueUserWorkItem(WaitCallback callback, Object* pState)`
+Queues a method for execution, and specifies an object containing context data to be used by the method.
 
-Represents a callback method to be executed by a thread pool thread.
+### `static bool SetMinThreads(int iMinThreads)`
+Sets the minimum number of worker threads the thread pool creates on demand.
 
-## Code Example
+---
+
+## Example
 
 ```cpp
+#include "System/Console.h"
 #include "System/Threading/ThreadPool.h"
 #include "System/Threading/Thread.h"
-#include "System/Console.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
 int main() {
-    Console::WriteLine("ThreadPool demo started.");
+    ThreadPool::SetMinThreads(4);
 
-    // Queue a work item without state
-    ThreadPool::QueueUserWorkItem(WaitCallback([](Object* pState) {
-        Console::WriteLine("Work item 1 running on the ThreadPool.");
-    }));
+    for (int i = 1; i <= 3; ++i) {
+        ThreadPool::QueueUserWorkItem([](Object* state) {
+            Console::WriteLine("Running worker task on Thread #{0}", Thread::GetCurrentThreadId());
+            Thread::Sleep(50);
+        });
+    }
 
-    // Queue a work item with state
-    Object* pStateObj = reinterpret_cast<Object*>(42);
-    ThreadPool::QueueUserWorkItem(WaitCallback([](Object* pState) {
-        intptr_t iVal = reinterpret_cast<intptr_t>(pState);
-        Console::Write("Work item 2 running with state: ");
-        Console::WriteLine((int)iVal);
-    }), pStateObj);
+    Thread::Sleep(200); // Allow thread pool workers to finish
+    Console::WriteLine("All pool tasks completed.");
 
-    // Give the thread pool time to process the queued items
-    Thread::Sleep(200);
-
-    Console::WriteLine("ThreadPool demo completed.");
     return 0;
 }
 ```
-

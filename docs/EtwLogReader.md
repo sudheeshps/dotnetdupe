@@ -1,89 +1,120 @@
-### class `EtwLogReader`
+# EtwLogReader &amp; EtwEvent
 
-Provides Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, event reading, and live subscription listener capabilities.
+**Namespace:** `DotNetDupe::System::Diagnostics`  
+**Header:** `#include "System/Diagnostics/EtwLogReader.h"`
 
-#### Structs
-
-##### `enum class EtwEventLevel`
-
-Defines the severity level for event filtering: `All = 0`, `Critical = 1`, `Error = 2`, `Warning = 3`, `Info = 4`, `Verbose = 5`.
-
-##### `struct EtwEvent`
-
-- `String sChannelName`: Name of the channel.
-- `String sMessage`: Formatted event message payload.
-- `int iEventId`: Unique event identifier.
-- `int iLevel`: Severity level (e.g. Critical, Error, Warning, Information, Verbose).
-- `String sProviderName`: Event provider name.
-- `DateTimeOffset dtTimeCreated`: Timestamp when event was generated.
-- `String sRawXml`: Complete raw XML payload of the event rendered via native `EvtRender`.
+Provides high-performance Event Tracing for Windows (ETW / Windows Event Log channels) and Linux syslog querying, batch event pagination, level counting, and real-time live event streaming subscriptions.
 
 ---
 
-#### Methods
+## Data Structures & Enums
 
-##### `static Collections::Generic::List<String> GetEventChannels()`
+### `EtwEventLevel`
+```cpp
+enum class EtwEventLevel {
+    All = 0,
+    Critical = 1,
+    Error = 2,
+    Warning = 3,
+    Info = 4,
+    Verbose = 5
+};
+```
 
-Enumerates available event channels on Windows (`EvtOpenChannelEnum`/`EvtNextChannelPath`) or system log categories on Linux (`syslog`, `auth.log`, `kern.log`).
+### `EtwEvent`
+```cpp
+struct EtwEvent {
+    String sChannelName;
+    String sMessage;
+    int iEventId;
+    int iLevel;
+    String sProviderName;
+    DateTimeOffset dtTimeCreated;
+    String sRawXml;
+};
+```
 
-##### `static unsigned long long GetChannelEventCount(const String& sChannelName)`
-
-Queries total number of log records configured in the specified channel via `EvtOpenLog` / `EvtLogNumberOfLogRecords`.
-
-##### `static EtwEventLevelCounts GetChannelEventLevelCounts(const String& sChannelName)`
-
-Queries event level breakdown counts (Critical, Error, Warning, Information, Verbose) for the specified channel using targeted XPath level queries (`*[System[Level=N]]`).
-
-##### `static Collections::Generic::List<EtwEvent> ReadEvents(const String& sChannelName, int iMaxEvents = 0, int iStartIndex = 0, bool bReverseDirection = true, EtwEventLevel level = EtwEventLevel::All)`
-
-Reads recorded events from the specified channel with pagination offset (`iStartIndex`), limit (`iMaxEvents`), direction control (`bReverseDirection`), and optional severity filter (`level`). On Windows, uses native `EvtQuery` (with generated XPath filter if `level` is specified), `EvtSeek`, `EvtRender`, and `EvtFormatMessage`. When `EvtFormatMessage` returns empty (e.g., unregistered provider resources), `sMessage` automatically falls back to `sRawXml`.
-
-##### `void StartListening(const String& sChannelName, std::function<void(const EtwEvent&)> fnCallback)`
-
-Attaches a live subscription listener callback to receive real-time events published to the target channel.
-
-##### `void StopListening()`
-
-Stops the live event listener subscription.
-
-##### `bool IsListening() const`
-
-Returns `true` if active live subscription is listening.
+### `EtwEventLevelCounts`
+```cpp
+struct EtwEventLevelCounts {
+    unsigned long long uCriticalCount;
+    unsigned long long uErrorCount;
+    unsigned long long uWarningCount;
+    unsigned long long uInfoCount;
+    unsigned long long uVerboseCount;
+};
+```
 
 ---
 
-## Code Example
+## `EtwLogReader` Class
 
-The following sample demonstrates enumerating channels, reading recorded events, and setting up a live event subscription listener.
+### Syntax
+```cpp
+class EtwLogReader : public Object;
+```
+
+---
+
+## Member Functions (Live Subscriptions)
+
+### `void StartListening(const String& sChannelName, Action<const EtwEvent&> fnCallback)`
+Starts asynchronous real-time event listening on the specified channel. Invokes `fnCallback` whenever a new event occurs.
+
+### `void StopListening()`
+Stops real-time event listening on the active channel and releases subscription resources.
+
+### `bool IsListening() const`
+Gets whether the instance is currently actively subscribed to live events.
+
+### `String GetListeningChannel() const`
+Gets the name of the channel currently being monitored.
+
+---
+
+## Static Methods
+
+### `static List<String> GetEventChannels()`
+Enumerates all registered ETW / Event Log channels on the operating system.
+
+### `static unsigned long long GetChannelEventCount(const String& sChannelName)`
+Gets the total count of recorded events in a specific channel.
+
+### `static EtwEventLevelCounts GetChannelEventLevelCounts(const String& sChannelName)`
+Retrieves an aggregate count of events partitioned by severity level (Critical, Error, Warning, Info, Verbose).
+
+### `static List<EtwEvent> ReadEvents(const String& sChannelName, int iMaxEvents = 100, int iStartIndex = 0, bool bReverseDirection = true, EtwEventLevel level = EtwEventLevel::All)`
+Queries and parses records from the specified channel with pagination, reverse ordering, and severity level filtering.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/EtwLogReader.h"
-#include "System/Convert.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    // 1. Enumerate channels
-    auto lstChannels = EtwLogReader::GetEventChannels();
-    Console::WriteLine("Channels found: " + Convert::ToString(lstChannels.GetCount()));
+    String channel = "Application";
 
-    // 2. Read events from first channel
-    if (lstChannels.GetCount() > 0) {
-        auto lstEvents = EtwLogReader::ReadEvents("System", 10, 0, true, EtwEventLevel::Error);
-        Console::WriteLine("Read " + Convert::ToString(lstEvents.GetCount()) + " error events from System");
+    // Query event stats
+    unsigned long long total = EtwLogReader::GetChannelEventCount(channel);
+    Console::WriteLine("Total events in '{0}': {1}", channel, (long long)total);
+
+    // Read top 5 latest error events
+    auto events = EtwLogReader::ReadEvents(channel, 5, 0, true, EtwEventLevel::Error);
+    Console::WriteLine("Read {0} recent error events:", events.GetCount());
+    for (int i = 0; i < events.GetCount(); ++i) {
+        Console::WriteLine(" [{0}] ID:{1} From:{2} - {3}", 
+            events[i].dtTimeCreated.ToString(),
+            events[i].iEventId, 
+            events[i].sProviderName,
+            events[i].sMessage);
     }
 
-    // 3. Live Subscription Listening
-    EtwLogReader reader;
-    reader.StartListening("System", [](const EtwEvent& evt) {
-        Console::WriteLine("[Live Event ID " + Convert::ToString(evt.iEventId) + "] " + evt.sMessage);
-    });
-
-    // ... listen for events ...
-
-    reader.StopListening();
     return 0;
 }
 ```

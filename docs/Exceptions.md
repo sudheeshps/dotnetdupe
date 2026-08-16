@@ -1,268 +1,124 @@
-### template class `BasicException<CharT>`
+# Exceptions
 
-Represents errors that occur during application execution.
+**Namespace:** `DotNetDupe::System` & `DotNetDupe::System::IO`  
+**Header:** `#include "System/Exception.h"`
 
-**Note:** The `Exception` class is a typedef for `BasicException<TCHAR>`.
+Defines the base error class and derived runtime exceptions for all DotNetDupe library components. In compliance with Quality Gate Constraint #7, DotNetDupe strictly throws library exceptions derived from `Exception`.
 
-#### Methods
+---
 
-##### `BasicException(const CharT* pchMessage)`
+## Complete Exception Hierarchy
 
-Initializes a new instance of the `BasicException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw BasicException<wchar_t>(L"An error occurred.");
+```text
+Exception (System/Exception.h)
+ ├── SystemException (System/SystemException.h)
+ │    ├── ArgumentException (System/ArgumentException.h)
+ │    │    ├── ArgumentNullException (System/ArgumentNullException.h)
+ │    │    └── ArgumentOutOfRangeException (System/ArgumentOutOfRangeException.h)
+ │    ├── InvalidOperationException (System/InvalidOperationException.h)
+ │    │    └── ObjectDisposedException (System/ObjectDisposedException.h)
+ │    ├── NullReferenceException (System/NullReferenceException.h)
+ │    ├── NotImplementedException (System/NotImplementedException.h)
+ │    ├── NotSupportedException (System/NotSupportedException.h)
+ │    ├── PlatformNotSupportedException (System/PlatformNotSupportedException.h)
+ │    ├── FormatException (System/FormatException.h)
+ │    ├── ArithmeticException (System/ArithmeticException.h)
+ │    │    └── OverflowException (System/OverflowException.h)
+ │    ├── TimeoutException (System/TimeoutException.h)
+ │    ├── OperationCanceledException (System/OperationCanceledException.h)
+ │    ├── UnauthorizedAccessException (System/UnauthorizedAccessException.h)
+ │    ├── OutOfMemoryException (System/OutOfMemoryException.h)
+ │    ├── AggregateException (System/AggregateException.h)
+ │    └── IOException (System/IO/IOException.h)
+ │         ├── FileNotFoundException (System/IO/FileNotFoundException.h)
+ │         ├── DirectoryNotFoundException (System/IO/DirectoryNotFoundException.h)
+ │         └── EndOfStreamException (System/IO/EndOfStreamException.h)
+ ├── SocketException (System/Net/Sockets/SocketException.h)
+ └── JsonException (System/Text/Json/JsonException.h)
 ```
 
-##### `const CharT* What() const`
+---
 
-Returns a pointer to the error message.
+## Base `Exception` Class
 
-**Returns:**
-- A const pointer to the error message string.
-
-**Usage:**
+### Syntax
 ```cpp
-try {
-    // ...
-} catch (const Exception& e) {
-    const TCHAR* msg = e.What();
+class Exception : public Object;
+```
+
+### Constructors
+- `Exception()`: Initializes a new instance of the `Exception` class with a default system message.
+- `Exception(const String& sMessage)`: Initializes a new instance of the `Exception` class with a specified error message.
+- `Exception(const String& sMessage, const Exception& innerException)`: Initializes a new instance of the `Exception` class with a specified error message and a reference to the inner exception that is the cause of this exception.
+
+### Member Functions
+- `const char* What() const`: Gets a message that describes the current exception.
+
+---
+
+## System & Collections Exceptions
+
+| Exception Class | Header | Thrown When |
+|---|---|---|
+| `ArgumentException` | `#include "System/ArgumentException.h"` | An invalid argument is passed to a method or when a duplicate key is added to `Dictionary` / `SortedDictionary`. |
+| `ArgumentNullException` | `#include "System/ArgumentNullException.h"` | A pointer or mandatory argument is `nullptr`. |
+| `ArgumentOutOfRangeException` | `#include "System/ArgumentOutOfRangeException.h"` | An index or offset is negative or beyond the collection bounds in `List<T>`, `Array<T>`, etc. |
+| `InvalidOperationException` | `#include "System/InvalidOperationException.h"` | Calling `Dequeue()` / `Pop()` / `Take()` on an empty collection, or mutating while in an invalid state. |
+| `ObjectDisposedException` | `#include "System/ObjectDisposedException.h"` | Accessing an object after `Dispose()` has been called (e.g. on streams or readers). |
+| `FormatException` | `#include "System/FormatException.h"` | String parsing / formatting fails (e.g. `DateTime::Parse`, `Convert::ToInt32`). |
+| `OverflowException` | `#include "System/OverflowException.h"` | An arithmetic or conversion operation causes an overflow. |
+| `NotImplementedException` | `#include "System/NotImplementedException.h"` | A requested interface method or functionality is not implemented. |
+| `NotSupportedException` | `#include "System/NotSupportedException.h"` | An invoked method is not supported by the underlying implementation. |
+| `PlatformNotSupportedException` | `#include "System/PlatformNotSupportedException.h"` | A feature is invoked on an unsupported operating system platform. |
+| `TimeoutException` | `#include "System/TimeoutException.h"` | A blocking or synchronization operation exceeds its timeout interval. |
+| `OperationCanceledException` | `#include "System/OperationCanceledException.h"` | An asynchronous or queued task is canceled. |
+| `UnauthorizedAccessException` | `#include "System/UnauthorizedAccessException.h"` | The operating system denies access due to an I/O permission or security error. |
+
+---
+
+## I/O Namespace Exceptions (`DotNetDupe::System::IO`)
+
+| Exception Class | Header | Thrown When |
+|---|---|---|
+| `IOException` | `#include "System/IO/IOException.h"` | An I/O error occurs while reading, writing, or manipulating a stream or file. |
+| `FileNotFoundException` | `#include "System/IO/FileNotFoundException.h"` | An attempt to access a file that does not exist on disk fails. |
+| `DirectoryNotFoundException` | `#include "System/IO/DirectoryNotFoundException.h"` | Part of a file or directory path cannot be found. |
+| `EndOfStreamException` | `#include "System/IO/EndOfStreamException.h"` | Reading is attempted past the end of a stream. |
+
+---
+
+## Example
+
+```cpp
+#include "System/Console.h"
+#include "System/Collections/Generic/List.h"
+#include "System/IO/File.h"
+#include "System/IO/FileNotFoundException.h"
+#include "System/ArgumentOutOfRangeException.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    // Collection boundary checking
+    try {
+        List<int> numbers;
+        numbers.Add(10);
+        int invalid = numbers[5]; // Index 5 out of range
+    } catch (const ArgumentOutOfRangeException& ex) {
+        Console::WriteLine("Caught Collection Exception: {0}", ex.What());
+    }
+
+    // File I/O checking
+    try {
+        String data = File::ReadAllText("non_existent_file.txt");
+    } catch (const FileNotFoundException& ex) {
+        Console::WriteLine("Caught File Not Found: {0}", ex.What());
+    } catch (const IOException& ex) {
+        Console::WriteLine("Caught Generic I/O Exception: {0}", ex.What());
+    }
+
+    return 0;
 }
 ```
-
----
-
-### template class `BasicSystemException<CharT>`
-
-The base class for all predefined exceptions in the System namespace.
-
-**Note:** The `SystemException` class is a typedef for `BasicSystemException<TCHAR>`.
-
-#### Methods
-
-##### `BasicSystemException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicSystemException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw SystemException("A system error occurred.");
-```
-
----
-
-### template class `BasicArgumentException<CharT>`
-
-Represents errors that occur during argument processing.
-
-**Note:** The `ArgumentException` class is a typedef for `BasicArgumentException<TCHAR>`.
-
-#### Methods
-
-##### `BasicArgumentException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicArgumentException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw ArgumentException("Invalid argument.");
-```
-
----
-
-### class `ArgumentNullException`
-
-The exception that is thrown when a null reference is passed to a method that does not accept it as a valid argument.
-
-#### Methods
-
-##### `ArgumentNullException(const TCHAR* message)`
-
-Initializes a new instance of the `ArgumentNullException` class with a specified error message.
-
-**Parameters:**
-- `message`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-if (arg == nullptr) {
-    throw ArgumentNullException("arg cannot be null.");
-}
-```
-
----
-
-### template class `BasicArgumentOutOfRangeException<CharT>`
-
-Represents errors that occur when an argument is outside the allowable range of values.
-
-**Note:** The `ArgumentOutOfRangeException` class is a typedef for `BasicArgumentOutOfRangeException<TCHAR>`.
-
-#### Methods
-
-##### `BasicArgumentOutOfRangeException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicArgumentOutOfRangeException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw ArgumentOutOfRangeException("Index was out of range.");
-```
-
----
-
-### template class `BasicArithmeticException<CharT>`
-
-Represents errors in an arithmetic operation.
-
-**Note:** The `ArithmeticException` class is a typedef for `BasicArithmeticException<TCHAR>`.
-
-#### Methods
-
-##### `BasicArithmeticException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicArithmeticException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw ArithmeticException("Arithmetic error.");
-```
-
----
-
-### template class `BasicFormatException<CharT>`
-
-The exception that is thrown when the format of an argument is invalid, or when a composite format string is not well formed.
-
-**Note:** The `FormatException` class is a typedef for `BasicFormatException<TCHAR>`.
-
-#### Methods
-
-##### `BasicFormatException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicFormatException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw FormatException("Invalid format.");
-```
-
----
-
-### template class `BasicIOException<CharT>`
-
-The exception that is thrown when an I/O error occurs.
-
-**Note:** The `IOException` class is a typedef for `BasicIOException<TCHAR>`.
-
-#### Methods
-
-##### `BasicIOException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicIOException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw IOException("An I/O error occurred.");
-```
-
----
-
-### template class `BasicNotImplementedException<CharT>`
-
-The exception that is thrown when a requested method or operation is not implemented.
-
-**Note:** The `NotImplementedException` class is a typedef for `BasicNotImplementedException<TCHAR>`.
-
-#### Methods
-
-##### `BasicNotImplementedException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicNotImplementedException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw NotImplementedException("The method is not implemented.");
-```
-
----
-
-### template class `BasicOverflowException<CharT>`
-
-The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow.
-
-**Note:** The `OverflowException` class is a typedef for `BasicOverflowException<TCHAR>`.
-
-#### Methods
-
-##### `BasicOverflowException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicOverflowException` class with a specified error message.
-
-**Parameters:**
-- `pchMessage`: A pointer to the error message string.
-
-**Usage:**
-```cpp
-throw OverflowException("Arithmetic overflow.");
-```
-
----
-
-### template class `BasicTimeoutException<CharT>`
-
-The exception that is thrown when the time allotted for a process or operation has expired.
-
-**Note:** The `TimeoutException` class is a typedef for `BasicTimeoutException<TCHAR>`.
-
-#### Methods
-
-##### `BasicTimeoutException(const CharT* pchMessage)`
-
-Initializes a new instance of the `BasicTimeoutException` class with a specified error message.
-
----
-
-### template class `BasicSemaphoreFullException<CharT>`
-
-The exception that is thrown when the `Release` method is called on a semaphore whose count is already at the maximum.
-
-**Note:** The `SemaphoreFullException` class is a typedef for `BasicSemaphoreFullException<TCHAR>`.
-
----
-
-### template class `BasicThreadStateException<CharT>`
-
-The exception that is thrown when a `Thread` is in an invalid `ThreadState` for the method call.
-
----
-
-### template class `BasicThreadInterruptedException<CharT>`
-
-The exception that is thrown when a `Thread` is interrupted while it is in a waiting state.
-

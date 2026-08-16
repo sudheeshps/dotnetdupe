@@ -1,106 +1,82 @@
-# Semaphore
+# Semaphore &amp; SemaphoreSlim
 
-Limits the number of threads that can access a resource or pool of resources concurrently.
+**Namespace:** `DotNetDupe::System::Threading`  
+**Header:** `#include "System/Threading/Semaphore.h"`, `#include "System/Threading/SemaphoreSlim.h"`
 
-## Methods
+Limits the number of threads that can access a resource or pool of resources concurrently. `Semaphore` wraps OS-level synchronization handles (supporting cross-process sharing), while `SemaphoreSlim` is a lightweight, low-overhead intra-process alternative.
 
-### `Semaphore(int initialCount, int maximumCount)`
-Initializes a new instance of the `Semaphore` class, specifying the initial number of entries and the maximum number of concurrent entries.
+---
 
-### `Semaphore(int initialCount, int maximumCount, const String& sName)`
-Initializes a new instance of the `Semaphore` class with a specified name.
+## `Semaphore`
 
-### `Semaphore(int initialCount, int maximumCount, const String& sName, bool& bCreatedNew)`
-Initializes a new instance of the `Semaphore` class with a specified name, returning whether a new handle was created.
+### Syntax
+```cpp
+class Semaphore : public LockWaitHandle;
+```
 
-### `static Semaphore* OpenExisting(const String& sName)`
-Opens an existing named `Semaphore`. Throws `WaitHandleCannotBeOpenedException` if the named handle does not exist.
+### Constructors
+- `Semaphore(int initialCount, int maximumCount)`: Initializes an unnamed semaphore with initial and maximum concurrent counts.
+- `Semaphore(const String& sName, int initialCount = 0, int maximumCount = 1, bool openAlways = true)`: Initializes a named system semaphore.
+- `Semaphore(int initialCount, int maximumCount, const String& sName, bool openAlways, bool& bCreatedNew)`: Initializes a named semaphore and indicates whether it was created or opened.
 
-### `static bool TryOpenExisting(const String& sName, Semaphore*& pResult)`
-Attempts to open an existing named `Semaphore`, returning `true` if successful.
+### Member Functions
+- `bool WaitOne() override`: Blocks until the semaphore counter is decremented (slot acquired).
+- `bool WaitOne(int millisecondsTimeout) override`: Blocks until acquired or timeout elapses.
+- `int Release(int releaseCount = 1) override`: Exits the semaphore and returns the previous count.
+  - **Throws:**
+    - `SemaphoreFullException`: If the release count exceeds the maximum semaphore capacity.
 
-### `bool WaitOne()`
-Blocks the current thread until it can enter the `Semaphore`.
+### Static Methods
+- `static SmartPointer<Semaphore> OpenExisting(const String& sName)`
+- `static bool TryOpenExisting(const String& sName, SmartPointer<Semaphore>& pResult)`
 
-### `bool WaitOne(int millisecondsTimeout)`
-Blocks the current thread until it can enter the `Semaphore` or the timeout expires.
+---
 
-**Exceptions:**
-- `TimeoutException`: Thrown if the timeout expires.
+## `SemaphoreSlim`
 
-### `int Release(int releaseCount = 1)`
-Exits the semaphore a specified number of times and returns the previous count.
+### Syntax
+```cpp
+class SemaphoreSlim : public LockWaitHandle;
+```
 
-**Exceptions:**
-- `SemaphoreFullException`: Thrown if the count would exceed the maximum count.
+### Constructors
+- `SemaphoreSlim(int initialCount)`: Initializes a `SemaphoreSlim` with initial and maximum count set to `initialCount`.
+- `SemaphoreSlim(int initialCount, int maximumCount)`: Initializes a `SemaphoreSlim` specifying both initial and maximum slots.
 
-## Code Example
+### Member Functions
+- `bool WaitOne() override`: Blocks until a slot is available.
+- `bool WaitOne(int millisecondsTimeout) override`: Blocks until slot is available or timeout occurs.
+- `int Release(int releaseCount = 1) override`: Releases slots and returns previous count.
+- `int GetCurrentCount() const`: Returns the number of remaining free slots available.
+
+---
+
+## Example
 
 ```cpp
-#include "System/Threading/Semaphore.h"
-#include "System/Threading/Thread.h"
 #include "System/Console.h"
-#include "System/SmartPointer.h"
-#include "System/Threading/SemaphoreFullException.h"
+#include "System/Threading/SemaphoreSlim.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Thread.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
 int main() {
-    Console::WriteLine("Semaphore demo started.");
+    // Allow at most 2 concurrent workers
+    SemaphoreSlim throttler(2, 2);
 
-    // Create a Semaphore with a capacity of 2
-    auto pSemaphore = SmartPointer<Semaphore>::NewShared(2, 2);
-
-    // Thread 1
-    SmartPointer<Thread> pT1 = SmartPointer<Thread>::New([pSemaphore]() {
-        Console::WriteLine("Thread 1 waiting to enter semaphore...");
-        pSemaphore->WaitOne();
-        Console::WriteLine("Thread 1 entered semaphore.");
-        Thread::Sleep(100);
-        Console::WriteLine("Thread 1 releasing semaphore.");
-        pSemaphore->Release();
-    });
-
-    // Thread 2
-    SmartPointer<Thread> pT2 = SmartPointer<Thread>::New([pSemaphore]() {
-        Console::WriteLine("Thread 2 waiting to enter semaphore...");
-        pSemaphore->WaitOne();
-        Console::WriteLine("Thread 2 entered semaphore.");
-        Thread::Sleep(100);
-        Console::WriteLine("Thread 2 releasing semaphore.");
-        pSemaphore->Release();
-    });
-
-    // Thread 3 (Will wait until T1 or T2 releases)
-    SmartPointer<Thread> pT3 = SmartPointer<Thread>::New([pSemaphore]() {
-        Console::WriteLine("Thread 3 waiting to enter semaphore...");
-        pSemaphore->WaitOne();
-        Console::WriteLine("Thread 3 entered semaphore.");
-        Thread::Sleep(100);
-        Console::WriteLine("Thread 3 releasing semaphore.");
-        pSemaphore->Release();
-    });
-
-    pT1->Start();
-    pT2->Start();
-    pT3->Start();
-
-    pT1->Join();
-    pT2->Join();
-    pT3->Join();
-
-    // Demonstrate SemaphoreFullException
-    try {
-        pSemaphore->Release(); // Releases beyond max count of 2
-    } catch (const SemaphoreFullException& ex) {
-        Console::Write("Expected SemaphoreFullException: ");
-        Console::WriteLine(ex.What());
+    for (int i = 1; i <= 5; ++i) {
+        ThreadPool::QueueUserWorkItem([&throttler, i](Object* state) {
+            throttler.WaitOne();
+            Console::WriteLine("Worker {0} entered critical section (Slots left: {1})", i, throttler.GetCurrentCount());
+            Thread::Sleep(50);
+            throttler.Release();
+            Console::WriteLine("Worker {0} released slot.", i);
+        });
     }
 
-    Console::WriteLine("Semaphore demo completed.");
+    Thread::Sleep(300);
     return 0;
 }
 ```
-
-

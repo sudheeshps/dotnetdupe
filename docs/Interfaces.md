@@ -1,111 +1,87 @@
-### interface `IClonable`
+# Core Interfaces
 
-Defines a general-purpose mechanism for creating a new object that is a copy of the current object.
+**Namespace:** `DotNetDupe::System` & `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/IDisposable.h"`, `#include "System/IComparable.h"`
 
-#### Methods
+Core contract interfaces representing common object behaviors like resource cleanup, cloning, ordering comparisons, and custom formatting.
 
-##### `virtual Object Clone() = 0`
+---
 
-Creates a new object that is a copy of the current instance.
+## `IDisposable`
 
-**Returns:**
-- A new object that is a copy of this instance.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/IDisposable.h"`
 
-**Usage:**
+Defines a mechanism for releasing unmanaged resources deterministically.
+
+### Syntax
 ```cpp
-class MyClass : public Object, public IClonable {
+class IDisposable {
 public:
-    Object Clone() override {
-        return MyClass(*this);
+    virtual ~IDisposable() = default;
+    virtual void Dispose() = 0;
+};
+```
+
+### Usage
+```cpp
+class DatabaseResource : public IDisposable {
+public:
+    void Dispose() override {
+        // Free native database handles
     }
 };
 ```
 
 ---
 
-### interface `IComparable`
+## `IComparable<T>`
 
-Defines a method that a value type or class implements to compare itself with another object of the same type.
+**Namespace:** `DotNetDupe::System`
 
-#### Methods
+Defines a strongly-typed generalized comparison method that a value type or class implements to create a type-specific comparison method for ordering or sorting.
 
-##### `virtual int CompareTo(const Object& obj) = 0`
-
-Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
-
-**Parameters:**
-- `obj`: An object to compare with this instance.
-
-**Returns:**
-- A value that indicates the relative order of the objects being compared. Less than zero means this instance precedes `obj`. Zero means they are equal. Greater than zero means this instance follows `obj`.
-
-**Usage:**
+### Syntax
 ```cpp
-class MyComparable : public Object, public IComparable {
+template <typename T>
+class IComparable {
 public:
-    int Value;
-    int CompareTo(const Object& obj) override {
-        const MyComparable& other = static_cast<const MyComparable&>(obj);
-        return Value - other.Value;
+    virtual ~IComparable() = default;
+    virtual int CompareTo(const T& other) const = 0;
+};
+```
+
+### Return Values
+- Less than zero: This instance precedes `other`.
+- Zero: This instance occurs in the same position as `other`.
+- Greater than zero: This instance follows `other`.
+
+### Usage
+```cpp
+class Student : public IComparable<Student> {
+public:
+    int Score;
+
+    int CompareTo(const Student& other) const override {
+        return this->Score - other.Score;
     }
 };
 ```
 
 ---
 
-### template interface `IComparable<T>`
+## `IFormatProvider<T>`
 
-Defines a method that a value type or class implements to compare itself with another object of the same type.
+**Namespace:** `DotNetDupe::System`
 
-#### Methods
+Provides a mechanism for retrieving an object to control formatting.
 
-##### `virtual int CompareTo(const T& other) = 0`
-
-Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
-
-**Parameters:**
-- `other`: An object to compare with this instance.
-
-**Returns:**
-- A value that indicates the relative order of the objects being compared.
-
-**Usage:**
+### Syntax
 ```cpp
-class MyInt : public IComparable<MyInt> {
+template <typename T>
+class IFormatProvider {
 public:
-    int Value;
-    int CompareTo(const MyInt& other) override {
-        return Value - other.Value;
-    }
+    virtual ~IFormatProvider() = default;
+    virtual String GetFormat(const T& type) = 0;
 };
 ```
-
----
-
-### interface `IFormatProvider<T>`
-
-Provides a mechanism for retrieving a formatting service for a specified type.
-
-#### Methods
-
-##### `virtual Object* GetFormat(const T* formatType) = 0`
-
-Returns an object that provides formatting services for the specified type.
-
-**Parameters:**
-- `formatType`: An object that specifies the type of format object to return.
-
-**Returns:**
-- An instance of the object specified by `formatType`, if the `IFormatProvider` implementation can supply that type of object; otherwise, `nullptr`.
-
-**Usage:**
-```cpp
-class MyFormatProvider : public IFormatProvider<String> {
-public:
-    Object* GetFormat(const String* formatType) override {
-        // Implementation
-        return nullptr;
-    }
-};
-```
-

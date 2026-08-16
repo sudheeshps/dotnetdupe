@@ -1,170 +1,96 @@
-### class `FileStream`
+# FileStream
 
-Provides a `Stream` for a file, supporting synchronous read and write operations.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/FileStream.h"`
 
-#### Methods
+Provides a `Stream` for a file, supporting both synchronous read and write operations, seeking, and deterministic resource release via `IDisposable`.
 
-##### `FileStream(const String& path, int mode)`
+---
 
-Initializes a new instance of the `FileStream` class with the specified path and creation mode.
+## Syntax
 
-**Parameters:**
-- `path`: A relative or absolute path for the file that the current `FileStream` object will encapsulate.
-- `mode`: A constant that determines how to open or create the file.
-
-**Usage:**
 ```cpp
-FileStream fs("test.dat", 1); // OpenOrCreate
+class FileStream : public Stream;
 ```
 
-##### `bool CanRead() const override`
+---
 
+## Constructors
+
+### `FileStream(const String& sPath, int iMode)`
+Initializes a new instance of the `FileStream` class with the specified path and creation mode.
+- **Parameters:**
+  - `sPath` (`const String&`): A relative or absolute path for the file that the current `FileStream` object will encapsulate.
+  - `iMode` (`int`): Constant specifying how the operating system should open the file (Create, Open, Append, etc.).
+- **Throws:**
+  - `IOException`: If the file cannot be opened.
+
+---
+
+## Member Functions
+
+### `bool CanRead() const override`
 Gets a value indicating whether the current stream supports reading.
 
-**Returns:**
-- `true` if the stream supports reading; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (fs.CanRead()) { /* ... */ }
-```
-
-##### `bool CanSeek() const override`
-
+### `bool CanSeek() const override`
 Gets a value indicating whether the current stream supports seeking.
 
-**Returns:**
-- `true` if the stream supports seeking; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (fs.CanSeek()) { /* ... */ }
-```
-
-##### `bool CanWrite() const override`
-
+### `bool CanWrite() const override`
 Gets a value indicating whether the current stream supports writing.
 
-**Returns:**
-- `true` if the stream supports writing; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (fs.CanWrite()) { /* ... */ }
-```
-
-##### `long GetLength() const override`
-
+### `long GetLength() const override`
 Gets the length in bytes of the stream.
 
-**Returns:**
-- A long value representing the length of the stream in bytes.
+### `long GetPosition() const override` / `void SetPosition(long llValue) override`
+Gets or sets the current position of this stream.
 
-**Usage:**
-```cpp
-long len = fs.GetLength();
-```
-
-##### `long GetPosition() const override`
-
-Gets the current position of this stream.
-
-**Returns:**
-- The current position within the stream.
-
-**Usage:**
-```cpp
-long pos = fs.GetPosition();
-```
-
-##### `void SetPosition(long value) override`
-
-Sets the current position of this stream.
-
-**Parameters:**
-- `value`: The new position within the stream.
-
-**Usage:**
-```cpp
-fs.SetPosition(100);
-```
-
-##### `void Flush() override`
-
-Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
-
-**Usage:**
-```cpp
-fs.Flush();
-```
-
-##### `int Read(char* buffer, int offset, int count) override`
-
+### `int Read(char* pBuffer, int iOffset, int nCount) override`
 Reads a block of bytes from the stream and writes the data in a given buffer.
+- **Returns:**
+  - `int`: The total number of bytes read into the buffer, or `0` if the end of the stream is reached.
 
-**Parameters:**
-- `buffer`: When this method returns, contains the specified character array with the values between `offset` and (`offset` + `count` - 1) replaced by the characters read from the current source.
-- `offset`: The zero-based byte offset in `buffer` at which to begin storing the data read from the current stream.
-- `count`: The maximum number of bytes to be read from the current stream.
+### `void Write(const char* pBuffer, int iOffset, int nCount) override`
+Writes a block of bytes to the file stream.
 
-**Returns:**
-- The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
+### `long Seek(long llOffset, int iOrigin) override`
+Sets the current position of this stream to the given value (0 = Begin, 1 = Current, 2 = End).
 
-**Usage:**
+### `void Flush() override`
+Clears buffers for this stream and causes any unwritten data to be written to the file.
+
+### `void Dispose() override`
+Closes the file handle and releases all unmanaged operating system resources.
+
+---
+
+## Example
+
 ```cpp
-char buffer[1024];
-int read = fs.Read(buffer, 0, 1024);
+#include "System/Console.h"
+#include "System/IO/FileStream.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    String filePath = "binary.dat";
+
+    // Write data
+    {
+        auto pStream = SmartPointer<FileStream>::NewUnique(filePath, 2 /* Create */);
+        const char* msg = "Native Binary Data";
+        pStream->Write(msg, 0, (int)strlen(msg));
+    } // FileStream automatically disposed and flushed
+
+    // Read data
+    {
+        auto pStream = SmartPointer<FileStream>::NewUnique(filePath, 3 /* Open */);
+        char buf[64] = { 0 };
+        int bytes = pStream->Read(buf, 0, sizeof(buf) - 1);
+        Console::WriteLine("Read {0} bytes: {1}", bytes, String(buf));
+    }
+
+    return 0;
+}
 ```
-
-##### `long Seek(long offset, int origin) override`
-
-Sets the position within the current stream.
-
-**Parameters:**
-- `offset`: A byte offset relative to the `origin` parameter.
-- `origin`: A value indicating the reference point used to obtain the new position.
-
-**Returns:**
-- The new position within the current stream.
-
-**Usage:**
-```cpp
-fs.Seek(0, 0); // Seek to beginning
-```
-
-##### `void SetLength(long value) override`
-
-Sets the length of this stream to the given value.
-
-**Parameters:**
-- `value`: The desired length of the current stream in bytes.
-
-**Usage:**
-```cpp
-fs.SetLength(2048);
-```
-
-##### `void Write(const char* buffer, int offset, int count) override`
-
-Writes a block of bytes to this stream using data from a buffer.
-
-**Parameters:**
-- `buffer`: The buffer containing data to write to the stream.
-- `offset`: The zero-based byte offset in `buffer` at which to begin copying bytes to the current stream.
-- `count`: The number of bytes to be written to the current stream.
-
-**Usage:**
-```cpp
-const char* data = "Hello";
-fs.Write(data, 0, 5);
-```
-
-##### `void Dispose() override`
-
-Releases all resources used by the `FileStream`.
-
-**Usage:**
-```cpp
-fs.Dispose();
-```
-

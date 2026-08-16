@@ -1,146 +1,110 @@
-### System.Net.Http Namespace
+# HttpClient, HttpRequestMessage, HttpResponseMessage &amp; HttpContent
 
-Provides a programming interface for modern HTTP applications.
+**Namespace:** `DotNetDupe::System::Net::Http`  
+**Header:** `#include "System/Net/Http/HttpClient.h"`, `#include "System/Net/Http/HttpRequestMessage.h"`, `#include "System/Net/Http/HttpResponseMessage.h"`, `#include "System/Net/Http/HttpContent.h"`, `#include "System/Net/Http/HttpMethod.h"`
 
----
-
-### class `HttpClient`
-
-Sends HTTP requests and receives HTTP responses from a resource identified by a URI.
-
-#### Methods
-
-##### `HttpClient()`
-Initializes a new instance of the `HttpClient` class.
-
-##### `SmartPointer<HttpResponseMessage> Get(const String& requestUri)`
-##### `SmartPointer<HttpResponseMessage> Get(const Uri& requestUri)`
-Sends a GET request to the specified Uri as an asynchronous-like blocking operation.
-
-##### `SmartPointer<HttpResponseMessage> Post(const String& requestUri, const SmartPointer<HttpContent>& content)`
-##### `SmartPointer<HttpResponseMessage> Post(const Uri& requestUri, const SmartPointer<HttpContent>& content)`
-Sends a POST request to the specified Uri.
-
-##### `SmartPointer<HttpResponseMessage> Put(const String& requestUri, const SmartPointer<HttpContent>& content)`
-##### `SmartPointer<HttpResponseMessage> Put(const Uri& requestUri, const SmartPointer<HttpContent>& content)`
-Sends a PUT request to the specified Uri.
-
-##### `SmartPointer<HttpResponseMessage> Delete(const String& requestUri)`
-##### `SmartPointer<HttpResponseMessage> Delete(const Uri& requestUri)`
-Sends a DELETE request to the specified Uri.
-
-##### `SmartPointer<HttpResponseMessage> Send(const SmartPointer<HttpRequestMessage>& request)`
-Sends an HTTP request.
-
-##### `String GetString(const String& requestUri)`
-Sends a GET request to the specified Uri and returns the response body as a string.
-
-##### `Array<char> GetByteArray(const String& requestUri)`
-Sends a GET request to the specified Uri and returns the response body as a byte array.
-
-##### `Dictionary<String, String>& GetDefaultRequestHeaders()`
-Gets the headers which should be sent with each request.
+Provides a fluent class for sending HTTP/HTTPS requests and receiving HTTP responses from a resource identified by a URI.
 
 ---
 
-### class `HttpRequestMessage`
+## `HttpMethod` Class
 
-Represents an HTTP request message.
+Static instances:
+- `HttpMethod::Get`, `HttpMethod::Post`, `HttpMethod::Put`, `HttpMethod::Delete`, `HttpMethod::Head`, `HttpMethod::Options`, `HttpMethod::Patch`, `HttpMethod::Trace`.
 
-#### Constructors
-- `HttpRequestMessage()`
-- `HttpRequestMessage(const HttpMethod& method, const Uri& requestUri)`
+---
+
+## `HttpContent` (Abstract Base) & Subclasses
+
+### Concrete Implementations
+- `StringContent(const String& content, const String& mediaType = "text/plain")`
+- `ByteArrayContent(const Array<char>& content, int offset = 0, int count = -1)`
+- `StreamContent(const SmartPointer<IO::Stream>& stream)`
+
+### Member Functions
+- `String ReadAsString()`: Serializes HTTP content to a string.
+- `Array<char> ReadAsByteArray()`: Serializes HTTP content to a byte array.
+- `SmartPointer<IO::Stream> ReadAsStream()`: Serializes the HTTP content and returns a stream that represents the content.
+- `void CopyTo(const SmartPointer<IO::Stream>& stream)`: Writes content into a destination stream.
+- `Dictionary<String, String>& GetHeaders()`: Content headers (e.g. `Content-Type`, `Content-Length`).
+
+---
+
+## `HttpRequestMessage` Class
+
+### Constructors
 - `HttpRequestMessage(const HttpMethod& method, const String& requestUri)`
+- `HttpRequestMessage(const HttpMethod& method, const Uri& requestUri)`
 
-#### Methods
-- `HttpMethod GetMethod() const` / `void SetMethod(const HttpMethod&)`
-- `Uri GetRequestUri() const` / `void SetRequestUri(const Uri&)`
-- `SmartPointer<HttpContent> GetContent() const` / `void SetContent(const SmartPointer<HttpContent>&)`
-- `Dictionary<String, String>& GetHeaders()`
-
----
-
-### class `HttpResponseMessage`
-
-Represents an HTTP response message including the status code and data.
-
-#### Methods
-- `HttpStatusCode GetStatusCode() const`
-- `String GetReasonPhrase() const`
-- `bool IsSuccessStatusCode() const`
-- `SmartPointer<HttpContent> GetContent() const`
-- `Dictionary<String, String>& GetHeaders()`
-- `void EnsureSuccessStatusCode()`: Throws an `HttpRequestException` if the HTTP response was unsuccessful.
+### Properties
+- `HttpMethod GetMethod() const` / `void SetMethod(const HttpMethod& method)`
+- `Uri GetRequestUri() const` / `void SetRequestUri(const Uri& requestUri)`
+- `HttpContentPtr GetContent() const` / `void SetContent(const HttpContentPtr& content)`
+- `Dictionary<String, String>& GetHeaders()`: Request headers (e.g. `Authorization`, `Accept`, `User-Agent`).
 
 ---
 
-### class `HttpContent` (Abstract)
+## `HttpResponseMessage` Class
 
-Represents an HTTP entity body and content headers.
-
-#### Subclasses
-- `StringContent`: Provides HTTP content based on a string.
-- `ByteArrayContent`: Provides HTTP content based on a byte array.
+### Properties
+- `HttpStatusCode GetStatusCode() const` / `void SetStatusCode(HttpStatusCode statusCode)`
+- `String GetReasonPhrase() const` / `void SetReasonPhrase(const String& reasonPhrase)`
+- `bool IsSuccessStatusCode() const`: Returns `true` if HTTP status code is in 200–299 range.
+- `void EnsureSuccessStatusCode()`: Throws `HttpRequestException` if the HTTP response was unsuccessful.
+- `HttpContentPtr GetContent() const` / `void SetContent(const HttpContentPtr& content)`
+- `Dictionary<String, String>& GetHeaders()`: Response headers dictionary.
 
 ---
 
-## Code Example
+## `HttpClient` Class
 
-The following example demonstrates how to use `HttpClient` to send a GET request, inspect the response headers and body, handle a POST request with `StringContent`, and handle exceptions.
+### Syntax
+```cpp
+class HttpClient : public Object;
+```
+
+### Member Functions
+- `HttpResponseMessagePtr Get(const String& requestUri)`: Sends a GET request.
+- `HttpResponseMessagePtr Post(const String& requestUri, const HttpContentPtr& content)`: Sends a POST request with payload.
+- `HttpResponseMessagePtr Put(const String& requestUri, const HttpContentPtr& content)`: Sends a PUT request with payload.
+- `HttpResponseMessagePtr Delete(const String& requestUri)`: Sends a DELETE request.
+- `HttpResponseMessagePtr Send(const HttpRequestMessagePtr& request)`: Sends an HTTP request message.
+- `String GetString(const String& requestUri)`: Sends a GET request and returns the response body as a `String`.
+- `Array<char> GetByteArray(const String& requestUri)`: Sends a GET request and returns the response body as a byte array.
+- `Dictionary<String, String>& GetDefaultRequestHeaders()`: Gets the headers which should be sent with each request.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Net/Http/HttpClient.h"
-#include "System/Net/Http/HttpRequestMessage.h"
-#include "System/Net/Http/HttpResponseMessage.h"
 #include "System/Net/Http/HttpContent.h"
-#include "System/Net/Http/HttpRequestException.h"
-#include "System/SmartPointer.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Net::Http;
 
 int main() {
-    try {
-        HttpClient client;
+    HttpClient client;
+    client.GetDefaultRequestHeaders().Add("User-Agent", "DotNetDupe-Client/4.0");
 
-        // Add a default request header
-        client.GetDefaultRequestHeaders().Add("User-Agent", "DotNetDupeClient/1.0");
+    // Simple GET
+    auto response = client.Get("https://jsonplaceholder.typicode.com/posts/1");
+    response->EnsureSuccessStatusCode();
 
-        Console::WriteLine("Sending GET request...");
-        auto response = client.Get("http://example.com/");
-        
-        // Ensure success status code
-        response->EnsureSuccessStatusCode();
+    String jsonBody = response->GetContent()->ReadAsString();
+    Console::WriteLine("Response status: {0}", (int)response->GetStatusCode());
+    Console::WriteLine("Payload:\n{0}", jsonBody);
 
-        Console::Write("Status Code: ");
-        Console::WriteLine(static_cast<int>(response->GetStatusCode()));
+    // POST JSON
+    auto postContent = SmartPointer<StringContent>::NewShared(
+        "{\"title\":\"foo\",\"body\":\"bar\",\"userId\":1}", 
+        "application/json");
 
-        auto content = response->GetContent();
-        if (!content.IsNull()) {
-            Console::WriteLine("Response Body:");
-            Console::WriteLine(content->ReadAsString());
-        }
-
-        // POST request example
-        Console::WriteLine("\nSending POST request...");
-        auto postContent = SmartPointer<StringContent>::NewShared("{\"name\":\"test\"}", "application/json");
-        auto postResponse = client.Post("http://example.com/api", postContent);
-
-        if (postResponse->IsSuccessStatusCode()) {
-            Console::WriteLine("POST request succeeded!");
-        } else {
-            Console::Write("POST failed with status: ");
-            Console::WriteLine(static_cast<int>(postResponse->GetStatusCode()));
-        }
-
-    } catch (const HttpRequestException& ex) {
-        Console::Write("HTTP Request Error: ");
-        Console::WriteLine(ex.What());
-    } catch (const BasicException<char>& ex) {
-        Console::Write("General Exception: ");
-        Console::WriteLine(ex.What());
-    }
+    auto postResponse = client.Post("https://jsonplaceholder.typicode.com/posts", postContent);
+    Console::WriteLine("POST Status: {0}", (int)postResponse->GetStatusCode());
 
     return 0;
 }

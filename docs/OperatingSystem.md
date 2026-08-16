@@ -1,133 +1,74 @@
-### class `OperatingSystem`
+# OperatingSystem
+
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/OperatingSystem.h"`
 
 Represents information about an operating system, such as the version and platform identifier.
 
-#### Methods
+---
 
-##### `OperatingSystem(PlatformID plPlatform, const Version& vVersion)`
+## Syntax
 
-Initializes a new instance of the `OperatingSystem` class, using the specified platform identifier and version object.
-
-**Parameters:**
-- `plPlatform`: One of the `PlatformID` values that identifies the operating system platform.
-- `vVersion`: A `Version` object that identifies the operating system version.
-
-**Usage:**
 ```cpp
-OperatingSystem osInfo(PlatformID::Win32NT, Version(10, 0));
-```
+enum class PlatformID {
+    Win32S = 0,
+    Win32Windows = 1,
+    Win32NT = 2,
+    WinCE = 3,
+    Unix = 4,
+    Xbox = 5
+};
 
-##### `PlatformID GetPlatform() const`
-
-Gets a `PlatformID` enumeration value that identifies the operating system platform.
-
-**Returns:**
-- One of the `PlatformID` values.
-
-**Usage:**
-```cpp
-PlatformID plId = osInfo.GetPlatform();
-```
-
-##### `const Version& GetVersion() const`
-
-Gets a `Version` object that identifies the operating system.
-
-**Returns:**
-- A `Version` object.
-
-**Usage:**
-```cpp
-const Version& vVer = osInfo.GetVersion();
-```
-
-##### `String GetVersionString() const`
-
-Gets the concatenated string representation of the platform identifier, version, and service pack of the current operating system.
-
-**Returns:**
-- The string representation.
-
-**Usage:**
-```cpp
-String sVersion = osInfo.GetVersionString();
-```
-
-##### `String GetServicePack() const`
-
-Gets the service pack version of the operating system.
-
-**Returns:**
-- The service pack version, if one is available.
-
-**Usage:**
-```cpp
-String sServicePack = osInfo.GetServicePack();
-```
-
-##### `static bool IsWindows()`
-
-Indicates whether the current operating system is a Windows operating system.
-
-**Returns:**
-- `true` if the platform is Windows; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (OperatingSystem::IsWindows()) { /* ... */ }
-```
-
-##### `static bool IsLinux()`
-
-Indicates whether the current operating system is a Linux operating system.
-
-**Returns:**
-- `true` if the platform is Linux; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (OperatingSystem::IsLinux()) { /* ... */ }
+class OperatingSystem : public Object;
 ```
 
 ---
 
-## Code Example
+## Static Methods
 
-The following example demonstrates how to determine the operating system type, instantiate an `OperatingSystem` representing a specific version, query its properties, and manage it dynamically using `SmartPointer`.
+### `static bool IsWindows()`
+Indicates whether the current application is running on Windows.
+
+```cpp
+if (OperatingSystem::IsWindows()) {
+    // Windows specific logic
+}
+```
+
+### `static bool IsLinux()`
+Indicates whether the current application is running on Linux.
+
+---
+
+## Properties
+
+### `PlatformID GetPlatform() const`
+Gets a `PlatformID` enumeration value that identifies the operating system platform.
+
+### `const Version& GetVersion() const`
+Gets a `Version` object that identifies the operating system.
+
+### `String GetVersionString() const`
+Gets the concatenated string representation of the platform identifier, version, and service pack that are currently installed on the operating system.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
+#include "System/Environment.h"
 #include "System/OperatingSystem.h"
-#include "System/Version.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    // Check current operating system family
-    if (OperatingSystem::IsWindows()) {
-        Console::WriteLine("Running on Windows.");
-    } else if (OperatingSystem::IsLinux()) {
-        Console::WriteLine("Running on Linux.");
-    } else {
-        Console::WriteLine("Running on an unknown OS.");
-    }
+    OperatingSystem os = Environment::GetOperatingSystem();
 
-    // Instantiation and dynamic memory management using SmartPointer
-    Version ver(10, 0, 19045, 0);
-    auto pOS = SmartPointer<OperatingSystem>::New(PlatformID::Win32NT, ver);
-
-    Console::Write("Version: ");
-    Console::WriteLine(pOS->GetVersion().ToString());
-
-    Console::Write("Version String: ");
-    Console::WriteLine(pOS->GetVersionString());
-
-    Console::Write("Platform ID: ");
-    Console::WriteLine(static_cast<int>(pOS->GetPlatform()));
+    Console::WriteLine("OS Version String: {0}", os.GetVersionString());
+    Console::WriteLine("Is Windows: {0}", OperatingSystem::IsWindows());
+    Console::WriteLine("Is Linux:   {0}", OperatingSystem::IsLinux());
 
     return 0;
 }
 ```
-
-
