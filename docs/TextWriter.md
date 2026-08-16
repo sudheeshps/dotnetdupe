@@ -1,78 +1,70 @@
-### class `TextWriter` (Abstract)
+# TextWriter &amp; StringWriter
 
-Represents a writer that can write a sequential series of characters. This is an **abstract base class**; use a derived class like `StringWriter` for actual writing operations.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/TextWriter.h"`, `#include "System/IO/StringWriter.h"`
 
-#### Methods
+`TextWriter` represents an abstract writer that can write a sequential series of characters. `StringWriter` implements `TextWriter` for writing information into a string or `StringBuilder`.
 
-##### `virtual void Close() = 0`
+---
 
-Closes the current writer and releases any system resources associated with the writer.
+## `TextWriter` (Abstract Base Class)
 
-**Usage:**
+### Syntax
 ```cpp
-pWriter->Close();
+class TextWriter : public Object, public IDisposable;
 ```
 
-##### `virtual void Dispose() = 0`
+### Pure Virtual Members
+- `virtual void Write(bool / char / const char* / const String& / int / long long / float / double) = 0`: Writes a formatted representation of primitive types to the text stream.
+- `virtual void WriteLine() = 0`: Writes a line terminator to the text stream.
+- `virtual void WriteLine(bool / char / const char* / const String& / int / long long / float / double) = 0`: Writes data followed by a line terminator to the text stream.
+- `virtual void Flush() = 0`: Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
+- `virtual void Close() = 0`: Closes the current `TextWriter` and releases any system resources associated with the writer.
+- `virtual void Dispose() override = 0`: Releases all resources used by the `TextWriter` object.
+- `virtual Text::EncodingPtr GetEncoding() const = 0`: Returns the character encoding in which the output is written.
 
-Releases all resources used by the `TextWriter` object.
+### Protected Static Methods
+- `static const String& GetNewLine()`: Returns the newline string for the current environment.
 
-**Usage:**
+---
+
+## `StringWriter`
+
+### Syntax
 ```cpp
-pWriter->Dispose();
+class StringWriter : public TextWriter;
 ```
 
-##### `virtual void Flush() = 0`
+### Constructors
+- `StringWriter()`: Initializes a new instance of the `StringWriter` class.
+- `StringWriter(Text::StringBuilder& sbOutput)`: Initializes a new instance of the `StringWriter` class that writes to the specified `StringBuilder`.
 
-Clears all buffers for the current writer and causes any buffered data to be written to the underlying device.
+### Additional Methods
+- `virtual String ToString() const`: Returns a string containing the characters written to the current `StringWriter` so far.
 
-**Usage:**
+---
+
+## Example
+
 ```cpp
-pWriter->Flush();
+#include "System/Console.h"
+#include "System/IO/StringWriter.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    StringWriter objWriter;
+    objWriter.WriteLine("Header: Application Report");
+    objWriter.Write("Result Code: ");
+    objWriter.WriteLine(200);
+    objWriter.Write("Status: ");
+    objWriter.WriteLine("Active");
+
+    String sResult = objWriter.ToString();
+    Console::WriteLine("Buffered Report:\n{0}", sResult);
+
+    return 0;
+}
 ```
-
-##### `virtual std::shared_ptr<Text::Encoding> GetEncoding() const = 0`
-
-When overridden in a derived class, returns the character encoding in which the output is written.
-
-##### `virtual void Write(const String& sValue) = 0`
-
-Writes a string to the text stream.
-
-**Usage:**
-```cpp
-pWriter->Write("Hello");
-```
-
-##### `virtual void Write(char cValue) = 0`
-##### `virtual void Write(bool bValue) = 0`
-##### `virtual void Write(int nValue) = 0`
-##### `virtual void Write(double dValue) = 0`
-
-Overloaded methods to write various primitive types to the text stream.
-
-##### `virtual void WriteLine(const String& sValue) = 0`
-
-Writes a string followed by a line terminator to the text stream.
-
-**Usage:**
-```cpp
-pWriter->WriteLine("Hello World");
-```
-
-##### `virtual void WriteLine()` = 0
-
-Writes a line terminator to the text stream.
-
-**Usage:**
-```cpp
-pWriter->WriteLine();
-```
-
-##### `virtual void WriteLine(char cValue) = 0`
-##### `virtual void WriteLine(bool bValue) = 0`
-##### `virtual void WriteLine(int nValue) = 0`
-##### `virtual void WriteLine(double dValue) = 0`
-
-Overloaded methods to write various primitive types followed by a line terminator to the text stream.
-

@@ -1,353 +1,160 @@
-### template class `Array<T>`
+# Array&lt;T&gt;
 
-Provides methods for creating, manipulating, searching, and sorting arrays.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Array.h"`
 
-#### Methods
+Provides methods for creating, manipulating, searching, and sorting fixed-size contiguous memory arrays of elements with bounds-checking and C#-style algorithms.
 
-##### `Array(int length)`
+---
 
-Initializes a new instance of the `Array` class with the specified length.
+## Syntax
 
-**Parameters:**
-- `length`: The number of elements that the new `Array` can contain.
-
-**Usage:**
 ```cpp
-Array<int> arr(10);
+template <class T>
+class Array : public Object;
 ```
 
-##### `Array(const std::initializer_list<T>& items)`
+---
 
-Initializes a new instance of the `Array` class that contains elements copied from the specified initializer list.
+## Constructors & Destructors
 
-**Parameters:**
-- `items`: The initializer list whose elements are copied to the new `Array`.
+### `Array()`
+Initializes an empty `Array<T>` instance of length 0.
 
-**Usage:**
+### `explicit Array(int iLength)`
+Initializes an `Array<T>` with the specified number of default-constructed elements.
+
 ```cpp
-Array<int> arr = { 1, 2, 3, 4, 5 };
+Array<int> arrNumbers(10);
 ```
 
-##### `int GetLength() const`
+### `Array(const T* pData, int iLength)`
+Initializes an `Array<T>` with `iLength` elements copied from the contiguous buffer `pData`.
 
-Gets the total number of elements in the `Array`.
+### `Array(const std::initializer_list<T>& vItems)`
+Initializes an `Array<T>` containing elements copied from an initializer list.
 
-**Returns:**
-- The total number of elements in the `Array`.
-
-**Usage:**
 ```cpp
-Array<int> arr = { 1, 2, 3 };
-int len = arr.GetLength(); // 3
+Array<String> arrFruits = { "Apple", "Banana", "Cherry" };
 ```
 
-##### `T* GetData()`
+### `Array(const Array& other)` / `Array& operator=(const Array& other)`
+Copy constructor and copy assignment operator.
 
-Returns a pointer to the underlying data buffer.
+### `Array(Array&& other) noexcept` / `Array& operator=(Array&& other) noexcept`
+Move constructor and move assignment operator.
 
-**Returns:**
-- A pointer to the first element of the `Array`.
+### `~Array() override`
+Destructor that cleans up allocated elements and buffers.
 
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-int* pData = arr.GetData();
-```
+---
 
-##### `bool IsNull() const`
+## Properties & Elements
 
-Gets a value indicating whether the `Array` is null (empty).
+### `int GetLength() const`
+Gets the total number of elements in the `Array<T>`.
 
-**Returns:**
-- `true` if the `Array` is empty; otherwise, `false`.
+### `bool IsNull() const`
+Returns `true` if the array has a length of 0.
 
-**Usage:**
-```cpp
-Array<int> arr(0);
-if (arr.IsNull()) {
-    // ...
-}
-```
+### `T* GetData()` / `const T* GetData() const`
+Returns a direct pointer to the underlying contiguous buffer.
 
-##### `T& operator[](int index)`
+### `T* begin()` / `T* end()` / `const T* begin() const` / `const T* end() const`
+Returns iterator pointers to support range-based for loops.
 
+### `T& operator[](int iIndex)` / `const T& operator[](int iIndex) const`
 Gets or sets the element at the specified index.
 
-**Parameters:**
-- `index`: The zero-based index of the element to get or set.
+---
 
-**Returns:**
-- The element at the specified index.
+## Searching & Predicates
 
-**Usage:**
-```cpp
-Array<int> arr(5);
-arr[0] = 10;
-int val = arr[0];
-```
+### `int IndexOf(const T& value) const`
+Searches for the specified value and returns the zero-based index of the first occurrence within the array. Returns `-1` if not found.
 
-##### `int IndexOf(const T& value) const`
+### `int LastIndexOf(const T& value) const`
+Searches for the specified value and returns the zero-based index of the last occurrence within the array. Returns `-1` if not found.
 
-Searches for the specified object and returns the index of its first occurrence in the `Array`.
+### `bool Exists(const Predicate<T>& fnPredicate) const`
+Determines whether the array contains elements that match the conditions defined by the specified predicate.
 
-**Parameters:**
-- `value`: The object to locate in the `Array`.
+### `T Find(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the first occurrence. Returns `T()` if not found.
 
-**Returns:**
-- The zero-based index of the first occurrence of `value` in the `Array`, if found; otherwise, -1.
-
-**Usage:**
-```cpp
-Array<int> arr = { 10, 20, 30, 20 };
-int index = arr.IndexOf(20); // 1
-```
-
-##### `int LastIndexOf(const T& value) const`
-
-Searches for the specified object and returns the index of its last occurrence in the `Array`.
-
-**Parameters:**
-- `value`: The object to locate in the `Array`.
-
-**Returns:**
-- The zero-based index of the last occurrence of `value` in the `Array`, if found; otherwise, -1.
-
-**Usage:**
-```cpp
-Array<int> arr = { 10, 20, 30, 20 };
-int index = arr.LastIndexOf(20); // 3
-```
-
-##### `void Sort()`
-
-Sorts the elements in the entire `Array`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 3, 1, 4, 1, 5 };
-arr.Sort();
-```
-
-##### `void Reverse()`
-
-Reverses the sequence of the elements in the entire `Array`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-arr.Reverse(); // { 3, 2, 1 }
-```
-
-##### `void Clear()`
-
-Sets all elements in the `Array` to their default value.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-arr.Clear(); // All elements become 0
-```
-
-##### `void CopyTo(Array<T>& array, int index)`
-
-Copies all the elements of the current `Array` to the specified `Array` starting at the specified destination index.
-
-**Parameters:**
-- `array`: The one-dimensional `Array` that is the destination of the elements copied from the current `Array`.
-- `index`: The zero-based index in `array` at which copying begins.
-
-**Usage:**
-```cpp
-Array<int> src = { 1, 2, 3 };
-Array<int> dest(5);
-src.CopyTo(dest, 1);
-```
-
-##### `static void Copy(Array<T>& sourceArray, Array<T>& destinationArray, int length)`
-
-Copies a range of elements from a `sourceArray` and pastes them into a `destinationArray`.
-
-**Parameters:**
-- `sourceArray`: The `Array` that contains the data to copy.
-- `destinationArray`: The `Array` that receives the data.
-- `length`: The number of elements to copy.
-
-**Usage:**
-```cpp
-Array<int> src = { 1, 2, 3, 4, 5 };
-Array<int> dest(3);
-Array<int>::Copy(src, dest, 3);
-```
-
-##### `bool Exists(const std::function<bool(T)>& predicate) const`
-
-Determines whether the `Array` contains elements that match the conditions defined by the specified predicate.
-
-**Parameters:**
-- `predicate`: The function that defines the conditions of the elements to search for.
-
-**Returns:**
-- `true` if the `Array` contains one or more elements that match the conditions; otherwise, `false`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-bool exists = arr.Exists([](int x) { return x > 2; }); // true
-```
-
-##### `T Find(const std::function<bool(T)>& predicate) const`
-
-Searches for an element that matches the conditions defined by the specified predicate, and returns the first occurrence.
-
-**Parameters:**
-- `predicate`: The function that defines the conditions of the element to search for.
-
-**Returns:**
-- The first element that matches the conditions; otherwise, the default value for type `T`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-int val = arr.Find([](int x) { return x > 1; }); // 2
-```
-
-##### `Array<T> FindAll(const std::function<bool(T)>& predicate) const`
-
+### `Array<T> FindAll(const Predicate<T>& fnPredicate) const`
 Retrieves all the elements that match the conditions defined by the specified predicate.
 
-**Parameters:**
-- `predicate`: The function that defines the conditions of the elements to search for.
+### `int FindIndex(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence. Returns `-1` if not found.
 
-**Returns:**
-- An `Array` containing all the elements that match the conditions.
+### `T FindLast(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the last occurrence. Returns `T()` if not found.
 
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3, 4 };
-Array<int> results = arr.FindAll([](int x) { return x % 2 == 0; }); // { 2, 4 }
-```
+### `int FindLastIndex(const Predicate<T>& fnPredicate) const`
+Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence. Returns `-1` if not found.
 
-##### `int FindIndex(const std::function<bool(T)>& predicate) const`
+### `bool TrueForAll(const Predicate<T>& fnPredicate) const`
+Determines whether every element in the array matches the conditions defined by the specified predicate.
 
-Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence.
+---
 
-**Parameters:**
-- `predicate`: The function that defines the conditions of the element to search for.
+## Operations & Transformations
 
-**Returns:**
-- The zero-based index of the first occurrence of an element that matches the conditions, if found; otherwise, -1.
+### `void Sort()`
+Sorts the elements in the array in ascending order using their `operator>`.
 
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-int index = arr.FindIndex([](int x) { return x == 2; }); // 1
-```
+### `void Reverse()`
+Reverses the order of the elements in the entire array.
 
-##### `T FindLast(const std::function<bool(T)>& predicate) const`
+### `void Clear()`
+Resets each element in the array to its default value `T()`.
 
-Searches for an element that matches the conditions defined by the specified predicate, and returns the last occurrence.
+### `void ForEach(const Action<T>& fnAction)`
+Performs the specified action on each element of the array.
 
-**Parameters:**
-- `predicate`: The function that defines the conditions of the element to search for.
+### `void CopyTo(Array<T>& arrTarget, int iIndex)`
+Copies all elements of the current array into the target array starting at the specified destination index.
 
-**Returns:**
-- The last element that matches the conditions; otherwise, the default value for type `T`.
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `iIndex < 0`.
+  - `ArgumentException`: If the destination array is not large enough.
 
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3, 2 };
-int val = arr.FindLast([](int x) { return x == 2; }); // 2 (at index 3)
-```
+### `static void Copy(Array<T>& arrSource, Array<T>& arrDestination, int iLength)`
+Copies a specified number of elements from the source array to the destination array.
 
-##### `int FindLastIndex(const std::function<bool(T)>& predicate) const`
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `iLength < 0`.
+  - `ArgumentException`: If the source or destination array is not large enough.
 
-Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence.
+---
 
-**Parameters:**
-- `predicate`: The function that defines the conditions of the element to search for.
-
-**Returns:**
-- The zero-based index of the last occurrence of an element that matches the conditions, if found; otherwise, -1.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3, 2 };
-int index = arr.FindLastIndex([](int x) { return x == 2; }); // 3
-```
-
-##### `void ForEach(const std::function<void(T)>& action)`
-
-Performs the specified action on each element of the `Array`.
-
-**Parameters:**
-- `action`: The action to perform on each element of the `Array`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 1, 2, 3 };
-arr.ForEach([](int x) { std::cout << x << std::endl; });
-```
-
-##### `bool TrueForAll(const std::function<bool(T)>& predicate) const`
-
-Determines whether every element in the `Array` matches the conditions defined by the specified predicate.
-
-**Parameters:**
-- `predicate`: The function that defines the conditions to check against the elements.
-
-**Returns:**
-- `true` if every element in the `Array` matches the conditions; otherwise, `false`.
-
-**Usage:**
-```cpp
-Array<int> arr = { 2, 4, 6 };
-bool allEven = arr.TrueForAll([](int x) { return x % 2 == 0; }); // true
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Array`.
+## Example
 
 ```cpp
-#include "System/Array.h"
 #include "System/Console.h"
-#include "System/Exception.h"
+#include "System/Array.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        // Initialize an Array using initializer list
-        Array<int> arr = { 5, 2, 8, 1, 9 };
+    Array<int> arrNumbers = { 42, 17, 99, 8, 23 };
 
-        Console::WriteLine("Array Elements:");
-        arr.ForEach([](int val) {
-            Console::Write(val);
-            Console::Write(" ");
-        });
-        Console::WriteLine();
+    Console::WriteLine("Original Array Length: {0}", arrNumbers.GetLength());
 
-        // Find an element
-        int index = arr.IndexOf(8);
-        Console::Write("Index of 8: ");
-        Console::WriteLine(index);
-
-        // Filter elements
-        Array<int> evenNumbers = arr.FindAll([](int val) { return val % 2 == 0; });
-        Console::WriteLine("Even elements:");
-        evenNumbers.ForEach([](int val) {
-            Console::Write(val);
-            Console::Write(" ");
-        });
-        Console::WriteLine();
-
-    } catch (const Exception& ex) {
-        Console::Write("Exception occurred: ");
-        Console::WriteLine(ex.What());
-        return 1;
+    arrNumbers.Sort();
+    Console::WriteLine("Sorted elements:");
+    for (int iIdx = 0; iIdx < arrNumbers.GetLength(); ++iIdx) {
+        Console::WriteLine(" - {0}", arrNumbers[iIdx]);
     }
+
+    int iFoundIndex = arrNumbers.IndexOf(23);
+    Console::WriteLine("Found 23 at index: {0}", iFoundIndex);
+
+    int iFirstEven = arrNumbers.Find([](int iVal) { return iVal % 2 == 0; });
+    Console::WriteLine("First even number: {0}", iFirstEven);
+
     return 0;
 }
 ```
-
-

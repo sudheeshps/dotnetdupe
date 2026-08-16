@@ -1,49 +1,45 @@
-# StringConvert Class Documentation
+# StringConvert
 
-`DotNetDupe::System::Utils::StringConvert` provides static utility methods for converting strings between UTF-8 (`char` / `std::string`) and UTF-16 (`wchar_t` / `std::wstring`) encoding representations across Windows and Linux.
+**Namespace:** `DotNetDupe::System::Utils`  
+**Header:** `#include "System/Utils/StringConvert.h"`
 
-## Namespace
-`DotNetDupe::System::Utils`
+Provides internal cross-platform helper methods for UTF-8 and UTF-16 character transcoding.
 
-## Header
+---
+
+## Syntax
+
 ```cpp
-#include "System/Utils/StringConvert.h"
+class StringConvert;
 ```
 
-## Public Static Methods
+---
 
-### `WCharToUtf8`
-Converts a null-terminated UTF-16 wide character string (`const wchar_t*`) into a `DotNetDupe::System::String`.
-```cpp
-static String WCharToUtf8(const wchar_t* pWStr);
-```
+## Static Methods
 
-### `Utf8ToWChar`
-Converts a null-terminated UTF-8 character string (`const char*`) into a `DotNetDupe::System::BasicString<wchar_t>`.
-```cpp
-static BasicString<wchar_t> Utf8ToWChar(const char* pUtf8Str);
-```
+### `static std::string WCharToUtf8(const wchar_t* pWStr)`
+Transcodes a wide character (UTF-16) string pointer to a standard UTF-8 string.
 
-## Example Usage
+### `static std::wstring Utf8ToWChar(const char* pUtf8Str)`
+Transcodes a UTF-8 character string pointer to a wide character (UTF-16) `std::wstring`.
+
+---
+
+## Example
 
 ```cpp
+#include "System/Console.h"
 #include "System/Utils/StringConvert.h"
 #include "System/String.h"
-#include <iostream>
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Utils;
 
 int main() {
-    // 1. Convert UTF-16 to DotNetDupe String
-    const wchar_t* pwszWide = L"Hello, World!";
-    String sUtf8 = StringConvert::WCharToUtf8(pwszWide);
-    std::cout << "UTF-8 string: " << sUtf8.GetRawString() << std::endl;
+    const wchar_t* wText = L"Wide UTF-16 String";
+    std::string utf8 = StringConvert::WCharToUtf8(wText);
 
-    // 2. Convert UTF-8 to BasicString<wchar_t>
-    const char* pszNarrow = "DotNetDupe Text Conversion";
-    BasicString<wchar_t> sWChar = StringConvert::Utf8ToWChar(pszNarrow);
-
+    Console::WriteLine("Converted to UTF-8: {0}", String(utf8.c_str()));
     return 0;
 }
 ```

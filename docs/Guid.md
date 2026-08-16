@@ -1,119 +1,86 @@
-### class `Guid`
+# Guid
 
-Represents a globally unique identifier (GUID).
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Guid.h"`
 
-#### Methods
+Represents a Globally Unique Identifier (GUID / UUID).
 
-##### `Guid()`
+---
 
-Initializes a new instance of the `Guid` class. The default value is `Guid::Empty`.
+## Syntax
 
-**Usage:**
 ```cpp
-Guid g;
+class Guid : public Object;
 ```
 
-##### `Guid(const String& g)`
+---
 
-Initializes a new instance of the `Guid` class using the value represented by the specified string.
+## Static Fields & Methods
 
-**Usage:**
+### `static const Guid Empty`
+A read-only instance of the `Guid` structure whose value is all zeros (`00000000-0000-0000-0000-000000000000`).
+
+### `static Guid NewGuid()`
+Generates a new RFC-4122 compliant version 4 random `Guid`.
+
 ```cpp
-Guid g("12345678-1234-1234-1234-1234567890ab");
+Guid objId = Guid::NewGuid();
 ```
 
-##### `static Guid NewGuid()`
+---
 
-Initializes a new instance of the `Guid` class with a random unique identifier.
+## Constructors
 
-**Usage:**
+### `Guid()`
+Initializes a new `Guid` structure equal to `Guid::Empty`.
+
+### `Guid(const String& g)`
+Initializes a `Guid` from a hyphenated or unhyphenated hex string.
+
+- **Throws:**
+  - `FormatException`: If the string is not in a valid GUID format.
+
+### `Guid(const Array<uint8_t>& b)`
+Initializes a `Guid` from a 16-element byte array.
+
+---
+
+## Member Functions & Operators
+
+### `String ToString() const`
+Returns a string representation of the value of this instance in standard `8-4-4-4-12` format.
+
 ```cpp
-Guid g = Guid::NewGuid();
+String sId = objId.ToString(); // "d3b07384-d113-40e1-95c5-7f4c029b936d"
 ```
 
-##### `String ToString() const`
-
-Returns a string representation of the value of this instance of the `Guid` class.
-
-**Usage:**
-```cpp
-String s = g.ToString();
-```
-
-##### `Array<uint8_t> ToByteArray() const`
-
+### `Array<uint8_t> ToByteArray() const`
 Returns a 16-element byte array that contains the value of this instance.
 
-**Usage:**
-```cpp
-auto bytes = g.ToByteArray();
-```
+### `bool operator==(const Guid& other) const`
+Returns `true` if this instance and `other` represent the same GUID value.
 
-##### `bool operator==(const Guid& other) const`
+### `bool operator!=(const Guid& other) const`
+Returns `true` if this instance and `other` represent different GUID values.
 
-Returns a value indicating whether this instance and a specified `Guid` object represent the same value.
+---
 
-**Usage:**
-```cpp
-if (g1 == g2) { /* ... */ }
-```
-
-#### Fields
-
-##### `static const Guid Empty`
-
-A read-only instance of the `Guid` class whose value is all zeros.
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Guid`.
+## Example
 
 ```cpp
-#include "System/Guid.h"
 #include "System/Console.h"
-#include "System/String.h"
-#include "System/Exception.h"
-#include "System/Array.h"
+#include "System/Guid.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        // Create a new random GUID
-        Guid guidNew = Guid::NewGuid();
-        Console::Write("New Guid: ");
-        Console::WriteLine(guidNew.ToString());
+    Guid objId1 = Guid::NewGuid();
+    Guid objId2 = Guid::NewGuid();
 
-        // Create GUID from string
-        String guidString = "936da01f-9abd-4d9d-80c7-02af85c822a8";
-        Guid guidFromString(guidString);
-        Console::Write("Guid from string: ");
-        Console::WriteLine(guidFromString.ToString());
+    Console::WriteLine("Generated GUID 1: {0}", objId1.ToString());
+    Console::WriteLine("Generated GUID 2: {0}", objId2.ToString());
+    Console::WriteLine("Are Equal: {0}", objId1 == objId2);
 
-        // Check Guid::Empty
-        Guid guidEmpty = Guid::Empty;
-        Console::Write("Empty Guid: ");
-        Console::WriteLine(guidEmpty.ToString());
-
-        // Compare GUIDs
-        if (guidFromString == guidNew) {
-            Console::WriteLine("GUIDs are equal (unexpected).");
-        } else {
-            Console::WriteLine("GUIDs are not equal.");
-        }
-
-        // Get byte representation
-        Array<uint8_t> bytes = guidFromString.ToByteArray();
-        Console::Write("Byte length: ");
-        Console::WriteLine(bytes.GetLength());
-
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
-    }
     return 0;
 }
 ```
-
-

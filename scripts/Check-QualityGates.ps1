@@ -538,7 +538,21 @@ if (-not [string]::IsNullOrWhiteSpace($OutputDir)) {
 }
 
 # ------------------------------------------------------------------
-# Summary & Exit Code
+# Pre-Package Step: Transpile README.md for NuGet.org with Online URLs
+# ------------------------------------------------------------------
+$readmeSource = Join-Path $RootDir "README.md"
+$objDir = Join-Path $RootDir "obj"
+if (Test-Path $readmeSource) {
+    if (-not (Test-Path $objDir)) {
+        [void][System.IO.Directory]::CreateDirectory($objDir)
+    }
+    $nugetReadmePath = Join-Path $objDir "README.nuget.md"
+    $readmeContent = [System.IO.File]::ReadAllText($readmeSource, [System.Text.Encoding]::UTF8)
+    # Transform relative docs/*.md links to official online documentation pages
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($readmeContent, '\(docs/([a-zA-Z0-9_]+)\.md\)', '(https://sudheeshps.github.io/dotnetdupe/docs/$1.html)')
+    [System.IO.File]::WriteAllText($nugetReadmePath, $transformedReadme, [System.Text.Encoding]::UTF8)
+    Write-Host "[NUGET] Generated NuGet package README with public URLs at $nugetReadmePath" -ForegroundColor Green
+}
 # ------------------------------------------------------------------
 Write-Host "`n=================================================="
 Write-Host "Static Analysis Execution Summary:"

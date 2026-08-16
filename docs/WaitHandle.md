@@ -1,68 +1,100 @@
-# WaitHandle
+# WaitHandle, EventWaitHandle, AutoResetEvent &amp; ManualResetEvent
 
-The `WaitHandle` class is an abstract base class for synchronization objects that wait for exclusive access to shared resources.
+**Namespace:** `DotNetDupe::System::Threading`  
+**Header:** `#include "System/Threading/WaitHandle.h"`, `#include "System/Threading/EventWaitHandle.h"`, `#include "System/Threading/AutoResetEvent.h"`, `#include "System/Threading/ManualResetEvent.h"`
 
-## Methods
-
-### `virtual bool WaitOne()`
-Blocks the current thread until the current `WaitHandle` receives a signal.
-
-**Returns:**
-- `true` if the current instance receives a signal.
-
-### `virtual bool WaitOne(int millisecondsTimeout)`
-Blocks the current thread until the current `WaitHandle` receives a signal, using a 32-bit signed integer to specify the time interval.
-
-**Parameters:**
-- `millisecondsTimeout`: The number of milliseconds to wait, or -1 to wait indefinitely.
-
-**Returns:**
-- `true` if the current instance receives a signal; otherwise, `false`.
-
-**Exceptions:**
-- `TimeoutException`: Thrown if the wait operation times out (for derived classes that implement timeout exceptions).
+Encapsulates operating system-specific synchronization handles that wait for exclusive access to shared resources and cross-thread event signals.
 
 ---
 
-## Code Example
+## `WaitHandle` (Abstract Base Class)
 
-The following example shows how to use a `WaitHandle` (using its concrete subclass `ManualResetEvent`) to synchronize a background worker thread.
+### Syntax
+```cpp
+class WaitHandle : public Object;
+```
+
+### Pure Virtual Members
+- `virtual bool WaitOne() = 0`: Blocks the current thread until the current `WaitHandle` receives a signal.
+- `virtual bool WaitOne(int millisecondsTimeout) = 0`: Blocks the current thread until the current `WaitHandle` receives a signal or until the specified timeout elapses.
+
+---
+
+## `EventWaitHandle`
+
+### Syntax
+```cpp
+class EventWaitHandle : public WaitHandle;
+```
+
+### Constructors
+- `EventWaitHandle(bool initialState, bool manualReset)`: Initializes an unnamed event handle.
+- `EventWaitHandle(const String& sName, bool initialState = false, bool manualReset = false, bool openAlways = true)`: Initializes a named system event handle.
+- `EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways, bool& bCreatedNew)`: Initializes a named event and indicates whether it was created or opened.
+
+### Methods
+- `bool Set()`: Sets the state of the event to signaled, allowing one or more waiting threads to proceed.
+- `bool Reset()`: Sets the state of the event to non-signaled, causing threads to block.
+- `static SmartPointer<EventWaitHandle> OpenExisting(const String& sName)`: Opens a specified named system event.
+- `static bool TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult)`: Tries to open an existing named event.
+
+---
+
+## `AutoResetEvent`
+
+Notifies a waiting thread that an event has occurred. Resets automatically to non-signaled after releasing a single waiting thread.
+
+### Constructors
+- `AutoResetEvent(bool initialState)`: Initializes an unnamed `AutoResetEvent`.
+- `AutoResetEvent(const String& sName, bool initialState = false, bool openAlways = true)`: Initializes a named `AutoResetEvent`.
+- `AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)`: Initializes a named `AutoResetEvent`.
+
+### Static Methods
+- `static SmartPointer<AutoResetEvent> OpenExisting(const String& sName)`
+- `static bool TryOpenExisting(const String& sName, SmartPointer<AutoResetEvent>& pResult)`
+
+---
+
+## `ManualResetEvent`
+
+Notifies one or more waiting threads that an event has occurred. Remains signaled until manually reset by calling `Reset()`.
+
+### Constructors
+- `ManualResetEvent(bool initialState)`: Initializes an unnamed `ManualResetEvent`.
+- `ManualResetEvent(const String& sName, bool initialState = false, bool openAlways = true)`: Initializes a named `ManualResetEvent`.
+- `ManualResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)`: Initializes a named `ManualResetEvent`.
+
+### Static Methods
+- `static SmartPointer<ManualResetEvent> OpenExisting(const String& sName)`
+- `static bool TryOpenExisting(const String& sName, SmartPointer<ManualResetEvent>& pResult)`
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
+#include "System/Threading/AutoResetEvent.h"
+#include "System/Threading/ThreadPool.h"
 #include "System/Threading/Thread.h"
-#include "System/Threading/ManualResetEvent.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
-void Worker(SmartPointer<WaitHandle> waitHandle) {
-    Console::WriteLine("Worker: Waiting for the signal...");
-    waitHandle->WaitOne();
-    Console::WriteLine("Worker: Signal received, proceeding with work!");
-}
-
 int main() {
-    // Create a concrete WaitHandle subclass in shared mode
-    SmartPointer<WaitHandle> mre = SmartPointer<ManualResetEvent>::NewShared(false);
+    AutoResetEvent autoEvent(false);
 
-    // Start background thread passing the WaitHandle
-    Thread t([mre]() {
-        Worker(mre);
+    ThreadPool::QueueUserWorkItem([&autoEvent]() {
+        Console::WriteLine("Worker thread working...");
+        Thread::Sleep(100);
+        Console::WriteLine("Worker signaling event...");
+        autoEvent.Set();
     });
-    t.Start();
 
-    // Sleep to simulate work, then signal
-    Thread::Sleep(500);
-    Console::WriteLine("Main: Signaling the WaitHandle...");
-    
-    // Cast and set (signal)
-    static_cast<ManualResetEvent*>(mre.Get())->Set();
+    Console::WriteLine("Main thread waiting for event signal...");
+    autoEvent.WaitOne();
+    Console::WriteLine("Main thread received signal. Continuing execution.");
 
-    t.Join();
     return 0;
 }
 ```
-
-

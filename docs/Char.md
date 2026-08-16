@@ -1,274 +1,104 @@
-### template class `BasicChar<CharT>`
+# Char
 
-Represents a character as a UTF-16 code unit. The `Char` class is a typedef for `BasicChar<TCHAR>`.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Char.h"`
 
-#### Methods
+Represents a Unicode character code point (`char32_t`) and provides comprehensive static methods for inspecting, categorizing, and converting character values.
 
-##### `BasicChar(CharT c)`
+---
 
-Initializes a new instance of the `BasicChar` class with the specified character.
+## Syntax
 
-**Parameters:**
-- `c`: A character.
-
-**Usage:**
 ```cpp
-Char c('A');
+class Char : public Object;
 ```
 
-##### `void operator= (CharT c)`
+---
 
-Assigns a character to the `BasicChar` object.
+## Constructors & Assignment
 
-**Parameters:**
-- `c`: The character to assign.
+### `Char()`
+Initializes a new `Char` instance with code point `0` (null character).
 
-**Usage:**
-```cpp
-Char c = 'A';
-c = 'B';
-```
+### `Char(char32_t c)`
+Initializes a new `Char` instance with the specified UTF-32 code point.
 
-##### `bool Equals(CharT c)`
+### `void operator=(char32_t c)`
+Assigns a new character code point.
 
-Indicates whether this instance and a specified character are equal.
+### `bool Equals(char32_t c) const` / `bool operator==(char32_t c) const`
+Determines equality with a character code point.
 
-**Parameters:**
-- `c`: The character to compare with.
+### `char32_t GetChar() const`
+Retrieves the underlying `char32_t` Unicode code point.
 
-**Returns:**
-- `true` if `c` is the same as the character in this instance; otherwise, `false`.
+---
 
-**Usage:**
-```cpp
-Char c('A');
-bool result = c.Equals('A'); // true
-```
+## Static Classification Methods
 
-##### `bool operator == (CharT c)`
+### General Unicode Categories
+- `static bool IsDigit(char32_t c)`: Indicates whether the character is a decimal digit (`0-9`).
+- `static bool IsLetter(char32_t c)`: Indicates whether the character is a Unicode letter.
+- `static bool IsLetterOrDigit(char32_t c)`: Indicates whether the character is a letter or decimal digit.
+- `static bool IsUpper(char32_t c)`: Indicates whether the character is uppercase.
+- `static bool IsLower(char32_t c)`: Indicates whether the character is lowercase.
+- `static bool IsNumber(char32_t c)`: Indicates whether the character is categorized as a number.
+- `static bool IsPunctuation(char32_t c)`: Indicates whether the character is punctuation.
+- `static bool IsWhiteSpace(char32_t c)`: Indicates whether the character is white space.
+- `static bool IsControl(char32_t c)`: Indicates whether the character is a control character.
+- `static bool IsSeparator(char32_t c)`: Indicates whether the character is a separator character.
+- `static bool IsSurrogate(char32_t c)`: Indicates whether the character is a surrogate code point.
+- `static bool IsSymbol(char32_t c)`: Indicates whether the character is categorized as a symbol.
 
-Compares this instance to a specified character for equality.
+### ASCII Specific Methods
+- `static bool IsAscii(char32_t c)`: Indicates whether the character is in the ASCII range ($0 \le c \le 127$).
+- `static bool IsAsciiDigit(char32_t c)`: Indicates whether the character is an ASCII decimal digit (`0-9`).
+- `static bool IsAsciiLetter(char32_t c)`: Indicates whether the character is an ASCII letter (`a-z`, `A-Z`).
+- `static bool IsAsciiLetterLower(char32_t c)`: Indicates whether the character is an ASCII lowercase letter (`a-z`).
+- `static bool IsAsciiLetterUpper(char32_t c)`: Indicates whether the character is an ASCII uppercase letter (`A-Z`).
+- `static bool IsAsciiLetterOrDigit(char32_t c)`: Indicates whether the character is an ASCII letter or digit.
+- `static bool IsAsciiHexDigit(char32_t c)`: Indicates whether the character is a hexadecimal digit (`0-9`, `a-f`, `A-F`).
+- `static bool IsAsciiHexDigitLower(char32_t c)`: Indicates whether the character is a lowercase hex digit (`0-9`, `a-f`).
+- `static bool IsAsciiHexDigitUpper(char32_t c)`: Indicates whether the character is an uppercase hex digit (`0-9`, `A-F`).
 
-**Parameters:**
-- `c`: The character to compare.
+### Range Checking
+- `static bool IsBetween(char32_t c, char32_t minInclusive, char32_t maxInclusive)`: Indicates whether the character falls inclusively within the specified range.
 
-**Returns:**
-- `true` if this instance is equal to `c`; otherwise, `false`.
+---
 
-**Usage:**
-```cpp
-Char c('A');
-if (c == 'A') { /* ... */ }
-```
+## Static Conversion Methods
 
-##### `double static GetNumericValue(CharT c)`
+### `static char32_t ToLower(char32_t c)`
+Converts the character to its lowercase equivalent.
 
-Converts the specified numeric Unicode character to a double-precision floating-point number.
+### `static char32_t ToUpper(char32_t c)`
+Converts the character to its uppercase equivalent.
 
-**Parameters:**
-- `c`: The Unicode character to convert.
+### `static double GetNumericValue(char32_t c)`
+Converts the specified numeric Unicode character to a double-precision floating-point number (e.g. returns `5.0` for `'5'`).
 
-**Returns:**
-- The numeric value of `c` if that character represents a number; otherwise, -1.0.
+### `String ToString() const` / `static String ToString(char32_t c)`
+Converts the Unicode code point into a single-character UTF-8 encoded `String`.
 
-**Usage:**
-```cpp
-double val = Char::GetNumericValue('5'); // 5.0
-```
+---
 
-##### `bool static IsAscii(CharT c)`
-
-Indicates whether the specified character is an ASCII character.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is an ASCII character; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsAscii('A'); // true
-```
-
-##### `bool static IsAsciiDigit(CharT c)`
-
-Indicates whether the specified character is an ASCII digit.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is an ASCII digit; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsAsciiDigit('7'); // true
-```
-
-##### `bool static IsBetween(CharT c, CharT minInclusive, CharT maxInclusive)`
-
-Indicates whether the specified character is between the specified minimum and maximum inclusive values.
-
-**Parameters:**
-- `c`: The character to evaluate.
-- `minInclusive`: The lower bound of the range.
-- `maxInclusive`: The upper bound of the range.
-
-**Returns:**
-- `true` if `c` is within the range; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsBetween('M', 'A', 'Z'); // true
-```
-
-##### `bool static IsControl(CharT c)`
-
-Indicates whether the specified character is a control character.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is a control character; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsControl('\n'); // true
-```
-
-##### `bool static IsDigit(CharT c)`
-
-Indicates whether the specified character is a decimal digit.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is a decimal digit; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsDigit('5'); // true
-```
-
-##### `bool static IsLower(CharT c)`
-
-Indicates whether the specified character is a lowercase letter.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is a lowercase letter; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsLower('a'); // true
-```
-
-##### `bool static IsLetter(CharT c)`
-
-Indicates whether the specified character is a letter.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is a letter; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsLetter('A'); // true
-```
-
-##### `bool static IsLetterOrDigit(CharT c)`
-
-Indicates whether the specified character is a letter or a decimal digit.
-
-**Parameters:**
-- `c`: The character to evaluate.
-
-**Returns:**
-- `true` if `c` is a letter or a digit; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool result = Char::IsLetterOrDigit('A'); // true
-```
-
-##### `CharT static ToLower(CharT c)`
-
-Converts the value of a specified Unicode character to its lowercase equivalent.
-
-**Parameters:**
-- `c`: The character to convert.
-
-**Returns:**
-- The lowercase equivalent of `c`, or the unchanged value of `c`, if `c` is already lowercase or not a letter.
-
-**Usage:**
-```cpp
-TCHAR lower = Char::ToLower('A'); // 'a'
-```
-
-##### `CharT GetChar()`
-
-Returns the character value of this instance.
-
-**Returns:**
-- The character value of this instance.
-
-**Usage:**
-```cpp
-Char c('X');
-TCHAR val = c.GetChar(); // 'X'
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Char`.
+## Example
 
 ```cpp
-#include "System/Char.h"
 #include "System/Console.h"
-#include "System/Exception.h"
+#include "System/Char.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        Char ch('A');
-        
-        // Character checks
-        Console::Write("Is Letter: ");
-        Console::WriteLine(Char::IsLetter(ch.GetChar()));
+    char32_t ch = 'A';
 
-        Console::Write("Is Digit: ");
-        Console::WriteLine(Char::IsDigit(ch.GetChar()));
+    Console::WriteLine("Is ASCII Letter:     {0}", Char::IsAsciiLetter(ch));
+    Console::WriteLine("Is Hex Digit:        {0}", Char::IsAsciiHexDigit(ch));
+    Console::WriteLine("Is Lower:            {0}", Char::IsLower(ch));
+    Console::WriteLine("Converted Lowercase: {0}", Char::ToString(Char::ToLower(ch)));
+    Console::WriteLine("Numeric Value of '9':{0}", Char::GetNumericValue('9'));
 
-        Console::Write("Is Lowercase: ");
-        Console::WriteLine(Char::IsLower(ch.GetChar()));
-
-        // Case conversions
-        TCHAR lowerCh = Char::ToLower(ch.GetChar());
-        Console::Write("Lowercase of A: ");
-        Console::Write(lowerCh);
-        Console::WriteLine();
-
-        // Get numeric value
-        double numericVal = Char::GetNumericValue('7');
-        Console::Write("Numeric value of '7': ");
-        Console::WriteLine(numericVal);
-
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
-    }
     return 0;
 }
 ```
-
-

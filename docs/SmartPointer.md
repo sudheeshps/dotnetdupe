@@ -1,150 +1,161 @@
-### class `SmartPointer<T>`
+# SmartPointer&lt;T&gt;
 
-A unified smart pointer that supports both **unique** and **shared** ownership semantics within a single interface. It provides a "managed" feel by automatically allocating objects and supporting C#-like instantiation patterns.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/SmartPointer.h"`
 
-#### Constructors
+A unified, exception-safe RAII smart pointer supporting both **Unique** and **Shared reference-counted** ownership semantics with zero unmanaged raw pointer leakages.
 
-##### `SmartPointer()`
+---
 
-Initializes a new `SmartPointer`.
-- **For concrete types**: Automatically allocates a new instance of `T` using `new T()`. Unique ownership.
-- **For abstract types**: Initializes to `nullptr`.
+## Syntax
 
-**Usage:**
 ```cpp
-SmartPointer<MyClass> pObj; // Automatically calls new MyClass()
+template <typename T>
+class SmartPointer;
 ```
 
-##### `explicit SmartPointer(bool bIsShared)`
+---
 
-Initializes a new `SmartPointer` and automatically allocates a new instance of `T`.
-- If `bIsShared` is `true`: Enables **Shared** ownership (reference counting).
-- If `bIsShared` is `false`: Enables **Unique** ownership.
+## Static Factory Methods (Recommended)
 
-**Usage:**
+### `static SmartPointer<T> NewUnique()` / `template <typename Arg1, typename... Args> static SmartPointer<T> NewUnique(Arg1&& arg1, Args&&... args)`
+Creates and constructs a uniquely owned instance of `T` by forwarding arguments to `T`'s constructor.
+
 ```cpp
-SmartPointer<MyClass> pShared(true); // Automatically calls new MyClass() and enables sharing
+auto pBuffer = SmartPointer<MemoryStream>::NewUnique();
 ```
 
-##### `explicit SmartPointer(T* pPtr)`
+### `static SmartPointer<T> NewShared()` / `template <typename Arg1, typename... Args> static SmartPointer<T> NewShared(Arg1&& arg1, Args&&... args)`
+Creates and constructs a shared reference-counted instance of `T` by forwarding arguments to `T`'s constructor.
 
-Takes ownership of an existing raw pointer. Unique ownership.
-
-##### `SmartPointer(T* pPtr, bool bIsShared)`
-
-Takes ownership of an existing raw pointer with specified ownership mode.
-
-##### `SmartPointer(std::nullptr_t)`
-
-Explicitly initializes an empty (null) `SmartPointer`.
-
-#### Static Helpers
-
-##### `static SmartPointer<T> New(Args&&... args)`
-
-Creates a new `SmartPointer` with unique ownership, passing the specified arguments to `T`'s constructor.
-
-**Usage:**
 ```cpp
-auto pObj = SmartPointer<MyClass>::New("arg1", 42);
+auto spFile = SmartPointer<FileStream>::NewShared("data.bin", FileMode::Open);
 ```
 
-##### `static SmartPointer<T> NewShared(Args&&... args)`
+### `static SmartPointer<T> New()` / `template <typename Arg1, typename... Args> static SmartPointer<T> New(Arg1&& arg1, Args&&... args)`
+Alias for `NewUnique()`, providing C#-like allocation syntax.
 
-Creates a new `SmartPointer` with shared ownership, passing the specified arguments to `T`'s constructor.
+### `static SmartPointer<T> MakeUnique()` / `template <typename Arg1, typename... Args> static SmartPointer<T> MakeUnique(Arg1&& arg1, Args&&... args)`
+Standard alias for `NewUnique()`.
 
-**Usage:**
+### `static SmartPointer<T> MakeShared()` / `template <typename Arg1, typename... Args> static SmartPointer<T> MakeShared(Arg1&& arg1, Args&&... args)`
+Standard alias for `NewShared()`.
+
+---
+
+## Constructors & Assignment
+
+### `SmartPointer()`
+Default constructor. For concrete types, automatically allocates `new T()` with unique ownership. For abstract classes, initializes to `nullptr`.
+
+### `explicit SmartPointer(bool bIsShared)`
+Constructor with ownership mode flag. Automatically allocates `new T()` and sets shared mode if `bIsShared` is `true`.
+
+### `explicit SmartPointer(T* pPtr)`
+Takes unique ownership of an existing raw pointer.
+
+### `SmartPointer(T* pPtr, bool bIsShared)`
+Takes ownership of an existing raw pointer with the specified ownership mode.
+
+### `SmartPointer(std::nullptr_t)`
+Explicit null constructor.
+
+### `SmartPointer(const SmartPointer<T>& objOther)` / `template <typename U> SmartPointer(const SmartPointer<U>& objOther)`
+Copy constructor. Only permitted when `objOther` is in Shared mode (`m_pnRefCount != nullptr`). Increments the atomic reference count.
+
+- **Throws:**
+  - `SystemException`: If attempted on a uniquely owned pointer.
+
+### `SmartPointer& operator=(const SmartPointer<T>& objOther)` / `template <typename U> SmartPointer& operator=(const SmartPointer<U>& objOther)`
+Copy assignment operator. Replaces the managed object and increments the atomic reference count if in Shared mode.
+
+- **Throws:**
+  - `SystemException`: If attempted on a uniquely owned pointer.
+
+### `SmartPointer(SmartPointer<T>&& objOther) noexcept` / `template <typename U> SmartPointer(SmartPointer<U>&& objOther) noexcept`
+Move constructor. Transfers ownership from `objOther` without altering reference counts.
+
+### `SmartPointer& operator=(SmartPointer<T>&& objOther) noexcept` / `template <typename U> SmartPointer& operator=(SmartPointer<U>&& objOther) noexcept`
+Move assignment operator. Releases the current object and transfers ownership from `objOther`.
+
+---
+
+## Member Functions
+
+### `T* Get() const`
+Returns the underlying raw pointer without transferring ownership.
+
+### `bool IsNull() const`
+Checks if the smart pointer currently manages a null object.
+
+### `int GetRefCount() const`
+Returns the current number of shared owners referencing this instance. Returns `0` for unique or null pointers.
+
+### `void Reset(T* pPtr = nullptr)`
+Releases the currently owned object and resets the pointer to null or a new object in Unique mode.
+
+### `void Reset(T* pPtr, bool bIsShared)`
+Releases the currently owned object and takes ownership of `pPtr` with the specified ownership mode.
+
+### `void Attach(T* pPtr, bool bIsShared = false)`
+Attaches a raw pointer to manage, equivalent to `Reset(pPtr, bIsShared)`.
+
+### `T* Detach()`
+Detaches the managed object and returns the raw pointer. The `SmartPointer` instance will no longer own the object.
+
+### `template <typename U> SmartPointer<U> DynamicCast() const`
+Dynamically casts the managed pointer to type `U*` using `dynamic_cast` and returns a new `SmartPointer<U>` sharing ownership.
+
+---
+
+## Operators
+
+### `T* operator->() const`
+Member access operator.
+
+### `T& operator*() const`
+Indirection operator.
+
+### `explicit operator bool() const`
+Contextual boolean conversion operator (`true` if non-null).
+
+### `template <typename U> bool operator==(const SmartPointer<U>& other) const`
+Checks for pointer equality between two smart pointers.
+
+### `template <typename U> bool operator!=(const SmartPointer<U>& other) const`
+Checks for pointer inequality between two smart pointers.
+
+---
+
+## Example
+
 ```cpp
-auto pShared = SmartPointer<MyClass>::NewShared("arg1", 42);
-```
-
-#### Methods
-
-##### `void Attach(T* pPtr, bool bIsShared = false)`
-
-Takes ownership of a new raw pointer, cleaning up the previously managed object.
-
-##### `T* Detach()`
-
-Releases ownership of the managed object and returns the raw pointer. The `SmartPointer` becomes null.
-
-##### `T* Get() const`
-
-Returns the underlying raw pointer without releasing ownership.
-
-##### `int GetRefCount() const`
-
-Returns the current reference count. Returns `0` for Unique pointers or null pointers.
-
-##### `bool IsNull() const`
-
-Returns `true` if the managed pointer is `nullptr`.
-
-#### Example
-
-```cpp
-void Demonstrate() {
-    // 1. Auto-allocation (Unique)
-    SmartPointer<String> pS;
-    Console::WriteLine(pS->GetLength());
-
-    // 2. Auto-allocation (Shared)
-    SmartPointer<String> pShared(true);
-    auto pCopy = pShared; // Ref count increments
-
-    // 3. Static Factory (with constructor args)
-    auto pVersion = SmartPointer<Version>::New(1, 0, 5);
-    Console::WriteLine(pVersion->ToString());
-
-    // 4. Abstract classes (must be manual or factory)
-    SmartPointer<TextReader> pReader(new StringReader("data"));
-}
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `SmartPointer`.
-
-```cpp
+#include "System/Console.h"
 #include "System/SmartPointer.h"
 #include "System/String.h"
-#include "System/Console.h"
-#include "System/Version.h"
-#include "System/Exception.h"
 
 using namespace DotNetDupe::System;
 
-int main() {
-    try {
-        // 1. Auto-allocated Unique ownership
-        SmartPointer<String> pUniqueStr;
-        *pUniqueStr = "Hello Unique";
-        Console::WriteLine(*pUniqueStr);
-
-        // 2. Auto-allocated Shared ownership (ref counted)
-        SmartPointer<String> pSharedStr(true);
-        *pSharedStr = "Hello Shared";
-        {
-            SmartPointer<String> pSharedCopy = pSharedStr; // Increments ref count
-            Console::Write("Copy content: ");
-            Console::WriteLine(*pSharedCopy);
-            Console::Write("Ref Count: ");
-            Console::WriteLine(pSharedStr.GetRefCount()); // Should be 2
-        }
-        Console::Write("Ref Count after copy went out of scope: ");
-        Console::WriteLine(pSharedStr.GetRefCount()); // Should be 1
-
-        // 3. Static Factory (with constructor args)
-        auto pVersion = SmartPointer<Version>::New(2, 1, 0);
-        Console::Write("Version via SmartPointer: ");
-        Console::WriteLine(pVersion->ToString());
-
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
+class DatabaseConnection {
+public:
+    void Connect() {
+        Console::WriteLine("Connected to Database.");
     }
+};
+
+int main() {
+    // 1. Unique Ownership
+    auto pUnique = SmartPointer<DatabaseConnection>::NewUnique();
+    pUnique->Connect();
+
+    // 2. Shared Ownership
+    auto spShared1 = SmartPointer<DatabaseConnection>::NewShared();
+    {
+        auto spShared2 = spShared1; // Shared ownership count = 2
+        Console::WriteLine("Reference count: {0}", spShared1.GetRefCount());
+    } // spShared2 leaves scope, count = 1
+
+    Console::WriteLine("Final reference count: {0}", spShared1.GetRefCount());
     return 0;
 }
 ```
-

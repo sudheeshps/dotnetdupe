@@ -1,115 +1,72 @@
-### class `TimeProvider`
+# TimeProvider
 
-Provides an abstraction for time.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/TimeProvider.h"`
 
-#### Methods
+Provides a testable abstraction for time, timestamp generation, and elapsed duration measurements (equivalent to .NET 8 `TimeProvider`).
 
-##### `virtual DateTimeOffset GetUtcNow() const = 0`
+---
 
-Gets a `DateTimeOffset` value that is set to the current Coordinated Universal Time (UTC) date and time.
+## Syntax
 
-**Usage:**
 ```cpp
-auto provider = TimeProvider::GetSystem();
-DateTimeOffset now = provider->GetUtcNow();
-```
-
-##### `virtual DateTimeOffset GetLocalNow() const = 0`
-
-Gets a `DateTimeOffset` value that is set to the current local date and time.
-
-**Usage:**
-```cpp
-DateTimeOffset local = provider->GetLocalNow();
-```
-
-##### `virtual int64_t GetTimestamp() const = 0`
-
-Gets the current high-resolution timestamp.
-
-**Usage:**
-```cpp
-int64_t start = provider->GetTimestamp();
-```
-
-##### `virtual int64_t GetTimestampFrequency() const = 0`
-
-Gets the frequency of the timestamp counter.
-
-**Usage:**
-```cpp
-int64_t freq = provider->GetTimestampFrequency();
-```
-
-##### `TimeSpan GetElapsedTime(int64_t startingTimestamp) const`
-
-Gets the elapsed time since the specified starting timestamp.
-
-**Usage:**
-```cpp
-int64_t start = provider->GetTimestamp();
-// ...
-TimeSpan elapsed = provider->GetElapsedTime(start);
-```
-
-##### `static std::shared_ptr<TimeProvider> GetSystem()`
-
-Gets the system's default `TimeProvider` instance.
-
-**Usage:**
-```cpp
-auto provider = TimeProvider::GetSystem();
+class TimeProvider : public Object;
+using TimeProviderPtr = SmartPointer<TimeProvider>;
 ```
 
 ---
 
-## Code Example
+## Static Methods
 
-The following example demonstrates how to retrieve the system `TimeProvider` instance, get the current UTC and local times, measure elapsed time with a high-resolution timestamp, and use `Thread::Sleep()` to simulate delay.
+### `static TimeProviderPtr GetSystem()`
+Gets a `TimeProvider` instance that provides a default implementation based on the system clock.
+
+```cpp
+TimeProviderPtr spTime = TimeProvider::GetSystem();
+```
+
+---
+
+## Member Functions
+
+### `virtual DateTimeOffset GetUtcNow() const = 0`
+Gets the current Coordinated Universal Time (UTC) date and time.
+
+### `virtual DateTimeOffset GetLocalNow() const = 0`
+Gets the current local date and time.
+
+### `virtual int64_t GetTimestamp() const = 0`
+Gets the high-frequency counter timestamp.
+
+### `virtual int64_t GetTimestampFrequency() const = 0`
+Gets the frequency of the high-frequency counter in ticks per second.
+
+### `TimeSpan GetElapsedTime(int64_t startingTimestamp) const`
+Gets the elapsed time interval between `startingTimestamp` and the current timestamp retrieved from `GetTimestamp()`.
+
+### `TimeSpan GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const`
+Gets the elapsed time interval between `startingTimestamp` and `endingTimestamp`.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/TimeProvider.h"
-#include "System/DateTimeOffset.h"
-#include "System/TimeSpan.h"
-#include "System/SmartPointer.h"
 #include "System/Threading/Thread.h"
-#include <memory>
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Threading;
 
 int main() {
-    // Get the system TimeProvider
-    std::shared_ptr<TimeProvider> provider = TimeProvider::GetSystem();
+    TimeProviderPtr spTime = TimeProvider::GetSystem();
 
-    // Retrieve the current UTC and Local times
-    DateTimeOffset utcNow = provider->GetUtcNow();
-    DateTimeOffset localNow = provider->GetLocalNow();
+    int64_t llStart = spTime->GetTimestamp();
+    Thread::Sleep(50);
+    TimeSpan tsElapsed = spTime->GetElapsedTime(llStart);
 
-    Console::WriteLine("UTC Ticks: ");
-    Console::WriteLine(utcNow.GetTicks());
-
-    Console::WriteLine("Local Ticks: ");
-    Console::WriteLine(localNow.GetTicks());
-
-    // Measure elapsed time using the high-resolution timestamp
-    int64_t startTimestamp = provider->GetTimestamp();
-    
-    // Simulate some work using Thread::Sleep
-    Thread::Sleep(100);
-
-    int64_t endTimestamp = provider->GetTimestamp();
-    TimeSpan elapsed = provider->GetElapsedTime(startTimestamp, endTimestamp);
-
-    // Dynamic memory management using SmartPointer
-    auto pElapsed = SmartPointer<TimeSpan>::New(elapsed);
-
-    Console::WriteLine("Elapsed Milliseconds: ");
-    Console::WriteLine(pElapsed->GetTotalMilliseconds());
-
+    Console::WriteLine("Elapsed Milliseconds: {0}", tsElapsed.GetTotalMilliseconds());
     return 0;
 }
 ```
-
-

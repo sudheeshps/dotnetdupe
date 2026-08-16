@@ -14,20 +14,25 @@ Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While th
 Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨
 
 > [!IMPORTANT]
-> **Major Update v4.0.0 ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe 4.0.0 is a major architectural release with header STL decoupling and expanded core services! 🌐 Key highlights in this release include:
+> **Major Update v4.0.1 ([![Latest Version](https://img.shields.io/github/v/tag/sudheeshps/DotNetDupe?style=flat-square&color=blue&label=version)](https://github.com/sudheeshps/DotNetDupe/tags)):** DotNetDupe 4.0.1 brings comprehensive documentation, API reference updates, and refined packaging! 🌐 Key highlights include:
 > - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
-> - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, and all concurrent collections.
+> - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
+> - ⚡ **Thread-Safe Concurrent Collections (`System::Collections::Concurrent`):** Lock-free/fine-grained thread-safe data structures including `ConcurrentDictionary`, `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag`, and `BlockingCollection`.
+> - 📊 **Real-Time Telemetry & System Metrics (`System::Diagnostics::SystemMetrics`):** Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk utilization %, network I/O Mbps, and active processes).
+> - 📜 **ETW & Enterprise Event Logging (`System::Diagnostics::EtwLogReader` & `EventLog`):** High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.
+> - 🖥️ **Terminal & User Sessions (`System::Diagnostics::TerminalSession` & `ActiveUserSession`):** Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.
 > - 📄 **Console I/O Redirection:** Standard stream redirection via `Console::SetOut`, `Console::SetError`, and `Console::SetIn` using `SmartPointer`.
 > - 🖊️ **LoggerTextWriter Log Redirector:** Bridge standard `TextWriter` stream calls directly into `LogManager` logging providers without per-call lookup overhead.
 > - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
-> - 📥 **FileDownloader Utility:** High-level download utility with robust lifecycle and prompt file handle release.
+> - 📥 **FileDownloader Utility:** High-level download utility with pause/resume support, speed tracking, and prompt file handle release.
 > - 🌲 **Recursive Directory Creation:** Overloaded `Directory::CreateDirectory(path, recursive)` to automatically construct missing parent directory structures.
 > - 📂 **Resilient File Logging:** Enhanced `FileLoggerProvider` to resolve relative log paths to full paths and auto-create missing log directories.
 > - 🧩 **ServiceCollection DI Enhancements:** Improved lifetime management and container registration.
 
-We're starting with a foundational set of classes in the `System` and `IO` namespaces, offering a glimpse into the library's potential. Your contributions are highly welcome to expand its functionality! 🤝
+This project is a living example of how persistent human effort during weekends and late evenings can build a system from scratch using AI. DotNetDupe has grown far beyond a foundational set of classes into a comprehensive, multi-platform C++ Base Class Library offering extensive modern capabilities across System, IO, Collections, Net, Threading, Logging, Data, and Hosting.
+If anyone wants to join hands, you are most welcome in the form of PRs, issues or comments 🙏
 
-A fun fact: While I personally crafted core components like `Char`, `String`, and `Path` (along with their tests), a significant portion of the remaining code was generated with the help of Gemini Code Assist. 🤖 This project serves as a unique playground for exploring how generative AI can accelerate development from scratch. 🚀
+A fun fact: While I personally crafted core components like `Char`, `String`, and `Path` (along with their tests), the rest of the system was collaboratively designed, built, and expanded by myself and my peer Antigravity. 🤖 This project serves as a unique playground for exploring how generative AI can accelerate development from scratch. 🚀
 
 DotNetDupe aims to simplify C++ development by providing C#-like interfaces for common tasks, making your code more concise, intuitive, and a joy to write. 💖
 
@@ -82,8 +87,8 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
   - `SmartPointer<T>`: Exception-safe RAII reference-counted smart pointer with `NewShared()` and `NewUnique()` factory helpers.
   - Base `Object` type system with `ToString()`, `GetType()`, `Equals()`, and `GetHashCode()`.
 
-- 🔤 **String Manipulation & Utilities (`System::BasicString`)**:
-  - Full-featured `String` (`BasicString<char>`) & `WString` (`BasicString<wchar_t>`) with UTF-8 / UTF-16 cross-transcoding.
+- 🔤 **String Manipulation & Utilities (`System::String`)**:
+  - Full-featured `String` & `WString` with UTF-8 / UTF-16 cross-transcoding.
   - Methods: `Format()`, `Split()`, `Join()`, `Replace()`, `Contains()`, `StartsWith()`, `EndsWith()`, `Trim()`, `PadLeft()`, `PadRight()`.
 
 - 📦 **Generic Collections (`System::Collections::Generic`)**:
@@ -130,9 +135,11 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 
 ### Prerequisites 📋
 
-*   C++17 compatible compiler (e.g., MSVC, GCC, Clang)
-*   CMake (for building, if applicable)
-*   (Any other dependencies, e.g., Google Test for running tests)
+*   C++17 / C++20 compatible compiler (e.g., MSVC v143, GCC 11+, Clang 13+)
+*   CMake 3.15+ (for building on Linux / WSL)
+*   **OpenSSL / SSL Runtime Dependencies**:
+    *   **Windows**: The NuGet package bundles pre-built OpenSSL runtime binaries (`libssl-4-x64.dll`, `libcrypto-4-x64.dll` for x64, and `libssl-4.dll`, `libcrypto-4.dll` for x86) which are automatically copied into the target build output directory via MSBuild `.targets`.
+    *   **Linux**: Requires system OpenSSL 3.x / 1.1.x runtime libraries (`libssl.so`, `libcrypto.so`). Install via `sudo apt-get install -y libssl-dev` (Ubuntu/Debian) or `sudo dnf install -y openssl-devel` (Fedora/RHEL).
 
 ### Installation ⬇️
 
@@ -146,7 +153,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.0.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.1.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -180,10 +187,15 @@ DotNetDupe is designed for high portability and officially supports **Windows** 
 ### Integration via NuGet
 
 DotNetDupe is distributed as a multi-platform NuGet package. It contains native binaries for:
-- `win-x64` (`DotNetDupe.dll`)
+- `win-x64` (`DotNetDupe.dll`, `libssl-4-x64.dll`, `libcrypto-4-x64.dll`)
+- `win-x86` (`DotNetDupe.dll`, `libssl-4.dll`, `libcrypto-4.dll`)
 - `linux-x64` (`libDotNetDupe.so`)
 
-When you add the NuGet package to your project, the appropriate binary is automatically selected based on your target platform.
+When you add the NuGet package to your project, the appropriate binary and dependencies are automatically selected based on your target platform.
+
+#### SSL Runtime Dependencies
+* **Windows**: Dynamic OpenSSL dependencies (`libssl-4-x64.dll` & `libcrypto-4-x64.dll`) are packaged directly inside the NuGet package and deployed next to `DotNetDupe.dll` at build time.
+* **Linux**: Dynamically links against standard host OpenSSL libraries (`libssl.so.3` / `libssl.so.1.1`). Ensure OpenSSL is installed on target runtime hosts (`apt-get install libssl3` or `libssl1.1`).
 
 #### Note for Linux Users
 On Linux, NuGet packages are typically managed via `dotnet` CLI or integrated into CMake projects using tools like `vcpkg` or by manually extracting the shared library (`.so`) and headers from the `.nupkg` (which is a ZIP file).
@@ -273,7 +285,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.0.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.1.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -283,9 +295,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.0.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.1.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.1.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -342,9 +354,11 @@ Here is a complete, compile-ready web application hosting `index.html` and respo
 #include "System/SmartPointer.h"
 #include "System/IO/File.h"
 #include "System/IO/Path.h"
+#include "System/IO/Directory.h"
 #include "WebAppCore/Builder/WebApplication.h"
 #include "WebAppCore/Builder/WebApplicationBuilder.h"
 #include "WebAppCore/Server/WebAppServer.h"
+#include "WebAppCore/Http/HttpContext.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::WebAppCore::Builder;
@@ -357,8 +371,11 @@ int main() {
     Console::WriteLine("=============================================");
 
     String webRoot = "wwwroot";
+    if (!IO::Directory::Exists(webRoot)) {
+        IO::Directory::CreateDirectory(webRoot, true);
+    }
 
-    // 1. Initialize WebApplication Host
+    // 1. Initialize WebApplication Host Builder
     auto builder = WebApplication::CreateBuilder();
     auto app = builder->Build();
 
@@ -393,36 +410,107 @@ int main() {
 
 Here are some quick examples of how to use DotNetDupe:
 
+### 1. Strings, Dates & Console
+
 ```cpp
-#include <iostream>
-#include "DotNetDupe/String.h"
-#include "DotNetDupe/Path.h"
-#include "DotNetDupe/BasicException.h"
-#include "DotNetDupe/TimeZoneInfo.h"
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/DateTime.h"
+#include "System/TimeSpan.h"
+#include "System/IO/Path.h"
 
-int main() {
-    // String Example
-    DotNetDupe::System::String greeting = _T("Hello");
-    DotNetDupe::System::String name = _T("World");
-    DotNetDupe::System::String message = greeting + _T(", ") + name + _T("!");
-    std::wcout << message << std::endl; // Output: Hello, World!
+using namespace DotNetDupe::System;
 
-    // Path Example
-    DotNetDupe::System::String fullPath = DotNetDupe::System::IO::Path::Combine({_T("C:\\"), _T("Users"), _T("document.txt")});
-    std::wcout << L"Combined Path: " << fullPath << std::endl;
+void DemonstrateBasics() {
+    // String interpolation / formatting & manipulation
+    String sGreeting = "Hello";
+    String sName = "Developer";
+    String sMessage = String::Format("{0}, {1}! Welcome to DotNetDupe.", sGreeting, sName);
+    Console::WriteLine(sMessage);
 
-    // TimeZone Example
-    DotNetDupe::System::TimeZoneInfo localTz = DotNetDupe::System::TimeZoneInfo::Local();
-    std::wcout << L"Local TimeZone: " << localTz.GetDisplayName() << std::endl;
+    // Cross-platform Path manipulation
+    String sDocPath = IO::Path::Combine("C:\\Projects", "DotNetDupe", "README.md");
+    Console::WriteLine("Combined Path: {0}", sDocPath);
+    Console::WriteLine("Extension: {0}", IO::Path::GetExtension(sDocPath));
 
-    // Exception Example
-    try {
-        throw DotNetDupe::System::BasicException<TCHAR>(_T("Something went wrong!"));
-    } catch (const DotNetDupe::System::BasicException<TCHAR>& e) {
-        std::wcout << L"Caught exception: " << e.What() << std::endl;
+    // DateTime and TimeSpan operations
+    DateTime dtNow = DateTime::Now();
+    DateTime dtTomorrow = dtNow.AddDays(1);
+    TimeSpan tsDiff = dtTomorrow - dtNow;
+    Console::WriteLine("Current Time: {0}", dtNow.ToString());
+    Console::WriteLine("Hours until tomorrow: {0}", tsDiff.GetTotalHours());
+}
+```
+
+### 2. Multi-Threading & Asynchronous Tasks
+
+```cpp
+#include "System/Console.h"
+#include "System/Threading/Thread.h"
+#include "System/Threading/ThreadPool.h"
+#include "System/Threading/Tasks/Task.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Threading;
+using namespace DotNetDupe::System::Threading::Tasks;
+
+void DemonstrateConcurrency() {
+    // Thread lifecycle
+    Thread workerThread([]() {
+        Console::WriteLine("Worker thread running...");
+        Thread::Sleep(100);
+    });
+    workerThread.Start();
+    workerThread.Join();
+
+    // High-throughput ThreadPool queue
+    ThreadPool::QueueUserWorkItem([]() {
+        Console::WriteLine("ThreadPool work item executed.");
+    });
+
+    // Async Task Parallelism
+    auto spTask = Task<int>::Run([]() -> int {
+        Thread::Sleep(50);
+        return 42 * 2;
+    });
+
+    spTask->Wait();
+    Console::WriteLine("Task result: {0}", spTask->GetResult());
+}
+```
+
+### 3. Thread-Safe Concurrent Collections
+
+```cpp
+#include "System/Console.h"
+#include "System/Collections/Concurrent/ConcurrentDictionary.h"
+#include "System/Collections/Concurrent/ConcurrentQueue.h"
+#include "System/Collections/Concurrent/BlockingCollection.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Concurrent;
+
+void DemonstrateConcurrentCollections() {
+    // Thread-safe ConcurrentDictionary
+    ConcurrentDictionary<String, int> dict;
+    dict.TryAdd("CPU", 95);
+    dict.TryAdd("Memory", 60);
+    dict.GetOrAdd("Disk", 40);
+
+    int iUsage = 0;
+    if (dict.TryGetValue("CPU", iUsage)) {
+        Console::WriteLine("CPU Usage: {0}%", iUsage);
     }
 
-    return 0;
+    // Thread-safe Producer-Consumer BlockingCollection
+    BlockingCollection<String> pipeline(100);
+    pipeline.Add("Packet #1");
+    pipeline.Add("Packet #2");
+
+    String sItem;
+    if (pipeline.TryTake(sItem)) {
+        Console::WriteLine("Processed item from pipeline: {0}", sItem);
+    }
 }
 ```
 
@@ -627,7 +715,7 @@ void AccessDatabase() {
         }
 
         conn.Close();
-    } catch (const BasicException<char>& ex) {
+    } catch (const Exception& ex) {
         Console::Write("Database Error: ");
         Console::WriteLine(ex.What());
     }
@@ -638,108 +726,79 @@ void AccessDatabase() {
 
 DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL.
 
-*   **[General Comparison Guide](docs/Comparison.md)**: Covers Strings, Collections, Timing, etc.
-*   **[Threading Comparison Guide](docs/ThreadingComparison.md)**: Detailed comparison of thread synchronization primitives.
-*   **[Process Management Comparison Guide](docs/ProcessComparison.md)**: Comparison of process execution and management.
-*   **[Authentication & Authorization Guide](docs/Auth.md)**: Covers client-side and server-side JWT authentication and authorization.
+*   **[General Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/Comparison.html)**: Covers Strings, Collections, Timing, etc.
+*   **[Threading Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/ThreadingComparison.html)**: Detailed comparison of thread synchronization primitives.
+*   **[Process Management Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/ProcessComparison.html)**: Comparison of process execution and management.
+*   **[Authentication & Authorization Guide](https://sudheeshps.github.io/dotnetdupe/docs/Auth.html)**: Covers client-side and server-side JWT authentication and authorization.
 
 ### Sample Client and Test Code 🧪
 
 The repository includes `DotNetDupeDemo` (a sample console application) and `DotNetDupeTests` (unit tests) projects. These projects demonstrate how to integrate and use the `DotNetDupe` library. You can refer to their `.vcxproj` files for examples of how to configure your own projects to consume the `DotNetDupe` NuGet package.
 
-
-
-
 ## API Reference 📖
 
-For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class.
-
-### Namespace: `DotNetDupe::WebAppCore::Builder`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [WebApplicationBuilder](docs/WebApplication.md) | Configures services and builds the web application host. |
-| [WebApplication](docs/WebApplication.md) | Configures routing endpoints and hosts the HTTP listener. |
-| [WebAppServer](docs/WebAppServer.md) | Web server hosting static website content (HTML, CSS, images) and REST APIs. |
-
-### Namespace: `DotNetDupe::WebAppCore::Http`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [HttpContext](docs/WebApplication.md) | Encapsulates all HTTP-specific information about an individual HTTP request. |
-| [HttpRequest](docs/WebApplication.md) | Represents the incoming HTTP request. |
-| [HttpResponse](docs/WebApplication.md) | Represents the outgoing HTTP response. |
-| [Push Notifications (SSE & WebSockets)](docs/PushNotifications.md) | Server-Sent Events (SSE) streaming and WebSocket push notification support. |
-
-### Namespace: `DotNetDupe::WebAppCore::Controllers`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [ControllerBase](docs/WebApplication.md) | Base class for MVC/Web API style controllers. |
-| [ControllerRouteBuilder<T>](docs/WebApplication.md) | Maps controller actions and automates JSON payload serialization. |
+For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:
 
 ### Namespace: `DotNetDupe::System`
 
-**Classes**
+**Core Primitives & Base Classes**
 
 | Class | Description |
 |---|---|
-| [Array<T>](docs/Array.md) | Provides methods for creating, manipulating, searching, and sorting arrays. |
-| [BitConverter](docs/BitConverter.md) | Converts base data types to an array of bytes, and an array of bytes to base data types. |
-| [Buffer](docs/Buffer.md) | Manipulates arrays of primitive types. |
-| [Char](docs/Char.md) | Represents a character. |
-| [Console](docs/Console.md) | Provides methods for reading from and writing to the standard input, output, and error streams. |
-| [Convert](docs/Convert.md) | Provides methods for converting a base data type to another base data type. |
-| [DaylightTime](docs/DaylightTime.md) | Defines the period of daylight saving time. |
-| [DateTimeOffset](docs/DateTimeOffset.md) | Represents a point in time, typically expressed as a date and time of day relative to UTC. |
-| [Environment](docs/Environment.md) | Provides information about the current environment and platform. |
-| [Guid](docs/Guid.md) | Represents a globally unique identifier (GUID). |
 | [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
-| [OperatingSystem](docs/OperatingSystem.md) | Represents information about an operating system, such as the version and platform identifier. |
-| [Random](docs/Random.md) | Represents a pseudo-random number generator. |
-| [SmartPointer<T>](docs/SmartPointer.md) | A unified smart pointer supporting both unique and shared ownership. |
-| [String](docs/String.md) | Represents text as a sequence of character code units. |
-| [TimeProvider](docs/TimeProvider.md) | Provides an abstraction for time. |
+| [SmartPointer&lt;T&gt;](docs/SmartPointer.md) | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
+| [Char](docs/Char.md) | Represents character code points and provides Unicode classification and transformation methods. |
+| [String](docs/String.md) | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
+| [Array&lt;T&gt;](docs/Array.md) | Provides methods for creating, manipulating, searching, and sorting arrays. |
+| [BitConverter](docs/BitConverter.md) | Converts base data types to arrays of bytes, and arrays of bytes to base data types. |
+| [Buffer](docs/Buffer.md) | Manipulates arrays of primitive types efficiently. |
+| [Console](docs/Console.md) | Reads and writes to standard I/O streams with full color control and stream redirection. |
+| [Convert](docs/Convert.md) | Converts base data types and hexadecimal strings. |
+| [DateTime](docs/DateTime.md) | Represents an instant in time, typically expressed as a date and time of day. |
+| [DateTimeOffset](docs/DateTimeOffset.md) | Represents a point in time relative to UTC with time zone offset. |
 | [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |
 | [TimeZone](docs/TimeZone.md) | Represents a time zone. |
-| [TimeZoneInfo](docs/TimeZoneInfo.md) | Represents any time zone in the world. |
-| [Uri](docs/Uri.md) | Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI. |
-| [UriBuilder](docs/UriBuilder.md) | Provides a convenient way to modify the contents of a `Uri` instance. |
-| [UriComponents](docs/UriComponents.md) | Specifies the parts of a URI. |
+| [TimeZoneInfo](docs/TimeZoneInfo.md) | Represents any time zone in the world with Daylight Saving adjustments. |
+| [DaylightTime](docs/DaylightTime.md) | Defines the period of daylight saving time. |
+| [TimeProvider](docs/TimeProvider.md) | Provides a testable abstraction for date and time. |
+| [Guid](docs/Guid.md) | Represents a globally unique identifier (GUID). |
+| [Environment](docs/Environment.md) | Provides environment variables, machine info, and platform properties. |
+| [OperatingSystem](docs/OperatingSystem.md) | Represents operating system platform identifiers and version metadata. |
+| [Random](docs/Random.md) | Represents a pseudo-random number generator. |
+| [Uri](docs/Uri.md) | Provides an object representation of Uniform Resource Identifiers (URI). |
+| [UriBuilder](docs/UriBuilder.md) | Provides convenient mutation of URI components. |
+| [UriComponents](docs/UriComponents.md) | Specifies parts of a URI. |
 | [UriFormat](docs/UriFormat.md) | Controls how URI information is escaped. |
-| [UriParser](docs/UriParser.md) | Parses a new URI scheme. |
-| [GenericUriParser](docs/GenericUriParser.md) | A customizable parser for a hierarchical URI. |
-| [Version](docs/Version.md) | Represents the version number of an assembly, operating system, or the common language runtime. |
+| [UriParser](docs/UriParser.md) | Parses and validates URI schemes. |
+| [GenericUriParser](docs/GenericUriParser.md) | Customizable parser for hierarchical URI schemes. |
+| [Version](docs/Version.md) | Represents version numbers (`major.minor.build.revision`). |
+
+**Core Interfaces**
+
+| Interface | Description |
+|---|---|
+| [IDisposable](docs/Interfaces.md) | Defines a mechanism for deterministic release of unmanaged resources. |
+| [IClonable](docs/Interfaces.md) | Defines mechanisms for deep or shallow object cloning. |
+| [IComparable](docs/Interfaces.md) | Defines comparison method for sorting and ordering. |
+| [IComparable&lt;T&gt;](docs/Interfaces.md) | Defines strongly-typed comparison method for sorting and ordering. |
+| [IFormatProvider&lt;T&gt;](docs/Interfaces.md) | Provides custom type-formatting services. |
+| [IServiceProvider](docs/DependencyInjection.md) | Defines service object resolution mechanism for dependency injection. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| [Exception](docs/Exceptions.md) | Represents errors that occur during application execution. |
-| [SystemException](docs/Exceptions.md) | The base class for all predefined exceptions in the System namespace. |
-| [ArgumentException](docs/Exceptions.md) | Represents errors that occur during argument processing. |
-| [ArgumentNullException](docs/Exceptions.md) | The exception that is thrown when a null reference is passed to a method that does not accept it as a valid argument. |
-| [ArgumentOutOfRangeException](docs/Exceptions.md) | Represents errors that occur when an argument is outside the allowable range of values. |
-| [ArithmeticException](docs/Exceptions.md) | Represents errors in an arithmetic operation. |
-| [FormatException](docs/Exceptions.md) | The exception that is thrown when the format of an argument is invalid. |
-| [NotImplementedException](docs/Exceptions.md) | The exception that is thrown when a requested method or operation is not implemented. |
-| [OverflowException](docs/Exceptions.md) | The exception that is thrown when an arithmetic, casting, or conversion operation in a checked context results in an overflow. |
+| [Exception](docs/Exceptions.md) | Root exception class for all DotNetDupe library errors. |
+| [SystemException](docs/Exceptions.md) | Base class for system-level runtime exceptions. |
+| [ArgumentException](docs/Exceptions.md) | Thrown when an argument passed to a method is invalid. |
+| [ArgumentNullException](docs/Exceptions.md) | Thrown when a null argument is passed to a non-null parameter. |
+| [ArgumentOutOfRangeException](docs/Exceptions.md) | Thrown when an argument falls outside allowable boundary limits. |
+| [ArithmeticException](docs/Exceptions.md) | Thrown for errors in mathematical or arithmetic operations. |
+| [FormatException](docs/Exceptions.md) | Thrown when string or argument formatting is invalid. |
+| [NotImplementedException](docs/Exceptions.md) | Thrown when a requested method or feature is not implemented. |
+| [OverflowException](docs/Exceptions.md) | Thrown on arithmetic or conversion overflow. |
 
-**Interfaces**
-
-| Interface | Description |
-|---|---|
-| [IClonable](docs/Interfaces.md) | Defines a general-purpose mechanism for creating a new object that is a copy of the current object. |
-| [IComparable](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
-| [IComparable<T>](docs/Interfaces.md) | Defines a method that a value type or class implements to compare itself with another object of the same type. |
-| [IFormatProvider<T>](docs/Interfaces.md) | Provides a mechanism for retrieving a formatting service for a specified type. |
-| [IServiceProvider](docs/DependencyInjection.md) | Defines a mechanism for retrieving a service object (type-safe dependency resolution). |
+---
 
 ### Namespace: `DotNetDupe::System::Collections::Generic`
 
@@ -747,55 +806,18 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Dictionary<TKey, TValue>](docs/Dictionary.md) | Represents a collection of keys and values. |
-| [List<T>](docs/List.md) | Represents a strongly typed list of objects that can be accessed by index. |
+| [List&lt;T&gt;](docs/List.md) | Strongly-typed dynamic array list accessible by index. |
+| [Dictionary&lt;TKey, TValue&gt;](docs/Dictionary.md) | Key/value hash map collection. |
+| [HashSet&lt;T&gt;](docs/HashSet.md) | Set of unique elements backed by a hash table. |
+| [Queue&lt;T&gt;](docs/Queue.md) | First-In-First-Out (FIFO) queue collection. |
+| [Stack&lt;T&gt;](docs/Stack.md) | Last-In-First-Out (LIFO) stack collection. |
+| [PriorityQueue&lt;TElement, TPriority&gt;](docs/PriorityQueue.md) | Min-heap collection of prioritized items. |
+| [SortedDictionary&lt;TKey, TValue&gt;](docs/SortedDictionary.md) | Key/value collection sorted by key. |
+| [SortedSet&lt;T&gt;](docs/SortedSet.md) | Ordered unique collection maintained in sorted order. |
+| [LinkedList&lt;T&gt;](docs/LinkedList.md) | Doubly-linked list collection. |
+| [Generic Collections Overview](docs/GenericCollections.md) | Comprehensive guide and comparison of generic collection types. |
 
-### Namespace: `DotNetDupe::System::Diagnostics`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [EventLog](docs/EventLog.md) | Provides interaction with system event logs and writing diagnostic entries. |
-| [EtwLogReader](docs/EtwLogReader.md) | Provides Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, reading, and subscription listening. |
-| [SystemMetrics](docs/RealtimeTelemetry.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
-| [ActiveUserSession](docs/RealtimeTelemetry.md) | Enumerates active and terminal user sessions across the system. |
-| [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
-| [Process](docs/Process.md) | Provides access to local processes and enables you to start and stop local system processes. |
-| [Stopwatch](docs/Stopwatch.md) | Provides a set of methods and properties that you can use to accurately measure elapsed time. |
-
-### Namespace: `DotNetDupe::System::Text`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [StringBuilder](docs/StringBuilder.md) | Represents a mutable string of characters. |
-| [TextEncoding](docs/TextEncoding.md) | Represents a character encoding. |
-
-### Namespace: `DotNetDupe::System::Utils`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [StringConvert](docs/StringConvert.md) | Provides static utility methods for converting strings between UTF-8 and UTF-16 representations. |
-
-### Namespace: `DotNetDupe::System::Collections::Generic`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [List](docs/GenericCollections.md) | Represents a strongly typed list of objects that can be accessed by index. |
-| [Dictionary](docs/GenericCollections.md) | Represents a collection of keys and values. |
-| [Queue](docs/Queue.md) | Represents a First-In-First-Out (FIFO) collection of instances. |
-| [Stack](docs/Stack.md) | Represents a Last-In-First-Out (LIFO) collection of instances. |
-| [HashSet](docs/GenericCollections.md) | Represents a set of unique values using a hash table. |
-| [SortedDictionary](docs/GenericCollections.md) | Represents a collection of key/value pairs that are sorted on the key. |
-| [SortedSet](docs/GenericCollections.md) | Represents a collection of objects that is maintained in sorted order. |
-| [LinkedList](docs/GenericCollections.md) | Represents a doubly linked list. |
-| [PriorityQueue](docs/GenericCollections.md) | Represents a collection of items that have a value and a priority. |
+---
 
 ### Namespace: `DotNetDupe::System::Collections::Concurrent`
 
@@ -803,19 +825,14 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [ConcurrentDictionary](docs/ConcurrentCollections.md) | Thread-safe key-value collection for concurrent operations. |
-| [ConcurrentQueue](docs/ConcurrentCollections.md) | Thread-safe First-In-First-Out (FIFO) collection. |
-| [ConcurrentStack](docs/ConcurrentCollections.md) | Thread-safe Last-In-First-Out (LIFO) collection. |
-| [ConcurrentBag](docs/ConcurrentCollections.md) | Thread-safe unordered collection of objects. |
-| [BlockingCollection](docs/ConcurrentCollections.md) | Thread-safe collection for blocking producer-consumer workflows. |
+| [ConcurrentDictionary&lt;TKey, TValue&gt;](docs/ConcurrentDictionary.md) | Thread-safe key/value collection for concurrent multi-threaded access. |
+| [ConcurrentQueue&lt;T&gt;](docs/ConcurrentQueue.md) | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
+| [ConcurrentStack&lt;T&gt;](docs/ConcurrentStack.md) | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
+| [ConcurrentBag&lt;T&gt;](docs/ConcurrentBag.md) | Thread-safe unordered object container with thread-local storage. |
+| [BlockingCollection&lt;T&gt;](docs/BlockingCollection.md) | Thread-safe collection providing blocking producer-consumer capabilities. |
+| [Concurrent Collections Overview](docs/ConcurrentCollections.md) | Comprehensive guide and architecture of lock-free and thread-safe collections. |
 
-### Namespace: `DotNetDupe::System::Text::Json`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [JsonSerializer](docs/JsonSerializer.md) | Provides functionality to serialize objects to JSON and deserialize JSON to objects. |
+---
 
 ### Namespace: `DotNetDupe::System::IO`
 
@@ -823,55 +840,95 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Path](docs/Path.md) | A class for path-related operations. |
-| [File](docs/File.md) | Provides static methods for the creation, copying, deletion, moving, and opening of a single file. |
-| [Directory](docs/Directory.md) | Exposes static methods for creating, moving, deleting, and enumerating directories and files. |
-| [FileStream](docs/FileStream.md) | Provides a `Stream` for a file, supporting both synchronous and asynchronous read and write operations. |
-| [Stream](docs/Stream.md) | Provides a generic view of a sequence of bytes. |
-| [TextReader](docs/TextReader.md) | Represents a reader that can read a sequential series of characters. |
-| [TextWriter](docs/TextWriter.md) | Represents a writer that can write a sequential series of characters. |
-| [StringReader](docs/StringReader.md) | Implements a `TextReader` that reads from a string. |
-| [StringWriter](docs/StringWriter.md) | Implements a `TextWriter` for writing information to a string. |
+| [File](docs/File.md) | Static helper methods for file creation, reading, writing, moving, and deletion. |
+| [Directory](docs/Directory.md) | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
+| [Path](docs/Path.md) | Performs cross-platform directory and file path string operations. |
+| [Stream](docs/Stream.md) | Abstract base class for byte sequence streams. |
+| [FileStream](docs/FileStream.md) | Provides a byte stream for files supporting synchronous read/write. |
+| [MemoryStream](docs/Stream.md) | Creates a stream whose backing store is memory. |
+| [TextReader](docs/TextReader.md) | Abstract reader for sequential character input. |
+| [TextWriter](docs/TextWriter.md) | Abstract writer for sequential character output. |
+| [StringReader](docs/StringReader.md) | Implements `TextReader` reading from a `String`. |
+| [StringWriter](docs/StringWriter.md) | Implements `TextWriter` writing characters into a string buffer. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| [IOException](docs/Exceptions.md) | The exception that is thrown when an I/O error occurs. |
+| [IOException](docs/Exceptions.md) | Thrown when an I/O or file system error occurs. |
+| [FileNotFoundException](docs/Exceptions.md) | Thrown when an attempt to access a file that does not exist on disk fails. |
+| [DirectoryNotFoundException](docs/Exceptions.md) | Thrown when part of a file or directory path cannot be found. |
+| [EndOfStreamException](docs/Exceptions.md) | Thrown when reading is attempted past the end of a stream. |
 
-**Interfaces**
+---
 
-| Interface | Description |
-|---|---|
-| [IDisposable](docs/Interfaces.md) | Provides a mechanism for releasing unmanaged resources. |
-
-### Namespace: `DotNetDupe::System::Net`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [Dns](docs/HttpClient.md) | Provides simple domain name resolution functionality. |
-
-### Namespace: `DotNetDupe::System::Net::Sockets`
+### Namespace: `DotNetDupe::System::Threading` & `System::Threading::Tasks`
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| [Socket](docs/Sockets.md) | A wrapper around standard native socket APIs. |
-| [NetworkStream](docs/Sockets.md) | Provides the underlying stream of data for network access. |
-| [TcpClient](docs/Sockets.md) | Provides client connections for TCP network services. |
-| [TcpListener](docs/Sockets.md) | Listens for connections from TCP network clients. |
-| [UdpClient](docs/Sockets.md) | Provides UDP datagram sockets. |
+| [Thread](docs/Thread.md) | Creates, configures, and controls OS threads. |
+| [ThreadPool](docs/ThreadPool.md) | High-throughput worker thread pool managing parallel task execution. |
+| [Task](docs/Task.md) | Represents asynchronous operations with continuation support. |
+| [Task&lt;T&gt;](docs/Task.md) | Represents asynchronous operations returning a result value. |
+| [WaitHandle](docs/WaitHandle.md) | Abstract base class for thread synchronization handles. |
+| [EventWaitHandle](docs/EventWaitHandle.md) | Manages cross-thread and system synchronization event signals. |
+| [AutoResetEvent](docs/AutoResetEvent.md) | Notifies waiting threads and automatically resets to non-signaled state. |
+| [ManualResetEvent](docs/ManualResetEvent.md) | Notifies waiting threads and remains signaled until manually reset. |
+| [Mutex](docs/Mutex.md) | Mutual exclusion synchronization primitive (supports named inter-process mutexes). |
+| [Semaphore](docs/Semaphore.md) | Limits concurrent thread access to a bounded resource pool. |
+| [SemaphoreSlim](docs/SemaphoreSlim.md) | Lightweight alternative to `Semaphore` avoiding kernel transitions for fast locking. |
+| [CriticalSection](docs/CriticalSection.md) | Low-overhead recursive mutex primitive for intra-process synchronization. |
+| [Interlocked](docs/Interlocked.md) | Provides atomic hardware operations (`Increment`, `Decrement`, `Exchange`, `CompareExchange`). |
+| [Lock&lt;T&gt;](docs/Lock.md) | Exception-safe RAII lock wrapper for synchronization primitives. |
 
-### Namespace: `DotNetDupe::System::Net::Security`
+**Exceptions**
+
+| Exception | Description |
+|---|---|
+| [ThreadStateException](docs/Exceptions.md) | Thrown when a thread is in an invalid state for the requested operation. |
+| [ThreadInterruptedException](docs/Exceptions.md) | Thrown when a thread is interrupted while waiting. |
+| [SynchronizationLockException](docs/Exceptions.md) | Thrown when unlocking a synchronization object not owned by the caller. |
+| [AbandonedMutexException](docs/Exceptions.md) | Thrown when a thread acquires a mutex abandoned by another terminating thread. |
+| [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | Thrown when attempting to open a non-existent named system sync handle. |
+| [SemaphoreFullException](docs/Exceptions.md) | Thrown when releasing a semaphore whose count is already at maximum capacity. |
+| [TaskCanceledException](docs/Exceptions.md) | Thrown when a task execution is canceled. |
+
+---
+
+### Namespace: `DotNetDupe::System::Diagnostics`
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| [SslStream](docs/SslStream.md) | Provides a stream that uses the SSL/TLS security protocol to secure communication. |
+| [Process](docs/Process.md) | Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes. |
+| [Stopwatch](docs/Stopwatch.md) | High-resolution performance timer for measuring elapsed time. |
+| [EventLog](docs/EventLog.md) | Interacts with OS diagnostic event logs and writes operational entries. |
+| [EtwLogReader](docs/EtwLogReader.md) | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
+| [SystemMetrics](docs/SystemMetrics.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
+| [RealtimeTelemetry](docs/RealtimeTelemetry.md) | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
+| [ActiveUserSession](docs/ActiveUserSession.md) | Enumerates active and terminal user sessions across the system. |
+| [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
+
+---
+
+### Namespace: `DotNetDupe::System::Net`, `System::Net::Sockets` & `System::Net::Security`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Dns](docs/HttpClient.md) | Provides domain name resolution and IP address lookup. |
+| [Socket](docs/Sockets.md) | Low-level cross-platform BSD/WinSock socket abstraction. |
+| [NetworkStream](docs/Sockets.md) | Implements `Stream` backed by a network socket. |
+| [TcpClient](docs/Sockets.md) | Client connection wrapper for TCP network services. |
+| [TcpListener](docs/Sockets.md) | TCP listener for accepting incoming network connections. |
+| [UdpClient](docs/Sockets.md) | User Datagram Protocol (UDP) client for datagram transmission. |
+| [SslStream](docs/SslStream.md) | TLS/SSL secure stream wrapper built on OpenSSL. |
+
+---
 
 ### Namespace: `DotNetDupe::System::Net::Http`
 
@@ -879,47 +936,52 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [HttpClient](docs/HttpClient.md) | Sends HTTP requests and receives HTTP responses from a resource identified by a URI. |
-| [RestClient](docs/RestClient.md) | Represents a strongly-typed REST client that simplifies resource-oriented Web API interactions by automatically serializing/deserializing payloads to and from C++ structures. |
-| [FileDownloader](docs/FileDownloader.md) | Provides HTTP/HTTPS file downloading with pause/resume support, auto-resumption of partial downloads, and real-time speed/progress tracking built upon `HttpClient`. |
-| [HttpRequestMessage](docs/HttpClient.md) | Represents an HTTP request message. |
-| [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response message including the status code and data. |
-| [HttpContent](docs/HttpClient.md) | Abstract class representing an HTTP entity body and content headers. |
-| [StringContent](docs/HttpClient.md) | Provides HTTP content based on a string. |
-| [ByteArrayContent](docs/HttpClient.md) | Provides HTTP content based on a byte array. |
-| [HttpMethod](docs/HttpClient.md) | Represents an HTTP method. |
+| [HttpClient](docs/HttpClient.md) | Sends HTTP/HTTPS requests and receives responses from URI endpoints. |
+| [RestClient&lt;T&gt;](docs/RestClient.md) | Strongly-typed REST client with automated C++ structure JSON serialization/deserialization. |
+| [FileDownloader](docs/FileDownloader.md) | High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal. |
+| [HttpRequestMessage](docs/HttpClient.md) | Represents an outgoing HTTP request with headers, method, and payload. |
+| [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response with status code, response headers, and content stream. |
+| [HttpContent](docs/HttpClient.md) | Base class for HTTP entity bodies and content headers. |
+| [StringContent](docs/HttpClient.md) | HTTP content wrapper for text and JSON payloads. |
+| [ByteArrayContent](docs/HttpClient.md) | HTTP content wrapper for raw byte arrays and binary payloads. |
+| [HttpMethod](docs/HttpClient.md) | Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.). |
 
-### Namespace: `DotNetDupe::System::Security::Principal`
+---
 
-**Classes**
-
-| Class | Description |
-|---|---|
-| [UserPrincipal](docs/UserPrincipal.md) | Enumerates system user accounts (Windows/Linux) and inspects user classification, groups, and security permissions. |
-
-### Namespace: `DotNetDupe::System::Security::Cryptography`
+### Namespace: `DotNetDupe::System::Text` & `System::Text::Json`
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| [HMACSHA256](docs/JWTToken.md) | Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function. |
+| [StringBuilder](docs/StringBuilder.md) | Mutable string buffer for high-performance string concatenation. |
+| [TextEncoding](docs/TextEncoding.md) | Represents character encodings (UTF-8, ASCII, UTF-16). |
+| [JsonSerializer](docs/JsonSerializer.md) | Serializes objects to JSON strings and deserializes JSON to C++ types. |
 
-### Namespace: `DotNetDupe::System::Security::Cryptography::X509Certificates`
+---
 
-**Classes**
-
-| Class | Description |
-|---|---|
-| [X509Certificate2](docs/X509Certificate2.md) | Represents an X.509 certificate and private key loaded from PEM files. |
-
-### Namespace: `DotNetDupe::System::IdentityModel::Tokens::Jwt`
+### Namespace: `DotNetDupe::System::Utils`
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| [JWTToken](docs/JWTToken.md) | Represents a JSON Web Token containing a header block, claims, and signature. |
+| [StringConvert](docs/StringConvert.md) | Static helper methods for UTF-8 / UTF-16 conversions and type transformations. |
+
+---
+
+### Namespace: `DotNetDupe::System::Security`
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [UserPrincipal](docs/UserPrincipal.md) | Cross-platform user account enumeration, group memberships, and administrative privilege inspection. |
+| [HMACSHA256](docs/JWTToken.md) | Computes SHA256 Hash-based Message Authentication Codes. |
+| [X509Certificate2](docs/X509Certificate2.md) | Loads and inspects X.509 SSL/TLS certificates and private keys. |
+| [JWTToken](docs/JWTToken.md) | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
+
+---
 
 ### Namespace: `DotNetDupe::System::Data::SqlClient`
 
@@ -927,85 +989,69 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [SqlConnection](docs/Database.md) | Represents an open connection to a database. |
-| [SqlCommand](docs/Database.md) | Represents an SQL statement to execute against a database. |
-| [SqlDataReader](docs/Database.md) | Provides a way of reading a forward-only stream of rows from a database. |
-| [SqlParameter](docs/Database.md) | Represents a parameter for an SQL command. |
+| [SqlConnection](docs/Database.md) | Represents an open connection to a database (supports In-Memory emulation and SQLite persistence). |
+| [SqlCommand](docs/Database.md) | Represents SQL statements and queries to execute against a database. |
+| [SqlDataReader](docs/Database.md) | Forward-only cursor for reading result rows from SQL queries. |
+| [SqlParameter](docs/Database.md) | Parameter for parameterized SQL commands protecting against SQL injection. |
 
-### Namespace: `DotNetDupe::System::Threading`
-
-**Classes**
-
-| Class | Description |
-|---|---|
-| [Thread](docs/Thread.md) | Creates and controls a thread, sets its priority, and gets its status. |
-| [ThreadPool](docs/ThreadPool.md) | Provides a pool of threads that can be used to execute tasks, post work items, and more. |
-| [Task](docs/Task.md) | Represents an asynchronous operation. |
-| [WaitHandle](docs/WaitHandle.md) | Abstract base class for synchronization objects. |
-| [EventWaitHandle](docs/EventWaitHandle.md) | Represents a thread synchronization event. |
-| [ManualResetEvent](docs/ManualResetEvent.md) | Notifies one or more waiting threads that an event has occurred. |
-| [AutoResetEvent](docs/AutoResetEvent.md) | Notifies a waiting thread that an event has occurred. |
-| [Mutex](docs/Mutex.md) | A synchronization primitive that can also be used for inter-process synchronization. |
-| [Semaphore](docs/Semaphore.md) | Limits the number of threads that can access a resource or pool of resources concurrently. |
-| [SemaphoreSlim](docs/SemaphoreSlim.md) | A lightweight alternative to `Semaphore`. |
-| [CriticalSection](docs/CriticalSection.md) | A wrapper around a recursive mutex for critical sections. |
-| [Interlocked](docs/Interlocked.md) | Provides atomic operations for variables that are shared by multiple threads. |
-| [Lock<T>](docs/Lock.md) | RAII mechanism for synchronization objects. |
-
-**Exceptions**
-
-| Exception | Description |
-|---|---|
-| [ThreadStateException](docs/Exceptions.md) | The exception that is thrown when a Thread is in an invalid ThreadState for the method call. |
-| [ThreadInterruptedException](docs/Exceptions.md) | The exception that is thrown when a Thread is interrupted while it is in a waiting state. |
-| [SynchronizationLockException](docs/Exceptions.md) | The exception that is thrown when a method requires the caller to own the lock on a given Monitor, and the method is invoked by a caller that does not own that lock. |
-| [AbandonedMutexException](docs/Exceptions.md) | The exception that is thrown when one thread acquires a Mutex object that another thread has abandoned by exiting without releasing it. |
-| [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | The exception that is thrown when an attempt is made to open a system mutex, semaphore, or event wait handle that does not exist. |
-| [SemaphoreFullException](docs/Exceptions.md) | The exception that is thrown when the Release method is called on a semaphore whose count is already at the maximum. |
+---
 
 ### Namespace: `DotNetDupe::Extensions::DependencyInjection`
 
-**Classes**
+**Classes & Interfaces**
 
-| Class | Description |
+| Type | Description |
 |---|---|
-| [ServiceCollection](docs/DependencyInjection.md) | Accumulates service descriptors and builds the service provider. |
-| [ServiceProvider](docs/DependencyInjection.md) | The concrete implementation of the dependency injection container. |
-| [ServiceScope](docs/DependencyInjection.md) | Represents a lifetime scope for scoped services. |
-| [ServiceScopeFactory](docs/DependencyInjection.md) | Creates instances of `ServiceScope`, which are used to resolve scoped dependencies. |
+| [ServiceCollection](docs/DependencyInjection.md) | Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes. |
+| [ServiceProvider](docs/DependencyInjection.md) | Dependency injection container resolving registered service dependencies. |
+| [ServiceScope](docs/DependencyInjection.md) | Represents a lifetime scope for resolving scoped service instances. |
+| [ServiceScopeFactory](docs/DependencyInjection.md) | Factory for creating scoped service containers. |
+| [IServiceCollection](docs/DependencyInjection.md) | Contract for service collection builders. |
+| [IServiceScope](docs/DependencyInjection.md) | Contract for lifetime scopes. |
+| [IServiceScopeFactory](docs/DependencyInjection.md) | Contract for service scope factories. |
 
-**Interfaces**
-
-| Interface | Description |
-|---|---|
-| [IServiceCollection](docs/DependencyInjection.md) | A collection of service descriptors. |
-| [IServiceScope](docs/DependencyInjection.md) | Represents the lifetime of a scoped service. |
-| [IServiceScopeFactory](docs/DependencyInjection.md) | Defines a factory for creating service scopes. |
+---
 
 ### Namespace: `DotNetDupe::Extensions::Logging`
 
-**Classes**
+**Classes & Interfaces**
+
+| Type | Description |
+|---|---|
+| [LogManager](docs/LogManager.md) | Global thread-safe static factory and cache for category loggers and file/console providers. |
+| [LoggerTextWriter](docs/LoggerTextWriter.md) | High-performance stream redirector bridging `TextWriter` output into `LogManager`. |
+| [LoggerFactory](docs/Logging.md) | Configures providers and generates category loggers. |
+| [Logger&lt;T&gt;](docs/Logging.md) | Generic category logger for class-specific logging. |
+| [ConsoleLoggerProvider](docs/Logging.md) | Renders structured console log records (Plain text and JSON format). |
+| [FileLoggerProvider](docs/Logging.md) | Thread-safe file logging provider with auto directory creation and relative path resolution. |
+| [ILogger](docs/Logging.md) | Core interface for emitting structured diagnostic log events. |
+| [ILoggerOf&lt;T&gt;](docs/Logging.md) | Generic category logger interface. |
+| [ILoggerProvider](docs/Logging.md) | Provider factory interface for creating loggers. |
+| [ILoggerFactory](docs/Logging.md) | Logging factory interface. |
+
+---
+
+### Namespace: `DotNetDupe::WebAppCore`
+
+**Builder, Controllers & Server**
 
 | Class | Description |
 |---|---|
-| [LogManager](docs/LogManager.md) | Global static factory for obtaining and caching category-based ConsoleLogger and FileLogger instances. |
-| [LoggerFactory](docs/Logging.md) | The concrete implementation of the logging factory. |
-| [Logger<T>](docs/Logging.md) | A generic template wrapper for class-specific category logging. |
-| [ConsoleLoggerProvider](docs/Logging.md) | Renders structured console outputs (Plain or JSON format). |
-| [FileLoggerProvider](docs/Logging.md) | Writes structured log records thread-safely to a file. |
+| [WebApplicationBuilder](docs/WebApplication.md) | Configures services, dependency injection, and builds the `WebApplication` host. |
+| [WebApplication](docs/WebApplication.md) | Configures routing endpoints and executes the HTTP server listener. |
+| [WebAppServer](docs/WebAppServer.md) | Web server hosting static website content (`index.html`, CSS, JS) and REST APIs simultaneously. |
+| [ControllerBase](docs/ControllerBase.md) | Base class for ASP.NET MVC / Web API style controllers (`Ok`, `Created`, `NotFound`, `BadRequest`). |
+| [ControllerRouteBuilder&lt;T&gt;](docs/WebApplication.md) | Maps controller actions and automates JSON payload serialization and deserialization. |
+| [HttpContext](docs/HttpContext.md) | Encapsulates HTTP request and response context for individual HTTP transactions. |
+| [HttpRequest](docs/HttpContext.md) | Represents incoming HTTP request headers, query parameters, and body. |
+| [HttpResponse](docs/HttpContext.md) | Represents outgoing HTTP response status codes, headers, and body. |
+| [Push Notifications (SSE & WebSockets)](docs/PushNotifications.md) | Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets. |
 
-**Interfaces**
-
-| Interface | Description |
-|---|---|
-| [ILogger](docs/Logging.md) | Defines the entry interface for logging messages. |
-| [ILoggerOf<T>](docs/Logging.md) | Represents a template logging category interface. |
-| [ILoggerProvider](docs/Logging.md) | Defines a provider factory for creating loggers. |
-| [ILoggerFactory](docs/Logging.md) | Manages logging providers and creates category loggers. |
+---
 
 ## Project Status 🚧
 
-DotNetDupe is currently **under active development**. We are continuously working on expanding the API coverage and improving stability.
+DotNetDupe is currently **under active development**. I am continuously working on expanding the API coverage and improving stability.
 
 ## Contributions 👋
 
@@ -1018,15 +1064,15 @@ This repository uses GitHub Actions to automate the build, test, and release pro
 ### Workflow Details
 - **Build & Test Matrix**: Every push to `main` and all pull requests trigger a full build (Debug & Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.
 - **GitHub CodeQL Analysis**: Continuous semantic security vulnerability scanning on every push, pull request, and weekly schedule via `github/codeql-action`.
-- **Quality Gates & Static Analysis**: Automated enforcement of 11 Quality Gate metrics (LLOC $\le 15$, CCN $\le 10$, Nesting depth $\le 4$, Hungarian SmartPointers, zero empty catch blocks, zero standard `throw std::*` exceptions, zero raw pointer ownership).
+- **Quality Gates & Static Analysis**: Automated enforcement of 11 Quality Gate metrics (LLOC &le; 15, CCN &le; 10, Nesting depth &le; 4, Hungarian SmartPointers, zero empty catch blocks, zero standard `throw std::*` exceptions, zero raw pointer ownership).
 - **Code Coverage**: Automated code coverage measurement via OpenCppCoverage (> 80% line coverage required) and static analysis HTML report generation.
 - **NuGet Release**: Pushing a tag (e.g., `v1.0.0`) triggers the creation and publishing of the NuGet package to [nuget.org](https://www.nuget.org/).
 
 ### Code Coverage & Static Analysis 📊
-- **Local Git Repository Reports:**
-  - 📈 [OpenCppCoverage HTML Report](CodeCoverage/index.html)
-  - 🔍 [Static Analysis & Quality Gate Report](CodeCoverage/StaticAnalysis.html)
-- **Live Web Report:** [https://sudheeshps.github.io/DotNetDupe/](https://sudheeshps.github.io/DotNetDupe/)
+- **Online Reports:**
+  - 📈 [OpenCppCoverage HTML Report](https://sudheeshps.github.io/dotnetdupe/CodeCoverage/index.html)
+  - 🔍 [Static Analysis & Quality Gate Report](https://sudheeshps.github.io/dotnetdupe/CodeCoverage/StaticAnalysis.html)
+- **Live Documentation Portal:** [https://sudheeshps.github.io/dotnetdupe/](https://sudheeshps.github.io/dotnetdupe/)
 - **Local Generation:** Run `powershell .\scripts\Generate-CoverageReport.ps1` to execute tests under OpenCppCoverage and refresh the `CodeCoverage/` folder.
 
 ### How to Release
@@ -1045,8 +1091,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## Generated Content 🤖
 
-This project is a unique blend of manual craftsmanship and AI-powered development. While the initial core components were meticulously crafted by hand, the majority of the remaining code, including many classes, methods, and their corresponding unit tests, were generated with the assistance of Gemini, a large language model. This approach highlights the potential of generative AI in accelerating software development from scratch.
+This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.
 
 ## Contact 📧
 
-For questions or support, please open an issue on the [GitHub repository](https://github.com/sudheeshps/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:your-email@example.com).
+For questions or support, please open an issue on the [GitHub repository](https://github.com/sudheeshps/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:sudheeshps@gmail.com).

@@ -1,166 +1,124 @@
-### class `Path`
+# Path
 
-A class for path-related operations.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/Path.h"`
 
-#### Methods
+Performs operations on `String` instances that contain file or directory path information. These operations are performed in a cross-platform manner.
 
-##### `static String ChangeExtension(const String &sFilePath, const String &sExtension)`
+---
 
+## Syntax
+
+```cpp
+class Path;
+```
+
+---
+
+## Static Methods & Path Operators
+
+### `static String Combine(const std::initializer_list<String> sPaths)`
+Combines multiple path strings into a single path using the appropriate directory separator char.
+
+```cpp
+String fullPath = Path::Combine({ "C:\\App", "Data", "config.json" });
+```
+
+### `static String Join(const std::initializer_list<String> sPaths)`
+Concatenates an array of paths into a single path.
+
+### `static bool TryJoin(const std::initializer_list<String> sPaths, String& sResult)`
+Attempts to concatenate paths into `sResult`.
+
+### `static String ChangeExtension(const String& sFilePath, const String& sExtension)`
 Changes the extension of a path string.
 
-**Parameters:**
-- `sFilePath`: The path information to modify.
-- `sExtension`: The new extension (with or without a leading period). Specify `null` to remove an existing extension from `sFilePath`.
-
-**Returns:**
-- The modified path information.
-
-**Usage:**
 ```cpp
-String sResult = Path::ChangeExtension("file.txt", ".bak"); // "file.bak"
+String imgPath = Path::ChangeExtension("report.doc", ".pdf"); // "report.pdf"
 ```
 
-##### `static String Combine(const std::initializer_list<String> arrPaths)`
+### `static String GetDirectoryName(const String& sFilePath)`
+Returns the directory information for the specified path string.
 
-Combines multiple strings into a path.
-
-**Parameters:**
-- `arrPaths`: A collection of parts of the path.
-
-**Returns:**
-- The combined paths.
-
-**Usage:**
-```cpp
-String sCombined = Path::Combine({ "C:", "Users", "test.txt" });
-```
-
-##### `static bool EndsInDirectorySeparator(const String &sFilePath)`
-
-Determines whether the path ends in a directory separator.
-
-**Parameters:**
-- `sFilePath`: The path to analyze.
-
-**Returns:**
-- `true` if the path ends in a directory separator; otherwise, `false`.
-
-**Usage:**
-```cpp
-bool bResult = Path::EndsInDirectorySeparator("C:\\Temp\\"); // true
-```
-
-##### `static bool Exists(const String &sFilePath)`
-
-Determines whether the given path refers to an existing file or directory.
-
-**Parameters:**
-- `sFilePath`: The path to test.
-
-**Returns:**
-- `true` if the path refers to an existing file or directory; otherwise, `false`.
-
-**Usage:**
-```cpp
-if (Path::Exists("test.txt")) { /* ... */ }
-```
-
-##### `static String GetDirectoryName(const String &sFilePath)`
-
-Returns the directory information for the specified path.
-
-**Parameters:**
-- `sFilePath`: The path of a file or directory.
-
-**Returns:**
-- Directory information for `sFilePath`, or an empty string if `sFilePath` denotes a root directory or is null.
-
-**Usage:**
-```cpp
-String sDir = Path::GetDirectoryName("C:\\Temp\\test.txt"); // "C:\\Temp"
-```
-
-##### `static String GetFileName(const String &sFilePath)`
-
+### `static String GetFileName(const String& sFilePath)`
 Returns the file name and extension of the specified path string.
 
-**Parameters:**
-- `sFilePath`: The path string from which to obtain the file name and extension.
-
-**Returns:**
-- The characters after the last directory separator in `sFilePath`.
-
-**Usage:**
-```cpp
-String sFileName = Path::GetFileName("C:\\Temp\\test.txt"); // "test.txt"
-```
-
-##### `static String GetExtension(const String &sFilePath)`
-
-Returns the extension of the specified path string.
-
-**Parameters:**
-- `sFilePath`: The path string from which to get the extension.
-
-**Returns:**
-- The extension of the specified path (including the period "."), or an empty string.
-
-**Usage:**
-```cpp
-String sExt = Path::GetExtension("test.txt"); // ".txt"
-```
-
-##### `static String GetFileNameWithoutExtension(const String &sFilePath)`
-
+### `static String GetFileNameWithoutExtension(const String& sFilePath)`
 Returns the file name of the specified path string without the extension.
 
-**Parameters:**
-- `sFilePath`: The path of the file.
+### `static String GetExtension(const String& sFilePath)`
+Returns the extension (including the period `"."`) of the specified path string.
 
-**Returns:**
-- The string returned by `GetFileName`, minus the last period and all characters following it.
+### `static bool HasExtension(const String& sPath)`
+Determines whether a path includes a file name extension.
 
-**Usage:**
-```cpp
-String sName = Path::GetFileNameWithoutExtension("test.txt"); // "test"
-```
-
-##### `static String GetFullPath(const String &sPath)`
-
+### `static String GetFullPath(const String& sPath)`
 Returns the absolute path for the specified path string.
 
-**Parameters:**
-- `sPath`: The file or directory for which to obtain absolute path information.
+### `static String GetRelativePath(const String& sRelativeTo, const String& sPath)`
+Returns a relative path from one path to another.
 
-**Returns:**
-- The fully qualified location of `sPath`.
+### `static String GetPathRoot(const String& sPath)`
+Gets the root directory information from the path.
 
-**Usage:**
+### `static bool IsPathRooted(const String& sPath)`
+Gets a value indicating whether the specified path string contains a root.
+
+### `static bool IsPathFullyQualified(const String& sPath)`
+Returns a value that indicates whether the path is fully qualified.
+
+### `static String GetTempPath()`
+Returns the path of the current user's temporary folder.
+
+### `static String GetTempFileName()`
+Creates a uniquely named, zero-byte temporary file on disk and returns the full path of that file.
+
+### `static String GetRandomFileName()`
+Returns a random folder name or file name.
+
+### `static bool EndsInDirectorySeparator(const String& sFilePath)`
+Returns a value that indicates whether the specified file path ends in a directory separator.
+
+### `static String TrimEndingDirectorySeparator(const String& sPath)`
+Trims one trailing directory separator beyond the root of the specified path.
+
+### `static bool Exists(const String& sFilePath)`
+Determines whether the given path refers to an existing file or directory.
+
+---
+
+## Static Separator Constants
+
+- `static char GetDirectorySeparatorChar()`: Primary separator character (`\` on Windows, `/` on Linux).
+- `static char GetAltDirectorySeparatorChar()`: Alternate separator character (`/` on Windows).
+- `static char GetVolumeSeparatorChar()`: Volume separator (`:` on Windows).
+- `static char GetPathSeparator()`: Path separator in environment variables (`;` on Windows, `:` on POSIX).
+- `static Array<char> GetInvalidFileNameChars()`: Returns an array containing characters not allowed in file names.
+- `static Array<char> GetInvalidPathChars()`: Returns an array containing characters not allowed in path names.
+
+---
+
+## Example
+
 ```cpp
-String sFullPath = Path::GetFullPath("test.txt");
+#include "System/Console.h"
+#include "System/IO/Path.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    String filePath = "C:\\Projects\\DotNetDupe\\Include\\System\\String.h";
+
+    Console::WriteLine("Directory: {0}", Path::GetDirectoryName(filePath));
+    Console::WriteLine("File Name: {0}", Path::GetFileName(filePath));
+    Console::WriteLine("No Ext:    {0}", Path::GetFileNameWithoutExtension(filePath));
+    Console::WriteLine("Extension: {0}", Path::GetExtension(filePath));
+
+    String tempLog = Path::Combine({ Path::GetTempPath(), "test.log" });
+    Console::WriteLine("Combined Temp: {0}", tempLog);
+
+    return 0;
+}
 ```
-
-##### `static Array<char> GetInvalidFileNameChars()`
-
-Gets an array of characters that are not allowed in file names.
-
-**Returns:**
-- An `Array<char>` containing the characters that are not allowed in file names.
-
-**Usage:**
-```cpp
-auto arrInvalid = Path::GetInvalidFileNameChars();
-```
-
-##### `static Array<char> GetInvalidPathChars()`
-
-Gets an array of characters that are not allowed in path names.
-
-**Returns:**
-- An `Array<char>` containing the characters that are not allowed in path names.
-
-**Usage:**
-```cpp
-auto arrInvalid = Path::GetInvalidPathChars();
-```
-

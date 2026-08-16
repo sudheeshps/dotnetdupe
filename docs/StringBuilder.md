@@ -1,123 +1,78 @@
-### class `StringBuilder`
+# StringBuilder
 
-Represents a mutable string of characters.
+**Namespace:** `DotNetDupe::System::Text`  
+**Header:** `#include "System/Text/StringBuilder.h"`
 
-#### Methods
+Represents a mutable string of characters. Use `StringBuilder` to modify a string without creating intermediate heap allocations.
 
-##### `StringBuilder()`
+---
 
-Initializes a new instance of the `StringBuilder` class.
+## Syntax
 
-**Usage:**
 ```cpp
-StringBuilder sb;
+class StringBuilder : public Object;
 ```
 
-##### `StringBuilder(const String& value)`
+---
 
+## Constructors
+
+### `StringBuilder()`
+Initializes a new, empty instance of the `StringBuilder` class with default capacity.
+
+### `StringBuilder(int capacity)`
+Initializes a new instance of the `StringBuilder` class using the specified capacity.
+
+### `StringBuilder(const String& value)`
 Initializes a new instance of the `StringBuilder` class using the specified string.
 
-**Usage:**
-```cpp
-StringBuilder sb("Initial");
-```
+---
 
-##### `StringBuilder& Append(...)`
+## Properties
 
-Appends the string representation of a specified value to this instance. Overloads are available for `String`, `TCHAR*`, `TCHAR`, `int`, `long long`, `double`, and `bool`.
+- `int GetLength() const` / `void SetLength(int value)`: Gets or sets the length of the current `StringBuilder` object.
+- `int GetCapacity() const` / `void SetCapacity(int value)`: Gets or sets the maximum number of characters that can be contained in the memory allocated by the current instance.
 
-**Usage:**
-```cpp
-sb.Append("Items: ").Append(10);
-```
+---
 
-##### `StringBuilder& AppendLine(...)`
+## Member Functions
 
-Appends the string representation of a specified value followed by the default line terminator.
+### `StringBuilder& Append(const String& / const char* / char / int / long long / double / bool value)`
+Appends a string or string representation of a specified primitive to the end of this instance. Returns a reference to this instance for chaining.
 
-**Usage:**
-```cpp
-sb.AppendLine("Line 1");
-```
+### `StringBuilder& AppendLine()`
+Appends the default line terminator to the end of the current `StringBuilder` object.
 
-##### `StringBuilder& Clear()`
+### `StringBuilder& AppendLine(const String& value)`
+Appends a copy of the specified string followed by the default line terminator to the end of the current `StringBuilder` object.
 
+### `StringBuilder& Clear()`
 Removes all characters from the current `StringBuilder` instance.
 
-**Usage:**
-```cpp
-sb.Clear();
-```
-
-##### `int GetLength() const`
-
-Gets the length of the current `StringBuilder` object.
-
-**Usage:**
-```cpp
-int len = sb.GetLength();
-```
-
-##### `void SetLength(int value)`
-
-Sets the length of the current `StringBuilder` object.
-
-**Usage:**
-```cpp
-sb.SetLength(0);
-```
-
-##### `String ToString() const`
-
+### `String ToString() const`
 Converts the value of this instance to a `String`.
 
-**Usage:**
-```cpp
-String result = sb.ToString();
-```
+---
 
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `StringBuilder`.
+## Example
 
 ```cpp
-#include "System/Text/StringBuilder.h"
 #include "System/Console.h"
-#include "System/Exception.h"
+#include "System/Text/StringBuilder.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Text;
 
 int main() {
-    try {
-        StringBuilder sb;
-        
-        // Chained Appends
-        sb.Append("Value: ")
-          .Append(42)
-          .Append(", Status: ")
-          .Append(true)
-          .AppendLine()
-          .AppendLine("Next line of data.");
-          
-        Console::WriteLine("StringBuilder result:");
-        Console::WriteLine(sb.ToString());
-        
-        // Displaying length
-        Console::Write("Buffer length: ");
-        Console::WriteLine(sb.GetLength());
-        
-        // Clearing
-        sb.Clear();
-        sb.Append("Brand new content");
-        Console::WriteLine(sb.ToString());
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
-    }
+    StringBuilder sb(256);
+    sb.AppendLine("=== System Report ===");
+    sb.Append("Active Users: ").Append(42).AppendLine();
+    sb.Append("CPU Load: ").Append(12.5).Append("%").AppendLine();
+    sb.Append("Healthy: ").Append(true);
+
+    String finalOutput = sb.ToString();
+    Console::WriteLine(finalOutput);
+
     return 0;
 }
 ```
-
-

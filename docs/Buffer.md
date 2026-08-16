@@ -1,121 +1,96 @@
-### class `Buffer`
+# Buffer
 
-Manipulates arrays of primitive types.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Buffer.h"`
 
-#### Methods
+Manipulates arrays of primitive types at the byte level with bounds-checking.
 
-##### `template <typename T> static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count)`
+---
 
+## Syntax
+
+```cpp
+class Buffer : public Object;
+```
+
+---
+
+## Static Methods
+
+### `template <typename T> static void BlockCopy(Array<T>& src, int srcOffset, Array<T>& dst, int dstOffset, int count)`
 Copies a specified number of bytes from a source array starting at a particular offset to a destination array starting at a particular offset.
 
-**Parameters:**
-- `src`: The source buffer.
-- `srcOffset`: The zero-based byte offset into `src`.
-- `dst`: The destination buffer.
-- `dstOffset`: The zero-based byte offset into `dst`.
-- `count`: The number of bytes to copy.
+- **Parameters:**
+  - `src` (`Array<T>&`): The source buffer.
+  - `srcOffset` (`int`): The zero-based byte offset into `src`.
+  - `dst` (`Array<T>&`): The destination buffer.
+  - `dstOffset` (`int`): The zero-based byte offset into `dst`.
+  - `count` (`int`): The number of bytes to copy.
+- **Throws:**
+  - `ArgumentNullException`: If `src` or `dst` is empty/null.
+  - `ArgumentOutOfRangeException`: If offsets or count are negative.
+  - `ArgumentException`: If copying exceeds array byte capacity.
 
-**Usage:**
 ```cpp
-Array<int> src = { 1, 2, 3, 4, 5 };
-Array<int> dst(5);
-Buffer::BlockCopy(src, 0, dst, 0, 5 * sizeof(int));
+Array<int> arrSrc = { 10, 20, 30 };
+Array<int> arrDst(3);
+Buffer::BlockCopy(arrSrc, 0, arrDst, 0, 3 * sizeof(int));
 ```
 
-##### `template <typename T> static int ByteLength(Array<T>& array)`
+---
 
-Returns the number of bytes in the specified array.
+### `template <typename T> static int ByteLength(Array<T>& array)`
+Returns the total number of bytes in the specified array.
 
-**Parameters:**
-- `array`: An array.
+- **Parameters:**
+  - `array` (`Array<T>&`): An array of primitive types.
+- **Returns:**
+  - `int`: The number of bytes in the array (`GetLength() * sizeof(T)`).
+- **Throws:**
+  - `ArgumentNullException`: If `array` is empty/null.
 
-**Returns:**
-- The number of bytes in the array.
-
-**Usage:**
 ```cpp
-Array<int> arr(10);
-int bytes = Buffer::ByteLength(arr); // 10 * sizeof(int)
+Array<int> arrNumbers(5);
+int iBytes = Buffer::ByteLength(arrNumbers); // 20 bytes
 ```
 
-##### `template <typename T> static byte GetByte(Array<T>& array, int index)`
+---
 
-Retrieves the byte at a specified location in a specified array.
+### `template <typename T> static byte GetByte(Array<T>& array, int index)`
+Retrieves the byte at a specified location in the specified array.
 
-**Parameters:**
-- `array`: An array.
-- `index`: A location in the array.
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `index < 0` or `index >= ByteLength(array)`.
 
-**Returns:**
-- The byte at the specified location in the array.
+---
 
-**Usage:**
-```cpp
-Array<int> arr = { 0x12345678 };
-byte b = Buffer::GetByte(arr, 0);
-```
+### `template <typename T> static void SetByte(Array<T>& array, int index, byte value)`
+Assigns a specified value to a byte at a particular location in a specified array.
 
-##### `template <typename T> static void SetByte(Array<T>& array, int index, byte value)`
+- **Throws:**
+  - `ArgumentOutOfRangeException`: If `index < 0` or `index >= ByteLength(array)`.
 
-Sets a byte at a specified location in a specified array.
+---
 
-**Parameters:**
-- `array`: An array.
-- `index`: A location in the array.
-- `value`: A byte value to set.
-
-**Usage:**
-```cpp
-Array<int> arr(1);
-Buffer::SetByte(arr, 0, 0xAA);
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Buffer`.
+## Example
 
 ```cpp
+#include "System/Console.h"
 #include "System/Buffer.h"
 #include "System/Array.h"
-#include "System/Console.h"
-#include "System/Convert.h"
-#include "System/Exception.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        Array<int> src = { 100, 200, 300, 400 };
-        Array<int> dst(4);
+    Array<short> arrSrc = { 100, 200, 300 };
+    Array<short> arrDst(3);
 
-        // Copy bytes from src to dst using Buffer::BlockCopy
-        Buffer::BlockCopy(src, 0, dst, 0, src.GetLength() * sizeof(int));
+    Buffer::BlockCopy(arrSrc, 0, arrDst, 0, Buffer::ByteLength(arrSrc));
 
-        Console::WriteLine("Destination Array after BlockCopy:");
-        dst.ForEach([](int val) {
-            Console::Write(val);
-            Console::Write(" ");
-        });
-        Console::WriteLine();
-
-        // Get byte length of destination array
-        int byteLen = Buffer::ByteLength(dst);
-        Console::Write("Byte length: ");
-        Console::WriteLine(byteLen);
-
-        // Manipulate bytes directly using SetByte and GetByte
-        Buffer::SetByte(dst, 0, 0x55);
-        byte firstByte = Buffer::GetByte(dst, 0);
-        Console::Write("First byte of dst: 0x");
-        Console::WriteLine(Convert::ToString((int)firstByte, 16));
-        
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
+    for (int iIdx = 0; iIdx < arrDst.GetLength(); ++iIdx) {
+        Console::WriteLine("dst[{0}] = {1}", iIdx, arrDst[iIdx]);
     }
+
     return 0;
 }
 ```
-
-

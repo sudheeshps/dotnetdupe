@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>4.0.0</version>
+    <version>4.0.1</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v4.0.0: Major architectural release. Refactored codebase to avoid STL dependency from public headers (providing ABI stability and clean interfaces across System::String, generic/concurrent collections, I/O, Networking, Logging, and Database subsystems). Added Console I/O stream redirection (SetOut, SetError, SetIn), LoggerTextWriter stream redirector, global LogManager category caching, FileDownloader utility with prompt file handle cleanup, recursive Directory::CreateDirectory, ServiceCollection DI improvements, and streamlined exception hierarchy.</releaseNotes>
+    <releaseNotes>v4.0.1: Maintenance &amp; documentation release. Transpiled and validated full API reference across all namespaces and classes. Enhanced Markdown and HTML rendering of general and threading comparison guides. Cleaned up NuGet packaging transpiler for seamless local IDE and online web navigation.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />
@@ -18,7 +18,7 @@
     </contentFiles>
   </metadata>
   <files>
-    <file src="README.md" target="README.md" />
+    <file src="obj\README.nuget.md" target="README.md" />
     <file src="LICENSE" target="LICENSE" />
     <file src="external\openssl-4.0.1\LICENSE.txt" target="licenses\OPENSSL_LICENSE.txt" />
     <file src="external\openssl-4.0.1\version.txt" target="OPENSSL_VERSION.txt" />

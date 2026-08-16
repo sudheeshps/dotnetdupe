@@ -1,176 +1,81 @@
-### class `Convert`
+# Convert
 
-Provides methods for converting a base data type to another base data type.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Convert.h"`
 
-#### Methods
+Converts a base data type to another base data type, parsing strings with radix bases (2, 8, 10, 16) and enforcing range checks.
 
-##### `static bool ToBoolean(...)`
+---
 
-Converts a specified value to an equivalent Boolean value. Overloads are available for `bool`, `int`, `long long`, `double`, and `String`.
+## Syntax
 
-**Usage:**
 ```cpp
-bool b1 = Convert::ToBoolean(1); // true
-bool b2 = Convert::ToBoolean("true"); // true
+class Convert : public Object;
 ```
 
-##### `static unsigned char ToByte(...)`
+---
 
-Converts a specified value to an 8-bit unsigned integer.
+## Static Methods
 
-**Usage:**
-```cpp
-unsigned char b = Convert::ToByte(255);
-unsigned char b2 = Convert::ToByte("FF", 16); // 255 from Hex
-```
+### Boolean Conversions
+- `static bool ToBoolean(bool value)`
+- `static bool ToBoolean(int value)`
+- `static bool ToBoolean(long long value)`
+- `static bool ToBoolean(double value)`
+- `static bool ToBoolean(const String& value)`
+- `static bool ToBoolean(const char* value)`
 
-##### `static signed char ToSByte(...)`
+### Integer Conversions (Signed)
+- `static signed char ToSByte(...)` (from `bool`, `unsigned char`, `signed char`, `short`, `int`, `long long`, `double`, `const String&`, `const char*`)
+- `static short ToInt16(...)` (from primitive types, strings, and with radix `fromBase`)
+- `static int ToInt32(...)` (from primitive types, strings, and with radix `fromBase`)
+- `static long long ToInt64(...)` (from primitive types, strings, and with radix `fromBase`)
 
-Converts a specified value to an 8-bit signed integer.
+### Integer Conversions (Unsigned)
+- `static unsigned char ToByte(...)` (from primitive types, strings, and with radix `fromBase`)
+- `static unsigned short ToUInt16(...)` (from primitive types and strings)
+- `static unsigned int ToUInt32(...)` (from primitive types and strings)
+- `static unsigned long long ToUInt64(...)` (from primitive types and strings)
 
-**Usage:**
-```cpp
-signed char sb = Convert::ToSByte(127);
-```
+### Floating-Point Conversions
+- `static float ToSingle(...)` (from `int`, `long long`, `double`, `const String&`, `const char*`)
+- `static double ToDouble(...)` (from `int`, `long long`, `float`, `const String&`, `const char*`)
 
-##### `static TCHAR ToChar(...)`
+### Character Conversions
+- `static char ToChar(unsigned short value)`
+- `static char ToChar(int value)`
+- `static char ToChar(long long value)`
+- `static char ToChar(const String& value)`
+- `static char ToChar(const char* value)`
 
-Converts a specified value to a Unicode character.
+### Base64 Encoding & Decoding
+- `static String ToBase64String(const Array<char>& inArray)`: Converts an array of 8-bit integers to its equivalent string representation that is encoded with base-64 digits.
+- `static Array<char> FromBase64String(const String& s)`: Converts the specified base-64 encoded string to an array of bytes.
+- `static Array<char> FromBase64String(const char* s)`: Converts the specified C-string to an array of bytes.
 
-**Usage:**
-```cpp
-TCHAR c = Convert::ToChar(65); // 'A'
-TCHAR c2 = Convert::ToChar("A"); // 'A'
-```
+### String Conversions
+- `static String ToString(...)` (overloads for `bool`, `char`, `signed char`, `unsigned char`, `short`, `int`, `long long`, `float`, `double`, `unsigned short`, `unsigned int`, `unsigned long long`)
+- `static String ToString(int value, int toBase)` (radix base 2, 8, 10, 16)
+- `static String ToString(long long value, int toBase)` (radix base 2, 8, 10, 16)
 
-##### `static double ToDouble(...)`
+---
 
-Converts a specified value to a double-precision floating-point number.
-
-**Usage:**
-```cpp
-double d = Convert::ToDouble("3.14159");
-```
-
-##### `static float ToSingle(...)`
-
-Converts a specified value to a single-precision floating-point number.
-
-**Usage:**
-```cpp
-float f = Convert::ToSingle("1.23");
-```
-
-##### `static short ToInt16(...)`
-
-Converts a specified value to a 16-bit signed integer.
-
-**Usage:**
-```cpp
-short s = Convert::ToInt16("123");
-```
-
-##### `static int ToInt32(...)`
-
-Converts a specified value to a 32-bit signed integer. Overloads support base-specified conversion.
-
-**Usage:**
-```cpp
-int i = Convert::ToInt32("12345");
-int i2 = Convert::ToInt32("FF", 16); // 255
-```
-
-##### `static long long ToInt64(...)`
-
-Converts a specified value to a 64-bit signed integer.
-
-**Usage:**
-```cpp
-long long l = Convert::ToInt64("123456789012345");
-```
-
-##### `static unsigned short ToUInt16(...)`
-
-Converts a specified value to a 16-bit unsigned integer.
-
-**Usage:**
-```cpp
-unsigned short us = Convert::ToUInt16("65535");
-```
-
-##### `static unsigned int ToUInt32(...)`
-
-Converts a specified value to a 32-bit unsigned integer.
-
-**Usage:**
-```cpp
-unsigned int ui = Convert::ToUInt32("4294967295");
-```
-
-##### `static unsigned long long ToUInt64(...)`
-
-Converts a specified value to a 64-bit unsigned integer.
-
-**Usage:**
-```cpp
-unsigned long long ull = Convert::ToUInt64("18446744073709551615");
-```
-
-##### `static String ToString(...)`
-
-Converts the specified value to its equivalent String representation. Overloads support base-specified conversion for integers.
-
-**Usage:**
-```cpp
-String s1 = Convert::ToString(true); // "True"
-String s2 = Convert::ToString(255, 16); // "FF"
-```
-
-## Code Example
-
-Below is a complete, compile-ready example demonstrating the usage of `Convert`.
+## Example
 
 ```cpp
-#include "System/Convert.h"
 #include "System/Console.h"
-#include "System/Exception.h"
+#include "System/Convert.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        // String to integer conversions
-        int val1 = Convert::ToInt32("12345");
-        Console::Write("Parsed Int32: ");
-        Console::WriteLine(val1);
+    String sBin = "11110000";
+    int iVal = Convert::ToInt32(sBin, 2);
+    Console::WriteLine("Binary {0} = Decimal {1}", sBin, iVal);
 
-        // Parsing with a specific base (Hexadecimal)
-        int val2 = Convert::ToInt32("FE", 16);
-        Console::Write("Parsed Hex 'FE' to Int32: ");
-        Console::WriteLine(val2);
+    String sHex = Convert::ToString(iVal, 16);
+    Console::WriteLine("Decimal {0} = Hex {1}", iVal, sHex);
 
-        // Double conversion
-        double val3 = Convert::ToDouble("3.14159");
-        Console::Write("Parsed Double: ");
-        Console::WriteLine(val3);
-
-        // String to Boolean conversion
-        bool bVal = Convert::ToBoolean("true");
-        Console::Write("Parsed Boolean: ");
-        Console::WriteLine(bVal);
-
-        // Integer to String conversion with base (Hex)
-        String hexStr = Convert::ToString(255, 16);
-        Console::Write("255 to Hex string: ");
-        Console::WriteLine(hexStr);
-
-    } catch (const Exception& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-        return 1;
-    }
     return 0;
 }
 ```
-
-

@@ -1,96 +1,149 @@
-### class `EventLog`
+# EventLog &amp; EventLogEntry
 
-Provides cross-platform interaction with system event logs, supporting native Windows Event Log (`OpenEventLogW`/`ReportEventW`) and POSIX Syslog (`openlog`/`syslog`) on Linux.
+**Namespace:** `DotNetDupe::System::Diagnostics`  
+**Header:** `#include "System/Diagnostics/EventLog.h"`
 
-#### Enums
-
-##### `enum class EventLogEntryType`
-
-- `Error = 1`: An error event (`EVENTLOG_ERROR_TYPE` on Windows / `LOG_ERR` on Linux).
-- `Warning = 2`: A warning event (`EVENTLOG_WARNING_TYPE` on Windows / `LOG_WARNING` on Linux).
-- `Information = 4`: An informational event (`EVENTLOG_INFORMATION_TYPE` on Windows / `LOG_INFO` on Linux).
-- `SuccessAudit = 8`: A success audit event (`EVENTLOG_AUDIT_SUCCESS` on Windows / `LOG_NOTICE` on Linux).
-- `FailureAudit = 16`: A failure audit event (`EVENTLOG_AUDIT_FAILURE` on Windows / `LOG_ALERT` on Linux).
+Provides interaction with system event logs, enabling reading and writing of operational diagnostic events across Windows (Windows Event Log) and Linux (`syslog`).
 
 ---
 
-#### Methods
+## `EventLogEntryType` Enum
 
-##### `static void CreateEventSource(const String& sSource, const String& sLogName)`
-
-Establishes an application source and log name for writing event information.
-
-##### `static bool SourceExists(const String& sSource)`
-
-Determines whether an event source is registered.
-
-##### `static void DeleteEventSource(const String& sSource)`
-
-Removes an event source registration.
-
-##### `static bool Exists(const String& sLogName)`
-
-Determines whether the log exists.
-
-##### `static void Delete(const String& sLogName)`
-
-Removes an event log.
-
-##### `void WriteEntry(const String& sMessage, EventLogEntryType eType = EventLogEntryType::Information, int iEventID = 0)`
-
-Writes an entry to the system event log (Windows EventLog / Linux syslog).
-
-##### `static void WriteEntry(const String& sSource, const String& sMessage, EventLogEntryType eType = EventLogEntryType::Information, int iEventID = 0)`
-
-Writes an entry to a system event log using the specified source.
-
-##### `Collections::Generic::List<EventLogEntry> GetEntries() const`
-
-Gets the contents of the event log. On Windows, reads records from `OpenEventLogW`.
-
-##### `void Clear()`
-
-Removes entries from the event log store.
+```cpp
+enum class EventLogEntryType {
+    Error = 1,
+    Warning = 2,
+    Information = 4,
+    SuccessAudit = 8,
+    FailureAudit = 16
+};
+```
 
 ---
 
-## Code Example
+## `EventLogEntry` Class
 
-The following complete, compilation-ready sample demonstrates creating an event source, writing informational and warning log entries cross-platform (Windows EventLog / Linux Syslog), and reading entries back.
+Encapsulates an individual recorded event log record.
+
+### Syntax
+```cpp
+class EventLogEntry : public Object;
+```
+
+### Constructors
+- `EventLogEntry()`: Initializes an empty event log entry.
+- `EventLogEntry(const String& sMessage, EventLogEntryType eType, int iInstanceId, const String& sSource, const DateTimeOffset& dtTimeGenerated)`: Initializes an event log entry with full metadata.
+
+### Properties
+- `String GetMessage() const`: Gets the event description text.
+- `EventLogEntryType GetEntryType() const`: Gets the severity level of the event entry.
+- `int GetInstanceId() const`: Gets the numeric event identifier.
+- `String GetSource() const`: Gets the name of the application source that registered the event.
+- `DateTimeOffset GetTimeGenerated() const`: Gets the date and time that the event was recorded.
+
+---
+
+## `EventLog` Class
+
+### Syntax
+```cpp
+class EventLog : public Object;
+```
+
+---
+
+## Constructors
+
+### `EventLog()`
+Initializes an empty instance of the `EventLog` class.
+
+### `EventLog(const String& sLogName)`
+Initializes an instance targeting a specific log channel (e.g. `"Application"`, `"System"`).
+
+### `EventLog(const String& sLogName, const String& sMachineName)`
+Initializes an instance targeting a specific log on a given machine name.
+
+### `EventLog(const String& sLogName, const String& sMachineName, const String& sSource)`
+Initializes an instance targeting a log with an explicit application source identifier.
+
+---
+
+## Properties
+
+- `String GetLog() const` / `void SetLog(const String& sLogName)`: Gets or sets the name of the log.
+- `String GetMachineName() const` / `void SetMachineName(const String& sMachineName)`: Gets or sets the machine name.
+- `String GetSource() const` / `void SetSource(const String& sSource)`: Gets or sets the source name.
+
+---
+
+## Member Functions
+
+### `List<EventLogEntry> GetEntries() const`
+Reads and returns all entries contained in the targeted event log channel.
+
+### `void WriteEntry(const String& sMessage)`
+### `void WriteEntry(const String& sMessage, EventLogEntryType eType)`
+### `void WriteEntry(const String& sMessage, EventLogEntryType eType, int iEventID)`
+Writes an entry into the event log instance with the specified message, severity level, and event ID.
+
+### `void Clear()`
+Removes all entries from the event log.
+
+### `void Close()`
+Closes the event log handle and releases resources.
+
+---
+
+## Static Methods
+
+### `static void WriteEntry(const String& sSource, const String& sMessage)`
+### `static void WriteEntry(const String& sSource, const String& sMessage, EventLogEntryType eType)`
+### `static void WriteEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID)`
+Writes an entry directly into the system event log using a static helper.
+
+### `static bool SourceExists(const String& sSource)` / `static bool SourceExists(const String& sSource, const String& sMachineName)`
+Determines whether an event source is registered on the computer.
+
+### `static void CreateEventSource(const String& sSource, const String& sLogName)`
+Establishes a valid event source for writing localized event messages.
+
+### `static void Delete(const String& sLogName)` / `static void Delete(const String& sLogName, const String& sMachineName)`
+Removes an event log from the computer.
+
+### `static void DeleteEventSource(const String& sSource)` / `static void DeleteEventSource(const String& sSource, const String& sMachineName)`
+Removes the event source registration.
+
+### `static bool Exists(const String& sLogName)` / `static bool Exists(const String& sLogName, const String& sMachineName)`
+Determines whether the specified log exists on the computer.
+
+### `static List<EventLog> GetEventLogs()` / `static List<EventLog> GetEventLogs(const String& sMachineName)`
+Enumerates all available event logs on the machine.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/EventLog.h"
-#include "System/Convert.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    String sSource = "MyAppService";
-    String sLogName = "Application";
+    String sSourceName = "DotNetDupeApp";
 
-    // 1. Ensure Event Source exists
-    if (!EventLog::SourceExists(sSource)) {
-        EventLog::CreateEventSource(sSource, sLogName);
+    if (!EventLog::SourceExists(sSourceName)) {
+        EventLog::CreateEventSource(sSourceName, "Application");
     }
 
-    // 2. Instantiate EventLog and write entries to OS event log
-    EventLog objLog(sLogName, ".", sSource);
-    objLog.WriteEntry("Application started successfully.", EventLogEntryType::Information, 100);
-    objLog.WriteEntry("Memory usage is above 85%.", EventLogEntryType::Warning, 201);
+    // Write diagnostic records
+    EventLog::WriteEntry(sSourceName, "Service started successfully.", EventLogEntryType::Information, 1001);
+    EventLog::WriteEntry(sSourceName, "High memory pressure detected.", EventLogEntryType::Warning, 2002);
 
-    // 3. Read entries
-    auto lstEntries = objLog.GetEntries();
-    for (int iIdx = 0; iIdx < lstEntries.GetCount(); iIdx++) {
-        const auto& entry = lstEntries[iIdx];
-        Console::Write("[Event ");
-        Console::Write(Convert::ToString(entry.GetInstanceId()));
-        Console::Write("] ");
-        Console::Write(entry.GetSource());
-        Console::Write(": ");
-        Console::WriteLine(entry.GetMessage());
-    }
+    EventLog logApp("Application");
+    auto listEntries = logApp.GetEntries();
+    Console::WriteLine("Total entries read: {0}", listEntries.GetCount());
 
     return 0;
 }

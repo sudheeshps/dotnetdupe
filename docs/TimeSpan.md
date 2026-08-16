@@ -1,166 +1,89 @@
-### class `TimeSpan`
+# TimeSpan
 
-Represents a time interval.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/TimeSpan.h"`
 
-#### Methods
-
-##### `TimeSpan(int64_t ticks)`
-
-Initializes a new instance of the `TimeSpan` class to a specified number of ticks.
-
-**Usage:**
-```cpp
-TimeSpan ts(10000000); // 1 second
-```
-
-##### `static TimeSpan FromDays(double value)`
-
-Returns a `TimeSpan` that represents a specified number of days.
-
-**Usage:**
-```cpp
-TimeSpan ts = TimeSpan::FromDays(1);
-```
-
-##### `static TimeSpan FromHours(double value)`
-
-Returns a `TimeSpan` that represents a specified number of hours.
-
-**Usage:**
-```cpp
-TimeSpan ts = TimeSpan::FromHours(2.5);
-```
-
-##### `static TimeSpan FromMinutes(double value)`
-
-Returns a `TimeSpan` that represents a specified number of minutes.
-
-**Usage:**
-```cpp
-TimeSpan ts = TimeSpan::FromMinutes(30);
-```
-
-##### `static TimeSpan FromSeconds(double value)`
-
-Returns a `TimeSpan` that represents a specified number of seconds.
-
-**Usage:**
-```cpp
-TimeSpan ts = TimeSpan::FromSeconds(15.5);
-```
-
-##### `static TimeSpan FromMilliseconds(double value)`
-
-Returns a `TimeSpan` that represents a specified number of milliseconds.
-
-**Usage:**
-```cpp
-TimeSpan ts = TimeSpan::FromMilliseconds(500);
-```
-
-##### `double GetTotalDays() const`
-
-Gets the value of the current `TimeSpan` structure expressed in whole and fractional days.
-
-**Usage:**
-```cpp
-double days = ts.GetTotalDays();
-```
-
-##### `double GetTotalHours() const`
-
-Gets the value of the current `TimeSpan` structure expressed in whole and fractional hours.
-
-**Usage:**
-```cpp
-double hours = ts.GetTotalHours();
-```
-
-##### `double GetTotalMinutes() const`
-
-Gets the value of the current `TimeSpan` structure expressed in whole and fractional minutes.
-
-**Usage:**
-```cpp
-double minutes = ts.GetTotalMinutes();
-```
-
-##### `double GetTotalSeconds() const`
-
-Gets the value of the current `TimeSpan` structure expressed in whole and fractional seconds.
-
-**Usage:**
-```cpp
-double seconds = ts.GetTotalSeconds();
-```
-
-##### `double GetTotalMilliseconds() const`
-
-Gets the value of the current `TimeSpan` structure expressed in whole and fractional milliseconds.
-
-**Usage:**
-```cpp
-double ms = ts.GetTotalMilliseconds();
-```
-
-##### `int64_t GetTicks() const`
-
-Gets the number of ticks that represent the value of the current `TimeSpan` structure.
-
-**Usage:**
-```cpp
-int64_t ticks = ts.GetTicks();
-```
-
-#### Fields
-
-##### `static constexpr int64_t TicksPerSecond`
-
-Represents the number of ticks in 1 second.
+Represents a time interval (duration of time) measured as a positive or negative number of 100-nanosecond ticks.
 
 ---
 
-## Code Example
+## Syntax
 
-The following example demonstrates how to create `TimeSpan` instances representing different durations, perform arithmetic operations, compare intervals, and use `SmartPointer` to manage them.
+```cpp
+class TimeSpan : public Object;
+```
+
+---
+
+## Constants
+
+- `TicksPerMillisecond = 10,000`
+- `TicksPerSecond = 10,000,000`
+- `TicksPerMinute = 600,000,000`
+- `TicksPerHour = 36,000,000,000`
+- `TicksPerDay = 864,000,000,000`
+
+---
+
+## Constructors & Factory Methods
+
+### `TimeSpan()`
+Initializes a new instance of `TimeSpan` to zero ticks.
+
+### `TimeSpan(int64_t ticks)` / `static TimeSpan FromTicks(int64_t ticks)`
+Initializes a new instance of `TimeSpan` to the specified number of ticks.
+
+### `static TimeSpan FromDays(double value)`
+Returns a `TimeSpan` that represents a specified number of days.
+
+```cpp
+TimeSpan tsSpan = TimeSpan::FromDays(1.5);
+```
+
+### `static TimeSpan FromHours(double value)` / `FromMinutes()` / `FromSeconds()` / `FromMilliseconds()`
+Returns a `TimeSpan` that represents the specified time units.
+
+```cpp
+TimeSpan tsTimeout = TimeSpan::FromSeconds(30);
+```
+
+---
+
+## Properties & Calculations
+
+### `int64_t GetTicks() const`
+Gets the number of ticks that represent the value of the current `TimeSpan`.
+
+### `double GetTotalMilliseconds() const` / `GetTotalSeconds()` / `GetTotalMinutes()` / `GetTotalHours()` / `GetTotalDays()`
+Gets the value of the current `TimeSpan` structure expressed in whole and fractional time units.
+
+```cpp
+double dMinutes = tsTimeout.GetTotalMinutes(); // 0.5
+```
+
+### `TimeSpan operator+(const TimeSpan& other) const` / `operator-()`
+Adds or subtracts another `TimeSpan`.
+
+### `bool operator==(const TimeSpan& other) const` / `!=` / `<` / `<=` / `>` / `>=`
+Relational and equality comparison operators comparing tick durations.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/TimeSpan.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    // Create TimeSpan using From* methods
-    TimeSpan tsDays = TimeSpan::FromDays(1.5);
-    TimeSpan tsHours = TimeSpan::FromHours(3);
-    TimeSpan tsSeconds = TimeSpan::FromSeconds(45.5);
+    TimeSpan tsWorkDay = TimeSpan::FromHours(8);
+    TimeSpan tsLunch = TimeSpan::FromMinutes(45);
 
-    Console::WriteLine("tsDays total hours: ");
-    Console::WriteLine(tsDays.GetTotalHours());
-
-    Console::WriteLine("tsHours total minutes: ");
-    Console::WriteLine(tsHours.GetTotalMinutes());
-
-    // Perform arithmetic operations
-    TimeSpan tsSum = tsHours + tsSeconds;
-    Console::WriteLine("tsSum total seconds: ");
-    Console::WriteLine(tsSum.GetTotalSeconds());
-
-    TimeSpan tsDiff = tsDays - tsHours;
-    Console::WriteLine("tsDiff total days: ");
-    Console::WriteLine(tsDiff.GetTotalDays());
-
-    // Comparison operators
-    if (tsHours > tsSeconds) {
-        Console::WriteLine("tsHours is longer than tsSeconds.");
-    }
-
-    // Dynamic memory management using SmartPointer
-    auto pSpan = SmartPointer<TimeSpan>::New(TimeSpan::TicksPerSecond * 10);
-    Console::WriteLine("pSpan total milliseconds: ");
-    Console::WriteLine(pSpan->GetTotalMilliseconds());
+    TimeSpan tsProductiveTime = tsWorkDay - tsLunch;
+    Console::WriteLine("Productive Hours: {0}", tsProductiveTime.GetTotalHours());
+    Console::WriteLine("Total Minutes: {0}", tsProductiveTime.GetTotalMinutes());
 
     return 0;
 }

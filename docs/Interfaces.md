@@ -1,111 +1,113 @@
-### interface `IClonable`
+# Core Interfaces
 
-Defines a general-purpose mechanism for creating a new object that is a copy of the current object.
+**Namespace:** `DotNetDupe::System` & `DotNetDupe::System::IO`  
+**Headers:** `#include "System/IO/IDisposable.h"`, `#include "System/Comparable.h"`, `#include "System/Clonable.h"`, `#include "System/FormatProvider.h"`, `#include "System/IServiceProvider.h"`
 
-#### Methods
+Core contract interfaces representing common object behaviors like resource cleanup, cloning, ordering comparisons, custom formatting, and service resolution.
 
-##### `virtual Object Clone() = 0`
+---
 
-Creates a new object that is a copy of the current instance.
+## `IDisposable`
 
-**Returns:**
-- A new object that is a copy of this instance.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/IDisposable.h"`
 
-**Usage:**
+Defines a mechanism for releasing unmanaged resources deterministically.
+
+### Syntax
 ```cpp
-class MyClass : public Object, public IClonable {
+class IDisposable {
 public:
-    Object Clone() override {
-        return MyClass(*this);
+    virtual ~IDisposable() = default;
+    virtual void Dispose() = 0;
+};
+```
+
+### Usage
+```cpp
+class DatabaseResource : public IDisposable {
+public:
+    void Dispose() override {
+        // Free native database handles
     }
 };
 ```
 
 ---
 
-### interface `IComparable`
+## `IComparable`
 
-Defines a method that a value type or class implements to compare itself with another object of the same type.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Comparable.h"`
 
-#### Methods
+Defines a generalized comparison method that a value type or class implements to create a type-specific comparison method for ordering or sorting.
 
-##### `virtual int CompareTo(const Object& obj) = 0`
-
-Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
-
-**Parameters:**
-- `obj`: An object to compare with this instance.
-
-**Returns:**
-- A value that indicates the relative order of the objects being compared. Less than zero means this instance precedes `obj`. Zero means they are equal. Greater than zero means this instance follows `obj`.
-
-**Usage:**
+### Syntax
 ```cpp
-class MyComparable : public Object, public IComparable {
+class IComparable {
 public:
-    int Value;
-    int CompareTo(const Object& obj) override {
-        const MyComparable& other = static_cast<const MyComparable&>(obj);
-        return Value - other.Value;
-    }
+    virtual ~IComparable() = default;
+    virtual int CompareTo(const Object& obj) = 0;
 };
 ```
 
 ---
 
-### template interface `IComparable<T>`
+## `IClonable`
 
-Defines a method that a value type or class implements to compare itself with another object of the same type.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Clonable.h"`
 
-#### Methods
+Supports cloning, which creates a new instance of a class with the same value as an existing instance.
 
-##### `virtual int CompareTo(const T& other) = 0`
-
-Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
-
-**Parameters:**
-- `other`: An object to compare with this instance.
-
-**Returns:**
-- A value that indicates the relative order of the objects being compared.
-
-**Usage:**
+### Syntax
 ```cpp
-class MyInt : public IComparable<MyInt> {
+class IClonable {
 public:
-    int Value;
-    int CompareTo(const MyInt& other) override {
-        return Value - other.Value;
-    }
+    virtual ~IClonable() = default;
+    virtual Object Clone() = 0;
 };
 ```
 
 ---
 
-### interface `IFormatProvider<T>`
+## `IFormatProvider<T>`
 
-Provides a mechanism for retrieving a formatting service for a specified type.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/FormatProvider.h"`
 
-#### Methods
+Provides a mechanism for retrieving an object to control formatting.
 
-##### `virtual Object* GetFormat(const T* formatType) = 0`
-
-Returns an object that provides formatting services for the specified type.
-
-**Parameters:**
-- `formatType`: An object that specifies the type of format object to return.
-
-**Returns:**
-- An instance of the object specified by `formatType`, if the `IFormatProvider` implementation can supply that type of object; otherwise, `nullptr`.
-
-**Usage:**
+### Syntax
 ```cpp
-class MyFormatProvider : public IFormatProvider<String> {
+template <class T>
+class IFormatProvider {
 public:
-    Object* GetFormat(const String* formatType) override {
-        // Implementation
-        return nullptr;
-    }
+    virtual ~IFormatProvider() = default;
+    virtual Object* GetFormat(const T* formatType) = 0;
 };
 ```
 
+---
+
+## `IServiceProvider`
+
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/IServiceProvider.h"`
+
+Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.
+
+### Syntax
+```cpp
+class IServiceProvider : public Object {
+public:
+    virtual ~IServiceProvider() = default;
+    virtual SmartPointer<Object> GetService(const std::type_index& serviceType) = 0;
+
+    template <typename T>
+    SmartPointer<T> GetService();
+
+    template <typename T>
+    SmartPointer<T> GetRequiredService();
+};
+```

@@ -1,193 +1,147 @@
-### class `File`
+# File
 
-Provides static methods for the creation, copying, deletion, moving, and opening of a single file.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/File.h"`
 
-#### Methods
+Provides static methods for creating, copying, deleting, moving, reading, and writing files.
 
-##### `static bool Exists(const String& sPath)`
+---
 
+## Syntax
+
+```cpp
+enum class FileAttributes {
+    Normal = 0, ReadOnly = 1, Hidden = 2, System = 4, Directory = 16,
+    Archive = 32, Device = 64, Temporary = 128, SparseFile = 256,
+    ReparsePoint = 512, Compressed = 1024, Offline = 2048,
+    NotContentIndexed = 4096, Encrypted = 8192, IntegrityStream = 16384,
+    NoScrubData = 32768
+};
+
+class File : public Object;
+```
+
+---
+
+## Static Methods
+
+### `static bool Exists(const String& sPath)`
 Determines whether the specified file exists.
+- **Parameters:**
+  - `sPath` (`const String&`): The file path to check.
+- **Returns:**
+  - `bool`: `true` if `sPath` contains the name of an existing file; otherwise, `false`.
 
-**Parameters:**
-- `sPath`: The file to check.
-
-**Returns:**
-- `true` if the caller has the required permissions and `sPath` contains the name of an existing file; otherwise, `false`.
-
-**Usage:**
 ```cpp
-if (File::Exists("test.txt")) { /* ... */ }
+bool bExists = File::Exists("config.json");
 ```
 
-##### `static String ReadAllText(const String& sPath)`
+### `static String ReadAllText(const String& sPath)`
+Opens a text file, reads all the text in the file, and then closes the file.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid or empty.
+  - `FileNotFoundException`: If the file cannot be found.
+  - `IOException`: If an I/O error occurs while reading the file.
 
-Opens a text file, reads all the text in the file into a string, and then closes the file.
-
-**Parameters:**
-- `sPath`: The file to open for reading.
-
-**Returns:**
-- A string containing all the text in the file.
-
-**Usage:**
 ```cpp
-String sContent = File::ReadAllText("test.txt");
+String sContent = File::ReadAllText("config.json");
 ```
 
-##### `static void WriteAllText(const String& sPath, const String& sContents)`
-
+### `static void WriteAllText(const String& sPath, const String& sContents)`
 Creates a new file, writes the specified string to the file, and then closes the file. If the target file already exists, it is overwritten.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid or empty.
+  - `IOException`: If an I/O error occurs while writing the file.
 
-**Parameters:**
-- `sPath`: The file to write to.
-- `sContents`: The string to write to the file.
-
-**Usage:**
 ```cpp
-File::WriteAllText("test.txt", "Hello World");
+File::WriteAllText("output.log", "Operation completed successfully.\n");
 ```
 
-##### `static void Copy(const String& sSourceFileName, const String& sDestFileName, bool bOverwrite)`
+### `static Array<String> ReadAllLines(const String& sPath)`
+Opens a text file, reads all lines of the file, and then closes the file.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `FileNotFoundException`: If the file does not exist.
+  - `IOException`: If an I/O error occurs.
 
-Copies an existing file to a new file. Overwriting a file of the same name is allowed.
-
-**Parameters:**
-- `sSourceFileName`: The file to copy.
-- `sDestFileName`: The name of the destination file. This cannot be a directory.
-- `bOverwrite`: `true` if the destination file can be overwritten; otherwise, `false`.
-
-**Usage:**
-```cpp
-File::Copy("old.txt", "new.txt", true);
-```
-
-##### `static void Move(const String& sSourceFileName, const String& sDestFileName)`
-
-Moves a specified file to a new location, providing the option to specify a new file name.
-
-**Parameters:**
-- `sSourceFileName`: The name of the file to move.
-- `sDestFileName`: The new path for the file.
-
-**Usage:**
-```cpp
-File::Move("file.txt", "C:\\Backup\\file.txt");
-```
-
-##### `static void Delete(const String& sPath)`
-
-Deletes the specified file.
-
-**Parameters:**
-- `sPath`: The name of the file to be deleted. Wildcard characters are not supported.
-
-**Usage:**
-```cpp
-File::Delete("temp.txt");
-```
-
-##### `static void AppendAllText(const String& sPath, const String& sContents)`
-
-Appends the specified string to the file, creating the file if it does not already exist.
-
-**Parameters:**
-- `sPath`: The file to append the specified string to.
-- `sContents`: The string to append to the file.
-
-**Usage:**
-```cpp
-File::AppendAllText("log.txt", "New log entry\n");
-```
-
-##### `static Array<String> ReadAllLines(const String& sPath)`
-
-Opens a text file, reads all lines of the file into a string array, and then closes the file.
-
-**Parameters:**
-- `sPath`: The file to open for reading.
-
-**Returns:**
-- An `Array<String>` containing all lines of the file.
-
-**Usage:**
-```cpp
-auto arrLines = File::ReadAllLines("test.txt");
-```
-
-##### `static void WriteAllLines(const String& sPath, const Array<String>& arrContents)`
-
+### `static void WriteAllLines(const String& sPath, const Array<String>& sContents)`
 Creates a new file, writes a collection of strings to the file, and then closes the file.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `IOException`: If an I/O error occurs.
 
-**Parameters:**
-- `sPath`: The file to write to.
-- `arrContents`: The collection of strings to write to the file.
+### `static void AppendAllText(const String& sPath, const String& sContents)`
+Appends the specified string to the file, creating the file if it does not already exist.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `IOException`: If an I/O error occurs.
 
-**Usage:**
-```cpp
-Array<String> arrLines = { "Line 1", "Line 2" };
-File::WriteAllLines("test.txt", arrLines);
-```
+### `static void AppendAllLines(const String& sPath, const Array<String>& sContents)`
+Appends lines to a file, and then closes the file. If the specified file does not exist, this method creates a file.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `IOException`: If an I/O error occurs.
 
-##### `static void Create(const String& sPath)`
+### `static void Copy(const String& sSourceFileName, const String& sDestFileName, bool bOverwrite)`
+Copies an existing file to a new file. Overwriting a file of the same name is allowed if `bOverwrite` is `true`.
+- **Throws:**
+  - `ArgumentException`: If source or destination path is invalid.
+  - `FileNotFoundException`: If source file does not exist.
+  - `IOException`: If destination file exists and `bOverwrite` is `false`, or an I/O error occurs.
 
+### `static void Move(const String& sSourceFileName, const String& sDestFileName)`
+Moves a specified file to a new location.
+- **Throws:**
+  - `ArgumentException`: If source or destination path is invalid.
+  - `FileNotFoundException`: If source file does not exist.
+  - `IOException`: If an I/O error occurs.
+
+### `static void Delete(const String& sPath)`
+Deletes the specified file.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `IOException`: If an I/O error occurs.
+
+### `static void Create(const String& sPath)`
 Creates or overwrites a file in the specified path.
+- **Throws:**
+  - `ArgumentException`: If `sPath` is invalid.
+  - `IOException`: If an I/O error occurs.
 
-**Parameters:**
-- `sPath`: The path and name of the file to create.
+### `static bool GetAttributes(const String& sPath, FileAttributes& attrAttributes)`
+Gets the `FileAttributes` of the file on the path.
 
-**Usage:**
+### `static bool SetAttributes(const String& sPath, FileAttributes attrAttributes)`
+Sets the specified `FileAttributes` of the file on the specified path.
+
+---
+
+## Example
+
 ```cpp
-File::Create("newfile.txt");
-```
+#include "System/Console.h"
+#include "System/IO/File.h"
+#include "System/Array.h"
+#include "System/String.h"
 
-##### `static bool GetAttributes(const String& sPath, FileAttributes& attrAttributes)`
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
 
-Gets the attributes of the file on the path.
+int main() {
+    String sPath = "sample.txt";
 
-**Parameters:**
-- `sPath`: The path to the file.
-- `attrAttributes`: An output parameter that will hold the attributes of the file.
+    File::WriteAllText(sPath, "Line 1: Alpha\nLine 2: Beta\nLine 3: Gamma");
+    Console::WriteLine("File created: {0}", File::Exists(sPath));
 
-**Returns:**
-- `true` if the attributes were successfully retrieved; otherwise, `false`.
-
-**Platform-Specific Behavior:**
-- **Windows**: Maps directly to Win32 `GetFileAttributesW`. All `FileAttributes` values are supported.
-- **Linux/POSIX**: Uses `std::filesystem::status`. 
-    - `ReadOnly`: Set if the file does not have `owner_write` permission.
-    - `Directory`: Set if the path refers to a directory.
-    - `Hidden`: Set if the filename starts with a period (`.`).
-    - `Normal`: Set if no other mapped attributes are present.
-
-**Usage:**
-```cpp
-FileAttributes attrAttributes;
-if (File::GetAttributes("test.txt", attrAttributes)) {
-    if ((static_cast<int>(attrAttributes) & static_cast<int>(FileAttributes::ReadOnly)) != 0) {
-        Console::WriteLine("File is read-only");
+    Array<String> arrLines = File::ReadAllLines(sPath);
+    Console::WriteLine("Read {0} lines from file:", arrLines.GetLength());
+    for (int iIdx = 0; iIdx < arrLines.GetLength(); ++iIdx) {
+        Console::WriteLine(" [{0}] {1}", iIdx, arrLines[iIdx]);
     }
+
+    File::Delete(sPath);
+    Console::WriteLine("File deleted. Exists: {0}", File::Exists(sPath));
+
+    return 0;
 }
 ```
-
-##### `static bool SetAttributes(const String& sPath, FileAttributes attrAttributes)`
-
-Sets the specified attributes of the file on the specified path.
-
-**Parameters:**
-- `sPath`: The path to the file.
-- `attrAttributes`: A bitwise combination of the `FileAttributes` enumeration values.
-
-**Returns:**
-- `true` if the attributes were successfully set; otherwise, `false`.
-
-**Platform-Specific Behavior:**
-- **Windows**: Maps directly to Win32 `SetFileAttributesW`.
-- **Linux/POSIX**: Uses `std::filesystem::permissions`.
-    - `ReadOnly`: If set, removes all write permissions (`owner_write`, `group_write`, `others_write`). If NOT set, adds `owner_write`.
-    - Other flags like `Hidden` or `Directory` cannot be set via this method on Linux as they are intrinsic to the name or file type.
-
-**Usage:**
-```cpp
-File::SetAttributes("test.txt", FileAttributes::ReadOnly);
-```
-

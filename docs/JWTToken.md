@@ -1,98 +1,78 @@
-### System.IdentityModel.Tokens.Jwt Namespace
+# JWTToken, HMACSHA256 &amp; X509Certificate2
 
-Provides a programming interface for JSON Web Token (JWT) creation, parsing, and verification.
+**Namespace:** `DotNetDupe::System::IdentityModel::Tokens::Jwt` & `DotNetDupe::System::Security::Cryptography`  
+**Header:** `#include "System/IdentityModel/Tokens/Jwt/JWTToken.h"`, `#include "System/Security/Cryptography/HMACSHA256.h"`, `#include "System/Security/Cryptography/X509Certificates/X509Certificate2.h"`
 
----
-
-### class `JWTToken`
-
-Represents a JSON Web Token containing a header block, a claims payload, and a cryptographic signature.
-
-#### Methods
-
-##### `JWTToken()`
-Initializes a new instance of the `JWTToken` class with default header values (`alg: HS256`, `typ: JWT`).
-
-##### `Dictionary<String, String>& GetHeader()`
-Gets the dictionary representing the token header properties.
-
-##### `Dictionary<String, String>& GetPayload()`
-Gets the dictionary representing the token payload claims.
-
-##### `String GetSignature() const`
-Gets the parsed Base64Url-encoded signature string (only set for parsed tokens).
-
-##### `String CreateToken(const String& secretKey)`
-Serializes, Base64Url-encodes, and signs the token using HMAC-SHA256 with the specified secret key. Returns the complete token string.
-
-##### `static SmartPointer<JWTToken> Parse(const String& tokenStr)`
-Parses a standard dot-separated JWT token string into a `JWTToken` instance. Throws `ArgumentException` if the format is invalid.
-
-##### `bool Verify(const String& secretKey) const`
-Verifies the token's cryptographic signature against the specified secret key. Returns `true` if valid, otherwise `false`.
+Provides token generation, signature validation, HMAC-SHA256 hashing, and X.509 certificate loading for SSL/TLS authentication.
 
 ---
 
-### class `Convert` (Extensions)
+## `HMACSHA256` Class
 
-Provides Base64 helpers.
+Computes a Hash-based Message Authentication Code (HMAC) using the SHA256 hash function.
 
-##### `static String ToBase64String(const Array<char>& inArray)`
-Conves a byte array to its equivalent string representation encoded with base-64 digits.
-
-##### `static Array<char> FromBase64String(const String& s)`
-Conves the specified string, which encodes binary data as base-64 digits, to an equivalent byte array.
+### Methods
+- `Array<char> ComputeHash(const Array<char>& buffer)`: Computes the hash for the given byte buffer.
+- `static Array<char> ComputeHash(const Array<char>& buffer, const Array<char>& key)`: Static helper to compute HMAC-SHA256.
 
 ---
 
-## Code Example
+## `X509Certificate2` Class
 
-The following example demonstrates how to create, sign, parse, and verify a JWT token using `JWTToken`.
+Represents an X.509 certificate and private key pair for TLS servers.
+
+### Constructors
+- `X509Certificate2(const String& certPath, const String& keyPath)`: Loads PEM certificate and private key from files.
+
+### Member Functions
+- `void* GetInternalCert() const`: Returns the internal OpenSSL `X509*` handle.
+- `void* GetInternalKey() const`: Returns the internal OpenSSL `EVP_PKEY*` handle.
+
+---
+
+## `JWTToken` Class
+
+Encapsulates JSON Web Token (JWT) encoding, header/claims inspection, and HMAC-SHA256 signature verification.
+
+### Methods
+- `Dictionary<String, String>& GetHeader()` / `const Dictionary<String, String>& GetHeader() const`: Gets token headers (e.g. `alg`, `typ`).
+- `Dictionary<String, String>& GetPayload()` / `const Dictionary<String, String>& GetPayload() const`: Gets token claims (e.g. `sub`, `name`, `role`, `exp`).
+- `String GetSignature() const`: Returns raw signature string.
+- `String CreateToken(const String& secretKey)`: Signs and encodes the JWT token into a compact `header.payload.signature` string.
+- `static SmartPointer<JWTToken> Parse(const String& tokenStr)`: Parses an encoded JWT string into a `JWTToken` object.
+- `bool Verify(const String& secretKey) const`: Validates token signature against a secret key.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
-#include "System/SmartPointer.h"
+#include "System/String.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::IdentityModel::Tokens::Jwt;
 
 int main() {
-    try {
-        // 1. Create a new JWT Token and add claims
-        JWTToken token;
-        token.GetPayload().Add("iss", "auth-service");
-        token.GetPayload().Add("sub", "john_doe_12");
-        token.GetPayload().Add("role", "admin");
+    String sSecret = "SuperSecretSigningKey123456789!";
 
-        String secretKey = "super-secret-key-phrase";
+    // Create Token
+    JWTToken jwtToken;
+    jwtToken.GetPayload().Add("sub", "user_1029");
+    jwtToken.GetPayload().Add("role", "Administrator");
+    jwtToken.GetPayload().Add("iss", "DotNetDupeAuth");
 
-        // 2. Serialize and sign the token
-        String jwtStr = token.CreateToken(secretKey);
-        Console::WriteLine("Generated JWT:");
-        Console::WriteLine(jwtStr);
+    String sJwtString = jwtToken.CreateToken(sSecret);
+    Console::WriteLine("Generated JWT:\n{0}", sJwtString);
 
-        // 3. Parse the token back
-        Console::WriteLine("\nParsing JWT...");
-        auto parsedToken = JWTToken::Parse(jwtStr);
+    // Parse and Verify Token
+    auto spParsedToken = JWTToken::Parse(sJwtString);
+    bool bIsValid = spParsedToken->Verify(sSecret);
 
-        Console::Write("Issuer (iss): ");
-        Console::WriteLine(parsedToken->GetPayload()["iss"]);
-
-        Console::Write("Subject (sub): ");
-        Console::WriteLine(parsedToken->GetPayload()["sub"]);
-
-        // 4. Verify token signatures
-        Console::Write("Verifying with correct key: ");
-        Console::WriteLine(parsedToken->Verify(secretKey) ? "SUCCESS" : "FAILED");
-
-        Console::Write("Verifying with incorrect key: ");
-        Console::WriteLine(parsedToken->Verify("wrong-key") ? "SUCCESS" : "FAILED");
-
-    } catch (const BasicException<char>& ex) {
-        Console::Write("Error: ");
-        Console::WriteLine(ex.What());
-    }
+    Console::WriteLine("Signature Valid: {0}", bIsValid);
+    Console::WriteLine("Subject Claim:   {0}", spParsedToken->GetPayload()["sub"]);
+    Console::WriteLine("Role Claim:      {0}", spParsedToken->GetPayload()["role"]);
 
     return 0;
 }

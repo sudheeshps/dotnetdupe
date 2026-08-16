@@ -1,122 +1,97 @@
-### class `JsonSerializer`
+# JsonSerializer &amp; JsonElement
 
-Provides functionality to serialize C++ objects or standard/library containers to JSON strings, and deserialize JSON strings back into C++ types using compile-time template specializations.
+**Namespace:** `DotNetDupe::System::Text::Json`  
+**Header:** `#include "System/Text/Json/JsonSerializer.h"`
 
-#### Namespace
-`DotNetDupe::System::Text::Json`
-
----
-
-#### Methods
-
-##### `template <typename T> static String Serialize(const T& value)`
-
-Serializes the specified value to a JSON string.
-
-* **Usage:**
-  ```cpp
-  int val = 42;
-  String json = JsonSerializer::Serialize(val); // "42"
-  
-  List<int> list = { 1, 2, 3 };
-  String arrJson = JsonSerializer::Serialize(list); // "[1,2,3]"
-  ```
-
-##### `template <typename T> static T Deserialize(const String& sJson)`
-
-Parses the JSON string and deserializes it into an instance of type `T`.
-
-* **Usage:**
-  ```cpp
-  int val = JsonSerializer::Deserialize<int>("42");
-  
-  List<int> list = JsonSerializer::Deserialize<List<int>>("[1,2,3]");
-  ```
+Provides high-performance functionality to serialize C++ objects to JSON strings and deserialize JSON strings into C++ objects and collections (`List<T>`, `Dictionary<String, T>`, primitives).
 
 ---
 
-### class `JsonElement`
+## `JsonSerializer` Class
 
-Represents a specific JSON value (object, array, string, number, boolean, or null). Used internally by the serializer and can be used directly for manual JSON parsing and manipulation.
-
-#### Methods
-
-##### `static JsonElement Parse(const String& sJson)`
-
-Parses a JSON string into a `JsonElement` DOM tree.
-
-* **Usage:**
-  ```cpp
-  JsonElement root = JsonElement::Parse("{\"Name\": \"Alice\", \"Age\": 30}");
-  ```
-
-##### `JsonValueKind GetValueKind() const`
-
-Gets the kind of the JSON value (e.g., `Object`, `Array`, `Number`, `String`, etc.).
-
-##### `bool GetBoolean() const`
-##### `double GetDouble() const`
-##### `int GetInt32() const`
-##### `long long GetInt64() const`
-##### `String GetString() const`
-
-Gets the primitive value from the element. Throws `std::runtime_error` if the element type does not match.
-
-##### `int GetArrayLength() const`
-##### `JsonElement GetArrayElement(int iIndex) const`
-##### `void AddArrayElement(const JsonElement& objElement)`
-
-Array manipulation and inspection methods.
-
-##### `bool TryGetProperty(const String& sPropertyName, JsonElement& objValue) const`
-##### `void SetProperty(const String& sPropertyName, const JsonElement& objValue)`
-##### `Collections::Generic::Array<String> GetPropertyNames() const`
-
-Object manipulation and inspection methods.
-
-##### `String ToString() const`
-
-Serializes the JSON DOM node and all its children back to a standard JSON string.
+### Syntax
+```cpp
+class JsonSerializer;
+```
 
 ---
 
-### Extending for Custom Types
+## Static Methods
 
-To support serialization/deserialization for user-defined structs/classes, specialize the `JsonConverter<T>` template struct:
+### `template <typename T> static String Serialize(const T& value)`
+Converts the value of a type specified by a generic type parameter into a JSON string.
 
 ```cpp
-struct Person {
-    String Name;
-    int Age;
+List<String> fruits;
+fruits.Add("Apple");
+fruits.Add("Mango");
+
+String json = JsonSerializer::Serialize(fruits); // ["Apple","Mango"]
+```
+
+### `template <typename T> static T Deserialize(const String& sJson)`
+Parses the text representing a single JSON value into an instance of the type specified by a generic type parameter.
+- **Throws:**
+  - `JsonException`: If the JSON text is invalid or cannot be converted to target type `T`.
+
+```cpp
+List<String> list = JsonSerializer::Deserialize<List<String>>("[\"Apple\",\"Mango\"]");
+```
+
+---
+
+## Custom Struct Serialization (`JSON_SERIALIZABLE` Macro)
+
+To make a custom C++ structure serializable, declare the `JSON_SERIALIZABLE` macro:
+
+```cpp
+struct Product {
+    int id;
+    String name;
+    double price;
 };
 
-namespace DotNetDupe {
-    namespace System {
-        namespace Text {
-            namespace Json {
-                template <>
-                struct JsonConverter<Person> {
-                    static JsonElement Write(const Person& value) {
-                        JsonElement obj(JsonValueKind::Object);
-                        obj.SetProperty("Name", JsonConverter<String>::Write(value.Name));
-                        obj.SetProperty("Age", JsonConverter<int>::Write(value.Age));
-                        return obj;
-                    }
+JSON_SERIALIZABLE(Product, id, name, price)
+```
 
-                    static Person Read(const JsonElement& element) {
-                        Person p;
-                        JsonElement prop;
-                        if (element.TryGetProperty("Name", prop)) {
-                            p.Name = JsonConverter<String>::Read(prop);
-                        }
-                        if (element.TryGetProperty("Age", prop)) {
-                            p.Age = JsonConverter<int>::Read(prop);
-                        }
-                        return p;
-                    }
-                };
-            }
-        }
+---
+
+## Example
+
+```cpp
+#include "System/Console.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/Collections/Generic/List.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Text::Json;
+using namespace DotNetDupe::System::Collections::Generic;
+
+struct Employee {
+    int id;
+    String name;
+    String department;
+};
+
+JSON_SERIALIZABLE(Employee, id, name, department)
+
+int main() {
+    List<Employee> team;
+    team.Add({ 1, "Alice", "Engineering" });
+    team.Add({ 2, "Bob", "Design" });
+
+    // Serialize
+    String json = JsonSerializer::Serialize(team);
+    Console::WriteLine("Serialized JSON:\n{0}", json);
+
+    // Deserialize
+    List<Employee> parsedTeam = JsonSerializer::Deserialize<List<Employee>>(json);
+    Console::WriteLine("Deserialized {0} employees:", parsedTeam.GetCount());
+    for (int i = 0; i < parsedTeam.GetCount(); ++i) {
+        Console::WriteLine(" - {0} ({1})", parsedTeam[i].name, parsedTeam[i].department);
     }
+
+    return 0;
 }
 ```

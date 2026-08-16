@@ -1,157 +1,79 @@
-### class `Stream`
+# Stream &amp; MemoryStream
 
-Provides a generic view of a sequence of bytes. This is an abstract class.
+**Namespace:** `DotNetDupe::System::IO`  
+**Header:** `#include "System/IO/Stream.h"`, `#include "System/IO/MemoryStream.h"`
 
-#### Methods
+`Stream` provides a generic view of a sequence of bytes. `MemoryStream` creates a stream whose backing store is contiguous memory.
 
-##### `virtual bool CanRead() const = 0`
+---
 
-When overridden in a derived class, gets a value indicating whether the current stream supports reading.
+## `Stream` (Abstract Base Class)
 
-**Returns:**
-- `true` if the stream supports reading; otherwise, `false`.
-
-**Usage:**
+### Syntax
 ```cpp
-if (stream->CanRead()) { /* ... */ }
+class Stream : public Object, public IDisposable;
 ```
 
-##### `virtual bool CanSeek() const = 0`
+### Pure Virtual Members
+- `virtual bool CanRead() const = 0`: Gets a value indicating whether the current stream supports reading.
+- `virtual bool CanSeek() const = 0`: Gets a value indicating whether the current stream supports seeking.
+- `virtual bool CanWrite() const = 0`: Gets a value indicating whether the current stream supports writing.
+- `virtual long GetLength() const = 0`: Gets the length in bytes of the stream.
+- `virtual long GetPosition() const = 0` / `virtual void SetPosition(long value) = 0`: Gets or sets the position within the current stream.
+- `virtual void Flush() = 0`: Clears all buffers for this stream and causes any buffered data to be written to the underlying device.
+- `virtual int Read(char* buffer, int offset, int count) = 0`: Reads a sequence of bytes from the current stream and advances the position.
+- `virtual void Write(const char* buffer, int offset, int count) = 0`: Writes a sequence of bytes to the current stream and advances the current position.
+- `virtual long Seek(long offset, int origin) = 0`: Sets the position within the current stream (0 = Begin, 1 = Current, 2 = End).
+- `virtual void SetLength(long value) = 0`: Sets the length of the current stream.
+- `virtual void Dispose() = 0`: Releases all unmanaged resources used by the `Stream`.
 
-When overridden in a derived class, gets a value indicating whether the current stream supports seeking.
+---
 
-**Returns:**
-- `true` if the stream supports seeking; otherwise, `false`.
+## `MemoryStream`
 
-**Usage:**
+### Syntax
 ```cpp
-if (stream->CanSeek()) { /* ... */ }
+class MemoryStream : public Stream;
 ```
 
-##### `virtual bool CanWrite() const = 0`
+### Constructors
+- `MemoryStream()`: Initializes a new non-resizable instance with an expandable capacity initialized to 0.
+- `explicit MemoryStream(const Array<char>& buffer)`: Initializes a new non-resizable instance based on the specified byte array.
+- `MemoryStream(const Array<char>& buffer, bool writable)`: Initializes a new instance with optional write permissions.
 
-When overridden in a derived class, gets a value indicating whether the current stream supports writing.
+### Additional Methods
+- `Array<char> ToArray() const`: Writes the entire stream contents to a byte array, regardless of the `Position` property.
 
-**Returns:**
-- `true` if the stream supports writing; otherwise, `false`.
+---
 
-**Usage:**
+## Example
+
 ```cpp
-if (stream->CanWrite()) { /* ... */ }
+#include "System/Console.h"
+#include "System/IO/MemoryStream.h"
+#include "System/String.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::IO;
+
+int main() {
+    MemoryStream memStream;
+
+    const char* text = "Hello from DotNetDupe MemoryStream!";
+    int len = (int)strlen(text);
+    memStream.Write(text, 0, len);
+
+    Console::WriteLine("Stream Length: {0} bytes", memStream.GetLength());
+    Console::WriteLine("Position:      {0}", memStream.GetPosition());
+
+    // Reset position to read
+    memStream.SetPosition(0);
+
+    char readBuf[128] = { 0 };
+    int bytesRead = memStream.Read(readBuf, 0, sizeof(readBuf) - 1);
+
+    Console::WriteLine("Bytes Read: {0}, Content: {1}", bytesRead, String(readBuf));
+
+    return 0;
+}
 ```
-
-##### `virtual long GetLength() const = 0`
-
-When overridden in a derived class, gets the length in bytes of the stream.
-
-**Returns:**
-- A long value representing the length of the stream in bytes.
-
-**Usage:**
-```cpp
-long len = stream->GetLength();
-```
-
-##### `virtual long GetPosition() const = 0`
-
-When overridden in a derived class, gets the position within the current stream.
-
-**Returns:**
-- The current position within the stream.
-
-**Usage:**
-```cpp
-long pos = stream->GetPosition();
-```
-
-##### `virtual void SetPosition(long value) = 0`
-
-When overridden in a derived class, sets the position within the current stream.
-
-**Parameters:**
-- `value`: The new position within the stream.
-
-**Usage:**
-```cpp
-stream->SetPosition(0);
-```
-
-##### `virtual void Flush() = 0`
-
-When overridden in a derived class, clears all buffers for this stream and causes any buffered data to be written to the underlying device.
-
-**Usage:**
-```cpp
-stream->Flush();
-```
-
-##### `virtual int Read(char* buffer, int offset, int count) = 0`
-
-When overridden in a derived class, reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.
-
-**Parameters:**
-- `buffer`: An array of bytes. When this method returns, the buffer contains the specified byte array with the values between `offset` and (`offset` + `count` - 1) replaced by the bytes read from the current source.
-- `offset`: The zero-based byte offset in `buffer` at which to begin storing the data read from the current stream.
-- `count`: The maximum number of bytes to be read from the current stream.
-
-**Returns:**
-- The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available, or zero (0) if the end of the stream has been reached.
-
-**Usage:**
-```cpp
-char buffer[1024];
-int read = stream->Read(buffer, 0, 1024);
-```
-
-##### `virtual long Seek(long offset, int origin) = 0`
-
-When overridden in a derived class, sets the position within the current stream.
-
-**Parameters:**
-- `offset`: A byte offset relative to the `origin` parameter.
-- `origin`: A value indicating the reference point used to obtain the new position.
-
-**Returns:**
-- The new position within the current stream.
-
-**Usage:**
-```cpp
-stream->Seek(0, 0);
-```
-
-##### `virtual void SetLength(long value) = 0`
-
-When overridden in a derived class, sets the length of the current stream.
-
-**Parameters:**
-- `value`: The desired length of the current stream in bytes.
-
-**Usage:**
-```cpp
-stream->SetLength(1024);
-```
-
-##### `virtual void Write(const char* buffer, int offset, int count) = 0`
-
-When overridden in a derived class, writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.
-
-**Parameters:**
-- `buffer`: An array of bytes. This method copies `count` bytes from `buffer` to the current stream.
-- `offset`: The zero-based byte offset in `buffer` at which to begin copying bytes to the current stream.
-- `count`: The number of bytes to be written to the current stream.
-
-**Usage:**
-```cpp
-const char* data = "Hello";
-stream->Write(data, 0, 5);
-```
-
-##### `virtual void Dispose() = 0`
-
-Releases all resources used by the `Stream`.
-
-**Usage:**
-```cpp
-stream->Dispose();
-```
-

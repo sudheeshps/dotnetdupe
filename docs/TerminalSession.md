@@ -1,48 +1,72 @@
-# TerminalSession
+# TerminalSession, RdpSessionInfo &amp; RdpSessionState
 
-`TerminalSession` provides APIs to enumerate and inspect active, disconnected, and remote desktop (RDP) sessions on a Windows machine via Terminal Services APIs (`WTSEnumerateSessions`, `WTSQuerySessionInformation`).
+**Namespace:** `DotNetDupe::System::Diagnostics`  
+**Header:** `#include "System/Diagnostics/TerminalSession.h"`
 
-## Namespace
-`DotNetDupe::System::Diagnostics`
+Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions, client names, and client IP addresses.
 
-## Header
+---
+
+## `RdpSessionState` Enum
+
 ```cpp
-#include "System/Diagnostics/TerminalSession.h"
+enum class RdpSessionState {
+    Active,
+    Connected,
+    ConnectQuery,
+    Shadow,
+    Disconnected,
+    Idle,
+    Listen,
+    Reset,
+    Down,
+    Init,
+    Unknown
+};
 ```
 
-## Struct: RdpSessionInfo
-| Property | Type | Description |
-| :--- | :--- | :--- |
-| `uSessionId` | `unsigned long` | Terminal Services Session ID |
-| `sSessionName` | `String` | Session identifier name (e.g. `"Console"`, `"RDP-Tcp#0"`) |
-| `sUserName` | `String` | Username logged into the session |
-| `sDomainName` | `String` | User domain name |
-| `sClientName` | `String` | Remote client machine name |
-| `sClientIpAddress` | `String` | Remote client IP address |
-| `eState` | `RdpSessionState` | Current state of session (`Active`, `Disconnected`, etc.) |
-| `bIsRdpSession` | `bool` | `true` if connected via RDP protocol |
+---
+
+## `RdpSessionInfo` Struct
+
+```cpp
+struct RdpSessionInfo {
+    unsigned long uSessionId;
+    String sSessionName;
+    String sUserName;
+    String sDomainName;
+    String sClientName;
+    String sClientIpAddress;
+    RdpSessionState eState;
+    bool bIsRdpSession;
+};
+```
+
+---
+
+## `TerminalSession` Class
+
+### Syntax
+```cpp
+class TerminalSession : public Object;
+```
+
+---
 
 ## Static Methods
 
-### GetSessions
-```cpp
-static List<RdpSessionInfo> GetSessions();
-```
-Enumerates all running sessions (Console, RDP, Listener) on the local Terminal Server.
+### `static List<RdpSessionInfo> GetSessions()`
+Enumerates all Terminal Services / RDP sessions regardless of connection state.
 
-### GetActiveSessions
-```cpp
-static List<RdpSessionInfo> GetActiveSessions();
-```
-Returns a list of sessions currently in `RdpSessionState::Active` state.
+### `static List<RdpSessionInfo> GetActiveSessions()`
+Enumerates all active connected user desktop sessions.
 
-### GetDisconnectedSessions
-```cpp
-static List<RdpSessionInfo> GetDisconnectedSessions();
-```
-Returns a list of sessions currently in `RdpSessionState::Disconnected` state.
+### `static List<RdpSessionInfo> GetDisconnectedSessions()`
+Enumerates disconnected or idle background sessions.
 
-## Usage Example
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
@@ -52,15 +76,19 @@ using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    auto lstSessions = TerminalSession::GetSessions();
-    Console::WriteLine("Total Sessions: " + String::ValueOf(lstSessions.GetCount()));
+    auto rdpSessions = TerminalSession::GetSessions();
 
-    for (int i = 0; i < lstSessions.GetCount(); ++i) {
-        const auto& session = lstSessions[i];
-        Console::WriteLine("Session ID: " + String::ValueOf(static_cast<int>(session.uSessionId)));
-        Console::WriteLine("  User: " + session.sUserName);
-        Console::WriteLine("  Client Name: " + session.sClientName);
+    Console::WriteLine("Terminal Sessions ({0} total):", rdpSessions.GetCount());
+    for (int i = 0; i < rdpSessions.GetCount(); ++i) {
+        const auto& s = rdpSessions[i];
+        Console::WriteLine(" [Session #{0}] User: {1}\\{2} (RDP: {3}, IP: {4})",
+            s.uSessionId,
+            s.sDomainName,
+            s.sUserName,
+            s.bIsRdpSession,
+            s.sClientIpAddress);
     }
+
     return 0;
 }
 ```

@@ -1,84 +1,74 @@
-### class `DateTimeOffset`
+# DateTimeOffset
+
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/DateTimeOffset.h"`
 
 Represents a point in time, typically expressed as a date and time of day relative to Coordinated Universal Time (UTC).
 
-#### Methods
+---
 
-##### `DateTimeOffset(int64_t ticks)`
+## Syntax
 
-Initializes a new instance of the `DateTimeOffset` class using the specified number of ticks.
-
-**Usage:**
 ```cpp
-DateTimeOffset dto(638200000000000000);
-```
-
-##### `int64_t GetTicks() const`
-
-Gets the number of ticks that represent the date and time of the current `DateTimeOffset` object.
-
-**Usage:**
-```cpp
-int64_t ticks = dto.GetTicks();
-```
-
-##### `TimeSpan operator-(const DateTimeOffset& other) const`
-
-Subtracts a `DateTimeOffset` from another `DateTimeOffset` and returns a `TimeSpan`.
-
-**Usage:**
-```cpp
-TimeSpan elapsed = dto2 - dto1;
-```
-
-##### `bool operator==(const DateTimeOffset& other) const`
-
-Determines whether two specified `DateTimeOffset` objects represent the same point in time.
-
-**Usage:**
-```cpp
-if (dto1 == dto2) { /* ... */ }
+class DateTimeOffset : public Object;
 ```
 
 ---
 
-## Code Example
+## Constructors
 
-The following example demonstrates how to create `DateTimeOffset` instances, compare them, and calculate elapsed time intervals using `TimeSpan`. It also demonstrates managing `DateTimeOffset` objects dynamically using `SmartPointer`.
+### `DateTimeOffset()`
+Initializes a new instance of `DateTimeOffset` set to 0 ticks.
+
+### `DateTimeOffset(int64_t ticks)`
+Initializes a new instance of `DateTimeOffset` with the specified number of ticks.
+
+---
+
+## Static Methods
+
+### `static DateTimeOffset Now()`
+Gets a `DateTimeOffset` object whose date and time are set to the current local time and whose offset is the local time's offset from UTC.
+
+### `static DateTimeOffset UtcNow()`
+Gets a `DateTimeOffset` object whose date and time are set to the current UTC time.
+
+```cpp
+DateTimeOffset dto = DateTimeOffset::UtcNow();
+```
+
+---
+
+## Member Functions & Operators
+
+### `int64_t GetTicks() const`
+Gets the number of ticks that represent the date and time of the current `DateTimeOffset` object.
+
+### `String ToString() const` / `String ToString(const String& sFormat) const`
+Converts the value of the current `DateTimeOffset` object to its equivalent string representation.
+
+### `TimeSpan operator-(const DateTimeOffset& other) const`
+Subtracts one `DateTimeOffset` object from another to yield a time interval (`TimeSpan`).
+
+### `bool operator==(const DateTimeOffset& other) const` / `!=` / `<` / `<=` / `>` / `>=`
+Relational and equality comparison operators comparing tick values.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/DateTimeOffset.h"
-#include "System/TimeSpan.h"
-#include "System/SmartPointer.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    // Create DateTimeOffset objects on the stack
-    DateTimeOffset dtoStart(638200000000000000);
-    DateTimeOffset dtoEnd(638200000010000000); // 1 second later (10,000,000 ticks)
+    DateTimeOffset dtoNow = DateTimeOffset::Now();
+    Console::WriteLine("Local DateTimeOffset: {0}", dtoNow.ToString());
 
-    Console::WriteLine("dtoStart ticks: ");
-    Console::WriteLine(dtoStart.GetTicks());
-
-    Console::WriteLine("dtoEnd ticks: ");
-    Console::WriteLine(dtoEnd.GetTicks());
-
-    // Calculate elapsed time using subtraction operator
-    TimeSpan elapsed = dtoEnd - dtoStart;
-    Console::WriteLine("Elapsed seconds: ");
-    Console::WriteLine(elapsed.GetTotalSeconds());
-
-    // Compare two points in time
-    if (dtoEnd > dtoStart) {
-        Console::WriteLine("dtoEnd is after dtoStart.");
-    }
-
-    // Dynamic memory management using SmartPointer
-    auto pDto = SmartPointer<DateTimeOffset>::New(638200000020000000);
-    Console::WriteLine("pDto ticks: ");
-    Console::WriteLine(pDto->GetTicks());
+    DateTimeOffset dtoUtc = DateTimeOffset::UtcNow();
+    Console::WriteLine("UTC DateTimeOffset: {0}", dtoUtc.ToString());
 
     return 0;
 }

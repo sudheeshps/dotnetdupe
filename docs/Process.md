@@ -1,110 +1,27 @@
-### class `Process`
+# Process &amp; ProcessStartInfo
 
-Provides access to local processes and enables you to start and stop local system processes.
+**Namespace:** `DotNetDupe::System::Diagnostics`  
+**Header:** `#include "System/Diagnostics/Process.h"`
 
-#### Methods
+Provides access to local and remote processes and enables you to start and stop local system processes.
 
-##### `static SmartPointer<Process> Start(const String& sFileName)`
+---
 
-Starts a process resource by specifying the name of an application.
-
-**Usage:**
-```cpp
-auto pProcess = Process::Start("notepad.exe");
-```
-
-##### `static SmartPointer<Process> Start(const String& sFileName, const String& sArguments)`
-
-Starts a process resource by specifying the name of an application and a set of command-line arguments.
-
-**Usage:**
-```cpp
-auto pProcess = Process::Start("cmd.exe", "/c dir");
-```
-
-##### `static SmartPointer<Process> Start(const ProcessStartInfo& objStartInfo)`
-
-Starts a process resource by specifying a `ProcessStartInfo` object.
-
-**Usage:**
-```cpp
-ProcessStartInfo objInfo("cmd.exe", "/c dir");
-objInfo.CreateNoWindow = true;
-auto pProcess = Process::Start(objInfo);
-```
-
-##### `bool Start()`
-
-Starts the process resource that is specified by the `StartInfo` property.
-
-**Usage:**
-```cpp
-Process objProcess;
-ProcessStartInfo objInfo("notepad.exe");
-objProcess.SetStartInfo(objInfo);
-objProcess.Start();
-```
-
-##### `void WaitForExit()`
-
-Instructs the `Process` component to wait indefinitely for the associated process to exit.
-
-**Usage:**
-```cpp
-pProcess->WaitForExit();
-```
-
-##### `bool WaitForExit(int iMilliseconds)`
-
-Instructs the `Process` component to wait the specified number of milliseconds for the associated process to exit.
-
-**Usage:**
-```cpp
-bool bExited = pProcess->WaitForExit(5000);
-```
-
-##### `void Kill()`
-
-Immediately stops the associated process.
-
-**Usage:**
-```cpp
-pProcess->Kill();
-```
-
-##### `int GetExitCode() const`
-
-Gets the value that the associated process specified when it terminated.
-
-**Usage:**
-```cpp
-int iCode = pProcess->GetExitCode();
-```
-
-##### `bool GetHasExited()`
-
-Gets a value indicating whether the associated process has been terminated.
-
-**Usage:**
-```cpp
-if (pProcess->GetHasExited()) { /* ... */ }
-```
-
-##### `int GetId() const`
-
-Gets the unique identifier for the associated process.
-
-**Usage:**
-```cpp
-int iId = pProcess->GetId();
-```
-
-#### class `ProcessStartInfo`
+## `ProcessStartInfo`
 
 Specifies a set of values that are used when you start a process.
 
-##### Properties
+### Syntax
+```cpp
+class ProcessStartInfo : public Object;
+```
 
+### Constructors
+- `ProcessStartInfo()`: Initializes an empty `ProcessStartInfo`.
+- `ProcessStartInfo(const String& sFileName)`: Initializes a `ProcessStartInfo` specifying the file name/executable.
+- `ProcessStartInfo(const String& sFileName, const String& sArguments)`: Initializes a `ProcessStartInfo` specifying executable and command line arguments.
+
+### Fields
 - `String FileName`: The application or document to start.
 - `String Arguments`: The set of command-line arguments to use when starting the application.
 - `String WorkingDirectory`: The working directory for the process to be started.
@@ -113,47 +30,91 @@ Specifies a set of values that are used when you start a process.
 
 ---
 
-## Code Example
+## `Process`
 
-The following example shows how to launch a command-line process cross-platform, inspect its PID, wait for it to exit, and check the exit code.
+### Syntax
+```cpp
+class Process : public Object;
+```
+
+---
+
+## Member Functions
+
+### `ProcessStartInfo GetStartInfo() const` / `void SetStartInfo(const ProcessStartInfo& objStartInfo)`
+Gets or sets the properties to pass to the `Start()` method.
+
+### `bool Start()`
+Starts the process resource that is specified by the `StartInfo` property.
+
+### `void WaitForExit()`
+Instructs the `Process` component to wait indefinitely for the associated process to exit.
+
+### `bool WaitForExit(int iMilliseconds)`
+Instructs the `Process` component to wait the specified number of milliseconds for the associated process to exit.
+- **Returns:**
+  - `bool`: `true` if the associated process has exited; otherwise, `false`.
+
+### `int GetExitCode() const`
+Gets the value that the associated process specified when it terminated.
+
+### `bool GetHasExited() const`
+Gets a value indicating whether the associated process has been terminated.
+
+### `int GetId() const`
+Gets the unique native identifier (PID) for the associated process.
+
+### `void Kill()`
+Immediately stops the associated process.
+
+---
+
+## Static Methods
+
+### `static SmartPointer<Process> Start(const String& sFileName)`
+Starts a process resource by specifying the name of an application.
+
+### `static SmartPointer<Process> Start(const String& sFileName, const String& sArguments)`
+Starts a process resource by specifying the executable file and command-line arguments.
+
+### `static SmartPointer<Process> Start(const ProcessStartInfo& objStartInfo)`
+Starts the process resource that is specified by the parameter containing process start information.
+
+### `static int GetCurrentProcessId()`
+Returns the process identifier of the calling process.
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/Process.h"
 #include "System/SmartPointer.h"
-#include "System/Convert.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    try {
+    Console::WriteLine("Current Process ID: {0}", Process::GetCurrentProcessId());
+
+    ProcessStartInfo psi;
 #if defined(_WIN32)
-        String sFileName = "cmd.exe";
-        String sArgs = "/c dir";
+    psi.FileName = "cmd.exe";
+    psi.Arguments = "/c echo Hello from child process";
 #else
-        String sFileName = "ls";
-        String sArgs = "-la";
+    psi.FileName = "/bin/sh";
+    psi.Arguments = "-c \"echo Hello from child process\"";
 #endif
+    psi.CreateNoWindow = true;
 
-        Console::WriteLine("Starting process...");
-        SmartPointer<Process> pProcess = Process::Start(sFileName, sArgs);
+    auto pProc = Process::Start(psi);
+    pProc->WaitForExit(3000);
 
-        Console::Write("Spawned Process ID: ");
-        Console::WriteLine(Convert::ToString(pProcess->GetId()));
+    Console::WriteLine("Child Process PID: {0}", pProc->GetId());
+    Console::WriteLine("Has Exited:        {0}", pProc->GetHasExited());
+    Console::WriteLine("Exit Code:         {0}", pProc->GetExitCode());
 
-        Console::WriteLine("Waiting for process to exit...");
-        pProcess->WaitForExit();
-
-        if (pProcess->GetHasExited()) {
-            Console::Write("Process exited with code: ");
-            Console::WriteLine(Convert::ToString(pProcess->GetExitCode()));
-        }
-    } catch (const std::exception& ex) {
-        Console::Write("Exception: ");
-        Console::WriteLine(ex.what());
-    }
     return 0;
 }
 ```
-

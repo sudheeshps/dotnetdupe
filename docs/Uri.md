@@ -1,167 +1,112 @@
-### class `Uri`
+# Uri
 
-Provides an object representation of a uniform resource identifier (URI) and easy access to the parts of the URI.
+**Namespace:** `DotNetDupe::System`  
+**Header:** `#include "System/Uri.h"`
 
-#### Methods
+Provides an object representation of a Uniform Resource Identifier (URI) and easy access to the parts of the URI (scheme, host, port, path, query, fragment).
 
-##### `Uri(const String& uriString)`
+---
 
-Initializes a new instance of the `Uri` class with the specified URI.
+## Syntax
 
-**Parameters:**
-- `uriString`: A string that represents the URI.
-
-**Usage:**
 ```cpp
-Uri uri("http://example.com/path?query=1");
-```
-
-##### `String GetAbsolutePath() const`
-
-Gets the absolute path of the URI.
-
-**Returns:**
-- A string containing the absolute path of the URI.
-
-**Usage:**
-```cpp
-String path = uri.GetAbsolutePath();
-```
-
-##### `String GetAbsoluteUri() const`
-
-Gets the absolute URI.
-
-**Returns:**
-- A string containing the entire URI.
-
-**Usage:**
-```cpp
-String fullUri = uri.GetAbsoluteUri();
-```
-
-##### `String GetAuthority() const`
-
-Gets the authority component of the URI.
-
-**Returns:**
-- A string containing the authority component of the URI.
-
-**Usage:**
-```cpp
-String authority = uri.GetAuthority();
-```
-
-##### `String GetHost() const`
-
-Gets the host component of this instance.
-
-**Returns:**
-- A string containing the host name.
-
-**Usage:**
-```cpp
-String host = uri.GetHost();
-```
-
-##### `int GetPort() const`
-
-Gets the port number of this URI.
-
-**Returns:**
-- An integer containing the port number of the URI.
-
-**Usage:**
-```cpp
-int port = uri.GetPort();
-```
-
-##### `String GetScheme() const`
-
-Gets the scheme name for this URI.
-
-**Returns:**
-- A string containing the scheme (e.g., "http" or "https").
-
-**Usage:**
-```cpp
-String scheme = uri.GetScheme();
-```
-
-##### `String GetQuery() const`
-
-Gets any query information included in the specified URI.
-
-**Returns:**
-- A string containing the query information.
-
-**Usage:**
-```cpp
-String query = uri.GetQuery();
-```
-
-##### `String GetFragment() const`
-
-Gets the fragment portion of the URI.
-
-**Returns:**
-- A string containing the fragment information.
-
-**Usage:**
-```cpp
-String fragment = uri.GetFragment();
+class Uri : public Object;
 ```
 
 ---
 
-## Code Example
+## Constructors
 
-The following example demonstrates how to parse a URI, read its various components, and manage the `Uri` instance dynamically using `SmartPointer`. It also shows how to catch a custom `FormatException` if one occurs.
+### `Uri(const String& uriString)`
+Initializes a new instance of the `Uri` class with the specified URI string.
+
+- **Throws:**
+  - `FormatException`: If the URI string cannot be parsed.
+
+```cpp
+Uri objUri("https://user:pass@api.example.com:8443/v1/users?page=1#profile");
+```
+
+---
+
+## Static Methods
+
+### `static String EscapeDataString(const String& stringToEscape)`
+Converts a string to its escaped representation.
+
+```cpp
+String sEscaped = Uri::EscapeDataString("Hello World & Co."); // "Hello%20World%20%26%20Co."
+```
+
+### `static String UnescapeDataString(const String& stringToUnescape)`
+Converts a string to its unescaped representation.
+
+---
+
+## Properties & Methods
+
+### `String GetScheme() const`
+Gets the scheme name for this URI (e.g. `"https"`, `"http"`, `"ftp"`).
+
+### `String GetHost() const`
+Gets the host component of this URI (e.g. `"api.example.com"`).
+
+### `int GetPort() const`
+Gets the port number of this URI (e.g. `8443`).
+
+### `String GetAuthority() const`
+Gets the domain name or IP address and port number for a server.
+
+### `String GetAbsolutePath() const`
+Gets the absolute path of the URI (e.g. `"/v1/users"`).
+
+### `String GetAbsoluteUri() const`
+Gets the entire, absolute URI string.
+
+### `String GetQuery() const`
+Gets any query information included in the specified URI (e.g. `"?page=1"`).
+
+### `String GetFragment() const`
+Gets the escaped URI fragment (e.g. `"#profile"`).
+
+### `String GetUserInfo() const`
+Gets the user name, password, or other user-specific information associated with the specified URI.
+
+### `String GetOriginalString() const`
+Gets the original URI string passed to the constructor.
+
+### `String ToString() const`
+Gets a canonical string representation for the specified `Uri` instance.
+
+### `bool IsDefaultPort() const`
+Gets a value indicating whether the port value of the URI is the default for this scheme.
+
+### `bool IsFile() const`
+Gets a value indicating whether the specified `Uri` is a file URI.
+
+### `bool IsLoopback() const`
+Gets a value indicating whether the specified `Uri` references the local host (`localhost`, `127.0.0.1`, `::1`).
+
+---
+
+## Example
 
 ```cpp
 #include "System/Console.h"
 #include "System/Uri.h"
-#include "System/SmartPointer.h"
-#include "System/FormatException.h"
 
 using namespace DotNetDupe::System;
 
 int main() {
-    try {
-        // Construct Uri using SmartPointer
-        auto pUri = SmartPointer<Uri>::New("https://admin:secret@example.com:8080/path/to/resource?query=1#section");
+    Uri objEndpoint("https://api.github.com:443/repos/dotnet/runtime?branch=main");
 
-        Console::Write("Scheme: ");
-        Console::WriteLine(pUri->GetScheme());
-
-        Console::Write("Host: ");
-        Console::WriteLine(pUri->GetHost());
-
-        Console::Write("Port: ");
-        Console::WriteLine(pUri->GetPort());
-
-        Console::Write("Absolute Path: ");
-        Console::WriteLine(pUri->GetAbsolutePath());
-
-        Console::Write("Query: ");
-        Console::WriteLine(pUri->GetQuery());
-
-        Console::Write("Fragment: ");
-        Console::WriteLine(pUri->GetFragment());
-
-        Console::Write("UserInfo: ");
-        Console::WriteLine(pUri->GetUserInfo());
-
-        Console::Write("Is Loopback: ");
-        Console::WriteLine(pUri->IsLoopback());
-
-    } catch (const FormatException& ex) {
-        Console::Write("Error parsing URI: ");
-        Console::WriteLine(ex.What());
-    }
+    Console::WriteLine("Scheme:    {0}", objEndpoint.GetScheme());
+    Console::WriteLine("Host:      {0}", objEndpoint.GetHost());
+    Console::WriteLine("Port:      {0}", objEndpoint.GetPort());
+    Console::WriteLine("Path:      {0}", objEndpoint.GetAbsolutePath());
+    Console::WriteLine("Authority: {0}", objEndpoint.GetAuthority());
+    Console::WriteLine("Query:     {0}", objEndpoint.GetQuery());
 
     return 0;
 }
 ```
-
-

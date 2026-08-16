@@ -1,99 +1,107 @@
-# Push Notifications & Real-Time HTTP Streaming
+# Push Notifications (SSE &amp; WebSockets)
 
-DotNetDupe `WebAppCore` provides real-time server-to-client push notification capabilities via **Server-Sent Events (SSE)** chunked HTTP streaming and **WebSockets**.
+**Namespace:** `DotNetDupe::WebAppCore::WebSockets` & `DotNetDupe::WebAppCore::Http`  
+**Header:** `#include "WebAppCore/WebSockets/WebSocketContext.h"`, `#include "WebAppCore/Http/HttpContext.h"`
 
-## Namespaces
-- `DotNetDupe::WebAppCore::Http`
-- `DotNetDupe::System::Net::WebSockets`
-- `DotNetDupe::WebAppCore::WebSockets`
+Provides real-time push notification streaming from the C++ backend to connected browser clients using either Server-Sent Events (SSE) or full-duplex WebSockets.
 
 ---
 
-## 1. Server-Sent Events (SSE) Streaming API
+## 1. Server-Sent Events (SSE)
 
-`HttpResponse` provides methods for keeping connections open and streaming chunked data (e.g., `text/event-stream`).
+SSE enables unidirectional push event streams over standard HTTP chunked transfer encoding.
 
-### Key Methods
-- `void BindStream(SmartPointer<NetworkStream> pStream)`: Binds the response directly to the underlying TCP socket network stream.
-- `void FlushHeaders()`: Immediately flushes the HTTP status line and headers (e.g. `Transfer-Encoding: chunked`).
-- `void WriteChunk(const String& data)`: Formats and writes a `chunked` HTTP transfer block directly to the socket.
-- `void Flush()`: Flushes remaining data and sends final 0-length terminating chunk.
-
-### Example: Server-Sent Events (SSE)
-
+### SSE Endpoint Implementation
 ```cpp
-#include "WebAppCore/Builder/WebApplication.h"
-#include "System/Console.h"
+app->MapGet("/api/live-feed", [](SmartPointer<HttpContext> context) -> String {
+    auto response = context->GetResponse();
+    response->SetContentType("text/event-stream");
+    response->GetHeaders().Add("Cache-Control", "no-cache");
+    response->GetHeaders().Add("Connection", "keep-alive");
+    response->SetChunked(true);
+    response->FlushHeaders();
 
-using namespace DotNetDupe::System;
-using namespace DotNetDupe::WebAppCore::Builder;
+    for (int i = 1; i <= 5; ++i) {
+        String data = String::Format("data: {\"event\": \"update\", \"count\": {0}}\n\n", i);
+        response->WriteChunk(data);
+        Thread::Sleep(1000);
+    }
 
-int main() {
-    auto builder = WebApplication::CreateBuilder();
-    auto app = builder->Build();
-
-    app->MapGet("/events", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext> ctx) -> String {
-        auto resp = ctx->GetResponse();
-        resp->SetContentType("text/event-stream");
-
-        resp->WriteChunk("data: {\"event\": \"ping\", \"time\": \"12:00:00\"}\n\n");
-        resp->WriteChunk("data: {\"event\": \"metrics\", \"cpu\": 12.5}\n\n");
-        resp->Flush();
-        return "";
-    });
-
-    app->Run("http://127.0.0.1:5000");
-    return 0;
-}
+    return "";
+});
 ```
 
 ---
 
-## 2. WebSocket Support
+## 2. WebSockets (`IWebSocketHandler`)
 
-Allows full-duplex persistent WebSocket connections on endpoints mapped via `MapWebSocket`.
+WebSockets provide low-latency, full-duplex bidirectional communication channels.
 
-### Key Interfaces & Classes
-- **`WebSocket`**: Encapsulates framing, masking, and `SendAsync(const String& message)` push operations.
-- **`IWebSocketHandler`**: Base handler class providing `OnConnected`, `OnMessage`, and `OnDisconnected` callbacks.
-- **`WebSocketContext`**: Container providing access to the `HttpContext` and active `WebSocket`.
-
-### Example: Custom WebSocket Handler
-
+### `IWebSocketHandler` Interface
 ```cpp
-#include "WebAppCore/Builder/WebApplication.h"
-#include "WebAppCore/WebSockets/WebSocketContext.h"
-#include "System/Console.h"
+class IWebSocketHandler : public virtual Object {
+public:
+    virtual void OnConnected(SmartPointer<WebSocketContext> pContext) = 0;
+    virtual void OnMessage(SmartPointer<WebSocketContext> pContext, const String& message) = 0;
+    virtual void OnDisconnected(SmartPointer<WebSocketContext> pContext) = 0;
+};
+```
 
-using namespace DotNetDupe::System;
-using namespace DotNetDupe::WebAppCore::Builder;
-using namespace DotNetDupe::WebAppCore::WebSockets;
-
-class NotificationsHandler : public IWebSocketHandler {
+### Mapping WebSocket Handlers
+```cpp
+class ChatSocketHandler : public IWebSocketHandler {
 public:
     void OnConnected(SmartPointer<WebSocketContext> pContext) override {
-        Console::WriteLine("[WebSocket] Client Connected!");
-        pContext->GetWebSocket()->SendAsync("Welcome to Push Notifications!");
+        Console::WriteLine("Client connected via WebSocket!");
     }
 
     void OnMessage(SmartPointer<WebSocketContext> pContext, const String& message) override {
-        Console::WriteLine(String("[WebSocket] Received: ") + message);
-        pContext->GetWebSocket()->SendAsync(String("Echo: ") + message);
+        Console::WriteLine("Received: {0}", message);
+        pContext->GetWebSocket()->Send("Echo: " + message);
     }
 
     void OnDisconnected(SmartPointer<WebSocketContext> pContext) override {
-        Console::WriteLine("[WebSocket] Client Disconnected.");
+        Console::WriteLine("Client disconnected.");
     }
 };
+
+// Map on WebApplication
+app->MapWebSocket("/ws/chat", SmartPointer<ChatSocketHandler>::NewShared());
+```
+
+---
+
+## Example
+
+```cpp
+#include "System/Console.h"
+#include "WebAppCore/Builder/WebApplication.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
+#include "System/Threading/Thread.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::WebAppCore::Builder;
+using namespace DotNetDupe::WebAppCore::Http;
+using namespace DotNetDupe::WebAppCore::WebSockets;
 
 int main() {
     auto builder = WebApplication::CreateBuilder();
     auto app = builder->Build();
 
-    auto handler = SmartPointer<NotificationsHandler>::NewShared();
-    app->MapWebSocket("/ws/notifications", handler);
+    // SSE Endpoint
+    app->MapGet("/events", [](SmartPointer<HttpContext> ctx) -> String {
+        auto res = ctx->GetResponse();
+        res->SetContentType("text/event-stream");
+        res->SetChunked(true);
+        res->FlushHeaders();
 
-    app->Run("http://127.0.0.1:5000");
+        res->WriteChunk("data: Hello from SSE\n\n");
+        return "";
+    });
+
+    Console::WriteLine("Streaming server running at http://127.0.0.1:8080/events");
+    app->Run("http://127.0.0.1:8080", 4);
+
     return 0;
 }
 ```
