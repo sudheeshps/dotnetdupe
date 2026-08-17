@@ -12,6 +12,11 @@ namespace DotNetDupe {
                 DOTNETDUPE_API ConditionVariable();
                 DOTNETDUPE_API virtual ~ConditionVariable();
                 
+                ConditionVariable(const ConditionVariable&) = delete;
+                ConditionVariable& operator=(const ConditionVariable&) = delete;
+                DOTNETDUPE_API ConditionVariable(ConditionVariable&& other) noexcept;
+                DOTNETDUPE_API ConditionVariable& operator=(ConditionVariable&& other) noexcept;
+                
                 DOTNETDUPE_API void Wait(CriticalSection& cs);
                 DOTNETDUPE_API bool Wait(CriticalSection& cs, int millisecondsTimeout);
                 
