@@ -46,6 +46,14 @@ Write-Host "   x86 Build successful." -ForegroundColor Green
 
 # 4. Pack NuGet Package
 Write-Host "[4/4] Creating NuGet Package using DotNetDupe.nuspec..." -ForegroundColor Yellow
+$checkQualityGates = Join-Path $PSScriptRoot "scripts\Check-QualityGates.ps1"
+if (Test-Path $checkQualityGates) {
+    & $checkQualityGates
+    if ($LASTEXITCODE -ne 0) {
+        Throw "Check-QualityGates failed with exit code $LASTEXITCODE"
+    }
+}
+
 if (-not (Test-Path $OutputDirectory)) {
     New-Item -ItemType Directory -Path $OutputDirectory -Force | Out-Null
 }
