@@ -173,6 +173,10 @@ jobs:
         # Linux Release
         cp artifacts-temp/linux-x64-Release/libDotNetDupe.so build-wsl/
 
+    - name: Generate NuGet README & Run Quality Gate Checks
+      shell: powershell
+      run: .\scripts\Check-QualityGates.ps1
+
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
 
