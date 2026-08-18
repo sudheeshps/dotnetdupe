@@ -117,6 +117,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 
 - 🌐 **Networking, HTTP & Web App Hosting (`System::Net` / `Extensions::Hosting`)**:
   - Low-level socket abstractions (`TcpClient`, `TcpListener`, `UdpClient`, `Socket`).
+  - Full-duplex WebSockets: `WebSocket`, `WebSocketState`, `WebSocketException`, `WebSocketError` (RFC 6455).
   - High-level HTTP client: `HttpClient`, `HttpRequestMessage`, `HttpResponseMessage`, `HttpContent`, `StringContent`, `ByteArrayContent`.
   - SSL/TLS security: `SslStream` backed by OpenSSL.
   - Embedded Web Server & Hosting: `WebAppServer` and `HostBuilder` for serving static Web UI files and REST API controllers.

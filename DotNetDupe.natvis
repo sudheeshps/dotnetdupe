@@ -99,6 +99,8 @@
       <Item Name="Build">_build</Item>
       <Item Name="Revision">_revision</Item>
     </Expand>
+  </Type>
+
   <!-- DotNetDupe::System::Diagnostics::EtwEvent -->
   <Type Name="DotNetDupe::System::Diagnostics::EtwEvent">
     <DisplayString>[ID={iEventId}, Level={iLevel}] Provider={sProviderName}</DisplayString>
@@ -110,6 +112,26 @@
       <Item Name="TimeCreated">dtTimeCreated</Item>
       <Item Name="Message">sMessage</Item>
       <Item Name="RawXml">sRawXml</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Net::WebSockets::WebSocketException -->
+  <Type Name="DotNetDupe::System::Net::WebSockets::WebSocketException">
+    <DisplayString>[WebSocketError={m_eWebSocketErrorCode}] {what()}</DisplayString>
+    <Expand>
+      <Item Name="WebSocketError">m_eWebSocketErrorCode</Item>
+      <Item Name="NativeErrorCode">m_iNativeErrorCode</Item>
+      <Item Name="Message">what()</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Net::WebSockets::WebSocket -->
+  <Type Name="DotNetDupe::System::Net::WebSockets::WebSocket">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>WebSocket [State={m_pImpl-&gt;m_eState}]</DisplayString>
+    <Expand>
+      <Item Name="State">m_pImpl-&gt;m_eState</Item>
+      <Item Name="Stream">m_pImpl-&gt;m_pStream</Item>
     </Expand>
   </Type>
 

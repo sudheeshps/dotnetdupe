@@ -218,6 +218,16 @@ namespace DotNetDupe {
                 }
             }
 
+            static void RunWsReceiveLoop(const System::SmartPointer<System::Net::WebSockets::WebSocket>& pWebSocket, const System::SmartPointer<WebSockets::WebSocketContext>& pWsContext, const System::SmartPointer<WebSockets::IWebSocketHandler>& pWsHandler) {
+                System::String msg;
+                try {
+                    while (pWebSocket->ReceiveText(msg)) {
+                        if (msg.IsEmpty() || msg == "__DISCONNECT__") break;
+                        try { pWsHandler->OnMessage(pWsContext, msg); } catch (...) { (void)0; }
+                    }
+                } catch (...) { (void)0; }
+            }
+
             static bool ProcessWsSession(const System::SmartPointer<System::Net::Sockets::NetworkStream>& stream, const System::SmartPointer<Http::HttpContext>& spContext, const System::SmartPointer<WebSockets::IWebSocketHandler>& pWsHandler, const System::String& sSecKey) {
                 System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
                 std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: " + std::string(sAcceptKey.GetRawString() ? sAcceptKey.GetRawString() : "") + "\r\n\r\n";
@@ -225,11 +235,7 @@ namespace DotNetDupe {
                 auto pWebSocket = System::SmartPointer<System::Net::WebSockets::WebSocket>::NewShared(stream);
                 auto pWsContext = System::SmartPointer<WebSockets::WebSocketContext>::NewShared(spContext, pWebSocket);
                 try { pWsHandler->OnConnected(pWsContext); } catch (...) { (void)0; }
-                System::String msg;
-                while (pWebSocket->ReceiveText(msg)) {
-                    if (msg.IsEmpty() || msg == "__DISCONNECT__") break;
-                    try { pWsHandler->OnMessage(pWsContext, msg); } catch (...) { (void)0; }
-                }
+                RunWsReceiveLoop(pWebSocket, pWsContext, pWsHandler);
                 try { pWsHandler->OnDisconnected(pWsContext); } catch (...) { (void)0; }
                 return true;
             }

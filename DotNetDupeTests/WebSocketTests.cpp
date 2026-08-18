@@ -1,6 +1,8 @@
 #include "pch.h"
 #include <gtest/gtest.h>
 #include "System/Net/WebSockets/WebSocket.h"
+#include "System/Net/WebSockets/WebSocketException.h"
+#include "System/ArgumentException.h"
 #include "System/Net/Sockets/TcpListener.h"
 #include "System/Net/Sockets/TcpClient.h"
 #include "System/Threading/Thread.h"
@@ -20,6 +22,10 @@ TEST(WebSocketTests, GivenSecWebSocketKey_WhenAcceptComputed_ThenMatchesRfcGuide
     EXPECT_STREQ(accept.GetRawString(), "s3pPLMBiTxaQ9kYGzzhZRbK+xOo=");
 }
 
+TEST(WebSocketTests, GivenEmptySecWebSocketKey_WhenAcceptComputed_ThenThrowsArgumentException) {
+    EXPECT_THROW(WebSocket::ComputeSecWebSocketAccept(""), ArgumentException);
+}
+
 TEST(WebSocketTests, GivenWebSocket_WhenStateQueriedAndModified_ThenStateUpdatesCorrectly) {
     SmartPointer<NetworkStream> pNullStream;
     WebSocket ws(pNullStream);
@@ -32,21 +38,47 @@ TEST(WebSocketTests, GivenWebSocket_WhenStateQueriedAndModified_ThenStateUpdates
     EXPECT_EQ(ws.GetState(), WebSocketState::Closed);
 }
 
-TEST(WebSocketTests, GivenNullStream_WhenSendOrReceiveAttempted_ThenReturnsFalse) {
+TEST(WebSocketTests, GivenNullStream_WhenSendOrReceiveAttempted_ThenThrowsWebSocketException) {
     SmartPointer<NetworkStream> pNullStream;
     WebSocket ws(pNullStream);
 
-    EXPECT_FALSE(ws.SendAsync("Test"));
+    EXPECT_THROW(ws.SendAsync("Test"), WebSocketException);
 
     Array<uint8_t> arrData(4);
     arrData[0] = 1; arrData[1] = 2; arrData[2] = 3; arrData[3] = 4;
-    EXPECT_FALSE(ws.SendBytes(arrData));
+    EXPECT_THROW(ws.SendBytes(arrData), WebSocketException);
 
     String msg;
-    EXPECT_FALSE(ws.ReceiveText(msg));
+    EXPECT_THROW(ws.ReceiveText(msg), WebSocketException);
 
     ws.Close();
     EXPECT_EQ(ws.GetState(), WebSocketState::Closed);
+}
+
+TEST(WebSocketTests, GivenWebSocketException_WhenConstructed_ThenPropertiesPreserved) {
+    WebSocketException ex1("General WebSocket error");
+    EXPECT_EQ(ex1.GetWebSocketErrorCode(), WebSocketError::Faulted);
+    EXPECT_STREQ(ex1.What(), "General WebSocket error");
+
+    WebSocketException ex2(WebSocketError::HeaderError, "Bad header");
+    EXPECT_EQ(ex2.GetWebSocketErrorCode(), WebSocketError::HeaderError);
+    EXPECT_STREQ(ex2.What(), "Bad header");
+
+    WebSocketException ex3(WebSocketError::NativeError, 10054, "Connection reset");
+    EXPECT_EQ(ex3.GetWebSocketErrorCode(), WebSocketError::NativeError);
+    EXPECT_EQ(ex3.GetErrorCode(), 10054);
+    EXPECT_STREQ(ex3.What(), "Connection reset");
+}
+
+TEST(WebSocketTests, GivenWebSocketException_WhenConstructedWithInnerException_ThenPreserved) {
+    Exception innerEx("Underlying IO error");
+    WebSocketException ex(WebSocketError::ConnectionClosedPrematurely, innerEx);
+    EXPECT_EQ(ex.GetWebSocketErrorCode(), WebSocketError::ConnectionClosedPrematurely);
+    EXPECT_STREQ(ex.What(), "Underlying IO error");
+
+    WebSocketException ex2(WebSocketError::HeaderError, "Frame header corrupt", innerEx);
+    EXPECT_EQ(ex2.GetWebSocketErrorCode(), WebSocketError::HeaderError);
+    EXPECT_STREQ(ex2.What(), "Frame header corrupt");
 }
 
 TEST(WebSocketTests, GivenWebSocketCommunication_WhenTextSentAndReceived_ThenFramesTransferredCorrectly) {
