@@ -48,6 +48,7 @@ int main() {
     RunGenericCollectionsDemo();
     DemonstrateDirectory();
     DemonstrateFileDownloader();
+    DemonstrateProcessStreamer();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

@@ -5,7 +5,7 @@
     <version>4.0.2</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v4.0.2: Pimpl move and destruction ABI stability release. Explicitly exported and defined special member functions for ConditionVariable and Pimpl classes to prevent C4150 incomplete type deletion warnings in consuming projects.</releaseNotes>
+    <releaseNotes>v4.0.2: Progressive Process Enumeration &amp; Telemetry Streaming (ProcessStreamer), WebSocketException error handling improvements, Pimpl move and destruction ABI stability release.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />

@@ -87,6 +87,20 @@ enum class SystemResource {
 
 ---
 
+---
+
+## Progressive Process Streaming (`ProcessStreamer`)
+
+For non-blocking, two-tier progressive telemetry streaming without freezing UI threads or stalling network endpoints, use `SystemMetrics::CreateProcessStreamer()` or `SystemMetrics::EnumerateProcessesAsync()`. See the dedicated [ProcessStreamer documentation](ProcessStreamer.md) for detailed usage patterns.
+
+```cpp
+SystemMetrics::EnumerateProcessesAsync([](const ProcessInfo& proc) {
+    Console::WriteLine("Discovered PID: {0} ({1})", proc.iProcessId, proc.sName);
+});
+```
+
+---
+
 ## Example
 
 ```cpp
@@ -116,3 +130,4 @@ int main() {
     return 0;
 }
 ```
+

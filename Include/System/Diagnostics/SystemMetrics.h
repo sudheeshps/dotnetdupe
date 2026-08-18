@@ -4,11 +4,15 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/SmartPointer.h"
+#include "System/Action.h"
 #include "System/Collections/Generic/List.h"
+#include "System/Diagnostics/ProcessStreamOptions.h"
 
 namespace DotNetDupe {
     namespace System {
         namespace Diagnostics {
+
+            class ProcessStreamer;
 
             enum class SystemResource {
                 Cpu,
@@ -113,6 +117,10 @@ namespace DotNetDupe {
                 // Process list & ranking APIs
                 DOTNETDUPE_API static Collections::Generic::List<ProcessInfo> GetTopProcesses(SystemResource eResource, int iCount);
                 DOTNETDUPE_API static Collections::Generic::List<ProcessInfo> GetAllProcesses(int iSessionId = -1);
+
+                // Progressive Streaming APIs
+                DOTNETDUPE_API static SmartPointer<ProcessStreamer> CreateProcessStreamer(const ProcessStreamOptions& options = ProcessStreamOptions());
+                DOTNETDUPE_API static void EnumerateProcessesAsync(const Action<const ProcessInfo&>& fnOnProcess, const Action<>& fnOnComplete = nullptr);
 
                 // Service enumeration API
                 DOTNETDUPE_API static Collections::Generic::List<ServiceInfo> GetAllServices();

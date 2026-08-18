@@ -135,4 +135,16 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::Diagnostics::ProcessStreamer -->
+  <Type Name="DotNetDupe::System::Diagnostics::ProcessStreamer">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>ProcessStreamer [Running={m_pImpl-&gt;m_bRunning}]</DisplayString>
+    <Expand>
+      <Item Name="Running">m_pImpl-&gt;m_bRunning</Item>
+      <Item Name="Cancelled">m_pImpl-&gt;m_bCancelled</Item>
+      <Item Name="BatchSize">m_pImpl-&gt;m_options.iBatchSize</Item>
+      <Item Name="DetailLevel">m_pImpl-&gt;m_options.eDetailLevel</Item>
+    </Expand>
+  </Type>
+
 </AutoVisualizer>

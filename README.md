@@ -25,6 +25,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 > - 🖊️ **LoggerTextWriter Log Redirector:** Bridge standard `TextWriter` stream calls directly into `LogManager` logging providers without per-call lookup overhead.
 > - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
 > - 📥 **FileDownloader Utility:** High-level download utility with pause/resume support, speed tracking, and prompt file handle release.
+> - 🔄 **Progressive Process Enumeration & Streaming (`System::Diagnostics::ProcessStreamer`):** Non-blocking, two-tier telemetry streaming and event-driven observable enumerator with Tier-1 fast discovery (<5ms), Tier-2 progressive deep metric enrichment (CPU, Disk, Network, Ports), configurable micro-batching, and cancellation support.
 > - 🌲 **Recursive Directory Creation:** Overloaded `Directory::CreateDirectory(path, recursive)` to automatically construct missing parent directory structures.
 > - 📂 **Resilient File Logging:** Enhanced `FileLoggerProvider` to resolve relative log paths to full paths and auto-create missing log directories.
 > - 🧩 **ServiceCollection DI Enhancements:** Improved lifetime management and container registration.
@@ -113,7 +114,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 - 🧵 **Multi-Threading & Process Management (`System::Threading` / `System::Diagnostics`)**:
   - Thread lifecycle (`Thread`), high-throughput `ThreadPool`, and task parallelism (`Task`, `Task<T>`).
   - Synchronization primitives: `Mutex`, `AutoResetEvent`, `ManualResetEvent`, `EventWaitHandle`, `CriticalSection`, `ReaderWriterLockSlim`.
-  - Process orchestration: `Process`, `ProcessStartInfo` for executing sub-processes with stdin/stdout/stderr piping.
+  - Process orchestration & telemetry: `Process`, `ProcessStartInfo`, and progressive streaming via `ProcessStreamer` / `ProcessStreamOptions`.
 
 - 🌐 **Networking, HTTP & Web App Hosting (`System::Net` / `Extensions::Hosting`)**:
   - Low-level socket abstractions (`TcpClient`, `TcpListener`, `UdpClient`, `Socket`).
@@ -912,6 +913,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [RealtimeTelemetry](docs/RealtimeTelemetry.md) | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
 | [ActiveUserSession](docs/ActiveUserSession.md) | Enumerates active and terminal user sessions across the system. |
 | [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
+| [ProcessStreamer](docs/ProcessStreamer.md) | Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator. |
 
 ---
 
