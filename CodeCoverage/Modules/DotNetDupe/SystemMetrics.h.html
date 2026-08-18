@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SystemMetrics.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#pragma once
+
+#include "Common.h"
+#include "System/Object.h"
+#include "System/String.h"
+#include "System/SmartPointer.h"
+#include "System/Action.h"
+#include "System/Collections/Generic/List.h"
+#include "System/Diagnostics/ProcessStreamOptions.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+            class ProcessStreamer;
+
+            enum class SystemResource {
+                Cpu,
+                Memory,
+                Disk,
+                Network
+            };
+
+            struct MemoryInfo {
+                double dMemoryUsagePercent;
+                unsigned long long uMemoryTotalBytes;
+                unsigned long long uMemoryUsedBytes;
+                long long lPrivateBytes;
+                long long lPhysicalMemoryBytes; // Working Set
+
+                MemoryInfo()
+                    : dMemoryUsagePercent(0.0),
+                      uMemoryTotalBytes(0ULL),
+                      uMemoryUsedBytes(0ULL),
+                      lPrivateBytes(-1),
+                      lPhysicalMemoryBytes(-1) {}
+            };
+
+            struct DiskInfo {
+                long long lDiskReadBytes;
+                long long lDiskWriteBytes;
+
+                DiskInfo() : lDiskReadBytes(-1), lDiskWriteBytes(-1) {}
+            };
+
+            struct NetworkUsageInfo {
+                long long lNetworkReadBytes;
+                long long lNetworkWriteBytes;
+
+                NetworkUsageInfo() : lNetworkReadBytes(-1), lNetworkWriteBytes(-1) {}
+            };
+
+            struct NetworkConnectionInfo {
+                String sLocalAddress;
+                int iLocalPort;
+                String sRemoteAddress;
+                int iRemotePort;
+                String sState; // e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT", etc.
+
+                NetworkConnectionInfo() : iLocalPort(0), iRemotePort(0) {}
+            };
+
+            struct ProcessNetworkConnectionInfo {
+                Collections::Generic::List&lt;int&gt; lstOpenPorts;
+                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;
+                bool bHasEstablishedInboundConnection;
+
+                ProcessNetworkConnectionInfo() : bHasEstablishedInboundConnection(false) {}
+            };
+
+            struct ProcessInfo {
+                int iProcessId;
+                int iSessionId;
+                String sName;
+                String sPath;
+                String sCommandLine;
+                double dCpuUsagePercent;
+                MemoryInfo memory;
+                DiskInfo disk;
+                NetworkUsageInfo network;
+
+                ProcessInfo()
+<span style = "background-color:#dfd">                    : iProcessId(0),</span>
+                      iSessionId(0),
+<span style = "background-color:#dfd">                      dCpuUsagePercent(0.0) {}</span>
+            };
+
+            struct ServiceInfo {
+                String sServiceName;
+                String sDisplayName;
+                String sStatus; // e.g. "Running", "Stopped", "Paused", "StartPending", etc.
+                String sStartType; // e.g. "Automatic", "Manual", "Disabled", etc.
+                int iProcessId;
+
+                ServiceInfo() : iProcessId(0) {}
+            };
+
+            class SystemMetrics : public Object {
+            public:
+                DOTNETDUPE_API SystemMetrics();
+                DOTNETDUPE_API virtual ~SystemMetrics();
+
+                // System-wide metrics
+                DOTNETDUPE_API static MemoryInfo GetSystemMemoryUsage();
+                DOTNETDUPE_API static double GetSystemCpuUsage();
+                DOTNETDUPE_API static DiskInfo GetSystemDiskUsage();
+                DOTNETDUPE_API static double GetSystemNetworkUsage();
+
+                // Process-specific metrics (by process name, internally using handle-based APIs)
+                DOTNETDUPE_API static String GetProcessCommandLine(const String&amp; sProcessName);
+                DOTNETDUPE_API static MemoryInfo GetProcessMemoryUsage(const String&amp; sProcessName);
+                DOTNETDUPE_API static DiskInfo GetProcessDiskUsage(const String&amp; sProcessName);
+                DOTNETDUPE_API static NetworkUsageInfo GetProcessNetworkUsage(const String&amp; sProcessName);
+                DOTNETDUPE_API static Collections::Generic::List&lt;int&gt; GetProcessNetworkPort(const String&amp; sProcessName);
+                DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String&amp; sProcessName);
+
+                // Process list &amp; ranking APIs
+                DOTNETDUPE_API static Collections::Generic::List&lt;ProcessInfo&gt; GetTopProcesses(SystemResource eResource, int iCount);
+                DOTNETDUPE_API static Collections::Generic::List&lt;ProcessInfo&gt; GetAllProcesses(int iSessionId = -1);
+
+                // Progressive Streaming APIs
+                DOTNETDUPE_API static SmartPointer&lt;ProcessStreamer&gt; CreateProcessStreamer(const ProcessStreamOptions&amp; options = ProcessStreamOptions());
+                DOTNETDUPE_API static void EnumerateProcessesAsync(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess, const Action&lt;&gt;&amp; fnOnComplete = nullptr);
+
+                // Service enumeration API
+                DOTNETDUPE_API static Collections::Generic::List&lt;ServiceInfo&gt; GetAllServices();
+
+            private:
+#if defined(_WIN32)
+                static void* OpenProcessByName(const String&amp; sProcessName, unsigned long dwDesiredAccess, int&amp; iOutProcessId);
+                static String ReadProcessCommandLineHandle(void* hProc);
+                static MemoryInfo ReadProcessMemoryHandle(void* hProc);
+                static DiskInfo ReadProcessDiskHandle(void* hProc, const String&amp; sProcessName);
+                static NetworkUsageInfo ReadProcessNetworkHandle(void* hProc, const String&amp; sProcessName);
+                static Collections::Generic::List&lt;int&gt; ReadProcessNetworkPortInternal(int iProcessId);
+                static ProcessNetworkConnectionInfo ReadProcessNetworkInfoInternal(int iProcessId);
+                static void PopulateProcessInfo(void* pEntry32, ProcessInfo&amp; proc);
+#else
+                static int FindPidByName(const String&amp; sProcessName);
+                static MemoryInfo ReadLinuxProcessMemory(int iPid);
+                static DiskInfo ReadLinuxProcessDisk(int iPid);
+                static NetworkUsageInfo ReadLinuxProcessNetwork(int iPid);
+                static Collections::Generic::List&lt;int&gt; ReadLinuxProcessPorts(int iPid);
+                static ProcessNetworkConnectionInfo ReadLinuxProcessNetworkInfo(int iPid);
+                static void PopulateLinuxProc(const std::string&amp; dname, ProcessInfo&amp; proc);
+#endif
+            };
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

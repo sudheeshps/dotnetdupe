@@ -25,10 +25,10 @@ namespace DotNetDupe {
 
             class WebSocketContext : public virtual DotNetDupe::System::Object {
             public:
-<span style = "background-color:#fdd">                DOTNETDUPE_API WebSocketContext(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; pContext,</span>
+<span style = "background-color:#dfd">                DOTNETDUPE_API WebSocketContext(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; pContext,</span>
                                                 DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Net::WebSockets::WebSocket&gt; pWebSocket)
-<span style = "background-color:#fdd">                    : m_pContext(pContext), m_pWebSocket(pWebSocket) {}
-                DOTNETDUPE_API ~WebSocketContext() override = default;</span>
+<span style = "background-color:#dfd">                    : m_pContext(pContext), m_pWebSocket(pWebSocket) {}</span>
+<span style = "background-color:#fdd">                DOTNETDUPE_API ~WebSocketContext() override = default;</span>
 
 <span style = "background-color:#dfd">                DOTNETDUPE_API DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; GetHttpContext() const { return m_pContext; }
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Net::WebSockets::WebSocket&gt; GetWebSocket() const { return m_pWebSocket; }</span>

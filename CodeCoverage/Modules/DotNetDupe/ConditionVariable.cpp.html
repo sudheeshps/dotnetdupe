@@ -34,6 +34,10 @@ namespace DotNetDupe {
                 m_pImpl = SmartPointer&lt;Impl&gt;::NewShared();
             }</span>
 
+<span style = "background-color:#fdd">            ConditionVariable::ConditionVariable(ConditionVariable&amp;&amp; other) noexcept = default;</span>
+
+<span style = "background-color:#fdd">            ConditionVariable&amp; ConditionVariable::operator=(ConditionVariable&amp;&amp; other) noexcept = default;</span>
+
 <span style = "background-color:#dfd">            ConditionVariable::~ConditionVariable() {
             }</span>
 

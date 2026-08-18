@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
+#include "System/Diagnostics/ProcessStreamer.h"
 #include "System/Utils/StringConvert.h"
 #include &lt;algorithm&gt;
 #include &lt;vector&gt;
@@ -47,6 +48,19 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">            SystemMetrics::SystemMetrics() {}
             SystemMetrics::~SystemMetrics() {}</span>
+
+<span style = "background-color:#fdd">            SmartPointer&lt;ProcessStreamer&gt; SystemMetrics::CreateProcessStreamer(const ProcessStreamOptions&amp; options) {
+                return SmartPointer&lt;ProcessStreamer&gt;::NewShared(options);
+            }</span>
+
+<span style = "background-color:#dfd">            void SystemMetrics::EnumerateProcessesAsync(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess, const Action&lt;&gt;&amp; fnOnComplete) {
+                ProcessStreamOptions options;
+                options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
+                auto pStreamer = CreateProcessStreamer(options);
+                pStreamer-&gt;OnProcess(fnOnProcess);
+                if (fnOnComplete) pStreamer-&gt;OnCompleted(fnOnComplete);
+                pStreamer-&gt;Start();
+            }</span>
 
 #if defined(_WIN32)
             struct ProcessCpuSample {
