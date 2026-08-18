@@ -23,13 +23,18 @@
 #endif
 #include "System/Text/Json/JsonSerializer.h"
 #include "System/IdentityModel/Tokens/Jwt/JWTToken.h"
+#include "WebAppCore/WebSockets/WebSocketContext.h"
+#include "System/Net/Sockets/TcpClient.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Net;
 using namespace DotNetDupe::System::Net::Http;
+using namespace DotNetDupe::System::Net::Sockets;
 using namespace DotNetDupe::System::Threading;
 using namespace DotNetDupe::WebAppCore::Builder;
 using namespace DotNetDupe::WebAppCore::Controllers;
+using namespace DotNetDupe::WebAppCore::WebSockets;
+using namespace DotNetDupe::WebAppCore::Server;
 using namespace DotNetDupe::System::Text::Json;
 
 namespace WebApplicationTests {
@@ -753,6 +758,159 @@ namespace WebApplicationTests {
             auto resp = client.Get("http://127.0.0.1:28089/nonexistent_path");
             ASSERT_FALSE(resp.IsNull());
             EXPECT_EQ((int)resp->GetStatusCode(), 404);
+
+        } catch (const SystemException& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    class TestWebSocketEchoHandler : public IWebSocketHandler {
+    public:
+        void OnConnected(SmartPointer<WebSocketContext> pContext) override {
+            (void)pContext;
+        }
+        void OnMessage(SmartPointer<WebSocketContext> pContext, const String& message) override {
+            pContext->GetWebSocket()->SendAsync(String("Echo: ") + message);
+        }
+        void OnDisconnected(SmartPointer<WebSocketContext> pContext) override {
+            (void)pContext;
+        }
+    };
+
+    TEST(WebApplicationTests, GivenWebSocketRoute_WhenHandshakeContainsMultiTokenConnectionHeader_ThenEstablishesWebSocketSession) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+            auto handler = SmartPointer<TestWebSocketEchoHandler>::NewShared();
+            app->MapWebSocket("/ws", handler);
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28090");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            TcpClient client;
+            client.Connect("127.0.0.1", 28090);
+            auto stream = client.GetStream();
+
+            std::string req = "GET /ws HTTP/1.1\r\nHost: 127.0.0.1:28090\r\nUpgrade: websocket\r\nConnection: keep-alive, Upgrade\r\nSec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n\r\n";
+            stream->Write(req.data(), 0, static_cast<int>(req.length()));
+
+            char buffer[512] = { 0 };
+            int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+            ASSERT_GT(bytesRead, 0);
+
+            std::string response(buffer);
+            EXPECT_TRUE(response.find("101 Switching Protocols") != std::string::npos);
+            EXPECT_TRUE(response.find("s3pPLMBiTxaQ9kYGzzhZRbK+xOo=") != std::string::npos);
+
+            client.Close();
+        } catch (const SystemException& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebSocketRoute_WhenNonWebSocketGetRequested_ThenReturns426UpgradeRequired) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+            auto handler = SmartPointer<TestWebSocketEchoHandler>::NewShared();
+            app->MapWebSocket("/ws", handler);
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28091");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            auto resp = client.Get("http://127.0.0.1:28091/ws");
+            ASSERT_FALSE(resp.IsNull());
+            EXPECT_EQ((int)resp->GetStatusCode(), 426);
+
+        } catch (const SystemException& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebSocketRoute_WhenMalformedHandshakeRequested_ThenReturns400BadRequest) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+            auto handler = SmartPointer<TestWebSocketEchoHandler>::NewShared();
+            app->MapWebSocket("/ws", handler);
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28092");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            TcpClient client;
+            client.Connect("127.0.0.1", 28092);
+            auto stream = client.GetStream();
+
+            std::string req = "GET /ws HTTP/1.1\r\nHost: 127.0.0.1:28092\r\nUpgrade: websocket\r\nConnection: Upgrade\r\n\r\n";
+            stream->Write(req.data(), 0, static_cast<int>(req.length()));
+
+            char buffer[512] = { 0 };
+            int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+            ASSERT_GT(bytesRead, 0);
+
+            std::string response(buffer);
+            EXPECT_TRUE(response.find("400 Bad Request") != std::string::npos);
+
+            client.Close();
+        } catch (const SystemException& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
+
+    TEST(WebApplicationTests, GivenWebAppServerWithStaticFiles_WhenWebSocketRouteRequestedWithoutUpgrade_ThenReturns426InsteadOf404) {
+        try {
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+            auto handler = SmartPointer<TestWebSocketEchoHandler>::NewShared();
+            app->MapWebSocket("/ws", handler);
+
+            auto server = SmartPointer<WebAppServer>::NewShared(app, "wwwroot");
+            server->EnableStaticFiles("index.html");
+
+            Thread serverThread([server]() {
+                server->Run("http://127.0.0.1:28093");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            HttpClient client;
+            auto resp = client.Get("http://127.0.0.1:28093/ws");
+            ASSERT_FALSE(resp.IsNull());
+            EXPECT_EQ((int)resp->GetStatusCode(), 426);
 
         } catch (const SystemException& ex) {
             FAIL() << "BasicException thrown: " << ex.What();

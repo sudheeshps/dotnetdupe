@@ -40,6 +40,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API void MapPut(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
                 DOTNETDUPE_API void MapWebSocket(const DotNetDupe::System::String& pattern, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler> handler);
+                DOTNETDUPE_API DotNetDupe::System::Collections::Generic::List<DotNetDupe::System::String> GetWebSocketRoutes() const;
+                DOTNETDUPE_API bool HasWebSocketRoute(const DotNetDupe::System::String& path) const;
 
                 DOTNETDUPE_API void MapControllers();
 
