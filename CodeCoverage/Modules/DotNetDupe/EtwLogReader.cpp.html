@@ -115,8 +115,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                if (::EvtRender(NULL, hEvt, EvtRenderEventXml, 4096, wXmlBuffer, &amp;dwUsed, &amp;dwProps)) {
                     std::string sNarrowXml = Utils::StringConvert::WCharToUtf8(wXmlBuffer);
                     evt.sRawXml = String(sNarrowXml.c_str());
-                } else {</span>
-<span style = "background-color:#fdd">                    evt.sRawXml = "&lt;Event&gt;&lt;System&gt;&lt;EventID&gt;100&lt;/EventID&gt;&lt;/System&gt;&lt;/Event&gt;";</span>
+                } else {
+                    evt.sRawXml = "&lt;Event&gt;&lt;System&gt;&lt;EventID&gt;100&lt;/EventID&gt;&lt;/System&gt;&lt;/Event&gt;";</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
