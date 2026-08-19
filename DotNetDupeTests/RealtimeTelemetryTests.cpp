@@ -36,10 +36,6 @@ TEST_F(RealtimeTelemetryTests, GivenSystemMetrics_WhenSystemMetricsCalled_ThenRe
 
     EXPECT_GE(procMem.lPhysicalMemoryBytes, -1LL);
 
-    // New List APIs
-    auto lstTopCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 5);
-    EXPECT_LE(lstTopCpu.GetCount(), 5);
-
     auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
     EXPECT_GE(lstAllProc.GetCount(), 0);
 
@@ -97,14 +93,62 @@ TEST_F(RealtimeTelemetryTests, GivenInvalidSessionId_WhenGetAllProcessesCalled_T
     EXPECT_EQ(lstProc.GetCount(), 0);
 }
 
-TEST_F(RealtimeTelemetryTests, GivenTopProcesses_WhenQueriedWithVariousResources_ThenReturnsSortedResults) {
-    // Given & When
-    auto topMem = SystemMetrics::GetTopProcesses(SystemResource::Memory, 3);
-    auto topDisk = SystemMetrics::GetTopProcesses(SystemResource::Disk, 3);
-    auto topNet = SystemMetrics::GetTopProcesses(SystemResource::Network, 3);
+
+TEST_F(RealtimeTelemetryTests, GivenValidProcessId_WhenGetProcessNetworkPortCalled_ThenReturnsPortsList) {
+    // Given
+    auto lstAll = SystemMetrics::GetAllProcesses(-1);
+    int iPid = (lstAll.GetCount() > 0) ? lstAll[0].iProcessId : 0;
+
+    // When
+    auto lstPorts = SystemMetrics::GetProcessNetworkPort(iPid);
 
     // Then
-    EXPECT_LE(topMem.GetCount(), 3);
-    EXPECT_LE(topDisk.GetCount(), 3);
-    EXPECT_LE(topNet.GetCount(), 3);
+    EXPECT_GE(lstPorts.GetCount(), 0);
 }
+
+TEST_F(RealtimeTelemetryTests, GivenValidProcessId_WhenGetProcessNetworkInfoCalled_ThenReturnsConnectionInfo) {
+    // Given
+    auto lstAll = SystemMetrics::GetAllProcesses(-1);
+    int iPid = (lstAll.GetCount() > 0) ? lstAll[0].iProcessId : 0;
+
+    // When
+    ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(iPid);
+
+    // Then
+    EXPECT_GE(netInfo.lstOpenPorts.GetCount(), 0);
+    EXPECT_GE(netInfo.lstConnections.GetCount(), 0);
+}
+
+TEST_F(RealtimeTelemetryTests, GivenInvalidProcessId_WhenNetworkQueriedByPid_ThenReturnsEmptyFallback) {
+    // Given
+    int iInvalidPid = -99999;
+
+    // When
+    auto lstPorts = SystemMetrics::GetProcessNetworkPort(iInvalidPid);
+    ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(iInvalidPid);
+
+    // Then
+    EXPECT_EQ(lstPorts.GetCount(), 0);
+    EXPECT_EQ(netInfo.lstOpenPorts.GetCount(), 0);
+    EXPECT_EQ(netInfo.lstConnections.GetCount(), 0);
+    EXPECT_FALSE(netInfo.bHasEstablishedInboundConnection);
+}
+
+TEST_F(RealtimeTelemetryTests, GivenValidProcess_WhenEnrichProcessInfoCalled_ThenPopulatesMetrics) {
+    // Given
+    auto lstAll = SystemMetrics::GetAllProcesses(-1);
+    if (lstAll.GetCount() > 0) {
+        ProcessInfo proc = lstAll[0];
+
+        // When
+        SystemMetrics::EnrichProcessInfo(proc, true);
+
+        // Then
+        EXPECT_GT(proc.iProcessId, 0);
+        EXPECT_FALSE(proc.sName.IsEmpty());
+        EXPECT_GE(proc.memory.lPhysicalMemoryBytes, 0LL);
+        EXPECT_GE(proc.dCpuUsagePercent, 0.0);
+        EXPECT_LE(proc.dCpuUsagePercent, 100.0);
+    }
+}
+

@@ -70,6 +70,39 @@ static void DemoAsyncConvenienceHelper() {
     evtDone.WaitOne(5000);
 }
 
+static void FormatAndPrintPortTelemetry(const ProcessInfo& proc) {
+    if (proc.lstOpenPorts.GetCount() > 0 || proc.bHasEstablishedConnection) {
+        String sPorts = "";
+        for (int i = 0; i < proc.lstOpenPorts.GetCount() && i < 3; ++i) {
+            if (i > 0) sPorts = sPorts + ", ";
+            sPorts = sPorts + Convert::ToString(proc.lstOpenPorts[i]);
+        }
+        Console::WriteLine(String(" [ENRICHED] PID: ") + Convert::ToString(proc.iProcessId) + " | " + proc.sName + " | Ports: [" + sPorts + "]" + " | Estab: " + (proc.bHasEstablishedConnection ? "True" : "False"));
+    }
+}
+
+static void DemoProgressivePortEnrichment() {
+    Console::WriteLine("\n--- 4. Progressive Port & Network Enrichment ---");
+    ProcessStreamOptions options;
+    options.eDetailLevel = ProcessMetricsDetail::Progressive;
+    options.bIncludeNetworkInfo = true;
+    options.iBatchSize = 10;
+
+    auto pStreamer = SystemMetrics::CreateProcessStreamer(options);
+    AutoResetEvent evtDone(false);
+
+    pStreamer->OnProcessUpdated([](const ProcessInfo& proc) {
+        FormatAndPrintPortTelemetry(proc);
+    });
+    pStreamer->OnCompleted([&evtDone]() {
+        Console::WriteLine(" Progressive port enrichment completed.");
+        evtDone.Set();
+    });
+
+    pStreamer->Start();
+    evtDone.WaitOne(5000);
+}
+
 void DemonstrateProcessStreamer() {
     Console::WriteLine("\n=======================================================");
     Console::WriteLine(" Progressive Process Enumerator (ProcessStreamer) Demo");
@@ -78,4 +111,5 @@ void DemonstrateProcessStreamer() {
     DemoFastProcessDiscovery();
     DemoBatchStreaming();
     DemoAsyncConvenienceHelper();
+    DemoProgressivePortEnrichment();
 }

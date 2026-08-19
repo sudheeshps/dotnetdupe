@@ -14,13 +14,6 @@ namespace DotNetDupe {
 
             class ProcessStreamer;
 
-            enum class SystemResource {
-                Cpu,
-                Memory,
-                Disk,
-                Network
-            };
-
             struct MemoryInfo {
                 double dMemoryUsagePercent;
                 unsigned long long uMemoryTotalBytes;
@@ -78,11 +71,15 @@ namespace DotNetDupe {
                 MemoryInfo memory;
                 DiskInfo disk;
                 NetworkUsageInfo network;
+                Collections::Generic::List<int> lstOpenPorts;
+                Collections::Generic::List<NetworkConnectionInfo> lstConnections;
+                bool bHasEstablishedConnection;
 
                 ProcessInfo()
                     : iProcessId(0),
                       iSessionId(0),
-                      dCpuUsagePercent(0.0) {}
+                      dCpuUsagePercent(0.0),
+                      bHasEstablishedConnection(false) {}
             };
 
             struct ServiceInfo {
@@ -114,8 +111,12 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static Collections::Generic::List<int> GetProcessNetworkPort(const String& sProcessName);
                 DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String& sProcessName);
 
-                // Process list & ranking APIs
-                DOTNETDUPE_API static Collections::Generic::List<ProcessInfo> GetTopProcesses(SystemResource eResource, int iCount);
+                // Process-specific metrics by PID
+                DOTNETDUPE_API static Collections::Generic::List<int> GetProcessNetworkPort(int iProcessId);
+                DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId);
+                DOTNETDUPE_API static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true);
+
+                // Process list & enumeration APIs
                 DOTNETDUPE_API static Collections::Generic::List<ProcessInfo> GetAllProcesses(int iSessionId = -1);
 
                 // Progressive Streaming APIs

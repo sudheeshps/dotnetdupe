@@ -1,5 +1,9 @@
 #include "pch.h"
 #include "System/Diagnostics/ProcessStreamer.h"
+#include "System/Diagnostics/SystemMetrics.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentNullException.h"
+#include "System/SystemException.h"
 #include "System/Threading/Thread.h"
 #include "System/Threading/CriticalSection.h"
 #include "System/Threading/Lock.h"
@@ -29,8 +33,11 @@ namespace DotNetDupe {
             static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
                 proc.iProcessId = pe32->th32ProcessID;
                 proc.sName = String(pe32->szExeFile);
+                proc.memory.lPhysicalMemoryBytes = 0;
+                proc.memory.lPrivateBytes = 0;
                 DWORD dwSess = 0;
                 if (::ProcessIdToSessionId(pe32->th32ProcessID, &dwSess)) proc.iSessionId = static_cast<int>(dwSess);
+                if (pe32->th32ProcessID == 0) return;
                 HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32->th32ProcessID);
                 if (!hProc) return;
                 WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
@@ -45,13 +52,16 @@ namespace DotNetDupe {
 
             static void CollectTier1Processes(std::vector<ProcessInfo>& vecProcs, int iSessionId) {
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (hSnapshot == INVALID_HANDLE_VALUE) return;
+                if (hSnapshot == INVALID_HANDLE_VALUE) throw SystemException("Failed to create system process snapshot.");
                 PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
                 if (::Process32FirstW(hSnapshot, &pe32)) {
                     do {
+                        if (pe32.th32ProcessID == 0) continue;
                         ProcessInfo proc;
                         FastPopulateProc(&pe32, proc);
-                        if (iSessionId == -1 || proc.iSessionId == iSessionId) vecProcs.push_back(proc);
+                        if (proc.iProcessId > 0 && (iSessionId == -1 || proc.iSessionId == iSessionId)) {
+                            vecProcs.push_back(proc);
+                        }
                     } while (::Process32NextW(hSnapshot, &pe32));
                 }
                 ::CloseHandle(hSnapshot);
@@ -72,7 +82,7 @@ namespace DotNetDupe {
 
             static void CollectTier1Processes(std::vector<ProcessInfo>& vecProcs, int iSessionId) {
                 DIR* dir = ::opendir("/proc");
-                if (!dir) return;
+                if (!dir) throw SystemException("Failed to open /proc directory.");
                 struct dirent* entry = nullptr;
                 while ((entry = ::readdir(dir)) != nullptr) {
                     if (entry->d_type == DT_DIR) {
@@ -89,15 +99,7 @@ namespace DotNetDupe {
 #endif
 
             static void DeepEnrichProc(ProcessInfo& proc, bool bIncludeNetwork) {
-                proc.sCommandLine = SystemMetrics::GetProcessCommandLine(proc.sName);
-                proc.disk = SystemMetrics::GetProcessDiskUsage(proc.sName);
-                proc.network = SystemMetrics::GetProcessNetworkUsage(proc.sName);
-                if (bIncludeNetwork) {
-                    auto netInfo = SystemMetrics::GetProcessNetworkInfo(proc.sName);
-                    for (int i = 0; i < netInfo.lstOpenPorts.GetCount(); ++i) {
-                        if (!proc.network.lNetworkReadBytes) proc.network.lNetworkReadBytes = netInfo.lstConnections.GetCount();
-                    }
-                }
+                SystemMetrics::EnrichProcessInfo(proc, bIncludeNetwork);
             }
 
             class ProcessStreamer::Impl : public Object {
@@ -187,6 +189,9 @@ namespace DotNetDupe {
                 }
 
                 void Start(const SmartPointer<Impl>& spSelf) {
+                    if (m_options.iBatchSize < 0 || m_options.iBatchIntervalMs < 0) {
+                        throw ArgumentException("ProcessStreamOptions batch parameters cannot be negative.");
+                    }
                     if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
                     m_bCancelled.store(false);
                     m_spWorkerThread = SmartPointer<Threading::Thread>::NewShared([spSelf]() {
@@ -232,6 +237,7 @@ namespace DotNetDupe {
             }
 
             void ProcessStreamer::Subscribe(const SmartPointer<IProcessObserver>& pObserver) {
+                if (!pObserver) throw ArgumentNullException("pObserver cannot be null.");
                 if (m_pImpl) m_pImpl->m_spObserver = pObserver;
             }
 

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
 #include "System/Diagnostics/ProcessStreamer.h"
+#include "System/ArgumentException.h"
+#include "System/SystemException.h"
 #include "System/Utils/StringConvert.h"
 #include <algorithm>
 #include <vector>
@@ -245,20 +247,38 @@ namespace DotNetDupe {
                     return info;
                 }
 
-                static Collections::Generic::List<int> ReadProcPorts(int iPid) {
-                    Collections::Generic::List<int> lst;
-                    if (iPid <= 0) return lst;
+                static void ReadUdpPorts(int iPid, Collections::Generic::List<int>& lst) {
+                    if (iPid <= 0) return;
                     DWORD dwSize = 0;
-                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) return lst;
+                    if (::GetExtendedUdpTable(NULL, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) return;
                     std::vector<uint8_t> buf(dwSize, 0);
-                    MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
-                    if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) return lst;
+                    MIB_UDPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_UDPTABLE_OWNER_PID*>(buf.data());
+                    if (::GetExtendedUdpTable(pTable, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != NO_ERROR) return;
                     for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
-                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid) && pTable->table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid)) {
                             int p = ntohs(static_cast<u_short>(pTable->table[i].dwLocalPort));
                             if (!lst.Contains(p)) lst.Add(p);
                         }
                     }
+                }
+
+                static Collections::Generic::List<int> ReadProcPorts(int iPid) {
+                    Collections::Generic::List<int> lst;
+                    if (iPid <= 0) return lst;
+                    DWORD dwSize = 0;
+                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
+                        std::vector<uint8_t> buf(dwSize, 0);
+                        MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
+                        if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                            for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                                if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid) && pTable->table[i].dwState == MIB_TCP_STATE_LISTEN) {
+                                    int p = ntohs(static_cast<u_short>(pTable->table[i].dwLocalPort));
+                                    if (!lst.Contains(p)) lst.Add(p);
+                                }
+                            }
+                        }
+                    }
+                    ReadUdpPorts(iPid, lst);
                     return lst;
                 }
 
@@ -273,28 +293,52 @@ namespace DotNetDupe {
                     conn.sState = (row.dwState == MIB_TCP_STATE_LISTEN) ? "LISTEN" : ((row.dwState == MIB_TCP_STATE_ESTAB) ? "ESTABLISHED" : "OTHER");
                 }
 
+                static void ReadUdpConnections(int iPid, ProcessNetworkConnectionInfo& info) {
+                    if (iPid <= 0) return;
+                    DWORD dwSize = 0;
+                    if (::GetExtendedUdpTable(NULL, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) return;
+                    std::vector<uint8_t> buf(dwSize, 0);
+                    MIB_UDPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_UDPTABLE_OWNER_PID*>(buf.data());
+                    if (::GetExtendedUdpTable(pTable, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != NO_ERROR) return;
+                    for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid)) {
+                            int p = ntohs(static_cast<u_short>(pTable->table[i].dwLocalPort));
+                            if (!info.lstOpenPorts.Contains(p)) info.lstOpenPorts.Add(p);
+                            NetworkConnectionInfo conn; conn.iLocalPort = p; conn.sState = "UDP";
+                            in_addr lAddr; lAddr.S_un.S_addr = pTable->table[i].dwLocalAddr;
+                            char szL[INET_ADDRSTRLEN] = { 0 };
+                            ::inet_ntop(AF_INET, &lAddr, szL, sizeof(szL));
+                            conn.sLocalAddress = String(szL);
+                            info.lstConnections.Add(conn);
+                        }
+                    }
+                }
+
                 static ProcessNetworkConnectionInfo ReadProcNetInfo(int iPid) {
                     ProcessNetworkConnectionInfo info;
                     if (iPid <= 0) return info;
                     DWORD dwSize = 0;
-                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != ERROR_INSUFFICIENT_BUFFER) return info;
-                    std::vector<uint8_t> buf(dwSize, 0);
-                    MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
-                    if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) != NO_ERROR) return info;
-                    for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
-                        if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid)) {
-                            NetworkConnectionInfo conn;
-                            ExtractTcpConnection(pTable->table[i], conn);
-                            info.lstConnections.Add(conn);
-                            if (pTable->table[i].dwState == MIB_TCP_STATE_LISTEN && !info.lstOpenPorts.Contains(conn.iLocalPort)) info.lstOpenPorts.Add(conn.iLocalPort);
-                            else if (pTable->table[i].dwState == MIB_TCP_STATE_ESTAB) info.bHasEstablishedInboundConnection = true;
+                    if (::GetExtendedTcpTable(NULL, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == ERROR_INSUFFICIENT_BUFFER) {
+                        std::vector<uint8_t> buf(dwSize, 0);
+                        MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast<MIB_TCPTABLE_OWNER_PID*>(buf.data());
+                        if (::GetExtendedTcpTable(pTable, &dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
+                            for (DWORD i = 0; i < pTable->dwNumEntries; ++i) {
+                                if (pTable->table[i].dwOwningPid == static_cast<DWORD>(iPid)) {
+                                    NetworkConnectionInfo conn;
+                                    ExtractTcpConnection(pTable->table[i], conn);
+                                    info.lstConnections.Add(conn);
+                                    if (pTable->table[i].dwState == MIB_TCP_STATE_LISTEN && !info.lstOpenPorts.Contains(conn.iLocalPort)) info.lstOpenPorts.Add(conn.iLocalPort);
+                                    else if (pTable->table[i].dwState == MIB_TCP_STATE_ESTAB) info.bHasEstablishedInboundConnection = true;
+                                }
+                            }
                         }
                     }
+                    ReadUdpConnections(iPid, info);
                     return info;
                 }
 
                 static void CalculateProcessCpu(HANDLE hProc, int iPid, double& dCpu) {
-                    FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser;
+                    FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser, ftNow;
                     if (!::GetProcessTimes(hProc, &ftCreate, &ftExit, &ftKernel, &ftUser) || !::GetSystemTimes(&ftSysIdle, &ftSysKernel, &ftSysUser)) return;
                     uint64_t uProc = ((static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime) + ((static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime);
                     uint64_t uSys = ((static_cast<uint64_t>(ftSysKernel.dwHighDateTime) << 32) | ftSysKernel.dwLowDateTime) + ((static_cast<uint64_t>(ftSysUser.dwHighDateTime) << 32) | ftSysUser.dwLowDateTime);
@@ -302,14 +346,27 @@ namespace DotNetDupe {
                     if (it != s_mapProcessCpuSamples.end() && uSys > it->second.uSystemTime && uProc >= it->second.uProcessTime) {
                         double c = (static_cast<double>(uProc - it->second.uProcessTime) * 100.0 / static_cast<double>(uSys - it->second.uSystemTime));
                         dCpu = (c > 100.0) ? 100.0 : ((c < 0.0) ? 0.0 : c);
+                    } else {
+                        ::GetSystemTimeAsFileTime(&ftNow); SYSTEM_INFO si; ::GetSystemInfo(&si);
+                        uint64_t uNow = (static_cast<uint64_t>(ftNow.dwHighDateTime) << 32) | ftNow.dwLowDateTime; uint64_t uCreate = (static_cast<uint64_t>(ftCreate.dwHighDateTime) << 32) | ftCreate.dwLowDateTime;
+                        if (uNow > uCreate && uProc > 0) { double c = (static_cast<double>(uProc) * 100.0) / (static_cast<double>(uNow - uCreate) * static_cast<double>(si.dwNumberOfProcessors > 0 ? si.dwNumberOfProcessors : 1)); dCpu = (c > 100.0) ? 100.0 : ((c < 0.0) ? 0.0 : c); }
                     }
                     s_mapProcessCpuSamples[iPid] = { uProc, uSys };
                 }
 
+                static void PopulateProcNetwork(int iPid, ProcessInfo& proc) {
+                    auto netInfo = ReadProcNetInfo(iPid);
+                    proc.lstOpenPorts = netInfo.lstOpenPorts;
+                    proc.lstConnections = netInfo.lstConnections;
+                    proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
+                }
+
                 static void PopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
                     proc.iProcessId = pe32->th32ProcessID; proc.sName = String(pe32->szExeFile); proc.dCpuUsagePercent = 0.0;
+                    proc.memory.lPhysicalMemoryBytes = 0; proc.memory.lPrivateBytes = 0;
                     DWORD dwSess = 0;
                     if (::ProcessIdToSessionId(pe32->th32ProcessID, &dwSess)) proc.iSessionId = static_cast<int>(dwSess);
+                    if (pe32->th32ProcessID == 0) return;
                     HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32->th32ProcessID);
                     if (!hProc) return;
                     WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
@@ -320,6 +377,7 @@ namespace DotNetDupe {
                     proc.disk = ReadProcDisk(hProc, proc.sName);
                     proc.network = ReadProcNetwork(hProc, proc.sName);
                     CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
+                    PopulateProcNetwork(proc.iProcessId, proc);
                     ::CloseHandle(hProc);
                 }
 
@@ -415,12 +473,37 @@ namespace DotNetDupe {
                 if (hProc) ::CloseHandle(hProc);
                 return ReadProcessNetworkPortInternal(iPid);
             }
+            Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(int iProcessId) {
+                return ReadProcessNetworkPortInternal(iProcessId);
+            }
 
             ProcessNetworkConnectionInfo SystemMetrics::ReadProcessNetworkInfoInternal(int iProcessId) { return SystemMetricsWin32Helper::ReadProcNetInfo(iProcessId); }
             ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName) {
                 int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
                 if (hProc) ::CloseHandle(hProc);
                 return ReadProcessNetworkInfoInternal(iPid);
+            }
+            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(int iProcessId) {
+                return ReadProcessNetworkInfoInternal(iProcessId);
+            }
+
+            void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork) {
+                if (proc.iProcessId <= 0) throw ArgumentException("Process ID must be greater than zero.");
+                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, proc.iProcessId);
+                if (hProc) {
+                    if (proc.sPath.IsEmpty()) {
+                        WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                        if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwLen)) proc.sPath = String(szPath);
+                    }
+                    proc.sCommandLine = SystemMetricsWin32Helper::ReadProcCmdLine(hProc);
+                    if (proc.sCommandLine.IsEmpty()) proc.sCommandLine = proc.sPath;
+                    proc.memory = SystemMetricsWin32Helper::ReadProcMemory(hProc);
+                    proc.disk = SystemMetricsWin32Helper::ReadProcDisk(hProc, proc.sName);
+                    proc.network = SystemMetricsWin32Helper::ReadProcNetwork(hProc, proc.sName);
+                    SystemMetricsWin32Helper::CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
+                    ::CloseHandle(hProc);
+                }
+                if (bIncludeNetwork) SystemMetricsWin32Helper::PopulateProcNetwork(proc.iProcessId, proc);
             }
 
             void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo& proc) {
@@ -434,33 +517,15 @@ namespace DotNetDupe {
                 PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
                 if (::Process32FirstW(hSnapshot, &pe32)) {
                     do {
+                        if (pe32.th32ProcessID == 0) continue;
                         ProcessInfo proc; PopulateProcessInfo(&pe32, proc);
-                        if (iSessionId == -1 || proc.iSessionId == iSessionId) lst.Add(proc);
+                        if (proc.iProcessId > 0 && (iSessionId == -1 || proc.iSessionId == iSessionId)) lst.Add(proc);
                     } while (::Process32NextW(hSnapshot, &pe32));
                 }
                 ::CloseHandle(hSnapshot);
                 return lst;
             }
 
-            static bool CompareProcessResource(const ProcessInfo& a, const ProcessInfo& b, SystemResource eResource) {
-                if (eResource == SystemResource::Cpu) return a.dCpuUsagePercent > b.dCpuUsagePercent;
-                if (eResource == SystemResource::Memory) return a.memory.lPhysicalMemoryBytes > b.memory.lPhysicalMemoryBytes;
-                if (eResource == SystemResource::Disk) return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) > (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
-                if (eResource == SystemResource::Network) return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) > (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
-                return a.dCpuUsagePercent > b.dCpuUsagePercent;
-            }
-
-            Collections::Generic::List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
-                Collections::Generic::List<ProcessInfo> lstAll = GetAllProcesses(-1);
-                std::vector<ProcessInfo> vec;
-                for (int i = 0; i < lstAll.GetCount(); ++i) vec.push_back(lstAll[i]);
-                std::sort(vec.begin(), vec.end(), [eResource](const ProcessInfo& a, const ProcessInfo& b) {
-                    return CompareProcessResource(a, b, eResource);
-                });
-                Collections::Generic::List<ProcessInfo> lstResult;
-                for (size_t i = 0; i < vec.size() && static_cast<int>(i) < iCount; ++i) lstResult.Add(vec[i]);
-                return lstResult;
-            }
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
                 Collections::Generic::List<ServiceInfo> lst;

@@ -9,12 +9,12 @@ Provides non-blocking, two-tier progressive telemetry streaming and event-driven
 
 ## 1. Architectural Overview
 
-Traditional process enumeration (`SystemMetrics::GetAllProcesses()` or `GetTopProcesses()`) is synchronous and can block the caller thread for 1.5–3.0 seconds to perform deep handle queries, CPU delta calculations, and TCP connection table inspections across all running processes.
+Traditional process enumeration (`SystemMetrics::GetAllProcesses()`) is synchronous and can block the caller thread for 1.5–3.0 seconds to perform deep handle queries, CPU delta calculations, and TCP connection table inspections across all running processes.
 
 `ProcessStreamer` solves this using a **two-tier streaming model**:
 
-1. **Tier 1 (Fast Discovery, $<5\text{ms}$)**: Instantly enumerates basic metadata (PID, Name, Session ID, Executable Path, and Working Set RAM) and fires `OnProcess` and `OnBatch` events in configurable micro-batches.
-2. **Tier 2 (Progressive Metric Enrichment)**: Asynchronously samples deep metrics (CPU %, Disk I/O bytes, Network bandwidth, open TCP/UDP ports) in the background and emits `OnProcessUpdated` events.
+1. **Tier 1 (Fast Discovery, $<5\text{ms}$)**: Instantly enumerates basic metadata (PID, Name, Session ID, Executable Path, and Working Set RAM) with `lstOpenPorts` empty and fires `OnProcess` and `OnBatch` events in configurable micro-batches for instantaneous UI rendering.
+2. **Tier 2 (Progressive Metric Enrichment)**: Asynchronously samples deep metrics (CPU %, Disk I/O bytes, Network bandwidth, open listening TCP/UDP ports in `lstOpenPorts`, active socket connections in `lstConnections`, and established connection state in `bHasEstablishedConnection`) in the background and emits `OnProcessUpdated` events.
 3. **Cancellation & Throttling**: Streams can be cancelled dynamically via `Cancel()` or configured with custom batch sizes and flush intervals.
 
 ---

@@ -1,12 +1,11 @@
 ### class `SystemMetrics` & `ActiveUserSession`
 
-Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Network), process and service enumeration, resource-based top processes ranking, and process-level handle-based resource metrics.
+Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Network), process and service enumeration, and process-level handle-based resource metrics.
 
 ---
 
 #### Enums & Structs
 
-- `enum class SystemResource { Cpu, Memory, Disk, Network }`
 - `MemoryInfo`: `double dMemoryUsagePercent`, `unsigned long long uMemoryTotalBytes`, `unsigned long long uMemoryUsedBytes`, `long long lPrivateBytes`, `long long lPhysicalMemoryBytes` (working set)
 - `DiskInfo`: `long long lDiskReadBytes`, `long long lDiskWriteBytes`
 - `NetworkUsageInfo`: `long long lNetworkReadBytes`, `long long lNetworkWriteBytes`
@@ -31,9 +30,11 @@ Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Networ
 - `NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName)`
 - `List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName)`
 - `ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName)`
+- `List<int> SystemMetrics::GetProcessNetworkPort(int iProcessId)`
+- `ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(int iProcessId)`
+- `void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`
 
-##### Process & Service Listing / Ranking
-- `List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount)`
+##### Process & Service Listing
 - `List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId = -1)`
 - `List<ServiceInfo> SystemMetrics::GetAllServices()`
 
@@ -59,7 +60,6 @@ int main() {
     ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(String("svchost.exe"));
 
     // Process & service listing APIs
-    auto lstTopCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 5);
     auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
     auto lstServices = SystemMetrics::GetAllServices();
 
