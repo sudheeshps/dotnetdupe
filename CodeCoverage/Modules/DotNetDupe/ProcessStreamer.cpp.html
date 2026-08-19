@@ -34,25 +34,25 @@
 
 namespace DotNetDupe {
     namespace System {
-<span style = "background-color:#dfd">        namespace Diagnostics {
+        namespace Diagnostics {
 
 #if defined(_WIN32)
-            static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo&amp; proc) {
+<span style = "background-color:#dfd">            static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo&amp; proc) {
                 proc.iProcessId = pe32-&gt;th32ProcessID;
                 proc.sName = String(pe32-&gt;szExeFile);
                 DWORD dwSess = 0;
                 if (::ProcessIdToSessionId(pe32-&gt;th32ProcessID, &amp;dwSess)) proc.iSessionId = static_cast&lt;int&gt;(dwSess);
-                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32-&gt;th32ProcessID);</span>
+                HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32-&gt;th32ProcessID);
                 if (!hProc) return;
-<span style = "background-color:#dfd">                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
-                if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwLen)) proc.sPath = String(szPath);
-                PROCESS_MEMORY_COUNTERS pmc;</span>
-                if (::GetProcessMemoryInfo(hProc, &amp;pmc, sizeof(pmc))) {
-<span style = "background-color:#dfd">                    proc.memory.lPhysicalMemoryBytes = static_cast&lt;long long&gt;(pmc.WorkingSetSize);
+                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwLen)) proc.sPath = String(szPath);</span>
+                PROCESS_MEMORY_COUNTERS pmc;
+<span style = "background-color:#dfd">                if (::GetProcessMemoryInfo(hProc, &amp;pmc, sizeof(pmc))) {
+                    proc.memory.lPhysicalMemoryBytes = static_cast&lt;long long&gt;(pmc.WorkingSetSize);
                     proc.memory.lPrivateBytes = static_cast&lt;long long&gt;(pmc.PagefileUsage);</span>
                 }
-                ::CloseHandle(hProc);
-            }
+<span style = "background-color:#dfd">                ::CloseHandle(hProc);
+            }</span>
 
             static void CollectTier1Processes(std::vector&lt;ProcessInfo&gt;&amp; vecProcs, int iSessionId) {
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
@@ -125,12 +125,12 @@ namespace DotNetDupe {
                 std::atomic&lt;bool&gt; m_bCancelled;
                 SmartPointer&lt;Threading::Thread&gt; m_spWorkerThread;
 
-<span style = "background-color:#fdd">                Impl(const ProcessStreamOptions&amp; options)
+                Impl(const ProcessStreamOptions&amp; options)
                     : m_options(options), m_bRunning(false), m_bCancelled(false) {}
-</span>
-                ~Impl() override {
+
+<span style = "background-color:#fdd">                ~Impl() override {
                     Cancel();
-                }
+                }</span>
 
                 void DispatchProcess(const ProcessInfo&amp; proc) {
                     if (m_fnOnProcess) m_fnOnProcess(proc);
@@ -154,57 +154,57 @@ namespace DotNetDupe {
 
                 void DispatchError(const Exception&amp; ex) {
                     if (m_fnOnError) m_fnOnError(ex);
-<span style = "background-color:#dfd">                    if (m_spObserver) m_spObserver-&gt;OnError(ex);
+                    if (m_spObserver) m_spObserver-&gt;OnError(ex);
                 }
 
-                void RunTier1(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
+<span style = "background-color:#dfd">                void RunTier1(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
                     Collections::Generic::List&lt;ProcessInfo&gt; batch;
                     int iBatchLimit = (m_options.iBatchSize &gt; 0) ? m_options.iBatchSize : 25;
                     for (size_t i = 0; i &lt; vecProcs.size(); ++i) {
                         if (m_bCancelled.load()) break;
                         DispatchProcess(vecProcs[i]);
                         batch.Add(vecProcs[i]);
-                        if (batch.GetCount() &gt;= iBatchLimit) {</span>
+                        if (batch.GetCount() &gt;= iBatchLimit) {
                             DispatchBatch(batch);
                             batch.Clear();
-<span style = "background-color:#dfd">                            if (m_options.iBatchIntervalMs &gt; 0) Threading::Thread::Sleep(m_options.iBatchIntervalMs);
-                        }</span>
+                            if (m_options.iBatchIntervalMs &gt; 0) Threading::Thread::Sleep(m_options.iBatchIntervalMs);</span>
+                        }
                     }
-<span style = "background-color:#fdd">                    if (batch.GetCount() &gt; 0 &amp;&amp; !m_bCancelled.load()) DispatchBatch(batch);
-                }
+<span style = "background-color:#dfd">                    if (batch.GetCount() &gt; 0 &amp;&amp; !m_bCancelled.load()) DispatchBatch(batch);
+                }</span>
 
-                void RunTier2(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
-                    for (size_t i = 0; i &lt; vecProcs.size(); ++i) {</span>
+<span style = "background-color:#fdd">                void RunTier2(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
+                    for (size_t i = 0; i &lt; vecProcs.size(); ++i) {
                         if (m_bCancelled.load()) break;
-<span style = "background-color:#fdd">                        DeepEnrichProc(vecProcs[i], m_options.bIncludeNetworkInfo);</span>
-                        DispatchUpdated(vecProcs[i]);
-<span style = "background-color:#dfd">                    }</span>
-                }
-<span style = "background-color:#dfd">
-                void ExecuteStream() {
+                        DeepEnrichProc(vecProcs[i], m_options.bIncludeNetworkInfo);
+                        DispatchUpdated(vecProcs[i]);</span>
+                    }
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                void ExecuteStream() {</span>
                     try {
-                        std::vector&lt;ProcessInfo&gt; vecProcs;</span>
-<span style = "background-color:#fdd">                        CollectTier1Processes(vecProcs, m_options.iSessionId);</span>
+<span style = "background-color:#dfd">                        std::vector&lt;ProcessInfo&gt; vecProcs;
+                        CollectTier1Processes(vecProcs, m_options.iSessionId);
                         RunTier1(vecProcs);
-<span style = "background-color:#dfd">                        if (!m_bCancelled.load() &amp;&amp; m_options.eDetailLevel != ProcessMetricsDetail::FastDiscoveryOnly) {
-                            RunTier2(vecProcs);
-                        }</span>
-<span style = "background-color:#fdd">                        m_bRunning.store(false);
+                        if (!m_bCancelled.load() &amp;&amp; m_options.eDetailLevel != ProcessMetricsDetail::FastDiscoveryOnly) {</span>
+<span style = "background-color:#fdd">                            RunTier2(vecProcs);</span>
+                        }
+<span style = "background-color:#dfd">                        m_bRunning.store(false);
                         if (!m_bCancelled.load()) DispatchCompleted();
                     } catch (const Exception&amp; ex) {</span>
-<span style = "background-color:#dfd">                        m_bRunning.store(false);</span>
+<span style = "background-color:#fdd">                        m_bRunning.store(false);
                         DispatchError(ex);
-<span style = "background-color:#dfd">                    }
-                }
+                    }</span>
+<span style = "background-color:#dfd">                }</span>
 
-                void Start(const SmartPointer&lt;Impl&gt;&amp; spSelf) {</span>
+<span style = "background-color:#dfd">                void Start(const SmartPointer&lt;Impl&gt;&amp; spSelf) {
                     if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
                     m_bCancelled.store(false);
-<span style = "background-color:#dfd">                    m_spWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared([spSelf]() {
-                        if (spSelf) spSelf-&gt;ExecuteStream();</span>
+                    m_spWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared([spSelf]() {</span>
+                        if (spSelf) spSelf-&gt;ExecuteStream();
                     });
-                    m_spWorkerThread-&gt;Start();
-                }
+<span style = "background-color:#dfd">                    m_spWorkerThread-&gt;Start();
+                }</span>
 
                 void Cancel() {
                     m_bCancelled.store(true);
@@ -215,39 +215,39 @@ namespace DotNetDupe {
                     }
                     m_bRunning.store(false);
                 }
-<span style = "background-color:#dfd">            };</span>
+            };
 
-<span style = "background-color:#fdd">            ProcessStreamer::ProcessStreamer(const ProcessStreamOptions&amp; options)</span>
-                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)) {}
-<span style = "background-color:#dfd">
-            ProcessStreamer::~ProcessStreamer() {}
-</span>
-            void ProcessStreamer::OnProcess(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess) {
-<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;m_fnOnProcess = fnOnProcess;
-            }
-</span>
-            void ProcessStreamer::OnBatch(const Action&lt;const Collections::Generic::List&lt;ProcessInfo&gt;&amp;&gt;&amp; fnOnBatch) {
-<span style = "background-color:#fdd">                if (m_pImpl) m_pImpl-&gt;m_fnOnBatch = fnOnBatch;
-            }
-</span>
-            void ProcessStreamer::OnProcessUpdated(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnUpdated) {
-<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;m_fnOnUpdated = fnOnUpdated;
-            }
-</span>
-            void ProcessStreamer::OnCompleted(const Action&lt;&gt;&amp; fnOnCompleted) {
-<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;m_fnOnCompleted = fnOnCompleted;
-            }
-</span>
-            void ProcessStreamer::OnError(const Action&lt;const Exception&amp;&gt;&amp; fnOnError) {
-<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;m_fnOnError = fnOnError;
-            }
-</span>
-            void ProcessStreamer::Subscribe(const SmartPointer&lt;IProcessObserver&gt;&amp; pObserver) {
-<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;m_spObserver = pObserver;
-            }
-</span>
-            void ProcessStreamer::Start() {
-<span style = "background-color:#dfd">                if (!m_pImpl) throw InvalidOperationException("ProcessStreamer implementation is null.");
+            ProcessStreamer::ProcessStreamer(const ProcessStreamOptions&amp; options)
+<span style = "background-color:#dfd">                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)) {}</span>
+
+<span style = "background-color:#fdd">            ProcessStreamer::~ProcessStreamer() {}</span>
+
+<span style = "background-color:#dfd">            void ProcessStreamer::OnProcess(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess) {
+                if (m_pImpl) m_pImpl-&gt;m_fnOnProcess = fnOnProcess;
+            }</span>
+
+<span style = "background-color:#dfd">            void ProcessStreamer::OnBatch(const Action&lt;const Collections::Generic::List&lt;ProcessInfo&gt;&amp;&gt;&amp; fnOnBatch) {
+                if (m_pImpl) m_pImpl-&gt;m_fnOnBatch = fnOnBatch;
+            }</span>
+
+<span style = "background-color:#fdd">            void ProcessStreamer::OnProcessUpdated(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnUpdated) {
+                if (m_pImpl) m_pImpl-&gt;m_fnOnUpdated = fnOnUpdated;
+            }</span>
+
+<span style = "background-color:#dfd">            void ProcessStreamer::OnCompleted(const Action&lt;&gt;&amp; fnOnCompleted) {
+                if (m_pImpl) m_pImpl-&gt;m_fnOnCompleted = fnOnCompleted;
+            }</span>
+
+<span style = "background-color:#fdd">            void ProcessStreamer::OnError(const Action&lt;const Exception&amp;&gt;&amp; fnOnError) {
+                if (m_pImpl) m_pImpl-&gt;m_fnOnError = fnOnError;
+            }</span>
+
+<span style = "background-color:#dfd">            void ProcessStreamer::Subscribe(const SmartPointer&lt;IProcessObserver&gt;&amp; pObserver) {
+                if (m_pImpl) m_pImpl-&gt;m_spObserver = pObserver;
+            }</span>
+
+<span style = "background-color:#dfd">            void ProcessStreamer::Start() {
+                if (!m_pImpl) throw InvalidOperationException("ProcessStreamer implementation is null.");
                 m_pImpl-&gt;Start(m_pImpl);
             }</span>
 
@@ -255,13 +255,13 @@ namespace DotNetDupe {
                 if (m_pImpl) m_pImpl-&gt;Cancel();
             }</span>
 
-<span style = "background-color:#fdd">            bool ProcessStreamer::IsRunning() const {
+<span style = "background-color:#dfd">            bool ProcessStreamer::IsRunning() const {
                 return m_pImpl ? m_pImpl-&gt;m_bRunning.load() : false;
             }</span>
 
-            ProcessStreamOptions ProcessStreamer::GetOptions() const {
+<span style = "background-color:#fdd">            ProcessStreamOptions ProcessStreamer::GetOptions() const {
                 return m_pImpl ? m_pImpl-&gt;m_options : ProcessStreamOptions();
-            }
+            }</span>
 
         }
     }
