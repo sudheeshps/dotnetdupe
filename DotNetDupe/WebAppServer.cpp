@@ -96,10 +96,21 @@ namespace DotNetDupe {
                 }
             }
 
+            static DotNetDupe::System::String HandleStaticRouteOrWebSocket(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& spApp, const DotNetDupe::System::SmartPointer<Http::HttpContext>& ctx, const DotNetDupe::System::String& webRoot, const DotNetDupe::System::String& defaultDoc) {
+                if (spApp->HasWebSocketRoute(ctx->GetRequest()->GetPath())) {
+                    ctx->GetResponse()->SetStatusCode(426);
+                    ctx->GetResponse()->SetContentType("text/plain");
+                    ctx->GetResponse()->GetHeaders()["Upgrade"] = "websocket";
+                    ctx->GetResponse()->GetHeaders()["Connection"] = "Upgrade";
+                    return "426 Upgrade Required";
+                }
+                return ServeStaticFile(ctx, webRoot, defaultDoc);
+            }
+
             void WebAppServer::Run(const DotNetDupe::System::String& url, int threadCount) {
                 if (m_bStaticFilesEnabled) {
                     m_spApp->MapGet("/{*filepath}", [this](DotNetDupe::System::SmartPointer<Http::HttpContext> ctx) {
-                        return ServeStaticFile(ctx, m_sWebRoot, m_sDefaultDocument);
+                        return HandleStaticRouteOrWebSocket(m_spApp, ctx, m_sWebRoot, m_sDefaultDocument);
                     });
                 }
                 m_spApp->Run(url, threadCount);

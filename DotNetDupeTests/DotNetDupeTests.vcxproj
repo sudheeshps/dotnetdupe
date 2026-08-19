@@ -193,6 +193,7 @@
     <ClCompile Include="TerminalSessionTests.cpp" />
     <ClCompile Include="ExceptionTests.cpp" />
     <ClCompile Include="WebSocketTests.cpp" />
+    <ClCompile Include="ProcessStreamerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

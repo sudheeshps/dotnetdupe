@@ -23,6 +23,10 @@ namespace DotNetDupe {
                 m_pImpl = SmartPointer<Impl>::NewShared();
             }
 
+            ConditionVariable::ConditionVariable(ConditionVariable&& other) noexcept = default;
+
+            ConditionVariable& ConditionVariable::operator=(ConditionVariable&& other) noexcept = default;
+
             ConditionVariable::~ConditionVariable() {
             }
 

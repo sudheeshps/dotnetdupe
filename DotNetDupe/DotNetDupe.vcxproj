@@ -396,6 +396,7 @@
     <ClCompile Include="EtwLogReader.cpp" />
     <ClCompile Include="SystemMetrics.cpp" />
     <ClCompile Include="SystemMetricsLinux.cpp" />
+    <ClCompile Include="ProcessStreamer.cpp" />
     <ClCompile Include="ActiveUserSession.cpp" />
     <ClCompile Include="DateTimeOffset.cpp" />
     <ClCompile Include="Random.cpp" />
@@ -433,6 +434,7 @@
     <ClCompile Include="WebAppServer.cpp" />
     <ClCompile Include="HttpResponse.cpp" />
     <ClCompile Include="WebSocket.cpp" />
+    <ClCompile Include="WebSocketException.cpp" />
     <ClCompile Include="SqlCommand.cpp" />
     <ClCompile Include="SqlDataReader.cpp" />
     <ClCompile Include="SqlConnection.cpp" />

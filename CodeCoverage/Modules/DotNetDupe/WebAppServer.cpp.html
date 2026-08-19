@@ -107,10 +107,21 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
+<span style = "background-color:#dfd">            static DotNetDupe::System::String HandleStaticRouteOrWebSocket(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; spApp, const DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt;&amp; ctx, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
+                if (spApp-&gt;HasWebSocketRoute(ctx-&gt;GetRequest()-&gt;GetPath())) {</span>
+<span style = "background-color:#fdd">                    ctx-&gt;GetResponse()-&gt;SetStatusCode(426);
+                    ctx-&gt;GetResponse()-&gt;SetContentType("text/plain");
+                    ctx-&gt;GetResponse()-&gt;GetHeaders()["Upgrade"] = "websocket";
+                    ctx-&gt;GetResponse()-&gt;GetHeaders()["Connection"] = "Upgrade";
+                    return "426 Upgrade Required";</span>
+                }
+<span style = "background-color:#dfd">                return ServeStaticFile(ctx, webRoot, defaultDoc);
+            }</span>
+
 <span style = "background-color:#dfd">            void WebAppServer::Run(const DotNetDupe::System::String&amp; url, int threadCount) {
                 if (m_bStaticFilesEnabled) {
                     m_spApp-&gt;MapGet("/{*filepath}", [this](DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; ctx) {</span>
-                        return ServeStaticFile(ctx, m_sWebRoot, m_sDefaultDocument);
+                        return HandleStaticRouteOrWebSocket(m_spApp, ctx, m_sWebRoot, m_sDefaultDocument);
                     });
                 }
 <span style = "background-color:#dfd">                m_spApp-&gt;Run(url, threadCount);

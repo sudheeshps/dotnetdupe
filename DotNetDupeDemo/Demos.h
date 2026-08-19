@@ -39,3 +39,4 @@ void RunConcurrentCollectionsDemo();
 void RunGenericCollectionsDemo();
 void DemonstrateDirectory();
 void DemonstrateFileDownloader();
+void DemonstrateProcessStreamer();

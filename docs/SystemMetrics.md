@@ -9,16 +9,6 @@ Provides system-wide and per-process hardware telemetry metrics including CPU %,
 
 ## Enums & Data Structures
 
-### `SystemResource` Enum
-```cpp
-enum class SystemResource {
-    Cpu,
-    Memory,
-    Disk,
-    Network
-};
-```
-
 ### `MemoryInfo` Struct
 - `double dMemoryUsagePercent`: Memory load percentage (0.0 to 100.0%).
 - `unsigned long long uMemoryTotalBytes`: Total physical memory installed.
@@ -54,6 +44,9 @@ enum class SystemResource {
 - `String sCommandLine`: Command-line arguments.
 - `double dCpuUsagePercent`: CPU load %.
 - `MemoryInfo memory`, `DiskInfo disk`, `NetworkUsageInfo network`.
+- `List<int> lstOpenPorts`: Active listening TCP and UDP ports bound to this PID.
+- `List<NetworkConnectionInfo> lstConnections`: Active TCP/UDP socket connections.
+- `bool bHasEstablishedConnection`: Whether the process has at least one active ESTABLISHED connection.
 
 ### `ServiceInfo` Struct
 - `String sServiceName`: Service short name.
@@ -77,13 +70,29 @@ enum class SystemResource {
 - `static MemoryInfo GetProcessMemoryUsage(const String& sProcessName)`: Retrieves memory statistics for the named process.
 - `static DiskInfo GetProcessDiskUsage(const String& sProcessName)`: Retrieves disk read/write throughput for the named process.
 - `static NetworkUsageInfo GetProcessNetworkUsage(const String& sProcessName)`: Retrieves network throughput for the named process.
-- `static List<int> GetProcessNetworkPort(const String& sProcessName)`: Retrieves listening ports opened by the process.
-- `static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String& sProcessName)`: Retrieves active TCP socket connection tables for the process.
+- `static List<int> GetProcessNetworkPort(const String& sProcessName)`: Retrieves listening ports opened by the process name.
+- `static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String& sProcessName)`: Retrieves active socket connection tables for the process name.
+- `static List<int> GetProcessNetworkPort(int iProcessId)`: Retrieves listening TCP/UDP ports bound to the specified PID.
+- `static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId)`: Retrieves complete socket connection and port tables for the specified PID.
+- `static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: Performs direct handle-level telemetry enrichment (CPU, memory working set, PEB command line, disk I/O, and network ports/connections) targeted by PID.
 
-### Process Enumeration & Ranking
-- `static List<ProcessInfo> GetTopProcesses(SystemResource eResource, int iCount)`: Returns the top `iCount` processes consuming the highest CPU, Memory, Disk, or Network.
+### Process Enumeration & Services
 - `static List<ProcessInfo> GetAllProcesses(int iSessionId = -1)`: Enumerates all active processes across the system or within a specific session.
 - `static List<ServiceInfo> GetAllServices()`: Enumerates all installed system services.
+
+---
+
+---
+
+## Progressive Process Streaming (`ProcessStreamer`)
+
+For non-blocking, two-tier progressive telemetry streaming without freezing UI threads or stalling network endpoints, use `SystemMetrics::CreateProcessStreamer()` or `SystemMetrics::EnumerateProcessesAsync()`. See the dedicated [ProcessStreamer documentation](ProcessStreamer.md) for detailed usage patterns.
+
+```cpp
+SystemMetrics::EnumerateProcessesAsync([](const ProcessInfo& proc) {
+    Console::WriteLine("Discovered PID: {0} ({1})", proc.iProcessId, proc.sName);
+});
+```
 
 ---
 
@@ -106,13 +115,11 @@ int main() {
         mem.uMemoryUsedBytes / (1024 * 1024), 
         mem.uMemoryTotalBytes / (1024 * 1024));
 
-    Console::WriteLine("\n--- Top 3 CPU Consuming Processes ---");
-    auto topCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 3);
-    for (int i = 0; i < topCpu.GetCount(); ++i) {
-        Console::WriteLine(" [{0}] PID {1}: {2} ({3:F1}% CPU)", 
-            i + 1, topCpu[i].iProcessId, topCpu[i].sName, topCpu[i].dCpuUsagePercent);
-    }
+    Console::WriteLine("\n--- Enumerating Processes ---");
+    auto lstProcesses = SystemMetrics::GetAllProcesses(-1);
+    Console::WriteLine("Total Active Processes: {0}", lstProcesses.GetCount());
 
     return 0;
 }
 ```
+

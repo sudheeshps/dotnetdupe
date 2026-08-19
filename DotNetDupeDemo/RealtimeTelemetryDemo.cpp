@@ -18,10 +18,7 @@ void DemonstrateRealtimeTelemetry() {
     Console::WriteLine("Disk Read Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskReadBytes)) + " Bytes");
     Console::WriteLine("Disk Write Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskWriteBytes)) + " Bytes");
 
-    // 2. Query Top Processes & Services
-    auto lstTopCpu = SystemMetrics::GetTopProcesses(SystemResource::Cpu, 3);
-    Console::WriteLine("Top CPU Processes Count: " + Convert::ToString(lstTopCpu.GetCount()));
-
+    // 2. Query Processes & Services
     auto lstAllProcesses = SystemMetrics::GetAllProcesses(-1);
     Console::WriteLine("Total Processes Count: " + Convert::ToString(lstAllProcesses.GetCount()));
 

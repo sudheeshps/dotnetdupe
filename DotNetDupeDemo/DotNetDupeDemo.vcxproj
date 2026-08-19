@@ -194,6 +194,7 @@
     <ClCompile Include="UserPrincipalDemo.cpp" />
     <ClCompile Include="TerminalSessionDemo.cpp" />
     <ClCompile Include="FileDownloaderDemo.cpp" />
+    <ClCompile Include="ProcessStreamerDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

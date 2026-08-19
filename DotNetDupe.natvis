@@ -99,6 +99,8 @@
       <Item Name="Build">_build</Item>
       <Item Name="Revision">_revision</Item>
     </Expand>
+  </Type>
+
   <!-- DotNetDupe::System::Diagnostics::EtwEvent -->
   <Type Name="DotNetDupe::System::Diagnostics::EtwEvent">
     <DisplayString>[ID={iEventId}, Level={iLevel}] Provider={sProviderName}</DisplayString>
@@ -110,6 +112,79 @@
       <Item Name="TimeCreated">dtTimeCreated</Item>
       <Item Name="Message">sMessage</Item>
       <Item Name="RawXml">sRawXml</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Net::WebSockets::WebSocketException -->
+  <Type Name="DotNetDupe::System::Net::WebSockets::WebSocketException">
+    <DisplayString>[WebSocketError={m_eWebSocketErrorCode}] {what()}</DisplayString>
+    <Expand>
+      <Item Name="WebSocketError">m_eWebSocketErrorCode</Item>
+      <Item Name="NativeErrorCode">m_iNativeErrorCode</Item>
+      <Item Name="Message">what()</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Net::WebSockets::WebSocket -->
+  <Type Name="DotNetDupe::System::Net::WebSockets::WebSocket">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>WebSocket [State={m_pImpl-&gt;m_eState}]</DisplayString>
+    <Expand>
+      <Item Name="State">m_pImpl-&gt;m_eState</Item>
+      <Item Name="Stream">m_pImpl-&gt;m_pStream</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Diagnostics::NetworkConnectionInfo -->
+  <Type Name="DotNetDupe::System::Diagnostics::NetworkConnectionInfo">
+    <DisplayString>[{sState}] {sLocalAddress}:{iLocalPort} -&gt; {sRemoteAddress}:{iRemotePort}</DisplayString>
+    <Expand>
+      <Item Name="LocalAddress">sLocalAddress</Item>
+      <Item Name="LocalPort">iLocalPort</Item>
+      <Item Name="RemoteAddress">sRemoteAddress</Item>
+      <Item Name="RemotePort">iRemotePort</Item>
+      <Item Name="State">sState</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Diagnostics::ProcessNetworkConnectionInfo -->
+  <Type Name="DotNetDupe::System::Diagnostics::ProcessNetworkConnectionInfo">
+    <DisplayString>Ports={lstOpenPorts.m_iCount}, Connections={lstConnections.m_iCount}, Established={bHasEstablishedInboundConnection}</DisplayString>
+    <Expand>
+      <Item Name="OpenPorts">lstOpenPorts</Item>
+      <Item Name="Connections">lstConnections</Item>
+      <Item Name="HasEstablishedInbound">bHasEstablishedInboundConnection</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Diagnostics::ProcessInfo -->
+  <Type Name="DotNetDupe::System::Diagnostics::ProcessInfo">
+    <DisplayString>[PID={iProcessId}] {sName} (Ports={lstOpenPorts.m_iCount}, Estab={bHasEstablishedConnection})</DisplayString>
+    <Expand>
+      <Item Name="ProcessId">iProcessId</Item>
+      <Item Name="SessionId">iSessionId</Item>
+      <Item Name="Name">sName</Item>
+      <Item Name="Path">sPath</Item>
+      <Item Name="CommandLine">sCommandLine</Item>
+      <Item Name="CpuUsagePercent">dCpuUsagePercent</Item>
+      <Item Name="Memory">memory</Item>
+      <Item Name="Disk">disk</Item>
+      <Item Name="Network">network</Item>
+      <Item Name="OpenPorts">lstOpenPorts</Item>
+      <Item Name="Connections">lstConnections</Item>
+      <Item Name="HasEstablishedConnection">bHasEstablishedConnection</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Diagnostics::ProcessStreamer -->
+  <Type Name="DotNetDupe::System::Diagnostics::ProcessStreamer">
+    <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>
+    <DisplayString>ProcessStreamer [Running={m_pImpl-&gt;m_bRunning}]</DisplayString>
+    <Expand>
+      <Item Name="Running">m_pImpl-&gt;m_bRunning</Item>
+      <Item Name="Cancelled">m_pImpl-&gt;m_bCancelled</Item>
+      <Item Name="BatchSize">m_pImpl-&gt;m_options.iBatchSize</Item>
+      <Item Name="DetailLevel">m_pImpl-&gt;m_options.eDetailLevel</Item>
     </Expand>
   </Type>
 

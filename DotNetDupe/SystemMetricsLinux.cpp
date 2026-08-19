@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
+#include "System/ArgumentException.h"
 #include "System/Utils/StringConvert.h"
 #include <algorithm>
 #include <vector>
@@ -186,27 +187,25 @@ namespace DotNetDupe {
             DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName) { return ReadLinuxProcessDisk(FindPidByName(sProcessName)); }
             NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName) { return ReadLinuxProcessNetwork(FindPidByName(sProcessName)); }
             Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(const String& sProcessName) { return ReadLinuxProcessPorts(FindPidByName(sProcessName)); }
+            Collections::Generic::List<int> SystemMetrics::GetProcessNetworkPort(int iProcessId) { return ReadLinuxProcessPorts(iProcessId); }
             ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(const String& sProcessName) { return ReadLinuxProcessNetworkInfo(FindPidByName(sProcessName)); }
+            ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(int iProcessId) { return ReadLinuxProcessNetworkInfo(iProcessId); }
 
-            static bool CompareLinuxProcessResource(const ProcessInfo& a, const ProcessInfo& b, SystemResource eResource) {
-                if (eResource == SystemResource::Cpu) return a.dCpuUsagePercent > b.dCpuUsagePercent;
-                if (eResource == SystemResource::Memory) return a.memory.lPhysicalMemoryBytes > b.memory.lPhysicalMemoryBytes;
-                if (eResource == SystemResource::Disk) return (a.disk.lDiskReadBytes + a.disk.lDiskWriteBytes) > (b.disk.lDiskReadBytes + b.disk.lDiskWriteBytes);
-                if (eResource == SystemResource::Network) return (a.network.lNetworkReadBytes + a.network.lNetworkWriteBytes) > (b.network.lNetworkReadBytes + b.network.lNetworkWriteBytes);
-                return a.dCpuUsagePercent > b.dCpuUsagePercent;
+            void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork) {
+                if (proc.iProcessId <= 0) throw ArgumentException("Process ID must be greater than zero.");
+                proc.sCommandLine = GetProcessCommandLine(proc.sName);
+                proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
+                proc.disk = ReadLinuxProcessDisk(proc.iProcessId);
+                proc.network = ReadLinuxProcessNetwork(proc.iProcessId);
+                if (bIncludeNetwork) {
+                    auto netInfo = ReadLinuxProcessNetworkInfo(proc.iProcessId);
+                    proc.lstOpenPorts = netInfo.lstOpenPorts;
+                    proc.lstConnections = netInfo.lstConnections;
+                    proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
+                }
             }
 
-            Collections::Generic::List<ProcessInfo> SystemMetrics::GetTopProcesses(SystemResource eResource, int iCount) {
-                Collections::Generic::List<ProcessInfo> lstAll = GetAllProcesses(-1);
-                std::vector<ProcessInfo> vec;
-                for (int i = 0; i < lstAll.GetCount(); ++i) vec.push_back(lstAll[i]);
-                std::sort(vec.begin(), vec.end(), [eResource](const ProcessInfo& a, const ProcessInfo& b) {
-                    return CompareLinuxProcessResource(a, b, eResource);
-                });
-                Collections::Generic::List<ProcessInfo> lstResult;
-                for (size_t i = 0; i < vec.size() && static_cast<int>(i) < iCount; ++i) lstResult.Add(vec[i]);
-                return lstResult;
-            }
+
 
             void SystemMetrics::PopulateLinuxProc(const std::string& dname, ProcessInfo& proc) {
                 proc.iProcessId = std::stoi(dname);
@@ -217,6 +216,10 @@ namespace DotNetDupe {
                 proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
                 proc.disk = ReadLinuxProcessDisk(proc.iProcessId);
                 proc.network = ReadLinuxProcessNetwork(proc.iProcessId);
+                auto netInfo = ReadLinuxProcessNetworkInfo(proc.iProcessId);
+                proc.lstOpenPorts = netInfo.lstOpenPorts;
+                proc.lstConnections = netInfo.lstConnections;
+                proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
             }
 
             Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {

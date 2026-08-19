@@ -84,6 +84,23 @@ namespace DotNetDupe {
                 m_wsHandlers.Add(pattern, handler);
             }
 
+            DotNetDupe::System::Collections::Generic::List<DotNetDupe::System::String> WebApplication::GetWebSocketRoutes() const {
+                DotNetDupe::System::Collections::Generic::List<DotNetDupe::System::String> list;
+                auto keys = m_wsHandlers.GetKeys();
+                for (int i = 0; i < keys.GetLength(); ++i) {
+                    list.Add(keys[i]);
+                }
+                return list;
+            }
+
+            bool WebApplication::HasWebSocketRoute(const DotNetDupe::System::String& path) const {
+                auto keys = m_wsHandlers.GetKeys();
+                for (int i = 0; i < keys.GetLength(); ++i) {
+                    if (keys[i] == path) return true;
+                }
+                return false;
+            }
+
             void WebApplication::MapControllers() {
                 for (int i = 0; i < m_controllerRegistrars.GetCount(); ++i) {
                     m_controllerRegistrars[i](m_spSelf);
@@ -201,6 +218,16 @@ namespace DotNetDupe {
                 }
             }
 
+            static void RunWsReceiveLoop(const System::SmartPointer<System::Net::WebSockets::WebSocket>& pWebSocket, const System::SmartPointer<WebSockets::WebSocketContext>& pWsContext, const System::SmartPointer<WebSockets::IWebSocketHandler>& pWsHandler) {
+                System::String msg;
+                try {
+                    while (pWebSocket->ReceiveText(msg)) {
+                        if (msg.IsEmpty() || msg == "__DISCONNECT__") break;
+                        try { pWsHandler->OnMessage(pWsContext, msg); } catch (...) { (void)0; }
+                    }
+                } catch (...) { (void)0; }
+            }
+
             static bool ProcessWsSession(const System::SmartPointer<System::Net::Sockets::NetworkStream>& stream, const System::SmartPointer<Http::HttpContext>& spContext, const System::SmartPointer<WebSockets::IWebSocketHandler>& pWsHandler, const System::String& sSecKey) {
                 System::String sAcceptKey = System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept(sSecKey);
                 std::string hsResponse = "HTTP/1.1 101 Switching Protocols\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Accept: " + std::string(sAcceptKey.GetRawString() ? sAcceptKey.GetRawString() : "") + "\r\n\r\n";
@@ -208,11 +235,7 @@ namespace DotNetDupe {
                 auto pWebSocket = System::SmartPointer<System::Net::WebSockets::WebSocket>::NewShared(stream);
                 auto pWsContext = System::SmartPointer<WebSockets::WebSocketContext>::NewShared(spContext, pWebSocket);
                 try { pWsHandler->OnConnected(pWsContext); } catch (...) { (void)0; }
-                System::String msg;
-                while (pWebSocket->ReceiveText(msg)) {
-                    if (msg.IsEmpty() || msg == "__DISCONNECT__") break;
-                    try { pWsHandler->OnMessage(pWsContext, msg); } catch (...) { (void)0; }
-                }
+                RunWsReceiveLoop(pWebSocket, pWsContext, pWsHandler);
                 try { pWsHandler->OnDisconnected(pWsContext); } catch (...) { (void)0; }
                 return true;
             }
@@ -246,17 +269,59 @@ namespace DotNetDupe {
                 return false;
             }
 
-            static bool TryHandleWebSocket(const System::SmartPointer<System::Net::Sockets::NetworkStream>& stream, const System::SmartPointer<Http::HttpContext>& spContext, const System::Collections::Generic::Dictionary<System::String, System::SmartPointer<WebSockets::IWebSocketHandler>>& wsMap) {
-                auto spRequest = spContext->GetRequest();
-                System::String sUpgrade, sSecKey;
-                if (spRequest->GetHeaders().TryGetValue("upgrade", sUpgrade) && sUpgrade.GetRawString() == "websocket" && spRequest->GetHeaders().TryGetValue("sec-websocket-key", sSecKey)) {
-                    System::SmartPointer<WebSockets::IWebSocketHandler> spWsHandler;
-                    if (wsMap.TryGetValue(spRequest->GetPath(), spWsHandler) && !spWsHandler.IsNull()) {
-                        ProcessWsSession(stream, spContext, spWsHandler, sSecKey);
-                        return true;
-                    }
+            static bool MatchTokenString(const std::string& val, const std::string& target) {
+                size_t start = 0;
+                while (start < val.length()) {
+                    size_t comma = val.find(',', start);
+                    std::string token = (comma == std::string::npos) ? val.substr(start) : val.substr(start, comma - start);
+                    size_t first = token.find_first_not_of(" \t\r\n");
+                    if (first != std::string::npos && token.substr(first, token.find_last_not_of(" \t\r\n") - first + 1) == target) return true;
+                    if (comma == std::string::npos) break;
+                    start = comma + 1;
                 }
                 return false;
+            }
+
+            static bool HeaderContainsToken(const System::String& headerVal, const std::string& targetToken) {
+                std::string val = headerVal.GetRawString() ? headerVal.GetRawString() : "";
+                std::transform(val.begin(), val.end(), val.begin(), ::tolower);
+                std::string target = targetToken;
+                std::transform(target.begin(), target.end(), target.begin(), ::tolower);
+                return MatchTokenString(val, target);
+            }
+
+            static void SendWebSocketErrorResponse(const System::SmartPointer<System::IO::Stream>& stream, int statusCode, const char* pMsg) {
+                std::string body = pMsg;
+                std::string statusText = (statusCode == 426) ? "Upgrade Required" : "Bad Request";
+                std::string resp = "HTTP/1.1 " + std::to_string(statusCode) + " " + statusText + "\r\nContent-Type: text/plain\r\nContent-Length: " + std::to_string(body.length()) + "\r\nConnection: close\r\n";
+                if (statusCode == 426) resp += "Upgrade: websocket\r\nConnection: Upgrade\r\n";
+                resp += "\r\n" + body;
+                stream->Write(resp.data(), 0, static_cast<int>(resp.length()));
+            }
+
+            static int ValidateWebSocketHandshake(const Http::HttpRequest* req, System::String& sSecKey) {
+                System::String sUpgrade, sConnection;
+                req->GetHeaders().TryGetValue("upgrade", sUpgrade);
+                req->GetHeaders().TryGetValue("connection", sConnection);
+                req->GetHeaders().TryGetValue("sec-websocket-key", sSecKey);
+                if (sUpgrade.IsEmpty() || sUpgrade.ToLower() != "websocket") return 426;
+                if (!HeaderContainsToken(sConnection, "upgrade") || sSecKey.IsEmpty()) return 400;
+                return 101;
+            }
+
+            static bool TryHandleWebSocket(const System::SmartPointer<System::Net::Sockets::NetworkStream>& stream, const System::SmartPointer<Http::HttpContext>& spContext, const System::Collections::Generic::Dictionary<System::String, System::SmartPointer<WebSockets::IWebSocketHandler>>& wsMap) {
+                auto spRequest = spContext->GetRequest();
+                System::SmartPointer<WebSockets::IWebSocketHandler> spWsHandler;
+                if (!wsMap.TryGetValue(spRequest->GetPath(), spWsHandler) || spWsHandler.IsNull()) return false;
+
+                System::String sSecKey;
+                int status = ValidateWebSocketHandshake(spRequest.Get(), sSecKey);
+                if (status != 101) {
+                    SendWebSocketErrorResponse(stream, status, (status == 426) ? "426 Upgrade Required" : "400 Bad Request");
+                    return true;
+                }
+                ProcessWsSession(stream, spContext, spWsHandler, sSecKey);
+                return true;
             }
 
             static void DispatchResponse(Http::HttpResponse* pResp, bool bFound, System::Func<System::String, System::SmartPointer<Http::HttpContext>>& pHandler, const System::SmartPointer<Http::HttpContext>& spContext) {
