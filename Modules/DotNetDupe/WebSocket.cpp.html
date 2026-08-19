@@ -11,9 +11,11 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Net/WebSockets/WebSocket.h"
-#include "System/Console.h"
+#include "System/Net/WebSockets/WebSocketException.h"
+#include "System/ArgumentException.h"
 #include &lt;openssl/sha.h&gt;
 #include &lt;openssl/evp.h&gt;
+#include &lt;array&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
 #include &lt;cstdint&gt;
@@ -22,93 +24,6 @@ namespace DotNetDupe {
     namespace System {
         namespace Net {
             namespace WebSockets {
-
-                class WebSocket::Impl : public Object {
-                public:
-                    SmartPointer&lt;Sockets::NetworkStream&gt; m_pStream;
-                    WebSocketState m_eState;
-                    Threading::CriticalSection m_csLock;
-
-                    Impl(SmartPointer&lt;Sockets::NetworkStream&gt; pStream)
-                        : m_pStream(pStream), m_eState(WebSocketState::Open) {}
-
-                    void CloseState() {
-                        Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_csLock);
-                        m_eState = WebSocketState::Closed;
-                    }
-
-<span style = "background-color:#dfd">                    bool ReadFrameHeader(uint8_t&amp; opcode, bool&amp; masked, uint64_t&amp; payloadLen) {</span>
-                        try {
-<span style = "background-color:#dfd">                            uint8_t header[2] = { 0 };
-                            if (m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(header), 0, 2) &lt;= 0) return false;
-                            opcode = header[0] &amp; 0x0F;
-                            masked = (header[1] &amp; 0x80) != 0;
-                            payloadLen = header[1] &amp; 0x7F;
-                            return true;
-                        } catch (...) {
-                            return false;</span>
-                        }
-<span style = "background-color:#dfd">                    }</span>
-
-<span style = "background-color:#dfd">                    bool ReadExtendedLength(uint64_t&amp; payloadLen) {</span>
-                        try {
-<span style = "background-color:#dfd">                            if (payloadLen == 126) {</span>
-<span style = "background-color:#fdd">                                uint8_t extLen[2] = { 0 };
-                                if (m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(extLen), 0, 2) &lt;= 0) return false;
-                                payloadLen = (static_cast&lt;uint64_t&gt;(extLen[0]) &lt;&lt; 8) | extLen[1];</span>
-<span style = "background-color:#dfd">                            } else if (payloadLen == 127) {</span>
-<span style = "background-color:#fdd">                                uint8_t extLen[8] = { 0 };
-                                if (m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(extLen), 0, 8) &lt;= 0) return false;</span>
-                                payloadLen = 0;
-<span style = "background-color:#fdd">                                for (int i = 0; i &lt; 8; ++i) payloadLen = (payloadLen &lt;&lt; 8) | extLen[i];</span>
-                            }
-<span style = "background-color:#fdd">                            return true;</span>
-<span style = "background-color:#dfd">                        } catch (...) {
-                            return false;</span>
-                        }
-<span style = "background-color:#dfd">                    }</span>
-
-<span style = "background-color:#dfd">                    bool ReadMaskKeyAndPayload(bool masked, uint64_t payloadLen, std::vector&lt;uint8_t&gt;&amp; payload) {</span>
-                        try {
-<span style = "background-color:#dfd">                            uint8_t maskKey[4] = { 0 };
-                            if (masked &amp;&amp; m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(maskKey), 0, 4) &lt;= 0) return false;
-                            payload.resize(payloadLen, 0);
-                            uint64_t totalRead = 0;
-                            while (totalRead &lt; payloadLen) {
-                                int bytesRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(payload.data() + totalRead), 0, static_cast&lt;int&gt;(payloadLen - totalRead));
-                                if (bytesRead &lt;= 0) return false;
-                                totalRead += bytesRead;
-                            }
-                            if (masked) {</span>
-<span style = "background-color:#fdd">                                for (uint64_t i = 0; i &lt; payloadLen; ++i) payload[i] ^= maskKey[i % 4];</span>
-                            }
-<span style = "background-color:#dfd">                            return true;
-                        } catch (...) {
-                            return false;</span>
-                        }
-<span style = "background-color:#dfd">                    }</span>
-                };
-
-                WebSocket::WebSocket(SmartPointer&lt;Sockets::NetworkStream&gt; pStream)
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(pStream)) {
-                }</span>
-
-<span style = "background-color:#dfd">                WebSocket::~WebSocket() = default;</span>
-
-<span style = "background-color:#dfd">                WebSocketState WebSocket::GetState() const { return m_pImpl-&gt;m_eState; }
-                void WebSocket::SetState(WebSocketState state) { m_pImpl-&gt;m_eState = state; }</span>
-
-<span style = "background-color:#dfd">                String WebSocket::ComputeSecWebSocketAccept(const String&amp; secWebSocketKey) {
-                    std::string key = secWebSocketKey.GetRawString();
-                    std::string magic = key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";</span>
-
-                    unsigned char hash[SHA_DIGEST_LENGTH];
-<span style = "background-color:#dfd">                    SHA1(reinterpret_cast&lt;const unsigned char*&gt;(magic.c_str()), magic.length(), hash);</span>
-
-<span style = "background-color:#dfd">                    char encoded[128] = { 0 };
-                    EVP_EncodeBlock(reinterpret_cast&lt;unsigned char*&gt;(encoded), hash, SHA_DIGEST_LENGTH);
-                    return String(encoded);
-                }</span>
 
 <span style = "background-color:#dfd">                static void BuildWebSocketFrameHeader(uint8_t opcode, size_t len, std::vector&lt;uint8_t&gt;&amp; frame) {
                     frame.push_back(opcode);
@@ -124,40 +39,158 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#fdd">                }</span>
 
+                class WebSocket::Impl : public Object {
+                public:
+                    SmartPointer&lt;Sockets::NetworkStream&gt; m_pStream;
+                    WebSocketState m_eState;
+                    Threading::CriticalSection m_csLock;
+
+                    Impl(SmartPointer&lt;Sockets::NetworkStream&gt; pStream)
+                        : m_pStream(pStream), m_eState(WebSocketState::Open) {}
+
+                    void CloseState() {
+                        Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_csLock);
+                        m_eState = WebSocketState::Closed;
+                    }
+
+                    bool ReadExtended16(uint64_t&amp; payloadLen) {
+                        uint8_t extLen[2] = { 0 };
+                        int bytesRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(extLen), 0, 2);
+                        if (bytesRead &lt;= 0) {
+                            throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Unexpected EOF reading 16-bit extended length.");
+                        }
+                        payloadLen = (static_cast&lt;uint64_t&gt;(extLen[0]) &lt;&lt; 8) | extLen[1];
+                        return true;
+                    }
+
+                    bool ReadExtended64(uint64_t&amp; payloadLen) {
+                        uint8_t extLen[8] = { 0 };
+                        int bytesRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(extLen), 0, 8);
+                        if (bytesRead &lt;= 0) {
+                            throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Unexpected EOF reading 64-bit extended length.");
+                        }
+                        payloadLen = 0;
+                        for (int i = 0; i &lt; 8; ++i) payloadLen = (payloadLen &lt;&lt; 8) | extLen[i];
+                        return true;
+                    }
+
+<span style = "background-color:#dfd">                    bool ReadFrameHeader(uint8_t&amp; opcode, bool&amp; masked, uint64_t&amp; payloadLen) {
+                        uint8_t header[2] = { 0 };</span>
+                        int bytesRead = 0;
+                        try {
+<span style = "background-color:#dfd">                            bytesRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(header), 0, 2);</span>
+<span style = "background-color:#fdd">                        } catch (const Exception&amp; ex) {
+                            throw WebSocketException(WebSocketError::NativeError, ex);</span>
+                        }
+<span style = "background-color:#dfd">                        if (bytesRead &lt;= 0) return false;
+                        opcode = header[0] &amp; 0x0F;
+                        masked = (header[1] &amp; 0x80) != 0;
+                        payloadLen = header[1] &amp; 0x7F;
+                        return true;
+                    }</span>
+
+                    bool ReadExtendedLength(uint64_t&amp; payloadLen) {
+                        if (payloadLen == 126) return ReadExtended16(payloadLen);
+                        if (payloadLen == 127) return ReadExtended64(payloadLen);
+                        return true;
+                    }
+
+                    void ReadPayloadBytes(uint64_t payloadLen, std::vector&lt;uint8_t&gt;&amp; payload) {
+                        payload.resize(payloadLen, 0);
+                        uint64_t totalRead = 0;
+                        while (totalRead &lt; payloadLen) {
+                            int toRead = static_cast&lt;int&gt;(payloadLen - totalRead);
+                            int bytesRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(payload.data() + totalRead), 0, toRead);
+                            if (bytesRead &lt;= 0) {
+                                throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Connection lost while reading payload bytes.");
+                            }
+                            totalRead += bytesRead;
+                        }
+                    }
+
+                    void UnmaskPayload(const std::array&lt;uint8_t, 4&gt;&amp; maskKey, uint64_t payloadLen, std::vector&lt;uint8_t&gt;&amp; payload) {
+                        for (uint64_t i = 0; i &lt; payloadLen; ++i) {
+                            payload[i] ^= maskKey[i % 4];
+                        }
+                    }
+
+                    bool ReadMaskKeyAndPayload(bool masked, uint64_t payloadLen, std::vector&lt;uint8_t&gt;&amp; payload) {
+                        std::array&lt;uint8_t, 4&gt; maskKey = { 0 };
+                        if (masked &amp;&amp; m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(maskKey.data()), 0, 4) &lt;= 0) {
+                            throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Connection lost while reading mask key.");
+                        }
+                        ReadPayloadBytes(payloadLen, payload);
+                        if (masked) UnmaskPayload(maskKey, payloadLen, payload);
+                        return true;
+                    }
+
+<span style = "background-color:#dfd">                    bool WriteFrame(uint8_t opcode, const uint8_t* pData, size_t len) {
+                        Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_csLock);
+                        if (m_pStream.IsNull() || m_eState != WebSocketState::Open) {
+                            throw WebSocketException(WebSocketError::InvalidState, "WebSocket is not connected or already closed.");</span>
+                        }
+<span style = "background-color:#dfd">                        std::vector&lt;uint8_t&gt; frame;
+                        BuildWebSocketFrameHeader(opcode, len, frame);
+                        if (pData != nullptr &amp;&amp; len &gt; 0) frame.insert(frame.end(), pData, pData + len);</span>
+                        try {
+<span style = "background-color:#dfd">                            m_pStream-&gt;Write(reinterpret_cast&lt;const char*&gt;(frame.data()), 0, static_cast&lt;int&gt;(frame.size()));</span>
+<span style = "background-color:#fdd">                        } catch (const Exception&amp; ex) {
+                            throw WebSocketException(WebSocketError::NativeError, ex);</span>
+                        }
+<span style = "background-color:#dfd">                        return true;
+                    }</span>
+                };
+
+                WebSocket::WebSocket(SmartPointer&lt;Sockets::NetworkStream&gt; pStream)
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(pStream)) {
+                }</span>
+
+<span style = "background-color:#dfd">                WebSocket::~WebSocket() {
+                }</span>
+
+<span style = "background-color:#dfd">                WebSocketState WebSocket::GetState() const { return m_pImpl-&gt;m_eState; }
+                void WebSocket::SetState(WebSocketState state) {
+                    m_pImpl-&gt;m_eState = state;
+                }</span>
+
+<span style = "background-color:#dfd">                String WebSocket::ComputeSecWebSocketAccept(const String&amp; secWebSocketKey) {
+                    if (secWebSocketKey.IsEmpty()) {
+                        throw ArgumentException("secWebSocketKey cannot be empty.");</span>
+                    }
+<span style = "background-color:#dfd">                    std::string key = secWebSocketKey.GetRawString();
+                    std::string magic = key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";</span>
+                    unsigned char hash[SHA_DIGEST_LENGTH];
+<span style = "background-color:#dfd">                    SHA1(reinterpret_cast&lt;const unsigned char*&gt;(magic.c_str()), magic.length(), hash);
+                    char encoded[128] = { 0 };
+                    EVP_EncodeBlock(reinterpret_cast&lt;unsigned char*&gt;(encoded), hash, SHA_DIGEST_LENGTH);
+                    return String(encoded);
+                }</span>
+
 <span style = "background-color:#dfd">                bool WebSocket::SendAsync(const String&amp; message) {
                     std::string text = message.GetRawString();
-                    std::vector&lt;uint8_t&gt; frame;
-                    BuildWebSocketFrameHeader(0x81, text.length(), frame);
-                    frame.insert(frame.end(), text.begin(), text.end());
-                    Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_pImpl-&gt;m_csLock);
-                    if (m_pImpl-&gt;m_pStream.IsNull() || m_pImpl-&gt;m_eState != WebSocketState::Open) return false;
-                    m_pImpl-&gt;m_pStream-&gt;Write(reinterpret_cast&lt;const char*&gt;(frame.data()), 0, static_cast&lt;int&gt;(frame.size()));
-                    return true;
+                    return m_pImpl-&gt;WriteFrame(0x81, reinterpret_cast&lt;const uint8_t*&gt;(text.data()), text.length());
                 }</span>
 
 <span style = "background-color:#dfd">                bool WebSocket::SendBytes(const Array&lt;uint8_t&gt;&amp; data) {
-                    std::vector&lt;uint8_t&gt; frame;
-                    BuildWebSocketFrameHeader(0x82, data.GetLength(), frame);
-                    for (int i = 0; i &lt; data.GetLength(); ++i) frame.push_back(data[i]);
-                    Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_pImpl-&gt;m_csLock);
-                    if (m_pImpl-&gt;m_pStream.IsNull() || m_pImpl-&gt;m_eState != WebSocketState::Open) return false;
-                    m_pImpl-&gt;m_pStream-&gt;Write(reinterpret_cast&lt;const char*&gt;(frame.data()), 0, static_cast&lt;int&gt;(frame.size()));
-                    return true;
-                }</span>
+                    return m_pImpl-&gt;WriteFrame(0x82, data.GetData(), data.GetLength());</span>
+                }
 
 <span style = "background-color:#dfd">                bool WebSocket::ReceiveText(String&amp; outMessage) {</span>
                     {
 <span style = "background-color:#dfd">                        Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_pImpl-&gt;m_csLock);
-                        if (m_pImpl-&gt;m_pStream.IsNull() || m_pImpl-&gt;m_eState != WebSocketState::Open) return false;
-                    }
+                        if (m_pImpl-&gt;m_pStream.IsNull() || m_pImpl-&gt;m_eState != WebSocketState::Open) {
+                            throw WebSocketException(WebSocketError::InvalidState, "WebSocket is not connected or already closed.");</span>
+                        }
+<span style = "background-color:#dfd">                    }
                     uint8_t opcode = 0; bool masked = false; uint64_t payloadLen = 0;
-                    if (!m_pImpl-&gt;ReadFrameHeader(opcode, masked, payloadLen) || opcode == 0x08) {</span>
-<span style = "background-color:#fdd">                        m_pImpl-&gt;CloseState(); return false;</span>
+                    if (!m_pImpl-&gt;ReadFrameHeader(opcode, masked, payloadLen) || opcode == 0x08) {
+                        m_pImpl-&gt;CloseState();
+                        return false;</span>
                     }
 <span style = "background-color:#dfd">                    std::vector&lt;uint8_t&gt; payload;
-                    if (!m_pImpl-&gt;ReadExtendedLength(payloadLen) || !m_pImpl-&gt;ReadMaskKeyAndPayload(masked, payloadLen, payload)) return false;
-                    std::string sPayload(payload.begin(), payload.end());
-                    outMessage = String(sPayload.c_str());
+                    m_pImpl-&gt;ReadExtendedLength(payloadLen);</span>
+<span style = "background-color:#fdd">                    m_pImpl-&gt;ReadMaskKeyAndPayload(masked, payloadLen, payload);</span>
+<span style = "background-color:#dfd">                    outMessage = String(std::string(payload.begin(), payload.end()).c_str());
                     return true;
                 }</span>
 
@@ -165,8 +198,13 @@ namespace DotNetDupe {
                     Threading::Lock&lt;Threading::CriticalSection&gt; lock(m_pImpl-&gt;m_csLock);
                     if (m_pImpl-&gt;m_eState == WebSocketState::Open) {
                         uint8_t closeFrame[2] = { 0x88, 0x00 };
-                        if (!m_pImpl-&gt;m_pStream.IsNull()) {
-                            m_pImpl-&gt;m_pStream-&gt;Write(reinterpret_cast&lt;const char*&gt;(closeFrame), 0, 2);</span>
+                        if (!m_pImpl-&gt;m_pStream.IsNull()) {</span>
+                            try {
+<span style = "background-color:#dfd">                                m_pImpl-&gt;m_pStream-&gt;Write(reinterpret_cast&lt;const char*&gt;(closeFrame), 0, 2);</span>
+<span style = "background-color:#fdd">                            } catch (...) {</span>
+                                // Suppress stream write errors during close handshake
+                                (void)0;
+<span style = "background-color:#fdd">                            }</span>
                         }
 <span style = "background-color:#dfd">                        m_pImpl-&gt;m_eState = WebSocketState::Closed;</span>
                     }
