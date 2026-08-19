@@ -4,6 +4,7 @@
 #include "System/ArgumentException.h"
 #include <openssl/sha.h>
 #include <openssl/evp.h>
+#include <array>
 #include <vector>
 #include <string>
 #include <cstdint>
@@ -96,15 +97,15 @@ namespace DotNetDupe {
                         }
                     }
 
-                    void UnmaskPayload(const uint8_t maskKey[4], uint64_t payloadLen, std::vector<uint8_t>& payload) {
+                    void UnmaskPayload(const std::array<uint8_t, 4>& maskKey, uint64_t payloadLen, std::vector<uint8_t>& payload) {
                         for (uint64_t i = 0; i < payloadLen; ++i) {
                             payload[i] ^= maskKey[i % 4];
                         }
                     }
 
                     bool ReadMaskKeyAndPayload(bool masked, uint64_t payloadLen, std::vector<uint8_t>& payload) {
-                        uint8_t maskKey[4] = { 0 };
-                        if (masked && m_pStream->Read(reinterpret_cast<char*>(maskKey), 0, 4) <= 0) {
+                        std::array<uint8_t, 4> maskKey = { 0 };
+                        if (masked && m_pStream->Read(reinterpret_cast<char*>(maskKey.data()), 0, 4) <= 0) {
                             throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Connection lost while reading mask key.");
                         }
                         ReadPayloadBytes(payloadLen, payload);
