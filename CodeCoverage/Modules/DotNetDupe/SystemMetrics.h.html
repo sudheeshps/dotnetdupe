@@ -25,13 +25,6 @@ namespace DotNetDupe {
 
             class ProcessStreamer;
 
-            enum class SystemResource {
-                Cpu,
-                Memory,
-                Disk,
-                Network
-            };
-
             struct MemoryInfo {
                 double dMemoryUsagePercent;
                 unsigned long long uMemoryTotalBytes;
@@ -68,7 +61,7 @@ namespace DotNetDupe {
                 int iRemotePort;
                 String sState; // e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT", etc.
 
-                NetworkConnectionInfo() : iLocalPort(0), iRemotePort(0) {}
+<span style = "background-color:#dfd">                NetworkConnectionInfo() : iLocalPort(0), iRemotePort(0) {}</span>
             };
 
             struct ProcessNetworkConnectionInfo {
@@ -89,11 +82,15 @@ namespace DotNetDupe {
                 MemoryInfo memory;
                 DiskInfo disk;
                 NetworkUsageInfo network;
+                Collections::Generic::List&lt;int&gt; lstOpenPorts;
+                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;
+                bool bHasEstablishedConnection;
 
                 ProcessInfo()
 <span style = "background-color:#dfd">                    : iProcessId(0),</span>
                       iSessionId(0),
-<span style = "background-color:#dfd">                      dCpuUsagePercent(0.0) {}</span>
+<span style = "background-color:#dfd">                      dCpuUsagePercent(0.0),
+                      bHasEstablishedConnection(false) {}</span>
             };
 
             struct ServiceInfo {
@@ -125,8 +122,12 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static Collections::Generic::List&lt;int&gt; GetProcessNetworkPort(const String&amp; sProcessName);
                 DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String&amp; sProcessName);
 
-                // Process list &amp; ranking APIs
-                DOTNETDUPE_API static Collections::Generic::List&lt;ProcessInfo&gt; GetTopProcesses(SystemResource eResource, int iCount);
+                // Process-specific metrics by PID
+                DOTNETDUPE_API static Collections::Generic::List&lt;int&gt; GetProcessNetworkPort(int iProcessId);
+                DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId);
+                DOTNETDUPE_API static void EnrichProcessInfo(ProcessInfo&amp; proc, bool bIncludeNetwork = true);
+
+                // Process list &amp; enumeration APIs
                 DOTNETDUPE_API static Collections::Generic::List&lt;ProcessInfo&gt; GetAllProcesses(int iSessionId = -1);
 
                 // Progressive Streaming APIs

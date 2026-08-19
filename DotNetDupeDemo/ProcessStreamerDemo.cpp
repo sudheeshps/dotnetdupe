@@ -100,7 +100,7 @@ static void DemoProgressivePortEnrichment() {
     });
 
     pStreamer->Start();
-    evtDone.WaitOne(5000);
+    evtDone.WaitOne();
 }
 
 void DemonstrateProcessStreamer() {

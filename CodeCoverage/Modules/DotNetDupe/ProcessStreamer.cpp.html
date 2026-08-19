@@ -11,6 +11,10 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/ProcessStreamer.h"
+#include "System/Diagnostics/SystemMetrics.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentNullException.h"
+#include "System/SystemException.h"
 #include "System/Threading/Thread.h"
 #include "System/Threading/CriticalSection.h"
 #include "System/Threading/Lock.h"
@@ -40,8 +44,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo&amp; proc) {
                 proc.iProcessId = pe32-&gt;th32ProcessID;
                 proc.sName = String(pe32-&gt;szExeFile);
+                proc.memory.lPhysicalMemoryBytes = 0;
+                proc.memory.lPrivateBytes = 0;
                 DWORD dwSess = 0;
                 if (::ProcessIdToSessionId(pe32-&gt;th32ProcessID, &amp;dwSess)) proc.iSessionId = static_cast&lt;int&gt;(dwSess);
+                if (pe32-&gt;th32ProcessID == 0) return;
                 HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32-&gt;th32ProcessID);
                 if (!hProc) return;
                 WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
@@ -56,13 +63,16 @@ namespace DotNetDupe {
 
             static void CollectTier1Processes(std::vector&lt;ProcessInfo&gt;&amp; vecProcs, int iSessionId) {
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (hSnapshot == INVALID_HANDLE_VALUE) return;
+                if (hSnapshot == INVALID_HANDLE_VALUE) throw SystemException("Failed to create system process snapshot.");
                 PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
                 if (::Process32FirstW(hSnapshot, &amp;pe32)) {
                     do {
+                        if (pe32.th32ProcessID == 0) continue;
                         ProcessInfo proc;
                         FastPopulateProc(&amp;pe32, proc);
-                        if (iSessionId == -1 || proc.iSessionId == iSessionId) vecProcs.push_back(proc);
+                        if (proc.iProcessId &gt; 0 &amp;&amp; (iSessionId == -1 || proc.iSessionId == iSessionId)) {
+                            vecProcs.push_back(proc);
+                        }
                     } while (::Process32NextW(hSnapshot, &amp;pe32));
                 }
                 ::CloseHandle(hSnapshot);
@@ -83,7 +93,7 @@ namespace DotNetDupe {
 
             static void CollectTier1Processes(std::vector&lt;ProcessInfo&gt;&amp; vecProcs, int iSessionId) {
                 DIR* dir = ::opendir("/proc");
-                if (!dir) return;
+                if (!dir) throw SystemException("Failed to open /proc directory.");
                 struct dirent* entry = nullptr;
                 while ((entry = ::readdir(dir)) != nullptr) {
                     if (entry-&gt;d_type == DT_DIR) {
@@ -100,15 +110,7 @@ namespace DotNetDupe {
 #endif
 
             static void DeepEnrichProc(ProcessInfo&amp; proc, bool bIncludeNetwork) {
-                proc.sCommandLine = SystemMetrics::GetProcessCommandLine(proc.sName);
-                proc.disk = SystemMetrics::GetProcessDiskUsage(proc.sName);
-                proc.network = SystemMetrics::GetProcessNetworkUsage(proc.sName);
-                if (bIncludeNetwork) {
-                    auto netInfo = SystemMetrics::GetProcessNetworkInfo(proc.sName);
-                    for (int i = 0; i &lt; netInfo.lstOpenPorts.GetCount(); ++i) {
-                        if (!proc.network.lNetworkReadBytes) proc.network.lNetworkReadBytes = netInfo.lstConnections.GetCount();
-                    }
-                }
+                SystemMetrics::EnrichProcessInfo(proc, bIncludeNetwork);
             }
 
             class ProcessStreamer::Impl : public Object {
@@ -128,7 +130,7 @@ namespace DotNetDupe {
                 Impl(const ProcessStreamOptions&amp; options)
                     : m_options(options), m_bRunning(false), m_bCancelled(false) {}
 
-<span style = "background-color:#fdd">                ~Impl() override {
+<span style = "background-color:#dfd">                ~Impl() override {
                     Cancel();
                 }</span>
 
@@ -173,21 +175,21 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    if (batch.GetCount() &gt; 0 &amp;&amp; !m_bCancelled.load()) DispatchBatch(batch);
                 }</span>
 
-<span style = "background-color:#fdd">                void RunTier2(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
+                void RunTier2(std::vector&lt;ProcessInfo&gt;&amp; vecProcs) {
                     for (size_t i = 0; i &lt; vecProcs.size(); ++i) {
                         if (m_bCancelled.load()) break;
                         DeepEnrichProc(vecProcs[i], m_options.bIncludeNetworkInfo);
-                        DispatchUpdated(vecProcs[i]);</span>
+                        DispatchUpdated(vecProcs[i]);
                     }
-<span style = "background-color:#fdd">                }</span>
+                }
 
 <span style = "background-color:#dfd">                void ExecuteStream() {</span>
                     try {
 <span style = "background-color:#dfd">                        std::vector&lt;ProcessInfo&gt; vecProcs;
                         CollectTier1Processes(vecProcs, m_options.iSessionId);
                         RunTier1(vecProcs);
-                        if (!m_bCancelled.load() &amp;&amp; m_options.eDetailLevel != ProcessMetricsDetail::FastDiscoveryOnly) {</span>
-<span style = "background-color:#fdd">                            RunTier2(vecProcs);</span>
+                        if (!m_bCancelled.load() &amp;&amp; m_options.eDetailLevel != ProcessMetricsDetail::FastDiscoveryOnly) {
+                            RunTier2(vecProcs);</span>
                         }
 <span style = "background-color:#dfd">                        m_bRunning.store(false);
                         if (!m_bCancelled.load()) DispatchCompleted();
@@ -198,7 +200,10 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                void Start(const SmartPointer&lt;Impl&gt;&amp; spSelf) {
-                    if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
+                    if (m_options.iBatchSize &lt; 0 || m_options.iBatchIntervalMs &lt; 0) {
+                        throw ArgumentException("ProcessStreamOptions batch parameters cannot be negative.");</span>
+                    }
+<span style = "background-color:#dfd">                    if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
                     m_bCancelled.store(false);
                     m_spWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared([spSelf]() {</span>
                         if (spSelf) spSelf-&gt;ExecuteStream();
@@ -230,7 +235,7 @@ namespace DotNetDupe {
                 if (m_pImpl) m_pImpl-&gt;m_fnOnBatch = fnOnBatch;
             }</span>
 
-<span style = "background-color:#fdd">            void ProcessStreamer::OnProcessUpdated(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnUpdated) {
+<span style = "background-color:#dfd">            void ProcessStreamer::OnProcessUpdated(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnUpdated) {
                 if (m_pImpl) m_pImpl-&gt;m_fnOnUpdated = fnOnUpdated;
             }</span>
 
@@ -243,6 +248,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void ProcessStreamer::Subscribe(const SmartPointer&lt;IProcessObserver&gt;&amp; pObserver) {
+                if (!pObserver) throw ArgumentNullException("pObserver cannot be null.");
                 if (m_pImpl) m_pImpl-&gt;m_spObserver = pObserver;
             }</span>
 
