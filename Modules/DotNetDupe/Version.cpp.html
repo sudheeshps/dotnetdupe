@@ -11,10 +11,58 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Version.h"
+#include "System/ArgumentException.h"
+#include "System/FormatException.h"
 #include &lt;sstream&gt;
+#include &lt;vector&gt;
+#include &lt;string&gt;
 
 namespace DotNetDupe {
     namespace System {
+
+<span style = "background-color:#dfd">        static bool ParseComponent(const std::string&amp; sPart, int&amp; iVal) {
+            if (sPart.empty()) return false;
+            for (char c : sPart) {
+                if (c &lt; '0' || c &gt; '9') return false;</span>
+            }
+            try {
+<span style = "background-color:#dfd">                long long llVal = std::stoll(sPart);
+                if (llVal &lt; 0 || llVal &gt; 2147483647LL) return false;
+                iVal = static_cast&lt;int&gt;(llVal);
+                return true;
+            } catch (...) {
+                return false;</span>
+            }
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        static bool SplitVersionParts(const String&amp; sInput, std::vector&lt;std::string&gt;&amp; vecParts) {
+            if (sInput.IsEmpty()) return false;
+            std::string s = sInput.GetRawString();
+            if (s.empty() || s.front() == '.' || s.back() == '.') return false;
+            std::stringstream ss(s);
+            std::string item;
+            while (std::getline(ss, item, '.')) {
+                if (item.empty()) return false;
+                vecParts.push_back(item);</span>
+            }
+<span style = "background-color:#dfd">            return (vecParts.size() &gt;= 2 &amp;&amp; vecParts.size() &lt;= 4);
+        }</span>
+
+        static bool TryParseInternal(const String&amp; sInput, int&amp; iMajor, int&amp; iMinor, int&amp; iBuild, int&amp; iRevision, int&amp; iCount) {
+            std::vector&lt;std::string&gt; vecParts;
+            if (!SplitVersionParts(sInput, vecParts)) return false;
+            iCount = static_cast&lt;int&gt;(vecParts.size());
+            int arrVals[4] = { 0, 0, 0, 0 };
+            for (size_t i = 0; i &lt; vecParts.size(); ++i) {
+                if (!ParseComponent(vecParts[i], arrVals[i])) return false;
+            }
+            iMajor = arrVals[0];
+            iMinor = arrVals[1];
+            iBuild = (iCount &gt;= 3) ? arrVals[2] : 0;
+            iRevision = (iCount == 4) ? arrVals[3] : 0;
+            return true;
+        }
+
         Version::Version(int iMajor, int iMinor, int iBuild, int iRevision)
 <span style = "background-color:#dfd">            : m_iMajor(iMajor), m_iMinor(iMinor), m_iBuild(iBuild), m_iRevision(iRevision) { }</span>
 
@@ -47,6 +95,28 @@ namespace DotNetDupe {
             std::stringstream ss;
             ss &lt;&lt; m_iMajor &lt;&lt; "." &lt;&lt; m_iMinor &lt;&lt; "." &lt;&lt; m_iBuild &lt;&lt; "." &lt;&lt; m_iRevision;
             return String(ss.str().c_str());
+        }</span>
+
+<span style = "background-color:#dfd">        Version Version::Parse(const String&amp; sInput) {
+            if (sInput.IsEmpty()) {
+                throw ArgumentException("Input string cannot be empty.");</span>
+            }
+<span style = "background-color:#dfd">            Version vResult;
+            if (!TryParse(sInput, vResult)) {
+                throw FormatException("Input string was not in a correct format.");</span>
+            }
+<span style = "background-color:#dfd">            return vResult;
+        }</span>
+
+<span style = "background-color:#dfd">        bool Version::TryParse(const String&amp; sInput, Version&amp; vResult) {</span>
+            int iMajor = 0, iMinor = 0, iBuild = 0, iRevision = 0, iCount = 0;
+<span style = "background-color:#dfd">            if (!TryParseInternal(sInput, iMajor, iMinor, iBuild, iRevision, iCount)) {
+                return false;</span>
+            }
+<span style = "background-color:#dfd">            if (iCount == 2) vResult = Version(iMajor, iMinor);
+            else if (iCount == 3) vResult = Version(iMajor, iMinor, iBuild);
+            else vResult = Version(iMajor, iMinor, iBuild, iRevision);
+            return true;
         }</span>
 
 <span style = "background-color:#dfd">        bool Version::operator==(const Version&amp; vOther) const {

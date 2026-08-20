@@ -15,6 +15,7 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/SmartPointer.h"
+#include "System/Array.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -36,6 +37,7 @@ namespace DotNetDupe {
             class Process : public Object {
             public:
                 DOTNETDUPE_API Process();
+                DOTNETDUPE_API Process(int iId, const String&amp; sProcessName, void* pProcessHandle = nullptr);
                 DOTNETDUPE_API virtual ~Process();
 
 <span style = "background-color:#fdd">                DOTNETDUPE_API ProcessStartInfo GetStartInfo() const { return m_objStartInfo; }</span>
@@ -52,13 +54,20 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                DOTNETDUPE_API int GetExitCode() const { return m_iExitCode; }</span>
                 DOTNETDUPE_API bool GetHasExited() const;
 <span style = "background-color:#fdd">                DOTNETDUPE_API int GetId() const { return m_iId; }</span>
+<span style = "background-color:#dfd">                DOTNETDUPE_API String GetProcessName() const { return m_sProcessName; }</span>
                 DOTNETDUPE_API static int GetCurrentProcessId();
+                DOTNETDUPE_API static SmartPointer&lt;Process&gt; GetCurrentProcess();
+
+                DOTNETDUPE_API static Array&lt;SmartPointer&lt;Process&gt;&gt; GetProcesses();
+                DOTNETDUPE_API static SmartPointer&lt;Process&gt; GetProcessById(int iProcessId);
+                DOTNETDUPE_API static Array&lt;SmartPointer&lt;Process&gt;&gt; GetProcessesByName(const String&amp; sProcessName);
 
                 DOTNETDUPE_API void Kill();
 
             private:
                 ProcessStartInfo m_objStartInfo;
                 int m_iId;
+                String m_sProcessName;
                 mutable int m_iExitCode;
                 mutable bool m_bHasExited;
                 void* m_pProcessHandle;

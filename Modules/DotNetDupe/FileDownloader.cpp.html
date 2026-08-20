@@ -38,7 +38,9 @@ namespace DotNetDupe {
                     Collections::Generic::Dictionary&lt;String, String&gt; m_customHeaders;
                     String m_sUrl;
                     String m_sDestinationPath;
-                    Action&lt;DownloadProgress&gt; m_progressCallback;
+
+                    EventHandler&lt;DownloadProgressChangedEventArgs&gt; DownloadProgressChanged;
+                    EventHandler&lt;DownloadCompletedEventArgs&gt; DownloadCompleted;
 
                     std::atomic&lt;DownloadStatus&gt; m_status{ DownloadStatus::NotStarted };
                     std::atomic&lt;bool&gt; m_bPauseRequested{ false };
@@ -48,6 +50,8 @@ namespace DotNetDupe {
 
                     HttpClient m_httpClient;
                     SmartPointer&lt;Threading::Thread&gt; m_pWorkerThread;
+
+                    Impl() = default;
 
 <span style = "background-color:#dfd">                    long long CheckExistingFileSize() {
                         if (!IO::File::Exists(m_sDestinationPath)) return 0;</span>
@@ -112,24 +116,31 @@ namespace DotNetDupe {
                         return pRequest;
 <span style = "background-color:#dfd">                    }</span>
 
-                    void UpdateRate(long long llBytesInSession, const std::chrono::steady_clock::time_point&amp; timeStart) {
+                    void UpdateRate(long long llBytesSession, const std::chrono::steady_clock::time_point&amp; timeStart) {
                         auto timeNow = std::chrono::steady_clock::now();
                         double dElapsedSec = std::chrono::duration&lt;double&gt;(timeNow - timeStart).count();
                         if (dElapsedSec &gt; 0.05) {
-                            m_dDownloadRate = static_cast&lt;double&gt;(llBytesInSession) / dElapsedSec;
+                            m_dDownloadRate = static_cast&lt;double&gt;(llBytesSession) / dElapsedSec;
                         }
                     }
 
-                    DownloadProgress GetProgress() {
+                    DownloadProgress GetProgress() const {
                         DownloadProgress progress;
                         progress.TotalBytes = m_llTotalBytes.load();
                         progress.DownloadedBytes = m_llDownloadedBytes.load();
-                        progress.RemainingBytes = (progress.TotalBytes &gt;= progress.DownloadedBytes) 
-                                                  ? (progress.TotalBytes - progress.DownloadedBytes) : 0;
+                        progress.RemainingBytes = progress.TotalBytes &gt; progress.DownloadedBytes ? (progress.TotalBytes - progress.DownloadedBytes) : 0;
                         progress.DownloadRateBytesPerSec = m_dDownloadRate.load();
                         progress.Status = m_status.load();
                         return progress;
                     }
+
+<span style = "background-color:#dfd">                    void FireProgressEvent() {
+                        long long llTotal = m_llTotalBytes.load();
+                        long long llDownloaded = m_llDownloadedBytes.load();
+                        double dPercent = (llTotal &gt; 0) ? (static_cast&lt;double&gt;(llDownloaded) / static_cast&lt;double&gt;(llTotal) * 100.0) : 0.0;
+                        DownloadProgressChangedEventArgs args(llDownloaded, llTotal, dPercent, m_dDownloadRate.load(), m_status.load());
+                        DownloadProgressChanged.Invoke(this, args);
+                    }</span>
 
                     void ProcessDownloadChunk(int iRead, const char* pBuffer, IO::FileStream&amp; outFile, long long&amp; llBytesSession, const std::chrono::steady_clock::time_point&amp; timeStart) {
                         outFile.Write(pBuffer, 0, iRead);
@@ -137,14 +148,14 @@ namespace DotNetDupe {
                         m_llDownloadedBytes += iRead;
                         llBytesSession += iRead;
                         UpdateRate(llBytesSession, timeStart);
-                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                        FireProgressEvent();
                     }
 
 <span style = "background-color:#dfd">                    bool ReadAndWriteData(const SmartPointer&lt;IO::Stream&gt;&amp; pStream, IO::FileStream&amp; outFile) {</span>
                         char pBuffer[8192];
-<span style = "background-color:#dfd">                        auto timeStart = std::chrono::steady_clock::now();
+<span style = "background-color:#dfd">                        auto timeStart = std::chrono::steady_clock::now();</span>
                         long long llBytesSession = 0;
-                        try {
+<span style = "background-color:#dfd">                        try {
                             while (!m_bPauseRequested.load()) {
                                 int iRead = pStream-&gt;Read(pBuffer, 0, sizeof(pBuffer));
                                 if (iRead &lt;= 0) break;
@@ -157,13 +168,16 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        return !m_bPauseRequested.load();
                     }</span>
 
-<span style = "background-color:#dfd">                    void NotifyStateChange(DownloadStatus status) {
+<span style = "background-color:#dfd">                    void NotifyStateChange(DownloadStatus status, const String&amp; sError = "") {
                         m_status = status;
                         m_dDownloadRate = 0.0;
-                        if (status == DownloadStatus::Failed) Console::WriteLine("[FileDownloader] Download status changed to Failed.");
-                        else if (status == DownloadStatus::Completed) Console::WriteLine("[FileDownloader] Download completed successfully.");
-                        else if (status == DownloadStatus::Paused) Console::WriteLine("[FileDownloader] Download paused.");
-                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                        FireProgressEvent();
+                        if (status == DownloadStatus::Completed || status == DownloadStatus::Failed) {
+                            bool bSuccess = (status == DownloadStatus::Completed);
+                            bool bCancelled = m_bPauseRequested.load();
+                            DownloadCompletedEventArgs args(bSuccess, bCancelled, sError);
+                            DownloadCompleted.Invoke(this, args);
+                        }
                     }</span>
 
 <span style = "background-color:#dfd">                    void ExecuteDownload(long long llExistingBytes) {
@@ -174,56 +188,55 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                            pResponse = m_httpClient.Send(pRequest, HttpCompletionOption::ResponseHeadersRead);</span>
 <span style = "background-color:#fdd">                        } catch (const HttpRequestException&amp; ex) {
                             Console::WriteLine(String("[FileDownloader] HTTP request failed: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);</span>
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());</span>
 <span style = "background-color:#dfd">                        } catch (const Sockets::SocketException&amp; ex) {
                             Console::WriteLine(String("[FileDownloader] Socket connection failed: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);</span>
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());</span>
 <span style = "background-color:#fdd">                        } catch (const SystemException&amp; ex) {
                             Console::WriteLine(String("[FileDownloader] HTTP client exception: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);</span>
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());</span>
                         }
 
-<span style = "background-color:#dfd">                        if (pResponse.IsNull()) return NotifyStateChange(DownloadStatus::Failed);</span>
+<span style = "background-color:#dfd">                        if (pResponse.IsNull()) return NotifyStateChange(DownloadStatus::Failed, "Null response received.");</span>
 
 <span style = "background-color:#dfd">                        int iStatusCode = static_cast&lt;int&gt;(pResponse-&gt;GetStatusCode());
                         if (iStatusCode == 301 || iStatusCode == 302 || iStatusCode == 307 || iStatusCode == 308) {
                             auto&amp; headers = pResponse-&gt;GetHeaders();
                             for (auto const&amp; [sKey, sVal] : headers) {
                                 if (sKey.ToLower() == "location") {
-                                    Console::WriteLine(String("[FileDownloader] Redirecting (") + Convert::ToString(iStatusCode) + ") to: " + sVal);
                                     m_sUrl = sVal;
                                     return ExecuteDownload(llExistingBytes);</span>
                                 }
 <span style = "background-color:#fdd">                            }</span>
                         }
 
-                        bool bPartial = (iStatusCode == 206);
-<span style = "background-color:#fdd">                        if (!bPartial &amp;&amp; iStatusCode != 200) {
-                            Console::WriteLine(String("[FileDownloader] HTTP server returned error status code: ") + Convert::ToString(iStatusCode));
-                            return NotifyStateChange(DownloadStatus::Failed);</span>
-                        }
-
-<span style = "background-color:#dfd">                        long long llRangeContentLen = ParseContentLengthFromResponse(pResponse);
-                        int iFileMode = (bPartial ? 5 : 1); // FileMode::Append or FileMode::Create
-                        if (!bPartial) {
-                            m_llDownloadedBytes = 0;
-                            llExistingBytes = 0;</span>
+                        int iFileMode = 1; // FileMode::Create
+<span style = "background-color:#fdd">                        long long llRangeContentLen = ParseContentLengthFromResponse(pResponse);</span>
+<span style = "background-color:#dfd">                        if (iStatusCode == 206) {
+                            iFileMode = 5; // FileMode::Append
+                        } else if (iStatusCode == 200) {
+                            iFileMode = 1; // FileMode::Create
+                            llExistingBytes = 0;
+                            m_llDownloadedBytes = 0;</span>
+                        } else {
+<span style = "background-color:#fdd">                            Console::WriteLine(String("[FileDownloader] Server returned error status code: ") + Convert::ToString(iStatusCode));
+                            return NotifyStateChange(DownloadStatus::Failed, String("HTTP Status ") + Convert::ToString(iStatusCode));</span>
                         }
 <span style = "background-color:#dfd">                        if (llRangeContentLen &gt;= 0) m_llTotalBytes = llExistingBytes + llRangeContentLen;</span>
 
 <span style = "background-color:#dfd">                        auto pStream = pResponse-&gt;GetContent()-&gt;ReadAsStream();
-                        if (pStream.IsNull()) return NotifyStateChange(DownloadStatus::Failed);</span>
+                        if (pStream.IsNull()) return NotifyStateChange(DownloadStatus::Failed, "Content stream is null.");</span>
 
                         try {
                             bool bCompleted = false;
                             {
 <span style = "background-color:#dfd">                                IO::FileStream outFile(m_sDestinationPath, iFileMode);
                                 bCompleted = ReadAndWriteData(pStream, outFile);
-                            } // outFile goes out of scope and releases the lock here
+                            }
                             NotifyStateChange(bCompleted ? DownloadStatus::Completed : DownloadStatus::Paused);</span>
 <span style = "background-color:#fdd">                        } catch (const IO::IOException&amp; ex) {
                             Console::WriteLine(String("[FileDownloader] File I/O exception: ") + ex.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, ex.What());
                         }</span>
 <span style = "background-color:#dfd">                    }</span>
 
@@ -239,22 +252,23 @@ namespace DotNetDupe {
                             ExecuteDownload(llExistingBytes);</span>
 <span style = "background-color:#fdd">                        } catch (const Exception&amp; ex) {
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + ex.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, ex.What());
                         } catch (const std::exception&amp; ex) {
                             UnknownException unk(ex.what());
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, unk.What());
                         } catch (...) {
                             UnknownException unk("An unknown error occurred during download.");
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, unk.What());
                         }</span>
 <span style = "background-color:#dfd">                    }</span>
                 };
 
-
                 FileDownloader::FileDownloader(const String&amp; sUrl, const String&amp; sDestinationPath)
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()),
+                      DownloadProgressChanged(m_pImpl-&gt;DownloadProgressChanged),
+                      DownloadCompleted(m_pImpl-&gt;DownloadCompleted) {
                     m_pImpl-&gt;m_sUrl = sUrl;
                     m_pImpl-&gt;m_sDestinationPath = sDestinationPath;
                     if (sUrl.IsEmpty()) throw ArgumentException("sUrl cannot be empty.");
@@ -275,10 +289,6 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                DownloadStatus FileDownloader::GetStatus() const {
                     return m_pImpl-&gt;m_status.load();
-                }</span>
-
-<span style = "background-color:#dfd">                void FileDownloader::SetProgressCallback(const Action&lt;DownloadProgress&gt;&amp; callback) {
-                    m_pImpl-&gt;m_progressCallback = callback;
                 }</span>
 
 <span style = "background-color:#dfd">                void FileDownloader::Pause() {
@@ -331,8 +341,7 @@ namespace DotNetDupe {
             }
         }
     }
-}
-</pre>
+}</pre>
         <hr />
         <table width="100%">
             <thead>

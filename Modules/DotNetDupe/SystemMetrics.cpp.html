@@ -12,6 +12,7 @@
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
 #include "System/Diagnostics/ProcessStreamer.h"
+#include "System/Diagnostics/Process.h"
 #include "System/ArgumentException.h"
 #include "System/SystemException.h"
 #include "System/Utils/StringConvert.h"
@@ -59,9 +60,15 @@ namespace DotNetDupe {
                 ProcessStreamOptions options;
                 options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
                 auto pStreamer = CreateProcessStreamer(options);
-                pStreamer-&gt;OnProcess(fnOnProcess);
-                if (fnOnComplete) pStreamer-&gt;OnCompleted(fnOnComplete);
-                pStreamer-&gt;Start();
+                pStreamer-&gt;ProcessDiscovered += [fnOnProcess](const void*, const ProcessEventArgs&amp; e) {</span>
+                    if (fnOnProcess) fnOnProcess(e.GetProcess());
+                };
+<span style = "background-color:#dfd">                if (fnOnComplete) {
+                    pStreamer-&gt;Completed += [fnOnComplete](const void*, const EventArgs&amp;) {</span>
+                        fnOnComplete();
+                    };
+                }
+<span style = "background-color:#dfd">                pStreamer-&gt;Start();
             }</span>
 
 #if defined(_WIN32)
@@ -155,31 +162,13 @@ namespace DotNetDupe {
                     return CalculateNetRate(totalOctets);
                 }
 
-<span style = "background-color:#dfd">                static HANDLE FindProcessHandle(HANDLE hSnapshot, const std::wstring&amp; wTarget, unsigned long dwAccess, int&amp; iOutPid) {
-                    PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
-                    if (!::Process32FirstW(hSnapshot, &amp;pe32)) return NULL;</span>
-                    do {
-<span style = "background-color:#dfd">                        std::wstring wExeFile(pe32.szExeFile);
-                        std::transform(wExeFile.begin(), wExeFile.end(), wExeFile.begin(), ::tolower);
-                        if (wExeFile == wTarget || wExeFile == wTarget + L".exe") {
-                            iOutPid = pe32.th32ProcessID;
-                            return ::OpenProcess(dwAccess, FALSE, pe32.th32ProcessID);</span>
-                        }
-<span style = "background-color:#dfd">                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
-                    return NULL;
-<span style = "background-color:#dfd">                }</span>
-
-<span style = "background-color:#dfd">                static void* OpenProcByName(const String&amp; sProcessName, unsigned long dwAccess, int&amp; iOutPid) {
+                static void* OpenProcByName(const String&amp; sProcessName, unsigned long dwAccess, int&amp; iOutPid) {
                     iOutPid = -1;
-                    HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                    if (hSnapshot == INVALID_HANDLE_VALUE) return NULL;
-                    std::string sTarget = sProcessName.GetRawString() ? sProcessName.GetRawString() : "";
-                    std::wstring wTarget(sTarget.begin(), sTarget.end());
-                    std::transform(wTarget.begin(), wTarget.end(), wTarget.begin(), ::tolower);
-                    HANDLE hResult = FindProcessHandle(hSnapshot, wTarget, dwAccess, iOutPid);
-                    ::CloseHandle(hSnapshot);
-                    return hResult;
-                }</span>
+                    auto arrMatches = Process::GetProcessesByName(sProcessName);
+                    if (arrMatches.GetLength() == 0) return NULL;
+                    iOutPid = arrMatches[0]-&gt;GetId();
+                    return ::OpenProcess(dwAccess, FALSE, static_cast&lt;DWORD&gt;(iOutPid));
+                }
 
 <span style = "background-color:#dfd">                static String ReadPebCommandLine(HANDLE hProc, PVOID pebBase) {
                     PEB peb; SIZE_T bytesRead = 0;
@@ -266,8 +255,8 @@ namespace DotNetDupe {
                     MIB_UDPTABLE_OWNER_PID* pTable = reinterpret_cast&lt;MIB_UDPTABLE_OWNER_PID*&gt;(buf.data());
                     if (::GetExtendedUdpTable(pTable, &amp;dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != NO_ERROR) return;
                     for (DWORD i = 0; i &lt; pTable-&gt;dwNumEntries; ++i) {
-                        if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid)) {
-                            int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
+                        if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid)) {</span>
+<span style = "background-color:#fdd">                            int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
                             if (!lst.Contains(p)) lst.Add(p);</span>
                         }
                     }
@@ -282,8 +271,8 @@ namespace DotNetDupe {
                         MIB_TCPTABLE_OWNER_PID* pTable = reinterpret_cast&lt;MIB_TCPTABLE_OWNER_PID*&gt;(buf.data());
                         if (::GetExtendedTcpTable(pTable, &amp;dwSize, FALSE, AF_INET, TCP_TABLE_OWNER_PID_ALL, 0) == NO_ERROR) {
                             for (DWORD i = 0; i &lt; pTable-&gt;dwNumEntries; ++i) {
-                                if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid) &amp;&amp; pTable-&gt;table[i].dwState == MIB_TCP_STATE_LISTEN) {
-                                    int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
+                                if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid) &amp;&amp; pTable-&gt;table[i].dwState == MIB_TCP_STATE_LISTEN) {</span>
+<span style = "background-color:#fdd">                                    int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
                                     if (!lst.Contains(p)) lst.Add(p);</span>
                                 }
                             }
@@ -365,32 +354,12 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    s_mapProcessCpuSamples[iPid] = { uProc, uSys };
                 }</span>
 
-<span style = "background-color:#dfd">                static void PopulateProcNetwork(int iPid, ProcessInfo&amp; proc) {
+                static void PopulateProcNetwork(int iPid, ProcessInfo&amp; proc) {
                     auto netInfo = ReadProcNetInfo(iPid);
                     proc.lstOpenPorts = netInfo.lstOpenPorts;
                     proc.lstConnections = netInfo.lstConnections;
                     proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
-                }</span>
-
-<span style = "background-color:#dfd">                static void PopulateProc(PROCESSENTRY32W* pe32, ProcessInfo&amp; proc) {
-                    proc.iProcessId = pe32-&gt;th32ProcessID; proc.sName = String(pe32-&gt;szExeFile); proc.dCpuUsagePercent = 0.0;
-                    proc.memory.lPhysicalMemoryBytes = 0; proc.memory.lPrivateBytes = 0;
-                    DWORD dwSess = 0;
-                    if (::ProcessIdToSessionId(pe32-&gt;th32ProcessID, &amp;dwSess)) proc.iSessionId = static_cast&lt;int&gt;(dwSess);
-                    if (pe32-&gt;th32ProcessID == 0) return;
-                    HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32-&gt;th32ProcessID);
-                    if (!hProc) return;
-                    WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
-                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwLen)) proc.sPath = String(szPath);
-                    proc.sCommandLine = ReadProcCmdLine(hProc);
-                    if (proc.sCommandLine.IsEmpty()) proc.sCommandLine = proc.sPath;
-                    proc.memory = ReadProcMemory(hProc);
-                    proc.disk = ReadProcDisk(hProc, proc.sName);
-                    proc.network = ReadProcNetwork(hProc, proc.sName);
-                    CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
-                    PopulateProcNetwork(proc.iProcessId, proc);
-                    ::CloseHandle(hProc);
-                }</span>
+                }
 
 <span style = "background-color:#dfd">                static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
                     SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
@@ -440,9 +409,9 @@ namespace DotNetDupe {
                 return SystemMetricsWin32Helper::ReadProcCmdLine(hProc);
             }
 
-<span style = "background-color:#dfd">            String SystemMetrics::GetProcessCommandLine(const String&amp; sProcessName) {
+<span style = "background-color:#dfd">            String SystemMetrics::GetProcessCommandLine(const String&amp; sProcessName) {</span>
                 int iPid = -1;
-                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+<span style = "background-color:#dfd">                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
                 if (!hProc) return String("");
                 String sCmd = ReadProcessCommandLineHandle(hProc);
                 if (sCmd.IsEmpty()) {</span>
@@ -502,8 +471,8 @@ namespace DotNetDupe {
                 if (proc.iProcessId &lt;= 0) throw ArgumentException("Process ID must be greater than zero.");
                 HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, proc.iProcessId);
                 if (hProc) {
-                    if (proc.sPath.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                        WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                    if (proc.sPath.IsEmpty()) {
+                        WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
                         if (::QueryFullProcessImageNameW(hProc, 0, szPath, &amp;dwLen)) proc.sPath = String(szPath);</span>
                     }
 <span style = "background-color:#dfd">                    proc.sCommandLine = SystemMetricsWin32Helper::ReadProcCmdLine(hProc);
@@ -516,27 +485,6 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">                if (bIncludeNetwork) SystemMetricsWin32Helper::PopulateProcNetwork(proc.iProcessId, proc);
             }</span>
-
-            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo&amp; proc) {
-                SystemMetricsWin32Helper::PopulateProc(static_cast&lt;PROCESSENTRY32W*&gt;(pEntry32), proc);
-            }
-
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;ProcessInfo&gt; SystemMetrics::GetAllProcesses(int iSessionId) {
-                Collections::Generic::List&lt;ProcessInfo&gt; lst;
-                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (hSnapshot == INVALID_HANDLE_VALUE) return lst;
-                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
-                if (::Process32FirstW(hSnapshot, &amp;pe32)) {</span>
-                    do {
-<span style = "background-color:#dfd">                        if (pe32.th32ProcessID == 0) continue;
-                        ProcessInfo proc; PopulateProcessInfo(&amp;pe32, proc);
-                        if (proc.iProcessId &gt; 0 &amp;&amp; (iSessionId == -1 || proc.iSessionId == iSessionId)) lst.Add(proc);
-                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
-                }
-<span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);</span>
-                return lst;
-<span style = "background-color:#dfd">            }</span>
-
 
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;ServiceInfo&gt; SystemMetrics::GetAllServices() {
                 Collections::Generic::List&lt;ServiceInfo&gt; lst;

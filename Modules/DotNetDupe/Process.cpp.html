@@ -11,22 +11,29 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Diagnostics/Process.h"
+#include "System/ArgumentException.h"
 #include "System/UnauthorizedAccessException.h"
 #include "System/IO/FileNotFoundException.h"
 #include "System/InvalidOperationException.h"
+#include "System/Collections/Generic/List.h"
 #include "System/Utils/StringConvert.h"
 
 #if defined(_WIN32)
 #include &lt;windows.h&gt;
+#include &lt;tlhelp32.h&gt;
 #include "Win32Internal.h"
 using namespace DotNetDupe::System::Internal;
 #else
 #include &lt;unistd.h&gt;
+#include &lt;dirent.h&gt;
 #include &lt;sys/wait.h&gt;
 #include &lt;signal.h&gt;
 #include &lt;spawn.h&gt;
 #include &lt;vector&gt;
 #include &lt;string&gt;
+#include &lt;fstream&gt;
+#include &lt;algorithm&gt;
+#include &lt;cctype&gt;
 #include &lt;cerrno&gt;
 extern char** environ;
 #endif
@@ -46,6 +53,9 @@ namespace DotNetDupe {
 
             Process::Process() 
 <span style = "background-color:#dfd">                : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}</span>
+
+            Process::Process(int iId, const String&amp; sProcessName, void* pProcessHandle)
+<span style = "background-color:#fdd">                : m_iId(iId), m_sProcessName(sProcessName), m_iExitCode(0), m_bHasExited(false), m_pProcessHandle(pProcessHandle) {}</span>
 
 <span style = "background-color:#dfd">            Process::~Process() {</span>
 #if defined(_WIN32)
@@ -233,7 +243,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const ProcessStartInfo&amp; objStartInfo) {
-                SmartPointer&lt;Process&gt; pProcess = SmartPointer&lt;Process&gt;::New();
+                SmartPointer&lt;Process&gt; pProcess = SmartPointer&lt;Process&gt;::NewShared();
                 pProcess-&gt;SetStartInfo(objStartInfo);</span>
                 try {
 <span style = "background-color:#dfd">                    if (pProcess-&gt;Start()) return pProcess;
@@ -280,9 +290,9 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            int Process::GetCurrentProcessId() {</span>
+<span style = "background-color:#dfd">            int Process::GetCurrentProcessId() {</span>
 #if defined(_WIN32)
-<span style = "background-color:#fdd">                return static_cast&lt;int&gt;(::GetCurrentProcessId());</span>
+<span style = "background-color:#dfd">                return static_cast&lt;int&gt;(::GetCurrentProcessId());</span>
 #else
                 return static_cast&lt;int&gt;(getpid());
 #endif
@@ -294,6 +304,132 @@ namespace DotNetDupe {
                     m_bHasExited = true;
                 }
             }
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            static bool QueryProcessNameById(int iProcessId, String&amp; sOutName, HANDLE&amp; hOutProc) {
+                hOutProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, static_cast&lt;DWORD&gt;(iProcessId));
+                if (hOutProc == NULL) return false;
+                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                if (::QueryFullProcessImageNameW(hOutProc, 0, szPath, &amp;dwLen)) {
+                    std::wstring ws(szPath);
+                    size_t pos = ws.find_last_of(L"\\/");
+                    std::wstring wsName = (pos != std::wstring::npos) ? ws.substr(pos + 1) : ws;
+                    sOutName = StringConvertInternal::WCharToUtf8(wsName.c_str()).c_str();
+                    return true;</span>
+                }
+<span style = "background-color:#dfd">                return false;
+            }</span>
+#else
+            static bool QueryLinuxProcessNameById(int iProcessId, String&amp; sOutName) {
+                std::string sPath = "/proc/" + std::to_string(iProcessId) + "/comm";
+                std::ifstream commFile(sPath);
+                std::string sComm;
+                if (commFile.is_open() &amp;&amp; std::getline(commFile, sComm)) {
+                    sOutName = String(sComm.c_str());
+                    return true;
+                }
+                return false;
+            }
+#endif
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">            static void EnumerateWin32Processes(Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt;&amp; lstProcs) {
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return;
+                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
+                if (::Process32FirstW(hSnapshot, &amp;pe32)) {</span>
+                    do {
+<span style = "background-color:#dfd">                        if (pe32.th32ProcessID == 0) continue;
+                        lstProcs.Add(SmartPointer&lt;Process&gt;::NewShared(static_cast&lt;int&gt;(pe32.th32ProcessID), String(pe32.szExeFile), nullptr));
+                    } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
+                }
+<span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);
+            }</span>
+#else
+            static void EnumerateLinuxProcesses(Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt;&amp; lstProcs) {
+                DIR* dir = ::opendir("/proc");
+                if (!dir) return;
+                struct dirent* entry = nullptr;
+                while ((entry = ::readdir(dir)) != nullptr) {
+                    if (entry-&gt;d_type == DT_DIR) {
+                        std::string dname = entry-&gt;d_name;
+                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
+                            std::ifstream commFile("/proc/" + dname + "/comm");
+                            std::string sComm;
+                            if (commFile.is_open() &amp;&amp; std::getline(commFile, sComm)) {
+                                lstProcs.Add(SmartPointer&lt;Process&gt;::NewShared(std::stoi(dname), String(sComm.c_str()), nullptr));
+                            }
+                        }
+                    }
+                }
+                ::closedir(dir);
+            }
+#endif
+
+<span style = "background-color:#dfd">            Array&lt;SmartPointer&lt;Process&gt;&gt; Process::GetProcesses() {
+                Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt; lstProcs;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                EnumerateWin32Processes(lstProcs);</span>
+#else
+                EnumerateLinuxProcesses(lstProcs);
+#endif
+<span style = "background-color:#dfd">                Array&lt;SmartPointer&lt;Process&gt;&gt; arrProcs(lstProcs.GetCount());
+                for (int i = 0; i &lt; lstProcs.GetCount(); ++i) arrProcs[i] = lstProcs[i];
+                return arrProcs;
+            }</span>
+
+            static bool FindProcessInSnapshot(int iProcessId, String&amp; sOutName) {
+                auto arrProcs = Process::GetProcesses();
+                for (int i = 0; i &lt; arrProcs.GetLength(); ++i) {
+                    if (arrProcs[i]-&gt;GetId() == iProcessId) {
+                        sOutName = arrProcs[i]-&gt;GetProcessName();
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+<span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::GetProcessById(int iProcessId) {
+                if (iProcessId &lt;= 0) throw ArgumentException("Process ID must be greater than zero.");
+                String sName;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                HANDLE hProc = NULL;
+                if (!QueryProcessNameById(iProcessId, sName, hProc) &amp;&amp; !FindProcessInSnapshot(iProcessId, sName)) {
+                    throw ArgumentException("Process with specified ID is not running.");</span>
+                }
+<span style = "background-color:#dfd">                return SmartPointer&lt;Process&gt;::NewShared(iProcessId, sName, hProc);</span>
+#else
+                if (!QueryLinuxProcessNameById(iProcessId, sName) &amp;&amp; !FindProcessInSnapshot(iProcessId, sName)) {
+                    throw ArgumentException("Process with specified ID is not running.");
+                }
+                return SmartPointer&lt;Process&gt;::NewShared(iProcessId, sName, nullptr);
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::GetCurrentProcess() {
+                return GetProcessById(GetCurrentProcessId());
+            }</span>
+
+<span style = "background-color:#dfd">            static bool MatchProcessName(const String&amp; sCandidate, const String&amp; sTarget) {
+                if (sCandidate.Equals(sTarget)) return true;
+                String sCandNorm = sCandidate.EndsWith(".exe", true) ? sCandidate.Substring(0, sCandidate.GetLength() - 4) : sCandidate;
+                String sTargNorm = sTarget.EndsWith(".exe", true) ? sTarget.Substring(0, sTarget.GetLength() - 4) : sTarget;
+                return sCandNorm.ToLower().Equals(sTargNorm.ToLower());
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;SmartPointer&lt;Process&gt;&gt; Process::GetProcessesByName(const String&amp; sProcessName) {
+                if (sProcessName.IsEmpty()) return Array&lt;SmartPointer&lt;Process&gt;&gt;(0);
+                auto arrAll = GetProcesses();
+                Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt; lstMatches;
+                for (int i = 0; i &lt; arrAll.GetLength(); ++i) {
+                    if (MatchProcessName(arrAll[i]-&gt;GetProcessName(), sProcessName)) {
+                        lstMatches.Add(arrAll[i]);</span>
+                    }
+                }
+<span style = "background-color:#dfd">                Array&lt;SmartPointer&lt;Process&gt;&gt; arrResult(lstMatches.GetCount());
+                for (int i = 0; i &lt; lstMatches.GetCount(); ++i) arrResult[i] = lstMatches[i];
+                return arrResult;
+            }</span>
         }
     }
 }</pre>

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>EventHandler.h</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#pragma once
+#include "Common.h"
+#include "System/Object.h"
+#include "System/EventArgs.h"
+#include "System/Action.h"
+#include "System/Collections/Generic/List.h"
+#include &lt;type_traits&gt;
+#include &lt;utility&gt;
+
+namespace DotNetDupe {
+    namespace System {
+
+        template &lt;typename TEventArgs = EventArgs&gt;
+        class EventHandler {
+        private:
+            struct SubscriberEntry {
+                size_t m_nToken;
+                Action&lt;const void*, const TEventArgs&amp;&gt; m_fnAction;
+
+                SubscriberEntry() : m_nToken(0), m_fnAction() {}
+                SubscriberEntry(size_t nToken, const Action&lt;const void*, const TEventArgs&amp;&gt;&amp; fnAction)
+                    : m_nToken(nToken), m_fnAction(fnAction) {}
+
+                bool operator==(const SubscriberEntry&amp; other) const {
+                    return m_nToken == other.m_nToken;
+                }
+            };
+
+            Collections::Generic::List&lt;SubscriberEntry&gt; m_lstSubscribers;
+            size_t m_nNextToken;
+
+        public:
+            EventHandler() : m_lstSubscribers(), m_nNextToken(1) {}
+
+            EventHandler(const EventHandler&amp; other)
+                : m_lstSubscribers(other.m_lstSubscribers), m_nNextToken(other.m_nNextToken) {}
+
+            EventHandler(EventHandler&amp;&amp; other) noexcept
+                : m_lstSubscribers(std::move(other.m_lstSubscribers)), m_nNextToken(other.m_nNextToken) {
+                other.m_nNextToken = 1;
+            }
+
+            EventHandler&amp; operator=(const EventHandler&amp; other) {
+                if (this != &amp;other) {
+                    m_lstSubscribers = other.m_lstSubscribers;
+                    m_nNextToken = other.m_nNextToken;
+                }
+                return *this;
+            }
+
+            EventHandler&amp; operator=(EventHandler&amp;&amp; other) noexcept {
+                if (this != &amp;other) {
+                    m_lstSubscribers = std::move(other.m_lstSubscribers);
+                    m_nNextToken = other.m_nNextToken;
+                    other.m_nNextToken = 1;
+                }
+                return *this;
+            }
+
+<span style = "background-color:#fdd">            ~EventHandler() = default;</span>
+
+<span style = "background-color:#dfd">            size_t Add(const Action&lt;const void*, const TEventArgs&amp;&gt;&amp; fnHandler) {
+                size_t nAssignedToken = m_nNextToken++;
+                m_lstSubscribers.Add(SubscriberEntry(nAssignedToken, fnHandler));</span>
+                return nAssignedToken;
+<span style = "background-color:#dfd">            }</span>
+
+            template &lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, EventHandler&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&lt;const void*, const TEventArgs&amp;&gt;&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, const void*, const TEventArgs&amp;&gt;&gt;&gt;
+            size_t Add(F&amp;&amp; fnHandler) {
+                return Add(Action&lt;const void*, const TEventArgs&amp;&gt;(std::forward&lt;F&gt;(fnHandler)));
+            }
+
+            template &lt;typename TClass&gt;
+            size_t Add(TClass* pInstance, void (TClass::*pMethod)(const void*, const TEventArgs&amp;)) {
+                return Add([pInstance, pMethod](const void* pSender, const TEventArgs&amp; e) {
+                    if (pInstance != nullptr &amp;&amp; pMethod != nullptr) {
+                        (pInstance-&gt;*pMethod)(pSender, e);
+                    }
+                });
+            }
+
+            size_t operator+=(const Action&lt;const void*, const TEventArgs&amp;&gt;&amp; fnHandler) {
+                return Add(fnHandler);
+            }
+
+            template &lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, EventHandler&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&lt;const void*, const TEventArgs&amp;&gt;&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, const void*, const TEventArgs&amp;&gt;&gt;&gt;
+            size_t operator+=(F&amp;&amp; fnHandler) {
+                return Add(std::forward&lt;F&gt;(fnHandler));
+            }
+
+            EventHandler&amp; operator+=(const EventHandler&amp; other) {
+                int iCount = other.m_lstSubscribers.GetCount();
+                for (int i = 0; i &lt; iCount; ++i) {
+                    Add(other.m_lstSubscribers[i].m_fnAction);
+                }
+                return *this;
+            }
+
+            bool Remove(size_t nToken) {
+                for (int i = 0; i &lt; m_lstSubscribers.GetCount(); ++i) {
+                    if (m_lstSubscribers[i].m_nToken == nToken) {
+                        m_lstSubscribers.RemoveAt(i);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            bool operator-=(size_t nToken) {
+                return Remove(nToken);
+            }
+
+            void Clear() {
+                m_lstSubscribers.Clear();
+            }
+
+            void Invoke(const void* pSender, const TEventArgs&amp; e) const {
+                int iCount = m_lstSubscribers.GetCount();
+                for (int i = 0; i &lt; iCount; ++i) {
+                    m_lstSubscribers[i].m_fnAction.Invoke(pSender, e);
+                }
+            }
+
+            void operator()(const void* pSender, const TEventArgs&amp; e) const {
+                Invoke(pSender, e);
+            }
+
+            bool IsEmpty() const {
+                return m_lstSubscribers.GetCount() == 0;
+            }
+
+            size_t GetSubscriberCount() const {
+                return static_cast&lt;size_t&gt;(m_lstSubscribers.GetCount());
+            }
+
+            explicit operator bool() const {
+                return !IsEmpty();
+            }
+        };
+
+        template &lt;typename TEventArgs = EventArgs&gt;
+        EventHandler() -&gt; EventHandler&lt;TEventArgs&gt;;
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
