@@ -4,6 +4,7 @@
 #include "System/EventHandler.h"
 #include "System/String.h"
 #include "System/Collections/Generic/List.h"
+#include <cmath>
 
 using namespace DotNetDupe::System;
 
@@ -34,7 +35,8 @@ namespace SystemTests {
         Thermostat(double dInitialTemp) : m_dCurrentTemperature(dInitialTemp), m_bPoweredOn(true) {}
 
         void SetTemperature(double dNewTemp) {
-            if (dNewTemp != m_dCurrentTemperature) {
+            constexpr double dTemperatureEpsilon = 1e-9;
+            if (std::fabs(dNewTemp - m_dCurrentTemperature) > dTemperatureEpsilon) {
                 double dOld = m_dCurrentTemperature;
                 m_dCurrentTemperature = dNewTemp;
                 TemperatureChangedEventArgs args(dOld, dNewTemp, "Living Room");
