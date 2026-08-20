@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 #include "System/Diagnostics/SystemMetrics.h"
 #include "System/Diagnostics/ActiveUserSession.h"
+#include "System/Diagnostics/Process.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
@@ -36,8 +37,8 @@ TEST_F(RealtimeTelemetryTests, GivenSystemMetrics_WhenSystemMetricsCalled_ThenRe
 
     EXPECT_GE(procMem.lPhysicalMemoryBytes, -1LL);
 
-    auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
-    EXPECT_GE(lstAllProc.GetCount(), 0);
+    auto arrAllProc = Process::GetProcesses();
+    EXPECT_GE(arrAllProc.GetLength(), 0);
 
     auto lstServices = SystemMetrics::GetAllServices();
     EXPECT_GE(lstServices.GetCount(), 0);
@@ -85,19 +86,9 @@ TEST_F(RealtimeTelemetryTests, GivenInvalidProcessName_WhenSystemMetricsQueried_
     EXPECT_FALSE(connInfo.bHasEstablishedInboundConnection);
 }
 
-TEST_F(RealtimeTelemetryTests, GivenInvalidSessionId_WhenGetAllProcessesCalled_ThenReturnsEmptyList) {
-    // Given & When
-    auto lstProc = SystemMetrics::GetAllProcesses(999999);
-
-    // Then
-    EXPECT_EQ(lstProc.GetCount(), 0);
-}
-
-
 TEST_F(RealtimeTelemetryTests, GivenValidProcessId_WhenGetProcessNetworkPortCalled_ThenReturnsPortsList) {
     // Given
-    auto lstAll = SystemMetrics::GetAllProcesses(-1);
-    int iPid = (lstAll.GetCount() > 0) ? lstAll[0].iProcessId : 0;
+    int iPid = Process::GetCurrentProcessId();
 
     // When
     auto lstPorts = SystemMetrics::GetProcessNetworkPort(iPid);
@@ -108,8 +99,7 @@ TEST_F(RealtimeTelemetryTests, GivenValidProcessId_WhenGetProcessNetworkPortCall
 
 TEST_F(RealtimeTelemetryTests, GivenValidProcessId_WhenGetProcessNetworkInfoCalled_ThenReturnsConnectionInfo) {
     // Given
-    auto lstAll = SystemMetrics::GetAllProcesses(-1);
-    int iPid = (lstAll.GetCount() > 0) ? lstAll[0].iProcessId : 0;
+    int iPid = Process::GetCurrentProcessId();
 
     // When
     ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(iPid);
@@ -136,19 +126,19 @@ TEST_F(RealtimeTelemetryTests, GivenInvalidProcessId_WhenNetworkQueriedByPid_The
 
 TEST_F(RealtimeTelemetryTests, GivenValidProcess_WhenEnrichProcessInfoCalled_ThenPopulatesMetrics) {
     // Given
-    auto lstAll = SystemMetrics::GetAllProcesses(-1);
-    if (lstAll.GetCount() > 0) {
-        ProcessInfo proc = lstAll[0];
+    auto spSelf = Process::GetCurrentProcess();
+    ASSERT_FALSE(spSelf.IsNull());
+    ProcessInfo proc;
+    proc.iProcessId = spSelf->GetId();
+    proc.sName = spSelf->GetProcessName();
 
-        // When
-        SystemMetrics::EnrichProcessInfo(proc, true);
+    // When
+    SystemMetrics::EnrichProcessInfo(proc, true);
 
-        // Then
-        EXPECT_GT(proc.iProcessId, 0);
-        EXPECT_FALSE(proc.sName.IsEmpty());
-        EXPECT_GE(proc.memory.lPhysicalMemoryBytes, 0LL);
-        EXPECT_GE(proc.dCpuUsagePercent, 0.0);
-        EXPECT_LE(proc.dCpuUsagePercent, 100.0);
-    }
+    // Then
+    EXPECT_GT(proc.iProcessId, 0);
+    EXPECT_FALSE(proc.sName.IsEmpty());
+    EXPECT_GE(proc.memory.lPhysicalMemoryBytes, 0LL);
+    EXPECT_GE(proc.dCpuUsagePercent, 0.0);
+    EXPECT_LE(proc.dCpuUsagePercent, 100.0);
 }
-

@@ -1,6 +1,7 @@
 #include "System/Console.h"
 #include "System/Diagnostics/SystemMetrics.h"
 #include "System/Diagnostics/ActiveUserSession.h"
+#include "System/Diagnostics/Process.h"
 #include "System/Convert.h"
 
 using namespace DotNetDupe::System;
@@ -18,13 +19,15 @@ void DemonstrateRealtimeTelemetry() {
     Console::WriteLine("Disk Read Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskReadBytes)) + " Bytes");
     Console::WriteLine("Disk Write Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskWriteBytes)) + " Bytes");
 
-    // 2. Fast Process Snapshot (< 5ms)
-    auto lstAllProcesses = SystemMetrics::GetAllProcesses(-1);
-    Console::WriteLine("Total Active Processes (<5ms Fast Snapshot): " + Convert::ToString(lstAllProcesses.GetCount()));
+    // 2. Discover Running Processes via Process::GetProcesses()
+    auto arrProcesses = Process::GetProcesses();
+    Console::WriteLine("Total Active Processes (Process::GetProcesses): " + Convert::ToString(arrProcesses.GetLength()));
 
     // 3. On-Demand Process Enrichment
-    if (lstAllProcesses.GetCount() > 0) {
-        ProcessInfo sampleProc = lstAllProcesses[0];
+    if (arrProcesses.GetLength() > 0 && !arrProcesses[0].IsNull()) {
+        ProcessInfo sampleProc;
+        sampleProc.iProcessId = arrProcesses[0]->GetId();
+        sampleProc.sName = arrProcesses[0]->GetProcessName();
         SystemMetrics::EnrichProcessInfo(sampleProc, true);
         Console::WriteLine("Sample Process Enriched: " + sampleProc.sName + " (PID: " + Convert::ToString(sampleProc.iProcessId) + ")");
         Console::WriteLine(" - RAM: " + Convert::ToString(static_cast<long long>(sampleProc.memory.lPhysicalMemoryBytes / (1024 * 1024))) + " MB");

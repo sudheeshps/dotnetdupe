@@ -35,7 +35,7 @@ Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Networ
 - `void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`
 
 ##### Process & Service Listing
-- `List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId = -1)`: Fast (< 5ms) snapshot of running processes.
+- `Array<SmartPointer<Process>> Process::GetProcesses()`: Fast (< 5ms) snapshot of running processes.
 - `void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: On-demand deep metric enrichment.
 - `List<ServiceInfo> SystemMetrics::GetAllServices()`: Enumerates system services.
 
@@ -46,6 +46,7 @@ Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Networ
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/SystemMetrics.h"
+#include "System/Diagnostics/Process.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
@@ -56,13 +57,15 @@ int main() {
     double dCpu = SystemMetrics::GetSystemCpuUsage();
     DiskInfo disk = SystemMetrics::GetSystemDiskUsage();
 
-    // Fast process snapshot (< 5ms)
-    auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
-    Console::WriteLine("Running processes: {0}", lstAllProc.GetCount());
+    // Process discovery
+    auto arrProcesses = Process::GetProcesses();
+    Console::WriteLine("Running processes: {0}", arrProcesses.GetLength());
 
     // On-demand process enrichment
-    if (lstAllProc.GetCount() > 0) {
-        ProcessInfo proc = lstAllProc[0];
+    if (arrProcesses.GetLength() > 0 && !arrProcesses[0].IsNull()) {
+        ProcessInfo proc;
+        proc.iProcessId = arrProcesses[0]->GetId();
+        proc.sName = arrProcesses[0]->GetProcessName();
         SystemMetrics::EnrichProcessInfo(proc, true);
         Console::WriteLine("Process {0} (PID {1}) enriched: {2} open ports", 
             proc.sName, proc.iProcessId, proc.lstOpenPorts.GetCount());

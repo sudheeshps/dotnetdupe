@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "System/Diagnostics/Process.h"
-#include "System/Diagnostics/SystemMetrics.h"
 #include "System/ArgumentException.h"
 #include "System/UnauthorizedAccessException.h"
 #include "System/IO/FileNotFoundException.h"
@@ -10,16 +9,20 @@
 
 #if defined(_WIN32)
 #include <windows.h>
+#include <tlhelp32.h>
 #include "Win32Internal.h"
 using namespace DotNetDupe::System::Internal;
 #else
 #include <unistd.h>
+#include <dirent.h>
 #include <sys/wait.h>
 #include <signal.h>
 #include <spawn.h>
 #include <vector>
 #include <string>
 #include <fstream>
+#include <algorithm>
+#include <cctype>
 #include <cerrno>
 extern char** environ;
 #endif
@@ -318,24 +321,61 @@ namespace DotNetDupe {
             }
 #endif
 
+#if defined(_WIN32)
+            static void EnumerateWin32Processes(Collections::Generic::List<SmartPointer<Process>>& lstProcs) {
+                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return;
+                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
+                if (::Process32FirstW(hSnapshot, &pe32)) {
+                    do {
+                        if (pe32.th32ProcessID == 0) continue;
+                        lstProcs.Add(SmartPointer<Process>::NewShared(static_cast<int>(pe32.th32ProcessID), String(pe32.szExeFile), nullptr));
+                    } while (::Process32NextW(hSnapshot, &pe32));
+                }
+                ::CloseHandle(hSnapshot);
+            }
+#else
+            static void EnumerateLinuxProcesses(Collections::Generic::List<SmartPointer<Process>>& lstProcs) {
+                DIR* dir = ::opendir("/proc");
+                if (!dir) return;
+                struct dirent* entry = nullptr;
+                while ((entry = ::readdir(dir)) != nullptr) {
+                    if (entry->d_type == DT_DIR) {
+                        std::string dname = entry->d_name;
+                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
+                            std::ifstream commFile("/proc/" + dname + "/comm");
+                            std::string sComm;
+                            if (commFile.is_open() && std::getline(commFile, sComm)) {
+                                lstProcs.Add(SmartPointer<Process>::NewShared(std::stoi(dname), String(sComm.c_str()), nullptr));
+                            }
+                        }
+                    }
+                }
+                ::closedir(dir);
+            }
+#endif
+
+            Array<SmartPointer<Process>> Process::GetProcesses() {
+                Collections::Generic::List<SmartPointer<Process>> lstProcs;
+#if defined(_WIN32)
+                EnumerateWin32Processes(lstProcs);
+#else
+                EnumerateLinuxProcesses(lstProcs);
+#endif
+                Array<SmartPointer<Process>> arrProcs(lstProcs.GetCount());
+                for (int i = 0; i < lstProcs.GetCount(); ++i) arrProcs[i] = lstProcs[i];
+                return arrProcs;
+            }
+
             static bool FindProcessInSnapshot(int iProcessId, String& sOutName) {
-                auto lstInfo = SystemMetrics::GetAllProcesses(-1);
-                for (int i = 0; i < lstInfo.GetCount(); ++i) {
-                    if (lstInfo[i].iProcessId == iProcessId) {
-                        sOutName = lstInfo[i].sName;
+                auto arrProcs = Process::GetProcesses();
+                for (int i = 0; i < arrProcs.GetLength(); ++i) {
+                    if (arrProcs[i]->GetId() == iProcessId) {
+                        sOutName = arrProcs[i]->GetProcessName();
                         return true;
                     }
                 }
                 return false;
-            }
-
-            Array<SmartPointer<Process>> Process::GetProcesses() {
-                auto lstInfo = SystemMetrics::GetAllProcesses(-1);
-                Array<SmartPointer<Process>> arrProcs(lstInfo.GetCount());
-                for (int i = 0; i < lstInfo.GetCount(); ++i) {
-                    arrProcs[i] = SmartPointer<Process>::NewShared(lstInfo[i].iProcessId, lstInfo[i].sName, nullptr);
-                }
-                return arrProcs;
             }
 
             SmartPointer<Process> Process::GetProcessById(int iProcessId) {

@@ -9,7 +9,7 @@ Provides non-blocking, two-tier progressive telemetry streaming and event-driven
 
 ## 1. Architectural Overview
 
-Traditional process enumeration (`SystemMetrics::GetAllProcesses()`) is synchronous and can block the caller thread for 1.5–3.0 seconds to perform deep handle queries, CPU delta calculations, and TCP connection table inspections across all running processes.
+Synchronous whole-system deep process telemetry enumeration can block the caller thread to perform handle queries, CPU delta calculations, and TCP connection table inspections across all running processes.
 
 `ProcessStreamer` solves this using a **two-tier streaming model**:
 

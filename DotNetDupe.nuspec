@@ -5,7 +5,7 @@
     <version>4.0.3</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v4.0.3: First-class C# .NET EventHandler&lt;TEventArgs&gt; and EventArgs delegate model; FileDownloader and ProcessStreamer modernization to multicast EventHandlers; ultra-fast &lt;5ms SystemMetrics::GetAllProcesses() snapshot with on-demand EnrichProcessInfo; Version::Parse and Version::TryParse string parsing APIs.</releaseNotes>
+    <releaseNotes>v4.0.3: First-class C# .NET EventHandler&lt;TEventArgs&gt; and EventArgs delegate model; FileDownloader and ProcessStreamer modernization to multicast EventHandlers; Process::GetProcesses(), Process::GetProcessById(), and Process::GetProcessesByName() process discovery APIs; on-demand SystemMetrics::EnrichProcessInfo(); Version::Parse and Version::TryParse string parsing APIs.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />
