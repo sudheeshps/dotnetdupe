@@ -1,8 +1,11 @@
 #include "pch.h"
 #include "System/Diagnostics/Process.h"
+#include "System/Diagnostics/SystemMetrics.h"
+#include "System/ArgumentException.h"
 #include "System/UnauthorizedAccessException.h"
 #include "System/IO/FileNotFoundException.h"
 #include "System/InvalidOperationException.h"
+#include "System/Collections/Generic/List.h"
 #include "System/Utils/StringConvert.h"
 
 #if defined(_WIN32)
@@ -16,6 +19,7 @@ using namespace DotNetDupe::System::Internal;
 #include <spawn.h>
 #include <vector>
 #include <string>
+#include <fstream>
 #include <cerrno>
 extern char** environ;
 #endif
@@ -35,6 +39,9 @@ namespace DotNetDupe {
 
             Process::Process() 
                 : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}
+
+            Process::Process(int iId, const String& sProcessName, void* pProcessHandle)
+                : m_iId(iId), m_sProcessName(sProcessName), m_iExitCode(0), m_bHasExited(false), m_pProcessHandle(pProcessHandle) {}
 
             Process::~Process() {
 #if defined(_WIN32)
@@ -222,7 +229,7 @@ namespace DotNetDupe {
             }
 
             SmartPointer<Process> Process::Start(const ProcessStartInfo& objStartInfo) {
-                SmartPointer<Process> pProcess = SmartPointer<Process>::New();
+                SmartPointer<Process> pProcess = SmartPointer<Process>::NewShared();
                 pProcess->SetStartInfo(objStartInfo);
                 try {
                     if (pProcess->Start()) return pProcess;
@@ -282,6 +289,95 @@ namespace DotNetDupe {
                 if (RefreshProcessPlatform(m_pProcessHandle, m_iExitCode)) {
                     m_bHasExited = true;
                 }
+            }
+
+#if defined(_WIN32)
+            static bool QueryProcessNameById(int iProcessId, String& sOutName, HANDLE& hOutProc) {
+                hOutProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, static_cast<DWORD>(iProcessId));
+                if (hOutProc == NULL) return false;
+                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+                if (::QueryFullProcessImageNameW(hOutProc, 0, szPath, &dwLen)) {
+                    std::wstring ws(szPath);
+                    size_t pos = ws.find_last_of(L"\\/");
+                    std::wstring wsName = (pos != std::wstring::npos) ? ws.substr(pos + 1) : ws;
+                    sOutName = StringConvertInternal::WCharToUtf8(wsName.c_str()).c_str();
+                    return true;
+                }
+                return false;
+            }
+#else
+            static bool QueryLinuxProcessNameById(int iProcessId, String& sOutName) {
+                std::string sPath = "/proc/" + std::to_string(iProcessId) + "/comm";
+                std::ifstream commFile(sPath);
+                std::string sComm;
+                if (commFile.is_open() && std::getline(commFile, sComm)) {
+                    sOutName = String(sComm.c_str());
+                    return true;
+                }
+                return false;
+            }
+#endif
+
+            static bool FindProcessInSnapshot(int iProcessId, String& sOutName) {
+                auto lstInfo = SystemMetrics::GetAllProcesses(-1);
+                for (int i = 0; i < lstInfo.GetCount(); ++i) {
+                    if (lstInfo[i].iProcessId == iProcessId) {
+                        sOutName = lstInfo[i].sName;
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            Array<SmartPointer<Process>> Process::GetProcesses() {
+                auto lstInfo = SystemMetrics::GetAllProcesses(-1);
+                Array<SmartPointer<Process>> arrProcs(lstInfo.GetCount());
+                for (int i = 0; i < lstInfo.GetCount(); ++i) {
+                    arrProcs[i] = SmartPointer<Process>::NewShared(lstInfo[i].iProcessId, lstInfo[i].sName, nullptr);
+                }
+                return arrProcs;
+            }
+
+            SmartPointer<Process> Process::GetProcessById(int iProcessId) {
+                if (iProcessId <= 0) throw ArgumentException("Process ID must be greater than zero.");
+                String sName;
+#if defined(_WIN32)
+                HANDLE hProc = NULL;
+                if (!QueryProcessNameById(iProcessId, sName, hProc) && !FindProcessInSnapshot(iProcessId, sName)) {
+                    throw ArgumentException("Process with specified ID is not running.");
+                }
+                return SmartPointer<Process>::NewShared(iProcessId, sName, hProc);
+#else
+                if (!QueryLinuxProcessNameById(iProcessId, sName) && !FindProcessInSnapshot(iProcessId, sName)) {
+                    throw ArgumentException("Process with specified ID is not running.");
+                }
+                return SmartPointer<Process>::NewShared(iProcessId, sName, nullptr);
+#endif
+            }
+
+            SmartPointer<Process> Process::GetCurrentProcess() {
+                return GetProcessById(GetCurrentProcessId());
+            }
+
+            static bool MatchProcessName(const String& sCandidate, const String& sTarget) {
+                if (sCandidate.Equals(sTarget)) return true;
+                String sCandNorm = sCandidate.EndsWith(".exe", true) ? sCandidate.Substring(0, sCandidate.GetLength() - 4) : sCandidate;
+                String sTargNorm = sTarget.EndsWith(".exe", true) ? sTarget.Substring(0, sTarget.GetLength() - 4) : sTarget;
+                return sCandNorm.ToLower().Equals(sTargNorm.ToLower());
+            }
+
+            Array<SmartPointer<Process>> Process::GetProcessesByName(const String& sProcessName) {
+                if (sProcessName.IsEmpty()) return Array<SmartPointer<Process>>(0);
+                auto arrAll = GetProcesses();
+                Collections::Generic::List<SmartPointer<Process>> lstMatches;
+                for (int i = 0; i < arrAll.GetLength(); ++i) {
+                    if (MatchProcessName(arrAll[i]->GetProcessName(), sProcessName)) {
+                        lstMatches.Add(arrAll[i]);
+                    }
+                }
+                Array<SmartPointer<Process>> arrResult(lstMatches.GetCount());
+                for (int i = 0; i < lstMatches.GetCount(); ++i) arrResult[i] = lstMatches[i];
+                return arrResult;
             }
         }
     }

@@ -4,6 +4,7 @@
 #include "System/Object.h"
 #include "System/String.h"
 #include "System/SmartPointer.h"
+#include "System/Array.h"
 
 namespace DotNetDupe {
     namespace System {
@@ -25,6 +26,7 @@ namespace DotNetDupe {
             class Process : public Object {
             public:
                 DOTNETDUPE_API Process();
+                DOTNETDUPE_API Process(int iId, const String& sProcessName, void* pProcessHandle = nullptr);
                 DOTNETDUPE_API virtual ~Process();
 
                 DOTNETDUPE_API ProcessStartInfo GetStartInfo() const { return m_objStartInfo; }
@@ -41,13 +43,20 @@ namespace DotNetDupe {
                 DOTNETDUPE_API int GetExitCode() const { return m_iExitCode; }
                 DOTNETDUPE_API bool GetHasExited() const;
                 DOTNETDUPE_API int GetId() const { return m_iId; }
+                DOTNETDUPE_API String GetProcessName() const { return m_sProcessName; }
                 DOTNETDUPE_API static int GetCurrentProcessId();
+                DOTNETDUPE_API static SmartPointer<Process> GetCurrentProcess();
+
+                DOTNETDUPE_API static Array<SmartPointer<Process>> GetProcesses();
+                DOTNETDUPE_API static SmartPointer<Process> GetProcessById(int iProcessId);
+                DOTNETDUPE_API static Array<SmartPointer<Process>> GetProcessesByName(const String& sProcessName);
 
                 DOTNETDUPE_API void Kill();
 
             private:
                 ProcessStartInfo m_objStartInfo;
                 int m_iId;
+                String m_sProcessName;
                 mutable int m_iExitCode;
                 mutable bool m_bHasExited;
                 void* m_pProcessHandle;
