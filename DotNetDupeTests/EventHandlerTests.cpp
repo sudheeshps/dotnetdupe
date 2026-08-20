@@ -172,7 +172,7 @@ namespace SystemTests {
         int iCalls2 = 0;
 
         size_t nToken1 = (handler += [&](const void*, const EventArgs&) { iCalls1++; });
-        size_t nToken2 = (handler += [&](const void*, const EventArgs&) { iCalls2++; });
+        handler += [&](const void*, const EventArgs&) { iCalls2++; };
 
         ASSERT_EQ(handler.GetSubscriberCount(), 2u);
 
