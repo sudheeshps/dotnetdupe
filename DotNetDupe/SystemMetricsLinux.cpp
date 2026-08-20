@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
+#include "System/Diagnostics/Process.h"
 #include "System/ArgumentException.h"
 #include "System/Utils/StringConvert.h"
 #include <algorithm>
@@ -21,23 +22,9 @@ namespace DotNetDupe {
 
             struct SystemMetricsLinuxHelper {
                 static int FindPid(const String& sProcessName) {
-                    DIR* dir = ::opendir("/proc");
-                    if (!dir) return -1;
-                    struct dirent* entry = nullptr;
-                    std::string target = sProcessName.GetRawString();
-                    while ((entry = ::readdir(dir)) != nullptr) {
-                        if (entry->d_type == DT_DIR) {
-                            std::string dname = entry->d_name;
-                            if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
-                                std::ifstream f("/proc/" + dname + "/comm");
-                                std::string comm;
-                                if (f.is_open() && std::getline(f, comm) && comm == target) {
-                                    ::closedir(dir); return std::stoi(dname);
-                                }
-                            }
-                        }
-                    }
-                    ::closedir(dir); return -1;
+                    auto arrMatches = Process::GetProcessesByName(sProcessName);
+                    if (arrMatches.GetLength() > 0) return arrMatches[0]->GetId();
+                    return -1;
                 }
 
                 static MemoryInfo ReadMem(int iPid) {
@@ -206,39 +193,6 @@ namespace DotNetDupe {
             }
 
 
-
-            void SystemMetrics::PopulateLinuxProc(const std::string& dname, ProcessInfo& proc) {
-                proc.iProcessId = std::stoi(dname);
-                std::ifstream commFile("/proc/" + dname + "/comm");
-                std::string procComm;
-                if (commFile.is_open() && std::getline(commFile, procComm)) proc.sName = String(procComm.c_str());
-                proc.sCommandLine = GetProcessCommandLine(proc.sName);
-                proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
-                proc.disk = ReadLinuxProcessDisk(proc.iProcessId);
-                proc.network = ReadLinuxProcessNetwork(proc.iProcessId);
-                auto netInfo = ReadLinuxProcessNetworkInfo(proc.iProcessId);
-                proc.lstOpenPorts = netInfo.lstOpenPorts;
-                proc.lstConnections = netInfo.lstConnections;
-                proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
-            }
-
-            Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {
-                Collections::Generic::List<ProcessInfo> lstProcs;
-                DIR* dir = ::opendir("/proc");
-                if (!dir) return lstProcs;
-                struct dirent* entry = nullptr;
-                while ((entry = ::readdir(dir)) != nullptr) {
-                    if (entry->d_type == DT_DIR) {
-                        std::string dname = entry->d_name;
-                        if (std::all_of(dname.begin(), dname.end(), ::isdigit)) {
-                            ProcessInfo proc; PopulateLinuxProc(dname, proc);
-                            if (iSessionId == -1 || proc.iSessionId == iSessionId) lstProcs.Add(proc);
-                        }
-                    }
-                }
-                ::closedir(dir);
-                return lstProcs;
-            }
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
                 return Collections::Generic::List<ServiceInfo>();

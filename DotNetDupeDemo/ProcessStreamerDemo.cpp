@@ -18,13 +18,16 @@ static void DemoFastProcessDiscovery() {
     auto pStreamer = SystemMetrics::CreateProcessStreamer(options);
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcess([](const ProcessInfo& proc) {
+    pStreamer->ProcessDiscovered += [](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        const auto& proc = e.GetProcess();
         Console::WriteLine(String(" [DISCOVERED] PID: ") + Convert::ToString(proc.iProcessId) + " | Name: " + proc.sName + " | RAM: " + Convert::ToString(proc.memory.lPhysicalMemoryBytes / (1024 * 1024)) + " MB");
-    });
-    pStreamer->OnCompleted([&evtDone]() {
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
         Console::WriteLine(" Fast Tier-1 discovery completed.");
         evtDone.Set();
-    });
+    };
 
     pStreamer->Start();
     evtDone.WaitOne(5000);
@@ -40,13 +43,15 @@ static void DemoBatchStreaming() {
     auto pStreamer = SystemMetrics::CreateProcessStreamer(options);
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnBatch([](const Collections::Generic::List<ProcessInfo>& lstBatch) {
-        Console::WriteLine(String(" [BATCH] Received chunk of ") + Convert::ToString(lstBatch.GetCount()) + " processes.");
-    });
-    pStreamer->OnCompleted([&evtDone]() {
+    pStreamer->BatchReady += [](const void* pSender, const ProcessBatchEventArgs& e) {
+        (void)pSender;
+        Console::WriteLine(String(" [BATCH] Received chunk of ") + Convert::ToString(e.GetBatch().GetCount()) + " processes.");
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
         Console::WriteLine(" Batch streaming completed.");
         evtDone.Set();
-    });
+    };
 
     pStreamer->Start();
     evtDone.WaitOne(5000);
@@ -91,13 +96,15 @@ static void DemoProgressivePortEnrichment() {
     auto pStreamer = SystemMetrics::CreateProcessStreamer(options);
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcessUpdated([](const ProcessInfo& proc) {
-        FormatAndPrintPortTelemetry(proc);
-    });
-    pStreamer->OnCompleted([&evtDone]() {
+    pStreamer->ProcessUpdated += [](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        FormatAndPrintPortTelemetry(e.GetProcess());
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
         Console::WriteLine(" Progressive port enrichment completed.");
         evtDone.Set();
-    });
+    };
 
     pStreamer->Start();
     evtDone.WaitOne();

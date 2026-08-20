@@ -265,6 +265,8 @@
     <ClInclude Include="..\Include\System\Utils.h" />
     <ClInclude Include="..\Include\System\Version.h" />
     <ClInclude Include="..\Include\System\Action.h" />
+    <ClInclude Include="..\Include\System\EventArgs.h" />
+    <ClInclude Include="..\Include\System\EventHandler.h" />
     <ClInclude Include="..\Include\System\Func.h" />
     <ClInclude Include="..\Include\System\Predicate.h" />
     <ClInclude Include="..\Include\System\Diagnostics\Process.h" />
@@ -361,6 +363,7 @@
     <ClCompile Include="Win32Exception.cpp" />
     <ClCompile Include="SocketException.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="EventArgs.cpp" />
     <ClCompile Include="JsonElement.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="NetworkStream.cpp" />

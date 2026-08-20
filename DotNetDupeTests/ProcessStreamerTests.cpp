@@ -44,42 +44,6 @@ static void AssertValidDeepMetrics(const ProcessInfo& proc) {
     AssertValidPortsAndConnections(proc);
 }
 
-class MockProcessObserver : public IProcessObserver {
-public:
-    std::atomic<int> m_iDiscoveredCount{0};
-    std::atomic<int> m_iBatchCount{0};
-    std::atomic<int> m_iUpdatedCount{0};
-    std::atomic<bool> m_bCompleted{false};
-    std::atomic<bool> m_bError{false};
-    AutoResetEvent m_evtDone{false};
-
-    void OnProcessDiscovered(const ProcessInfo& proc) override {
-        AssertValidBaseMetrics(proc);
-        m_iDiscoveredCount++;
-    }
-
-    void OnBatchReady(const Collections::Generic::List<ProcessInfo>& lstBatch) override {
-        for (int i = 0; i < lstBatch.GetCount(); ++i) AssertValidBaseMetrics(lstBatch[i]);
-        m_iBatchCount++;
-    }
-
-    void OnProcessUpdated(const ProcessInfo& proc) override {
-        AssertValidDeepMetrics(proc);
-        m_iUpdatedCount++;
-    }
-
-    void OnCompleted() override {
-        m_bCompleted = true;
-        m_evtDone.Set();
-    }
-
-    void OnError(const Exception& ex) override {
-        (void)ex;
-        m_bError = true;
-        m_evtDone.Set();
-    }
-};
-
 TEST(ProcessStreamerTests, GivenDefaultOptions_WhenStreamerStarted_ThenEmitsProcessesAndCompletes) {
     ProcessStreamOptions options;
     options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
@@ -91,14 +55,16 @@ TEST(ProcessStreamerTests, GivenDefaultOptions_WhenStreamerStarted_ThenEmitsProc
     std::atomic<bool> bFinished{false};
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcess([&iCount](const ProcessInfo& proc) {
-        AssertValidBaseMetrics(proc);
+    pStreamer->ProcessDiscovered += [&iCount](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        AssertValidBaseMetrics(e.GetProcess());
         iCount++;
-    });
-    pStreamer->OnCompleted([&bFinished, &evtDone]() {
+    };
+    pStreamer->Completed += [&bFinished, &evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
         bFinished = true;
         evtDone.Set();
-    });
+    };
 
     pStreamer->Start();
     EXPECT_TRUE(evtDone.WaitOne(5000));
@@ -118,12 +84,16 @@ TEST(ProcessStreamerTests, GivenCustomBatchSize_WhenStreamerStarted_ThenEmitsBat
     std::atomic<int> iTotalInBatches{0};
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnBatch([&iBatchCount, &iTotalInBatches](const Collections::Generic::List<ProcessInfo>& lstBatch) {
+    pStreamer->BatchReady += [&iBatchCount, &iTotalInBatches](const void* pSender, const ProcessBatchEventArgs& e) {
+        (void)pSender;
         iBatchCount++;
-        for (int i = 0; i < lstBatch.GetCount(); ++i) AssertValidBaseMetrics(lstBatch[i]);
-        iTotalInBatches += lstBatch.GetCount();
-    });
-    pStreamer->OnCompleted([&evtDone]() { evtDone.Set(); });
+        for (int i = 0; i < e.GetBatch().GetCount(); ++i) AssertValidBaseMetrics(e.GetBatch()[i]);
+        iTotalInBatches += e.GetBatch().GetCount();
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
+        evtDone.Set();
+    };
 
     pStreamer->Start();
     EXPECT_TRUE(evtDone.WaitOne(5000));
@@ -146,21 +116,39 @@ TEST(ProcessStreamerTests, GivenRunningStreamer_WhenCancelled_ThenStopsGracefull
     EXPECT_FALSE(pStreamer->IsRunning());
 }
 
-TEST(ProcessStreamerTests, GivenIProcessObserver_WhenSubscribed_ThenReceivesAllEvents) {
+TEST(ProcessStreamerTests, GivenMulticastSubscribers_WhenProcessesDiscovered_ThenAllSubscribersReceiveEvents) {
     ProcessStreamOptions options;
     options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
     options.iBatchSize = 20;
     options.iBatchIntervalMs = 0;
 
     auto pStreamer = SmartPointer<ProcessStreamer>::NewShared(options);
-    auto spObserver = SmartPointer<MockProcessObserver>::NewShared();
-    pStreamer->Subscribe(spObserver);
+    std::atomic<int> iCount1{0};
+    std::atomic<int> iCount2{0};
+    AutoResetEvent evtDone(false);
+
+    size_t nToken1 = (pStreamer->ProcessDiscovered += [&iCount1](const void*, const ProcessEventArgs& e) {
+        AssertValidBaseMetrics(e.GetProcess());
+        iCount1++;
+    });
+
+    size_t nToken2 = (pStreamer->ProcessDiscovered += [&iCount2](const void*, const ProcessEventArgs& e) {
+        AssertValidBaseMetrics(e.GetProcess());
+        iCount2++;
+    });
+
+    pStreamer->Completed += [&evtDone](const void*, const EventArgs&) {
+        evtDone.Set();
+    };
 
     pStreamer->Start();
-    EXPECT_TRUE(spObserver->m_evtDone.WaitOne(5000));
-    EXPECT_TRUE(spObserver->m_bCompleted.load());
-    EXPECT_GT(spObserver->m_iDiscoveredCount.load(), 0);
-    EXPECT_GT(spObserver->m_iBatchCount.load(), 0);
+    EXPECT_TRUE(evtDone.WaitOne(5000));
+    EXPECT_GT(iCount1.load(), 0);
+    EXPECT_EQ(iCount1.load(), iCount2.load());
+
+    // Verify unsubscription
+    EXPECT_TRUE(pStreamer->ProcessDiscovered -= nToken1);
+    EXPECT_TRUE(pStreamer->ProcessDiscovered -= nToken2);
 }
 
 TEST(ProcessStreamerTests, GivenRunningStreamer_WhenStartCalledAgain_ThenThrowsInvalidOperationException) {
@@ -203,12 +191,16 @@ TEST(ProcessStreamerTests, GivenProgressiveStreamer_WhenDeepEnrichmentRuns_ThenE
     std::atomic<long long> lTotalRam{0};
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcessUpdated([&iUpdatedCount, &lTotalRam](const ProcessInfo& proc) {
-        AssertValidDeepMetrics(proc);
-        lTotalRam += proc.memory.lPhysicalMemoryBytes;
+    pStreamer->ProcessUpdated += [&iUpdatedCount, &lTotalRam](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        AssertValidDeepMetrics(e.GetProcess());
+        lTotalRam += e.GetProcess().memory.lPhysicalMemoryBytes;
         iUpdatedCount++;
-    });
-    pStreamer->OnCompleted([&evtDone]() { evtDone.Set(); });
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
+        evtDone.Set();
+    };
 
     pStreamer->Start();
     EXPECT_TRUE(evtDone.WaitOne());
@@ -226,11 +218,15 @@ TEST(ProcessStreamerTests, GivenFastDiscoveryOnly_WhenStreamerRuns_ThenOpenPorts
     std::atomic<bool> bAllInitialEmpty{true};
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcess([&bAllInitialEmpty](const ProcessInfo& proc) {
-        AssertValidBaseMetrics(proc);
-        if (proc.lstOpenPorts.GetCount() != 0) bAllInitialEmpty = false;
-    });
-    pStreamer->OnCompleted([&evtDone]() { evtDone.Set(); });
+    pStreamer->ProcessDiscovered += [&bAllInitialEmpty](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        AssertValidBaseMetrics(e.GetProcess());
+        if (e.GetProcess().lstOpenPorts.GetCount() != 0) bAllInitialEmpty = false;
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
+        evtDone.Set();
+    };
 
     pStreamer->Start();
     EXPECT_TRUE(evtDone.WaitOne(5000));
@@ -248,11 +244,15 @@ TEST(ProcessStreamerTests, GivenOptionsWithIncludeNetworkFalse_WhenProgressiveSt
     std::atomic<bool> bAllPortsEmpty{true};
     AutoResetEvent evtDone(false);
 
-    pStreamer->OnProcessUpdated([&bAllPortsEmpty](const ProcessInfo& proc) {
-        AssertValidBaseMetrics(proc);
-        if (proc.lstOpenPorts.GetCount() > 0) bAllPortsEmpty = false;
-    });
-    pStreamer->OnCompleted([&evtDone]() { evtDone.Set(); });
+    pStreamer->ProcessUpdated += [&bAllPortsEmpty](const void* pSender, const ProcessEventArgs& e) {
+        (void)pSender;
+        AssertValidBaseMetrics(e.GetProcess());
+        if (e.GetProcess().lstOpenPorts.GetCount() > 0) bAllPortsEmpty = false;
+    };
+    pStreamer->Completed += [&evtDone](const void* pSender, const EventArgs& e) {
+        (void)pSender; (void)e;
+        evtDone.Set();
+    };
 
     pStreamer->Start();
     EXPECT_TRUE(evtDone.WaitOne());
@@ -265,10 +265,3 @@ TEST(ProcessStreamerTests, GivenNegativeBatchOptions_WhenStartCalled_ThenThrowsA
     auto pStreamer = SmartPointer<ProcessStreamer>::NewShared(options);
     EXPECT_THROW(pStreamer->Start(), ArgumentException);
 }
-
-TEST(ProcessStreamerTests, GivenNullObserver_WhenSubscribeCalled_ThenThrowsArgumentNullException) {
-    ProcessStreamOptions options;
-    auto pStreamer = SmartPointer<ProcessStreamer>::NewShared(options);
-    EXPECT_THROW(pStreamer->Subscribe(nullptr), ArgumentNullException);
-}
-

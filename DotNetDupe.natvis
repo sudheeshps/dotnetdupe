@@ -25,6 +25,20 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::EventArgs -->
+  <Type Name="DotNetDupe::System::EventArgs">
+    <DisplayString>{{ EventArgs }}</DisplayString>
+  </Type>
+
+  <!-- DotNetDupe::System::EventHandler<T> -->
+  <Type Name="DotNetDupe::System::EventHandler&lt;*&gt;">
+    <DisplayString>{{ subscribers={m_lstSubscribers.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[SubscriberCount]">m_lstSubscribers.m_iCount</Item>
+      <Item Name="[Subscribers]">m_lstSubscribers</Item>
+    </Expand>
+  </Type>
+
   <!-- DotNetDupe::System::Array<T> -->
   <Type Name="DotNetDupe::System::Array&lt;*&gt;">
     <DisplayString>{{ size={m_iLength} }}</DisplayString>

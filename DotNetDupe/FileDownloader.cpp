@@ -27,7 +27,9 @@ namespace DotNetDupe {
                     Collections::Generic::Dictionary<String, String> m_customHeaders;
                     String m_sUrl;
                     String m_sDestinationPath;
-                    Action<DownloadProgress> m_progressCallback;
+
+                    EventHandler<DownloadProgressChangedEventArgs> DownloadProgressChanged;
+                    EventHandler<DownloadCompletedEventArgs> DownloadCompleted;
 
                     std::atomic<DownloadStatus> m_status{ DownloadStatus::NotStarted };
                     std::atomic<bool> m_bPauseRequested{ false };
@@ -37,6 +39,8 @@ namespace DotNetDupe {
 
                     HttpClient m_httpClient;
                     SmartPointer<Threading::Thread> m_pWorkerThread;
+
+                    Impl() = default;
 
                     long long CheckExistingFileSize() {
                         if (!IO::File::Exists(m_sDestinationPath)) return 0;
@@ -101,23 +105,30 @@ namespace DotNetDupe {
                         return pRequest;
                     }
 
-                    void UpdateRate(long long llBytesInSession, const std::chrono::steady_clock::time_point& timeStart) {
+                    void UpdateRate(long long llBytesSession, const std::chrono::steady_clock::time_point& timeStart) {
                         auto timeNow = std::chrono::steady_clock::now();
                         double dElapsedSec = std::chrono::duration<double>(timeNow - timeStart).count();
                         if (dElapsedSec > 0.05) {
-                            m_dDownloadRate = static_cast<double>(llBytesInSession) / dElapsedSec;
+                            m_dDownloadRate = static_cast<double>(llBytesSession) / dElapsedSec;
                         }
                     }
 
-                    DownloadProgress GetProgress() {
+                    DownloadProgress GetProgress() const {
                         DownloadProgress progress;
                         progress.TotalBytes = m_llTotalBytes.load();
                         progress.DownloadedBytes = m_llDownloadedBytes.load();
-                        progress.RemainingBytes = (progress.TotalBytes >= progress.DownloadedBytes) 
-                                                  ? (progress.TotalBytes - progress.DownloadedBytes) : 0;
+                        progress.RemainingBytes = progress.TotalBytes > progress.DownloadedBytes ? (progress.TotalBytes - progress.DownloadedBytes) : 0;
                         progress.DownloadRateBytesPerSec = m_dDownloadRate.load();
                         progress.Status = m_status.load();
                         return progress;
+                    }
+
+                    void FireProgressEvent() {
+                        long long llTotal = m_llTotalBytes.load();
+                        long long llDownloaded = m_llDownloadedBytes.load();
+                        double dPercent = (llTotal > 0) ? (static_cast<double>(llDownloaded) / static_cast<double>(llTotal) * 100.0) : 0.0;
+                        DownloadProgressChangedEventArgs args(llDownloaded, llTotal, dPercent, m_dDownloadRate.load(), m_status.load());
+                        DownloadProgressChanged.Invoke(this, args);
                     }
 
                     void ProcessDownloadChunk(int iRead, const char* pBuffer, IO::FileStream& outFile, long long& llBytesSession, const std::chrono::steady_clock::time_point& timeStart) {
@@ -126,7 +137,7 @@ namespace DotNetDupe {
                         m_llDownloadedBytes += iRead;
                         llBytesSession += iRead;
                         UpdateRate(llBytesSession, timeStart);
-                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                        FireProgressEvent();
                     }
 
                     bool ReadAndWriteData(const SmartPointer<IO::Stream>& pStream, IO::FileStream& outFile) {
@@ -146,13 +157,16 @@ namespace DotNetDupe {
                         return !m_bPauseRequested.load();
                     }
 
-                    void NotifyStateChange(DownloadStatus status) {
+                    void NotifyStateChange(DownloadStatus status, const String& sError = "") {
                         m_status = status;
                         m_dDownloadRate = 0.0;
-                        if (status == DownloadStatus::Failed) Console::WriteLine("[FileDownloader] Download status changed to Failed.");
-                        else if (status == DownloadStatus::Completed) Console::WriteLine("[FileDownloader] Download completed successfully.");
-                        else if (status == DownloadStatus::Paused) Console::WriteLine("[FileDownloader] Download paused.");
-                        if (m_progressCallback) m_progressCallback.Invoke(GetProgress());
+                        FireProgressEvent();
+                        if (status == DownloadStatus::Completed || status == DownloadStatus::Failed) {
+                            bool bSuccess = (status == DownloadStatus::Completed);
+                            bool bCancelled = m_bPauseRequested.load();
+                            DownloadCompletedEventArgs args(bSuccess, bCancelled, sError);
+                            DownloadCompleted.Invoke(this, args);
+                        }
                     }
 
                     void ExecuteDownload(long long llExistingBytes) {
@@ -163,56 +177,55 @@ namespace DotNetDupe {
                             pResponse = m_httpClient.Send(pRequest, HttpCompletionOption::ResponseHeadersRead);
                         } catch (const HttpRequestException& ex) {
                             Console::WriteLine(String("[FileDownloader] HTTP request failed: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());
                         } catch (const Sockets::SocketException& ex) {
                             Console::WriteLine(String("[FileDownloader] Socket connection failed: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());
                         } catch (const SystemException& ex) {
                             Console::WriteLine(String("[FileDownloader] HTTP client exception: ") + ex.What());
-                            return NotifyStateChange(DownloadStatus::Failed);
+                            return NotifyStateChange(DownloadStatus::Failed, ex.What());
                         }
 
-                        if (pResponse.IsNull()) return NotifyStateChange(DownloadStatus::Failed);
+                        if (pResponse.IsNull()) return NotifyStateChange(DownloadStatus::Failed, "Null response received.");
 
                         int iStatusCode = static_cast<int>(pResponse->GetStatusCode());
                         if (iStatusCode == 301 || iStatusCode == 302 || iStatusCode == 307 || iStatusCode == 308) {
                             auto& headers = pResponse->GetHeaders();
                             for (auto const& [sKey, sVal] : headers) {
                                 if (sKey.ToLower() == "location") {
-                                    Console::WriteLine(String("[FileDownloader] Redirecting (") + Convert::ToString(iStatusCode) + ") to: " + sVal);
                                     m_sUrl = sVal;
                                     return ExecuteDownload(llExistingBytes);
                                 }
                             }
                         }
 
-                        bool bPartial = (iStatusCode == 206);
-                        if (!bPartial && iStatusCode != 200) {
-                            Console::WriteLine(String("[FileDownloader] HTTP server returned error status code: ") + Convert::ToString(iStatusCode));
-                            return NotifyStateChange(DownloadStatus::Failed);
-                        }
-
+                        int iFileMode = 1; // FileMode::Create
                         long long llRangeContentLen = ParseContentLengthFromResponse(pResponse);
-                        int iFileMode = (bPartial ? 5 : 1); // FileMode::Append or FileMode::Create
-                        if (!bPartial) {
-                            m_llDownloadedBytes = 0;
+                        if (iStatusCode == 206) {
+                            iFileMode = 5; // FileMode::Append
+                        } else if (iStatusCode == 200) {
+                            iFileMode = 1; // FileMode::Create
                             llExistingBytes = 0;
+                            m_llDownloadedBytes = 0;
+                        } else {
+                            Console::WriteLine(String("[FileDownloader] Server returned error status code: ") + Convert::ToString(iStatusCode));
+                            return NotifyStateChange(DownloadStatus::Failed, String("HTTP Status ") + Convert::ToString(iStatusCode));
                         }
                         if (llRangeContentLen >= 0) m_llTotalBytes = llExistingBytes + llRangeContentLen;
 
                         auto pStream = pResponse->GetContent()->ReadAsStream();
-                        if (pStream.IsNull()) return NotifyStateChange(DownloadStatus::Failed);
+                        if (pStream.IsNull()) return NotifyStateChange(DownloadStatus::Failed, "Content stream is null.");
 
                         try {
                             bool bCompleted = false;
                             {
                                 IO::FileStream outFile(m_sDestinationPath, iFileMode);
                                 bCompleted = ReadAndWriteData(pStream, outFile);
-                            } // outFile goes out of scope and releases the lock here
+                            }
                             NotifyStateChange(bCompleted ? DownloadStatus::Completed : DownloadStatus::Paused);
                         } catch (const IO::IOException& ex) {
                             Console::WriteLine(String("[FileDownloader] File I/O exception: ") + ex.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, ex.What());
                         }
                     }
 
@@ -228,22 +241,23 @@ namespace DotNetDupe {
                             ExecuteDownload(llExistingBytes);
                         } catch (const Exception& ex) {
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + ex.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, ex.What());
                         } catch (const std::exception& ex) {
                             UnknownException unk(ex.what());
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, unk.What());
                         } catch (...) {
                             UnknownException unk("An unknown error occurred during download.");
                             Console::WriteLine(String("[FileDownloader] Download loop failed: ") + unk.What());
-                            NotifyStateChange(DownloadStatus::Failed);
+                            NotifyStateChange(DownloadStatus::Failed, unk.What());
                         }
                     }
                 };
 
-
                 FileDownloader::FileDownloader(const String& sUrl, const String& sDestinationPath)
-                    : m_pImpl(SmartPointer<Impl>::NewShared()) {
+                    : m_pImpl(SmartPointer<Impl>::NewShared()),
+                      DownloadProgressChanged(m_pImpl->DownloadProgressChanged),
+                      DownloadCompleted(m_pImpl->DownloadCompleted) {
                     m_pImpl->m_sUrl = sUrl;
                     m_pImpl->m_sDestinationPath = sDestinationPath;
                     if (sUrl.IsEmpty()) throw ArgumentException("sUrl cannot be empty.");
@@ -264,10 +278,6 @@ namespace DotNetDupe {
 
                 DownloadStatus FileDownloader::GetStatus() const {
                     return m_pImpl->m_status.load();
-                }
-
-                void FileDownloader::SetProgressCallback(const Action<DownloadProgress>& callback) {
-                    m_pImpl->m_progressCallback = callback;
                 }
 
                 void FileDownloader::Pause() {
@@ -321,4 +331,3 @@ namespace DotNetDupe {
         }
     }
 }
-

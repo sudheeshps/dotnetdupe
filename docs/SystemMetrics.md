@@ -76,11 +76,13 @@ Provides system-wide and per-process hardware telemetry metrics including CPU %,
 - `static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId)`: Retrieves complete socket connection and port tables for the specified PID.
 - `static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: Performs direct handle-level telemetry enrichment (CPU, memory working set, PEB command line, disk I/O, and network ports/connections) targeted by PID.
 
-### Process Enumeration & Services
-- `static List<ProcessInfo> GetAllProcesses(int iSessionId = -1)`: Enumerates all active processes across the system or within a specific session.
+### Services & Streaming
 - `static List<ServiceInfo> GetAllServices()`: Enumerates all installed system services.
+- `static SmartPointer<ProcessStreamer> CreateProcessStreamer(const ProcessStreamOptions& options = ProcessStreamOptions())`: Creates a progressive process telemetry streamer.
+- `static void EnumerateProcessesAsync(const Action<const ProcessInfo&>& fnOnProcess, const Action<>& fnOnComplete = nullptr)`: Progressive asynchronous process enumeration.
 
----
+> [!NOTE]
+> For standard process enumeration, use `Process::GetProcesses()`, `Process::GetProcessById()`, or `Process::GetProcessesByName()`. See [Process.md](Process.md).
 
 ---
 
@@ -101,6 +103,7 @@ SystemMetrics::EnumerateProcessesAsync([](const ProcessInfo& proc) {
 ```cpp
 #include "System/Console.h"
 #include "System/Diagnostics/SystemMetrics.h"
+#include "System/Diagnostics/Process.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
@@ -116,8 +119,8 @@ int main() {
         mem.uMemoryTotalBytes / (1024 * 1024));
 
     Console::WriteLine("\n--- Enumerating Processes ---");
-    auto lstProcesses = SystemMetrics::GetAllProcesses(-1);
-    Console::WriteLine("Total Active Processes: {0}", lstProcesses.GetCount());
+    auto arrProcesses = Process::GetProcesses();
+    Console::WriteLine("Total Active Processes: {0}", arrProcesses.GetLength());
 
     return 0;
 }

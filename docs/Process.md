@@ -1,9 +1,9 @@
-# Process &amp; ProcessStartInfo
+# Process & ProcessStartInfo
 
 **Namespace:** `DotNetDupe::System::Diagnostics`  
 **Header:** `#include "System/Diagnostics/Process.h"`
 
-Provides access to local and remote processes and enables you to start and stop local system processes.
+Provides access to local processes, process querying and discovery, and starting/stopping system processes.
 
 ---
 
@@ -52,8 +52,7 @@ Instructs the `Process` component to wait indefinitely for the associated proces
 
 ### `bool WaitForExit(int iMilliseconds)`
 Instructs the `Process` component to wait the specified number of milliseconds for the associated process to exit.
-- **Returns:**
-  - `bool`: `true` if the associated process has exited; otherwise, `false`.
+- **Returns:** `bool`: `true` if the associated process has exited; otherwise, `false`.
 
 ### `int GetExitCode() const`
 Gets the value that the associated process specified when it terminated.
@@ -63,6 +62,9 @@ Gets a value indicating whether the associated process has been terminated.
 
 ### `int GetId() const`
 Gets the unique native identifier (PID) for the associated process.
+
+### `String GetProcessName() const`
+Gets the name of the process.
 
 ### `void Kill()`
 Immediately stops the associated process.
@@ -83,6 +85,18 @@ Starts the process resource that is specified by the parameter containing proces
 ### `static int GetCurrentProcessId()`
 Returns the process identifier of the calling process.
 
+### `static SmartPointer<Process> GetCurrentProcess()`
+Gets a new `Process` component and associates it with the currently active process.
+
+### `static Array<SmartPointer<Process>> GetProcesses()`
+Creates an array of new `Process` components and associates them with all active process resources on the system.
+
+### `static SmartPointer<Process> GetProcessById(int iProcessId)`
+Returns a new `Process` component, given the identifier of a process on the local machine. Throws `ArgumentException` if the process is not running.
+
+### `static Array<SmartPointer<Process>> GetProcessesByName(const String& sProcessName)`
+Creates an array of new `Process` components and associates them with all active processes sharing the specified process name.
+
 ---
 
 ## Example
@@ -91,13 +105,25 @@ Returns the process identifier of the calling process.
 #include "System/Console.h"
 #include "System/Diagnostics/Process.h"
 #include "System/SmartPointer.h"
+#include "System/Array.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Diagnostics;
 
 int main() {
-    Console::WriteLine("Current Process ID: {0}", Process::GetCurrentProcessId());
+    // 1. Current Process Inspection
+    auto spSelf = Process::GetCurrentProcess();
+    Console::WriteLine("Current PID: {0} ({1})", spSelf->GetId(), spSelf->GetProcessName());
 
+    // 2. Enumerate Running Processes
+    auto arrProcesses = Process::GetProcesses();
+    Console::WriteLine("Total Running Processes: {0}", arrProcesses.GetLength());
+
+    // 3. Find Processes by Name
+    auto arrSvchost = Process::GetProcessesByName("svchost");
+    Console::WriteLine("Instances of svchost: {0}", arrSvchost.GetLength());
+
+    // 4. Start Child Process
     ProcessStartInfo psi;
 #if defined(_WIN32)
     psi.FileName = "cmd.exe";
@@ -108,12 +134,11 @@ int main() {
 #endif
     psi.CreateNoWindow = true;
 
-    auto pProc = Process::Start(psi);
-    pProc->WaitForExit(3000);
+    auto spChild = Process::Start(psi);
+    spChild->WaitForExit(3000);
 
-    Console::WriteLine("Child Process PID: {0}", pProc->GetId());
-    Console::WriteLine("Has Exited:        {0}", pProc->GetHasExited());
-    Console::WriteLine("Exit Code:         {0}", pProc->GetExitCode());
+    Console::WriteLine("Child PID: {0}, Exited: {1}, ExitCode: {2}", 
+        spChild->GetId(), spChild->GetHasExited(), spChild->GetExitCode());
 
     return 0;
 }

@@ -40,3 +40,4 @@ void RunGenericCollectionsDemo();
 void DemonstrateDirectory();
 void DemonstrateFileDownloader();
 void DemonstrateProcessStreamer();
+void DemonstrateEventHandler();

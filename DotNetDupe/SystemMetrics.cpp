@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "System/Diagnostics/SystemMetrics.h"
 #include "System/Diagnostics/ProcessStreamer.h"
+#include "System/Diagnostics/Process.h"
 #include "System/ArgumentException.h"
 #include "System/SystemException.h"
 #include "System/Utils/StringConvert.h"
@@ -48,8 +49,14 @@ namespace DotNetDupe {
                 ProcessStreamOptions options;
                 options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
                 auto pStreamer = CreateProcessStreamer(options);
-                pStreamer->OnProcess(fnOnProcess);
-                if (fnOnComplete) pStreamer->OnCompleted(fnOnComplete);
+                pStreamer->ProcessDiscovered += [fnOnProcess](const void*, const ProcessEventArgs& e) {
+                    if (fnOnProcess) fnOnProcess(e.GetProcess());
+                };
+                if (fnOnComplete) {
+                    pStreamer->Completed += [fnOnComplete](const void*, const EventArgs&) {
+                        fnOnComplete();
+                    };
+                }
                 pStreamer->Start();
             }
 
@@ -144,30 +151,12 @@ namespace DotNetDupe {
                     return CalculateNetRate(totalOctets);
                 }
 
-                static HANDLE FindProcessHandle(HANDLE hSnapshot, const std::wstring& wTarget, unsigned long dwAccess, int& iOutPid) {
-                    PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
-                    if (!::Process32FirstW(hSnapshot, &pe32)) return NULL;
-                    do {
-                        std::wstring wExeFile(pe32.szExeFile);
-                        std::transform(wExeFile.begin(), wExeFile.end(), wExeFile.begin(), ::tolower);
-                        if (wExeFile == wTarget || wExeFile == wTarget + L".exe") {
-                            iOutPid = pe32.th32ProcessID;
-                            return ::OpenProcess(dwAccess, FALSE, pe32.th32ProcessID);
-                        }
-                    } while (::Process32NextW(hSnapshot, &pe32));
-                    return NULL;
-                }
-
                 static void* OpenProcByName(const String& sProcessName, unsigned long dwAccess, int& iOutPid) {
                     iOutPid = -1;
-                    HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                    if (hSnapshot == INVALID_HANDLE_VALUE) return NULL;
-                    std::string sTarget = sProcessName.GetRawString() ? sProcessName.GetRawString() : "";
-                    std::wstring wTarget(sTarget.begin(), sTarget.end());
-                    std::transform(wTarget.begin(), wTarget.end(), wTarget.begin(), ::tolower);
-                    HANDLE hResult = FindProcessHandle(hSnapshot, wTarget, dwAccess, iOutPid);
-                    ::CloseHandle(hSnapshot);
-                    return hResult;
+                    auto arrMatches = Process::GetProcessesByName(sProcessName);
+                    if (arrMatches.GetLength() == 0) return NULL;
+                    iOutPid = arrMatches[0]->GetId();
+                    return ::OpenProcess(dwAccess, FALSE, static_cast<DWORD>(iOutPid));
                 }
 
                 static String ReadPebCommandLine(HANDLE hProc, PVOID pebBase) {
@@ -361,26 +350,6 @@ namespace DotNetDupe {
                     proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
                 }
 
-                static void PopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
-                    proc.iProcessId = pe32->th32ProcessID; proc.sName = String(pe32->szExeFile); proc.dCpuUsagePercent = 0.0;
-                    proc.memory.lPhysicalMemoryBytes = 0; proc.memory.lPrivateBytes = 0;
-                    DWORD dwSess = 0;
-                    if (::ProcessIdToSessionId(pe32->th32ProcessID, &dwSess)) proc.iSessionId = static_cast<int>(dwSess);
-                    if (pe32->th32ProcessID == 0) return;
-                    HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32->th32ProcessID);
-                    if (!hProc) return;
-                    WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
-                    if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwLen)) proc.sPath = String(szPath);
-                    proc.sCommandLine = ReadProcCmdLine(hProc);
-                    if (proc.sCommandLine.IsEmpty()) proc.sCommandLine = proc.sPath;
-                    proc.memory = ReadProcMemory(hProc);
-                    proc.disk = ReadProcDisk(hProc, proc.sName);
-                    proc.network = ReadProcNetwork(hProc, proc.sName);
-                    CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
-                    PopulateProcNetwork(proc.iProcessId, proc);
-                    ::CloseHandle(hProc);
-                }
-
                 static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
                     SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
                     if (!hService) return "Manual";
@@ -505,27 +474,6 @@ namespace DotNetDupe {
                 }
                 if (bIncludeNetwork) SystemMetricsWin32Helper::PopulateProcNetwork(proc.iProcessId, proc);
             }
-
-            void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo& proc) {
-                SystemMetricsWin32Helper::PopulateProc(static_cast<PROCESSENTRY32W*>(pEntry32), proc);
-            }
-
-            Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {
-                Collections::Generic::List<ProcessInfo> lst;
-                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (hSnapshot == INVALID_HANDLE_VALUE) return lst;
-                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
-                if (::Process32FirstW(hSnapshot, &pe32)) {
-                    do {
-                        if (pe32.th32ProcessID == 0) continue;
-                        ProcessInfo proc; PopulateProcessInfo(&pe32, proc);
-                        if (proc.iProcessId > 0 && (iSessionId == -1 || proc.iSessionId == iSessionId)) lst.Add(proc);
-                    } while (::Process32NextW(hSnapshot, &pe32));
-                }
-                ::CloseHandle(hSnapshot);
-                return lst;
-            }
-
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
                 Collections::Generic::List<ServiceInfo> lst;

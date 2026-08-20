@@ -116,9 +116,6 @@ namespace DotNetDupe {
                 DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId);
                 DOTNETDUPE_API static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true);
 
-                // Process list & enumeration APIs
-                DOTNETDUPE_API static Collections::Generic::List<ProcessInfo> GetAllProcesses(int iSessionId = -1);
-
                 // Progressive Streaming APIs
                 DOTNETDUPE_API static SmartPointer<ProcessStreamer> CreateProcessStreamer(const ProcessStreamOptions& options = ProcessStreamOptions());
                 DOTNETDUPE_API static void EnumerateProcessesAsync(const Action<const ProcessInfo&>& fnOnProcess, const Action<>& fnOnComplete = nullptr);
@@ -135,7 +132,6 @@ namespace DotNetDupe {
                 static NetworkUsageInfo ReadProcessNetworkHandle(void* hProc, const String& sProcessName);
                 static Collections::Generic::List<int> ReadProcessNetworkPortInternal(int iProcessId);
                 static ProcessNetworkConnectionInfo ReadProcessNetworkInfoInternal(int iProcessId);
-                static void PopulateProcessInfo(void* pEntry32, ProcessInfo& proc);
 #else
                 static int FindPidByName(const String& sProcessName);
                 static MemoryInfo ReadLinuxProcessMemory(int iPid);
@@ -143,7 +139,6 @@ namespace DotNetDupe {
                 static NetworkUsageInfo ReadLinuxProcessNetwork(int iPid);
                 static Collections::Generic::List<int> ReadLinuxProcessPorts(int iPid);
                 static ProcessNetworkConnectionInfo ReadLinuxProcessNetworkInfo(int iPid);
-                static void PopulateLinuxProc(const std::string& dname, ProcessInfo& proc);
 #endif
             };
 
