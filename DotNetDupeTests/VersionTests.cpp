@@ -2,6 +2,8 @@
 #include "gtest/gtest.h"
 #include "System/Version.h"
 #include "System/String.h"
+#include "System/ArgumentException.h"
+#include "System/FormatException.h"
 
 using namespace DotNetDupe::System;
 
@@ -132,6 +134,61 @@ namespace SystemTests {
 
             // When, Then
             EXPECT_TRUE(v1 != v2);
+        }
+
+        TEST(VersionTest, GivenTwoPartString_WhenParseCalled_ThenConstructsVersion) {
+            Version v = Version::Parse("2.5");
+            EXPECT_EQ(v.GetMajor(), 2);
+            EXPECT_EQ(v.GetMinor(), 5);
+            EXPECT_EQ(v.GetBuild(), 0);
+            EXPECT_EQ(v.GetRevision(), 0);
+        }
+
+        TEST(VersionTest, GivenThreePartString_WhenParseCalled_ThenConstructsVersion) {
+            Version v = Version::Parse("3.1.4");
+            EXPECT_EQ(v.GetMajor(), 3);
+            EXPECT_EQ(v.GetMinor(), 1);
+            EXPECT_EQ(v.GetBuild(), 4);
+            EXPECT_EQ(v.GetRevision(), 0);
+        }
+
+        TEST(VersionTest, GivenFourPartString_WhenParseCalled_ThenConstructsVersion) {
+            Version v = Version::Parse("10.0.19041.1");
+            EXPECT_EQ(v.GetMajor(), 10);
+            EXPECT_EQ(v.GetMinor(), 0);
+            EXPECT_EQ(v.GetBuild(), 19041);
+            EXPECT_EQ(v.GetRevision(), 1);
+        }
+
+        TEST(VersionTest, GivenEmptyString_WhenParseCalled_ThenThrowsArgumentException) {
+            EXPECT_THROW(Version::Parse(""), ArgumentException);
+        }
+
+        TEST(VersionTest, GivenInvalidFormatStrings_WhenParseCalled_ThenThrowsFormatException) {
+            EXPECT_THROW(Version::Parse("1"), FormatException);
+            EXPECT_THROW(Version::Parse("1.2.3.4.5"), FormatException);
+            EXPECT_THROW(Version::Parse("1.a"), FormatException);
+            EXPECT_THROW(Version::Parse("1.-2"), FormatException);
+            EXPECT_THROW(Version::Parse("1.2."), FormatException);
+            EXPECT_THROW(Version::Parse(".1.2"), FormatException);
+            EXPECT_THROW(Version::Parse("1..2"), FormatException);
+        }
+
+        TEST(VersionTest, GivenValidString_WhenTryParseCalled_ThenReturnsTrueAndPopulatesResult) {
+            Version v;
+            EXPECT_TRUE(Version::TryParse("4.8.0.1234", v));
+            EXPECT_EQ(v.GetMajor(), 4);
+            EXPECT_EQ(v.GetMinor(), 8);
+            EXPECT_EQ(v.GetBuild(), 0);
+            EXPECT_EQ(v.GetRevision(), 1234);
+        }
+
+        TEST(VersionTest, GivenInvalidString_WhenTryParseCalled_ThenReturnsFalse) {
+            Version v;
+            EXPECT_FALSE(Version::TryParse("", v));
+            EXPECT_FALSE(Version::TryParse("1", v));
+            EXPECT_FALSE(Version::TryParse("invalid.version", v));
+            EXPECT_FALSE(Version::TryParse("1.2.3.4.5", v));
         }
     }
 }

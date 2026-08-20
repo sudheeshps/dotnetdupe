@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>4.0.2</version>
+    <version>4.0.3</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v4.0.2: Progressive Process Enumeration &amp; Telemetry Streaming (ProcessStreamer), WebSocketException error handling improvements, Pimpl move and destruction ABI stability release.</releaseNotes>
+    <releaseNotes>v4.0.3: First-class C# .NET EventHandler&lt;TEventArgs&gt; and EventArgs delegate model; FileDownloader and ProcessStreamer modernization to multicast EventHandlers; ultra-fast &lt;5ms SystemMetrics::GetAllProcesses() snapshot with on-demand EnrichProcessInfo; Version::Parse and Version::TryParse string parsing APIs.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />

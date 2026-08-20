@@ -105,18 +105,18 @@ namespace DotNetDupe {
             class ProcessStreamer::Impl : public Object {
             public:
                 ProcessStreamOptions m_options;
-                Action<const ProcessInfo&> m_fnOnProcess;
-                Action<const Collections::Generic::List<ProcessInfo>&> m_fnOnBatch;
-                Action<const ProcessInfo&> m_fnOnUpdated;
-                Action<> m_fnOnCompleted;
-                Action<const Exception&> m_fnOnError;
-                SmartPointer<IProcessObserver> m_spObserver;
+                EventHandler<ProcessEventArgs> ProcessDiscovered;
+                EventHandler<ProcessBatchEventArgs> BatchReady;
+                EventHandler<ProcessEventArgs> ProcessUpdated;
+                EventHandler<> Completed;
+                EventHandler<ProcessStreamErrorEventArgs> Error;
+
                 Threading::CriticalSection m_csLock;
                 std::atomic<bool> m_bRunning;
                 std::atomic<bool> m_bCancelled;
                 SmartPointer<Threading::Thread> m_spWorkerThread;
 
-                Impl(const ProcessStreamOptions& options)
+                explicit Impl(const ProcessStreamOptions& options)
                     : m_options(options), m_bRunning(false), m_bCancelled(false) {}
 
                 ~Impl() override {
@@ -124,28 +124,27 @@ namespace DotNetDupe {
                 }
 
                 void DispatchProcess(const ProcessInfo& proc) {
-                    if (m_fnOnProcess) m_fnOnProcess(proc);
-                    if (m_spObserver) m_spObserver->OnProcessDiscovered(proc);
+                    ProcessEventArgs args(proc);
+                    ProcessDiscovered.Invoke(this, args);
                 }
 
                 void DispatchBatch(const Collections::Generic::List<ProcessInfo>& lstBatch) {
-                    if (m_fnOnBatch) m_fnOnBatch(lstBatch);
-                    if (m_spObserver) m_spObserver->OnBatchReady(lstBatch);
+                    ProcessBatchEventArgs args(lstBatch);
+                    BatchReady.Invoke(this, args);
                 }
 
                 void DispatchUpdated(const ProcessInfo& proc) {
-                    if (m_fnOnUpdated) m_fnOnUpdated(proc);
-                    if (m_spObserver) m_spObserver->OnProcessUpdated(proc);
+                    ProcessEventArgs args(proc);
+                    ProcessUpdated.Invoke(this, args);
                 }
 
                 void DispatchCompleted() {
-                    if (m_fnOnCompleted) m_fnOnCompleted();
-                    if (m_spObserver) m_spObserver->OnCompleted();
+                    Completed.Invoke(this, EventArgs::Empty());
                 }
 
                 void DispatchError(const Exception& ex) {
-                    if (m_fnOnError) m_fnOnError(ex);
-                    if (m_spObserver) m_spObserver->OnError(ex);
+                    ProcessStreamErrorEventArgs args(ex.What());
+                    Error.Invoke(this, args);
                 }
 
                 void RunTier1(std::vector<ProcessInfo>& vecProcs) {
@@ -212,34 +211,14 @@ namespace DotNetDupe {
             };
 
             ProcessStreamer::ProcessStreamer(const ProcessStreamOptions& options)
-                : m_pImpl(SmartPointer<Impl>::NewShared(options)) {}
+                : m_pImpl(SmartPointer<Impl>::NewShared(options)),
+                  ProcessDiscovered(m_pImpl->ProcessDiscovered),
+                  BatchReady(m_pImpl->BatchReady),
+                  ProcessUpdated(m_pImpl->ProcessUpdated),
+                  Completed(m_pImpl->Completed),
+                  Error(m_pImpl->Error) {}
 
             ProcessStreamer::~ProcessStreamer() {}
-
-            void ProcessStreamer::OnProcess(const Action<const ProcessInfo&>& fnOnProcess) {
-                if (m_pImpl) m_pImpl->m_fnOnProcess = fnOnProcess;
-            }
-
-            void ProcessStreamer::OnBatch(const Action<const Collections::Generic::List<ProcessInfo>&>& fnOnBatch) {
-                if (m_pImpl) m_pImpl->m_fnOnBatch = fnOnBatch;
-            }
-
-            void ProcessStreamer::OnProcessUpdated(const Action<const ProcessInfo&>& fnOnUpdated) {
-                if (m_pImpl) m_pImpl->m_fnOnUpdated = fnOnUpdated;
-            }
-
-            void ProcessStreamer::OnCompleted(const Action<>& fnOnCompleted) {
-                if (m_pImpl) m_pImpl->m_fnOnCompleted = fnOnCompleted;
-            }
-
-            void ProcessStreamer::OnError(const Action<const Exception&>& fnOnError) {
-                if (m_pImpl) m_pImpl->m_fnOnError = fnOnError;
-            }
-
-            void ProcessStreamer::Subscribe(const SmartPointer<IProcessObserver>& pObserver) {
-                if (!pObserver) throw ArgumentNullException("pObserver cannot be null.");
-                if (m_pImpl) m_pImpl->m_spObserver = pObserver;
-            }
 
             void ProcessStreamer::Start() {
                 if (!m_pImpl) throw InvalidOperationException("ProcessStreamer implementation is null.");

@@ -48,8 +48,14 @@ namespace DotNetDupe {
                 ProcessStreamOptions options;
                 options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
                 auto pStreamer = CreateProcessStreamer(options);
-                pStreamer->OnProcess(fnOnProcess);
-                if (fnOnComplete) pStreamer->OnCompleted(fnOnComplete);
+                pStreamer->ProcessDiscovered += [fnOnProcess](const void*, const ProcessEventArgs& e) {
+                    if (fnOnProcess) fnOnProcess(e.GetProcess());
+                };
+                if (fnOnComplete) {
+                    pStreamer->Completed += [fnOnComplete](const void*, const EventArgs&) {
+                        fnOnComplete();
+                    };
+                }
                 pStreamer->Start();
             }
 
@@ -361,23 +367,24 @@ namespace DotNetDupe {
                     proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
                 }
 
-                static void PopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
-                    proc.iProcessId = pe32->th32ProcessID; proc.sName = String(pe32->szExeFile); proc.dCpuUsagePercent = 0.0;
-                    proc.memory.lPhysicalMemoryBytes = 0; proc.memory.lPrivateBytes = 0;
+                static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
+                    proc.iProcessId = pe32->th32ProcessID;
+                    proc.sName = String(pe32->szExeFile);
+                    proc.dCpuUsagePercent = 0.0;
+                    proc.memory.lPhysicalMemoryBytes = 0;
+                    proc.memory.lPrivateBytes = 0;
                     DWORD dwSess = 0;
                     if (::ProcessIdToSessionId(pe32->th32ProcessID, &dwSess)) proc.iSessionId = static_cast<int>(dwSess);
                     if (pe32->th32ProcessID == 0) return;
-                    HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, pe32->th32ProcessID);
+                    HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pe32->th32ProcessID);
                     if (!hProc) return;
                     WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
                     if (::QueryFullProcessImageNameW(hProc, 0, szPath, &dwLen)) proc.sPath = String(szPath);
-                    proc.sCommandLine = ReadProcCmdLine(hProc);
-                    if (proc.sCommandLine.IsEmpty()) proc.sCommandLine = proc.sPath;
-                    proc.memory = ReadProcMemory(hProc);
-                    proc.disk = ReadProcDisk(hProc, proc.sName);
-                    proc.network = ReadProcNetwork(hProc, proc.sName);
-                    CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
-                    PopulateProcNetwork(proc.iProcessId, proc);
+                    PROCESS_MEMORY_COUNTERS pmc;
+                    if (::GetProcessMemoryInfo(hProc, &pmc, sizeof(pmc))) {
+                        proc.memory.lPhysicalMemoryBytes = static_cast<long long>(pmc.WorkingSetSize);
+                        proc.memory.lPrivateBytes = static_cast<long long>(pmc.PagefileUsage);
+                    }
                     ::CloseHandle(hProc);
                 }
 
@@ -507,7 +514,7 @@ namespace DotNetDupe {
             }
 
             void SystemMetrics::PopulateProcessInfo(void* pEntry32, ProcessInfo& proc) {
-                SystemMetricsWin32Helper::PopulateProc(static_cast<PROCESSENTRY32W*>(pEntry32), proc);
+                SystemMetricsWin32Helper::FastPopulateProc(static_cast<PROCESSENTRY32W*>(pEntry32), proc);
             }
 
             Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {

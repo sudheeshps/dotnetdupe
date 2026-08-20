@@ -16,4 +16,8 @@ void DemonstrateEnvironment() {
     Console::WriteLine(Environment::GetOperatingSystem().GetVersionString());
     Console::Write("Processor Count: ");
     Console::WriteLine((int)Environment::GetProcessorCount());
+
+    Version parsedVer = Version::Parse("10.0.19041.1");
+    Console::Write("Parsed Version: ");
+    Console::WriteLine(parsedVer.ToString());
 }

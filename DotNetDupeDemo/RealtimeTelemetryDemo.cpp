@@ -13,19 +13,29 @@ void DemonstrateRealtimeTelemetry() {
     MemoryInfo mem = SystemMetrics::GetSystemMemoryUsage();
     double dCpu = SystemMetrics::GetSystemCpuUsage();
     DiskInfo disk = SystemMetrics::GetSystemDiskUsage();
-    Console::WriteLine("Memory Load: " + Convert::ToString(static_cast<int>(mem.dMemoryUsagePercent)) + "% (" + Convert::ToString(static_cast<long long>(mem.uMemoryUsedBytes)) + " Bytes / " + Convert::ToString(static_cast<long long>(mem.uMemoryTotalBytes)) + " Bytes)");
+    Console::WriteLine("Memory Load: " + Convert::ToString(static_cast<int>(mem.dMemoryUsagePercent)) + "% (" + Convert::ToString(static_cast<long long>(mem.uMemoryUsedBytes / (1024 * 1024))) + " MB / " + Convert::ToString(static_cast<long long>(mem.uMemoryTotalBytes / (1024 * 1024))) + " MB)");
     Console::WriteLine("CPU Usage: " + Convert::ToString(static_cast<int>(dCpu)) + "%");
     Console::WriteLine("Disk Read Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskReadBytes)) + " Bytes");
     Console::WriteLine("Disk Write Bytes: " + Convert::ToString(static_cast<long long>(disk.lDiskWriteBytes)) + " Bytes");
 
-    // 2. Query Processes & Services
+    // 2. Fast Process Snapshot (< 5ms)
     auto lstAllProcesses = SystemMetrics::GetAllProcesses(-1);
-    Console::WriteLine("Total Processes Count: " + Convert::ToString(lstAllProcesses.GetCount()));
+    Console::WriteLine("Total Active Processes (<5ms Fast Snapshot): " + Convert::ToString(lstAllProcesses.GetCount()));
 
+    // 3. On-Demand Process Enrichment
+    if (lstAllProcesses.GetCount() > 0) {
+        ProcessInfo sampleProc = lstAllProcesses[0];
+        SystemMetrics::EnrichProcessInfo(sampleProc, true);
+        Console::WriteLine("Sample Process Enriched: " + sampleProc.sName + " (PID: " + Convert::ToString(sampleProc.iProcessId) + ")");
+        Console::WriteLine(" - RAM: " + Convert::ToString(static_cast<long long>(sampleProc.memory.lPhysicalMemoryBytes / (1024 * 1024))) + " MB");
+        Console::WriteLine(" - Open Ports: " + Convert::ToString(sampleProc.lstOpenPorts.GetCount()));
+    }
+
+    // 4. Query Services
     auto lstServices = SystemMetrics::GetAllServices();
     Console::WriteLine("Total Services Count: " + Convert::ToString(lstServices.GetCount()));
 
-    // 2. Query Active & Total Sessions
+    // 5. Query Active & Total Sessions
     auto lstSessions = ActiveUserSession::GetAllSessions();
     Console::WriteLine("Active User Sessions Count: " + Convert::ToString(lstSessions.GetCount()));
     for (int i = 0; i < lstSessions.GetCount(); i++) {

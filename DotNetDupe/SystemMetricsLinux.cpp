@@ -212,14 +212,12 @@ namespace DotNetDupe {
                 std::ifstream commFile("/proc/" + dname + "/comm");
                 std::string procComm;
                 if (commFile.is_open() && std::getline(commFile, procComm)) proc.sName = String(procComm.c_str());
-                proc.sCommandLine = GetProcessCommandLine(proc.sName);
-                proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
-                proc.disk = ReadLinuxProcessDisk(proc.iProcessId);
-                proc.network = ReadLinuxProcessNetwork(proc.iProcessId);
-                auto netInfo = ReadLinuxProcessNetworkInfo(proc.iProcessId);
-                proc.lstOpenPorts = netInfo.lstOpenPorts;
-                proc.lstConnections = netInfo.lstConnections;
-                proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
+                std::ifstream statmFile("/proc/" + dname + "/statm");
+                unsigned long size = 0, resident = 0;
+                if (statmFile >> size >> resident) {
+                    long pageSize = sysconf(_SC_PAGE_SIZE);
+                    proc.memory.lPhysicalMemoryBytes = static_cast<long long>(resident * pageSize);
+                }
             }
 
             Collections::Generic::List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId) {

@@ -22,6 +22,9 @@ namespace DotNetDupe
 
             DOTNETDUPE_API String ToString() const;
 
+            DOTNETDUPE_API static Version Parse(const String& sInput);
+            DOTNETDUPE_API static bool TryParse(const String& sInput, Version& vResult);
+
             DOTNETDUPE_API bool operator==(const Version& vOther) const;
             DOTNETDUPE_API bool operator!=(const Version& vOther) const;
 

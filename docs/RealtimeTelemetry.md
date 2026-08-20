@@ -35,8 +35,9 @@ Provides granular real-time system hardware telemetry (Memory, CPU, Disk, Networ
 - `void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`
 
 ##### Process & Service Listing
-- `List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId = -1)`
-- `List<ServiceInfo> SystemMetrics::GetAllServices()`
+- `List<ProcessInfo> SystemMetrics::GetAllProcesses(int iSessionId = -1)`: Fast (< 5ms) snapshot of running processes.
+- `void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: On-demand deep metric enrichment.
+- `List<ServiceInfo> SystemMetrics::GetAllServices()`: Enumerates system services.
 
 ---
 
@@ -55,12 +56,18 @@ int main() {
     double dCpu = SystemMetrics::GetSystemCpuUsage();
     DiskInfo disk = SystemMetrics::GetSystemDiskUsage();
 
-    // Process specific handle-based metrics
-    String sCmd = SystemMetrics::GetProcessCommandLine(String("svchost.exe"));
-    ProcessNetworkConnectionInfo netInfo = SystemMetrics::GetProcessNetworkInfo(String("svchost.exe"));
-
-    // Process & service listing APIs
+    // Fast process snapshot (< 5ms)
     auto lstAllProc = SystemMetrics::GetAllProcesses(-1);
+    Console::WriteLine("Running processes: {0}", lstAllProc.GetCount());
+
+    // On-demand process enrichment
+    if (lstAllProc.GetCount() > 0) {
+        ProcessInfo proc = lstAllProc[0];
+        SystemMetrics::EnrichProcessInfo(proc, true);
+        Console::WriteLine("Process {0} (PID {1}) enriched: {2} open ports", 
+            proc.sName, proc.iProcessId, proc.lstOpenPorts.GetCount());
+    }
+
     auto lstServices = SystemMetrics::GetAllServices();
 
     return 0;

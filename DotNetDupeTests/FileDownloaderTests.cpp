@@ -171,10 +171,19 @@ namespace DotNetDupeTests {
         FileDownloader downloader(sUrl, sDest);
         downloader.SetUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
 
-        bool bCallbackInvoked = false;
-        downloader.SetProgressCallback([&bCallbackInvoked](DownloadProgress progress) {
-            bCallbackInvoked = true;
+        bool bProgressInvoked = false;
+        bool bCompletedInvoked = false;
+        size_t nToken = (downloader.DownloadProgressChanged += [&bProgressInvoked](const void* pSender, const DownloadProgressChangedEventArgs& e) {
+            (void)pSender;
+            bProgressInvoked = true;
+            EXPECT_GE(e.GetBytesReceived(), 0);
         });
+
+        downloader.DownloadCompleted += [&bCompletedInvoked](const void* pSender, const DownloadCompletedEventArgs& e) {
+            (void)pSender;
+            bCompletedInvoked = true;
+            EXPECT_TRUE(e.IsSuccess());
+        };
 
         // When
         downloader.Start();
@@ -189,7 +198,11 @@ namespace DotNetDupeTests {
         EXPECT_EQ(downloader.GetStatus(), DownloadStatus::Completed);
         EXPECT_TRUE(IO::File::Exists(sDest));
         EXPECT_EQ(IO::File::ReadAllText(sDest), String(sPayload.c_str()));
-        EXPECT_TRUE(bCallbackInvoked);
+        EXPECT_TRUE(bProgressInvoked);
+        EXPECT_TRUE(bCompletedInvoked);
+
+        // Verify unsubscription works cleanly
+        EXPECT_TRUE(downloader.DownloadProgressChanged -= nToken);
 
         DownloadProgress progress = downloader.GetProgress();
         EXPECT_EQ(progress.DownloadedBytes, static_cast<long long>(sPayload.size()));

@@ -3,7 +3,7 @@
 **Namespace:** `DotNetDupe::System`  
 **Header:** `#include "System/Version.h"`
 
-Represents the version number of an assembly, operating system, or library (`major.minor.build.revision`).
+Represents the version number of an assembly, operating system, or library (`major.minor[.build[.revision]]`).
 
 ---
 
@@ -45,6 +45,12 @@ Version ver(1, 4, 0, 102);
 ### `String ToString() const`
 Converts the value of the current `Version` object to its equivalent `String` representation (`"1.4.0.102"`).
 
+### `static Version Parse(const String& sInput)`
+Converts the string representation of a version number (2 to 4 dot-delimited integer components) to an equivalent `Version` object. Throws `ArgumentException` if the input is empty or has an invalid number of components, and `FormatException` if any component is invalid.
+
+### `static bool TryParse(const String& sInput, Version& vResult)`
+Attempts to convert the string representation of a version number to an equivalent `Version` object. Returns `true` if parsing succeeded; otherwise `false`.
+
 ### `bool operator==(const Version& vOther) const`
 Determines whether two `Version` instances represent the same version value.
 
@@ -62,9 +68,20 @@ Determines whether two `Version` instances represent different version values.
 using namespace DotNetDupe::System;
 
 int main() {
+    // Construct version directly
     Version verCurrent(2, 0, 1);
     Console::WriteLine("Current Version: {0}", verCurrent.ToString());
-    Console::WriteLine("Major: {0}, Minor: {1}", verCurrent.GetMajor(), verCurrent.GetMinor());
+
+    // Parse from string representation
+    Version verParsed = Version::Parse("10.0.19041.1");
+    Console::WriteLine("Parsed Major: {0}, Minor: {1}, Build: {2}, Revision: {3}",
+        verParsed.GetMajor(), verParsed.GetMinor(), verParsed.GetBuild(), verParsed.GetRevision());
+
+    // Safe TryParse
+    Version verAttempt;
+    if (Version::TryParse("4.8.0", verAttempt)) {
+        Console::WriteLine("TryParse Succeeded: {0}", verAttempt.ToString());
+    }
 
     return 0;
 }

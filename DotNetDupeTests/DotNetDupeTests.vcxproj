@@ -194,6 +194,7 @@
     <ClCompile Include="ExceptionTests.cpp" />
     <ClCompile Include="WebSocketTests.cpp" />
     <ClCompile Include="ProcessStreamerTests.cpp" />
+    <ClCompile Include="EventHandlerTests.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetDupe\DotNetDupe.vcxproj">

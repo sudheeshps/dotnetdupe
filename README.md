@@ -15,17 +15,20 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Latest Published Version ([![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue&label=version)](https://www.nuget.org/packages/DotNetDupe)):** Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:
+> - ⚡ **First-Class C# `EventHandler<TEventArgs>` & `EventArgs` Model:** Idiomatic C# .NET event-driven delegate system with multicast subscription (`+=`, `-=`), member method binding (`Add(pInstance, &Class::Method)`), token-based unsubscription, and thread-safe dispatch.
+> - 📥 **Modernized `FileDownloader`:** Upgraded download callbacks to typed multicast `EventHandler<DownloadProgressChangedEventArgs>` and `EventHandler<DownloadCompletedEventArgs>` with reliable `FileMode` creation and resumption.
+> - 🔄 **Observable `ProcessStreamer` Modernization:** Multicast event streams (`ProcessDiscovered`, `BatchReady`, `ProcessUpdated`, `Completed`, `Error`) with two-tier progressive telemetry streaming and thread-safe cancellation.
+> - ⏱️ **Fast Process Snapshot & On-Demand Telemetry:** Refactored `SystemMetrics::GetAllProcesses()` to perform ultra-fast ($<5\text{ms}$) discovery snapshots matching .NET `Process.GetProcesses()`, with on-demand per-process deep enrichment via `SystemMetrics::EnrichProcessInfo()`.
+> - 🔢 **Version String Parsing (`Version::Parse` & `Version::TryParse`):** Strict, .NET-compliant string parsing supporting 2, 3, and 4-component version formats with full error validation.
 > - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
 > - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
 > - ⚡ **Thread-Safe Concurrent Collections (`System::Collections::Concurrent`):** Lock-free/fine-grained thread-safe data structures including `ConcurrentDictionary`, `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag`, and `BlockingCollection`.
-> - 📊 **Real-Time Telemetry & System Metrics (`System::Diagnostics::SystemMetrics`):** Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk utilization %, network I/O Mbps, and active processes).
+> - 📊 **Real-Time Telemetry & System Metrics (`System::Diagnostics::SystemMetrics`):** Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk throughput, network bandwidth, and active processes).
 > - 📜 **ETW & Enterprise Event Logging (`System::Diagnostics::EtwLogReader` & `EventLog`):** High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.
 > - 🖥️ **Terminal & User Sessions (`System::Diagnostics::TerminalSession` & `ActiveUserSession`):** Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.
 > - 📄 **Console I/O Redirection:** Standard stream redirection via `Console::SetOut`, `Console::SetError`, and `Console::SetIn` using `SmartPointer`.
 > - 🖊️ **LoggerTextWriter Log Redirector:** Bridge standard `TextWriter` stream calls directly into `LogManager` logging providers without per-call lookup overhead.
 > - 🏷️ **Global LogManager:** Thread-safe category logger caching and static factory via `LogManager::GetLogger("Category")` and `LogManager::GetLogger<T>()`.
-> - 📥 **FileDownloader Utility:** High-level download utility with pause/resume support, speed tracking, and prompt file handle release.
-> - 🔄 **Progressive Process Enumeration & Streaming (`System::Diagnostics::ProcessStreamer`):** Non-blocking, two-tier telemetry streaming and event-driven observable enumerator with Tier-1 fast discovery (<5ms), Tier-2 progressive deep metric enrichment (CPU, Disk, Network, Ports), configurable micro-batching, and cancellation support.
 > - 🌲 **Recursive Directory Creation:** Overloaded `Directory::CreateDirectory(path, recursive)` to automatically construct missing parent directory structures.
 > - 📂 **Resilient File Logging:** Enhanced `FileLoggerProvider` to resolve relative log paths to full paths and auto-create missing log directories.
 > - 🧩 **ServiceCollection DI Enhancements:** Improved lifetime management and container registration.
@@ -87,6 +90,10 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 - 🧠 **Memory & Object Management (`System`)**:
   - `SmartPointer<T>`: Exception-safe RAII reference-counted smart pointer with `NewShared()` and `NewUnique()` factory helpers.
   - Base `Object` type system with `ToString()`, `GetType()`, `Equals()`, and `GetHashCode()`.
+
+- ⚡ **Delegates & Event Model (`System`)**:
+  - `EventHandler<TEventArgs>`: Multicast event delegate supporting lambda, free function, and member method binding with `operator+=`, token unsubscription with `operator-=`, and FIFO invocation.
+  - `EventArgs`: Base class for event data payloads with `EventArgs::Empty()` singleton.
 
 - 🔤 **String Manipulation & Utilities (`System::String`)**:
   - Full-featured `String` & `WString` with UTF-8 / UTF-16 cross-transcoding.
@@ -155,7 +162,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.2.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.3.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -287,7 +294,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.2.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.3.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -297,9 +304,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.2.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.3.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.2.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.3.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -749,6 +756,8 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
 | [SmartPointer&lt;T&gt;](docs/SmartPointer.md) | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
+| [EventArgs](docs/EventHandler.md) | Base class for event data payloads with `Empty` singleton representation. |
+| [EventHandler&lt;TEventArgs&gt;](docs/EventHandler.md) | Multicast delegate supporting publisher-subscriber event model with token unsubscription. |
 | [Char](docs/Char.md) | Represents character code points and provides Unicode classification and transformation methods. |
 | [String](docs/String.md) | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
 | [Array&lt;T&gt;](docs/Array.md) | Provides methods for creating, manipulating, searching, and sorting arrays. |

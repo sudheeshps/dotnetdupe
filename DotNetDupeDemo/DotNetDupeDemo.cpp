@@ -49,6 +49,7 @@ int main() {
     DemonstrateDirectory();
     DemonstrateFileDownloader();
     DemonstrateProcessStreamer();
+    DemonstrateEventHandler();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

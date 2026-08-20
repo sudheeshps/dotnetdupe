@@ -89,12 +89,22 @@ void DemonstrateFileDownloader() {
         FileDownloader downloader(sUrl, sDest);
         downloader.SetUserAgent("Mozilla/5.0");
 
-        downloader.SetProgressCallback([](DownloadProgress progress) {
-            Console::WriteLine(String("  [Progress] Downloaded: ") + Convert::ToString(progress.DownloadedBytes) +
-                " / " + Convert::ToString(progress.TotalBytes) + " bytes (Remaining: " +
-                Convert::ToString(progress.RemainingBytes) + ") | Rate: " +
-                Convert::ToString(static_cast<int>(progress.DownloadRateBytesPerSec)) + " B/s");
-        });
+        downloader.DownloadProgressChanged += [](const void* pSender, const DownloadProgressChangedEventArgs& e) {
+            (void)pSender;
+            Console::WriteLine(String("  [Progress] Downloaded: ") + Convert::ToString(e.GetBytesReceived()) +
+                " / " + Convert::ToString(e.GetTotalBytesToReceive()) + " bytes (" +
+                Convert::ToString(static_cast<int>(e.GetProgressPercentage())) + "%) | Rate: " +
+                Convert::ToString(static_cast<int>(e.GetDownloadRateBytesPerSec())) + " B/s");
+        };
+
+        downloader.DownloadCompleted += [](const void* pSender, const DownloadCompletedEventArgs& e) {
+            (void)pSender;
+            if (e.IsSuccess()) {
+                Console::WriteLine("  [Completed] File download finished successfully.");
+            } else {
+                Console::WriteLine(String("  [Completed] File download status: ") + (e.IsCancelled() ? "Cancelled/Paused" : "Failed") + " (" + e.GetError() + ")");
+            }
+        };
 
         Console::WriteLine("Starting download...");
         downloader.Start();

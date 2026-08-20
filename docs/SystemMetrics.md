@@ -77,7 +77,8 @@ Provides system-wide and per-process hardware telemetry metrics including CPU %,
 - `static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: Performs direct handle-level telemetry enrichment (CPU, memory working set, PEB command line, disk I/O, and network ports/connections) targeted by PID.
 
 ### Process Enumeration & Services
-- `static List<ProcessInfo> GetAllProcesses(int iSessionId = -1)`: Enumerates all active processes across the system or within a specific session.
+- `static List<ProcessInfo> GetAllProcesses(int iSessionId = -1)`: Enumerates all active processes across the system or within a specific session using an ultra-fast (< 5ms) snapshot of basic metadata (PID, Name, Session, Path, Working Set RAM), matching .NET `Process.GetProcesses()`.
+- `static void EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork = true)`: Performs direct handle-level telemetry enrichment (CPU %, PEB command line, disk I/O, and active network ports/connections) on-demand for the specified process.
 - `static List<ServiceInfo> GetAllServices()`: Enumerates all installed system services.
 
 ---
