@@ -217,6 +217,9 @@ namespace DotNetDupe {
 		const char* String::GetRawString() const {
 			return m_pImpl->s.c_str();
 		}
+		const char* String::GetChars() const {
+			return GetRawString();
+		}
 		int String::GetHashCode() const {
 			const char* p = GetRawString();
 			if (!p) return 0;

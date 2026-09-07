@@ -596,5 +596,17 @@ namespace SystemTests {
             // Then
             ASSERT_EQ(str, "Assigned Wide String");
         }
+
+        TEST(StringTest, GetChars_Should_ReturnUnderlyingCString_When_Called) {
+            // Given
+            String str("DICOM Tag String");
+
+            // When
+            const char* pChars = str.GetChars();
+
+            // Then
+            ASSERT_NE(pChars, nullptr);
+            EXPECT_STREQ(pChars, "DICOM Tag String");
+        }
     }
 }

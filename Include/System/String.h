@@ -80,6 +80,7 @@ namespace DotNetDupe {
                 throw ArgumentException("Invalid input integer");
             }
             DOTNETDUPE_API const char* GetRawString() const;
+            DOTNETDUPE_API const char* GetChars() const;
             operator const char* () const { return GetRawString(); }
             DOTNETDUPE_API int GetHashCode() const;
             DOTNETDUPE_API int GetLength() const;
