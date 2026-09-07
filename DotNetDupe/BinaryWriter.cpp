@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/IO/BinaryWriter.h"
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
@@ -97,6 +97,10 @@ namespace DotNetDupe {
             void BinaryWriter::Write(byte bValue) {
                 char chBuf = static_cast<char>(bValue);
                 WriteInternal(&chBuf, 1);
+            }
+
+            void BinaryWriter::Write(char chValue) {
+                WriteInternal(&chValue, 1);
             }
 
             void BinaryWriter::Write(signed char chValue) {

@@ -32,6 +32,7 @@ namespace SystemIOTests {
             // When
             writer.Write(true);
             writer.Write(static_cast<byte>(0xAB));
+            writer.Write('Z');
             writer.Write(static_cast<short>(1234));
             writer.Write(567890);
             writer.Write(3.14159f);
@@ -43,6 +44,7 @@ namespace SystemIOTests {
             BinaryReader reader(&stream, true, true);
             EXPECT_TRUE(reader.ReadBoolean());
             EXPECT_EQ(0xAB, reader.ReadByte());
+            EXPECT_EQ('Z', reader.ReadChar());
             EXPECT_EQ(1234, reader.ReadInt16());
             EXPECT_EQ(567890, reader.ReadInt32());
             EXPECT_FLOAT_EQ(3.14159f, reader.ReadSingle());

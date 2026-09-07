@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #include "Common.h"
 #include "System/Object.h"
 #include "System/IO/IDisposable.h"
@@ -28,6 +28,7 @@ namespace DotNetDupe {
 
                 DOTNETDUPE_API virtual void Write(bool bValue);
                 DOTNETDUPE_API virtual void Write(byte bValue);
+                DOTNETDUPE_API virtual void Write(char chValue);
                 DOTNETDUPE_API virtual void Write(signed char chValue);
                 DOTNETDUPE_API virtual void Write(const Array<byte>& arrBuffer);
                 DOTNETDUPE_API virtual void Write(const Array<byte>& arrBuffer, int iIndex, int iCount);
