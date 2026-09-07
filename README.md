@@ -105,7 +105,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 - 📁 **File I/O & System Services (`System::IO`)**:
   - High-level static primitives: `File` (`ReadAllText`, `WriteAllText`, `AppendAllText`, `Exists`, `Delete`) and `Directory` (`CreateDirectory(path, recursive)`, `Exists`, `EnumerateFiles`).
   - Cross-platform path calculations: `Path` (`Combine`, `GetFullPath`, `GetDirectoryName`, `GetFileName`, `GetExtension`).
-  - Stream & Reader/Writer hierarchy: `FileStream`, `MemoryStream`, `BufferedStream`, `StreamReader`, `StreamWriter`, `BinaryReader`, `BinaryWriter`, `StringReader`, `StringWriter`.
+  - Stream & Reader/Writer hierarchy: `FileStream`, `MemoryStream`, `BufferedStream`, `StreamReader`, `StreamWriter`, `[BinaryReader](docs/BinaryReader.md)`, `[BinaryWriter](docs/BinaryWriter.md)`, `StringReader`, `StringWriter`.
 
 - 📟 **Console & Stream Redirection (`System::Console`)**:
   - Rich console text & background color controls (`SetForegroundColor`, `SetBackgroundColor`, `ResetColor`).
@@ -861,6 +861,8 @@ For detailed information on the available classes, methods, and their usage, ple
 | [TextWriter](docs/TextWriter.md) | Abstract writer for sequential character output. |
 | [StringReader](docs/StringReader.md) | Implements `TextReader` reading from a `String`. |
 | [StringWriter](docs/StringWriter.md) | Implements `TextWriter` writing characters into a string buffer. |
+| [BinaryReader](docs/BinaryReader.md) | Reads primitive data types as binary values in Little-Endian or Big-Endian encoding from a stream. |
+| [BinaryWriter](docs/BinaryWriter.md) | Writes primitive data types in binary format with configurable endianness to a stream. |
 
 **Exceptions**
 
