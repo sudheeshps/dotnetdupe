@@ -1,4 +1,4 @@
-#include "System/Console.h"
+﻿#include "System/Console.h"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -21,6 +21,7 @@ int main() {
     DemonstrateEnvironment();
     DemonstrateTimeZone();
     DemonstrateTextIO();
+    DemonstrateBinaryIO();
     DemonstrateFileAttributes();
     DemonstrateThreading();
     DemonstrateSynchronization();
@@ -56,3 +57,4 @@ int main() {
     Console::ReadLine();
     return 0;
 }
+

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 void DemonstrateConsole();
 void DemonstrateString();
@@ -12,6 +12,7 @@ void DemonstrateGuid();
 void DemonstrateEnvironment();
 void DemonstrateTimeZone();
 void DemonstrateTextIO();
+void DemonstrateBinaryIO();
 void DemonstrateThreading();
 void DemonstrateSynchronization();
 void DemonstrateLockRAII();
@@ -41,3 +42,4 @@ void DemonstrateDirectory();
 void DemonstrateFileDownloader();
 void DemonstrateProcessStreamer();
 void DemonstrateEventHandler();
+
