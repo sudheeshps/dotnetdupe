@@ -162,7 +162,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.3.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.4.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -294,7 +294,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.3.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.4.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -304,9 +304,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.3.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.4.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.3.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.4.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
