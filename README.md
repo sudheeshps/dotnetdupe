@@ -755,318 +755,321 @@ DotNetDupe provides comprehensive documentation through an interactive portal:
 
 For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:
 
-### Namespace: `DotNetDupe::System`
+> [!TIP]
+> **Navigation**: Click any **Class Name** to inspect its C++ header interface, or click **📖** to open its generated Doxygen API reference.
+
+### Namespace: [`DotNetDupe::System`](Include/System/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html)
 
 **Core Primitives & Base Classes**
 
 | Class | Description |
 |---|---|
-| **Object** | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
-| **SmartPointer&lt;T&gt;** | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
-| **EventArgs** | Base class for event data payloads with `Empty` singleton representation. |
-| **EventHandler&lt;TEventArgs&gt;** | Multicast delegate supporting publisher-subscriber event model with token unsubscription. |
-| **Char** | Represents character code points and provides Unicode classification and transformation methods. |
-| **String** | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
-| **Array&lt;T&gt;** | Provides methods for creating, manipulating, searching, and sorting arrays. |
-| **BitConverter** | Converts base data types to arrays of bytes, and arrays of bytes to base data types. |
-| **Buffer** | Manipulates arrays of primitive types efficiently. |
-| **Console** | Reads and writes to standard I/O streams with full color control and stream redirection. |
-| **Convert** | Converts base data types and hexadecimal strings. |
-| **DateTime** | Represents an instant in time, typically expressed as a date and time of day. |
-| **DateTimeOffset** | Represents a point in time relative to UTC with time zone offset. |
-| **TimeSpan** | Represents a time interval. |
-| **TimeZone** | Represents a time zone. |
-| **TimeZoneInfo** | Represents any time zone in the world with Daylight Saving adjustments. |
-| **DaylightTime** | Defines the period of daylight saving time. |
-| **TimeProvider** | Provides a testable abstraction for date and time. |
-| **Guid** | Represents a globally unique identifier (GUID). |
-| **Environment** | Provides environment variables, machine info, and platform properties. |
-| **OperatingSystem** | Represents operating system platform identifiers and version metadata. |
-| **Random** | Represents a pseudo-random number generator. |
-| **Uri** | Provides an object representation of Uniform Resource Identifiers (URI). |
-| **UriBuilder** | Provides convenient mutation of URI components. |
-| **UriComponents** | Specifies parts of a URI. |
-| **UriFormat** | Controls how URI information is escaped. |
-| **UriParser** | Parses and validates URI schemes. |
-| **GenericUriParser** | Customizable parser for hierarchical URI schemes. |
-| **Version** | Represents version numbers (`major.minor.build.revision`). |
+| [Object](Include/System/Object.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_object.html) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
+| [SmartPointer&lt;T&gt;](Include/System/SmartPointer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_smart_pointer.html) | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
+| [EventArgs](Include/System/EventArgs.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_event_args.html) | Base class for event data payloads with `Empty` singleton representation. |
+| [EventHandler&lt;TEventArgs&gt;](Include/System/EventHandler.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_event_handler.html) | Multicast delegate supporting publisher-subscriber event model with token unsubscription. |
+| [Char](Include/System/Char.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_char.html) | Represents character code points and provides Unicode classification and transformation methods. |
+| [String](Include/System/String.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_string.html) | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
+| [Array&lt;T&gt;](Include/System/Array.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_array.html) | Provides methods for creating, manipulating, searching, and sorting arrays. |
+| [BitConverter](Include/System/BitConverter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_bit_converter.html) | Converts base data types to arrays of bytes, and arrays of bytes to base data types. |
+| [Buffer](Include/System/Buffer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_buffer.html) | Manipulates arrays of primitive types efficiently. |
+| [Console](Include/System/Console.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_console.html) | Reads and writes to standard I/O streams with full color control and stream redirection. |
+| [Convert](Include/System/Convert.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_convert.html) | Converts base data types and hexadecimal strings. |
+| [DateTime](Include/System/DateTime.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_date_time.html) | Represents an instant in time, typically expressed as a date and time of day. |
+| [DateTimeOffset](Include/System/DateTimeOffset.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_date_time_offset.html) | Represents a point in time relative to UTC with time zone offset. |
+| [TimeSpan](Include/System/TimeSpan.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_time_span.html) | Represents a time interval. |
+| [TimeZone](Include/System/TimeZone.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_time_zone.html) | Represents a time zone. |
+| [TimeZoneInfo](Include/System/TimeZoneInfo.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_time_zone_info.html) | Represents any time zone in the world with Daylight Saving adjustments. |
+| [DaylightTime](Include/System/DaylightTime.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_daylight_time.html) | Defines the period of daylight saving time. |
+| [TimeProvider](Include/System/TimeProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_time_provider.html) | Provides a testable abstraction for date and time. |
+| [Guid](Include/System/Guid.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_guid.html) | Represents a globally unique identifier (GUID). |
+| [Environment](Include/System/Environment.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_environment.html) | Provides environment variables, machine info, and platform properties. |
+| [OperatingSystem](Include/System/OperatingSystem.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_operating_system.html) | Represents operating system platform identifiers and version metadata. |
+| [Random](Include/System/Random.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_random.html) | Represents a pseudo-random number generator. |
+| [Uri](Include/System/Uri.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_uri.html) | Provides an object representation of Uniform Resource Identifiers (URI). |
+| [UriBuilder](Include/System/UriBuilder.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_uri_builder.html) | Provides convenient mutation of URI components. |
+| [UriComponents](Include/System/UriEnums.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html) | Specifies parts of a URI. |
+| [UriFormat](Include/System/UriEnums.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html) | Controls how URI information is escaped. |
+| [UriParser](Include/System/UriParser.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_uri_parser.html) | Parses and validates URI schemes. |
+| [GenericUriParser](Include/System/UriParser.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_generic_uri_parser.html) | Customizable parser for hierarchical URI schemes. |
+| [Version](Include/System/Version.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_version.html) | Represents version numbers (`major.minor.build.revision`). |
 
 **Core Interfaces**
 
 | Interface | Description |
 |---|---|
-| **IDisposable** | Defines a mechanism for deterministic release of unmanaged resources. |
-| **IClonable** | Defines mechanisms for deep or shallow object cloning. |
-| **IComparable** | Defines comparison method for sorting and ordering. |
-| **IComparable&lt;T&gt;** | Defines strongly-typed comparison method for sorting and ordering. |
-| **IFormatProvider&lt;T&gt;** | Provides custom type-formatting services. |
-| **IServiceProvider** | Defines service object resolution mechanism for dependency injection. |
+| [IDisposable](Include/System/IO/IDisposable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_disposable.html) | Defines a mechanism for deterministic release of unmanaged resources. |
+| [IClonable](Include/System/Clonable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_clonable.html) | Defines mechanisms for deep or shallow object cloning. |
+| [IComparable](Include/System/Comparable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_comparable.html) | Defines comparison method for sorting and ordering. |
+| [IComparable&lt;T&gt;](Include/System/Comparable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_comparable.html) | Defines strongly-typed comparison method for sorting and ordering. |
+| [IFormatProvider&lt;T&gt;](Include/System/FormatProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_format_provider.html) | Provides custom type-formatting services. |
+| [IServiceProvider](Include/System/IServiceProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_service_provider.html) | Defines service object resolution mechanism for dependency injection. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| **Exception** | Root exception class for all DotNetDupe library errors. |
-| **SystemException** | Base class for system-level runtime exceptions. |
-| **ArgumentException** | Thrown when an argument passed to a method is invalid. |
-| **ArgumentNullException** | Thrown when a null argument is passed to a non-null parameter. |
-| **ArgumentOutOfRangeException** | Thrown when an argument falls outside allowable boundary limits. |
-| **ArithmeticException** | Thrown for errors in mathematical or arithmetic operations. |
-| **FormatException** | Thrown when string or argument formatting is invalid. |
-| **NotImplementedException** | Thrown when a requested method or feature is not implemented. |
-| **OverflowException** | Thrown on arithmetic or conversion overflow. |
+| [Exception](Include/System/Exception.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_exception.html) | Root exception class for all DotNetDupe library errors. |
+| [SystemException](Include/System/SystemException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_system_exception.html) | Base class for system-level runtime exceptions. |
+| [ArgumentException](Include/System/ArgumentException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_argument_exception.html) | Thrown when an argument passed to a method is invalid. |
+| [ArgumentNullException](Include/System/ArgumentNullException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_argument_null_exception.html) | Thrown when a null argument is passed to a non-null parameter. |
+| [ArgumentOutOfRangeException](Include/System/ArgumentOutOfRangeException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html) | Thrown when an argument falls outside allowable boundary limits. |
+| [ArithmeticException](Include/System/ArithmeticException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_arithmetic_exception.html) | Thrown for errors in mathematical or arithmetic operations. |
+| [FormatException](Include/System/FormatException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_format_exception.html) | Thrown when string or argument formatting is invalid. |
+| [NotImplementedException](Include/System/NotImplementedException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_not_implemented_exception.html) | Thrown when a requested method or feature is not implemented. |
+| [OverflowException](Include/System/OverflowException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_overflow_exception.html) | Thrown on arithmetic or conversion overflow. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Collections::Generic`
+### Namespace: [`DotNetDupe::System::Collections::Generic`](Include/System/Collections/Generic/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **List&lt;T&gt;** | Strongly-typed dynamic array list accessible by index. |
-| **Dictionary&lt;TKey, TValue&gt;** | Key/value hash map collection. |
-| **HashSet&lt;T&gt;** | Set of unique elements backed by a hash table. |
-| **Queue&lt;T&gt;** | First-In-First-Out (FIFO) queue collection. |
-| **Stack&lt;T&gt;** | Last-In-First-Out (LIFO) stack collection. |
-| **PriorityQueue&lt;TElement, TPriority&gt;** | Min-heap collection of prioritized items. |
-| **SortedDictionary&lt;TKey, TValue&gt;** | Key/value collection sorted by key. |
-| **SortedSet&lt;T&gt;** | Ordered unique collection maintained in sorted order. |
-| **LinkedList&lt;T&gt;** | Doubly-linked list collection. |
-| **Generic Collections Overview** | Comprehensive guide and comparison of generic collection types. |
+| [List&lt;T&gt;](Include/System/Collections/Generic/List.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html) | Strongly-typed dynamic array list accessible by index. |
+| [Dictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/Dictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html) | Key/value hash map collection. |
+| [HashSet&lt;T&gt;](Include/System/Collections/Generic/HashSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html) | Set of unique elements backed by a hash table. |
+| [Queue&lt;T&gt;](Include/System/Collections/Generic/Queue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html) | First-In-First-Out (FIFO) queue collection. |
+| [Stack&lt;T&gt;](Include/System/Collections/Generic/Stack.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html) | Last-In-First-Out (LIFO) stack collection. |
+| [PriorityQueue&lt;TElement, TPriority&gt;](Include/System/Collections/Generic/PriorityQueue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue.html) | Min-heap collection of prioritized items. |
+| [SortedDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/SortedDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html) | Key/value collection sorted by key. |
+| [SortedSet&lt;T&gt;](Include/System/Collections/Generic/SortedSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html) | Ordered unique collection maintained in sorted order. |
+| [LinkedList&lt;T&gt;](Include/System/Collections/Generic/LinkedList.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html) | Doubly-linked list collection. |
+| [Generic Collections Overview](Include/System/Collections/Generic/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html) | Comprehensive guide and comparison of generic collection types. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Collections::Concurrent`
+### Namespace: [`DotNetDupe::System::Collections::Concurrent`](Include/System/Collections/Concurrent/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **ConcurrentDictionary&lt;TKey, TValue&gt;** | Thread-safe key/value collection for concurrent multi-threaded access. |
-| **ConcurrentQueue&lt;T&gt;** | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
-| **ConcurrentStack&lt;T&gt;** | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
-| **ConcurrentBag&lt;T&gt;** | Thread-safe unordered object container with thread-local storage. |
-| **BlockingCollection&lt;T&gt;** | Thread-safe collection providing blocking producer-consumer capabilities. |
-| **Concurrent Collections Overview** | Comprehensive guide and architecture of lock-free and thread-safe collections. |
+| [ConcurrentDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Concurrent/ConcurrentDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html) | Thread-safe key/value collection for concurrent multi-threaded access. |
+| [ConcurrentQueue&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentQueue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html) | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
+| [ConcurrentStack&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentStack.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html) | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
+| [ConcurrentBag&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentBag.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html) | Thread-safe unordered object container with thread-local storage. |
+| [BlockingCollection&lt;T&gt;](Include/System/Collections/Concurrent/BlockingCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html) | Thread-safe collection providing blocking producer-consumer capabilities. |
+| [Concurrent Collections Overview](Include/System/Collections/Concurrent/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html) | Comprehensive guide and architecture of lock-free and thread-safe collections. |
 
 ---
 
-### Namespace: `DotNetDupe::System::IO`
+### Namespace: [`DotNetDupe::System::IO`](Include/System/IO/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **File** | Static helper methods for file creation, reading, writing, moving, and deletion. |
-| **Directory** | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
-| **Path** | Performs cross-platform directory and file path string operations. |
-| **Stream** | Abstract base class for byte sequence streams. |
-| **FileStream** | Provides a byte stream for files supporting synchronous read/write. |
-| **MemoryStream** | Creates a stream whose backing store is memory. |
-| **TextReader** | Abstract reader for sequential character input. |
-| **TextWriter** | Abstract writer for sequential character output. |
-| **StringReader** | Implements `TextReader` reading from a `String`. |
-| **StringWriter** | Implements `TextWriter` writing characters into a string buffer. |
-| **BinaryReader** | Reads primitive data types as binary values in Little-Endian or Big-Endian encoding from a stream. |
-| **BinaryWriter** | Writes primitive data types in binary format with configurable endianness to a stream. |
+| [File](Include/System/IO/File.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html) | Static helper methods for file creation, reading, writing, moving, and deletion. |
+| [Directory](Include/System/IO/Directory.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html) | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
+| [Path](Include/System/IO/Path.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html) | Performs cross-platform directory and file path string operations. |
+| [Stream](Include/System/IO/Stream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html) | Abstract base class for byte sequence streams. |
+| [FileStream](Include/System/IO/FileStream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html) | Provides a byte stream for files supporting synchronous read/write. |
+| [MemoryStream](Include/System/IO/MemoryStream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html) | Creates a stream whose backing store is memory. |
+| [TextReader](Include/System/IO/TextReader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_reader.html) | Abstract reader for sequential character input. |
+| [TextWriter](Include/System/IO/TextWriter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html) | Abstract writer for sequential character output. |
+| [StringReader](Include/System/IO/StringReader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_reader.html) | Implements `TextReader` reading from a `String`. |
+| [StringWriter](Include/System/IO/StringWriter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html) | Implements `TextWriter` writing characters into a string buffer. |
+| [BinaryReader](Include/System/IO/BinaryReader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html) | Reads primitive data types as binary values in Little-Endian or Big-Endian encoding from a stream. |
+| [BinaryWriter](Include/System/IO/BinaryWriter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer.html) | Writes primitive data types in binary format with configurable endianness to a stream. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| **IOException** | Thrown when an I/O or file system error occurs. |
-| **FileNotFoundException** | Thrown when an attempt to access a file that does not exist on disk fails. |
-| **DirectoryNotFoundException** | Thrown when part of a file or directory path cannot be found. |
-| **EndOfStreamException** | Thrown when reading is attempted past the end of a stream. |
+| [IOException](Include/System/IO/IOException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html) | Thrown when an I/O or file system error occurs. |
+| [FileNotFoundException](Include/System/IO/FileNotFoundException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html) | Thrown when an attempt to access a file that does not exist on disk fails. |
+| [DirectoryNotFoundException](Include/System/IO/DirectoryNotFoundException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html) | Thrown when part of a file or directory path cannot be found. |
+| [EndOfStreamException](Include/System/IO/EndOfStreamException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html) | Thrown when reading is attempted past the end of a stream. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Threading` & `System::Threading::Tasks`
+### Namespace: [`DotNetDupe::System::Threading`](Include/System/Threading/) & [`System::Threading::Tasks`](Include/System/Threading/Tasks/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **Thread** | Creates, configures, and controls OS threads. |
-| **ThreadPool** | High-throughput worker thread pool managing parallel task execution. |
-| **Task** | Represents asynchronous operations with continuation support. |
-| **Task&lt;T&gt;** | Represents asynchronous operations returning a result value. |
-| **WaitHandle** | Abstract base class for thread synchronization handles. |
-| **EventWaitHandle** | Manages cross-thread and system synchronization event signals. |
-| **AutoResetEvent** | Notifies waiting threads and automatically resets to non-signaled state. |
-| **ManualResetEvent** | Notifies waiting threads and remains signaled until manually reset. |
-| **Mutex** | Mutual exclusion synchronization primitive (supports named inter-process mutexes). |
-| **Semaphore** | Limits concurrent thread access to a bounded resource pool. |
-| **SemaphoreSlim** | Lightweight alternative to `Semaphore` avoiding kernel transitions for fast locking. |
-| **CriticalSection** | Low-overhead recursive mutex primitive for intra-process synchronization. |
-| **Interlocked** | Provides atomic hardware operations (`Increment`, `Decrement`, `Exchange`, `CompareExchange`). |
-| **Lock&lt;T&gt;** | Exception-safe RAII lock wrapper for synchronization primitives. |
+| [Thread](Include/System/Threading/Thread.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html) | Creates, configures, and controls OS threads. |
+| [ThreadPool](Include/System/Threading/ThreadPool.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html) | High-throughput worker thread pool managing parallel task execution. |
+| [Task](Include/System/Threading/Tasks/Task.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html) | Represents asynchronous operations with continuation support. |
+| [Task&lt;T&gt;](Include/System/Threading/Tasks/Task.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html) | Represents asynchronous operations returning a result value. |
+| [WaitHandle](Include/System/Threading/WaitHandle.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html) | Abstract base class for thread synchronization handles. |
+| [EventWaitHandle](Include/System/Threading/EventWaitHandle.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_event_wait_handle.html) | Manages cross-thread and system synchronization event signals. |
+| [AutoResetEvent](Include/System/Threading/AutoResetEvent.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_auto_reset_event.html) | Notifies waiting threads and automatically resets to non-signaled state. |
+| [ManualResetEvent](Include/System/Threading/ManualResetEvent.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_manual_reset_event.html) | Notifies waiting threads and remains signaled until manually reset. |
+| [Mutex](Include/System/Threading/Mutex.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_mutex.html) | Mutual exclusion synchronization primitive (supports named inter-process mutexes). |
+| [Semaphore](Include/System/Threading/Semaphore.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore.html) | Limits concurrent thread access to a bounded resource pool. |
+| [SemaphoreSlim](Include/System/Threading/SemaphoreSlim.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_slim.html) | Lightweight alternative to `Semaphore` avoiding kernel transitions for fast locking. |
+| [CriticalSection](Include/System/Threading/CriticalSection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_critical_section.html) | Low-overhead recursive mutex primitive for intra-process synchronization. |
+| [Interlocked](Include/System/Threading/Interlocked.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_interlocked.html) | Provides atomic hardware operations (`Increment`, `Decrement`, `Exchange`, `CompareExchange`). |
+| [Lock&lt;T&gt;](Include/System/Threading/Lock.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html) | Exception-safe RAII lock wrapper for synchronization primitives. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| **ThreadStateException** | Thrown when a thread is in an invalid state for the requested operation. |
-| **ThreadInterruptedException** | Thrown when a thread is interrupted while waiting. |
-| **SynchronizationLockException** | Thrown when unlocking a synchronization object not owned by the caller. |
-| **AbandonedMutexException** | Thrown when a thread acquires a mutex abandoned by another terminating thread. |
-| **WaitHandleCannotBeOpenedException** | Thrown when attempting to open a non-existent named system sync handle. |
-| **SemaphoreFullException** | Thrown when releasing a semaphore whose count is already at maximum capacity. |
-| **TaskCanceledException** | Thrown when a task execution is canceled. |
+| [ThreadStateException](Include/System/Threading/ThreadStateException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_state_exception.html) | Thrown when a thread is in an invalid state for the requested operation. |
+| [ThreadInterruptedException](Include/System/Threading/ThreadInterruptedException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_interrupted_exception.html) | Thrown when a thread is interrupted while waiting. |
+| [SynchronizationLockException](Include/System/Threading/SynchronizationLockException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_synchronization_lock_exception.html) | Thrown when unlocking a synchronization object not owned by the caller. |
+| [AbandonedMutexException](Include/System/Threading/AbandonedMutexException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_abandoned_mutex_exception.html) | Thrown when a thread acquires a mutex abandoned by another terminating thread. |
+| [WaitHandleCannotBeOpenedException](Include/System/Threading/WaitHandleCannotBeOpenedException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html) | Thrown when attempting to open a non-existent named system sync handle. |
+| [SemaphoreFullException](Include/System/Threading/SemaphoreFullException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_full_exception.html) | Thrown when releasing a semaphore whose count is already at maximum capacity. |
+| [TaskCanceledException](Include/System/Threading/Tasks/TaskCanceledException.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task_canceled_exception.html) | Thrown when a task execution is canceled. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Diagnostics`
+### Namespace: [`DotNetDupe::System::Diagnostics`](Include/System/Diagnostics/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **Process** | Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes. |
-| **Stopwatch** | High-resolution performance timer for measuring elapsed time. |
-| **EventLog** | Interacts with OS diagnostic event logs and writes operational entries. |
-| **EtwLogReader** | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
-| **SystemMetrics** | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
-| **RealtimeTelemetry** | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
-| **ActiveUserSession** | Enumerates active and terminal user sessions across the system. |
-| **TerminalSession** | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
-| **ProcessStreamer** | Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator. |
+| [Process](Include/System/Diagnostics/Process.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html) | Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes. |
+| [Stopwatch](Include/System/Diagnostics/Stopwatch.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_stopwatch.html) | High-resolution performance timer for measuring elapsed time. |
+| [EventLog](Include/System/Diagnostics/EventLog.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html) | Interacts with OS diagnostic event logs and writes operational entries. |
+| [EtwLogReader](Include/System/Diagnostics/EtwLogReader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_log_reader.html) | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
+| [SystemMetrics](Include/System/Diagnostics/SystemMetrics.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_system_metrics.html) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
+| [RealtimeTelemetry](Include/System/Diagnostics/SystemMetrics.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_system_metrics.html) | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
+| [ActiveUserSession](Include/System/Diagnostics/ActiveUserSession.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_active_user_session.html) | Enumerates active and terminal user sessions across the system. |
+| [TerminalSession](Include/System/Diagnostics/TerminalSession.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session.html) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
+| [ProcessStreamer](Include/System/Diagnostics/ProcessStreamer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_streamer.html) | Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Net`, `System::Net::Sockets` & `System::Net::Security`
+### Namespace: [`DotNetDupe::System::Net`](Include/System/Net/), [`Sockets`](Include/System/Net/Sockets/) & [`Security`](Include/System/Net/Security/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **Dns** | Provides domain name resolution and IP address lookup. |
-| **Socket** | Low-level cross-platform BSD/WinSock socket abstraction. |
-| **NetworkStream** | Implements `Stream` backed by a network socket. |
-| **TcpClient** | Client connection wrapper for TCP network services. |
-| **TcpListener** | TCP listener for accepting incoming network connections. |
-| **UdpClient** | User Datagram Protocol (UDP) client for datagram transmission. |
-| **SslStream** | TLS/SSL secure stream wrapper built on OpenSSL. |
+| [Dns](Include/System/Net/Dns.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html) | Provides domain name resolution and IP address lookup. |
+| [Socket](Include/System/Net/Sockets/Socket.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket.html) | Low-level cross-platform BSD/WinSock socket abstraction. |
+| [NetworkStream](Include/System/Net/Sockets/NetworkStream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html) | Implements `Stream` backed by a network socket. |
+| [TcpClient](Include/System/Net/Sockets/TcpClient.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_tcp_client.html) | Client connection wrapper for TCP network services. |
+| [TcpListener](Include/System/Net/Sockets/TcpListener.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_tcp_listener.html) | TCP listener for accepting incoming network connections. |
+| [UdpClient](Include/System/Net/Sockets/UdpClient.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_udp_client.html) | User Datagram Protocol (UDP) client for datagram transmission. |
+| [SslStream](Include/System/Net/Security/SslStream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html) | TLS/SSL secure stream wrapper built on OpenSSL. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Net::Http`
+### Namespace: [`DotNetDupe::System::Net::Http`](Include/System/Net/Http/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **HttpClient** | Sends HTTP/HTTPS requests and receives responses from URI endpoints. |
-| **RestClient&lt;T&gt;** | Strongly-typed REST client with automated C++ structure JSON serialization/deserialization. |
-| **FileDownloader** | High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal. |
-| **HttpRequestMessage** | Represents an outgoing HTTP request with headers, method, and payload. |
-| **HttpResponseMessage** | Represents an HTTP response with status code, response headers, and content stream. |
-| **HttpContent** | Base class for HTTP entity bodies and content headers. |
-| **StringContent** | HTTP content wrapper for text and JSON payloads. |
-| **ByteArrayContent** | HTTP content wrapper for raw byte arrays and binary payloads. |
-| **HttpMethod** | Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.). |
+| [HttpClient](Include/System/Net/Http/HttpClient.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html) | Sends HTTP/HTTPS requests and receives responses from URI endpoints. |
+| [RestClient&lt;T&gt;](Include/System/Net/Http/RestClient.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client.html) | Strongly-typed REST client with automated C++ structure JSON serialization/deserialization. |
+| [FileDownloader](Include/System/Net/Http/FileDownloader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html) | High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal. |
+| [HttpRequestMessage](Include/System/Net/Http/HttpRequestMessage.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_request_message.html) | Represents an outgoing HTTP request with headers, method, and payload. |
+| [HttpResponseMessage](Include/System/Net/Http/HttpResponseMessage.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_response_message.html) | Represents an HTTP response with status code, response headers, and content stream. |
+| [HttpContent](Include/System/Net/Http/HttpContent.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_content.html) | Base class for HTTP entity bodies and content headers. |
+| [StringContent](Include/System/Net/Http/HttpContent.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html) | HTTP content wrapper for text and JSON payloads. |
+| [ByteArrayContent](Include/System/Net/Http/HttpContent.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html) | HTTP content wrapper for raw byte arrays and binary payloads. |
+| [HttpMethod](Include/System/Net/Http/HttpMethod.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_method.html) | Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.). |
 
 ---
 
-### Namespace: `DotNetDupe::System::Text` & `System::Text::Json`
+### Namespace: [`DotNetDupe::System::Text`](Include/System/Text/) & [`System::Text::Json`](Include/System/Text/Json/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **StringBuilder** | Mutable string buffer for high-performance string concatenation. |
-| **TextEncoding** | Represents character encodings (UTF-8, ASCII, UTF-16). |
-| **JsonSerializer** | Serializes objects to JSON strings and deserializes JSON to C++ types. |
+| [StringBuilder](Include/System/Text/StringBuilder.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_string_builder.html) | Mutable string buffer for high-performance string concatenation. |
+| [TextEncoding](Include/System/Text/TextEncoding.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_text_encoding.html) | Represents character encodings (UTF-8, ASCII, UTF-16). |
+| [JsonSerializer](Include/System/Text/Json/JsonSerializer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html) | Serializes objects to JSON strings and deserializes JSON to C++ types. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Utils`
+### Namespace: [`DotNetDupe::System::Utils`](Include/System/Utils/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **StringConvert** | Static helper methods for UTF-8 / UTF-16 conversions and type transformations. |
+| [StringConvert](Include/System/Utils/StringConvert.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_utils_1_1_string_convert.html) | Static helper methods for UTF-8 / UTF-16 conversions and type transformations. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Security`
+### Namespace: [`DotNetDupe::System::Security`](Include/System/Security/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **UserPrincipal** | Cross-platform user account enumeration, group memberships, and administrative privilege inspection. |
-| **HMACSHA256** | Computes SHA256 Hash-based Message Authentication Codes. |
-| **X509Certificate2** | Loads and inspects X.509 SSL/TLS certificates and private keys. |
-| **JWTToken** | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
+| [UserPrincipal](Include/System/Security/Principal/UserPrincipal.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_principal.html) | Cross-platform user account enumeration, group memberships, and administrative privilege inspection. |
+| [HMACSHA256](Include/System/Security/Cryptography/HMACSHA256.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html) | Computes SHA256 Hash-based Message Authentication Codes. |
+| [X509Certificate2](Include/System/Security/Cryptography/X509Certificates/X509Certificate2.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html) | Loads and inspects X.509 SSL/TLS certificates and private keys. |
+| [JWTToken](Include/System/IdentityModel/Tokens/Jwt/JWTToken.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html) | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
 
 ---
 
-### Namespace: `DotNetDupe::System::Data::SqlClient`
+### Namespace: [`DotNetDupe::System::Data::SqlClient`](Include/System/Data/SqlClient/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html)
 
 **Classes**
 
 | Class | Description |
 |---|---|
-| **SqlConnection** | Represents an open connection to a database (supports In-Memory emulation and SQLite persistence). |
-| **SqlCommand** | Represents SQL statements and queries to execute against a database. |
-| **SqlDataReader** | Forward-only cursor for reading result rows from SQL queries. |
-| **SqlParameter** | Parameter for parameterized SQL commands protecting against SQL injection. |
+| [SqlConnection](Include/System/Data/SqlClient/SqlConnection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html) | Represents an open connection to a database (supports In-Memory emulation and SQLite persistence). |
+| [SqlCommand](Include/System/Data/SqlClient/SqlCommand.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html) | Represents SQL statements and queries to execute against a database. |
+| [SqlDataReader](Include/System/Data/SqlClient/SqlDataReader.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html) | Forward-only cursor for reading result rows from SQL queries. |
+| [SqlParameter](Include/System/Data/SqlClient/SqlParameter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_parameter.html) | Parameter for parameterized SQL commands protecting against SQL injection. |
 
 ---
 
-### Namespace: `DotNetDupe::Extensions::DependencyInjection`
+### Namespace: [`DotNetDupe::Extensions::DependencyInjection`](Include/Extensions/DependencyInjection/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html)
 
 **Classes & Interfaces**
 
 | Type | Description |
 |---|---|
-| **ServiceCollection** | Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes. |
-| **ServiceProvider** | Dependency injection container resolving registered service dependencies. |
-| **ServiceScope** | Represents a lifetime scope for resolving scoped service instances. |
-| **ServiceScopeFactory** | Factory for creating scoped service containers. |
-| **IServiceCollection** | Contract for service collection builders. |
-| **IServiceScope** | Contract for lifetime scopes. |
-| **IServiceScopeFactory** | Contract for service scope factories. |
+| [ServiceCollection](Include/Extensions/DependencyInjection/ServiceCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html) | Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes. |
+| [ServiceProvider](Include/Extensions/DependencyInjection/ServiceProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html) | Dependency injection container resolving registered service dependencies. |
+| [ServiceScope](Include/Extensions/DependencyInjection/IServiceScope.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_scope.html) | Represents a lifetime scope for resolving scoped service instances. |
+| [ServiceScopeFactory](Include/Extensions/DependencyInjection/IServiceScopeFactory.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_scope_factory.html) | Factory for creating scoped service containers. |
+| [IServiceCollection](Include/Extensions/DependencyInjection/IServiceCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html) | Contract for service collection builders. |
+| [IServiceScope](Include/Extensions/DependencyInjection/IServiceScope.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope.html) | Contract for lifetime scopes. |
+| [IServiceScopeFactory](Include/Extensions/DependencyInjection/IServiceScopeFactory.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope_factory.html) | Contract for service scope factories. |
 
 ---
 
-### Namespace: `DotNetDupe::Extensions::Logging`
+### Namespace: [`DotNetDupe::Extensions::Logging`](Include/Extensions/Logging/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html)
 
 **Classes & Interfaces**
 
 | Type | Description |
 |---|---|
-| **LogManager** | Global thread-safe static factory and cache for category loggers and file/console providers. |
-| **LoggerTextWriter** | High-performance stream redirector bridging `TextWriter` output into `LogManager`. |
-| **LoggerFactory** | Configures providers and generates category loggers. |
-| **Logger&lt;T&gt;** | Generic category logger for class-specific logging. |
-| **ConsoleLoggerProvider** | Renders structured console log records (Plain text and JSON format). |
-| **FileLoggerProvider** | Thread-safe file logging provider with auto directory creation and relative path resolution. |
-| **ILogger** | Core interface for emitting structured diagnostic log events. |
-| **ILoggerOf&lt;T&gt;** | Generic category logger interface. |
-| **ILoggerProvider** | Provider factory interface for creating loggers. |
-| **ILoggerFactory** | Logging factory interface. |
+| [LogManager](Include/Extensions/Logging/LogManager.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager.html) | Global thread-safe static factory and cache for category loggers and file/console providers. |
+| [LoggerTextWriter](Include/Extensions/Logging/LoggerTextWriter.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html) | High-performance stream redirector bridging `TextWriter` output into `LogManager`. |
+| [LoggerFactory](Include/Extensions/Logging/LoggerFactory.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_factory.html) | Configures providers and generates category loggers. |
+| [Logger&lt;T&gt;](Include/Extensions/Logging/Logger.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger.html) | Generic category logger for class-specific logging. |
+| [ConsoleLoggerProvider](Include/Extensions/Logging/ConsoleLoggerProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider.html) | Renders structured console log records (Plain text and JSON format). |
+| [FileLoggerProvider](Include/Extensions/Logging/FileLoggerProvider.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html) | Thread-safe file logging provider with auto directory creation and relative path resolution. |
+| [ILogger](Include/Extensions/Logging/ILogger.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html) | Core interface for emitting structured diagnostic log events. |
+| [ILoggerOf&lt;T&gt;](Include/Extensions/Logging/ILogger.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html) | Generic category logger interface. |
+| [ILoggerProvider](Include/Extensions/Logging/ILogger.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_provider.html) | Provider factory interface for creating loggers. |
+| [ILoggerFactory](Include/Extensions/Logging/ILogger.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory.html) | Logging factory interface. |
 
 ---
 
-### Namespace: `DotNetDupe::WebAppCore`
+### Namespace: [`DotNetDupe::WebAppCore`](Include/WebAppCore/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_web_app_core.html)
 
 **Builder, Controllers & Server**
 
 | Class | Description |
 |---|---|
-| **WebApplicationBuilder** | Configures services, dependency injection, and builds the `WebApplication` host. |
-| **WebApplication** | Configures routing endpoints and executes the HTTP server listener. |
-| **WebAppServer** | Web server hosting static website content (`index.html`, CSS, JS) and REST APIs simultaneously. |
-| **ControllerBase** | Base class for ASP.NET MVC / Web API style controllers (`Ok`, `Created`, `NotFound`, `BadRequest`). |
-| **ControllerRouteBuilder&lt;T&gt;** | Maps controller actions and automates JSON payload serialization and deserialization. |
-| **HttpContext** | Encapsulates HTTP request and response context for individual HTTP transactions. |
-| **HttpRequest** | Represents incoming HTTP request headers, query parameters, and body. |
-| **HttpResponse** | Represents outgoing HTTP response status codes, headers, and body. |
-| **Push Notifications (SSE & WebSockets)** | Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets. |
+| [WebApplicationBuilder](Include/WebAppCore/Builder/WebApplicationBuilder.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html) | Configures services, dependency injection, and builds the `WebApplication` host. |
+| [WebApplication](Include/WebAppCore/Builder/WebApplication.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html) | Configures routing endpoints and executes the HTTP server listener. |
+| [WebAppServer](Include/WebAppCore/Server/WebAppServer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_server_1_1_web_app_server.html) | Web server hosting static website content (`index.html`, CSS, JS) and REST APIs simultaneously. |
+| [ControllerBase](Include/WebAppCore/Controllers/ControllerBase.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html) | Base class for ASP.NET MVC / Web API style controllers (`Ok`, `Created`, `NotFound`, `BadRequest`). |
+| [ControllerRouteBuilder&lt;T&gt;](Include/WebAppCore/Controllers/ControllerRouteBuilder.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_route_builder.html) | Maps controller actions and automates JSON payload serialization and deserialization. |
+| [HttpContext](Include/WebAppCore/Http/HttpContext.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html) | Encapsulates HTTP request and response context for individual HTTP transactions. |
+| [HttpRequest](Include/WebAppCore/Http/HttpContext.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_request.html) | Represents incoming HTTP request headers, query parameters, and body. |
+| [HttpResponse](Include/WebAppCore/Http/HttpContext.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_response.html) | Represents outgoing HTTP response status codes, headers, and body. |
+| [Push Notifications (SSE & WebSockets)](Include/WebAppCore/WebSockets/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html) | Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets. |
 
 ---
 

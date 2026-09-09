@@ -550,6 +550,10 @@ if (Test-Path $readmeSource) {
     $readmeContent = [System.IO.File]::ReadAllText($readmeSource, [System.Text.Encoding]::UTF8)
     # Transform relative docs/*.md links to official online documentation pages
     $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($readmeContent, '\(docs/([a-zA-Z0-9_]+)\.md\)', '(https://sudheeshps.github.io/dotnetdupe/docs/$1.html)')
+    # Transform relative docs/html/ links to official online documentation pages for NuGet.org
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/html/([^)]+)\)', '(https://sudheeshps.github.io/dotnetdupe/html/$1)')
+    # Transform relative Include/ links to official GitHub repository URLs for NuGet.org
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\((Include/[^)]+)\)', '(https://github.com/sudheeshps/DotNetDupe/blob/main/$1)')
     [System.IO.File]::WriteAllText($nugetReadmePath, $transformedReadme, [System.Text.Encoding]::UTF8)
     Write-Host "[NUGET] Generated NuGet package README with public URLs at $nugetReadmePath" -ForegroundColor Green
 }

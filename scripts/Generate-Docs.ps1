@@ -133,8 +133,9 @@ if (Test-Path $outputHtml) {
     $doxyIndexContent = $doxyIndexContent.Replace('href="docs/html/index.html"', 'href="index.html"')
     $doxyIndexContent = $doxyIndexContent.Replace('href="docs/html/', 'href="')
     $doxyIndexContent = $doxyIndexContent.Replace('href="CodeCoverage/', 'href="../../CodeCoverage/')
+    $doxyIndexContent = $doxyIndexContent.Replace('href="Include/', 'href="../../Include/')
     [System.IO.File]::WriteAllText($outputHtml, $doxyIndexContent, [System.Text.Encoding]::UTF8)
-    Write-Host "[INFO] Relinked docs/index.html and CodeCoverage in generated Doxygen index." -ForegroundColor Gray
+    Write-Host "[INFO] Relinked docs/index.html, CodeCoverage, and Include in generated Doxygen index." -ForegroundColor Gray
 
     Write-Host "`n[SUCCESS] API Documentation generated in $elapsed seconds!" -ForegroundColor Green
     Write-Host "  -> API Reference: $outputHtml" -ForegroundColor Green
