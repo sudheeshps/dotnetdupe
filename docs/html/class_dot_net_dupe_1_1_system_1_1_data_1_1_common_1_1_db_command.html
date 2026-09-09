@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Represents an abstract SQL statement or stored procedure to execute against a data source.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_db_command_8h_source.html">DbCommand.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Data::Common::DbCommand:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -130,13 +133,21 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a98c663f5be6dee399dc47f5169a90a7d" id="r_a98c663f5be6dee399dc47f5169a90a7d"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a98c663f5be6dee399dc47f5169a90a7d">DbCommand</a> ()=default</td></tr>
+<tr class="memdesc:a98c663f5be6dee399dc47f5169a90a7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> class.  <br /></td></tr>
 <tr class="memitem:a6d2187eda8ced6dcda58dbe24c318640" id="r_a6d2187eda8ced6dcda58dbe24c318640"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a6d2187eda8ced6dcda58dbe24c318640">~DbCommand</a> () override=default</td></tr>
+<tr class="memdesc:a6d2187eda8ced6dcda58dbe24c318640"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a6250f94d57b0aeccb2408bbdc5e8ed21" id="r_a6250f94d57b0aeccb2408bbdc5e8ed21"><td class="memItemLeft">virtual int&#160;</td><td class="memItemRight"><a class="el" href="#a6250f94d57b0aeccb2408bbdc5e8ed21">ExecuteNonQuery</a> ()=0</td></tr>
+<tr class="memdesc:a6250f94d57b0aeccb2408bbdc5e8ed21"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes a SQL statement against the connection and returns the number of rows affected.  <br /></td></tr>
 <tr class="memitem:a33df2b824fc6fced4a16de31edfdee59" id="r_a33df2b824fc6fced4a16de31edfdee59"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html">DbDataReader</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a33df2b824fc6fced4a16de31edfdee59">ExecuteReader</a> ()=0</td></tr>
+<tr class="memdesc:a33df2b824fc6fced4a16de31edfdee59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the command text against the connection and returns a forward-only reader.  <br /></td></tr>
 <tr class="memitem:a7789a7d733b255dbe566b32af2e8e8ce" id="r_a7789a7d733b255dbe566b32af2e8e8ce"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a7789a7d733b255dbe566b32af2e8e8ce">ExecuteScalar</a> ()=0</td></tr>
+<tr class="memdesc:a7789a7d733b255dbe566b32af2e8e8ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes the query and returns the first column of the first row in the result set.  <br /></td></tr>
 <tr class="memitem:aec5bdae3cbc919dd4920c6f994613399" id="r_aec5bdae3cbc919dd4920c6f994613399"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aec5bdae3cbc919dd4920c6f994613399">GetCommandText</a> () const =0</td></tr>
+<tr class="memdesc:aec5bdae3cbc919dd4920c6f994613399"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the text command to run against the data source.  <br /></td></tr>
 <tr class="memitem:a7a6347f44ea6dd08f7092c28c1b4b48a" id="r_a7a6347f44ea6dd08f7092c28c1b4b48a"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_parameter_collection.html">DbParameterCollection</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a7a6347f44ea6dd08f7092c28c1b4b48a">GetParameters</a> () const =0</td></tr>
+<tr class="memdesc:a7a6347f44ea6dd08f7092c28c1b4b48a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the collection of parameters associated with the command.  <br /></td></tr>
 <tr class="memitem:ae129ace575a241c6146be4df33e0d5ff" id="r_ae129ace575a241c6146be4df33e0d5ff"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#ae129ace575a241c6146be4df33e0d5ff">SetCommandText</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;sText)=0</td></tr>
+<tr class="memdesc:ae129ace575a241c6146be4df33e0d5ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the text command to run against the data source.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -158,8 +169,11 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_db_command_8h_source.html#l00014">14</a> of file <a class="el" href="_db_command_8h_source.html">DbCommand.h</a>.</p>
+<div class="textblock"><p>Represents an abstract SQL statement or stored procedure to execute against a data source. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">System.Data.Common.DbCommand</a> and adhering to the ADO.NET specification. <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> serves as the base abstraction for database commands across in-memory, SQLite, and relational database providers.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> instances are generally not guaranteed to be thread-safe. Concurrent execution of commands on the same instance must be synchronized externally. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_db_command_8h_source.html#l00023">23</a> of file <a class="el" href="_db_command_8h_source.html">DbCommand.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a98c663f5be6dee399dc47f5169a90a7d" name="a98c663f5be6dee399dc47f5169a90a7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98c663f5be6dee399dc47f5169a90a7d">&#9670;&#160;</a></span>DbCommand()</h2>
@@ -183,6 +197,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> class. </p>
 
 </div>
 </div>
@@ -209,6 +225,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor for polymorphic cleanup. </p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -234,6 +252,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Executes a SQL statement against the connection and returns the number of rows affected. </p>
+<dl class="section return"><dt>Returns</dt><dd>The number of rows affected by INSERT, UPDATE, or DELETE operations. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">DotNetDupe::System::InvalidOperationException</a></td><td>If execution fails. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#a086a08441dcf196e877fdb512d55b8ae">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 
@@ -262,6 +289,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Executes the command text against the connection and returns a forward-only reader. </p>
+<dl class="section return"><dt>Returns</dt><dd>A smart pointer to a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">DbDataReader</a> object. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">DotNetDupe::System::InvalidOperationException</a></td><td>If connection is closed or SQL syntax error occurs. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#a6ce37612c1bfb57406fbf9c2c0a526fa">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 
 </div>
@@ -288,6 +324,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Executes the query and returns the first column of the first row in the result set. </p>
+<dl class="section return"><dt>Returns</dt><dd>The value of the first column of the first row formatted as a string. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">DotNetDupe::System::InvalidOperationException</a></td><td>If execution fails. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#ac8eb9416f1ce9e837445ccbf79745d99">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 
@@ -316,6 +361,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the text command to run against the data source. </p>
+<dl class="section return"><dt>Returns</dt><dd>The SQL statement or stored procedure name to execute. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#a0d03a71422c9440955a9d0f190eddad5">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 
 </div>
@@ -343,6 +391,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the collection of parameters associated with the command. </p>
+<dl class="section return"><dt>Returns</dt><dd>A smart pointer to the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_parameter_collection.html" title="Represents a collection of parameters associated with a DbCommand.">DbParameterCollection</a>. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#a4ad80b58ea15738f480f2707c2ddee9a">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 
 </div>
@@ -369,6 +420,14 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Sets the text command to run against the data source. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sText</td><td>The SQL statement or stored procedure name to execute. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_command.html#ac4b9acd8f8ea07a1fe3f2e95e0f0898a">DotNetDupe::System::Data::SqlClient::SqlCommand</a>.</p>
 

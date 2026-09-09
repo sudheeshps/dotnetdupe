@@ -18,6 +18,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static void PopulateSessionInfo(const WTS_SESSION_INFOW& wtsInfo, UserSessionInfo& session) {
+                /// Step: Query username associated with WTS session.
                 LPWSTR pBuffer = NULL; DWORD dwBytes = 0;
                 String sUsername = "SYSTEM";
                 if (::WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, wtsInfo.SessionId, WTSUserName, &pBuffer, &dwBytes) && pBuffer && dwBytes > 2) {
@@ -25,6 +26,7 @@ namespace DotNetDupe {
                     ::WTSFreeMemory(pBuffer);
                 }
 
+                /// Step: Populate session properties and status timestamps.
                 session.uSessionId = wtsInfo.SessionId;
                 session.sUsername = sUsername;
                 session.bIsActive = (wtsInfo.State == WTSActive);
@@ -34,6 +36,7 @@ namespace DotNetDupe {
             }
 
             void ActiveUserSession::EnumerateWin32Sessions(Collections::Generic::List<UserSessionInfo>& lstSessions) {
+                /// Step: Enumerate all interactive sessions on the local server.
                 WTS_SESSION_INFOW* pSessionInfo = NULL;
                 DWORD dwSessionCount = 0;
 
@@ -51,6 +54,7 @@ namespace DotNetDupe {
 #endif
 
             Collections::Generic::List<UserSessionInfo> ActiveUserSession::GetAllSessions() {
+                /// Step: Enumerate all sessions via platform API.
                 Collections::Generic::List<UserSessionInfo> lstSessions;
 #if defined(_WIN32)
                 EnumerateWin32Sessions(lstSessions);
@@ -59,6 +63,7 @@ namespace DotNetDupe {
             }
 
             Collections::Generic::List<UserSessionInfo> ActiveUserSession::GetActiveSessions() {
+                /// Step: Filter full session list for active sessions only.
                 auto lstAll = GetAllSessions();
                 Collections::Generic::List<UserSessionInfo> lstActive;
                 for (int i = 0; i < lstAll.GetCount(); i++) {
@@ -68,6 +73,7 @@ namespace DotNetDupe {
             }
 
             Collections::Generic::List<UserSessionInfo> ActiveUserSession::GetExpiredSessions() {
+                /// Step: Filter full session list for inactive/disconnected sessions.
                 auto lstAll = GetAllSessions();
                 Collections::Generic::List<UserSessionInfo> lstExpired;
                 for (int i = 0; i < lstAll.GetCount(); i++) {

@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Provides interaction with Windows event logs and Linux syslog services.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_event_log_8h_source.html">EventLog.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Diagnostics::EventLog:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,22 +132,39 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa2ecb9686b49141a1332956483a16613" id="r_aa2ecb9686b49141a1332956483a16613"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aa2ecb9686b49141a1332956483a16613">EventLog</a> ()</td></tr>
+<tr class="memdesc:aa2ecb9686b49141a1332956483a16613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html" title="Provides interaction with Windows event logs and Linux syslog services.">EventLog</a> class targeting the Application log.  <br /></td></tr>
 <tr class="memitem:aa9bcec58dc9fb44678c3fea730d2a6c4" id="r_aa9bcec58dc9fb44678c3fea730d2a6c4"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aa9bcec58dc9fb44678c3fea730d2a6c4">EventLog</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName)</td></tr>
+<tr class="memdesc:aa9bcec58dc9fb44678c3fea730d2a6c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an instance targeting the specified log on the local computer.  <br /></td></tr>
 <tr class="memitem:a31944f7fd8358f627133ddfa238ba870" id="r_a31944f7fd8358f627133ddfa238ba870"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a31944f7fd8358f627133ddfa238ba870">EventLog</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:a31944f7fd8358f627133ddfa238ba870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an instance targeting the specified log and machine.  <br /></td></tr>
 <tr class="memitem:a23416357bc5b0e282030b611b6c88044" id="r_a23416357bc5b0e282030b611b6c88044"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a23416357bc5b0e282030b611b6c88044">EventLog</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource)</td></tr>
+<tr class="memdesc:a23416357bc5b0e282030b611b6c88044"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes an instance targeting the specified log, machine, and source.  <br /></td></tr>
 <tr class="memitem:ad1c101766b6e24d1a846bcfa31850d5b" id="r_ad1c101766b6e24d1a846bcfa31850d5b"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#ad1c101766b6e24d1a846bcfa31850d5b">~EventLog</a> ()</td></tr>
+<tr class="memdesc:ad1c101766b6e24d1a846bcfa31850d5b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor.  <br /></td></tr>
 <tr class="memitem:ab75da377603ee5b73bf2501b08909bca" id="r_ab75da377603ee5b73bf2501b08909bca"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab75da377603ee5b73bf2501b08909bca">Clear</a> ()</td></tr>
+<tr class="memdesc:ab75da377603ee5b73bf2501b08909bca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes all entries from the event log.  <br /></td></tr>
 <tr class="memitem:a4e63d354a90fcea7f3d96849f6caa530" id="r_a4e63d354a90fcea7f3d96849f6caa530"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a4e63d354a90fcea7f3d96849f6caa530">Close</a> ()</td></tr>
+<tr class="memdesc:a4e63d354a90fcea7f3d96849f6caa530"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the event log and releases read/write handles.  <br /></td></tr>
 <tr class="memitem:afeae849bc324d91da9e4d297ad92cae7" id="r_afeae849bc324d91da9e4d297ad92cae7"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html">EventLogEntry</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#afeae849bc324d91da9e4d297ad92cae7">GetEntries</a> () const</td></tr>
+<tr class="memdesc:afeae849bc324d91da9e4d297ad92cae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the contents of the event log as a list of entries.  <br /></td></tr>
 <tr class="memitem:ac5e56db24bd246d15b1d196870cea7c4" id="r_ac5e56db24bd246d15b1d196870cea7c4"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac5e56db24bd246d15b1d196870cea7c4">GetLog</a> () const</td></tr>
+<tr class="memdesc:ac5e56db24bd246d15b1d196870cea7c4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name of the log to read from or write to.  <br /></td></tr>
 <tr class="memitem:a87fd94b278a17c731174c69f21b670e5" id="r_a87fd94b278a17c731174c69f21b670e5"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a87fd94b278a17c731174c69f21b670e5">GetMachineName</a> () const</td></tr>
+<tr class="memdesc:a87fd94b278a17c731174c69f21b670e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name of the computer on which the event log resides.  <br /></td></tr>
 <tr class="memitem:aa01073d0d32cbf4ee574eedfb8d1c57f" id="r_aa01073d0d32cbf4ee574eedfb8d1c57f"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa01073d0d32cbf4ee574eedfb8d1c57f">GetSource</a> () const</td></tr>
+<tr class="memdesc:aa01073d0d32cbf4ee574eedfb8d1c57f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the source name to register and use when writing to the event log.  <br /></td></tr>
 <tr class="memitem:af96d814b91da8867b7a816b2eca5cff8" id="r_af96d814b91da8867b7a816b2eca5cff8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af96d814b91da8867b7a816b2eca5cff8">SetLog</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName)</td></tr>
+<tr class="memdesc:af96d814b91da8867b7a816b2eca5cff8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the name of the log to read from or write to.  <br /></td></tr>
 <tr class="memitem:a40b53abb3e4a0bf4b452da0747bcba39" id="r_a40b53abb3e4a0bf4b452da0747bcba39"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a40b53abb3e4a0bf4b452da0747bcba39">SetMachineName</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:a40b53abb3e4a0bf4b452da0747bcba39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the name of the computer on which the event log resides.  <br /></td></tr>
 <tr class="memitem:a3e14ccdf4d34e9bc94bc83aa50ca6945" id="r_a3e14ccdf4d34e9bc94bc83aa50ca6945"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3e14ccdf4d34e9bc94bc83aa50ca6945">SetSource</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource)</td></tr>
+<tr class="memdesc:a3e14ccdf4d34e9bc94bc83aa50ca6945"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the source name to register and use when writing to the event log.  <br /></td></tr>
 <tr class="memitem:ac352c9e9c96b58a88a2bea0216f1c44c" id="r_ac352c9e9c96b58a88a2bea0216f1c44c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac352c9e9c96b58a88a2bea0216f1c44c">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage)</td></tr>
+<tr class="memdesc:ac352c9e9c96b58a88a2bea0216f1c44c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an information entry with the specified message to the event log.  <br /></td></tr>
 <tr class="memitem:a81cbc85e9a5d0232e31780127fda1d06" id="r_a81cbc85e9a5d0232e31780127fda1d06"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a81cbc85e9a5d0232e31780127fda1d06">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a> eType)</td></tr>
+<tr class="memdesc:a81cbc85e9a5d0232e31780127fda1d06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an entry with the specified message and severity type.  <br /></td></tr>
 <tr class="memitem:a53bea2bb338fc0185e1539c690eacf8b" id="r_a53bea2bb338fc0185e1539c690eacf8b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a53bea2bb338fc0185e1539c690eacf8b">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a> eType, int iEventID)</td></tr>
+<tr class="memdesc:a53bea2bb338fc0185e1539c690eacf8b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an entry with specified message, severity, and event identifier.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -162,26 +182,43 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ad309227cd8b97a519516f9ebe6d09d80" id="r_ad309227cd8b97a519516f9ebe6d09d80"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ad309227cd8b97a519516f9ebe6d09d80">CreateEventSource</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName)</td></tr>
+<tr class="memdesc:ad309227cd8b97a519516f9ebe6d09d80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Establishes the specified source name as a valid event source for writing to a log.  <br /></td></tr>
 <tr class="memitem:aa46dd21af4c33473839ad3fee643b51a" id="r_aa46dd21af4c33473839ad3fee643b51a"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aa46dd21af4c33473839ad3fee643b51a">Delete</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName)</td></tr>
+<tr class="memdesc:aa46dd21af4c33473839ad3fee643b51a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an event log from the local computer.  <br /></td></tr>
 <tr class="memitem:a3736153e3ecc5dfde25b35291186b370" id="r_a3736153e3ecc5dfde25b35291186b370"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a3736153e3ecc5dfde25b35291186b370">Delete</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:a3736153e3ecc5dfde25b35291186b370"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an event log from the specified computer.  <br /></td></tr>
 <tr class="memitem:a141a51dbcf7a910261e22340075dd2d3" id="r_a141a51dbcf7a910261e22340075dd2d3"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a141a51dbcf7a910261e22340075dd2d3">DeleteEventSource</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource)</td></tr>
+<tr class="memdesc:a141a51dbcf7a910261e22340075dd2d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an event source registration from the local computer.  <br /></td></tr>
 <tr class="memitem:a230eb3ffc1222233ad12095e38d105b7" id="r_a230eb3ffc1222233ad12095e38d105b7"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a230eb3ffc1222233ad12095e38d105b7">DeleteEventSource</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:a230eb3ffc1222233ad12095e38d105b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes an event source registration from the specified computer.  <br /></td></tr>
 <tr class="memitem:aeee6382a38724a80cf79d094b5a2e1f6" id="r_aeee6382a38724a80cf79d094b5a2e1f6"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#aeee6382a38724a80cf79d094b5a2e1f6">Exists</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName)</td></tr>
+<tr class="memdesc:aeee6382a38724a80cf79d094b5a2e1f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the log exists on the local computer.  <br /></td></tr>
 <tr class="memitem:a24eedf9d3254a4eb9deb1f043f9d87e0" id="r_a24eedf9d3254a4eb9deb1f043f9d87e0"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a24eedf9d3254a4eb9deb1f043f9d87e0">Exists</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sLogName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:a24eedf9d3254a4eb9deb1f043f9d87e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the log exists on the specified computer.  <br /></td></tr>
 <tr class="memitem:aa3051965e1b2cc73a32c3ad2942af0eb" id="r_aa3051965e1b2cc73a32c3ad2942af0eb"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="#aa2ecb9686b49141a1332956483a16613">EventLog</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aa3051965e1b2cc73a32c3ad2942af0eb">GetEventLogs</a> ()</td></tr>
+<tr class="memdesc:aa3051965e1b2cc73a32c3ad2942af0eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Searches for all event logs on the local computer.  <br /></td></tr>
 <tr class="memitem:aa45f06b629bd718ecee6b3da14f9d22e" id="r_aa45f06b629bd718ecee6b3da14f9d22e"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="#aa2ecb9686b49141a1332956483a16613">EventLog</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aa45f06b629bd718ecee6b3da14f9d22e">GetEventLogs</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:aa45f06b629bd718ecee6b3da14f9d22e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Searches for all event logs on the specified computer.  <br /></td></tr>
 <tr class="memitem:ac6310dc8a068a8c7e5d89f0f4d0f653f" id="r_ac6310dc8a068a8c7e5d89f0f4d0f653f"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#ac6310dc8a068a8c7e5d89f0f4d0f653f">SourceExists</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource)</td></tr>
+<tr class="memdesc:ac6310dc8a068a8c7e5d89f0f4d0f653f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the specified event source is registered on the local computer.  <br /></td></tr>
 <tr class="memitem:acb48522df23f4691ea12050daeed932e" id="r_acb48522df23f4691ea12050daeed932e"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#acb48522df23f4691ea12050daeed932e">SourceExists</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMachineName)</td></tr>
+<tr class="memdesc:acb48522df23f4691ea12050daeed932e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the specified event source is registered on the given computer.  <br /></td></tr>
 <tr class="memitem:ad7edbe1dca398226de351fe6bed61b3e" id="r_ad7edbe1dca398226de351fe6bed61b3e"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ad7edbe1dca398226de351fe6bed61b3e">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage)</td></tr>
+<tr class="memdesc:ad7edbe1dca398226de351fe6bed61b3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an information entry to an event log using the specified source.  <br /></td></tr>
 <tr class="memitem:af624ec935d2f05fddf3e4492fad6a366" id="r_af624ec935d2f05fddf3e4492fad6a366"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af624ec935d2f05fddf3e4492fad6a366">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a> eType)</td></tr>
+<tr class="memdesc:af624ec935d2f05fddf3e4492fad6a366"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an entry with specified source, message, and entry type.  <br /></td></tr>
 <tr class="memitem:a7db744158667cf13731dc3901715b8fe" id="r_a7db744158667cf13731dc3901715b8fe"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a7db744158667cf13731dc3901715b8fe">WriteEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a> eType, int iEventID)</td></tr>
+<tr class="memdesc:a7db744158667cf13731dc3901715b8fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes an entry with specified source, message, type, and event identifier.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00045">45</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<div class="textblock"><p>Provides interaction with Windows event logs and Linux syslog services. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html" title="Provides interaction with Windows event logs and Linux syslog services.">System.Diagnostics.EventLog</a>. Supports reading, writing, creating, and clearing system event logs across platforms. On Windows, reads via <span class="tt">OpenEventLogW</span> and writes via <span class="tt">ReportEventW</span>; on Linux, interfaces with POSIX <span class="tt">syslog</span> (RFC 5424).</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Static methods and internal registry access are thread-safe. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00083">83</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa2ecb9686b49141a1332956483a16613" name="aa2ecb9686b49141a1332956483a16613"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa2ecb9686b49141a1332956483a16613">&#9670;&#160;</a></span>EventLog() <span class="overload">[1/4]</span></h2>
@@ -198,9 +235,11 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html" title="Provides interaction with Windows event logs and Linux syslog services.">EventLog</a> class targeting the Application log. </p>
+
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00050">50</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00434">GetEventLogs()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00465">GetEventLogs()</a>.</p>
 
 </div>
 </div>
@@ -218,6 +257,14 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes an instance targeting the specified log on the local computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The name of the log (e.g. "Application", "System"). </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00054">54</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
@@ -241,6 +288,15 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes an instance targeting the specified log and machine. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The log name. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The computer name ("." for local). </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00059">59</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
@@ -270,6 +326,16 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Initializes an instance targeting the specified log, machine, and source. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The log name. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The computer name ("." for local). </td></tr>
+    <tr><td class="paramname">sSource</td><td>The application event source name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00065">65</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 </div>
@@ -297,6 +363,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor. </p>
+
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00071">71</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 </div>
@@ -317,7 +385,11 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00443">443</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Removes all entries from the event log. </p>
+<p>Step: Clear native event log via ClearEventLogW.</p>
+<p>Step: Clear in-memory event entries.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00475">475</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -338,7 +410,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00457">457</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Closes the event log and releases read/write handles. </p>
+<p>Step: Close resources associated with event log.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00491">491</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 </div>
 </div>
@@ -369,7 +444,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00342">342</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Establishes the specified source name as a valid event source for writing to a log. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The source name to register. </td></tr>
+    <tr><td class="paramname">sLogName</td><td>The target log name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Guard parameter and register event source.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00368">368</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, <a class="el" href="_event_log_8cpp_source.html#l00039">DotNetDupe::System::Diagnostics::s_mapSourceToLog</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -398,11 +483,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00363">363</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Removes an event log from the local computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The name of the log to delete. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00363">Delete()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00390">390</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00363">Delete()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00390">Delete()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00390">Delete()</a>.</p>
 
 </div>
 </div>
@@ -433,7 +526,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00377">377</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Removes an event log from the specified computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The name of the log to delete. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The machine name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Validate parameter and delete log registry key.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00405">405</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -462,11 +565,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00389">389</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Removes an event source registration from the local computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The source name to remove. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00389">DeleteEventSource()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00418">418</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00389">DeleteEventSource()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00418">DeleteEventSource()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00418">DeleteEventSource()</a>.</p>
 
 </div>
 </div>
@@ -497,7 +608,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00393">393</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Removes an event source registration from the specified computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The source name to remove. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The machine name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Validate parameter and delete event source.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00422">422</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_event_log_8cpp_source.html#l00039">DotNetDupe::System::Diagnostics::s_mapSourceToLog</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -526,11 +647,20 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00409">409</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Determines whether the log exists on the local computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The log name to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the log exists; otherwise false. </dd></dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00409">Exists()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00439">439</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00409">Exists()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00439">Exists()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00439">Exists()</a>.</p>
 
 </div>
 </div>
@@ -561,7 +691,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00413">413</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Determines whether the log exists on the specified computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The log name. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The computer name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the log exists; otherwise false. </dd></dl>
+<p>Step: Verify log existence via registry or internal store.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00443">443</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -582,7 +723,12 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00266">266</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Gets the contents of the event log as a list of entries. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html" title="Encapsulates a single record in the event log.">EventLogEntry</a> objects. </dd></dl>
+<p>Step: Synchronize and query platform event logs.</p>
+<p>Step: Merge entries recorded in the in-memory fallback store.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00284">284</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00042">DotNetDupe::System::Diagnostics::EventLogEntry::EventLogEntry()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -611,11 +757,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00430">430</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Searches for all event logs on the local computer. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html" title="Provides interaction with Windows event logs and Linux syslog services.">EventLog</a> instances. </dd></dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00430">GetEventLogs()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00461">461</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00430">GetEventLogs()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00461">GetEventLogs()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00461">GetEventLogs()</a>.</p>
 
 </div>
 </div>
@@ -642,7 +791,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00434">434</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Searches for all event logs on the specified computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMachineName</td><td>The computer name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html" title="Provides interaction with Windows event logs and Linux syslog services.">EventLog</a> instances. </dd></dl>
+<p>Step: Enumerate all registered event log stores.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00465">465</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00050">EventLog()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_event_log_8cpp_source.html#l00040">DotNetDupe::System::Diagnostics::s_mapLogEntries</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -671,7 +830,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00053">53</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the name of the log to read from or write to. </p>
+<dl class="section return"><dt>Returns</dt><dd>The log name string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00108">108</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -698,7 +860,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00056">56</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the name of the computer on which the event log resides. </p>
+<dl class="section return"><dt>Returns</dt><dd>The machine name. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00116">116</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -725,7 +890,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00059">59</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the source name to register and use when writing to the event log. </p>
+<dl class="section return"><dt>Returns</dt><dd>The source name. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00124">124</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -752,7 +920,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00054">54</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Sets the name of the log to read from or write to. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sLogName</td><td>The log name string. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00112">112</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -779,7 +955,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00057">57</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Sets the name of the computer on which the event log resides. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMachineName</td><td>The computer name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00120">120</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -806,7 +990,15 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00060">60</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Sets the source name to register and use when writing to the event log. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The source name. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00128">128</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -833,11 +1025,20 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00329">329</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Determines whether the specified event source is registered on the local computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The name of the event source. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if source exists; otherwise false. </dd></dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00329">SourceExists()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00354">354</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00329">SourceExists()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00354">SourceExists()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00354">SourceExists()</a>.</p>
 
 </div>
 </div>
@@ -868,7 +1069,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00333">333</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Determines whether the specified event source is registered on the given computer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The name of the event source. </td></tr>
+    <tr><td class="paramname">sMachineName</td><td>The machine name to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if source exists; otherwise false. </dd></dl>
+<p>Step: Check source existence on native platform and fallback map.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00358">358</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_event_log_8cpp_source.html#l00039">DotNetDupe::System::Diagnostics::s_mapSourceToLog</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 
@@ -889,11 +1101,19 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00283">283</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an information entry with the specified message to the event log. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMessage</td><td>The text string to write. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8h_source.html#l00021">DotNetDupe::System::Diagnostics::Information</a>, and <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00303">303</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00287">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00291">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00296">WriteEntry()</a>, and <a class="el" href="_event_log_8cpp_source.html#l00300">WriteEntry()</a>.</p>
+<p class="reference">References <a class="el" href="_event_log_8h_source.html#l00025">DotNetDupe::System::Diagnostics::Information</a>, and <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00307">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00311">WriteEntry()</a>, <a class="el" href="_event_log_8cpp_source.html#l00316">WriteEntry()</a>, and <a class="el" href="_event_log_8cpp_source.html#l00320">WriteEntry()</a>.</p>
 
 </div>
 </div>
@@ -916,9 +1136,18 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00287">287</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an entry with the specified message and severity type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMessage</td><td>The text string to write. </td></tr>
+    <tr><td class="paramname">eType</td><td>The severity classification. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00307">307</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>.</p>
 
 </div>
 </div>
@@ -946,9 +1175,19 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00291">291</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an entry with specified message, severity, and event identifier. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMessage</td><td>The text string to write. </td></tr>
+    <tr><td class="paramname">eType</td><td>The severity classification. </td></tr>
+    <tr><td class="paramname">iEventID</td><td>The application-specific event identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00311">311</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>.</p>
 
 </div>
 </div>
@@ -979,9 +1218,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00296">296</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an information entry to an event log using the specified source. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The source by which the application is registered. </td></tr>
+    <tr><td class="paramname">sMessage</td><td>The text message to write. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8h_source.html#l00021">DotNetDupe::System::Diagnostics::Information</a>, and <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00316">316</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_event_log_8h_source.html#l00025">DotNetDupe::System::Diagnostics::Information</a>, and <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>.</p>
 
 </div>
 </div>
@@ -1017,9 +1265,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00300">300</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an entry with specified source, message, and entry type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The registered source name. </td></tr>
+    <tr><td class="paramname">sMessage</td><td>The text message. </td></tr>
+    <tr><td class="paramname">eType</td><td>The severity classification. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00283">WriteEntry()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00320">320</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_event_log_8cpp_source.html#l00303">WriteEntry()</a>.</p>
 
 </div>
 </div>
@@ -1060,7 +1318,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00316">316</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
+<p>Writes an entry with specified source, message, type, and event identifier. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSource</td><td>The registered source name. </td></tr>
+    <tr><td class="paramname">sMessage</td><td>The text message. </td></tr>
+    <tr><td class="paramname">eType</td><td>The severity classification. </td></tr>
+    <tr><td class="paramname">iEventID</td><td>The event identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Validate parameter constraints.</p>
+<p>Step: Dispatch write to native platform logger.</p>
+<p>Step: Synchronize and record in memory fallback table.</p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00337">337</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_event_log_8cpp_source.html#l00038">DotNetDupe::System::Diagnostics::s_mtxEventLog</a>.</p>
 

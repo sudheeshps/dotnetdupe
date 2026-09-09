@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Represents an abstract connection to an ADO.NET compatible data source.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_db_connection_8h_source.html">DbConnection.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Data::Common::DbConnection:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -130,12 +133,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a44ecb83e5aa5e50d337305de33076a49" id="r_a44ecb83e5aa5e50d337305de33076a49"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a44ecb83e5aa5e50d337305de33076a49">DbConnection</a> ()=default</td></tr>
+<tr class="memdesc:a44ecb83e5aa5e50d337305de33076a49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_connection.html" title="Represents an abstract connection to an ADO.NET compatible data source.">DbConnection</a> class.  <br /></td></tr>
 <tr class="memitem:a08427e19dd75d33bb41295b1db076825" id="r_a08427e19dd75d33bb41295b1db076825"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a08427e19dd75d33bb41295b1db076825">~DbConnection</a> () override=default</td></tr>
+<tr class="memdesc:a08427e19dd75d33bb41295b1db076825"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring clean disposal of connection resources.  <br /></td></tr>
 <tr class="memitem:ae6baae14d37a889efc829d332dc1d1fc" id="r_ae6baae14d37a889efc829d332dc1d1fc"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#ae6baae14d37a889efc829d332dc1d1fc">Close</a> ()=0</td></tr>
+<tr class="memdesc:ae6baae14d37a889efc829d332dc1d1fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes the connection to the data source and releases internal resources.  <br /></td></tr>
 <tr class="memitem:a9191af15b6407deaca0c5d613e3442fe" id="r_a9191af15b6407deaca0c5d613e3442fe"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html">DbCommand</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a9191af15b6407deaca0c5d613e3442fe">CreateCommand</a> ()=0</td></tr>
+<tr class="memdesc:a9191af15b6407deaca0c5d613e3442fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and returns a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> object associated with the current connection.  <br /></td></tr>
 <tr class="memitem:a73fa440f1be2aa41ffaa4cbbfe6be4a7" id="r_a73fa440f1be2aa41ffaa4cbbfe6be4a7"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a73fa440f1be2aa41ffaa4cbbfe6be4a7">GetConnectionString</a> () const =0</td></tr>
+<tr class="memdesc:a73fa440f1be2aa41ffaa4cbbfe6be4a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string used to open a connection to the data source.  <br /></td></tr>
 <tr class="memitem:af71f2bd49c9f8de82fd30a40bc7da746" id="r_af71f2bd49c9f8de82fd30a40bc7da746"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#af71f2bd49c9f8de82fd30a40bc7da746">Open</a> ()=0</td></tr>
+<tr class="memdesc:af71f2bd49c9f8de82fd30a40bc7da746"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a database connection with the settings specified by the ConnectionString.  <br /></td></tr>
 <tr class="memitem:ab5574373a9559fff373c3483c3d8168e" id="r_ab5574373a9559fff373c3483c3d8168e"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#ab5574373a9559fff373c3483c3d8168e">SetConnectionString</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;sConnStr)=0</td></tr>
+<tr class="memdesc:ab5574373a9559fff373c3483c3d8168e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the string used to open a connection to the data source.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -157,8 +167,11 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_db_connection_8h_source.html#l00013">13</a> of file <a class="el" href="_db_connection_8h_source.html">DbConnection.h</a>.</p>
+<div class="textblock"><p>Represents an abstract connection to an ADO.NET compatible data source. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_connection.html" title="Represents an abstract connection to an ADO.NET compatible data source.">System.Data.Common.DbConnection</a>. Provides a standard abstraction for managing database connection states, connection string configuration, and instantiating provider-specific command objects.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Connection objects are not thread-safe. Concurrent operations must be executed across separate connection instances or guarded by locks. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_db_connection_8h_source.html#l00022">22</a> of file <a class="el" href="_db_connection_8h_source.html">DbConnection.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a44ecb83e5aa5e50d337305de33076a49" name="a44ecb83e5aa5e50d337305de33076a49"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a44ecb83e5aa5e50d337305de33076a49">&#9670;&#160;</a></span>DbConnection()</h2>
@@ -182,6 +195,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_connection.html" title="Represents an abstract connection to an ADO.NET compatible data source.">DbConnection</a> class. </p>
 
 </div>
 </div>
@@ -208,6 +223,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor ensuring clean disposal of connection resources. </p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -233,6 +250,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Closes the connection to the data source and releases internal resources. </p>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html#aa276cc36ba33e4dc805decabcff87256">DotNetDupe::System::Data::SqlClient::SqlConnection</a>.</p>
 
@@ -261,6 +280,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Creates and returns a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> object associated with the current connection. </p>
+<dl class="section return"><dt>Returns</dt><dd>A smart pointer to an initialized <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html" title="Represents an abstract SQL statement or stored procedure to execute against a data source.">DbCommand</a> instance. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html#a6f58122af8055859a169cb38d3e0e42f">DotNetDupe::System::Data::SqlClient::SqlConnection</a>.</p>
 
 </div>
@@ -287,6 +309,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the string used to open a connection to the data source. </p>
+<dl class="section return"><dt>Returns</dt><dd>The connection string settings. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html#afdc136ebbcc98ce5dd91a56fa21efa74">DotNetDupe::System::Data::SqlClient::SqlConnection</a>.</p>
 
@@ -315,6 +340,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Opens a database connection with the settings specified by the ConnectionString. </p>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">DotNetDupe::System::InvalidOperationException</a></td><td>If connection fails to open. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html#a07b302caf1c22ceedc9cb3d52aff2734">DotNetDupe::System::Data::SqlClient::SqlConnection</a>.</p>
 
 </div>
@@ -341,6 +374,14 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Sets the string used to open a connection to the data source. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sConnStr</td><td>The connection string settings to configure. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html#a69bd5e74ed45866b4ad4ccd020ab4ce0">DotNetDupe::System::Data::SqlClient::SqlConnection</a>.</p>
 

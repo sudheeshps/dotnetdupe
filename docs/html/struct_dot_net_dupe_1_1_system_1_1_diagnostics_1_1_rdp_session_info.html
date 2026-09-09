@@ -114,26 +114,39 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Contains extended telemetry for a Remote Desktop Protocol (RDP) session.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a879f2756fd5f313269a95b7bffa0eeae" id="r_a879f2756fd5f313269a95b7bffa0eeae"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a879f2756fd5f313269a95b7bffa0eeae">RdpSessionInfo</a> ()</td></tr>
+<tr class="memdesc:a879f2756fd5f313269a95b7bffa0eeae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing default state.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a8f87b30a1696ca22fdb35bab8e9dc47b" id="r_a8f87b30a1696ca22fdb35bab8e9dc47b"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a8f87b30a1696ca22fdb35bab8e9dc47b">bIsRdpSession</a></td></tr>
+<tr class="memdesc:a8f87b30a1696ca22fdb35bab8e9dc47b"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if session is an active or disconnected RDP remote session.  <br /></td></tr>
 <tr class="memitem:a2548adb6a260ea4c4b9d41ec31a4d137" id="r_a2548adb6a260ea4c4b9d41ec31a4d137"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2a805da56f8f3d09bfad61b11cfb69ea">RdpSessionState</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2548adb6a260ea4c4b9d41ec31a4d137">eState</a></td></tr>
+<tr class="memdesc:a2548adb6a260ea4c4b9d41ec31a4d137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current RDP connection state.  <br /></td></tr>
 <tr class="memitem:aab58b3cda0b6331617db5c9176449dad" id="r_aab58b3cda0b6331617db5c9176449dad"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aab58b3cda0b6331617db5c9176449dad">sClientIpAddress</a></td></tr>
+<tr class="memdesc:aab58b3cda0b6331617db5c9176449dad"><td class="mdescLeft">&#160;</td><td class="mdescRight">IPv4 or IPv6 client address.  <br /></td></tr>
 <tr class="memitem:a2c8b1c2483f391c07259e0060569e181" id="r_a2c8b1c2483f391c07259e0060569e181"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2c8b1c2483f391c07259e0060569e181">sClientName</a></td></tr>
+<tr class="memdesc:a2c8b1c2483f391c07259e0060569e181"><td class="mdescLeft">&#160;</td><td class="mdescRight">NetBIOS or DNS name of connecting client endpoint.  <br /></td></tr>
 <tr class="memitem:a0656f7b84872e75e6e730bab7a27708c" id="r_a0656f7b84872e75e6e730bab7a27708c"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0656f7b84872e75e6e730bab7a27708c">sDomainName</a></td></tr>
+<tr class="memdesc:a0656f7b84872e75e6e730bab7a27708c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Domain of the authenticated user account.  <br /></td></tr>
 <tr class="memitem:aef3cc4ddc70c6bddc145237640b6d202" id="r_aef3cc4ddc70c6bddc145237640b6d202"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aef3cc4ddc70c6bddc145237640b6d202">sSessionName</a></td></tr>
+<tr class="memdesc:aef3cc4ddc70c6bddc145237640b6d202"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name of the WinStation (e.g. "Console", "RDP-Tcp#0").  <br /></td></tr>
 <tr class="memitem:aaae9114ed4421d8605c7d2c937f0100e" id="r_aaae9114ed4421d8605c7d2c937f0100e"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aaae9114ed4421d8605c7d2c937f0100e">sUserName</a></td></tr>
+<tr class="memdesc:aaae9114ed4421d8605c7d2c937f0100e"><td class="mdescLeft">&#160;</td><td class="mdescRight">User account associated with session.  <br /></td></tr>
 <tr class="memitem:ab7b20796235f2d21b8f20d86c4d320e9" id="r_ab7b20796235f2d21b8f20d86c4d320e9"><td class="memItemLeft">unsigned long&#160;</td><td class="memItemRight"><a class="el" href="#ab7b20796235f2d21b8f20d86c4d320e9">uSessionId</a></td></tr>
+<tr class="memdesc:ab7b20796235f2d21b8f20d86c4d320e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminal Services session ID.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00027">27</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<div class="textblock"><p>Contains extended telemetry for a Remote Desktop Protocol (RDP) session. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00031">31</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a879f2756fd5f313269a95b7bffa0eeae" name="a879f2756fd5f313269a95b7bffa0eeae"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a879f2756fd5f313269a95b7bffa0eeae">&#9670;&#160;</a></span>RdpSessionInfo()</h2>
@@ -158,9 +171,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00037">37</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>Default constructor initializing default state. </p>
 
-<p class="reference">References <a class="el" href="_terminal_session_8h_source.html#l00035">bIsRdpSession</a>, <a class="el" href="_terminal_session_8h_source.html#l00034">eState</a>, <a class="el" href="_terminal_session_8h_source.html#l00024">DotNetDupe::System::Diagnostics::Unknown</a>, and <a class="el" href="_terminal_session_8h_source.html#l00028">uSessionId</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00042">42</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_terminal_session_8h_source.html#l00039">bIsRdpSession</a>, <a class="el" href="_terminal_session_8h_source.html#l00038">eState</a>, <a class="el" href="_terminal_session_8h_source.html#l00026">DotNetDupe::System::Diagnostics::Unknown</a>, and <a class="el" href="_terminal_session_8h_source.html#l00032">uSessionId</a>.</p>
 
 </div>
 </div>
@@ -177,9 +192,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00035">35</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>True if session is an active or disconnected RDP remote session. </p>
 
-<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00037">RdpSessionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00039">39</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00042">RdpSessionInfo()</a>.</p>
 
 </div>
 </div>
@@ -195,9 +212,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00034">34</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>Current RDP connection state. </p>
 
-<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00037">RdpSessionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00038">38</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00042">RdpSessionInfo()</a>.</p>
 
 </div>
 </div>
@@ -213,7 +232,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00033">33</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>IPv4 or IPv6 client address. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00037">37</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 
 </div>
 </div>
@@ -229,7 +250,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00032">32</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>NetBIOS or DNS name of connecting client endpoint. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00036">36</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 
 </div>
 </div>
@@ -245,7 +268,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00031">31</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>Domain of the authenticated user account. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00035">35</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 
 </div>
 </div>
@@ -261,7 +286,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00029">29</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>Name of the WinStation (e.g. "Console", "RDP-Tcp#0"). </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00033">33</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +304,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00030">30</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>User account associated with session. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00034">34</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 
 </div>
 </div>
@@ -293,9 +322,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00028">28</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<p>Terminal Services session ID. </p>
 
-<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00037">RdpSessionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00032">32</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_terminal_session_8h_source.html#l00042">RdpSessionInfo()</a>.</p>
 
 </div>
 </div>

@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Provides system inspection facilities for active and expired user logon sessions.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Diagnostics::ActiveUserSession:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,7 +132,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a179898466ed6217e804388d8d818f378" id="r_a179898466ed6217e804388d8d818f378"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a179898466ed6217e804388d8d818f378">ActiveUserSession</a> ()</td></tr>
+<tr class="memdesc:a179898466ed6217e804388d8d818f378"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_active_user_session.html" title="Provides system inspection facilities for active and expired user logon sessions.">ActiveUserSession</a>.  <br /></td></tr>
 <tr class="memitem:a74a098718e2d174f1ad79f7c6d432dde" id="r_a74a098718e2d174f1ad79f7c6d432dde"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a74a098718e2d174f1ad79f7c6d432dde">~ActiveUserSession</a> ()</td></tr>
+<tr class="memdesc:a74a098718e2d174f1ad79f7c6d432dde"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -147,15 +152,21 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a085e39929b18f08a4fb4fc4ea749a03d" id="r_a085e39929b18f08a4fb4fc4ea749a03d"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html">UserSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a085e39929b18f08a4fb4fc4ea749a03d">GetActiveSessions</a> ()</td></tr>
+<tr class="memdesc:a085e39929b18f08a4fb4fc4ea749a03d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates all sessions currently in the active interactive state.  <br /></td></tr>
 <tr class="memitem:a5b47b439e945c2a28d29219816c723a5" id="r_a5b47b439e945c2a28d29219816c723a5"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html">UserSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a5b47b439e945c2a28d29219816c723a5">GetAllSessions</a> ()</td></tr>
+<tr class="memdesc:a5b47b439e945c2a28d29219816c723a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates all user sessions regardless of active state.  <br /></td></tr>
 <tr class="memitem:a3c6b7ae4ac04d37124ada7acbd097dab" id="r_a3c6b7ae4ac04d37124ada7acbd097dab"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html">UserSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a3c6b7ae4ac04d37124ada7acbd097dab">GetExpiredSessions</a> ()</td></tr>
+<tr class="memdesc:a3c6b7ae4ac04d37124ada7acbd097dab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates all disconnected or inactive user sessions.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00022">22</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<div class="textblock"><p>Provides system inspection facilities for active and expired user logon sessions. </p>
+<p>Interrogates Windows Terminal Services (WTS API via <span class="tt">WTSEnumerateSessionsW</span> and <span class="tt">WTSQuerySessionInformationW</span>) to enumerate logged-in console and remote desktop users.</p>
+<dl class="section note"><dt>Note</dt><dd>Requires appropriate administrative privileges on Windows to query details for other users. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00031">31</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a179898466ed6217e804388d8d818f378" name="a179898466ed6217e804388d8d818f378"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a179898466ed6217e804388d8d818f378">&#9670;&#160;</a></span>ActiveUserSession()</h2>
@@ -171,6 +182,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_active_user_session.html" title="Provides system inspection facilities for active and expired user logon sessions.">ActiveUserSession</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00016">16</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
 
@@ -198,6 +211,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
 
 <p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00017">17</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
 
@@ -227,9 +242,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00061">61</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+<p>Enumerates all sessions currently in the active interactive state. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of active <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html" title="Encapsulates details about an operating system interactive user session.">UserSessionInfo</a> structures. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_unauthorized_access_exception.html">DotNetDupe::System::UnauthorizedAccessException</a></td><td>If access is denied querying sessions. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Filter full session list for active sessions only.</p>
 
-<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00053">GetAllSessions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00065">65</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00056">GetAllSessions()</a>.</p>
 
 </div>
 </div>
@@ -256,9 +281,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00053">53</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+<p>Enumerates all user sessions regardless of active state. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of all <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html" title="Encapsulates details about an operating system interactive user session.">UserSessionInfo</a> structures found on the machine. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_unauthorized_access_exception.html">DotNetDupe::System::UnauthorizedAccessException</a></td><td>If access is denied querying sessions. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Enumerate all sessions via platform API.</p>
 
-<p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00061">GetActiveSessions()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00070">GetExpiredSessions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00056">56</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00065">GetActiveSessions()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00075">GetExpiredSessions()</a>.</p>
 
 </div>
 </div>
@@ -285,9 +320,19 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00070">70</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+<p>Enumerates all disconnected or inactive user sessions. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of expired or disconnected <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html" title="Encapsulates details about an operating system interactive user session.">UserSessionInfo</a> structures. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_unauthorized_access_exception.html">DotNetDupe::System::UnauthorizedAccessException</a></td><td>If access is denied querying sessions. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Filter full session list for inactive/disconnected sessions.</p>
 
-<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00053">GetAllSessions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8cpp_source.html#l00075">75</a> of file <a class="el" href="_active_user_session_8cpp_source.html">ActiveUserSession.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_active_user_session_8cpp_source.html#l00056">GetAllSessions()</a>.</p>
 
 </div>
 </div>

@@ -114,30 +114,47 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Comprehensive telemetry snapshot for an operating system process.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a98cad4165ff82caf683efb33301a7d14" id="r_a98cad4165ff82caf683efb33301a7d14"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a98cad4165ff82caf683efb33301a7d14">ProcessInfo</a> ()</td></tr>
+<tr class="memdesc:a98cad4165ff82caf683efb33301a7d14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ab97a7e56134680008501f21fb2f6b983" id="r_ab97a7e56134680008501f21fb2f6b983"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ab97a7e56134680008501f21fb2f6b983">bHasEstablishedConnection</a></td></tr>
+<tr class="memdesc:ab97a7e56134680008501f21fb2f6b983"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if any connection is established.  <br /></td></tr>
 <tr class="memitem:a0d776458772057370eea22d10a98cbbf" id="r_a0d776458772057370eea22d10a98cbbf"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a0d776458772057370eea22d10a98cbbf">dCpuUsagePercent</a></td></tr>
+<tr class="memdesc:a0d776458772057370eea22d10a98cbbf"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html" title="Provides access to local processes, starting/stopping processes, and querying process snapshots.">Process</a> CPU consumption percentage (0.0 - 100.0).  <br /></td></tr>
 <tr class="memitem:ab20748d223c103303ae32f79ee9f3250" id="r_ab20748d223c103303ae32f79ee9f3250"><td class="memItemLeft"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_disk_info.html">DiskInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab20748d223c103303ae32f79ee9f3250">disk</a></td></tr>
+<tr class="memdesc:ab20748d223c103303ae32f79ee9f3250"><td class="mdescLeft">&#160;</td><td class="mdescRight">Disk I/O telemetry.  <br /></td></tr>
 <tr class="memitem:a4e0c946c934c8062a7c3e8770272d13b" id="r_a4e0c946c934c8062a7c3e8770272d13b"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a4e0c946c934c8062a7c3e8770272d13b">iProcessId</a></td></tr>
+<tr class="memdesc:a4e0c946c934c8062a7c3e8770272d13b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operating system process identifier (PID).  <br /></td></tr>
 <tr class="memitem:abafa10fc214fb6668b982023bf32dad3" id="r_abafa10fc214fb6668b982023bf32dad3"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#abafa10fc214fb6668b982023bf32dad3">iSessionId</a></td></tr>
+<tr class="memdesc:abafa10fc214fb6668b982023bf32dad3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminal Services session ID.  <br /></td></tr>
 <tr class="memitem:ad8918305dc47bdea93a1156b9df2e940" id="r_ad8918305dc47bdea93a1156b9df2e940"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_network_connection_info.html">NetworkConnectionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ad8918305dc47bdea93a1156b9df2e940">lstConnections</a></td></tr>
+<tr class="memdesc:ad8918305dc47bdea93a1156b9df2e940"><td class="mdescLeft">&#160;</td><td class="mdescRight">Active socket connections.  <br /></td></tr>
 <tr class="memitem:a307a5229860d1ee56248077655f64c03" id="r_a307a5229860d1ee56248077655f64c03"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a307a5229860d1ee56248077655f64c03">lstOpenPorts</a></td></tr>
+<tr class="memdesc:a307a5229860d1ee56248077655f64c03"><td class="mdescLeft">&#160;</td><td class="mdescRight">Open listening ports.  <br /></td></tr>
 <tr class="memitem:ad1cb194ae8411c805dcc8e1a926f8591" id="r_ad1cb194ae8411c805dcc8e1a926f8591"><td class="memItemLeft"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_memory_info.html">MemoryInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad1cb194ae8411c805dcc8e1a926f8591">memory</a></td></tr>
+<tr class="memdesc:ad1cb194ae8411c805dcc8e1a926f8591"><td class="mdescLeft">&#160;</td><td class="mdescRight">Memory allocation statistics.  <br /></td></tr>
 <tr class="memitem:a88b031eaa1b45679b9424e61e9931790" id="r_a88b031eaa1b45679b9424e61e9931790"><td class="memItemLeft"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_network_usage_info.html">NetworkUsageInfo</a>&#160;</td><td class="memItemRight"><a class="el" href="#a88b031eaa1b45679b9424e61e9931790">network</a></td></tr>
+<tr class="memdesc:a88b031eaa1b45679b9424e61e9931790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Network traffic metrics.  <br /></td></tr>
 <tr class="memitem:aa3aa9b6b8f6561e8ce753548e92e8286" id="r_aa3aa9b6b8f6561e8ce753548e92e8286"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa3aa9b6b8f6561e8ce753548e92e8286">sCommandLine</a></td></tr>
+<tr class="memdesc:aa3aa9b6b8f6561e8ce753548e92e8286"><td class="mdescLeft">&#160;</td><td class="mdescRight">Full command-line arguments used to spawn the process.  <br /></td></tr>
 <tr class="memitem:a13add9962575b3ed4a3e7223a63938b2" id="r_a13add9962575b3ed4a3e7223a63938b2"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a13add9962575b3ed4a3e7223a63938b2">sName</a></td></tr>
+<tr class="memdesc:a13add9962575b3ed4a3e7223a63938b2"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html" title="Provides access to local processes, starting/stopping processes, and querying process snapshots.">Process</a> executable name without path.  <br /></td></tr>
 <tr class="memitem:acabe27fc08940e612786a2e0061f8f48" id="r_acabe27fc08940e612786a2e0061f8f48"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#acabe27fc08940e612786a2e0061f8f48">sPath</a></td></tr>
+<tr class="memdesc:acabe27fc08940e612786a2e0061f8f48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Full filesystem path to the executable image.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00064">64</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<div class="textblock"><p>Comprehensive telemetry snapshot for an operating system process. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00081">81</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a98cad4165ff82caf683efb33301a7d14" name="a98cad4165ff82caf683efb33301a7d14"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a98cad4165ff82caf683efb33301a7d14">&#9670;&#160;</a></span>ProcessInfo()</h2>
@@ -162,9 +179,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00078">78</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Default constructor. </p>
 
-<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00076">bHasEstablishedConnection</a>, <a class="el" href="_system_metrics_8h_source.html#l00070">dCpuUsagePercent</a>, <a class="el" href="_system_metrics_8h_source.html#l00065">iProcessId</a>, and <a class="el" href="_system_metrics_8h_source.html#l00066">iSessionId</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00096">96</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00093">bHasEstablishedConnection</a>, <a class="el" href="_system_metrics_8h_source.html#l00087">dCpuUsagePercent</a>, <a class="el" href="_system_metrics_8h_source.html#l00082">iProcessId</a>, and <a class="el" href="_system_metrics_8h_source.html#l00083">iSessionId</a>.</p>
 
 </div>
 </div>
@@ -181,9 +200,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00076">76</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>True if any connection is established. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00078">ProcessInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00093">93</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00096">ProcessInfo()</a>.</p>
 
 </div>
 </div>
@@ -199,9 +220,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00070">70</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p><a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html" title="Provides access to local processes, starting/stopping processes, and querying process snapshots.">Process</a> CPU consumption percentage (0.0 - 100.0). </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00078">ProcessInfo()</a>, and <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00087">87</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00096">ProcessInfo()</a>, and <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
 
 </div>
 </div>
@@ -217,9 +240,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00072">72</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Disk I/O telemetry. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00089">89</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
 
 </div>
 </div>
@@ -235,9 +260,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00065">65</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Operating system process identifier (PID). </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00078">ProcessInfo()</a>, <a class="el" href="_process_streamer_8cpp_source.html#l00055">DotNetDupe::System::Diagnostics::CollectTier1Processes()</a>, <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00082">82</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00096">ProcessInfo()</a>, <a class="el" href="_process_streamer_8cpp_source.html#l00055">DotNetDupe::System::Diagnostics::CollectTier1Processes()</a>, <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -253,9 +280,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00066">66</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Terminal Services session ID. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00078">ProcessInfo()</a>, <a class="el" href="_process_streamer_8cpp_source.html#l00055">DotNetDupe::System::Diagnostics::CollectTier1Processes()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00083">83</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00096">ProcessInfo()</a>, <a class="el" href="_process_streamer_8cpp_source.html#l00055">DotNetDupe::System::Diagnostics::CollectTier1Processes()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -271,7 +300,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00075">75</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Active socket connections. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00092">92</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>
@@ -287,7 +318,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00074">74</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Open listening ports. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00091">91</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>
@@ -303,9 +336,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00071">71</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Memory allocation statistics. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00088">88</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -321,9 +356,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00073">73</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Network traffic metrics. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00090">90</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
 
 </div>
 </div>
@@ -339,9 +376,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00069">69</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Full command-line arguments used to spawn the process. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00086">86</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>.</p>
 
 </div>
 </div>
@@ -357,9 +396,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00067">67</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p><a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html" title="Provides access to local processes, starting/stopping processes, and querying process snapshots.">Process</a> executable name without path. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00084">84</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -375,9 +416,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00068">68</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Full filesystem path to the executable image. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00459">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00085">85</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00492">DotNetDupe::System::Diagnostics::SystemMetrics::EnrichProcessInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>

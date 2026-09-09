@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Reads a forward-only stream of rows from a data source.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_db_data_reader_8h_source.html">DbDataReader.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Data::Common::DbDataReader:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -130,17 +133,29 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aaba8833aaaf95a225345dc3eacfedc58" id="r_aaba8833aaaf95a225345dc3eacfedc58"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aaba8833aaaf95a225345dc3eacfedc58">DbDataReader</a> ()=default</td></tr>
+<tr class="memdesc:aaba8833aaaf95a225345dc3eacfedc58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">DbDataReader</a> class.  <br /></td></tr>
 <tr class="memitem:a2ba546e4391f44f07f2ad46deff1f2c6" id="r_a2ba546e4391f44f07f2ad46deff1f2c6"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a2ba546e4391f44f07f2ad46deff1f2c6">~DbDataReader</a> () override=default</td></tr>
+<tr class="memdesc:a2ba546e4391f44f07f2ad46deff1f2c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:aa3e57478751df69175837617f22b2f12" id="r_aa3e57478751df69175837617f22b2f12"><td class="memItemLeft">virtual double&#160;</td><td class="memItemRight"><a class="el" href="#aa3e57478751df69175837617f22b2f12">GetDouble</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:aa3e57478751df69175837617f22b2f12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the specified column as a double-precision floating point number.  <br /></td></tr>
 <tr class="memitem:adaa998310f5b09e2dfbec4887f71d0e4" id="r_adaa998310f5b09e2dfbec4887f71d0e4"><td class="memItemLeft">virtual int&#160;</td><td class="memItemRight"><a class="el" href="#adaa998310f5b09e2dfbec4887f71d0e4">GetFieldCount</a> () const =0</td></tr>
+<tr class="memdesc:adaa998310f5b09e2dfbec4887f71d0e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of columns in the current row.  <br /></td></tr>
 <tr class="memitem:a088ac22ef00b471f2b25a4369b4dc36d" id="r_a088ac22ef00b471f2b25a4369b4dc36d"><td class="memItemLeft">virtual int&#160;</td><td class="memItemRight"><a class="el" href="#a088ac22ef00b471f2b25a4369b4dc36d">GetInt32</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:a088ac22ef00b471f2b25a4369b4dc36d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the specified column as a 32-bit signed integer.  <br /></td></tr>
 <tr class="memitem:aff3f700c1287ef13b6a068f6d201ffba" id="r_aff3f700c1287ef13b6a068f6d201ffba"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aff3f700c1287ef13b6a068f6d201ffba">GetName</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:aff3f700c1287ef13b6a068f6d201ffba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name of the column, given the zero-based column ordinal.  <br /></td></tr>
 <tr class="memitem:a8fe25543c34a5ff31047216cc45cf68f" id="r_a8fe25543c34a5ff31047216cc45cf68f"><td class="memItemLeft">virtual int&#160;</td><td class="memItemRight"><a class="el" href="#a8fe25543c34a5ff31047216cc45cf68f">GetOrdinal</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;sName)=0</td></tr>
+<tr class="memdesc:a8fe25543c34a5ff31047216cc45cf68f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the column ordinal, given the name of the column.  <br /></td></tr>
 <tr class="memitem:af4390d161035d2d86b0cdd43ef3c2de8" id="r_af4390d161035d2d86b0cdd43ef3c2de8"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#af4390d161035d2d86b0cdd43ef3c2de8">GetString</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:af4390d161035d2d86b0cdd43ef3c2de8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the specified column as a string.  <br /></td></tr>
 <tr class="memitem:a3e6ab7335d1df5c3c3e18fc57883dbb0" id="r_a3e6ab7335d1df5c3c3e18fc57883dbb0"><td class="memItemLeft">virtual bool&#160;</td><td class="memItemRight"><a class="el" href="#a3e6ab7335d1df5c3c3e18fc57883dbb0">IsDBNull</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:a3e6ab7335d1df5c3c3e18fc57883dbb0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a value that indicates whether the column contains non-existent or missing values.  <br /></td></tr>
 <tr class="memitem:ac441a33bb9db2e8cf83107dbba882075" id="r_ac441a33bb9db2e8cf83107dbba882075"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac441a33bb9db2e8cf83107dbba882075">operator[]</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;sName)=0</td></tr>
+<tr class="memdesc:ac441a33bb9db2e8cf83107dbba882075"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the specified column by column name.  <br /></td></tr>
 <tr class="memitem:a950dd045fe6e34756625e0f28d42d60a" id="r_a950dd045fe6e34756625e0f28d42d60a"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a950dd045fe6e34756625e0f28d42d60a">operator[]</a> (int iOrdinal)=0</td></tr>
+<tr class="memdesc:a950dd045fe6e34756625e0f28d42d60a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the specified column by ordinal index.  <br /></td></tr>
 <tr class="memitem:ae5c8a6c6f3224ab01abde1425dab9fab" id="r_ae5c8a6c6f3224ab01abde1425dab9fab"><td class="memItemLeft">virtual bool&#160;</td><td class="memItemRight"><a class="el" href="#ae5c8a6c6f3224ab01abde1425dab9fab">Read</a> ()=0</td></tr>
+<tr class="memdesc:ae5c8a6c6f3224ab01abde1425dab9fab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Advances the reader to the next record in the result set.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -162,8 +177,11 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_db_data_reader_8h_source.html#l00011">11</a> of file <a class="el" href="_db_data_reader_8h_source.html">DbDataReader.h</a>.</p>
+<div class="textblock"><p>Reads a forward-only stream of rows from a data source. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">System.Data.Common.DbDataReader</a>. <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">DbDataReader</a> provides a high-performance, non-buffered stream for inspecting query results column by column and row by row.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">DbDataReader</a> is forward-only and single-threaded. Simultaneous access from multiple threads without synchronization is unsupported. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_db_data_reader_8h_source.html#l00019">19</a> of file <a class="el" href="_db_data_reader_8h_source.html">DbDataReader.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aaba8833aaaf95a225345dc3eacfedc58" name="aaba8833aaaf95a225345dc3eacfedc58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaba8833aaaf95a225345dc3eacfedc58">&#9670;&#160;</a></span>DbDataReader()</h2>
@@ -187,6 +205,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html" title="Reads a forward-only stream of rows from a data source.">DbDataReader</a> class. </p>
 
 </div>
 </div>
@@ -213,6 +233,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor for polymorphic cleanup. </p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -238,6 +260,21 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the value of the specified column as a double-precision floating point number. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The double value of the column. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_format_exception.html" title="The exception that is thrown when the format of an argument is invalid, or when a composite format st...">DotNetDupe::System::FormatException</a></td><td>If value cannot be parsed as double. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#ad261f20fb28a007d8a9d7a2f833399a9">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
@@ -266,6 +303,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the number of columns in the current row. </p>
+<dl class="section return"><dt>Returns</dt><dd>The field count. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#a6b3047a00f5a06531adee8669a9f57b1">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
 </div>
@@ -292,6 +332,21 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the value of the specified column as a 32-bit signed integer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The integer value of the column. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_format_exception.html" title="The exception that is thrown when the format of an argument is invalid, or when a composite format st...">DotNetDupe::System::FormatException</a></td><td>If value cannot be parsed as integer. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#ac0e4838518fc7f9c781fa89248db9eeb">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
@@ -320,6 +375,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the name of the column, given the zero-based column ordinal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The name of the specified column. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#a2546739b3e7f1b4f7775b65561d9c30f">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
 </div>
@@ -346,6 +410,21 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets the column ordinal, given the name of the column. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sName</td><td>The name of the column. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The zero-based column ordinal. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">DotNetDupe::System::IndexOutOfRangeException</td><td>If column name does not exist. </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#a6f435565b68adcd4f3f847920064ca41">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
@@ -374,6 +453,21 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the value of the specified column as a string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The string value of the column. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html" title="The exception that is thrown when the value of an argument is outside the allowable range of values a...">DotNetDupe::System::ArgumentOutOfRangeException</a></td><td>If ordinal is out of range. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#aa77f59581bc065d134ef8a3ed34c5f77">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
 </div>
@@ -400,6 +494,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Gets a value that indicates whether the column contains non-existent or missing values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the specified column is equivalent to DBNull; otherwise, false. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#a9104163c1afc85a41c95309a6542e0f0">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
@@ -428,6 +531,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the value of the specified column by column name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sName</td><td>The column name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The string representation of the column value. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#adb0ce2845e762253b80add77c83d3fbd">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
 </div>
@@ -455,6 +567,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the value of the specified column by ordinal index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iOrdinal</td><td>The zero-based column ordinal. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The string representation of the column value. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#a616f8afaf9769ac650165f00a99bb99a">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 
 </div>
@@ -481,6 +602,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Advances the reader to the next record in the result set. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if there are more rows; otherwise, false. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_data_reader.html#ad96581c8e47ffb67fbf6c9d675d6df8a">DotNetDupe::System::Data::SqlClient::SqlDataReader</a>.</p>
 

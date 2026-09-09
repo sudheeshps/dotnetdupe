@@ -114,20 +114,30 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Encapsulates details about an operating system interactive user session.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad89ff6e97c447df3df62d997752c2f61" id="r_ad89ff6e97c447df3df62d997752c2f61"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ad89ff6e97c447df3df62d997752c2f61">bIsActive</a></td></tr>
+<tr class="memdesc:ad89ff6e97c447df3df62d997752c2f61"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if session is actively receiving user input.  <br /></td></tr>
 <tr class="memitem:ae2bbf7ddb587d6304e820c617c1fe18b" id="r_ae2bbf7ddb587d6304e820c617c1fe18b"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ae2bbf7ddb587d6304e820c617c1fe18b">sLoginTimestamp</a></td></tr>
+<tr class="memdesc:ae2bbf7ddb587d6304e820c617c1fe18b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formatted timestamp of when session was established.  <br /></td></tr>
 <tr class="memitem:a330c02bcb8711c055d73309bd2f5f0fd" id="r_a330c02bcb8711c055d73309bd2f5f0fd"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a330c02bcb8711c055d73309bd2f5f0fd">sLogoutTimestamp</a></td></tr>
+<tr class="memdesc:a330c02bcb8711c055d73309bd2f5f0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Formatted timestamp of session disconnection or active status.  <br /></td></tr>
 <tr class="memitem:a6afea4ebe5cbdab716945a9a6e02fd7e" id="r_a6afea4ebe5cbdab716945a9a6e02fd7e"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a6afea4ebe5cbdab716945a9a6e02fd7e">sPrivilege</a></td></tr>
+<tr class="memdesc:a6afea4ebe5cbdab716945a9a6e02fd7e"><td class="mdescLeft">&#160;</td><td class="mdescRight">User privilege level or role description.  <br /></td></tr>
 <tr class="memitem:ad3b53f53ff22c2856b2ad44edbda74eb" id="r_ad3b53f53ff22c2856b2ad44edbda74eb"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad3b53f53ff22c2856b2ad44edbda74eb">sUsername</a></td></tr>
+<tr class="memdesc:ad3b53f53ff22c2856b2ad44edbda74eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Account name of the logged-on user.  <br /></td></tr>
 <tr class="memitem:a22e664a2b4bae2de836df172461ba919" id="r_a22e664a2b4bae2de836df172461ba919"><td class="memItemLeft">unsigned long&#160;</td><td class="memItemRight"><a class="el" href="#a22e664a2b4bae2de836df172461ba919">uSessionId</a></td></tr>
+<tr class="memdesc:a22e664a2b4bae2de836df172461ba919"><td class="mdescLeft">&#160;</td><td class="mdescRight">Terminal Services session identifier.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00013">13</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<div class="textblock"><p>Encapsulates details about an operating system interactive user session. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00015">15</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="ad89ff6e97c447df3df62d997752c2f61" name="ad89ff6e97c447df3df62d997752c2f61"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad89ff6e97c447df3df62d997752c2f61">&#9670;&#160;</a></span>bIsActive</h2>
@@ -141,7 +151,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00019">19</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>True if session is actively receiving user input. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00021">21</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 
@@ -159,7 +171,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00017">17</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>Formatted timestamp of when session was established. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00019">19</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 
@@ -177,7 +191,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00018">18</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>Formatted timestamp of session disconnection or active status. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00020">20</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 
@@ -195,7 +211,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00016">16</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>User privilege level or role description. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00018">18</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 
@@ -213,7 +231,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00015">15</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>Account name of the logged-on user. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00017">17</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 
@@ -231,7 +251,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00014">14</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
+<p>Terminal Services session identifier. </p>
+
+<p class="definition">Definition at line <a class="el" href="_active_user_session_8h_source.html#l00016">16</a> of file <a class="el" href="_active_user_session_8h_source.html">ActiveUserSession.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_active_user_session_8cpp_source.html#l00020">DotNetDupe::System::Diagnostics::PopulateSessionInfo()</a>.</p>
 

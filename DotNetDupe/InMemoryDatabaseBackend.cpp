@@ -24,6 +24,7 @@ namespace DotNetDupe {
                     std::unordered_map<std::string, StdTable> m_tables;
 
                     void ExecuteCreate(const std::vector<std::string>& tokens) {
+                        /// Step: Parse CREATE TABLE statement.
                         if (tokens.size() > 2 && ToUpper(tokens[1]) == "TABLE") {
                             std::string tableName = tokens[2];
                             StdTable t;
@@ -50,6 +51,7 @@ namespace DotNetDupe {
                     void ExecuteInsert(const std::vector<std::string>& tokens,
                                        const std::unordered_map<std::string, std::string>& parameters,
                                        int& rowsAffected) {
+                        /// Step: Parse INSERT INTO statement.
                         if (tokens.size() > 2 && ToUpper(tokens[1]) == "INTO") {
                             std::string tableName = tokens[2];
                             auto tIt = m_tables.find(tableName);
@@ -106,6 +108,7 @@ namespace DotNetDupe {
                     std::vector<StdRow> ExecuteSelect(const std::vector<std::string>& tokens,
                                                       const std::unordered_map<std::string, std::string>& parameters,
                                                       std::vector<std::string>& columnNames) {
+                        /// Step: Parse SELECT column projections and FROM table.
                         std::vector<std::string> selectCols;
                         size_t idx = 1;
                         while (idx < tokens.size() && ToUpper(tokens[idx]) != "FROM") {
@@ -124,6 +127,7 @@ namespace DotNetDupe {
 
                         StdTable& t = tIt->second;
 
+                        /// Step: Evaluate WHERE filter condition.
                         std::string whereCol;
                         std::string whereVal;
                         if (idx < tokens.size() && ToUpper(tokens[idx]) == "WHERE") {
@@ -136,6 +140,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Map projected column indices.
                         std::vector<size_t> colIndices;
                         if (selectCols.size() == 1 && selectCols[0] == "*") {
                             columnNames = t.Columns;
@@ -158,6 +163,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Collect matching rows.
                         std::vector<StdRow> resultRows;
                         for (auto const& row : t.Rows) {
                             if (whereColIdx != -1) {
@@ -177,6 +183,7 @@ namespace DotNetDupe {
                     void ExecuteUpdate(const std::vector<std::string>& tokens,
                                        const std::unordered_map<std::string, std::string>& parameters,
                                        int& rowsAffected) {
+                        /// Step: Parse UPDATE table and SET assignments.
                         std::string tableName = tokens[1];
                         auto tIt = m_tables.find(tableName);
                         if (tIt == m_tables.end()) return;
@@ -200,6 +207,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Evaluate WHERE clause filter.
                         std::string whereCol;
                         std::string whereVal;
                         if (idx < tokens.size() && ToUpper(tokens[idx]) == "WHERE") {
@@ -220,6 +228,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Apply column updates to matching rows.
                         for (auto& row : t.Rows) {
                             if (whereColIdx != -1) {
                                 if (row.Values[whereColIdx] != whereVal) {
@@ -240,6 +249,7 @@ namespace DotNetDupe {
                     void ExecuteDelete(const std::vector<std::string>& tokens,
                                        const std::unordered_map<std::string, std::string>& parameters,
                                        int& rowsAffected) {
+                        /// Step: Parse DELETE FROM table.
                         if (tokens.size() > 2 && ToUpper(tokens[1]) == "FROM") {
                             std::string tableName = tokens[2];
                             auto tIt = m_tables.find(tableName);
@@ -268,6 +278,7 @@ namespace DotNetDupe {
                                 }
                             }
 
+                            /// Step: Erase matching rows from table.
                             auto it = t.Rows.begin();
                             while (it != t.Rows.end()) {
                                 if (whereColIdx != -1) {
@@ -287,6 +298,7 @@ namespace DotNetDupe {
                     }
 
                     std::vector<std::string> Tokenize(const std::string& s) const {
+                        /// Step: Tokenize SQL query preserving quoted literals.
                         std::vector<std::string> tokens;
                         std::string token;
                         bool inQuotes = false;
@@ -314,11 +326,13 @@ namespace DotNetDupe {
                     }
 
                     std::string ToUpper(std::string s) const {
+                        /// Step: Convert string to uppercase for case-insensitive keywords.
                         std::transform(s.begin(), s.end(), s.begin(), ::toupper);
                         return s;
                     }
 
                     std::string ResolveValue(const std::string& val, const std::unordered_map<std::string, std::string>& parameters) const {
+                        /// Step: Resolve @param references or unquote literals.
                         if (!val.empty() && val[0] == '@') {
                             auto it = parameters.find(val);
                             if (it != parameters.end()) {
@@ -333,6 +347,7 @@ namespace DotNetDupe {
                     }
 
                     std::vector<StdRow> DispatchCommand(const std::string& cmd, const std::vector<std::string>& tokens, const std::unordered_map<std::string, std::string>& stdParams, std::vector<std::string>& stdColNames, int& rowsAffected) {
+                        /// Step: Dispatch token stream to matching DDL/DML handler.
                         if (cmd == "CREATE") ExecuteCreate(tokens);
                         else if (cmd == "INSERT") ExecuteInsert(tokens, stdParams, rowsAffected);
                         else if (cmd == "SELECT") return ExecuteSelect(tokens, stdParams, stdColNames);
@@ -346,10 +361,12 @@ namespace DotNetDupe {
                 InMemoryDatabaseBackend::~InMemoryDatabaseBackend() = default;
 
                 void InMemoryDatabaseBackend::ClearDatabase() {
+                    /// Step: Clear in-memory table store.
                     m_pImpl->m_tables.clear();
                 }
 
                 static std::unordered_map<std::string, std::string> ConvertParamsMap(const Collections::Generic::Dictionary<String, String>& parameters) {
+                    /// Step: Convert library Dictionary into std::unordered_map.
                     std::unordered_map<std::string, std::string> stdParams;
                     auto keys = parameters.GetKeys();
                     for (int i = 0; i < keys.GetLength(); ++i) {
@@ -361,7 +378,10 @@ namespace DotNetDupe {
                 }
 
                 static Collections::Generic::List<Row> ConvertResultRows(const std::vector<StdRow>& stdResRows, const std::vector<std::string>& stdColNames, Collections::Generic::List<String>& columnNames) {
+                    /// Step: Copy column headers to output list.
                     for (const auto& col : stdColNames) columnNames.Add(String(col.c_str()));
+
+                    /// Step: Convert STL row vectors to library Row structures.
                     Collections::Generic::List<Row> resultRows;
                     for (const auto& sr : stdResRows) {
                         Row r;
@@ -377,12 +397,16 @@ namespace DotNetDupe {
                     Collections::Generic::List<String>& columnNames,
                     int& rowsAffected
                 ) {
+                    /// Step: Initialize outputs.
                     rowsAffected = 0;
                     columnNames.Clear();
+
+                    /// Step: Convert parameter dictionary and tokenize input SQL.
                     std::unordered_map<std::string, std::string> stdParams = ConvertParamsMap(parameters);
                     std::vector<std::string> tokens = m_pImpl->Tokenize(sql.GetRawString());
                     if (tokens.empty()) return Collections::Generic::List<Row>();
 
+                    /// Step: Dispatch SQL command and convert results.
                     std::vector<std::string> stdColNames;
                     std::vector<StdRow> stdResRows = m_pImpl->DispatchCommand(m_pImpl->ToUpper(tokens[0]), tokens, stdParams, stdColNames, rowsAffected);
                     return ConvertResultRows(stdResRows, stdColNames, columnNames);

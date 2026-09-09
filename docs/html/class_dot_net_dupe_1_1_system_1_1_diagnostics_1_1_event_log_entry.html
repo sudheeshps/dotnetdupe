@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Encapsulates a single record in the event log.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_event_log_8h_source.html">EventLog.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Diagnostics::EventLogEntry:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,12 +132,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8dd0e01052c52b68af974639758b2b74" id="r_a8dd0e01052c52b68af974639758b2b74"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a8dd0e01052c52b68af974639758b2b74">EventLogEntry</a> ()</td></tr>
+<tr class="memdesc:a8dd0e01052c52b68af974639758b2b74"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing an empty entry.  <br /></td></tr>
 <tr class="memitem:ad09ca3379c528819921a401706f37f30" id="r_ad09ca3379c528819921a401706f37f30"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad09ca3379c528819921a401706f37f30">EventLogEntry</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sMessage, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a> eType, int iInstanceId, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;dtTimeGenerated)</td></tr>
+<tr class="memdesc:ad09ca3379c528819921a401706f37f30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html" title="Encapsulates a single record in the event log.">EventLogEntry</a> with specified properties.  <br /></td></tr>
 <tr class="memitem:a96276f170f460dfb74bd57d5167f257c" id="r_a96276f170f460dfb74bd57d5167f257c"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93">EventLogEntryType</a>&#160;</td><td class="memItemRight"><a class="el" href="#a96276f170f460dfb74bd57d5167f257c">GetEntryType</a> () const</td></tr>
+<tr class="memdesc:a96276f170f460dfb74bd57d5167f257c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the event type of the entry.  <br /></td></tr>
 <tr class="memitem:a8f110de4cf826c8ea248e6330390232a" id="r_a8f110de4cf826c8ea248e6330390232a"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a8f110de4cf826c8ea248e6330390232a">GetInstanceId</a> () const</td></tr>
+<tr class="memdesc:a8f110de4cf826c8ea248e6330390232a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the resource identifier / event ID.  <br /></td></tr>
 <tr class="memitem:ad25ce42c9b506a204c581a98e6365539" id="r_ad25ce42c9b506a204c581a98e6365539"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad25ce42c9b506a204c581a98e6365539">GetMessage</a> () const</td></tr>
+<tr class="memdesc:ad25ce42c9b506a204c581a98e6365539"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the message associated with the event.  <br /></td></tr>
 <tr class="memitem:a5f5093f0de7579aaf63f2553027578f9" id="r_a5f5093f0de7579aaf63f2553027578f9"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a5f5093f0de7579aaf63f2553027578f9">GetSource</a> () const</td></tr>
+<tr class="memdesc:a5f5093f0de7579aaf63f2553027578f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the name of the software that registered the event.  <br /></td></tr>
 <tr class="memitem:a3e1c81a4337e2a15080ed1c90d20ea60" id="r_a3e1c81a4337e2a15080ed1c90d20ea60"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#a3e1c81a4337e2a15080ed1c90d20ea60">GetTimeGenerated</a> () const</td></tr>
+<tr class="memdesc:a3e1c81a4337e2a15080ed1c90d20ea60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the local time at which this event was generated.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -156,8 +166,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00026">26</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<div class="textblock"><p>Encapsulates a single record in the event log. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html" title="Encapsulates a single record in the event log.">System.Diagnostics.EventLogEntry</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00034">34</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8dd0e01052c52b68af974639758b2b74" name="a8dd0e01052c52b68af974639758b2b74"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8dd0e01052c52b68af974639758b2b74">&#9670;&#160;</a></span>EventLogEntry() <span class="overload">[1/2]</span></h2>
@@ -174,9 +186,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Default constructor initializing an empty entry. </p>
+
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00042">42</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00266">DotNetDupe::System::Diagnostics::EventLog::GetEntries()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_log_8cpp_source.html#l00284">DotNetDupe::System::Diagnostics::EventLog::GetEntries()</a>.</p>
 
 </div>
 </div>
@@ -214,6 +228,18 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Constructs an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html" title="Encapsulates a single record in the event log.">EventLogEntry</a> with specified properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sMessage</td><td>The text message of the event. </td></tr>
+    <tr><td class="paramname">eType</td><td>The event severity classification. </td></tr>
+    <tr><td class="paramname">iInstanceId</td><td>The resource identifier or event ID. </td></tr>
+    <tr><td class="paramname">sSource</td><td>The application source that created the event. </td></tr>
+    <tr><td class="paramname">dtTimeGenerated</td><td>Timestamp when the event was generated. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p class="definition">Definition at line <a class="el" href="_event_log_8cpp_source.html#l00046">46</a> of file <a class="el" href="_event_log_8cpp_source.html">EventLog.cpp</a>.</p>
 
 </div>
@@ -242,7 +268,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00032">32</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the event type of the entry. </p>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93" title="Defines the event type of an event log entry.">EventLogEntryType</a> classification. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00053">53</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -269,7 +298,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00033">33</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the resource identifier / event ID. </p>
+<dl class="section return"><dt>Returns</dt><dd>The 32-bit instance identifier. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00057">57</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -296,7 +328,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00031">31</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the message associated with the event. </p>
+<dl class="section return"><dt>Returns</dt><dd>The event text message. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00049">49</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -323,7 +358,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00034">34</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the name of the software that registered the event. </p>
+<dl class="section return"><dt>Returns</dt><dd>The source name string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00061">61</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>
@@ -350,7 +388,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00035">35</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
+<p>Gets the local time at which this event was generated. </p>
+<dl class="section return"><dt>Returns</dt><dd>The generation timestamp. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_event_log_8h_source.html#l00065">65</a> of file <a class="el" href="_event_log_8h_source.html">EventLog.h</a>.</p>
 
 </div>
 </div>

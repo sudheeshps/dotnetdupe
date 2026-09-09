@@ -114,23 +114,33 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Snapshot of physical and virtual memory utilization for the system or a specific process.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a509cb2a2783843db598278c478aca86c" id="r_a509cb2a2783843db598278c478aca86c"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a509cb2a2783843db598278c478aca86c">MemoryInfo</a> ()</td></tr>
+<tr class="memdesc:a509cb2a2783843db598278c478aca86c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing default counters.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a6a980668bf3e4d524c654c443c153737" id="r_a6a980668bf3e4d524c654c443c153737"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a6a980668bf3e4d524c654c443c153737">dMemoryUsagePercent</a></td></tr>
+<tr class="memdesc:a6a980668bf3e4d524c654c443c153737"><td class="mdescLeft">&#160;</td><td class="mdescRight">Percentage of total physical memory currently in use (0.0 - 100.0).  <br /></td></tr>
 <tr class="memitem:a552fefeca725c417f2738f808a956a8a" id="r_a552fefeca725c417f2738f808a956a8a"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a552fefeca725c417f2738f808a956a8a">lPhysicalMemoryBytes</a></td></tr>
+<tr class="memdesc:a552fefeca725c417f2738f808a956a8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Working set size (physical RAM resident) for the target process.  <br /></td></tr>
 <tr class="memitem:ad99c93160f1969ee23e5dc0bf1561589" id="r_ad99c93160f1969ee23e5dc0bf1561589"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#ad99c93160f1969ee23e5dc0bf1561589">lPrivateBytes</a></td></tr>
+<tr class="memdesc:ad99c93160f1969ee23e5dc0bf1561589"><td class="mdescLeft">&#160;</td><td class="mdescRight">Private bytes allocated by the target process (-1 if unavailable).  <br /></td></tr>
 <tr class="memitem:a5cfbdcea833985b98b37823df7522aef" id="r_a5cfbdcea833985b98b37823df7522aef"><td class="memItemLeft">unsigned long long&#160;</td><td class="memItemRight"><a class="el" href="#a5cfbdcea833985b98b37823df7522aef">uMemoryTotalBytes</a></td></tr>
+<tr class="memdesc:a5cfbdcea833985b98b37823df7522aef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total physical RAM installed on the host in bytes.  <br /></td></tr>
 <tr class="memitem:aed10b7bf8da9a35d69fd7d58a04bbd59" id="r_aed10b7bf8da9a35d69fd7d58a04bbd59"><td class="memItemLeft">unsigned long long&#160;</td><td class="memItemRight"><a class="el" href="#aed10b7bf8da9a35d69fd7d58a04bbd59">uMemoryUsedBytes</a></td></tr>
+<tr class="memdesc:aed10b7bf8da9a35d69fd7d58a04bbd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Currently consumed physical RAM across all processes.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00017">17</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<div class="textblock"><p>Snapshot of physical and virtual memory utilization for the system or a specific process. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00019">19</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a509cb2a2783843db598278c478aca86c" name="a509cb2a2783843db598278c478aca86c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a509cb2a2783843db598278c478aca86c">&#9670;&#160;</a></span>MemoryInfo()</h2>
@@ -155,11 +165,13 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00024">24</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Default constructor initializing default counters. </p>
 
-<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00018">dMemoryUsagePercent</a>, <a class="el" href="_system_metrics_8h_source.html#l00022">lPhysicalMemoryBytes</a>, <a class="el" href="_system_metrics_8h_source.html#l00021">lPrivateBytes</a>, <a class="el" href="_system_metrics_8h_source.html#l00019">uMemoryTotalBytes</a>, and <a class="el" href="_system_metrics_8h_source.html#l00020">uMemoryUsedBytes</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00027">27</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00415">DotNetDupe::System::Diagnostics::SystemMetrics::GetProcessMemoryUsage()</a>.</p>
+<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00020">dMemoryUsagePercent</a>, <a class="el" href="_system_metrics_8h_source.html#l00024">lPhysicalMemoryBytes</a>, <a class="el" href="_system_metrics_8h_source.html#l00023">lPrivateBytes</a>, <a class="el" href="_system_metrics_8h_source.html#l00021">uMemoryTotalBytes</a>, and <a class="el" href="_system_metrics_8h_source.html#l00022">uMemoryUsedBytes</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8cpp_source.html#l00445">DotNetDupe::System::Diagnostics::SystemMetrics::GetProcessMemoryUsage()</a>.</p>
 
 </div>
 </div>
@@ -176,9 +188,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00018">18</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Percentage of total physical memory currently in use (0.0 - 100.0). </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00024">MemoryInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00020">20</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00027">MemoryInfo()</a>.</p>
 
 </div>
 </div>
@@ -194,9 +208,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00022">22</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Working set size (physical RAM resident) for the target process. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00024">MemoryInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00024">24</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00027">MemoryInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -212,9 +228,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00021">21</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Private bytes allocated by the target process (-1 if unavailable). </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00024">MemoryInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00023">23</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00027">MemoryInfo()</a>, and <a class="el" href="_process_streamer_8cpp_source.html#l00034">DotNetDupe::System::Diagnostics::FastPopulateProc()</a>.</p>
 
 </div>
 </div>
@@ -230,9 +248,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00019">19</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Total physical RAM installed on the host in bytes. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00024">MemoryInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00021">21</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00027">MemoryInfo()</a>.</p>
 
 </div>
 </div>
@@ -248,9 +268,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00020">20</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Currently consumed physical RAM across all processes. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00024">MemoryInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00022">22</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00027">MemoryInfo()</a>.</p>
 
 </div>
 </div>

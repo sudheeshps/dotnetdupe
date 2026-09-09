@@ -114,23 +114,33 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Telemetry describing an active TCP or UDP socket endpoint.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad1e005c478415380189c6ecc3851a815" id="r_ad1e005c478415380189c6ecc3851a815"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad1e005c478415380189c6ecc3851a815">NetworkConnectionInfo</a> ()</td></tr>
+<tr class="memdesc:ad1e005c478415380189c6ecc3851a815"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af3500892d98e29d2193e11f6d98e7ec1" id="r_af3500892d98e29d2193e11f6d98e7ec1"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#af3500892d98e29d2193e11f6d98e7ec1">iLocalPort</a></td></tr>
+<tr class="memdesc:af3500892d98e29d2193e11f6d98e7ec1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local listening or bound port.  <br /></td></tr>
 <tr class="memitem:a15cc7588536cdb19db104b40f8dd0bc5" id="r_a15cc7588536cdb19db104b40f8dd0bc5"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a15cc7588536cdb19db104b40f8dd0bc5">iRemotePort</a></td></tr>
+<tr class="memdesc:a15cc7588536cdb19db104b40f8dd0bc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote peer port.  <br /></td></tr>
 <tr class="memitem:a6204b5de10471e1437ff0c44b948687a" id="r_a6204b5de10471e1437ff0c44b948687a"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a6204b5de10471e1437ff0c44b948687a">sLocalAddress</a></td></tr>
+<tr class="memdesc:a6204b5de10471e1437ff0c44b948687a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Local IPv4 or IPv6 IP address.  <br /></td></tr>
 <tr class="memitem:abc3a6b924ffb6ec091a9fcd90c189ee2" id="r_abc3a6b924ffb6ec091a9fcd90c189ee2"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#abc3a6b924ffb6ec091a9fcd90c189ee2">sRemoteAddress</a></td></tr>
+<tr class="memdesc:abc3a6b924ffb6ec091a9fcd90c189ee2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remote peer IP address.  <br /></td></tr>
 <tr class="memitem:a4ee8da4cf68aab26b7623a59da9f5844" id="r_a4ee8da4cf68aab26b7623a59da9f5844"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4ee8da4cf68aab26b7623a59da9f5844">sState</a></td></tr>
+<tr class="memdesc:a4ee8da4cf68aab26b7623a59da9f5844"><td class="mdescLeft">&#160;</td><td class="mdescRight">Socket connection state (e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT").  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00046">46</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<div class="textblock"><p>Telemetry describing an active TCP or UDP socket endpoint. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00057">57</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad1e005c478415380189c6ecc3851a815" name="ad1e005c478415380189c6ecc3851a815"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad1e005c478415380189c6ecc3851a815">&#9670;&#160;</a></span>NetworkConnectionInfo()</h2>
@@ -155,9 +165,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00053">53</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Default constructor. </p>
 
-<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00048">iLocalPort</a>, and <a class="el" href="_system_metrics_8h_source.html#l00050">iRemotePort</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00065">65</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00059">iLocalPort</a>, and <a class="el" href="_system_metrics_8h_source.html#l00061">iRemotePort</a>.</p>
 
 </div>
 </div>
@@ -174,9 +186,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00048">48</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Local listening or bound port. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00053">NetworkConnectionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00059">59</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00065">NetworkConnectionInfo()</a>.</p>
 
 </div>
 </div>
@@ -192,9 +206,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00050">50</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Remote peer port. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00053">NetworkConnectionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00061">61</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00065">NetworkConnectionInfo()</a>.</p>
 
 </div>
 </div>
@@ -210,7 +226,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00047">47</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Local IPv4 or IPv6 IP address. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00058">58</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>
@@ -226,7 +244,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00049">49</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Remote peer IP address. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00060">60</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>
@@ -242,7 +262,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00051">51</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Socket connection state (e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT"). </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00062">62</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>

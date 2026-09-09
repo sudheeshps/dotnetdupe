@@ -22,12 +22,14 @@ namespace DotNetDupe {
 
             struct SystemMetricsLinuxHelper {
                 static int FindPid(const String& sProcessName) {
+                    /// Step: Look up process by name and return PID.
                     auto arrMatches = Process::GetProcessesByName(sProcessName);
                     if (arrMatches.GetLength() > 0) return arrMatches[0]->GetId();
                     return -1;
                 }
 
                 static MemoryInfo ReadMem(int iPid) {
+                    /// Step: Parse /proc/[pid]/status for VmRSS and VmSize.
                     MemoryInfo info;
                     if (iPid <= 0) return info;
                     std::ifstream f("/proc/" + std::to_string(iPid) + "/status");
@@ -41,6 +43,7 @@ namespace DotNetDupe {
                 }
 
                 static DiskInfo ReadDisk(int iPid) {
+                    /// Step: Parse /proc/[pid]/io for read_bytes and write_bytes.
                     DiskInfo info;
                     if (iPid <= 0) return info;
                     std::ifstream f("/proc/" + std::to_string(iPid) + "/io");
@@ -53,6 +56,7 @@ namespace DotNetDupe {
                 }
 
                 static NetworkUsageInfo ReadNet(int iPid) {
+                    /// Step: Parse /proc/[pid]/net/dev for rx and tx bytes.
                     NetworkUsageInfo info;
                     if (iPid <= 0) return info;
                     std::ifstream f("/proc/" + std::to_string(iPid) + "/net/dev");
@@ -72,6 +76,7 @@ namespace DotNetDupe {
                 }
 
                 static ProcessNetworkConnectionInfo ReadNetInfo(int iPid) {
+                    /// Step: Parse /proc/net/tcp for local and remote socket ports.
                     ProcessNetworkConnectionInfo info;
                     if (iPid <= 0) return info;
                     std::ifstream f("/proc/net/tcp");
@@ -96,6 +101,7 @@ namespace DotNetDupe {
                 }
 
                 static MemoryInfo GetSysMem() {
+                    /// Step: Parse /proc/meminfo for MemTotal and MemAvailable.
                     MemoryInfo info;
                     std::ifstream f("/proc/meminfo");
                     std::string line; unsigned long long tot = 0, av = 0;
@@ -110,6 +116,7 @@ namespace DotNetDupe {
                 }
 
                 static double GetSysCpu() {
+                    /// Step: Parse /proc/stat for aggregate CPU times.
                     std::ifstream f("/proc/stat");
                     std::string line;
                     if (f.is_open() && std::getline(f, line) && line.rfind("cpu ", 0) == 0) {
@@ -124,6 +131,7 @@ namespace DotNetDupe {
                 }
 
                 static DiskInfo GetSysDisk() {
+                    /// Step: Query root filesystem blocks via statvfs.
                     DiskInfo info; struct statvfs vfs;
                     if (statvfs("/", &vfs) == 0) {
                         info.lDiskReadBytes = static_cast<long long>(vfs.f_blocks * vfs.f_frsize);
@@ -133,6 +141,7 @@ namespace DotNetDupe {
                 }
 
                 static double GetSysNet() {
+                    /// Step: Aggregate total network octets from /proc/net/dev.
                     std::ifstream f("/proc/net/dev");
                     std::string line; long long total = 0; int cnt = 0;
                     while (f.is_open() && std::getline(f, line)) {
@@ -149,6 +158,7 @@ namespace DotNetDupe {
                 }
 
                 static String ReadCmdLine(int pid) {
+                    /// Step: Read null-separated argument tokens from /proc/[pid]/cmdline.
                     if (pid <= 0) return String("");
                     std::ifstream f("/proc/" + std::to_string(pid) + "/cmdline", std::ios::binary);
                     std::string cmd; char ch;
@@ -179,6 +189,7 @@ namespace DotNetDupe {
             ProcessNetworkConnectionInfo SystemMetrics::GetProcessNetworkInfo(int iProcessId) { return ReadLinuxProcessNetworkInfo(iProcessId); }
 
             void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork) {
+                /// Step: Guard parameter and read Linux telemetry from /proc.
                 if (proc.iProcessId <= 0) throw ArgumentException("Process ID must be greater than zero.");
                 proc.sCommandLine = GetProcessCommandLine(proc.sName);
                 proc.memory = ReadLinuxProcessMemory(proc.iProcessId);
@@ -191,8 +202,6 @@ namespace DotNetDupe {
                     proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
                 }
             }
-
-
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
                 return Collections::Generic::List<ServiceInfo>();

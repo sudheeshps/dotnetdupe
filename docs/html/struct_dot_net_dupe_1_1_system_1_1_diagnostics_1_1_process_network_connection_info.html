@@ -114,21 +114,29 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Collection of open ports and active connections attributed to a specific process.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a06bc642c6546a8536793f862003f1598" id="r_a06bc642c6546a8536793f862003f1598"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a06bc642c6546a8536793f862003f1598">ProcessNetworkConnectionInfo</a> ()</td></tr>
+<tr class="memdesc:a06bc642c6546a8536793f862003f1598"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a3b4b7960cd8c50821f418d246fcc9066" id="r_a3b4b7960cd8c50821f418d246fcc9066"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a3b4b7960cd8c50821f418d246fcc9066">bHasEstablishedInboundConnection</a></td></tr>
+<tr class="memdesc:a3b4b7960cd8c50821f418d246fcc9066"><td class="mdescLeft">&#160;</td><td class="mdescRight">True if process possesses at least one established connection.  <br /></td></tr>
 <tr class="memitem:a2c0b80c460662041e9f4fe3151e58a05" id="r_a2c0b80c460662041e9f4fe3151e58a05"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_network_connection_info.html">NetworkConnectionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2c0b80c460662041e9f4fe3151e58a05">lstConnections</a></td></tr>
+<tr class="memdesc:a2c0b80c460662041e9f4fe3151e58a05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Detailed active socket connections.  <br /></td></tr>
 <tr class="memitem:a98c8ddbaa69a70378f5491bc069ec1f0" id="r_a98c8ddbaa69a70378f5491bc069ec1f0"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; int &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a98c8ddbaa69a70378f5491bc069ec1f0">lstOpenPorts</a></td></tr>
+<tr class="memdesc:a98c8ddbaa69a70378f5491bc069ec1f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of TCP/UDP ports bound or in LISTEN state.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00056">56</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<div class="textblock"><p>Collection of open ports and active connections attributed to a specific process. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00070">70</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a06bc642c6546a8536793f862003f1598" name="a06bc642c6546a8536793f862003f1598"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a06bc642c6546a8536793f862003f1598">&#9670;&#160;</a></span>ProcessNetworkConnectionInfo()</h2>
@@ -153,9 +161,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00061">61</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Default constructor. </p>
 
-<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00059">bHasEstablishedInboundConnection</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00076">76</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_system_metrics_8h_source.html#l00073">bHasEstablishedInboundConnection</a>.</p>
 
 </div>
 </div>
@@ -172,9 +182,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00059">59</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>True if process possesses at least one established connection. </p>
 
-<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00061">ProcessNetworkConnectionInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00073">73</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_system_metrics_8h_source.html#l00076">ProcessNetworkConnectionInfo()</a>.</p>
 
 </div>
 </div>
@@ -190,7 +202,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00058">58</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>Detailed active socket connections. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00072">72</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>
@@ -206,7 +220,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00057">57</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
+<p>List of TCP/UDP ports bound or in LISTEN state. </p>
+
+<p class="definition">Definition at line <a class="el" href="_system_metrics_8h_source.html#l00071">71</a> of file <a class="el" href="_system_metrics_8h_source.html">SystemMetrics.h</a>.</p>
 
 </div>
 </div>

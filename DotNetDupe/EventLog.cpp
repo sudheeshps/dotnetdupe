@@ -73,6 +73,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             EventLogEntryType EventLog::MapWin32EventType(WORD wType) {
+                /// Step: Convert native Windows EVENTLOG type word to EventLogEntryType.
                 if (wType == EVENTLOG_ERROR_TYPE) return EventLogEntryType::Error;
                 if (wType == EVENTLOG_WARNING_TYPE) return EventLogEntryType::Warning;
                 if (wType == EVENTLOG_AUDIT_SUCCESS) return EventLogEntryType::SuccessAudit;
@@ -81,6 +82,7 @@ namespace DotNetDupe {
             }
 
             EventLogEntry EventLog::ParseWin32Record(const PEVENTLOGRECORD pRec) {
+                /// Step: Extract event record source and message strings.
                 EventLogEntryType eType = MapWin32EventType(pRec->EventType);
                 std::string sSrc = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
                 String sMsg = "";
@@ -88,11 +90,14 @@ namespace DotNetDupe {
                     std::string sNarrowMsg = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + pRec->StringOffset));
                     sMsg = String(sNarrowMsg.c_str());
                 }
+
+                /// Step: Convert Windows time to .NET 100-nanosecond ticks.
                 int64_t iTicks = ((int64_t)pRec->TimeGenerated + 62135596800LL) * 10000000LL;
                 return EventLogEntry(sMsg, eType, (int)pRec->EventID, String(sSrc.c_str()), DateTimeOffset(iTicks));
             }
 
             void EventLog::ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List<EventLogEntry>& lstEntries) {
+                /// Step: Iterate variable-length EVENTLOGRECORD headers across buffer.
                 DWORD dwOffset = 0;
                 while (dwOffset < dwBytesRead) {
                     PEVENTLOGRECORD pRec = (PEVENTLOGRECORD)&buffer[dwOffset];
@@ -102,6 +107,7 @@ namespace DotNetDupe {
             }
 
             static WORD MapEventLogEntryTypeToWin32(EventLogEntryType eType) {
+                /// Step: Map library EventLogEntryType enum to native EVENTLOG type.
                 if (eType == EventLogEntryType::Error) return EVENTLOG_ERROR_TYPE;
                 if (eType == EventLogEntryType::Warning) return EVENTLOG_WARNING_TYPE;
                 if (eType == EventLogEntryType::SuccessAudit) return EVENTLOG_AUDIT_SUCCESS;
@@ -110,6 +116,7 @@ namespace DotNetDupe {
             }
 
             static void ValidateWin32ReportResult(BOOL bReported, DWORD dwErr, const String& sSource) {
+                /// Step: Verify ReportEvent status and report Win32 errors.
                 if (!bReported) {
                     if (dwErr == ERROR_ACCESS_DENIED) {
                         throw UnauthorizedAccessException("Access denied writing to EventLog for source: " + sSource);
@@ -119,6 +126,7 @@ namespace DotNetDupe {
             }
 
             static HANDLE OpenWin32EventLogHandle(const String& sLogName) {
+                /// Step: Open native event log handle via OpenEventLogW.
                 std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
                 HANDLE h = ::OpenEventLogW(NULL, wLogName.c_str());
@@ -132,6 +140,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::ReadWin32EventLog(const String& sLogName, Collections::Generic::List<EventLogEntry>& lstEntries) {
+                /// Step: Open log and read records sequentially backwards.
                 HANDLE hEventLog = OpenWin32EventLogHandle(sLogName);
                 DWORD dwBytesRead = 0, dwNeeded = 0;
                 BYTE buffer[0x10000];
@@ -142,6 +151,7 @@ namespace DotNetDupe {
             }
 
             static HANDLE RegisterWin32EventSourceHandle(const String& sSource) {
+                /// Step: Register event source with Windows Event Log subsystem.
                 std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSource(sStdSource.begin(), sStdSource.end());
                 HANDLE h = ::RegisterEventSourceW(NULL, wSource.c_str());
@@ -154,6 +164,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::WriteWin32EventLog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+                /// Step: Register event source and report event record.
                 HANDLE hEventLog = RegisterWin32EventSourceHandle(sSource);
                 std::string sStdMsg(sMessage.GetRawString() ? sMessage.GetRawString() : "");
                 std::wstring wMsg(sStdMsg.begin(), sStdMsg.end());
@@ -165,6 +176,7 @@ namespace DotNetDupe {
             }
 
             bool EventLog::CreateWin32EventSource(const String& sSource, const String& sLogName) {
+                /// Step: Register new event source in Windows registry under HKLM.
                 std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" +
@@ -183,6 +195,7 @@ namespace DotNetDupe {
             }
 
             bool EventLog::Win32SourceExists(const String& sSource) {
+                /// Step: Check registry under Application, System, and Security for registered source.
                 std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
@@ -197,6 +210,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::DeleteWin32EventSource(const String& sSource) {
+                /// Step: Delete registered event source key from HKLM registry.
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
@@ -208,6 +222,7 @@ namespace DotNetDupe {
             }
 #else
             void EventLog::WriteLinuxSyslog(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+                /// Step: Map severity and write message via POSIX syslog(3).
                 int iPriority = LOG_INFO;
                 const char* szLevelStr = "Information";
                 if (eType == EventLogEntryType::Error) { iPriority = LOG_ERR; szLevelStr = "Error"; }
@@ -222,6 +237,7 @@ namespace DotNetDupe {
             }
 
             EventLogEntry EventLog::ParseSyslogLine(const String& sLine) {
+                /// Step: Parse syslog line format into EventLogEntry.
                 EventLogEntryType eType = EventLogEntryType::Information;
                 std::string line = sLine.GetRawString() ? sLine.GetRawString() : "";
 
@@ -241,6 +257,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::ReadLinuxSyslogFile(const String& sFilePath, Collections::Generic::List<EventLogEntry>& lstEntries) {
+                /// Step: Read syslog text file lines.
                 std::ifstream infile(sFilePath.GetRawString() ? sFilePath.GetRawString() : "");
                 if (!infile.is_open()) return;
 
@@ -252,6 +269,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::ReadLinuxSyslog(Collections::Generic::List<EventLogEntry>& lstEntries) {
+                /// Step: Search standard syslog paths (/var/log/syslog, /var/log/messages).
                 const char* syslogPaths[] = { "/var/log/syslog", "/var/log/messages" };
                 for (const char* path : syslogPaths) {
                     struct stat st;
@@ -264,6 +282,7 @@ namespace DotNetDupe {
 #endif
 
             Collections::Generic::List<EventLogEntry> EventLog::GetEntries() const {
+                /// Step: Synchronize and query platform event logs.
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 Collections::Generic::List<EventLogEntry> lstEntries;
 #if defined(_WIN32)
@@ -271,6 +290,7 @@ namespace DotNetDupe {
 #else
                 ReadLinuxSyslog(lstEntries);
 #endif
+                /// Step: Merge entries recorded in the in-memory fallback store.
                 auto it = s_mapLogEntries.find(m_sLogName);
                 if (it != s_mapLogEntries.end()) {
                     for (const auto& entry : it->second) {
@@ -302,6 +322,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::RecordInternalLogEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+                /// Step: Map source to log name and save in internal store.
                 String sTargetLog = "Application";
                 auto itSource = s_mapSourceToLog.find(sSource);
                 if (itSource != s_mapSourceToLog.end()) {
@@ -314,14 +335,18 @@ namespace DotNetDupe {
             }
 
             void EventLog::WriteEntry(const String& sSource, const String& sMessage, EventLogEntryType eType, int iEventID) {
+                /// Step: Validate parameter constraints.
                 if (sSource.IsEmpty()) {
                     throw ArgumentException("Source cannot be empty when writing to event log.");
                 }
+
+                /// Step: Dispatch write to native platform logger.
 #if defined(_WIN32)
                 WriteWin32EventLog(sSource, sMessage, eType, iEventID);
 #else
                 WriteLinuxSyslog(sSource, sMessage, eType, iEventID);
 #endif
+                /// Step: Synchronize and record in memory fallback table.
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 RecordInternalLogEntry(sSource, sMessage, eType, iEventID);
             }
@@ -331,6 +356,7 @@ namespace DotNetDupe {
             }
 
             bool EventLog::SourceExists(const String& sSource, const String& sMachineName) {
+                /// Step: Check source existence on native platform and fallback map.
                 if (sSource.IsEmpty()) return false;
 #if defined(_WIN32)
                 if (Win32SourceExists(sSource)) return true;
@@ -340,6 +366,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::CreateEventSource(const String& sSource, const String& sLogName) {
+                /// Step: Guard parameter and register event source.
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
                 String sEffectiveLog = sLogName.IsEmpty() ? String("Application") : sLogName;
 #if defined(_WIN32)
@@ -365,6 +392,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::PurgeSourcesForLog(const String& sLogName) {
+                /// Step: Purge source mapping associations for deleted log.
                 std::vector<String> vSourcesToRemove;
                 for (const auto& pair : s_mapSourceToLog) {
                     if (pair.second == sLogName) vSourcesToRemove.push_back(pair.first);
@@ -375,6 +403,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::Delete(const String& sLogName, const String& sMachineName) {
+                /// Step: Validate parameter and delete log registry key.
                 if (sLogName.IsEmpty()) throw ArgumentException("Log name cannot be empty.");
 #if defined(_WIN32)
                 std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
@@ -391,6 +420,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::DeleteEventSource(const String& sSource, const String& sMachineName) {
+                /// Step: Validate parameter and delete event source.
                 if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
 #if defined(_WIN32)
                 try {
@@ -411,6 +441,7 @@ namespace DotNetDupe {
             }
 
             bool EventLog::Exists(const String& sLogName, const String& sMachineName) {
+                /// Step: Verify log existence via registry or internal store.
                 if (sLogName.IsEmpty()) return false;
 #if defined(_WIN32)
                 std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
@@ -432,6 +463,7 @@ namespace DotNetDupe {
             }
 
             Collections::Generic::List<EventLog> EventLog::GetEventLogs(const String& sMachineName) {
+                /// Step: Enumerate all registered event log stores.
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 Collections::Generic::List<EventLog> lstLogs;
                 for (const auto& pair : s_mapLogEntries) {
@@ -441,6 +473,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::Clear() {
+                /// Step: Clear native event log via ClearEventLogW.
 #if defined(_WIN32)
                 std::string sStdLog(m_sLogName.GetRawString() ? m_sLogName.GetRawString() : "");
                 std::wstring wLog(sStdLog.begin(), sStdLog.end());
@@ -450,11 +483,13 @@ namespace DotNetDupe {
                     ::CloseEventLog(hLog);
                 }
 #endif
+                /// Step: Clear in-memory event entries.
                 std::lock_guard<std::mutex> lock(s_mtxEventLog);
                 s_mapLogEntries[m_sLogName].clear();
             }
 
             void EventLog::Close() {
+                /// Step: Close resources associated with event log.
             }
 
         }

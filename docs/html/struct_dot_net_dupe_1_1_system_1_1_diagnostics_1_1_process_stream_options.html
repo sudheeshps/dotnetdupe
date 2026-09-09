@@ -114,23 +114,33 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Configuration options controlling the execution of a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_streamer.html" title="Streams system process updates asynchronously with batching and event notifications.">ProcessStreamer</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5366e68bb1987d95736f774661b9cb8f" id="r_a5366e68bb1987d95736f774661b9cb8f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a5366e68bb1987d95736f774661b9cb8f">ProcessStreamOptions</a> ()</td></tr>
+<tr class="memdesc:a5366e68bb1987d95736f774661b9cb8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor configuring progressive telemetry defaults.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ac1289d6ebb5f815e80da746d79b84ea0" id="r_ac1289d6ebb5f815e80da746d79b84ea0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ac1289d6ebb5f815e80da746d79b84ea0">bIncludeNetworkInfo</a></td></tr>
+<tr class="memdesc:ac1289d6ebb5f815e80da746d79b84ea0"><td class="mdescLeft">&#160;</td><td class="mdescRight">True to enumerate open ports and socket connections.  <br /></td></tr>
 <tr class="memitem:a0fb6db90bdd6e1aa2f6e33653166f194" id="r_a0fb6db90bdd6e1aa2f6e33653166f194"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2e3c260599e9dda8062f8bc48bac2fff">ProcessMetricsDetail</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0fb6db90bdd6e1aa2f6e33653166f194">eDetailLevel</a></td></tr>
+<tr class="memdesc:a0fb6db90bdd6e1aa2f6e33653166f194"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth of telemetry gathered for each process.  <br /></td></tr>
 <tr class="memitem:a1339fd0f752d9eef8051bb2c393cbd68" id="r_a1339fd0f752d9eef8051bb2c393cbd68"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a1339fd0f752d9eef8051bb2c393cbd68">iBatchIntervalMs</a></td></tr>
+<tr class="memdesc:a1339fd0f752d9eef8051bb2c393cbd68"><td class="mdescLeft">&#160;</td><td class="mdescRight">Millisecond interval between batch dispatches.  <br /></td></tr>
 <tr class="memitem:a3766cef60772c0d6c66a8d6e86291ee7" id="r_a3766cef60772c0d6c66a8d6e86291ee7"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a3766cef60772c0d6c66a8d6e86291ee7">iBatchSize</a></td></tr>
+<tr class="memdesc:a3766cef60772c0d6c66a8d6e86291ee7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of processes dispatched in each batch event.  <br /></td></tr>
 <tr class="memitem:a9c07dc70e4d5578201bc28e786c779c7" id="r_a9c07dc70e4d5578201bc28e786c779c7"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a9c07dc70e4d5578201bc28e786c779c7">iSessionId</a></td></tr>
+<tr class="memdesc:a9c07dc70e4d5578201bc28e786c779c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Filter by session identifier (-1 for all sessions).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00014">14</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<div class="textblock"><p>Configuration options controlling the execution of a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_streamer.html" title="Streams system process updates asynchronously with batching and event notifications.">ProcessStreamer</a>. </p>
+
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00018">18</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5366e68bb1987d95736f774661b9cb8f" name="a5366e68bb1987d95736f774661b9cb8f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5366e68bb1987d95736f774661b9cb8f">&#9670;&#160;</a></span>ProcessStreamOptions()</h2>
@@ -155,9 +165,11 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00021">21</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>Default constructor configuring progressive telemetry defaults. </p>
 
-<p class="reference">References <a class="el" href="_process_stream_options_8h_source.html#l00019">bIncludeNetworkInfo</a>, <a class="el" href="_process_stream_options_8h_source.html#l00015">eDetailLevel</a>, <a class="el" href="_process_stream_options_8h_source.html#l00017">iBatchIntervalMs</a>, <a class="el" href="_process_stream_options_8h_source.html#l00016">iBatchSize</a>, <a class="el" href="_process_stream_options_8h_source.html#l00018">iSessionId</a>, and <a class="el" href="_process_stream_options_8h_source.html#l00010">DotNetDupe::System::Diagnostics::Progressive</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00026">26</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_process_stream_options_8h_source.html#l00023">bIncludeNetworkInfo</a>, <a class="el" href="_process_stream_options_8h_source.html#l00019">eDetailLevel</a>, <a class="el" href="_process_stream_options_8h_source.html#l00021">iBatchIntervalMs</a>, <a class="el" href="_process_stream_options_8h_source.html#l00020">iBatchSize</a>, <a class="el" href="_process_stream_options_8h_source.html#l00022">iSessionId</a>, and <a class="el" href="_process_stream_options_8h_source.html#l00012">DotNetDupe::System::Diagnostics::Progressive</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_process_streamer_8cpp_source.html#l00246">DotNetDupe::System::Diagnostics::ProcessStreamer::GetOptions()</a>.</p>
 
@@ -176,9 +188,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00019">19</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>True to enumerate open ports and socket connections. </p>
 
-<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00021">ProcessStreamOptions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00023">23</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00026">ProcessStreamOptions()</a>.</p>
 
 </div>
 </div>
@@ -194,9 +208,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00015">15</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>Depth of telemetry gathered for each process. </p>
 
-<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00021">ProcessStreamOptions()</a>, and <a class="el" href="_system_metrics_8cpp_source.html#l00048">DotNetDupe::System::Diagnostics::SystemMetrics::EnumerateProcessesAsync()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00019">19</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00026">ProcessStreamOptions()</a>, and <a class="el" href="_system_metrics_8cpp_source.html#l00049">DotNetDupe::System::Diagnostics::SystemMetrics::EnumerateProcessesAsync()</a>.</p>
 
 </div>
 </div>
@@ -212,9 +228,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00017">17</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>Millisecond interval between batch dispatches. </p>
 
-<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00021">ProcessStreamOptions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00021">21</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00026">ProcessStreamOptions()</a>.</p>
 
 </div>
 </div>
@@ -230,9 +248,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00016">16</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>Number of processes dispatched in each batch event. </p>
 
-<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00021">ProcessStreamOptions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00020">20</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00026">ProcessStreamOptions()</a>.</p>
 
 </div>
 </div>
@@ -248,9 +268,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00018">18</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+<p>Filter by session identifier (-1 for all sessions). </p>
 
-<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00021">ProcessStreamOptions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_process_stream_options_8h_source.html#l00022">22</a> of file <a class="el" href="_process_stream_options_8h_source.html">ProcessStreamOptions.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_process_stream_options_8h_source.html#l00026">ProcessStreamOptions()</a>.</p>
 
 </div>
 </div>

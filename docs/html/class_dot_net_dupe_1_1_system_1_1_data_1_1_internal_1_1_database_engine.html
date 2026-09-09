@@ -114,22 +114,33 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Central registry and dispatcher for named database backends.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_database_engine_8h_source.html">DatabaseEngine.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2aaa5ce05286e9b319332385552f441c" id="r_a2aaa5ce05286e9b319332385552f441c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2aaa5ce05286e9b319332385552f441c">ClearDatabase</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;dbName)</td></tr>
+<tr class="memdesc:a2aaa5ce05286e9b319332385552f441c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all contents of the specified database.  <br /></td></tr>
 <tr class="memitem:a9e411adbfbd222b52d1c9706d3ff123c" id="r_a9e411adbfbd222b52d1c9706d3ff123c"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_row.html">Row</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a9e411adbfbd222b52d1c9706d3ff123c">Execute</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;dbName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sql, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;parameters, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;columnNames, int &amp;rowsAffected)</td></tr>
+<tr class="memdesc:a9e411adbfbd222b52d1c9706d3ff123c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes a SQL command against the named database backend.  <br /></td></tr>
 <tr class="memitem:a0c79832059ce713499632e8bc93dd073" id="r_a0c79832059ce713499632e8bc93dd073"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_i_database_backend.html">IDatabaseBackend</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a0c79832059ce713499632e8bc93dd073">GetBackend</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;dbName)</td></tr>
+<tr class="memdesc:a0c79832059ce713499632e8bc93dd073"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the backend associated with a database name.  <br /></td></tr>
 <tr class="memitem:a6c5659b25e6f87a276dc55f8b2ca19d7" id="r_a6c5659b25e6f87a276dc55f8b2ca19d7"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a6c5659b25e6f87a276dc55f8b2ca19d7">RegisterBackend</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;dbName, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_i_database_backend.html">IDatabaseBackend</a> &gt; backend)</td></tr>
+<tr class="memdesc:a6c5659b25e6f87a276dc55f8b2ca19d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a backend instance for a specific database name.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ace8753b797b3dd866079baf056ad5601" id="r_ace8753b797b3dd866079baf056ad5601"><td class="memItemLeft">static DatabaseEngine &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ace8753b797b3dd866079baf056ad5601">Instance</a> ()</td></tr>
+<tr class="memdesc:ace8753b797b3dd866079baf056ad5601"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the singleton instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_database_engine.html" title="Central registry and dispatcher for named database backends.">DatabaseEngine</a>.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_database_engine_8h_source.html#l00014">14</a> of file <a class="el" href="_database_engine_8h_source.html">DatabaseEngine.h</a>.</p>
+<div class="textblock"><p>Central registry and dispatcher for named database backends. </p>
+<p>Manages registration and routing of database operations to active backends (e.g. in-memory or SQLite) based on connection string database names.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Thread-safe. <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_internal.html">Internal</a> registry lookup is guarded by synchronization mutex. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_database_engine_8h_source.html#l00021">21</a> of file <a class="el" href="_database_engine_8h_source.html">DatabaseEngine.h</a>.</p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a2aaa5ce05286e9b319332385552f441c" name="a2aaa5ce05286e9b319332385552f441c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2aaa5ce05286e9b319332385552f441c">&#9670;&#160;</a></span>ClearDatabase()</h2>
@@ -146,11 +157,21 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00043">43</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
+<p>Clears all contents of the specified database. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbName</td><td>The database identifier to clear. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Resolve backend by name.</p>
+<p>Step: Invoke backend-specific purge if registered.</p>
 
-<p class="reference">References <a class="el" href="_database_engine_8cpp_source.html#l00043">ClearDatabase()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00034">GetBackend()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00052">52</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00043">ClearDatabase()</a>.</p>
+<p class="reference">References <a class="el" href="_database_engine_8cpp_source.html#l00052">ClearDatabase()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00038">GetBackend()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00052">ClearDatabase()</a>.</p>
 
 </div>
 </div>
@@ -188,11 +209,26 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00050">50</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
+<p>Executes a SQL command against the named database backend. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbName</td><td>The database identifier. </td></tr>
+    <tr><td class="paramname">sql</td><td>The SQL statement to execute. </td></tr>
+    <tr><td class="paramname">parameters</td><td>Dictionary of query parameters. </td></tr>
+    <tr><td class="paramname">columnNames</td><td>Output list populated with column header names. </td></tr>
+    <tr><td class="paramname">rowsAffected</td><td>Output count of modified rows. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>List of rows returned by query execution. </dd></dl>
+<p>Step: Locate target database backend.</p>
+<p>Step: Reset outputs and return empty list on missing backend.</p>
 
-<p class="reference">References <a class="el" href="_list_8h_source.html#l00134">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Clear()</a>, <a class="el" href="_database_engine_8cpp_source.html#l00050">Execute()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00034">GetBackend()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00062">62</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00050">Execute()</a>, <a class="el" href="_sql_command_8cpp_source.html#l00065">DotNetDupe::System::Data::SqlClient::SqlCommand::ExecuteNonQuery()</a>, and <a class="el" href="_sql_command_8cpp_source.html#l00053">DotNetDupe::System::Data::SqlClient::SqlCommand::ExecuteReader()</a>.</p>
+<p class="reference">References <a class="el" href="_list_8h_source.html#l00134">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Clear()</a>, <a class="el" href="_database_engine_8cpp_source.html#l00062">Execute()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00038">GetBackend()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00062">Execute()</a>, <a class="el" href="_sql_command_8cpp_source.html#l00065">DotNetDupe::System::Data::SqlClient::SqlCommand::ExecuteNonQuery()</a>, and <a class="el" href="_sql_command_8cpp_source.html#l00053">DotNetDupe::System::Data::SqlClient::SqlCommand::ExecuteReader()</a>.</p>
 
 </div>
 </div>
@@ -211,11 +247,23 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00034">34</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
+<p>Retrieves the backend associated with a database name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbName</td><td>The database identifier. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Smart pointer to the backend, or nullptr if not found. </dd></dl>
+<p>Step: Synchronize access to backend registry.</p>
+<p>Step: Look up backend by name.</p>
+<p>Step: Return null pointer if backend is unregistered.</p>
 
-<p class="reference">References <a class="el" href="_database_engine_8cpp_source.html#l00034">GetBackend()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00038">38</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00043">ClearDatabase()</a>, <a class="el" href="_database_engine_8cpp_source.html#l00050">Execute()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00034">GetBackend()</a>.</p>
+<p class="reference">References <a class="el" href="_database_engine_8cpp_source.html#l00038">GetBackend()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00052">ClearDatabase()</a>, <a class="el" href="_database_engine_8cpp_source.html#l00062">Execute()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00038">GetBackend()</a>.</p>
 
 </div>
 </div>
@@ -241,6 +289,10 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Retrieves the singleton instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_database_engine.html" title="Central registry and dispatcher for named database backends.">DatabaseEngine</a>. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to the global <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_database_engine.html" title="Central registry and dispatcher for named database backends.">DatabaseEngine</a>. </dd></dl>
+<p>Step: Maintain thread-safe static singleton instance.</p>
 
 <p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00024">24</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
 
@@ -269,11 +321,22 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00029">29</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
+<p>Registers a backend instance for a specific database name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">dbName</td><td>The database identifier or connection name. </td></tr>
+    <tr><td class="paramname">backend</td><td>Smart pointer to the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_i_database_backend.html" title="Interface defining the contract for database storage backends in DotNetDupe.">IDatabaseBackend</a> implementation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Synchronize access to backend map.</p>
+<p>Step: Store backend reference keyed by database name.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00029">RegisterBackend()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_database_engine_8cpp_source.html#l00030">30</a> of file <a class="el" href="_database_engine_8cpp_source.html">DatabaseEngine.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00029">RegisterBackend()</a>, and <a class="el" href="_sql_connection_8cpp_source.html#l00065">DotNetDupe::System::Data::SqlClient::RegisterSelectedBackend()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_database_engine_8cpp_source.html#l00030">RegisterBackend()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_database_engine_8cpp_source.html#l00030">RegisterBackend()</a>, and <a class="el" href="_sql_connection_8cpp_source.html#l00065">DotNetDupe::System::Data::SqlClient::RegisterSelectedBackend()</a>.</p>
 
 </div>
 </div>

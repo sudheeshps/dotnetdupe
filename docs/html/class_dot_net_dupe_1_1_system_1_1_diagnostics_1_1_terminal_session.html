@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Provides querying and enumeration of Terminal Services and RDP sessions.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Diagnostics::TerminalSession:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,7 +132,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af206fec96623dc781a9ef8139ecf8cd7" id="r_af206fec96623dc781a9ef8139ecf8cd7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#af206fec96623dc781a9ef8139ecf8cd7">TerminalSession</a> ()</td></tr>
+<tr class="memdesc:af206fec96623dc781a9ef8139ecf8cd7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session.html" title="Provides querying and enumeration of Terminal Services and RDP sessions.">TerminalSession</a>.  <br /></td></tr>
 <tr class="memitem:a97dc0fa7a0e856d0baa75d35c02b8be4" id="r_a97dc0fa7a0e856d0baa75d35c02b8be4"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a97dc0fa7a0e856d0baa75d35c02b8be4">~TerminalSession</a> ()</td></tr>
+<tr class="memdesc:a97dc0fa7a0e856d0baa75d35c02b8be4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -147,15 +152,20 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aac5b50a3a0c896ed324f4d8baf65537e" id="r_aac5b50a3a0c896ed324f4d8baf65537e"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html">RdpSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#aac5b50a3a0c896ed324f4d8baf65537e">GetActiveSessions</a> ()</td></tr>
+<tr class="memdesc:aac5b50a3a0c896ed324f4d8baf65537e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates only actively connected terminal sessions.  <br /></td></tr>
 <tr class="memitem:a9c408ff7d9f88c7ef48ec3f63e31074c" id="r_a9c408ff7d9f88c7ef48ec3f63e31074c"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html">RdpSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a9c408ff7d9f88c7ef48ec3f63e31074c">GetDisconnectedSessions</a> ()</td></tr>
+<tr class="memdesc:a9c408ff7d9f88c7ef48ec3f63e31074c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates disconnected terminal sessions available for reconnection.  <br /></td></tr>
 <tr class="memitem:a47d1c389dedc5ff1659a691f6ff0fbd8" id="r_a47d1c389dedc5ff1659a691f6ff0fbd8"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html">RdpSessionInfo</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a47d1c389dedc5ff1659a691f6ff0fbd8">GetSessions</a> ()</td></tr>
+<tr class="memdesc:a47d1c389dedc5ff1659a691f6ff0fbd8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enumerates all terminal sessions on the local system.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00043">43</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
+<div class="textblock"><p>Provides querying and enumeration of Terminal Services and RDP sessions. </p>
+<p>Interfaces with Windows Terminal Services APIs (<span class="tt">wtsapi32.dll</span>) to discover active, disconnected, and remote client sessions with client IP and machine names. </p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8h_source.html#l00053">53</a> of file <a class="el" href="_terminal_session_8h_source.html">TerminalSession.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="af206fec96623dc781a9ef8139ecf8cd7" name="af206fec96623dc781a9ef8139ecf8cd7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af206fec96623dc781a9ef8139ecf8cd7">&#9670;&#160;</a></span>TerminalSession()</h2>
@@ -171,6 +181,8 @@ Static Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session.html" title="Provides querying and enumeration of Terminal Services and RDP sessions.">TerminalSession</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00018">18</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
 
@@ -198,6 +210,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor. </p>
 
 <p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00019">19</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
 
@@ -227,9 +241,13 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00090">90</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
+<p>Enumerates only actively connected terminal sessions. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of active <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html" title="Contains extended telemetry for a Remote Desktop Protocol (RDP) session.">RdpSessionInfo</a> records. </dd></dl>
+<p>Step: Filter sessions for Active state.</p>
 
-<p class="reference">References <a class="el" href="_terminal_session_8h_source.html#l00014">DotNetDupe::System::Diagnostics::Active</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00066">GetSessions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00094">94</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_terminal_session_8h_source.html#l00016">DotNetDupe::System::Diagnostics::Active</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00069">GetSessions()</a>.</p>
 
 </div>
 </div>
@@ -256,9 +274,13 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00099">99</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
+<p>Enumerates disconnected terminal sessions available for reconnection. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of disconnected <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html" title="Contains extended telemetry for a Remote Desktop Protocol (RDP) session.">RdpSessionInfo</a> records. </dd></dl>
+<p>Step: Filter sessions for Disconnected state.</p>
 
-<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_terminal_session_8h_source.html#l00018">DotNetDupe::System::Diagnostics::Disconnected</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00066">GetSessions()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00104">104</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_terminal_session_8h_source.html#l00020">DotNetDupe::System::Diagnostics::Disconnected</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00069">GetSessions()</a>.</p>
 
 </div>
 </div>
@@ -285,11 +307,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00066">66</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
+<p>Enumerates all terminal sessions on the local system. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of all <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_rdp_session_info.html" title="Contains extended telemetry for a Remote Desktop Protocol (RDP) session.">RdpSessionInfo</a> records. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_unauthorized_access_exception.html">DotNetDupe::System::UnauthorizedAccessException</a></td><td>If caller lacks administrative rights. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Enumerate all Terminal Services sessions via native WTS API.</p>
+
+<p class="definition">Definition at line <a class="el" href="_terminal_session_8cpp_source.html#l00069">69</a> of file <a class="el" href="_terminal_session_8cpp_source.html">TerminalSession.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, and <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_terminal_session_8cpp_source.html#l00090">GetActiveSessions()</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00099">GetDisconnectedSessions()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_terminal_session_8cpp_source.html#l00094">GetActiveSessions()</a>, and <a class="el" href="_terminal_session_8cpp_source.html#l00104">GetDisconnectedSessions()</a>.</p>
 
 </div>
 </div>

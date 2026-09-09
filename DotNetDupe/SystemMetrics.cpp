@@ -42,22 +42,28 @@ namespace DotNetDupe {
             SystemMetrics::~SystemMetrics() {}
 
             SmartPointer<ProcessStreamer> SystemMetrics::CreateProcessStreamer(const ProcessStreamOptions& options) {
+                /// Step: Construct streamer instance with requested options.
                 return SmartPointer<ProcessStreamer>::NewShared(options);
             }
 
             void SystemMetrics::EnumerateProcessesAsync(const Action<const ProcessInfo&>& fnOnProcess, const Action<>& fnOnComplete) {
+                /// Step: Initialize streamer in fast discovery mode.
                 ProcessStreamOptions options;
                 options.eDetailLevel = ProcessMetricsDetail::FastDiscoveryOnly;
-                auto pStreamer = CreateProcessStreamer(options);
-                pStreamer->ProcessDiscovered += [fnOnProcess](const void*, const ProcessEventArgs& e) {
+                auto spStreamer = CreateProcessStreamer(options);
+
+                /// Step: Bind discovery and completion handlers.
+                spStreamer->ProcessDiscovered += [fnOnProcess](const void*, const ProcessEventArgs& e) {
                     if (fnOnProcess) fnOnProcess(e.GetProcess());
                 };
                 if (fnOnComplete) {
-                    pStreamer->Completed += [fnOnComplete](const void*, const EventArgs&) {
+                    spStreamer->Completed += [fnOnComplete](const void*, const EventArgs&) {
                         fnOnComplete();
                     };
                 }
-                pStreamer->Start();
+
+                /// Step: Start streaming processes.
+                spStreamer->Start();
             }
 
 #if defined(_WIN32)
@@ -69,6 +75,7 @@ namespace DotNetDupe {
 
             struct SystemMetricsWin32Helper {
                 static MemoryInfo GetSystemMemory() {
+                    /// Step: Query GlobalMemoryStatusEx for physical RAM statistics.
                     MemoryInfo info;
                     MEMORYSTATUSEX memStatus;
                     memStatus.dwLength = sizeof(MEMORYSTATUSEX);
@@ -81,6 +88,7 @@ namespace DotNetDupe {
                 }
 
                 static double CalculateCpuDelta(uint64_t uIdle, uint64_t uKernel, uint64_t uUser) {
+                    /// Step: Compute delta between consecutive CPU time samples.
                     static uint64_t s_uPrevIdle = 0, s_uPrevTotal = 0;
                     uint64_t uTotal = uKernel + uUser;
                     double dCpu = 0.0;
@@ -96,6 +104,7 @@ namespace DotNetDupe {
                 }
 
                 static double GetSystemCpu() {
+                    /// Step: Sample system times via GetSystemTimes.
                     FILETIME ftIdle, ftKernel, ftUser;
                     if (!::GetSystemTimes(&ftIdle, &ftKernel, &ftUser)) return 0.0;
                     uint64_t uIdle = (static_cast<uint64_t>(ftIdle.dwHighDateTime) << 32) | ftIdle.dwLowDateTime;
@@ -105,6 +114,7 @@ namespace DotNetDupe {
                 }
 
                 static void InitDiskQuery(HQUERY& hQuery, HCOUNTER& hRead, HCOUNTER& hWrite) {
+                    /// Step: Open PDH query and attach PhysicalDisk counters.
                     static bool s_bPdhInitialized = false;
                     if (!s_bPdhInitialized && ::PdhOpenQueryW(NULL, 0, &hQuery) == ERROR_SUCCESS) {
                         ::PdhAddEnglishCounterW(hQuery, L"\\PhysicalDisk(_Total)\\Disk Read Bytes/sec", 0, &hRead);
@@ -115,6 +125,7 @@ namespace DotNetDupe {
                 }
 
                 static DiskInfo GetSystemDisk() {
+                    /// Step: Query disk read/write throughput counters.
                     DiskInfo info;
                     static HQUERY s_hQuery = NULL; static HCOUNTER s_hRead = NULL, s_hWrite = NULL;
                     InitDiskQuery(s_hQuery, s_hRead, s_hWrite);
@@ -127,6 +138,7 @@ namespace DotNetDupe {
                 }
 
                 static double CalculateNetRate(uint64_t totalOctets) {
+                    /// Step: Calculate network bandwidth in Mbps.
                     static uint64_t s_uPrevOctets = 0; static DWORD s_dwPrevTick = 0;
                     DWORD dwNow = ::GetTickCount(); double dMbps = 0.0;
                     if (s_dwPrevTick > 0 && dwNow > s_dwPrevTick && totalOctets >= s_uPrevOctets) {
@@ -138,6 +150,7 @@ namespace DotNetDupe {
                 }
 
                 static double GetSystemNetwork() {
+                    /// Step: Query interface table via GetIfTable.
                     DWORD dwSize = 0;
                     if (::GetIfTable(NULL, &dwSize, FALSE) != ERROR_INSUFFICIENT_BUFFER) return 0.0;
                     std::vector<uint8_t> buf(dwSize, 0);
@@ -152,6 +165,7 @@ namespace DotNetDupe {
                 }
 
                 static void* OpenProcByName(const String& sProcessName, unsigned long dwAccess, int& iOutPid) {
+                    /// Step: Locate PID by name and open process handle.
                     iOutPid = -1;
                     auto arrMatches = Process::GetProcessesByName(sProcessName);
                     if (arrMatches.GetLength() == 0) return NULL;
@@ -160,6 +174,7 @@ namespace DotNetDupe {
                 }
 
                 static String ReadPebCommandLine(HANDLE hProc, PVOID pebBase) {
+                    /// Step: Read PEB and RTL_USER_PROCESS_PARAMETERS to extract command line.
                     PEB peb; SIZE_T bytesRead = 0;
                     if (!::ReadProcessMemory(hProc, pebBase, &peb, sizeof(peb), &bytesRead)) return String("");
                     RTL_USER_PROCESS_PARAMETERS upp;
@@ -170,6 +185,7 @@ namespace DotNetDupe {
                 }
 
                 static String ReadProcCmdLine(void* hProc) {
+                    /// Step: Query NtQueryInformationProcess for PEB base address.
                     typedef NTSTATUS(NTAPI* pfnNtQuery)(HANDLE, ULONG, PVOID, ULONG, PULONG);
                     HMODULE hNtDll = ::GetModuleHandleW(L"ntdll.dll");
                     pfnNtQuery fnNtQuery = hNtDll ? (pfnNtQuery)::GetProcAddress(hNtDll, "NtQueryInformationProcess") : NULL;
@@ -182,6 +198,7 @@ namespace DotNetDupe {
                 }
 
                 static MemoryInfo ReadProcMemory(void* hProc) {
+                    /// Step: Query working set and private bytes via GetProcessMemoryInfo.
                     MemoryInfo info;
                     if (hProc) {
                         PROCESS_MEMORY_COUNTERS_EX pmc;
@@ -194,6 +211,7 @@ namespace DotNetDupe {
                 }
 
                 static void QueryPdhIoCounters(const std::wstring& wProcName, DiskInfo& info) {
+                    /// Step: Query process IO read/write counters using PDH.
                     std::wstring rPath = L"\\Process(" + wProcName + L")\\IO Read Bytes/sec";
                     std::wstring wPath = L"\\Process(" + wProcName + L")\\IO Write Bytes/sec";
                     HQUERY hQuery = NULL; HCOUNTER hRead = NULL, hWrite = NULL;
@@ -209,6 +227,7 @@ namespace DotNetDupe {
                 }
 
                 static DiskInfo ReadProcDisk(void* hProc, const String& sProcessName) {
+                    /// Step: Read process disk counters via PDH and fallback to GetProcessIoCounters.
                     DiskInfo info;
                     std::string sStd(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
                     std::wstring wProc(sStd.begin(), sStd.end());
@@ -225,6 +244,7 @@ namespace DotNetDupe {
                 }
 
                 static NetworkUsageInfo ReadProcNetwork(void* hProc, const String& sProcessName) {
+                    /// Step: Sample process network transfer metrics.
                     NetworkUsageInfo info;
                     std::string sStd(sProcessName.GetRawString() ? sProcessName.GetRawString() : "");
                     std::wstring wProc(sStd.begin(), sStd.end());
@@ -237,6 +257,7 @@ namespace DotNetDupe {
                 }
 
                 static void ReadUdpPorts(int iPid, Collections::Generic::List<int>& lst) {
+                    /// Step: Query UDP table for process bound ports.
                     if (iPid <= 0) return;
                     DWORD dwSize = 0;
                     if (::GetExtendedUdpTable(NULL, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) return;
@@ -252,6 +273,7 @@ namespace DotNetDupe {
                 }
 
                 static Collections::Generic::List<int> ReadProcPorts(int iPid) {
+                    /// Step: Query TCP listen ports and append UDP ports.
                     Collections::Generic::List<int> lst;
                     if (iPid <= 0) return lst;
                     DWORD dwSize = 0;
@@ -272,6 +294,7 @@ namespace DotNetDupe {
                 }
 
                 static void ExtractTcpConnection(MIB_TCPROW_OWNER_PID& row, NetworkConnectionInfo& conn) {
+                    /// Step: Format local and remote IP address and port numbers.
                     in_addr lAddr, rAddr;
                     lAddr.S_un.S_addr = row.dwLocalAddr; rAddr.S_un.S_addr = row.dwRemoteAddr;
                     char szL[INET_ADDRSTRLEN] = { 0 }, szR[INET_ADDRSTRLEN] = { 0 };
@@ -283,6 +306,7 @@ namespace DotNetDupe {
                 }
 
                 static void ReadUdpConnections(int iPid, ProcessNetworkConnectionInfo& info) {
+                    /// Step: Query UDP connection endpoints for PID.
                     if (iPid <= 0) return;
                     DWORD dwSize = 0;
                     if (::GetExtendedUdpTable(NULL, &dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) return;
@@ -304,6 +328,7 @@ namespace DotNetDupe {
                 }
 
                 static ProcessNetworkConnectionInfo ReadProcNetInfo(int iPid) {
+                    /// Step: Enumerate TCP and UDP sockets for process.
                     ProcessNetworkConnectionInfo info;
                     if (iPid <= 0) return info;
                     DWORD dwSize = 0;
@@ -327,6 +352,7 @@ namespace DotNetDupe {
                 }
 
                 static void CalculateProcessCpu(HANDLE hProc, int iPid, double& dCpu) {
+                    /// Step: Calculate process CPU percentage against system time delta.
                     FILETIME ftCreate, ftExit, ftKernel, ftUser, ftSysIdle, ftSysKernel, ftSysUser, ftNow;
                     if (!::GetProcessTimes(hProc, &ftCreate, &ftExit, &ftKernel, &ftUser) || !::GetSystemTimes(&ftSysIdle, &ftSysKernel, &ftSysUser)) return;
                     uint64_t uProc = ((static_cast<uint64_t>(ftKernel.dwHighDateTime) << 32) | ftKernel.dwLowDateTime) + ((static_cast<uint64_t>(ftUser.dwHighDateTime) << 32) | ftUser.dwLowDateTime);
@@ -344,6 +370,7 @@ namespace DotNetDupe {
                 }
 
                 static void PopulateProcNetwork(int iPid, ProcessInfo& proc) {
+                    /// Step: Populate network ports and socket connections.
                     auto netInfo = ReadProcNetInfo(iPid);
                     proc.lstOpenPorts = netInfo.lstOpenPorts;
                     proc.lstConnections = netInfo.lstConnections;
@@ -351,6 +378,7 @@ namespace DotNetDupe {
                 }
 
                 static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
+                    /// Step: Query service configuration for startup mode.
                     SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
                     if (!hService) return "Manual";
                     BYTE buffer[1024]; DWORD dwNeeded = 0;
@@ -371,6 +399,7 @@ namespace DotNetDupe {
                 }
 
                 static void ParseServiceStatus(ENUM_SERVICE_STATUS_PROCESSW& svc, SC_HANDLE hSCM, ServiceInfo& info) {
+                    /// Step: Map native service status and startup type.
                     info.sServiceName = String(svc.lpServiceName); info.sDisplayName = String(svc.lpDisplayName);
                     info.iProcessId = static_cast<int>(svc.ServiceStatusProcess.dwProcessId);
                     switch (svc.ServiceStatusProcess.dwCurrentState) {
@@ -399,6 +428,7 @@ namespace DotNetDupe {
             }
 
             String SystemMetrics::GetProcessCommandLine(const String& sProcessName) {
+                /// Step: Open target process and query full command line.
                 int iPid = -1;
                 HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
                 if (!hProc) return String("");
@@ -413,6 +443,7 @@ namespace DotNetDupe {
 
             MemoryInfo SystemMetrics::ReadProcessMemoryHandle(void* hProc) { return SystemMetricsWin32Helper::ReadProcMemory(hProc); }
             MemoryInfo SystemMetrics::GetProcessMemoryUsage(const String& sProcessName) {
+                /// Step: Query memory allocation for target process name.
                 int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
                 if (!hProc) return MemoryInfo();
                 MemoryInfo mem = ReadProcessMemoryHandle(hProc);
@@ -422,6 +453,7 @@ namespace DotNetDupe {
 
             DiskInfo SystemMetrics::ReadProcessDiskHandle(void* hProc, const String& sProcessName) { return SystemMetricsWin32Helper::ReadProcDisk(hProc, sProcessName); }
             DiskInfo SystemMetrics::GetProcessDiskUsage(const String& sProcessName) {
+                /// Step: Query disk read/write throughput for process name.
                 int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
                 DiskInfo di = ReadProcessDiskHandle(hProc, sProcessName);
                 if (hProc) ::CloseHandle(hProc);
@@ -430,6 +462,7 @@ namespace DotNetDupe {
 
             NetworkUsageInfo SystemMetrics::ReadProcessNetworkHandle(void* hProc, const String& sProcessName) { return SystemMetricsWin32Helper::ReadProcNetwork(hProc, sProcessName); }
             NetworkUsageInfo SystemMetrics::GetProcessNetworkUsage(const String& sProcessName) {
+                /// Step: Query network throughput for process name.
                 int iPid = -1; HANDLE hProc = static_cast<HANDLE>(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION, iPid));
                 NetworkUsageInfo net = ReadProcessNetworkHandle(hProc, sProcessName);
                 if (hProc) ::CloseHandle(hProc);
@@ -457,7 +490,10 @@ namespace DotNetDupe {
             }
 
             void SystemMetrics::EnrichProcessInfo(ProcessInfo& proc, bool bIncludeNetwork) {
+                /// Step: Guard against invalid PID.
                 if (proc.iProcessId <= 0) throw ArgumentException("Process ID must be greater than zero.");
+
+                /// Step: Open process and query image path, command line, memory, disk, network, and CPU.
                 HANDLE hProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, FALSE, proc.iProcessId);
                 if (hProc) {
                     if (proc.sPath.IsEmpty()) {
@@ -472,10 +508,13 @@ namespace DotNetDupe {
                     SystemMetricsWin32Helper::CalculateProcessCpu(hProc, proc.iProcessId, proc.dCpuUsagePercent);
                     ::CloseHandle(hProc);
                 }
+
+                /// Step: Populate network connection details if requested.
                 if (bIncludeNetwork) SystemMetricsWin32Helper::PopulateProcNetwork(proc.iProcessId, proc);
             }
 
             Collections::Generic::List<ServiceInfo> SystemMetrics::GetAllServices() {
+                /// Step: Open Service Control Manager and enumerate running and stopped services.
                 Collections::Generic::List<ServiceInfo> lst;
                 SC_HANDLE hSCM = ::OpenSCManagerW(NULL, NULL, SC_MANAGER_ENUMERATE_SERVICE);
                 if (!hSCM) return lst;
