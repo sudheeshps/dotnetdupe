@@ -67,7 +67,7 @@ var searchData=
   ['charunicodeinfo_2eh_64',['CharUnicodeInfo.h',['../_char_unicode_info_8h.html',1,'']]],
   ['chchars_65',['&lt;span class=&quot;tt&quot;&gt;int IndexOfAny(int iStartIndex, std::initializer_list&amp;lt;char&amp;gt; chChars)&lt;/span&gt;',['../md_docs_2_string.html#autotoc_md1569',1,'']]],
   ['chchars_20bool_20bignorecase_66',['&lt;span class=&quot;tt&quot;&gt;int LastIndexOfAny(int iStartIndex, std::initializer_list&amp;lt;char&amp;gt; chChars, bool bIgnoreCase)&lt;/span&gt;',['../md_docs_2_string.html#autotoc_md1571',1,'']]],
-  ['checkandrollover_67',['CheckAndRollover',['../namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#aa0ec025397074bd521cc1e52c016ff76',1,'DotNetDupe::Extensions::Logging']]],
+  ['checkandrollover_67',['CheckAndRollover',['../namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a61d790fb715034a2db5ac6927473ab4a',1,'DotNetDupe::Extensions::Logging']]],
   ['checking_68',['Range Checking',['../md_docs_2_char.html#autotoc_md195',1,'']]],
   ['checkrange_69',['CheckRange',['../namespace_dot_net_dupe_1_1_system.html#aa20de12f382cc3e1757a52188597810d',1,'DotNetDupe::System']]],
   ['choriginalchar_20char_20chreplacechar_20const_70',['&lt;span class=&quot;tt&quot;&gt;String Replace(char chOriginalChar, char chReplaceChar) const&lt;/span&gt;',['../md_docs_2_string.html#autotoc_md1591',1,'']]],

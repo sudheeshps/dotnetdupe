@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Specifies the contract for a collection of service descriptors.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::Extensions::DependencyInjection::IServiceCollection:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -124,32 +127,45 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
   <map id="DotNetDupe_3A_3AExtensions_3A_3ADependencyInjection_3A_3AIServiceCollection_map" name="DotNetDupe_3A_3AExtensions_3A_3ADependencyInjection_3A_3AIServiceCollection_map">
 <area href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html" alt="DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;" shape="rect" coords="0,56,397,80"/>
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="0,0,397,24"/>
-<area href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html" alt="DotNetDupe::Extensions::DependencyInjection::ServiceCollection" shape="rect" coords="0,168,397,192"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html" title="Default implementation of the IServiceCollection interface." alt="DotNetDupe::Extensions::DependencyInjection::ServiceCollection" shape="rect" coords="0,168,397,192"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a030668979b342a36ca523c65a667a2c7" id="r_a030668979b342a36ca523c65a667a2c7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> ()=default</td></tr>
+<tr class="memdesc:a030668979b342a36ca523c65a667a2c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing an empty collection.  <br /></td></tr>
 <tr class="memitem:ad375fd93efede6c93229c0eb55214284" id="r_ad375fd93efede6c93229c0eb55214284"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad375fd93efede6c93229c0eb55214284">IServiceCollection</a> (const IServiceCollection &amp;)=default</td></tr>
+<tr class="memdesc:ad375fd93efede6c93229c0eb55214284"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor.  <br /></td></tr>
 <tr class="memitem:a4115754cb4bbd3b09c1faf3783dc6fa1" id="r_a4115754cb4bbd3b09c1faf3783dc6fa1"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a4115754cb4bbd3b09c1faf3783dc6fa1">IServiceCollection</a> (IServiceCollection &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:a4115754cb4bbd3b09c1faf3783dc6fa1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor.  <br /></td></tr>
 <tr class="memitem:a9329f05cbfcd447eabc4ca29989eb697" id="r_a9329f05cbfcd447eabc4ca29989eb697"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a9329f05cbfcd447eabc4ca29989eb697">~IServiceCollection</a> ()=default</td></tr>
+<tr class="memdesc:a9329f05cbfcd447eabc4ca29989eb697"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a114e9c07c40f2e654b0a7d525db89db8" id="r_a114e9c07c40f2e654b0a7d525db89db8"><td class="memTemplParams" colspan="2">template&lt;typename TService, typename TImplementation, typename... TArgs&gt; </td></tr>
 <tr class="memitem:a114e9c07c40f2e654b0a7d525db89db8 template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a114e9c07c40f2e654b0a7d525db89db8">AddScoped</a> ()</td></tr>
+<tr class="memdesc:a114e9c07c40f2e654b0a7d525db89db8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a scoped service of type TService with an implementation of TImplementation.  <br /></td></tr>
 <tr class="memitem:a4d355c8de5df23493bd76a71a2045c33" id="r_a4d355c8de5df23493bd76a71a2045c33"><td class="memTemplParams" colspan="2">template&lt;typename TService&gt; </td></tr>
 <tr class="memitem:a4d355c8de5df23493bd76a71a2045c33 template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a4d355c8de5df23493bd76a71a2045c33">AddScoped</a> (<a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#a87ba1d2fe3d24f1785bfc8de5564b5f8">ServiceDescriptor::FactoryType</a> fnFactory)</td></tr>
+<tr class="memdesc:a4d355c8de5df23493bd76a71a2045c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a scoped service of type TService with a factory delegate.  <br /></td></tr>
 <tr class="memitem:a47943ac556079140d270fc58be3f63ac" id="r_a47943ac556079140d270fc58be3f63ac"><td class="memTemplParams" colspan="2">template&lt;typename TService, typename TImplementation, typename... TArgs&gt; </td></tr>
 <tr class="memitem:a47943ac556079140d270fc58be3f63ac template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a47943ac556079140d270fc58be3f63ac">AddSingleton</a> ()</td></tr>
+<tr class="memdesc:a47943ac556079140d270fc58be3f63ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a singleton service of type TService with an implementation of TImplementation.  <br /></td></tr>
 <tr class="memitem:afb9395ab4e90780495d8b23a82f0c38d" id="r_afb9395ab4e90780495d8b23a82f0c38d"><td class="memTemplParams" colspan="2">template&lt;typename TService&gt; </td></tr>
 <tr class="memitem:afb9395ab4e90780495d8b23a82f0c38d template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#afb9395ab4e90780495d8b23a82f0c38d">AddSingleton</a> (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a> &gt; pInstance)</td></tr>
+<tr class="memdesc:afb9395ab4e90780495d8b23a82f0c38d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a pre-existing singleton instance of type TService.  <br /></td></tr>
 <tr class="memitem:abe51f551b252ff5d352fe2b0bf919089" id="r_abe51f551b252ff5d352fe2b0bf919089"><td class="memTemplParams" colspan="2">template&lt;typename TService&gt; </td></tr>
 <tr class="memitem:abe51f551b252ff5d352fe2b0bf919089 template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#abe51f551b252ff5d352fe2b0bf919089">AddSingleton</a> (<a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#a87ba1d2fe3d24f1785bfc8de5564b5f8">ServiceDescriptor::FactoryType</a> fnFactory)</td></tr>
+<tr class="memdesc:abe51f551b252ff5d352fe2b0bf919089"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a singleton service of type TService with a factory delegate.  <br /></td></tr>
 <tr class="memitem:a734d332caf13467fe3d03e92ea0f5fa6" id="r_a734d332caf13467fe3d03e92ea0f5fa6"><td class="memTemplParams" colspan="2">template&lt;typename TService, typename TImplementation, typename... TArgs&gt; </td></tr>
 <tr class="memitem:a734d332caf13467fe3d03e92ea0f5fa6 template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a734d332caf13467fe3d03e92ea0f5fa6">AddTransient</a> ()</td></tr>
+<tr class="memdesc:a734d332caf13467fe3d03e92ea0f5fa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transient service of type TService with an implementation of TImplementation.  <br /></td></tr>
 <tr class="memitem:a50ea59019aa93e386435d2bcb95b9da4" id="r_a50ea59019aa93e386435d2bcb95b9da4"><td class="memTemplParams" colspan="2">template&lt;typename TService&gt; </td></tr>
 <tr class="memitem:a50ea59019aa93e386435d2bcb95b9da4 template"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a50ea59019aa93e386435d2bcb95b9da4">AddTransient</a> (<a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#a87ba1d2fe3d24f1785bfc8de5564b5f8">ServiceDescriptor::FactoryType</a> fnFactory)</td></tr>
+<tr class="memdesc:a50ea59019aa93e386435d2bcb95b9da4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a transient service of type TService with a factory delegate.  <br /></td></tr>
 <tr class="memitem:a7013738bef977039d240daafe20239f6" id="r_a7013738bef977039d240daafe20239f6"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a7013738bef977039d240daafe20239f6">operator=</a> (const <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;)=default</td></tr>
+<tr class="memdesc:a7013738bef977039d240daafe20239f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator.  <br /></td></tr>
 <tr class="memitem:aa7c657e3d608a8ffa2aecd4e1b1fe0ae" id="r_aa7c657e3d608a8ffa2aecd4e1b1fe0ae"><td class="memItemLeft"><a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aa7c657e3d608a8ffa2aecd4e1b1fe0ae">operator=</a> (<a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection</a> &amp;&amp;) noexcept=default</td></tr>
+<tr class="memdesc:aa7c657e3d608a8ffa2aecd4e1b1fe0ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;</a></td></tr>
 <tr class="memitem:a912c535c5857024afbe0136d9f8db216 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list" id="r_a912c535c5857024afbe0136d9f8db216"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a912c535c5857024afbe0136d9f8db216">List</a> ()</td></tr>
 <tr class="memdesc:a912c535c5857024afbe0136d9f8db216 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html" title="Represents a strongly typed list of objects accessible by index.">List</a> class that is empty.  <br /></td></tr>
@@ -198,8 +214,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00010">10</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<div class="textblock"><p>Specifies the contract for a collection of service descriptors. </p>
+<p>Modeled after Microsoft.Extensions.DependencyInjection.IServiceCollection. Inherits from List&lt;ServiceDescriptor&gt; to provide fluent registration methods for Singleton, Transient, and Scoped service dependencies. <b>[Microsoft.Extensions.DependencyInjection]</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00015">15</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a030668979b342a36ca523c65a667a2c7" name="a030668979b342a36ca523c65a667a2c7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a030668979b342a36ca523c65a667a2c7">&#9670;&#160;</a></span>IServiceCollection() <span class="overload">[1/3]</span></h2>
@@ -224,7 +242,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">Referenced by <a class="el" href="#ad375fd93efede6c93229c0eb55214284">IServiceCollection()</a>, <a class="el" href="#a4115754cb4bbd3b09c1faf3783dc6fa1">IServiceCollection()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00053">AddScoped()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00059">AddScoped()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00021">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00033">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00027">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00040">AddTransient()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00046">AddTransient()</a>, <a class="el" href="#a7013738bef977039d240daafe20239f6">operator=()</a>, and <a class="el" href="#aa7c657e3d608a8ffa2aecd4e1b1fe0ae">operator=()</a>.</p>
+<p>Default constructor initializing an empty collection. </p>
+
+<p class="reference">Referenced by <a class="el" href="#ad375fd93efede6c93229c0eb55214284">IServiceCollection()</a>, <a class="el" href="#a4115754cb4bbd3b09c1faf3783dc6fa1">IServiceCollection()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00088">AddScoped()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00098">AddScoped()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00036">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00056">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00046">AddSingleton()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00067">AddTransient()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00077">AddTransient()</a>, <a class="el" href="#a7013738bef977039d240daafe20239f6">operator=()</a>, and <a class="el" href="#aa7c657e3d608a8ffa2aecd4e1b1fe0ae">operator=()</a>.</p>
 
 </div>
 </div>
@@ -251,6 +271,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor for polymorphic cleanup. </p>
+
 </div>
 </div>
 <a id="ad375fd93efede6c93229c0eb55214284" name="ad375fd93efede6c93229c0eb55214284"></a>
@@ -275,6 +297,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Copy constructor. </p>
 
 <p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>.</p>
 
@@ -302,6 +326,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Move constructor. </p>
 
 <p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>.</p>
 
@@ -333,9 +359,20 @@ template&lt;typename TService, typename TImplementation, typename... TArgs&gt; <
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00053">53</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a scoped service of type TService with an implementation of TImplementation. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+    <tr><td class="paramname">TImplementation</td><td>The concrete type implementing TService. </td></tr>
+    <tr><td class="paramname">TArgs</td><td>Types of dependencies passed to TImplementation's constructor. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00008">DotNetDupe::Extensions::DependencyInjection::Scoped</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00088">88</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00015">DotNetDupe::Extensions::DependencyInjection::Scoped</a>.</p>
 
 </div>
 </div>
@@ -364,9 +401,24 @@ template&lt;typename TService&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00059">59</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a scoped service of type TService with a factory delegate. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fnFactory</td><td>Factory function used to instantiate the service. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00008">DotNetDupe::Extensions::DependencyInjection::Scoped</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00098">98</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00015">DotNetDupe::Extensions::DependencyInjection::Scoped</a>.</p>
 
 </div>
 </div>
@@ -395,11 +447,22 @@ template&lt;typename TService, typename TImplementation, typename... TArgs&gt; <
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00021">21</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a singleton service of type TService with an implementation of TImplementation. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+    <tr><td class="paramname">TImplementation</td><td>The concrete type implementing TService. </td></tr>
+    <tr><td class="paramname">TArgs</td><td>Types of dependencies passed to TImplementation's constructor. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00021">AddSingleton()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00007">DotNetDupe::Extensions::DependencyInjection::Singleton</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00036">36</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_i_service_collection_8h_source.html#l00021">AddSingleton()</a>.</p>
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_i_service_collection_8h_source.html#l00036">AddSingleton()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00013">DotNetDupe::Extensions::DependencyInjection::Singleton</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_i_service_collection_8h_source.html#l00036">AddSingleton()</a>.</p>
 
 </div>
 </div>
@@ -428,9 +491,24 @@ template&lt;typename TService&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00033">33</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a pre-existing singleton instance of type TService. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pInstance</td><td>SmartPointer to the existing instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00018">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::ServiceDescriptor()</a>, and <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00056">56</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00025">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::ServiceDescriptor()</a>, and <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>.</p>
 
 </div>
 </div>
@@ -459,9 +537,24 @@ template&lt;typename TService&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00027">27</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a singleton service of type TService with a factory delegate. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fnFactory</td><td>Factory function used to instantiate the service. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00007">DotNetDupe::Extensions::DependencyInjection::Singleton</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00046">46</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00013">DotNetDupe::Extensions::DependencyInjection::Singleton</a>.</p>
 
 </div>
 </div>
@@ -490,9 +583,20 @@ template&lt;typename TService, typename TImplementation, typename... TArgs&gt; <
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00040">40</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a transient service of type TService with an implementation of TImplementation. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+    <tr><td class="paramname">TImplementation</td><td>The concrete type implementing TService. </td></tr>
+    <tr><td class="paramname">TArgs</td><td>Types of dependencies passed to TImplementation's constructor. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00009">DotNetDupe::Extensions::DependencyInjection::Transient</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00067">67</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00017">DotNetDupe::Extensions::DependencyInjection::Transient</a>.</p>
 
 </div>
 </div>
@@ -521,9 +625,24 @@ template&lt;typename TService&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00046">46</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+<p>Adds a transient service of type TService with a factory delegate. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TService</td><td>The interface or base type to register. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fnFactory</td><td>Factory function used to instantiate the service. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Reference to this <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html" title="Specifies the contract for a collection of service descriptors.">IServiceCollection</a> for method chaining. </dd></dl>
 
-<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00062">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00009">DotNetDupe::Extensions::DependencyInjection::Transient</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_i_service_collection_8h_source.html#l00077">77</a> of file <a class="el" href="_i_service_collection_8h_source.html">IServiceCollection.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; ServiceDescriptor &gt;::Add()</a>, <a class="el" href="_service_descriptor_8h_source.html#l00097">DotNetDupe::Extensions::DependencyInjection::ServiceDescriptor::Describe()</a>, and <a class="el" href="_service_lifetime_8h_source.html#l00017">DotNetDupe::Extensions::DependencyInjection::Transient</a>.</p>
 
 </div>
 </div>
@@ -549,6 +668,8 @@ template&lt;typename TService&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Copy assignment operator. </p>
 
 <p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>.</p>
 
@@ -576,6 +697,8 @@ template&lt;typename TService&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Move assignment operator. </p>
 
 <p class="reference">References <a class="el" href="#a030668979b342a36ca523c65a667a2c7">IServiceCollection()</a>.</p>
 

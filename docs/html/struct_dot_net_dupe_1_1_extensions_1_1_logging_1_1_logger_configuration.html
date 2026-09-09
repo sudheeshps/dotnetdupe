@@ -114,25 +114,38 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Encapsulates logging system configuration options.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a21de19a3de58d98e317c789b8a0d3d91" id="r_a21de19a3de58d98e317c789b8a0d3d91"><td class="memItemLeft">static <a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html">LoggerConfiguration</a>&#160;</td><td class="memItemRight"><a class="el" href="#a21de19a3de58d98e317c789b8a0d3d91">LoadFromFile</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;filePath)</td></tr>
+<tr class="memdesc:a21de19a3de58d98e317c789b8a0d3d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads logging configuration options from a JSON file.  <br /></td></tr>
 <tr class="memitem:aa5ff5c0cc914142daa60b9169feb5924" id="r_aa5ff5c0cc914142daa60b9169feb5924"><td class="memItemLeft">static <a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html">LoggerConfiguration</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa5ff5c0cc914142daa60b9169feb5924">LoadFromJson</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;jsonContent)</td></tr>
+<tr class="memdesc:aa5ff5c0cc914142daa60b9169feb5924"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads logging configuration options from a raw JSON string.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a589d6d9043dc217bfca85cca0e217e7b" id="r_a589d6d9043dc217bfca85cca0e217e7b"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a589d6d9043dc217bfca85cca0e217e7b">FilePath</a></td></tr>
+<tr class="memdesc:a589d6d9043dc217bfca85cca0e217e7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destination file path when file logging is configured.  <br /></td></tr>
 <tr class="memitem:a59d0b2a47ac5c7aae56b2ed5c233f25b" id="r_a59d0b2a47ac5c7aae56b2ed5c233f25b"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a59d0b2a47ac5c7aae56b2ed5c233f25b">IsJsonFormat</a> = false</td></tr>
+<tr class="memdesc:a59d0b2a47ac5c7aae56b2ed5c233f25b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies whether to serialize log messages as structured JSON objects.  <br /></td></tr>
 <tr class="memitem:ac8af45eeb0eee9e7b3cee2c0bae85dc7" id="r_ac8af45eeb0eee9e7b3cee2c0bae85dc7"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ce">LogLevel</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac8af45eeb0eee9e7b3cee2c0bae85dc7">MinLevel</a> = <a class="el" href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ceaa82be0f551b8708bc08eb33cd9ded0cf">LogLevel::Information</a></td></tr>
+<tr class="memdesc:ac8af45eeb0eee9e7b3cee2c0bae85dc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum log level required for a message to be recorded.  <br /></td></tr>
 <tr class="memitem:a7168b0495ff5edecdcf8f1a5977ea8bb" id="r_a7168b0495ff5edecdcf8f1a5977ea8bb"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a7168b0495ff5edecdcf8f1a5977ea8bb">PlainTextFormat</a> = &quot;{Timestamp} [{Level}] [{Category}] {Message}&quot;</td></tr>
+<tr class="memdesc:a7168b0495ff5edecdcf8f1a5977ea8bb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Plain text formatting template (e.g. "{Timestamp} [{Level}] [{Category}] {Message}").  <br /></td></tr>
 <tr class="memitem:a7cf7fc13570c4af09d74a5db27f21750" id="r_a7cf7fc13570c4af09d74a5db27f21750"><td class="memItemLeft"><a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_rollover_config.html">FileRolloverConfig</a>&#160;</td><td class="memItemRight"><a class="el" href="#a7cf7fc13570c4af09d74a5db27f21750">Rollover</a></td></tr>
+<tr class="memdesc:a7cf7fc13570c4af09d74a5db27f21750"><td class="mdescLeft">&#160;</td><td class="mdescRight">File rotation settings.  <br /></td></tr>
 <tr class="memitem:a4a4795da0ff77f5885aa0199631886ac" id="r_a4a4795da0ff77f5885aa0199631886ac"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4a4795da0ff77f5885aa0199631886ac">TimestampFormat</a> = &quot;%Y-%m-%d %H:%M:%S&quot;</td></tr>
+<tr class="memdesc:a4a4795da0ff77f5885aa0199631886ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timestamp formatting template using strftime syntax (e.g. "%Y-%m-%d %H:%M:%S").  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00029">29</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<div class="textblock"><p>Encapsulates logging system configuration options. </p>
+<p>Modeled after Microsoft.Extensions.Logging configuration patterns. Supports loading settings from JSON files or raw JSON strings, setting minimum levels, choosing plain text or JSON output formatting, and setting file paths. <b>[Microsoft.Extensions.Logging]</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00026">26</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a21de19a3de58d98e317c789b8a0d3d91" name="a21de19a3de58d98e317c789b8a0d3d91"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a21de19a3de58d98e317c789b8a0d3d91">&#9670;&#160;</a></span>LoadFromFile()</h2>
@@ -157,9 +170,20 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8cpp_source.html#l00167">167</a> of file <a class="el" href="_logger_configuration_8cpp_source.html">LoggerConfiguration.cpp</a>.</p>
+<p>Loads logging configuration options from a JSON file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filePath</td><td>Path to the JSON configuration file on disk. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Parsed <a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html" title="Encapsulates logging system configuration options.">LoggerConfiguration</a> object. </dd></dl>
+<p>Guard: Verify file existence before reading.</p>
+<p>Read entire file content into string and deserialize.</p>
 
-<p class="reference">References <a class="el" href="_file_8cpp_source.html#l00031">DotNetDupe::System::IO::File::Exists()</a>, <a class="el" href="_logger_configuration_8cpp_source.html#l00175">LoadFromJson()</a>, and <a class="el" href="_file_8cpp_source.html#l00036">DotNetDupe::System::IO::File::ReadAllText()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8cpp_source.html#l00183">183</a> of file <a class="el" href="_logger_configuration_8cpp_source.html">LoggerConfiguration.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_file_8cpp_source.html#l00031">DotNetDupe::System::IO::File::Exists()</a>, <a class="el" href="_logger_configuration_8cpp_source.html#l00194">LoadFromJson()</a>, and <a class="el" href="_file_8cpp_source.html#l00036">DotNetDupe::System::IO::File::ReadAllText()</a>.</p>
 
 </div>
 </div>
@@ -186,11 +210,21 @@ Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8cpp_source.html#l00175">175</a> of file <a class="el" href="_logger_configuration_8cpp_source.html">LoggerConfiguration.cpp</a>.</p>
+<p>Loads logging configuration options from a raw JSON string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jsonContent</td><td>String containing valid JSON configuration. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Parsed <a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html" title="Encapsulates logging system configuration options.">LoggerConfiguration</a> object. </dd></dl>
+<p>Deserialize <a class="el" href="struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html" title="Encapsulates logging system configuration options.">LoggerConfiguration</a> from JSON string.</p>
+
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8cpp_source.html#l00194">194</a> of file <a class="el" href="_logger_configuration_8cpp_source.html">LoggerConfiguration.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_json_serializer_8h_source.html#l00043">DotNetDupe::System::Text::Json::JsonSerializer::Deserialize()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_configuration_8cpp_source.html#l00167">LoadFromFile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_logger_configuration_8cpp_source.html#l00183">LoadFromFile()</a>.</p>
 
 </div>
 </div>
@@ -207,9 +241,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00040">40</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Destination file path when file logging is configured. </p>
 
-<p class="reference">Referenced by <a class="el" href="_file_logger_provider_8cpp_source.html#l00041">DotNetDupe::Extensions::Logging::FileLoggerProvider::FileLoggerProvider()</a>, and <a class="el" href="_file_logger_8cpp_source.html#l00026">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00039">39</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_logger_provider_8cpp_source.html#l00042">DotNetDupe::Extensions::Logging::FileLoggerProvider::FileLoggerProvider()</a>, and <a class="el" href="_file_logger_8cpp_source.html#l00028">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
 
 </div>
 </div>
@@ -225,9 +261,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00031">31</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Specifies whether to serialize log messages as structured JSON objects. </p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00134">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00030">30</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00155">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
 
 </div>
 </div>
@@ -243,9 +281,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00030">30</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Minimum log level required for a message to be recorded. </p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00017">DotNetDupe::Extensions::Logging::LoggerBase::IsEnabled()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00028">28</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::LoggerBase::IsEnabled()</a>.</p>
 
 </div>
 </div>
@@ -261,9 +301,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00034">34</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Plain text formatting template (e.g. "{Timestamp} [{Level}] [{Category}] {Message}"). </p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00134">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00033">33</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00155">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
 
 </div>
 </div>
@@ -279,9 +321,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>File rotation settings. </p>
+
 <p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00041">41</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00041">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>, and <a class="el" href="_file_logger_8cpp_source.html#l00026">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00050">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>, and <a class="el" href="_file_logger_8cpp_source.html#l00028">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
 
 </div>
 </div>
@@ -297,9 +341,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00037">37</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Timestamp formatting template using strftime syntax (e.g. "%Y-%m-%d %H:%M:%S"). </p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00134">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00036">36</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00155">DotNetDupe::Extensions::Logging::LoggerBase::BuildLogMessage()</a>.</p>
 
 </div>
 </div>

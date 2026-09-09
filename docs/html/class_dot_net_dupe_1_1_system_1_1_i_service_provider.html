@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::IServiceProvider:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -123,18 +126,22 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
   <img src="class_dot_net_dupe_1_1_system_1_1_i_service_provider.png" usemap="#DotNetDupe_3A_3ASystem_3A_3AIServiceProvider_map" alt=""/>
   <map id="DotNetDupe_3A_3ASystem_3A_3AIServiceProvider_map" name="DotNetDupe_3A_3ASystem_3A_3AIServiceProvider_map">
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="0,0,370,24"/>
-<area href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html" alt="DotNetDupe::Extensions::DependencyInjection::ServiceProvider" shape="rect" coords="0,112,370,136"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html" title="Default IoC service provider for resolving dependencies." alt="DotNetDupe::Extensions::DependencyInjection::ServiceProvider" shape="rect" coords="0,112,370,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5877ca6819e08091e6f9228d8f4e5921" id="r_a5877ca6819e08091e6f9228d8f4e5921"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a5877ca6819e08091e6f9228d8f4e5921">~IServiceProvider</a> ()=default</td></tr>
+<tr class="memdesc:a5877ca6819e08091e6f9228d8f4e5921"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic interface cleanup.  <br /></td></tr>
 <tr class="memitem:a1265838832ce31d87f3c46523ef10450" id="r_a1265838832ce31d87f3c46523ef10450"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a1265838832ce31d87f3c46523ef10450 template"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; T &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a1265838832ce31d87f3c46523ef10450">GetRequiredService</a> ()</td></tr>
+<tr class="memdesc:a1265838832ce31d87f3c46523ef10450"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets service of type T, throwing <a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">InvalidOperationException</a> if not found.  <br /></td></tr>
 <tr class="memitem:a1c27d8a1c2a854609ce7ad985ceb77a3" id="r_a1c27d8a1c2a854609ce7ad985ceb77a3"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
 <tr class="memitem:a1c27d8a1c2a854609ce7ad985ceb77a3 template"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; T &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a1c27d8a1c2a854609ce7ad985ceb77a3">GetService</a> ()</td></tr>
+<tr class="memdesc:a1c27d8a1c2a854609ce7ad985ceb77a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the service object of the specified generic type T.  <br /></td></tr>
 <tr class="memitem:a350a7d51d79a53b0cf60c61801b692dc" id="r_a350a7d51d79a53b0cf60c61801b692dc"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a350a7d51d79a53b0cf60c61801b692dc">GetService</a> (const std::type_index &amp;serviceType)=0</td></tr>
+<tr class="memdesc:a350a7d51d79a53b0cf60c61801b692dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the service object of the specified type.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -156,8 +163,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00011">11</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
+<div class="textblock"><p>Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects. </p>
+<p>Modeled after <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_service_provider.html" title="Defines a mechanism for retrieving a service object; that is, an object that provides custom support ...">System.IServiceProvider</a> in .NET Base Class Library (ECMA-335). Serves as the base resolution contract implemented by IoC containers across <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>. <b>[ECMA-335]</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00015">15</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a5877ca6819e08091e6f9228d8f4e5921" name="a5877ca6819e08091e6f9228d8f4e5921"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5877ca6819e08091e6f9228d8f4e5921">&#9670;&#160;</a></span>~IServiceProvider()</h2>
@@ -181,6 +190,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic interface cleanup. </p>
 
 </div>
 </div>
@@ -210,7 +221,22 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00026">26</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
+<p>Gets service of type T, throwing <a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">InvalidOperationException</a> if not found. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of service object to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A service object of type T. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_invalid_operation_exception.html" title="The exception that is thrown when a method call is invalid for the object&#39;s current state.">InvalidOperationException</a></td><td>Thrown if the service cannot be resolved. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00042">42</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00015">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="#a350a7d51d79a53b0cf60c61801b692dc">GetService()</a>, and <a class="el" href="_smart_pointer_8h_source.html#l00390">DotNetDupe::System::SmartPointer&lt; T &gt;::IsNull()</a>.</p>
 
@@ -241,7 +267,16 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00017">17</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
+<p>Gets the service object of the specified generic type T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of service object to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A service object of type T, or null if no such service is registered. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_i_service_provider_8h_source.html#l00029">29</a> of file <a class="el" href="_i_service_provider_8h_source.html">IServiceProvider.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00071">DotNetDupe::System::SmartPointer&lt; T &gt;::SmartPointer</a>, <a class="el" href="_smart_pointer_8h_source.html#l00587">DotNetDupe::System::DynamicCast()</a>, <a class="el" href="#a350a7d51d79a53b0cf60c61801b692dc">GetService()</a>, and <a class="el" href="_smart_pointer_8h_source.html#l00390">DotNetDupe::System::SmartPointer&lt; T &gt;::IsNull()</a>.</p>
 
@@ -270,9 +305,18 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the service object of the specified type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">serviceType</td><td>An object that specifies the type of service object to get. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A service object of type serviceType, or null if there is no service object of type serviceType. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html#a9e9041806b1bd2ab74423216979e7440">DotNetDupe::Extensions::DependencyInjection::ServiceProvider</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_i_service_provider_8h_source.html#l00026">GetRequiredService()</a>, and <a class="el" href="_i_service_provider_8h_source.html#l00017">GetService()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_i_service_provider_8h_source.html#l00042">GetRequiredService()</a>, and <a class="el" href="_i_service_provider_8h_source.html#l00029">GetService()</a>.</p>
 
 </div>
 </div>

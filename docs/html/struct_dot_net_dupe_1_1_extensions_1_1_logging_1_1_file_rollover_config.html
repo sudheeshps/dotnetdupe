@@ -114,17 +114,24 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Configuration settings for file rotation and archival. <b>[Microsoft.Extensions.Logging]</b>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a54f7fcf68905e7087c99476c578619d1" id="r_a54f7fcf68905e7087c99476c578619d1"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a54f7fcf68905e7087c99476c578619d1">EnableRollover</a> = false</td></tr>
+<tr class="memdesc:a54f7fcf68905e7087c99476c578619d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether file rotation is enabled when file size threshold is reached.  <br /></td></tr>
 <tr class="memitem:a565626ca1145230a0d6afa03b735f112" id="r_a565626ca1145230a0d6afa03b735f112"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a565626ca1145230a0d6afa03b735f112">MaxBackupFiles</a> = 3</td></tr>
+<tr class="memdesc:a565626ca1145230a0d6afa03b735f112"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of rotated backup log files to retain (default: 3).  <br /></td></tr>
 <tr class="memitem:a02ea6a69cb82d04bc92001015399e32a" id="r_a02ea6a69cb82d04bc92001015399e32a"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a02ea6a69cb82d04bc92001015399e32a">MaxFileSizeInBytes</a> = 5 * 1024 * 1024</td></tr>
+<tr class="memdesc:a02ea6a69cb82d04bc92001015399e32a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum size in bytes of the primary log file before rotation (default: 5 MB).  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00010">10</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<div class="textblock"><p>Configuration settings for file rotation and archival. <b>[Microsoft.Extensions.Logging]</b>. </p>
+
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00012">12</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="a54f7fcf68905e7087c99476c578619d1" name="a54f7fcf68905e7087c99476c578619d1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a54f7fcf68905e7087c99476c578619d1">&#9670;&#160;</a></span>EnableRollover</h2>
@@ -138,9 +145,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00011">11</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Indicates whether file rotation is enabled when file size threshold is reached. </p>
 
-<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00041">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00014">14</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00050">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>.</p>
 
 </div>
 </div>
@@ -156,9 +165,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00013">13</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Maximum number of rotated backup log files to retain (default: 3). </p>
 
-<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00026">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00018">18</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00028">DotNetDupe::Extensions::Logging::PerformFileRollover()</a>.</p>
 
 </div>
 </div>
@@ -174,9 +185,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00012">12</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+<p>Maximum size in bytes of the primary log file before rotation (default: 5 MB). </p>
 
-<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00041">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_configuration_8h_source.html#l00016">16</a> of file <a class="el" href="_logger_configuration_8h_source.html">LoggerConfiguration.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_logger_8cpp_source.html#l00050">DotNetDupe::Extensions::Logging::CheckAndRollover()</a>.</p>
 
 </div>
 </div>

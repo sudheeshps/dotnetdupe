@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Delegates logging to a wrapped <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a> instance where category is based on T.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_logger_8h_source.html">Logger.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::Extensions::Logging::Logger&lt; T &gt;:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -122,8 +125,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
  <div class="center">
   <img src="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger.png" usemap="#DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3ALogger_3C_20T_20_3E_map" alt=""/>
   <map id="DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3ALogger_3C_20T_20_3E_map" name="DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3ALogger_3C_20T_20_3E_map">
-<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of.html" alt="DotNetDupe::Extensions::Logging::ILoggerOf&lt; T &gt;" shape="rect" coords="0,112,291,136"/>
-<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" alt="DotNetDupe::Extensions::Logging::ILogger" shape="rect" coords="0,56,291,80"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of.html" title="A generic interface for logging where the category name is derived from the specified type name." alt="DotNetDupe::Extensions::Logging::ILoggerOf&lt; T &gt;" shape="rect" coords="0,112,291,136"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging." alt="DotNetDupe::Extensions::Logging::ILogger" shape="rect" coords="0,56,291,80"/>
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="0,0,291,24"/>
   </map>
 </div></div>
@@ -131,14 +134,21 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0aa197a1ab9b6e458cd28d619e0c889" id="r_ad0aa197a1ab9b6e458cd28d619e0c889"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad0aa197a1ab9b6e458cd28d619e0c889">Logger</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html">ILogger</a> &gt; &amp;pLogger)</td></tr>
+<tr class="memdesc:ad0aa197a1ab9b6e458cd28d619e0c889"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of Logger&lt;T&gt; wrapping the given <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a>.  <br /></td></tr>
 <tr class="memitem:a113c1610b4b1542d5049cc24df558ba9" id="r_a113c1610b4b1542d5049cc24df558ba9"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a113c1610b4b1542d5049cc24df558ba9">~Logger</a> () override=default</td></tr>
+<tr class="memdesc:a113c1610b4b1542d5049cc24df558ba9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a25c1c742d81445d87faa54ab2ef8b6de" id="r_a25c1c742d81445d87faa54ab2ef8b6de"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a25c1c742d81445d87faa54ab2ef8b6de">IsEnabled</a> (<a class="el" href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ce">LogLevel</a> logLevel) const override</td></tr>
+<tr class="memdesc:a25c1c742d81445d87faa54ab2ef8b6de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks if the given logLevel is enabled.  <br /></td></tr>
 <tr class="memitem:a1ba34579562b0d314c8168a95495868c" id="r_a1ba34579562b0d314c8168a95495868c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a1ba34579562b0d314c8168a95495868c">Log</a> (<a class="el" href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ce">LogLevel</a> logLevel, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;message) override</td></tr>
+<tr class="memdesc:a1ba34579562b0d314c8168a95495868c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a log entry at the specified log level.  <br /></td></tr>
 <tr class="memitem:a7efb9c3907ca0dce3f7f78dee0e78e23" id="r_a7efb9c3907ca0dce3f7f78dee0e78e23"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a7efb9c3907ca0dce3f7f78dee0e78e23">Log</a> (<a class="el" href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ce">LogLevel</a> logLevel, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;message, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;properties) override</td></tr>
+<tr class="memdesc:a7efb9c3907ca0dce3f7f78dee0e78e23"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a structured log entry with key-value properties.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of.html">DotNetDupe::Extensions::Logging::ILoggerOf&lt; T &gt;</a></td></tr>
 <tr class="memitem:a1df3e505f76cb9e0f65fa9902fdebff1 inherit pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of" id="r_a1df3e505f76cb9e0f65fa9902fdebff1"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of.html#a1df3e505f76cb9e0f65fa9902fdebff1">~ILoggerOf</a> ()=default</td></tr>
+<tr class="memdesc:a1df3e505f76cb9e0f65fa9902fdebff1 inherit pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html">DotNetDupe::Extensions::Logging::ILogger</a></td></tr>
 <tr class="memitem:abb217b8be1a96a7b23a29571f44902ea inherit pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger" id="r_abb217b8be1a96a7b23a29571f44902ea"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html#abb217b8be1a96a7b23a29571f44902ea">~ILogger</a> ()=default</td></tr>
+<tr class="memdesc:abb217b8be1a96a7b23a29571f44902ea inherit pub_methods_class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -161,8 +171,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-class DotNetDupe::Extensions::Logging::Logger&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00009">9</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
+class DotNetDupe::Extensions::Logging::Logger&lt; T &gt;</div><p>Delegates logging to a wrapped <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a> instance where category is based on T. </p>
+<p>Modeled after Microsoft.Extensions.Logging.Logger&lt;T&gt;. </p><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type whose name is used for the logger category name. <b>[Microsoft.Extensions.Logging]</b> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00013">13</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad0aa197a1ab9b6e458cd28d619e0c889" name="ad0aa197a1ab9b6e458cd28d619e0c889"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad0aa197a1ab9b6e458cd28d619e0c889">&#9670;&#160;</a></span>Logger()</h2>
@@ -189,7 +206,15 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00014">14</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
+<p>Initializes a new instance of Logger&lt;T&gt; wrapping the given <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pLogger</td><td>SmartPointer to the underlying <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a> implementation. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00020">20</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
 
 </div>
 </div>
@@ -217,6 +242,8 @@ template&lt;typename T&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
 
 </div>
 </div>
@@ -246,9 +273,18 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Checks if the given logLevel is enabled. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logLevel</td><td>Level to be checked. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if enabled; otherwise, false. </dd></dl>
+
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html#a8c4a817f748598ed5f8989c9ac447ab4">DotNetDupe::Extensions::Logging::ILogger</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00030">30</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00048">48</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
 
 </div>
 </div>
@@ -281,9 +317,18 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Writes a log entry at the specified log level. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logLevel</td><td>Entry will be written on this level. </td></tr>
+    <tr><td class="paramname">message</td><td>The message string to log. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html#a162bf6975b26cf3ce18bc8de4d2daf35">DotNetDupe::Extensions::Logging::ILogger</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00017">17</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00028">28</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
 
 </div>
 </div>
@@ -321,9 +366,19 @@ template&lt;typename T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Writes a structured log entry with key-value properties. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">logLevel</td><td>Entry will be written on this level. </td></tr>
+    <tr><td class="paramname">message</td><td>The message string to log. </td></tr>
+    <tr><td class="paramname">properties</td><td>Dictionary containing structured log properties. </td></tr>
+  </table>
+  </dd>
+</dl>
+
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html#aaa5e571c4ba7d4c710405b838164234b">DotNetDupe::Extensions::Logging::ILogger</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00023">23</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_logger_8h_source.html#l00038">38</a> of file <a class="el" href="_logger_8h_source.html">Logger.h</a>.</p>
 
 </div>
 </div>

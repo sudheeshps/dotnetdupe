@@ -28,7 +28,7 @@ var namespace_dot_net_dupe_1_1_extensions_1_1_logging =
     ] ],
     [ "AddJsonLogProperties", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a15dba607c8b7ff0578c9d985ef75ece8", null ],
     [ "BuildJsonLog", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#af29059d217a214d7d96677d519c93b17", null ],
-    [ "CheckAndRollover", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#aa0ec025397074bd521cc1e52c016ff76", null ],
+    [ "CheckAndRollover", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a61d790fb715034a2db5ac6927473ab4a", null ],
     [ "ParseLogLevel", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#aeebbc278d876fcf60f9cc2d2c5bf6dcb", null ],
     [ "PerformFileRollover", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a890f6e0fd32b066225a2201c27ac2830", null ],
     [ "ReplaceDynamicPropertyTokens", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#acaeb3fd56c108aec2dc8281686b35288", null ],

@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Represents a type that can create instances of <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a>.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_i_logger_8h_source.html">ILogger.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::Extensions::Logging::ILoggerProvider:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -123,15 +126,17 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
   <img src="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_provider.png" usemap="#DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3AILoggerProvider_map" alt=""/>
   <map id="DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3AILoggerProvider_map" name="DotNetDupe_3A_3AExtensions_3A_3ALogging_3A_3AILoggerProvider_map">
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="174,0,512,24"/>
-<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider.html" alt="DotNetDupe::Extensions::Logging::ConsoleLoggerProvider" shape="rect" coords="0,112,338,136"/>
-<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html" alt="DotNetDupe::Extensions::Logging::FileLoggerProvider" shape="rect" coords="348,112,686,136"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider.html" title="Provider that creates ConsoleLogger instances configured with shared settings." alt="DotNetDupe::Extensions::Logging::ConsoleLoggerProvider" shape="rect" coords="0,112,338,136"/>
+<area href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html" title="Provider that creates FileLogger instances sharing a file handle and rotation context." alt="DotNetDupe::Extensions::Logging::FileLoggerProvider" shape="rect" coords="348,112,686,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9987dca6cc7e338efa456f6f957b3747" id="r_a9987dca6cc7e338efa456f6f957b3747"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a9987dca6cc7e338efa456f6f957b3747">~ILoggerProvider</a> ()=default</td></tr>
+<tr class="memdesc:a9987dca6cc7e338efa456f6f957b3747"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a09fcbdb28434759aa627a807056978c2" id="r_a09fcbdb28434759aa627a807056978c2"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html">ILogger</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a09fcbdb28434759aa627a807056978c2">CreateLogger</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;categoryName)=0</td></tr>
+<tr class="memdesc:a09fcbdb28434759aa627a807056978c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a> instance for the specified category.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -153,8 +158,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_i_logger_8h_source.html#l00037">37</a> of file <a class="el" href="_i_logger_8h_source.html">ILogger.h</a>.</p>
+<div class="textblock"><p>Represents a type that can create instances of <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a>. </p>
+<p>Modeled after Microsoft.Extensions.Logging.ILoggerProvider. <b>[Microsoft.Extensions.Logging]</b> </p>
+
+<p class="definition">Definition at line <a class="el" href="_i_logger_8h_source.html#l00072">72</a> of file <a class="el" href="_i_logger_8h_source.html">ILogger.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9987dca6cc7e338efa456f6f957b3747" name="a9987dca6cc7e338efa456f6f957b3747"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9987dca6cc7e338efa456f6f957b3747">&#9670;&#160;</a></span>~ILoggerProvider()</h2>
@@ -178,6 +185,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
 
 </div>
 </div>
@@ -204,6 +213,15 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Creates a new <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a> instance for the specified category. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">categoryName</td><td>The category name for messages produced by the logger. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>SmartPointer to the created <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html" title="Represents a type used to perform logging.">ILogger</a>. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider.html#a65306ec5cd81aa96ce4102113085c9de">DotNetDupe::Extensions::Logging::ConsoleLoggerProvider</a>, and <a class="el" href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html#ac5897ee26b43a6c18fe30acdccfaef51">DotNetDupe::Extensions::Logging::FileLoggerProvider</a>.</p>
 
