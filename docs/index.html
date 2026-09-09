@@ -56,10 +56,23 @@
       --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+
+    .card-title-link {
+      text-decoration: none;
+      color: inherit;
+      display: inline-block;
+    }
+    .card-title-link:hover .card-title {
+      color: var(--accent-primary);
     }
 
     body {
@@ -654,16 +667,16 @@
       </a>
 
       <div class="nav-actions">
-        <a href="html/index.html" class="nav-link" id="nav-api-doxygen">
+        <a href="html/namespaces.html" class="nav-link" id="nav-api-doxygen">
           <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
           API Reference
         </a>
-        <a href="Comparison.html" class="nav-link" id="nav-comparison">Guides</a>
+        <a href="#code-showcase" class="nav-link" id="nav-comparison">Guides</a>
         <a href="https://github.com/sudheeshps/DotNetDupe" target="_blank" rel="noopener" class="nav-link" id="nav-github">GitHub</a>
         <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle theme">
           <svg id="theme-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
         </button>
-        <a href="html/index.html" class="btn-api-primary" id="btn-browse-api">
+        <a href="html/namespaces.html" class="btn-api-primary" id="btn-browse-api">
           Browse DotNetDupe API &rarr;
         </a>
       </div>
@@ -684,10 +697,10 @@
     </p>
 
     <div class="hero-cta-group">
-      <a href="html/index.html" class="btn-api-primary btn-lg" id="hero-btn-api">
+      <a href="html/namespaces.html" class="btn-api-primary btn-lg" id="hero-btn-api">
         Explore Full API Reference &rarr;
       </a>
-      <a href="Comparison.html" class="btn-secondary btn-lg" id="hero-btn-guides">
+      <a href="#code-showcase" class="btn-secondary btn-lg" id="hero-btn-guides">
         Read Comparison Guides
       </a>
       <a href="https://www.nuget.org/packages/DotNetDupe" target="_blank" rel="noopener" class="btn-secondary btn-lg" id="hero-btn-nuget">
@@ -742,7 +755,7 @@
     <div class="section-header">
       <div>
         <h2 class="section-title">Namespaces &amp; API Categories</h2>
-        <p class="section-desc">Browse classes by category with links to DotNetDupe API reference and architectural markdown guides.</p>
+        <p class="section-desc">Browse classes by category with direct links to the official C++ API reference.</p>
       </div>
     </div>
 
@@ -752,7 +765,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System</div>
           <div class="card-title-row">
-            <h3 class="card-title">String &amp; Char</h3>
+            <a href="html/class_dot_net_dupe_1_1_system_1_1_string.html" class="card-title-link">
+              <h3 class="card-title">String &amp; Char</h3>
+            </a>
             <span class="card-tag">Core</span>
           </div>
           <p class="card-body">
@@ -760,8 +775,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/class_dot_net_dupe_1_1_system_1_1_string.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="String.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_string.html" class="card-btn">String API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_char.html" class="card-btn card-btn-guide">Char API &rarr;</a>
         </div>
       </div>
 
@@ -770,7 +785,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System</div>
           <div class="card-title-row">
-            <h3 class="card-title">SmartPointer&lt;T&gt;</h3>
+            <a href="html/class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" class="card-title-link">
+              <h3 class="card-title">SmartPointer&lt;T&gt;</h3>
+            </a>
             <span class="card-tag">Memory</span>
           </div>
           <p class="card-body">
@@ -778,8 +795,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="SmartPointer.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" class="card-btn">SmartPointer API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_object.html" class="card-btn card-btn-guide">Object Base &rarr;</a>
         </div>
       </div>
 
@@ -788,7 +805,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System</div>
           <div class="card-title-row">
-            <h3 class="card-title">EventHandler &amp; EventArgs</h3>
+            <a href="html/class_dot_net_dupe_1_1_system_1_1_event_handler.html" class="card-title-link">
+              <h3 class="card-title">EventHandler &amp; EventArgs</h3>
+            </a>
             <span class="card-tag">Delegates</span>
           </div>
           <p class="card-body">
@@ -796,8 +815,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/class_dot_net_dupe_1_1_system_1_1_event_handler.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="EventHandler.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_event_handler.html" class="card-btn">EventHandler API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_event_args.html" class="card-btn card-btn-guide">EventArgs API &rarr;</a>
         </div>
       </div>
 
@@ -806,7 +825,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System</div>
           <div class="card-title-row">
-            <h3 class="card-title">DateTime &amp; TimeZoneInfo</h3>
+            <a href="html/class_dot_net_dupe_1_1_system_1_1_date_time.html" class="card-title-link">
+              <h3 class="card-title">DateTime &amp; TimeZoneInfo</h3>
+            </a>
             <span class="card-tag">Time</span>
           </div>
           <p class="card-body">
@@ -814,8 +835,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/class_dot_net_dupe_1_1_system_1_1_date_time.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="DateTime.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_date_time.html" class="card-btn">DateTime API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_time_zone_info.html" class="card-btn card-btn-guide">TimeZoneInfo API &rarr;</a>
         </div>
       </div>
 
@@ -824,7 +845,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Collections::Generic</div>
           <div class="card-title-row">
-            <h3 class="card-title">List, Dictionary &amp; Set</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html" class="card-title-link">
+              <h3 class="card-title">List, Dictionary &amp; Set</h3>
+            </a>
             <span class="card-tag">Collections</span>
           </div>
           <p class="card-body">
@@ -832,8 +855,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="GenericCollections.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html" class="card-btn">Collections API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html" class="card-btn card-btn-guide">List&lt;T&gt; Class &rarr;</a>
         </div>
       </div>
 
@@ -842,7 +865,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Collections::Concurrent</div>
           <div class="card-title-row">
-            <h3 class="card-title">Concurrent Collections</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html" class="card-title-link">
+              <h3 class="card-title">Concurrent Collections</h3>
+            </a>
             <span class="card-tag">Lock-Free</span>
           </div>
           <p class="card-body">
@@ -850,8 +875,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="ConcurrentCollections.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html" class="card-btn">Concurrent API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html" class="card-btn card-btn-guide">ConcurrentDictionary &rarr;</a>
         </div>
       </div>
 
@@ -860,7 +885,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::IO</div>
           <div class="card-title-row">
-            <h3 class="card-title">File, Directory &amp; Stream</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html" class="card-title-link">
+              <h3 class="card-title">File, Directory &amp; Stream</h3>
+            </a>
             <span class="card-tag">I/O</span>
           </div>
           <p class="card-body">
@@ -868,8 +895,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="File.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html" class="card-btn">IO API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html" class="card-btn card-btn-guide">File Class &rarr;</a>
         </div>
       </div>
 
@@ -878,7 +905,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Net</div>
           <div class="card-title-row">
-            <h3 class="card-title">Socket, TCP &amp; HTTP</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_net.html" class="card-title-link">
+              <h3 class="card-title">Socket, TCP &amp; HTTP</h3>
+            </a>
             <span class="card-tag">Network</span>
           </div>
           <p class="card-body">
@@ -886,8 +915,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="HttpClient.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_net.html" class="card-btn">Networking API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html" class="card-btn card-btn-guide">HttpClient Class &rarr;</a>
         </div>
       </div>
 
@@ -896,7 +925,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Threading</div>
           <div class="card-title-row">
-            <h3 class="card-title">Thread, Task &amp; Locks</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_threading.html" class="card-title-link">
+              <h3 class="card-title">Thread, Task &amp; Locks</h3>
+            </a>
             <span class="card-tag">Concurrency</span>
           </div>
           <p class="card-body">
@@ -904,8 +935,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="ThreadingComparison.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_threading.html" class="card-btn">Threading API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html" class="card-btn card-btn-guide">Task Class &rarr;</a>
         </div>
       </div>
 
@@ -914,7 +945,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Diagnostics</div>
           <div class="card-title-row">
-            <h3 class="card-title">Process &amp; SystemMetrics</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html" class="card-title-link">
+              <h3 class="card-title">Process &amp; SystemMetrics</h3>
+            </a>
             <span class="card-tag">Telemetry</span>
           </div>
           <p class="card-body">
@@ -922,8 +955,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="ProcessComparison.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html" class="card-btn">Diagnostics API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process.html" class="card-btn card-btn-guide">Process Class &rarr;</a>
         </div>
       </div>
 
@@ -932,7 +965,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::WebAppCore</div>
           <div class="card-title-row">
-            <h3 class="card-title">WebApplication &amp; API</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_web_app_core.html" class="card-title-link">
+              <h3 class="card-title">WebApplication &amp; API</h3>
+            </a>
             <span class="card-tag">Web Hosting</span>
           </div>
           <p class="card-body">
@@ -940,8 +975,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="WebApplication.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_web_app_core.html" class="card-btn">WebAppCore API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html" class="card-btn card-btn-guide">WebApplication &rarr;</a>
         </div>
       </div>
 
@@ -950,7 +985,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::System::Data::SqlClient</div>
           <div class="card-title-row">
-            <h3 class="card-title">SqlConnection &amp; Command</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html" class="card-title-link">
+              <h3 class="card-title">SqlConnection &amp; Command</h3>
+            </a>
             <span class="card-tag">Database</span>
           </div>
           <p class="card-body">
@@ -958,8 +995,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="Database.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html" class="card-btn">Data &amp; SQL API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html" class="card-btn card-btn-guide">SqlConnection &rarr;</a>
         </div>
       </div>
 
@@ -968,7 +1005,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::Extensions::DependencyInjection</div>
           <div class="card-title-row">
-            <h3 class="card-title">ServiceCollection &amp; ServiceProvider</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html" class="card-title-link">
+              <h3 class="card-title">ServiceCollection &amp; ServiceProvider</h3>
+            </a>
             <span class="card-tag">IoC Container</span>
           </div>
           <p class="card-body">
@@ -976,8 +1015,8 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="DependencyInjection.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html" class="card-btn">DI Container API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html" class="card-btn card-btn-guide">ServiceCollection &rarr;</a>
         </div>
       </div>
 
@@ -986,7 +1025,9 @@
         <div class="card-top">
           <div class="card-namespace">DotNetDupe::Extensions::Logging</div>
           <div class="card-title-row">
-            <h3 class="card-title">LogManager, ILogger &amp; TextWriter</h3>
+            <a href="html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html" class="card-title-link">
+              <h3 class="card-title">LogManager, ILogger &amp; TextWriter</h3>
+            </a>
             <span class="card-tag">Logging</span>
           </div>
           <p class="card-body">
@@ -994,17 +1035,19 @@
           </p>
         </div>
         <div class="card-links">
-          <a href="html/annotated.html" class="card-btn">DotNetDupe API &rarr;</a>
-          <a href="Logging.md" class="card-btn card-btn-guide">Topic Guide</a>
+          <a href="html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html" class="card-btn">Logging API &rarr;</a>
+          <a href="html/class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager.html" class="card-btn card-btn-guide">LogManager Class &rarr;</a>
         </div>
       </div>
     </div>
 
-    <!-- Code Showcase Section -->
-    <div class="showcase-section">
+        <!-- Code Showcase Section -->
+    <div class="showcase-section" id="code-showcase">
       <h2 class="section-title">C# Simplicity with C++ Speed</h2>
-      <p class="section-desc">Look at how clean, concise, and familiar DotNetDupe makes modern C++ code.</p>
+      <p class="section-desc">Compare the elegance and conciseness of DotNetDupe APIs against standard C# .NET.</p>
 
+      <!-- Comparison 1: File I/O -->
+      <h3 style="margin-top: 1.5rem; font-size: 1.1rem; color: var(--accent-primary);">1. File I/O &amp; Text Streaming</h3>
       <div class="code-comparison-grid">
         <div class="code-box">
           <div class="code-box-header">
@@ -1043,6 +1086,89 @@ for (const auto& line : lines) {
 }</code></pre>
         </div>
       </div>
+
+      <!-- Comparison 2: Multicast Events -->
+      <h3 style="margin-top: 2rem; font-size: 1.1rem; color: var(--accent-primary);">2. Thread-Safe Event Delegates</h3>
+      <div class="code-comparison-grid">
+        <div class="code-box">
+          <div class="code-box-header">
+            <span>C# .NET Event Model</span>
+            <span>C#</span>
+          </div>
+          <pre><code>// C# Event Handling
+public class Worker {
+    public event EventHandler<EventArgs> Completed;
+
+    public void DoWork() {
+        Completed?.Invoke(this, EventArgs.Empty);
+    }
+}
+
+worker.Completed += (sender, e) => {
+    Console.WriteLine("Done!");
+};</code></pre>
+        </div>
+
+        <div class="code-box">
+          <div class="code-box-header">
+            <span>DotNetDupe Event Model</span>
+            <span>C++17/20</span>
+          </div>
+          <pre><code>// DotNetDupe Event Handling
+#include "System/EventHandler.h"
+#include "System/Console.h"
+
+class Worker {
+public:
+    EventHandler<EventArgs> Completed;
+    void DoWork() {
+        Completed.Invoke(this, EventArgs::Empty());
+    }
+};
+
+worker.Completed += [](void* sender, const EventArgs& e) {
+    Console::WriteLine("Done!");
+};</code></pre>
+        </div>
+      </div>
+
+      <!-- Comparison 3: Generic Collections -->
+      <h3 style="margin-top: 2rem; font-size: 1.1rem; color: var(--accent-primary);">3. Generic Collections &amp; Dictionaries</h3>
+      <div class="code-comparison-grid">
+        <div class="code-box">
+          <div class="code-box-header">
+            <span>C# .NET Collections</span>
+            <span>C#</span>
+          </div>
+          <pre><code>// C# Collections
+var scores = new Dictionary<string, int>();
+scores.Add("Alice", 95);
+scores.Add("Bob", 88);
+
+if (scores.TryGetValue("Alice", out int val)) {
+    Console.WriteLine($"Score: {val}");
+}</code></pre>
+        </div>
+
+        <div class="code-box">
+          <div class="code-box-header">
+            <span>DotNetDupe Collections</span>
+            <span>C++17/20</span>
+          </div>
+          <pre><code>// DotNetDupe Collections
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/Console.h"
+
+Dictionary<String, int> scores;
+scores.Add("Alice", 95);
+scores.Add("Bob", 88);
+
+int val = 0;
+if (scores.TryGetValue("Alice", val)) {
+    Console::WriteLine("Score: {0}", val);
+}</code></pre>
+        </div>
+      </div>
     </div>
   </main>
 
@@ -1050,10 +1176,10 @@ for (const auto& line : lines) {
   <footer class="site-footer">
     <div class="footer-content">
       <ul class="footer-links">
-        <li><a href="html/index.html">DotNetDupe API Reference</a></li>
+        <li><a href="html/namespaces.html">DotNetDupe API Reference</a></li>
         <li><a href="html/annotated.html">Class Index</a></li>
         <li><a href="html/files.html">Header Files</a></li>
-        <li><a href="Comparison.html">STL Comparison</a></li>
+        <li><a href="#code-showcase">Comparison Guides</a></li>
         <li><a href="https://github.com/sudheeshps/DotNetDupe">GitHub Repository</a></li>
         <li><a href="https://www.nuget.org/packages/DotNetDupe">NuGet Package</a></li>
       </ul>

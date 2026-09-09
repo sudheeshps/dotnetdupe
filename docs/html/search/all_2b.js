@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📂_0',['4. Path Handling 📂',['../index.html#autotoc_md215',1,'']]]
+  ['📚_0',['Table of Contents 📚',['../index.html#autotoc_md1',1,'']]]
 ];

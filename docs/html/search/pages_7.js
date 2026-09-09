@@ -1,5 +1,28 @@
 var searchData=
 [
-  ['7_20raii_20scoped_20locking_0',['7. RAII Scoped Locking',['../md_docs_2_threading_comparison.html#autotoc_md1762',1,'']]],
-  ['7_20version_20comparison_20🔢_1',['7. Version Comparison 🔢',['../index.html#autotoc_md224',1,'']]]
+  ['database_20integration_20guide_20🌐🗄️_0',['Web API &amp;amp; Database Integration Guide 🌐🗄️',['../index.html#autotoc_md35',1,'']]],
+  ['database_20layer_1',['3. Using the Database Layer',['../index.html#autotoc_md43',1,'']]],
+  ['dates_20console_2',['1. Strings, Dates &amp;amp; Console',['../index.html#autotoc_md32',1,'']]],
+  ['defining_20and_20hosting_20a_20controller_3',['Defining and Hosting a Controller',['../index.html#autotoc_md37',1,'']]],
+  ['dependencies_4',['SSL Runtime Dependencies',['../index.html#autotoc_md10',1,'']]],
+  ['details_5',['Workflow Details',['../index.html#autotoc_md81',1,'']]],
+  ['developing_20cross_20platform_20applications_20🌐💻_6',['Developing Cross-Platform Applications 🌐💻',['../index.html#autotoc_md17',1,'']]],
+  ['directory_20layout_7',['Project Directory Layout',['../index.html#autotoc_md27',1,'']]],
+  ['dotnetdupe_20🚀_8',['DotNetDupe 🚀',['../index.html',1,'']]],
+  ['dotnetdupe_20comparison_20⚖️_9',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md45',1,'']]],
+  ['dotnetdupe_3a_3aextensions_3a_3adependencyinjection_10',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::Extensions::DependencyInjection&lt;/span&gt;',['../index.html#autotoc_md72',1,'']]],
+  ['dotnetdupe_3a_3aextensions_3a_3alogging_11',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::Extensions::Logging&lt;/span&gt;',['../index.html#autotoc_md74',1,'']]],
+  ['dotnetdupe_3a_3asystem_12',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System&lt;/span&gt;',['../index.html#autotoc_md48',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3acollections_3a_3aconcurrent_13',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Collections::Concurrent&lt;/span&gt;',['../index.html#autotoc_md52',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3acollections_3a_3ageneric_14',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Collections::Generic&lt;/span&gt;',['../index.html#autotoc_md50',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3adata_3a_3asqlclient_15',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Data::SqlClient&lt;/span&gt;',['../index.html#autotoc_md70',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3adiagnostics_16',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Diagnostics&lt;/span&gt;',['../index.html#autotoc_md58',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3aio_17',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::IO&lt;/span&gt;',['../index.html#autotoc_md54',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3anet_20system_3a_3anet_3a_3asockets_20system_3a_3anet_3a_3asecurity_18',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Net&lt;/span&gt;, &lt;span class=&quot;tt&quot;&gt;System::Net::Sockets&lt;/span&gt; &amp;amp; &lt;span class=&quot;tt&quot;&gt;System::Net::Security&lt;/span&gt;',['../index.html#autotoc_md60',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3anet_3a_3ahttp_19',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Net::Http&lt;/span&gt;',['../index.html#autotoc_md62',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3asecurity_20',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Security&lt;/span&gt;',['../index.html#autotoc_md68',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3atext_20system_3a_3atext_3a_3ajson_21',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Text&lt;/span&gt; &amp;amp; &lt;span class=&quot;tt&quot;&gt;System::Text::Json&lt;/span&gt;',['../index.html#autotoc_md64',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3athreading_20system_3a_3athreading_3a_3atasks_22',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Threading&lt;/span&gt; &amp;amp; &lt;span class=&quot;tt&quot;&gt;System::Threading::Tasks&lt;/span&gt;',['../index.html#autotoc_md56',1,'']]],
+  ['dotnetdupe_3a_3asystem_3a_3autils_23',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Utils&lt;/span&gt;',['../index.html#autotoc_md66',1,'']]],
+  ['dotnetdupe_3a_3awebappcore_24',['Namespace: &lt;span class=&quot;tt&quot;&gt;DotNetDupe::WebAppCore&lt;/span&gt;',['../index.html#autotoc_md76',1,'']]]
 ];

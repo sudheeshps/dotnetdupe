@@ -127,6 +127,15 @@ $outputHtml = Join-Path $rootDir "docs\html\index.html"
 $portalHtml = Join-Path $rootDir "docs\index.html"
 
 if (Test-Path $outputHtml) {
+    # Post-process generated Doxygen landing page to fix relative links from docs/html/ to docs/
+    $doxyIndexContent = [System.IO.File]::ReadAllText($outputHtml, [System.Text.Encoding]::UTF8)
+    $doxyIndexContent = $doxyIndexContent.Replace('href="docs/index.html"', 'href="../index.html"')
+    $doxyIndexContent = $doxyIndexContent.Replace('href="docs/html/index.html"', 'href="index.html"')
+    $doxyIndexContent = $doxyIndexContent.Replace('href="docs/html/', 'href="')
+    $doxyIndexContent = $doxyIndexContent.Replace('href="CodeCoverage/', 'href="../../CodeCoverage/')
+    [System.IO.File]::WriteAllText($outputHtml, $doxyIndexContent, [System.Text.Encoding]::UTF8)
+    Write-Host "[INFO] Relinked docs/index.html and CodeCoverage in generated Doxygen index." -ForegroundColor Gray
+
     Write-Host "`n[SUCCESS] API Documentation generated in $elapsed seconds!" -ForegroundColor Green
     Write-Host "  -> API Reference: $outputHtml" -ForegroundColor Green
     Write-Host "  -> Docs Portal:   $portalHtml" -ForegroundColor Green

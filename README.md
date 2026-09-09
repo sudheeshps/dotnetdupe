@@ -19,7 +19,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 > - ⚡ **First-Class C# `EventHandler<TEventArgs>` & `EventArgs` Model:** Idiomatic C# .NET event-driven delegate system with multicast subscription (`+=`, `-=`), member method binding (`Add(pInstance, &Class::Method)`), token-based unsubscription, and thread-safe dispatch.
 > - 📥 **Modernized `FileDownloader`:** Upgraded download callbacks to typed multicast `EventHandler<DownloadProgressChangedEventArgs>` and `EventHandler<DownloadCompletedEventArgs>` with reliable `FileMode` creation and resumption.
 > - 🔄 **Observable `ProcessStreamer` Modernization:** Multicast event streams (`ProcessDiscovered`, `BatchReady`, `ProcessUpdated`, `Completed`, `Error`) with two-tier progressive telemetry streaming and thread-safe cancellation.
-> - ⏱️ **First-Class Process Discovery (`Process::GetProcesses`):** Native ultra-fast ($<5\text{ms}$) discovery snapshots via `Process::GetProcesses()`, `Process::GetProcessById()`, and `Process::GetProcessesByName()` matching .NET BCL, with on-demand per-process deep enrichment via `SystemMetrics::EnrichProcessInfo()`.
+> - ⏱️ **First-Class Process Discovery (`Process::GetProcesses`):** Native ultra-fast (&lt; 5ms) discovery snapshots via `Process::GetProcesses()`, `Process::GetProcessById()`, and `Process::GetProcessesByName()` matching .NET BCL, with on-demand per-process deep enrichment via `SystemMetrics::EnrichProcessInfo()`.
 > - 🔢 **Version String Parsing (`Version::Parse` & `Version::TryParse`):** Strict, .NET-compliant string parsing supporting 2, 3, and 4-component version formats with full error validation.
 > - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
 > - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
@@ -734,7 +734,7 @@ void AccessDatabase() {
 
 ## STL vs DotNetDupe Comparison ⚖️
 
-DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the [Interactive Documentation Portal](docs/index.html) and the [Doxygen HTML API Reference](docs/html/index.html).
+DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the [Interactive Documentation Portal](docs/index.html).
 
 ### Sample Client and Test Code 🧪
 
@@ -742,10 +742,9 @@ The repository includes `DotNetDupeDemo` (a sample console application) and `Dot
 
 ## API Reference 📖
 
-DotNetDupe provides comprehensive documentation through multiple interconnected channels:
+DotNetDupe provides comprehensive documentation through an interactive portal:
 
-* 🌐 **[Interactive Documentation Portal](docs/index.html)**: Modern web interface with real-time class search, namespace categorization, and C# vs C++ code comparisons.
-* 📚 **[Doxygen HTML API Reference](docs/html/index.html)**: Exhaustive class and member documentation with parameter specifications, return types, exception contracts, and inheritance hierarchies.
+* 🌐 **[Interactive Documentation Portal](docs/index.html)**: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.
 
 > [!TIP]
 > **Generating API Documentation Locally**:

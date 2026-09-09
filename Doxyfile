@@ -31,11 +31,12 @@ SORT_GROUP_NAMES       = YES
 SORT_BY_SCOPE_NAME     = YES
 
 # Input options
-INPUT                  = Include DotNetDupe
+INPUT                  = README.md Include DotNetDupe
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
                          *.hpp \
-                         *.cpp
+                         *.cpp \
+                         *.md
 RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_PATTERNS       = */.git/* \
@@ -52,7 +53,7 @@ EXAMPLE_PATTERNS       = *.cpp *.h
 EXAMPLE_RECURSIVE      = YES
 
 # Markdown & Main Page
-USE_MDFILE_AS_MAINPAGE = docs/Comparison.md
+USE_MDFILE_AS_MAINPAGE = README.md
 MARKDOWN_SUPPORT       = YES
 AUTOLINK_SUPPORT       = YES
 BUILTIN_STL_SUPPORT    = YES

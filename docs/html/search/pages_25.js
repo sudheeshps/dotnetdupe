@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['⚖️_0',['STL vs DotNetDupe Comparison ⚖️',['../index.html',1,'']]]
+  ['📧_0',['Contact 📧',['../index.html#autotoc_md86',1,'']]]
 ];

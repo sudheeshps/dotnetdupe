@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🎲_0',['12. Random Numbers 🎲',['../index.html#autotoc_md239',1,'']]]
+  ['📊_0',['Code Coverage &amp;amp; Static Analysis 📊',['../index.html#autotoc_md82',1,'']]]
 ];

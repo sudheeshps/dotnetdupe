@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['2_20comparison_20examples_0',['2. Comparison Examples',['../md_docs_2_process_comparison.html#autotoc_md1225',1,'']]],
-  ['2_20concurrentqueue_1',['2. &lt;span class=&quot;tt&quot;&gt;ConcurrentQueue&amp;lt;T&amp;gt;&lt;/span&gt;',['../md_docs_2_concurrent_collections.html#autotoc_md272',1,'']]],
-  ['2_20enums_20configuration_2',['2. Enums &amp;amp; Configuration',['../md_docs_2_process_streamer.html#autotoc_md1238',1,'']]],
-  ['2_20hashset_20sortedset_3',['2. &lt;span class=&quot;tt&quot;&gt;HashSet&amp;lt;T&amp;gt;&lt;/span&gt; &amp;amp; &lt;span class=&quot;tt&quot;&gt;SortedSet&amp;lt;T&amp;gt;&lt;/span&gt;',['../md_docs_2_generic_collections.html#autotoc_md819',1,'']]],
-  ['2_20lists_20search_20🔍_4',['2. Lists &amp;amp; Search 🔍',['../index.html#autotoc_md209',1,'']]],
-  ['2_20mutex_20exclusive_20locking_5',['2. Mutex &amp;amp; Exclusive Locking',['../md_docs_2_threading_comparison.html#autotoc_md1760',1,'']]],
-  ['2_20websockets_20iwebsockethandler_6',['2. WebSockets (&lt;span class=&quot;tt&quot;&gt;IWebSocketHandler&lt;/span&gt;)',['../md_docs_2_push_notifications.html#autotoc_md1258',1,'']]]
+  ['3_20build_20test_20in_20wsl_0',['3. Build &amp;amp; Test in WSL',['../index.html#autotoc_md15',1,'']]],
+  ['3_20building_20a_20web_20application_20with_20static_20files_20rest_20apis_1',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
+  ['3_20thread_20safe_20concurrent_20collections_2',['3. Thread-Safe Concurrent Collections',['../index.html#autotoc_md34',1,'']]],
+  ['3_20using_20the_20database_20layer_3',['3. Using the Database Layer',['../index.html#autotoc_md43',1,'']]]
 ];

@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DotNetDupe: Main Page</title>
+<title>DotNetDupe: DotNetDupe 🚀</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -109,10 +109,1285 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 </div>
 </div>
 
-<div class="header">
-  <div class="headertitle"><div class="title">DotNetDupe Documentation</div></div>
+<div><div class="header">
+  <div class="headertitle"><div class="title"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> 🚀 </div></div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a></p>
+<p><a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&amp;style=flat-square&amp;logo=github" alt="Build Status" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&amp;style=flat-square&amp;logo=github&amp;label=CodeQL" alt="CodeQL Security" class="inline"/></a> <a href="../../CodeCoverage/index.html"><img src="https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&amp;logo=googlechrome" alt="Coverage" class="inline"/></a> <a href="../index.html"><img src="https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&amp;logo=doxygen" alt="API Docs" class="inline"/></a> <a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue" alt="NuGet Version" class="inline"/></a> <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&amp;logo=cplusplus" alt="Language" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe#cross-platform-support-"><img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&amp;logo=linux" alt="Platforms" class="inline"/></a> [<img src="https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&amp;color=orange" alt="License" class="inline"/>](LICENSE)</p>
+<p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
+<p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
+<dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
+<li>⚡ <b>First-Class C# <span class="tt">EventHandler&lt;TEventArgs&gt;</span> &amp; <span class="tt">EventArgs</span> Model:</b> Idiomatic C# .NET event-driven delegate system with multicast subscription (<span class="tt">+=</span>, <span class="tt">-=</span>), member method binding (<span class="tt">Add(pInstance, &amp;Class::Method)</span>), token-based unsubscription, and thread-safe dispatch.</li>
+<li>📥 <b>Modernized <span class="tt">FileDownloader</span>:</b> Upgraded download callbacks to typed multicast <span class="tt">EventHandler&lt;DownloadProgressChangedEventArgs&gt;</span> and <span class="tt">EventHandler&lt;DownloadCompletedEventArgs&gt;</span> with reliable <span class="tt">FileMode</span> creation and resumption.</li>
+<li>🔄 <b>Observable <span class="tt">ProcessStreamer</span> Modernization:</b> Multicast event streams (<span class="tt">ProcessDiscovered</span>, <span class="tt">BatchReady</span>, <span class="tt">ProcessUpdated</span>, <span class="tt">Completed</span>, <span class="tt">Error</span>) with two-tier progressive telemetry streaming and thread-safe cancellation.</li>
+<li>⏱️ <b>First-Class Process Discovery (<span class="tt">Process::GetProcesses</span>):</b> Native ultra-fast (&lt; 5ms) discovery snapshots via <span class="tt">Process::GetProcesses()</span>, <span class="tt">Process::GetProcessById()</span>, and <span class="tt">Process::GetProcessesByName()</span> matching .NET BCL, with on-demand per-process deep enrichment via <span class="tt">SystemMetrics::EnrichProcessInfo()</span>.</li>
+<li>🔢 <b>Version String Parsing (<span class="tt">Version::Parse</span> &amp; <span class="tt">Version::TryParse</span>):</b> Strict, .NET-compliant string parsing supporting 2, 3, and 4-component version formats with full error validation.</li>
+<li>🛡️ <b>Zero Header STL Dependencies:</b> Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across <span class="tt">String</span>, <span class="tt">Collections</span>, <span class="tt">IO</span>, <span class="tt">Net</span>, <span class="tt">Logging</span>, and <span class="tt">Data</span>.</li>
+<li>📦 <b>Core Data Structures &amp; Collections Overhaul:</b> Pure library implementations for <span class="tt">List&lt;T&gt;</span>, <span class="tt">Dictionary&lt;K, V&gt;</span>, <span class="tt">HashSet&lt;T&gt;</span>, <span class="tt">Queue&lt;T&gt;</span>, <span class="tt">Stack&lt;T&gt;</span>, <span class="tt">PriorityQueue&lt;T&gt;</span>, <span class="tt">SortedDictionary&lt;K, V&gt;</span>, <span class="tt">SortedSet&lt;T&gt;</span>, and <span class="tt">LinkedList&lt;T&gt;</span>.</li>
+<li>⚡ <b>Thread-Safe Concurrent Collections (<span class="tt">System::Collections::Concurrent</span>):</b> Lock-free/fine-grained thread-safe data structures including <span class="tt">ConcurrentDictionary</span>, <span class="tt">ConcurrentQueue</span>, <span class="tt">ConcurrentStack</span>, <span class="tt">ConcurrentBag</span>, and <span class="tt">BlockingCollection</span>.</li>
+<li>📊 <b>Real-Time Telemetry &amp; System Metrics (<span class="tt">System::Diagnostics::SystemMetrics</span>):</b> Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk throughput, network bandwidth, and active processes).</li>
+<li>📜 <b>ETW &amp; Enterprise Event Logging (<span class="tt">System::Diagnostics::EtwLogReader</span> &amp; <span class="tt">EventLog</span>):</b> High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.</li>
+<li>🖥️ <b>Terminal &amp; User Sessions (<span class="tt">System::Diagnostics::TerminalSession</span> &amp; <span class="tt">ActiveUserSession</span>):</b> Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.</li>
+<li>📄 <b>Console I/O Redirection:</b> Standard stream redirection via <span class="tt">Console::SetOut</span>, <span class="tt">Console::SetError</span>, and <span class="tt">Console::SetIn</span> using <span class="tt">SmartPointer</span>.</li>
+<li>🖊️ <b>LoggerTextWriter Log Redirector:</b> Bridge standard <span class="tt">TextWriter</span> stream calls directly into <span class="tt">LogManager</span> logging providers without per-call lookup overhead.</li>
+<li>🏷️ <b>Global LogManager:</b> Thread-safe category logger caching and static factory via <span class="tt">LogManager::GetLogger("Category")</span> and <span class="tt">LogManager::GetLogger&lt;T&gt;()</span>.</li>
+<li>🌲 <b>Recursive Directory Creation:</b> Overloaded <span class="tt">Directory::CreateDirectory(path, recursive)</span> to automatically construct missing parent directory structures.</li>
+<li>📂 <b>Resilient File Logging:</b> Enhanced <span class="tt">FileLoggerProvider</span> to resolve relative log paths to full paths and auto-create missing log directories.</li>
+<li>🧩 <b>ServiceCollection DI Enhancements:</b> Improved lifetime management and container registration.</li>
+</ul>
+</dd></dl>
+<p>This project is a living example of how persistent human effort during weekends and late evenings can build a system from scratch using AI. <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> has grown far beyond a foundational set of classes into a comprehensive, multi-platform C++ Base Class Library offering extensive modern capabilities across System, IO, Collections, Net, Threading, Logging, Data, and Hosting. If anyone wants to join hands, you are most welcome in the form of PRs, issues or comments 🙏</p>
+<p>A fun fact: While I personally crafted core components like <span class="tt">Char</span>, <span class="tt">String</span>, and <span class="tt">Path</span> (along with their tests), the rest of the system was collaboratively designed, built, and expanded by myself and my peer Antigravity. 🤖 This project serves as a unique playground for exploring how generative AI can accelerate development from scratch. 🚀</p>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> aims to simplify C++ development by providing C#-like interfaces for common tasks, making your code more concise, intuitive, and a joy to write. 💖</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md1"></a>
+Table of Contents 📚</h1>
+<ul>
+<li>DotNetDupe 🚀<ul>
+<li>Table of Contents 📚</li>
+<li>Project Overview 💡</li>
+<li>Features ✨</li>
+<li>Getting Started 🚀<ul>
+<li>Prerequisites 📋</li>
+<li>Installation ⬇️</li>
+</ul>
+</li>
+<li>Cross-Platform Support 🌐<ul>
+<li>Building and Testing</li>
+<li>Integration via NuGet</li>
+</ul>
+</li>
+<li>WSL Setup Guide (Windows) 🐧<ul>
+<li>1. Install WSL</li>
+<li>2. Environment Provisioning</li>
+<li>3. Build &amp; Test in WSL</li>
+</ul>
+</li>
+<li>Developing Cross-Platform Applications 🌐💻<ul>
+<li>1. Cross-Platform Project Architecture</li>
+<li>2. Integrating via NuGet Package</li>
+<li>3. Building a Web Application with Static Files &amp; REST APIs</li>
+</ul>
+</li>
+<li>Usage 💻</li>
+<li>Web API &amp; Database Integration Guide 🌐🗄️<ul>
+<li>1. Hosting REST API Controllers</li>
+<li>2. Consuming REST APIs</li>
+<li>3. Using the Database Layer</li>
+</ul>
+</li>
+<li>STL vs DotNetDupe Comparison ⚖️</li>
+<li>API Reference 📖</li>
+<li>Project Status 🚧</li>
+<li>Contributions 👋</li>
+<li>CI/CD Pipeline 🚀<ul>
+<li>Code Coverage &amp; Static Analysis 📊</li>
+</ul>
+</li>
+<li>License 📄</li>
+<li>Generated Content 🤖</li>
+<li>Contact 📧</li>
+</ul>
+</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md2"></a>
+Project Overview 💡</h1>
+<p>The core objective of <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is to bridge the gap between the power and performance of C++ and the ease of use and productivity offered by C# APIs. By providing C#-like interfaces for common programming tasks, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> aims to:</p>
+<ul>
+<li><b>Simplify C++ Development:</b> Reduce the boilerplate and complexity often associated with STL, making C++ more approachable for developers accustomed to higher-level languages.</li>
+<li><b>Enhance Readability:</b> Promote cleaner and more readable code by adopting well-known C# API patterns.</li>
+<li><b>Boost Productivity:</b> Accelerate development cycles by offering intuitive and efficient tools for common operations.</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md3"></a>
+Features &amp; Library Capabilities ✨</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> has evolved into a feature-rich, multi-platform C++20 Base Class Library (BCL) offering an extensive suite of modern capabilities:</p>
+<ul>
+<li>🧠 <b>Memory &amp; Object Management (<span class="tt">System</span>)</b>:<ul>
+<li><span class="tt">SmartPointer&lt;T&gt;</span>: Exception-safe RAII reference-counted smart pointer with <span class="tt">NewShared()</span> and <span class="tt">NewUnique()</span> factory helpers.</li>
+<li>Base <span class="tt">Object</span> type system with <span class="tt">ToString()</span>, <span class="tt">GetType()</span>, <span class="tt">Equals()</span>, and <span class="tt">GetHashCode()</span>.</li>
+</ul>
+</li>
+<li>⚡ <b>Delegates &amp; Event Model (<span class="tt">System</span>)</b>:<ul>
+<li><span class="tt">EventHandler&lt;TEventArgs&gt;</span>: Multicast event delegate supporting lambda, free function, and member method binding with <span class="tt">operator+=</span>, token unsubscription with <span class="tt">operator-=</span>, and FIFO invocation.</li>
+<li><span class="tt">EventArgs</span>: Base class for event data payloads with <span class="tt">EventArgs::Empty()</span> singleton.</li>
+</ul>
+</li>
+<li>🔤 <b>String Manipulation &amp; Utilities (<span class="tt">System::String</span>)</b>:<ul>
+<li>Full-featured <span class="tt">String</span> &amp; <span class="tt">WString</span> with UTF-8 / UTF-16 cross-transcoding.</li>
+<li>Methods: <span class="tt">Format()</span>, <span class="tt">Split()</span>, <span class="tt">Join()</span>, <span class="tt">Replace()</span>, <span class="tt">Contains()</span>, <span class="tt">StartsWith()</span>, <span class="tt">EndsWith()</span>, <span class="tt">Trim()</span>, <span class="tt">PadLeft()</span>, <span class="tt">PadRight()</span>.</li>
+</ul>
+</li>
+<li>📦 <b>Generic Collections (<span class="tt">System::Collections::Generic</span>)</b>:<ul>
+<li>Type-safe container wrappers: <span class="tt">List&lt;T&gt;</span>, <span class="tt">Dictionary&lt;K, V&gt;</span>, <span class="tt">Queue&lt;T&gt;</span>, <span class="tt">Stack&lt;T&gt;</span>, <span class="tt">HashSet&lt;T&gt;</span>, and <span class="tt">KeyValuePair&lt;K, V&gt;</span>.</li>
+</ul>
+</li>
+<li>📁 <b>File I/O &amp; System Services (<span class="tt">System::IO</span>)</b>:<ul>
+<li>High-level static primitives: <span class="tt">File</span> (<span class="tt">ReadAllText</span>, <span class="tt">WriteAllText</span>, <span class="tt">AppendAllText</span>, <span class="tt">Exists</span>, <span class="tt">Delete</span>) and <span class="tt">Directory</span> (<span class="tt">CreateDirectory(path, recursive)</span>, <span class="tt">Exists</span>, <span class="tt">EnumerateFiles</span>).</li>
+<li>Cross-platform path calculations: <span class="tt">Path</span> (<span class="tt">Combine</span>, <span class="tt">GetFullPath</span>, <span class="tt">GetDirectoryName</span>, <span class="tt">GetFileName</span>, <span class="tt">GetExtension</span>).</li>
+<li>Stream &amp; Reader/Writer hierarchy: <span class="tt">FileStream</span>, <span class="tt">MemoryStream</span>, <span class="tt">BufferedStream</span>, <span class="tt">StreamReader</span>, <span class="tt">StreamWriter</span>, <span class="tt">BinaryReader</span>, <span class="tt">BinaryWriter</span>, <span class="tt">StringReader</span>, <span class="tt">StringWriter</span>.</li>
+</ul>
+</li>
+<li>📟 <b>Console &amp; Stream Redirection (<span class="tt">System::Console</span>)</b>:<ul>
+<li>Rich console text &amp; background color controls (<span class="tt">SetForegroundColor</span>, <span class="tt">SetBackgroundColor</span>, <span class="tt">ResetColor</span>).</li>
+<li>Full stream redirection via <span class="tt">SetOut()</span>, <span class="tt">SetError()</span>, and <span class="tt">SetIn()</span> accepting <span class="tt">SmartPointer&lt;TextWriter&gt;</span> and <span class="tt">SmartPointer&lt;TextReader&gt;</span>.</li>
+</ul>
+</li>
+<li>🌲 <b>Enterprise Logging &amp; Diagnostics (<span class="tt">Extensions::Logging</span>)</b>:<ul>
+<li>Structured &amp; Plaintext logging (<span class="tt">ILogger</span>, <span class="tt">ILoggerProvider</span>, <span class="tt">LoggerFactory</span>).</li>
+<li>Formats: Custom plaintext layout templates &amp; JSON structured payloads with key-value metadata properties.</li>
+<li>Providers: <span class="tt">ConsoleLoggerProvider</span> and <span class="tt">FileLoggerProvider</span> with automatic relative path resolution &amp; recursive parent directory creation.</li>
+<li><span class="tt">LogManager</span>: Category logger caching factory (<span class="tt">GetLogger("Category")</span>, <span class="tt">GetLogger&lt;T&gt;()</span>, <span class="tt">GetConsoleLogger</span>, <span class="tt">GetFileLogger</span>).</li>
+<li><span class="tt">LoggerTextWriter</span>: High-performance stream redirector bridging <span class="tt">TextWriter</span> output into <span class="tt">LogManager</span>.</li>
+</ul>
+</li>
+<li>🧵 <b>Multi-Threading &amp; Process Management (<span class="tt">System::Threading</span> / <span class="tt">System::Diagnostics</span>)</b>:<ul>
+<li>Thread lifecycle (<span class="tt">Thread</span>), high-throughput <span class="tt">ThreadPool</span>, and task parallelism (<span class="tt">Task</span>, <span class="tt">Task&lt;T&gt;</span>).</li>
+<li>Synchronization primitives: <span class="tt">Mutex</span>, <span class="tt">AutoResetEvent</span>, <span class="tt">ManualResetEvent</span>, <span class="tt">EventWaitHandle</span>, <span class="tt">CriticalSection</span>, <span class="tt">ReaderWriterLockSlim</span>.</li>
+<li>Process orchestration &amp; telemetry: <span class="tt">Process</span>, <span class="tt">ProcessStartInfo</span>, and progressive streaming via <span class="tt">ProcessStreamer</span> / <span class="tt">ProcessStreamOptions</span>.</li>
+</ul>
+</li>
+<li>🌐 <b>Networking, HTTP &amp; Web App Hosting (<span class="tt">System::Net</span> / <span class="tt">Extensions::Hosting</span>)</b>:<ul>
+<li>Low-level socket abstractions (<span class="tt">TcpClient</span>, <span class="tt">TcpListener</span>, <span class="tt">UdpClient</span>, <span class="tt">Socket</span>).</li>
+<li>Full-duplex WebSockets: <span class="tt">WebSocket</span>, <span class="tt">WebSocketState</span>, <span class="tt">WebSocketException</span>, <span class="tt">WebSocketError</span> (RFC 6455).</li>
+<li>High-level HTTP client: <span class="tt">HttpClient</span>, <span class="tt">HttpRequestMessage</span>, <span class="tt">HttpResponseMessage</span>, <span class="tt">HttpContent</span>, <span class="tt">StringContent</span>, <span class="tt">ByteArrayContent</span>.</li>
+<li>SSL/TLS security: <span class="tt">SslStream</span> backed by OpenSSL.</li>
+<li>Embedded Web Server &amp; Hosting: <span class="tt">WebAppServer</span> and <span class="tt">HostBuilder</span> for serving static Web UI files and REST API controllers.</li>
+</ul>
+</li>
+<li>💉 <b>Dependency Injection (<span class="tt">Extensions::DependencyInjection</span>)</b>:<ul>
+<li>Full-featured DI container (<span class="tt">ServiceCollection</span>, <span class="tt">ServiceProvider</span>, <span class="tt">ServiceDescriptor</span>).</li>
+<li>Lifetimes: <span class="tt">Transient</span>, <span class="tt">Scoped</span>, <span class="tt">Singleton</span>.</li>
+</ul>
+</li>
+<li>🔐 <b>Security &amp; Principal (<span class="tt">System::Security::Principal</span>)</b>:<ul>
+<li><span class="tt">UserPrincipal</span> and <span class="tt">WindowsIdentity</span> for cross-platform OS user enumeration and privilege inspection.</li>
+</ul>
+</li>
+<li>⚡ <b>Database Data Access (<span class="tt">System::Data</span>)</b>:<ul>
+<li>Abstract ADO.NET-style data provider interfaces (<span class="tt">IDbConnection</span>, <span class="tt">IDbCommand</span>, <span class="tt">IDataReader</span>, <span class="tt">IDataParameterCollection</span>).</li>
+</ul>
+</li>
+</ul>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md4"></a>
+Getting Started 🚀</h1>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md5"></a>
+Prerequisites 📋</h2>
+<ul>
+<li>C++17 / C++20 compatible compiler (e.g., MSVC v143, GCC 11+, Clang 13+)</li>
+<li>CMake 3.15+ (for building on Linux / WSL)</li>
+<li><b>OpenSSL / SSL Runtime Dependencies</b>:<ul>
+<li><b>Windows</b>: The NuGet package bundles pre-built OpenSSL runtime binaries (<span class="tt">libssl-4-x64.dll</span>, <span class="tt">libcrypto-4-x64.dll</span> for x64, and <span class="tt">libssl-4.dll</span>, <span class="tt">libcrypto-4.dll</span> for x86) which are automatically copied into the target build output directory via MSBuild <span class="tt">.targets</span>.</li>
+<li><b>Linux</b>: Requires system OpenSSL 3.x / 1.1.x runtime libraries (<span class="tt">libssl.so</span>, <span class="tt">libcrypto.so</span>). Install via <span class="tt">sudo apt-get install -y libssl-dev</span> (Ubuntu/Debian) or <span class="tt">sudo dnf install -y openssl-devel</span> (Fedora/RHEL).</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md6"></a>
+Installation ⬇️</h2>
+<ol type="1">
+<li><b>Clone the repository:</b> <span class="tt">bash
+    git clone <a href="https://github.com/sudheeshps/DotNetDupe.git">https://github.com/sudheeshps/DotNetDupe.git</a>
+    cd <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>
+    </span></li>
+<li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
+    .\BuildAndPack.ps1
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.4.0.4.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+<li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
+    nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
+    </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
+<li><b>Install the NuGet package in your project:</b> In your C++ project, you can now install the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> package using the NuGet Package Manager or the command line: <span class="tt">bash
+    nuget install <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> -OutputDirectory &lt;YourProjectDirectory&gt; -Source DotNetDupeLocal
+    </span> (Replace <span class="tt">&lt;YourProjectDirectory&gt;</span> with the path to your project where you want to install the package.)</li>
+<li><b>Integrate into your project:</b> Once installed, ensure your project's <span class="tt">.vcxproj</span> file is configured to link against the <span class="tt">DotNetDupe.lib</span> and include its headers. The NuGet package's <span class="tt">.targets</span> file should handle most of this automatically.</li>
+</ol>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md7"></a>
+Cross-Platform Support 🌐</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is designed for high portability and officially supports <b>Windows</b> (via MSVC/MSBuild) and <b>Linux</b> (via GCC/Clang/CMake).</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md8"></a>
+Building and Testing</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Platform  </th><th class="markdownTableHeadLeft">Build System  </th><th class="markdownTableHeadLeft">Build Command  </th><th class="markdownTableHeadLeft">Test Command  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><b>Windows</b>  </td><td class="markdownTableBodyLeft">MSBuild  </td><td class="markdownTableBodyLeft"><span class="tt">msbuild DotNetDupe.sln /p:Configuration=Release</span>  </td><td class="markdownTableBodyLeft"><span class="tt">.\bin\x64\Release\DotNetDupeTests.exe</span>  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><b>Linux / WSL</b>  </td><td class="markdownTableBodyLeft">CMake  </td><td class="markdownTableBodyLeft"><span class="tt">cmake -S . -B build &amp;&amp; cmake --build build</span>  </td><td class="markdownTableBodyLeft"><span class="tt">cd build &amp;&amp; ctest</span>  </td></tr>
+</table>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md9"></a>
+Integration via NuGet</h2>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is distributed as a multi-platform NuGet package. It contains native binaries for:</p><ul>
+<li><span class="tt">win-x64</span> (<span class="tt">DotNetDupe.dll</span>, <span class="tt">libssl-4-x64.dll</span>, <span class="tt">libcrypto-4-x64.dll</span>)</li>
+<li><span class="tt">win-x86</span> (<span class="tt">DotNetDupe.dll</span>, <span class="tt">libssl-4.dll</span>, <span class="tt">libcrypto-4.dll</span>)</li>
+<li><span class="tt">linux-x64</span> (<span class="tt">libDotNetDupe.so</span>)</li>
+</ul>
+<p>When you add the NuGet package to your project, the appropriate binary and dependencies are automatically selected based on your target platform.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
+SSL Runtime Dependencies</h3>
+<ul>
+<li><b>Windows</b>: Dynamic OpenSSL dependencies (<span class="tt">libssl-4-x64.dll</span> &amp; <span class="tt">libcrypto-4-x64.dll</span>) are packaged directly inside the NuGet package and deployed next to <span class="tt">DotNetDupe.dll</span> at build time.</li>
+<li><b>Linux</b>: Dynamically links against standard host OpenSSL libraries (<span class="tt">libssl.so.3</span> / <span class="tt">libssl.so.1.1</span>). Ensure OpenSSL is installed on target runtime hosts (<span class="tt">apt-get install libssl3</span> or <span class="tt">libssl1.1</span>).</li>
+</ul>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
+Note for Linux Users</h3>
+<p>On Linux, NuGet packages are typically managed via <span class="tt">dotnet</span> CLI or integrated into CMake projects using tools like <span class="tt">vcpkg</span> or by manually extracting the shared library (<span class="tt">.so</span>) and headers from the <span class="tt">.nupkg</span> (which is a ZIP file).</p>
+<p>Example manual extraction: </p><div class="fragment"><div class="line">unzip DotNetDupe.nupkg -d dotnetdupe_lib</div>
+<div class="line"># Use dotnetdupe_lib/include for headers</div>
+<div class="line"># Use dotnetdupe_lib/runtimes/linux-x64/native/libDotNetDupe.so for linking</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md12"></a>
+WSL Setup Guide (Windows) 🐧</h1>
+<p>For Windows developers who want to build and test for Linux locally, we recommend using the Windows Subsystem for Linux (WSL).</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md13"></a>
+1. Install WSL</h2>
+<p>If you haven't already, install Ubuntu via PowerShell: </p><div class="fragment"><div class="line">wsl --install -d Ubuntu</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md14"></a>
+2. Environment Provisioning</h2>
+<p>Inside your WSL terminal, install the C++ build chain and OpenSSL development headers: </p><div class="fragment"><div class="line">sudo apt-get update</div>
+<div class="line">sudo apt-get install -y build-essential cmake libssl-dev pkg-config</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md15"></a>
+3. Build &amp; Test in WSL</h2>
+<p>Navigate to your project root (e.g., <span class="tt">/mnt/d/Projects/DotNetDupe</span>) and run: </p><div class="fragment"><div class="line"># Create build directory</div>
+<div class="line">mkdir -p build-wsl &amp;&amp; cd build-wsl</div>
+<div class="line"> </div>
+<div class="line"># Configure and Build</div>
+<div class="line">cmake .. -DCMAKE_BUILD_TYPE=Release</div>
+<div class="line">cmake --build .</div>
+<div class="line"> </div>
+<div class="line"># Run Tests</div>
+<div class="line">ctest --output-on-failure</div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md16"></a>
+4. Running WSL Commands from PowerShell</h2>
+<p>You can also build and test for Linux directly from a Windows PowerShell terminal without manually entering the WSL shell:</p>
+<div class="fragment"><div class="line"># Create build directory</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;mkdir -p build-wsl&quot;</div>
+<div class="line"> </div>
+<div class="line"># Configure</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;cd build-wsl &amp;&amp; cmake .. -DCMAKE_BUILD_TYPE=Release&quot;</div>
+<div class="line"> </div>
+<div class="line"># Build</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;cd build-wsl &amp;&amp; cmake --build .&quot;</div>
+<div class="line"> </div>
+<div class="line"># Run Tests (via CTest)</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;cd build-wsl &amp;&amp; ctest&quot;</div>
+<div class="line"> </div>
+<div class="line"># Run Tests (direct execution)</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;cd build-wsl &amp;&amp; ./DotNetDupeTests&quot;</div>
+<div class="line"> </div>
+<div class="line"># Run Demo Application</div>
+<div class="line">wsl -d Ubuntu -- bash -c &quot;cd build-wsl &amp;&amp; ./DotNetDupeDemo&quot;</div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md17"></a>
+Developing Cross-Platform Applications 🌐💻</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> enables unified, cross-platform C++20 development across Windows (MSVC / MSBuild) and Linux (GCC/Clang via CMake or WSL).</p>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md19"></a>
+1. Cross-Platform Project Architecture</h2>
+<p>When building a cross-platform application with <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>:</p><ul>
+<li>Use <b>UTF-8 character encoding</b> for cross-platform portability.</li>
+<li>Rely on <b><span class="tt"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" title="A unified smart pointer that supports both unique and shared ownership semantics.">DotNetDupe::System::SmartPointer</a>&lt;T&gt;</span></b> for memory and resource cleanup.</li>
+<li>Avoid platform-specific raw syscalls; use <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> abstractions like <span class="tt">System::IO::Path</span>, <span class="tt">System::IO::File</span>, <span class="tt">System::Threading::Thread</span>, and <span class="tt">System::Net::Sockets::TcpClient</span>.</li>
+</ul>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md21"></a>
+2. Integrating via NuGet Package</h2>
+<p>You can package and consume <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> via NuGet across Windows and Linux (WSL / CMake) projects.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
+A. Generating the NuGet Package</h3>
+<p>Run the automated build script from PowerShell: </p><div class="fragment"><div class="line">.\BuildAndPack.ps1</div>
+</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.4.0.4.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
+B. Consuming NuGet Package in Visual Studio (Windows)</h3>
+<ol type="1">
+<li>Add the local <span class="tt">nuget_packages</span> folder as a NuGet Package Source: <div class="fragment"><div class="line">nuget sources Add -Name &quot;DotNetDupeLocal&quot; -Source &quot;D:\Personal\Projects\C++\DotNetDupe\nuget_packages&quot;</div>
+</div><!-- fragment --></li>
+<li>In Visual Studio, right-click your project -&gt; <b>Manage NuGet Packages</b> -&gt; Select <span class="tt">DotNetDupeLocal</span> -&gt; Install <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span>.</li>
+</ol>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
+C. Consuming NuGet Package on Linux / CMake (WSL)</h3>
+<ol type="1">
+<li>Extract <span class="tt">DotNetDupe.4.0.4.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.4.0.4.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
+</div><!-- fragment --></li>
+<li>Configure CMake pointing <span class="tt">NUGET_PATH</span> to the extracted package folder: <div class="fragment"><div class="line">cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH=&quot;./DotNetDupe_NuGet&quot;</div>
+<div class="line">cmake --build build</div>
+</div><!-- fragment --></li>
+</ol>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md26"></a>
+3. Building a Web Application with Static Files &amp; REST APIs</h2>
+<p>The <b><span class="tt">WebAppServer</span></b> class serves static website assets (<span class="tt">index.html</span>, CSS, JavaScript, images) alongside mapped REST endpoints.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md27"></a>
+Project Directory Layout</h3>
+<div class="fragment"><div class="line">MyWebApp/</div>
+<div class="line">├── wwwroot/</div>
+<div class="line">│   ├── index.html</div>
+<div class="line">│   └── site.css</div>
+<div class="line">└── main.cpp</div>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md28"></a>
+Step 1: Create <span class="tt">wwwroot/index.html</span></h3>
+<div class="fragment"><div class="line">&lt;!DOCTYPE html&gt;</div>
+<div class="line">&lt;html lang=&quot;en&quot;&gt;</div>
+<div class="line">&lt;head&gt;</div>
+<div class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</div>
+<div class="line">    &lt;title&gt;DotNetDupe Web App&lt;/title&gt;</div>
+<div class="line">    &lt;link rel=&quot;stylesheet&quot; href=&quot;site.css&quot;&gt;</div>
+<div class="line">&lt;/head&gt;</div>
+<div class="line">&lt;body&gt;</div>
+<div class="line">    &lt;h1&gt;DotNetDupe Web Application Server&lt;/h1&gt;</div>
+<div class="line">    &lt;p&gt;Serving static assets and REST API endpoints simultaneously!&lt;/p&gt;</div>
+<div class="line">    &lt;button onclick=&quot;fetchWelcomeMessage()&quot;&gt;Hit Welcome Endpoint&lt;/button&gt;</div>
+<div class="line">    &lt;p id=&quot;welcome-output&quot;&gt;&lt;/p&gt;</div>
+<div class="line"> </div>
+<div class="line">    &lt;script&gt;</div>
+<div class="line">        async function fetchWelcomeMessage() {</div>
+<div class="line">            const response = await fetch(&#39;/api/welcome?name=Developer&#39;);</div>
+<div class="line">            const data = await response.json();</div>
+<div class="line">            document.getElementById(&#39;welcome-output&#39;).innerText = data.message;</div>
+<div class="line">        }</div>
+<div class="line">    &lt;/script&gt;</div>
+<div class="line">&lt;/body&gt;</div>
+<div class="line">&lt;/html&gt;</div>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md29"></a>
+Step 2: C++ Application (<span class="tt">main.cpp</span>)</h3>
+<p>Here is a complete, compile-ready web application hosting <span class="tt">index.html</span> and responding with a welcome message on hitting <span class="tt">/api/welcome</span>:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_smart_pointer_8h.html">System/SmartPointer.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_file_8h.html">System/IO/File.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_path_8h.html">System/IO/Path.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_directory_8h.html">System/IO/Directory.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_web_application_8h.html">WebAppCore/Builder/WebApplication.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_web_application_builder_8h.html">WebAppCore/Builder/WebApplicationBuilder.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_web_app_server_8h.html">WebAppCore/Server/WebAppServer.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_http_context_8h.html">WebAppCore/Http/HttpContext.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_builder.html">DotNetDupe::WebAppCore::Builder</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_server.html">DotNetDupe::WebAppCore::Server</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_http.html">DotNetDupe::WebAppCore::Http</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;=============================================&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot; Starting DotNetDupe Cross-Platform Web Server&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;=============================================&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> webRoot = <span class="stringliteral">&quot;wwwroot&quot;</span>;</div>
+<div class="line">    <span class="keywordflow">if</span> (!<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a9d1a2f0c070b13f512e1fb63e199df01">IO::Directory::Exists</a>(webRoot)) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a1e37a4da2786bb51228ce5e254907417">IO::Directory::CreateDirectory</a>(webRoot, <span class="keyword">true</span>);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 1. Initialize WebApplication Host Builder</span></div>
+<div class="line">    <span class="keyword">auto</span> builder = <a class="code hl_function" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html#abdaa13d29107d83e44661da72737e726">WebApplication::CreateBuilder</a>();</div>
+<div class="line">    <span class="keyword">auto</span> app = builder-&gt;Build();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. Map REST Endpoint (/api/welcome?name=...)</span></div>
+<div class="line">    app-&gt;MapGet(<span class="stringliteral">&quot;/api/welcome&quot;</span>, [](<a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer&lt;HttpContext&gt;</a> ctx) -&gt; <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> {</div>
+<div class="line">        <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> name = <span class="stringliteral">&quot;Guest&quot;</span>;</div>
+<div class="line">        <span class="keywordflow">if</span> (ctx-&gt;GetRequest()-&gt;GetQuery().ContainsKey(<span class="stringliteral">&quot;name&quot;</span>)) {</div>
+<div class="line">            name = ctx-&gt;GetRequest()-&gt;GetQuery()[<span class="stringliteral">&quot;name&quot;</span>];</div>
+<div class="line">        }</div>
+<div class="line"> </div>
+<div class="line">        ctx-&gt;GetResponse()-&gt;SetContentType(<span class="stringliteral">&quot;application/json&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>(<span class="stringliteral">&quot;{\&quot;status\&quot;:\&quot;Success\&quot;,\&quot;message\&quot;:\&quot;Welcome to DotNetDupe Web Server, &quot;</span>) + name + <span class="stringliteral">&quot;!\&quot;}&quot;</span>;</div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 3. Initialize WebAppServer to serve website content (index.html &amp; assets)</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_web_app_core_1_1_server_1_1_web_app_server.html">WebAppServer</a> server(app, webRoot);</div>
+<div class="line">    server.EnableStaticFiles(<span class="stringliteral">&quot;index.html&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Server running at: http://localhost:8080/index.html&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Welcome Endpoint at: http://localhost:8080/api/welcome?name=Developer&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 4. Start Server</span></div>
+<div class="line">    server.Run(<span class="stringliteral">&quot;http://localhost:8080/index.html&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">return</span> 0;</div>
+<div class="line">}</div>
+<div class="ttc" id="a_console_8h_html"><div class="ttname"><a href="_console_8h.html">Console.h</a></div><div class="ttdoc">Represents standard input, output, and error streams for console applications.</div></div>
+<div class="ttc" id="a_directory_8h_html"><div class="ttname"><a href="_directory_8h.html">Directory.h</a></div></div>
+<div class="ttc" id="a_file_8h_html"><div class="ttname"><a href="_file_8h.html">File.h</a></div><div class="ttdoc">Provides static methods for the creation, copying, deletion, moving, and opening of a single file.</div></div>
+<div class="ttc" id="a_http_context_8h_html"><div class="ttname"><a href="_http_context_8h.html">HttpContext.h</a></div><div class="ttdoc">HTTP request, response, and context abstractions for WebAppCore processing pipelines.</div></div>
+<div class="ttc" id="a_path_8h_html"><div class="ttname"><a href="_path_8h.html">Path.h</a></div></div>
+<div class="ttc" id="a_smart_pointer_8h_html"><div class="ttname"><a href="_smart_pointer_8h.html">SmartPointer.h</a></div><div class="ttdoc">Provides reference-counted and weak pointer memory management primitives ensuring zero raw ownership.</div></div>
+<div class="ttc" id="a_web_app_server_8h_html"><div class="ttname"><a href="_web_app_server_8h.html">WebAppServer.h</a></div><div class="ttdoc">Static file web server and application hosting wrapper for WebApplication.</div></div>
+<div class="ttc" id="a_web_application_8h_html"><div class="ttname"><a href="_web_application_8h.html">WebApplication.h</a></div><div class="ttdoc">Represents the web application used to configure the HTTP pipeline and routes mirroring ASP....</div></div>
+<div class="ttc" id="a_web_application_builder_8h_html"><div class="ttname"><a href="_web_application_builder_8h.html">WebApplicationBuilder.h</a></div><div class="ttdoc">Builder pattern orchestrator for configuring services, controllers, and constructing WebApplication i...</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_console_html_a9ac4b759f46575696d499176d1c23789"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">DotNetDupe::System::Console::WriteLine</a></div><div class="ttdeci">static void WriteLine()</div><div class="ttdef"><b>Definition</b> <a href="_console_8cpp_source.html#l00097">Console.cpp:97</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a1e37a4da2786bb51228ce5e254907417"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a1e37a4da2786bb51228ce5e254907417">DotNetDupe::System::IO::Directory::CreateDirectory</a></div><div class="ttdeci">static void CreateDirectory(const String &amp;sPath)</div><div class="ttdoc">Creates all directories and subdirectories in the specified path unless they already exist.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00064">Directory.cpp:64</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a9d1a2f0c070b13f512e1fb63e199df01"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a9d1a2f0c070b13f512e1fb63e199df01">DotNetDupe::System::IO::Directory::Exists</a></div><div class="ttdeci">static bool Exists(const String &amp;sPath)</div><div class="ttdoc">Determines whether the given path refers to an existing directory on disk.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00056">Directory.cpp:56</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_smart_pointer_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a></div><div class="ttdoc">A unified smart pointer that supports both unique and shared ownership semantics.</div><div class="ttdef"><b>Definition</b> <a href="_smart_pointer_8h_source.html#l00072">SmartPointer.h:72</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a></div><div class="ttdoc">Represents text as a sequence of UTF-8 code units with culture-invariant operations.</div><div class="ttdef"><b>Definition</b> <a href="_string_8h_source.html#l00074">String.h:74</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_html_abdaa13d29107d83e44661da72737e726"><div class="ttname"><a href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html#abdaa13d29107d83e44661da72737e726">DotNetDupe::WebAppCore::Builder::WebApplication::CreateBuilder</a></div><div class="ttdeci">static DotNetDupe::System::SmartPointer&lt; WebApplicationBuilder &gt; CreateBuilder()</div><div class="ttdoc">Initializes a new instance of the WebApplicationBuilder class with pre-configured defaults.</div><div class="ttdef"><b>Definition</b> <a href="_web_application_8cpp_source.html#l00067">WebApplication.cpp:67</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_web_app_core_1_1_server_1_1_web_app_server_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_web_app_core_1_1_server_1_1_web_app_server.html">DotNetDupe::WebAppCore::Server::WebAppServer</a></div><div class="ttdoc">High-level HTTP web server providing static file serving, MIME detection, and lifecycle management.</div><div class="ttdef"><b>Definition</b> <a href="_web_app_server_8h_source.html#l00024">WebAppServer.h:24</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a></div><div class="ttdef"><b>Definition</b> <a href="_action_8h_source.html#l00011">Action.h:11</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_web_app_core_1_1_builder_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_builder.html">DotNetDupe::WebAppCore::Builder</a></div><div class="ttdef"><b>Definition</b> <a href="_web_application_8h_source.html#l00021">WebApplication.h:21</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_web_app_core_1_1_http_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_http.html">DotNetDupe::WebAppCore::Http</a></div><div class="ttdef"><b>Definition</b> <a href="_http_context_8h_source.html#l00016">HttpContext.h:16</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_web_app_core_1_1_server_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_server.html">DotNetDupe::WebAppCore::Server</a></div><div class="ttdef"><b>Definition</b> <a href="_web_app_server_8h_source.html#l00014">WebAppServer.h:14</a></div></div>
+</div><!-- fragment --><hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md31"></a>
+Usage 💻</h1>
+<p>Here are some quick examples of how to use <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>:</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md32"></a>
+1. Strings, Dates &amp; Console</h2>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_date_time_8h.html">System/DateTime.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_time_span_8h.html">System/TimeSpan.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_path_8h.html">System/IO/Path.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateBasics() {</div>
+<div class="line">    <span class="comment">// String interpolation / formatting &amp; manipulation</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> sGreeting = <span class="stringliteral">&quot;Hello&quot;</span>;</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> sName = <span class="stringliteral">&quot;Developer&quot;</span>;</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> sMessage = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_string.html#aa2996c3f645a32e13cf4350fef2b1240">String::Format</a>(<span class="stringliteral">&quot;{0}, {1}! Welcome to DotNetDupe.&quot;</span>, sGreeting, sName);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(sMessage);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Cross-platform Path manipulation</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> sDocPath = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a76be9ffc0acbe817339579dba254b088">IO::Path::Combine</a>(<span class="stringliteral">&quot;C:\\Projects&quot;</span>, <span class="stringliteral">&quot;DotNetDupe&quot;</span>, <span class="stringliteral">&quot;README.md&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Combined Path: {0}&quot;</span>, sDocPath);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Extension: {0}&quot;</span>, <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a44d58d831cbf3981a90230e9e150a027">IO::Path::GetExtension</a>(sDocPath));</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// DateTime and TimeSpan operations</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_date_time.html">DateTime</a> dtNow = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_date_time.html#a4ad98129c7e762cf4f40f99f06849e1e">DateTime::Now</a>();</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_date_time.html">DateTime</a> dtTomorrow = dtNow.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_date_time.html#afa7302558cb9e4bc6d5c095cf238d4cc">AddDays</a>(1);</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_time_span.html">TimeSpan</a> tsDiff = dtTomorrow - dtNow;</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Current Time: {0}&quot;</span>, dtNow.ToString());</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Hours until tomorrow: {0}&quot;</span>, tsDiff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_time_span.html#af635a141da2b2147ee6c95b5613437d2">GetTotalHours</a>());</div>
+<div class="line">}</div>
+<div class="ttc" id="a_date_time_8h_html"><div class="ttname"><a href="_date_time_8h.html">DateTime.h</a></div><div class="ttdoc">Represents an instant in time, typically expressed as a date and time of day.</div></div>
+<div class="ttc" id="a_string_8h_html"><div class="ttname"><a href="_string_8h.html">String.h</a></div><div class="ttdoc">High-performance UTF-8 / UTF-16 string manipulation class mirroring .NET System.String.</div></div>
+<div class="ttc" id="a_time_span_8h_html"><div class="ttname"><a href="_time_span_8h.html">TimeSpan.h</a></div><div class="ttdoc">Represents a time interval.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html">DotNetDupe::System::DateTime</a></div><div class="ttdoc">Represents an instant in time, typically expressed as a date and time of day.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8h_source.html#l00031">DateTime.h:31</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html_a4ad98129c7e762cf4f40f99f06849e1e"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html#a4ad98129c7e762cf4f40f99f06849e1e">DotNetDupe::System::DateTime::Now</a></div><div class="ttdeci">static DateTime Now()</div><div class="ttdoc">Gets a DateTime object set to the current date and time on this computer, expressed as local time.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8cpp_source.html#l00242">DateTime.cpp:242</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html_afa7302558cb9e4bc6d5c095cf238d4cc"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html#afa7302558cb9e4bc6d5c095cf238d4cc">DotNetDupe::System::DateTime::AddDays</a></div><div class="ttdeci">DateTime AddDays(double value) const</div><div class="ttdoc">Returns a new DateTime that adds the specified number of days.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8cpp_source.html#l00177">DateTime.cpp:177</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a44d58d831cbf3981a90230e9e150a027"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a44d58d831cbf3981a90230e9e150a027">DotNetDupe::System::IO::Path::GetExtension</a></div><div class="ttdeci">static String GetExtension(const String &amp;sFilePath)</div><div class="ttdoc">Returns the extension of the specified path string.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00111">Path.cpp:111</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a76be9ffc0acbe817339579dba254b088"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a76be9ffc0acbe817339579dba254b088">DotNetDupe::System::IO::Path::Combine</a></div><div class="ttdeci">static String Combine(const std::initializer_list&lt; String &gt; sPaths)</div><div class="ttdoc">Combines an array of strings into a path.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00063">Path.cpp:63</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html_aa2996c3f645a32e13cf4350fef2b1240"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html#aa2996c3f645a32e13cf4350fef2b1240">DotNetDupe::System::String::Format</a></div><div class="ttdeci">static String Format(const char *pFormat, const Arg1 &amp;arg1, const Args &amp;... args)</div><div class="ttdef"><b>Definition</b> <a href="_string_8h_source.html#l00239">String.h:239</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_time_span_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_time_span.html">DotNetDupe::System::TimeSpan</a></div><div class="ttdoc">Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...</div><div class="ttdef"><b>Definition</b> <a href="_time_span_8h_source.html#l00020">TimeSpan.h:20</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_time_span_html_af635a141da2b2147ee6c95b5613437d2"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_time_span.html#af635a141da2b2147ee6c95b5613437d2">DotNetDupe::System::TimeSpan::GetTotalHours</a></div><div class="ttdeci">double GetTotalHours() const</div><div class="ttdoc">Gets the value of the current TimeSpan expressed in whole and fractional hours.</div><div class="ttdef"><b>Definition</b> <a href="_time_span_8h_source.html#l00062">TimeSpan.h:62</a></div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md33"></a>
+2. Multi-Threading &amp; Asynchronous Tasks</h2>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_thread_8h.html">System/Threading/Thread.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_thread_pool_8h.html">System/Threading/ThreadPool.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_task_8h.html">System/Threading/Tasks/Task.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_threading.html">DotNetDupe::System::Threading</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html">DotNetDupe::System::Threading::Tasks</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateConcurrency() {</div>
+<div class="line">    <span class="comment">// Thread lifecycle</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html">Thread</a> workerThread([]() {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Worker thread running...&quot;</span>);</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#aca1ab2925f7e162281459b8758903661">Thread::Sleep</a>(100);</div>
+<div class="line">    });</div>
+<div class="line">    workerThread.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#ac9873ca850ec902a1c64e6477f4b12e1">Start</a>();</div>
+<div class="line">    workerThread.Join();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// High-throughput ThreadPool queue</span></div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html#af1162bec04b2e3c1a1ea87e60b8bf305">ThreadPool::QueueUserWorkItem</a>([]() {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;ThreadPool work item executed.&quot;</span>);</div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Async Task Parallelism</span></div>
+<div class="line">    <span class="keyword">auto</span> spTask = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a4c294e33a1d67697fbb2943ece8c740b">Task&lt;int&gt;::Run</a>([]() -&gt; <span class="keywordtype">int</span> {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#aca1ab2925f7e162281459b8758903661">Thread::Sleep</a>(50);</div>
+<div class="line">        <span class="keywordflow">return</span> 42 * 2;</div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    spTask-&gt;Wait();</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Task result: {0}&quot;</span>, spTask-&gt;GetResult());</div>
+<div class="line">}</div>
+<div class="ttc" id="a_task_8h_html"><div class="ttname"><a href="_task_8h.html">Task.h</a></div><div class="ttdoc">Represents an asynchronous operation mirroring .NET System.Threading.Tasks.Task.</div></div>
+<div class="ttc" id="a_thread_8h_html"><div class="ttname"><a href="_thread_8h.html">Thread.h</a></div><div class="ttdoc">Creates and controls a thread, sets its priority, and gets its status mirroring .NET System....</div></div>
+<div class="ttc" id="a_thread_pool_8h_html"><div class="ttname"><a href="_thread_pool_8h.html">ThreadPool.h</a></div><div class="ttdoc">Provides a pool of threads that can be used to execute tasks and work items.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task_html_a4c294e33a1d67697fbb2943ece8c740b"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a4c294e33a1d67697fbb2943ece8c740b">DotNetDupe::System::Threading::Tasks::Task::Run</a></div><div class="ttdeci">static SmartPointer&lt; Task &gt; Run(Action&lt;&gt; objAction)</div><div class="ttdoc">Queues the specified work to run on the ThreadPool and returns a Task representing that work.</div><div class="ttdef"><b>Definition</b> <a href="_task_8cpp_source.html#l00083">Task.cpp:83</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html">DotNetDupe::System::Threading::Thread</a></div><div class="ttdoc">Creates and controls execution of operating system threads.</div><div class="ttdef"><b>Definition</b> <a href="_thread_8h_source.html#l00028">Thread.h:28</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_html_ac9873ca850ec902a1c64e6477f4b12e1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#ac9873ca850ec902a1c64e6477f4b12e1">DotNetDupe::System::Threading::Thread::Start</a></div><div class="ttdeci">void Start()</div><div class="ttdoc">Causes the operating system to change the state of the current instance to Running.</div><div class="ttdef"><b>Definition</b> <a href="_thread_8cpp_source.html#l00078">Thread.cpp:78</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_html_aca1ab2925f7e162281459b8758903661"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#aca1ab2925f7e162281459b8758903661">DotNetDupe::System::Threading::Thread::Sleep</a></div><div class="ttdeci">static void Sleep(int millisecondsTimeout)</div><div class="ttdoc">Suspends the current thread for the specified number of milliseconds.</div><div class="ttdef"><b>Definition</b> <a href="_thread_8cpp_source.html#l00120">Thread.cpp:120</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool_html_af1162bec04b2e3c1a1ea87e60b8bf305"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html#af1162bec04b2e3c1a1ea87e60b8bf305">DotNetDupe::System::Threading::ThreadPool::QueueUserWorkItem</a></div><div class="ttdeci">static bool QueueUserWorkItem(WaitCallback callback)</div><div class="ttdoc">Queues a method for execution. The method executes when a thread pool thread becomes available.</div><div class="ttdef"><b>Definition</b> <a href="_thread_pool_8cpp_source.html#l00147">ThreadPool.cpp:147</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html">DotNetDupe::System::Threading::Tasks</a></div><div class="ttdef"><b>Definition</b> <a href="_task_8h_source.html#l00017">Task.h:17</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_threading_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html">DotNetDupe::System::Threading</a></div><div class="ttdef"><b>Definition</b> <a href="_abandoned_mutex_exception_8h_source.html#l00011">AbandonedMutexException.h:11</a></div></div>
+</div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md34"></a>
+3. Thread-Safe Concurrent Collections</h2>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_concurrent_dictionary_8h.html">System/Collections/Concurrent/ConcurrentDictionary.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_concurrent_queue_8h.html">System/Collections/Concurrent/ConcurrentQueue.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_blocking_collection_8h.html">System/Collections/Concurrent/BlockingCollection.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateConcurrentCollections() {</div>
+<div class="line">    <span class="comment">// Thread-safe ConcurrentDictionary</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">ConcurrentDictionary&lt;String, int&gt;</a> dict;</div>
+<div class="line">    dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">TryAdd</a>(<span class="stringliteral">&quot;CPU&quot;</span>, 95);</div>
+<div class="line">    dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">TryAdd</a>(<span class="stringliteral">&quot;Memory&quot;</span>, 60);</div>
+<div class="line">    dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">GetOrAdd</a>(<span class="stringliteral">&quot;Disk&quot;</span>, 40);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordtype">int</span> iUsage = 0;</div>
+<div class="line">    <span class="keywordflow">if</span> (dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a2766be9ee319ec041ebe43e2ecd32b86">TryGetValue</a>(<span class="stringliteral">&quot;CPU&quot;</span>, iUsage)) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;CPU Usage: {0}%&quot;</span>, iUsage);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Thread-safe Producer-Consumer BlockingCollection</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">BlockingCollection&lt;String&gt;</a> pipeline(100);</div>
+<div class="line">    pipeline.Add(<span class="stringliteral">&quot;Packet #1&quot;</span>);</div>
+<div class="line">    pipeline.Add(<span class="stringliteral">&quot;Packet #2&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> sItem;</div>
+<div class="line">    <span class="keywordflow">if</span> (pipeline.TryTake(sItem)) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Processed item from pipeline: {0}&quot;</span>, sItem);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="a_blocking_collection_8h_html"><div class="ttname"><a href="_blocking_collection_8h.html">BlockingCollection.h</a></div></div>
+<div class="ttc" id="a_concurrent_dictionary_8h_html"><div class="ttname"><a href="_concurrent_dictionary_8h.html">ConcurrentDictionary.h</a></div></div>
+<div class="ttc" id="a_concurrent_queue_8h_html"><div class="ttname"><a href="_concurrent_queue_8h.html">ConcurrentQueue.h</a></div><div class="ttdoc">Thread-safe FIFO queue mirroring .NET System.Collections.Concurrent.ConcurrentQueue&lt;T&gt;.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">DotNetDupe::System::Collections::Concurrent::BlockingCollection</a></div><div class="ttdoc">Provides blocking and bounding capabilities for thread-safe collections implementing the Producer-Con...</div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00025">BlockingCollection.h:25</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary</a></div><div class="ttdoc">Represents a thread-safe collection of key/value pairs that can be accessed by multiple threads concu...</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00024">ConcurrentDictionary.h:24</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_a194b3b32db4404b08a7e98386b6c8103"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryAdd</a></div><div class="ttdeci">bool TryAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdoc">Attempts to add the specified key and value to the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00042">ConcurrentDictionary.h:42</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_a2766be9ee319ec041ebe43e2ecd32b86"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a2766be9ee319ec041ebe43e2ecd32b86">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryGetValue</a></div><div class="ttdeci">bool TryGetValue(const TKey &amp;key, TValue &amp;value) const</div><div class="ttdoc">Attempts to get the value associated with the specified key from the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00055">ConcurrentDictionary.h:55</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_aaedac5d0dc67712892f4392d7b8b8777"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::GetOrAdd</a></div><div class="ttdeci">TValue GetOrAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00089">ConcurrentDictionary.h:89</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a></div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00016">BlockingCollection.h:16</a></div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md35"></a>
+Web API &amp; Database Integration Guide 🌐🗄️</h1>
+<p>This section provides comprehensive examples and recommended practices for hosting web services, consuming them, and using the database storage layer.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md36"></a>
+1. Hosting REST API Controllers</h2>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides an ASP.NET-like hosting model with dependency injection and controller-based routing in the <span class="tt">WebAppCore</span> namespaces.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md37"></a>
+Defining and Hosting a Controller</h3>
+<ol type="1">
+<li>Declare your data structure.</li>
+<li>Specialize the <span class="tt">JsonConverter&lt;T&gt;</span> for the structure to enable automatic serialization and deserialization.</li>
+<li>Inherit from <span class="tt">ControllerBase</span> and define your action methods.</li>
+<li>Bind routes using <span class="tt">ControllerRouteBuilder</span> and map them in the application host.</li>
+</ol>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_web_application_builder_8h.html">WebAppCore/Builder/WebApplicationBuilder.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_web_application_8h.html">WebAppCore/Builder/WebApplication.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_controller_base_8h.html">WebAppCore/Controllers/ControllerBase.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_list_8h.html">System/Collections/Generic/List.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_builder.html">DotNetDupe::WebAppCore::Builder</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_controllers.html">DotNetDupe::WebAppCore::Controllers</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 1. Declare the data model</span></div>
+<div class="line"><span class="keyword">struct </span>ProductItem {</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> Name;</div>
+<div class="line">    <span class="keywordtype">int</span> Price = 0;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 2. Specialize JsonConverter for serialization/deserialization</span></div>
+<div class="line"><span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe.html">DotNetDupe</a> {</div>
+<div class="line">    <span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">System</a> {</div>
+<div class="line">        <span class="keyword">namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_text.html">Text</a> {</div>
+<div class="line">            <span class="keyword">namespace </span>Json {</div>
+<div class="line">                <span class="keyword">template</span> &lt;&gt;</div>
+<div class="line">                <span class="keyword">struct </span>JsonConverter&lt;ProductItem&gt; {</div>
+<div class="line">                    <span class="keyword">static</span> JsonElement Write(<span class="keyword">const</span> ProductItem&amp; value) {</div>
+<div class="line">                        JsonElement obj(<a class="code hl_enumvalue" href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a497031794414a552435f90151ac3b54b">JsonValueKind::Object</a>);</div>
+<div class="line">                        obj.SetProperty(<span class="stringliteral">&quot;name&quot;</span>, <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a>(value.Name));</div>
+<div class="line">                        obj.SetProperty(<span class="stringliteral">&quot;price&quot;</span>, <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a>(<span class="keyword">static_cast&lt;</span><span class="keywordtype">double</span><span class="keyword">&gt;</span>(value.Price)));</div>
+<div class="line">                        <span class="keywordflow">return</span> obj;</div>
+<div class="line">                    }</div>
+<div class="line">                    <span class="keyword">static</span> ProductItem Read(<span class="keyword">const</span> JsonElement&amp; element) {</div>
+<div class="line">                        ProductItem p;</div>
+<div class="line">                        JsonElement prop;</div>
+<div class="line">                        <span class="keywordflow">if</span> (element.TryGetProperty(<span class="stringliteral">&quot;name&quot;</span>, prop)) p.Name = prop.GetString();</div>
+<div class="line">                        <span class="keywordflow">if</span> (element.TryGetProperty(<span class="stringliteral">&quot;price&quot;</span>, prop)) p.Price = prop.GetInt32();</div>
+<div class="line">                        <span class="keywordflow">return</span> p;</div>
+<div class="line">                    }</div>
+<div class="line">                };</div>
+<div class="line">            }</div>
+<div class="line">        }</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 3. Define the controller</span></div>
+<div class="line"><span class="keyword">class </span>ProductsController : <span class="keyword">public</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html">ControllerBase</a> {</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    <span class="comment">// GET /api/products</span></div>
+<div class="line">    Collections::Generic::List&lt;ProductItem&gt; GetProducts() {</div>
+<div class="line">        Collections::Generic::List&lt;ProductItem&gt; list;</div>
+<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>(ProductItem{<span class="stringliteral">&quot;Espresso Machine&quot;</span>, 299});</div>
+<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>(ProductItem{<span class="stringliteral">&quot;Coffee Grinder&quot;</span>, 89});</div>
+<div class="line">        <span class="keywordflow">return</span> list;</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// POST /api/products</span></div>
+<div class="line">    <a class="code hl_enumvalue" href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a27118326006d3829667a400ad23d5d98">String</a> CreateProduct(<span class="keyword">const</span> ProductItem&amp; product) {</div>
+<div class="line">        <span class="keywordflow">return</span> <a class="code hl_enumvalue" href="namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6">Created</a>(<a class="code hl_enumvalue" href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a27118326006d3829667a400ad23d5d98">String</a>(<span class="stringliteral">&quot;Added &quot;</span>) + product.Name);</div>
+<div class="line">    }</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">int</span> main() {</div>
+<div class="line">    <span class="keyword">auto</span> builder = <a class="code hl_function" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html#abdaa13d29107d83e44661da72737e726">WebApplication::CreateBuilder</a>();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 4. Register and configure routes on the controller</span></div>
+<div class="line">    builder-&gt;AddController&lt;ProductsController&gt;(<span class="stringliteral">&quot;/api/products&quot;</span>)</div>
+<div class="line">        .MapGet(<span class="stringliteral">&quot;&quot;</span>, &amp;ProductsController::GetProducts)</div>
+<div class="line">        .MapPost(<span class="stringliteral">&quot;&quot;</span>, &amp;ProductsController::CreateProduct);</div>
+<div class="line"> </div>
+<div class="line">    <span class="keyword">auto</span> app = builder-&gt;Build();</div>
+<div class="line">    app-&gt;MapControllers(); <span class="comment">// Applies the registered mappings</span></div>
+<div class="line"> </div>
+<div class="line">    app-&gt;Run(<span class="stringliteral">&quot;http://127.0.0.1:5000&quot;</span>);</div>
+<div class="line">}</div>
+<div class="ttc" id="a_controller_base_8h_html"><div class="ttname"><a href="_controller_base_8h.html">ControllerBase.h</a></div><div class="ttdoc">Base controller class providing REST action helpers, JWT authorization, and HTTP context accessors.</div></div>
+<div class="ttc" id="a_list_8h_html"><div class="ttname"><a href="_list_8h.html">List.h</a></div><div class="ttdoc">Represents a strongly typed list of objects that can be accessed by index mirroring ....</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html_aa210514ce0dfddc981d7ce13a2d17e12"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">DotNetDupe::System::Collections::Generic::List::Add</a></div><div class="ttdeci">void Add(const T &amp;item)</div><div class="ttdoc">Adds an object to the end of the List.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00138">List.h:138</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element_html_aa8e615b00cbc72a60dfb7535e8a18c6b"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#aa8e615b00cbc72a60dfb7535e8a18c6b">DotNetDupe::System::Text::Json::JsonElement::JsonElement</a></div><div class="ttdeci">JsonElement()</div><div class="ttdoc">Initializes a new instance of the JsonElement class representing undefined.</div><div class="ttdef"><b>Definition</b> <a href="_json_element_8cpp_source.html#l00273">JsonElement.cpp:273</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html">DotNetDupe::WebAppCore::Controllers::ControllerBase</a></div><div class="ttdoc">Base class for MVC/REST API controllers mirroring ASP.NET Core ControllerBase.</div><div class="ttdef"><b>Definition</b> <a href="_controller_base_8h_source.html#l00027">ControllerBase.h:27</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_net_html_a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6">DotNetDupe::System::Net::HttpStatusCode::Created</a></div><div class="ttdeci">@ Created</div><div class="ttdoc">Equivalent to HTTP status 201. Indicates that the request resulted in a new resource created.</div><div class="ttdef"><b>Definition</b> <a href="_http_status_code_8h_source.html#l00021">HttpStatusCode.h:21</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_text_1_1_json_html_a5d60994a11a8c08ce95bb3c913a563e4a27118326006d3829667a400ad23d5d98"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a27118326006d3829667a400ad23d5d98">DotNetDupe::System::Text::Json::JsonValueKind::String</a></div><div class="ttdeci">@ String</div><div class="ttdef"><b>Definition</b> <a href="_json_element_8h_source.html#l00025">JsonElement.h:25</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_text_1_1_json_html_a5d60994a11a8c08ce95bb3c913a563e4a497031794414a552435f90151ac3b54b"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a497031794414a552435f90151ac3b54b">DotNetDupe::System::Text::Json::JsonValueKind::Object</a></div><div class="ttdeci">@ Object</div><div class="ttdef"><b>Definition</b> <a href="_json_element_8h_source.html#l00023">JsonElement.h:23</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_text_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_text.html">DotNetDupe::System::Text</a></div><div class="ttdef"><b>Definition</b> <a href="_json_element_8h_source.html#l00016">JsonElement.h:16</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_web_app_core_1_1_controllers_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_controllers.html">DotNetDupe::WebAppCore::Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="_controller_base_8h_source.html#l00017">ControllerBase.h:17</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_html"><div class="ttname"><a href="namespace_dot_net_dupe.html">DotNetDupe</a></div><div class="ttdef"><b>Definition</b> <a href="_i_service_collection_8h_source.html#l00007">IServiceCollection.h:7</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md39"></a>
+2. Consuming REST APIs</h2>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> makes client-side web requests simple. You can query endpoints using a low-level HTTP client or a strongly-typed REST resource client.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md40"></a>
+Option A: Low-level HTTP Client (<span class="tt">HttpClient</span>)</h3>
+<p>Best for general, raw request handling, sending custom headers, or performing authentication (like setting Bearer tokens).</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_http_client_8h.html">System/Net/Http/HttpClient.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> GetRawData() {</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">DotNetDupe::System::Net::Http</a>;</div>
+<div class="line">    </div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html">HttpClient</a> client;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// Add default headers (e.g. JWT Auth token)</span></div>
+<div class="line">    client.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#ad95af88106b60653a5ae93d7520e0dba">GetDefaultRequestHeaders</a>().Add(<span class="stringliteral">&quot;Authorization&quot;</span>, <span class="stringliteral">&quot;Bearer your_token_here&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="keyword">auto</span> response = client.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#abcd8a4d7d9d88641c5e7ed02b1dd0f92">Get</a>(<span class="stringliteral">&quot;http://127.0.0.1:5000/api/products&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">if</span> (response-&gt;GetStatusCode() == 200) {</div>
+<div class="line">        <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> json = response-&gt;GetContent()-&gt;ReadAsString();</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">DotNetDupe::System::Console::WriteLine</a>(json);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="a_http_client_8h_html"><div class="ttname"><a href="_http_client_8h.html">HttpClient.h</a></div><div class="ttdoc">Provides a base class for sending HTTP requests and receiving HTTP responses mirroring ....</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html">DotNetDupe::System::Net::Http::HttpClient</a></div><div class="ttdoc">Sends HTTP requests and receives HTTP responses from a resource identified by a URI.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8h_source.html#l00040">HttpClient.h:40</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_abcd8a4d7d9d88641c5e7ed02b1dd0f92"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#abcd8a4d7d9d88641c5e7ed02b1dd0f92">DotNetDupe::System::Net::Http::HttpClient::Get</a></div><div class="ttdeci">HttpResponseMessagePtr Get(const String &amp;requestUri)</div><div class="ttdoc">Sends a GET request to the specified string Uri.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00283">HttpClient.cpp:283</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_ad95af88106b60653a5ae93d7520e0dba"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#ad95af88106b60653a5ae93d7520e0dba">DotNetDupe::System::Net::Http::HttpClient::GetDefaultRequestHeaders</a></div><div class="ttdeci">Collections::Generic::Dictionary&lt; String, String &gt; &amp; GetDefaultRequestHeaders()</div><div class="ttdoc">Gets the headers which should be sent with each request.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00357">HttpClient.cpp:357</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_net_1_1_http_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">DotNetDupe::System::Net::Http</a></div><div class="ttdef"><b>Definition</b> <a href="_file_downloader_8h_source.html#l00022">FileDownloader.h:22</a></div></div>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md41"></a>
+Option B: Strongly-Typed Client (<span class="tt">RestClient&lt;T&gt;</span>) - <em>Recommended</em></h3>
+<p>Best for standard RESTful resources. It handles payload serialization/deserialization to your model structures automatically.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_rest_client_8h.html">System/Net/Http/RestClient.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> SyncProducts() {</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">DotNetDupe::System::Net::Http</a>;</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// Point the RestClient to your resource endpoint</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client.html">RestClient&lt;ProductItem&gt;</a> client(<span class="stringliteral">&quot;http://127.0.0.1:5000/api/products&quot;</span>);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// GET all resources automatically parsed into List&lt;T&gt;</span></div>
+<div class="line">    <span class="keyword">auto</span> products = client.GetAll();</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// POST new resource automatically serialized to JSON</span></div>
+<div class="line">    ProductItem newProduct{<span class="stringliteral">&quot;Milk Frother&quot;</span>, 35};</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> reply = client.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#a0181c787346856e96bd927ead8de012a">Post</a>(newProduct);</div>
+<div class="line">}</div>
+<div class="ttc" id="a_rest_client_8h_html"><div class="ttname"><a href="_rest_client_8h.html">RestClient.h</a></div><div class="ttdoc">Strongly typed REST client template with automatic JSON serialization and deserialization.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_a0181c787346856e96bd927ead8de012a"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#a0181c787346856e96bd927ead8de012a">DotNetDupe::System::Net::Http::HttpClient::Post</a></div><div class="ttdeci">HttpResponseMessagePtr Post(const String &amp;requestUri, const HttpContentPtr &amp;content)</div><div class="ttdoc">Sends a POST request with content to the specified string Uri.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00294">HttpClient.cpp:294</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client.html">DotNetDupe::System::Net::Http::RestClient</a></div><div class="ttdoc">Strongly-typed REST client template with automated C++ structure JSON serialization/deserialization.</div><div class="ttdef"><b>Definition</b> <a href="_rest_client_8h_source.html#l00027">RestClient.h:27</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md43"></a>
+3. Using the Database Layer</h2>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> emulates C# ADO.NET (<span class="tt">SqlConnection</span>, <span class="tt">SqlCommand</span>, <span class="tt">SqlDataReader</span>) for SQL execution.</p>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md44"></a>
+Recommended Usage Patterns</h3>
+<ol type="1">
+<li><b>Routing and Engine Fallback via Connection String</b>:<ul>
+<li><b>In-Memory Emulation (Default)</b>: Use <span class="tt">Engine=InMemory;</span> for unit testing or when you don't want server/file dependencies. This runs an in-memory SQL parsing engine.</li>
+<li><b>Persistent SQLite</b>: Use <span class="tt">Engine=SQLite; Data Source=my_db.db;</span> when you need actual SQLite file persistence. <em>Note: Requires compilation with the <span class="tt">DOTNETDUPE_USE_SQLITE</span> flag defined.</em></li>
+</ul>
+</li>
+<li><b>Always Parameterize Queries</b>: Use <span class="tt">AddWithValue</span> parameters to protect queries against parsing issues and SQL syntax injections.</li>
+<li><b>Use RAII and Smart Pointers</b>: Wrap database commands and readers in smart pointers to guarantee resource cleanup.</li>
+</ol>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_sql_connection_8h.html">System/Data/SqlClient/SqlConnection.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_sql_command_8h.html">System/Data/SqlClient/SqlCommand.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> AccessDatabase() {</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line">    <span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">DotNetDupe::System::Data::SqlClient</a>;</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordflow">try</span> {</div>
+<div class="line">        <span class="comment">// Connect. Uses default In-Memory emulation engine if SQLite is not compiled.</span></div>
+<div class="line">        <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html">SqlConnection</a> conn(<span class="stringliteral">&quot;Data Source=InventoryDb;Engine=InMemory;&quot;</span>);</div>
+<div class="line">        conn.Open();</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// 1. Create table schema</span></div>
+<div class="line">        <span class="keyword">auto</span> cmdCreate = conn.CreateCommand();</div>
+<div class="line">        cmdCreate-&gt;SetCommandText(<span class="stringliteral">&quot;CREATE TABLE Items (Id INT, Name VARCHAR, Price INT)&quot;</span>);</div>
+<div class="line">        cmdCreate-&gt;ExecuteNonQuery();</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// 2. Parameterized Insert (Recommended)</span></div>
+<div class="line">        <span class="keyword">auto</span> cmdInsert = conn.CreateCommand();</div>
+<div class="line">        cmdInsert-&gt;SetCommandText(<span class="stringliteral">&quot;INSERT INTO Items (Id, Name, Price) VALUES (@id, @name, @price)&quot;</span>);</div>
+<div class="line">        cmdInsert-&gt;GetParameters()-&gt;AddWithValue(<span class="stringliteral">&quot;@id&quot;</span>, 101);</div>
+<div class="line">        cmdInsert-&gt;GetParameters()-&gt;AddWithValue(<span class="stringliteral">&quot;@name&quot;</span>, <span class="stringliteral">&quot;Bean Grinder&quot;</span>);</div>
+<div class="line">        cmdInsert-&gt;GetParameters()-&gt;AddWithValue(<span class="stringliteral">&quot;@price&quot;</span>, 75);</div>
+<div class="line">        cmdInsert-&gt;ExecuteNonQuery();</div>
+<div class="line"> </div>
+<div class="line">        <span class="comment">// 3. Querying rows</span></div>
+<div class="line">        <span class="keyword">auto</span> cmdSelect = conn.CreateCommand();</div>
+<div class="line">        cmdSelect-&gt;SetCommandText(<span class="stringliteral">&quot;SELECT Id, Name, Price FROM Items WHERE Price &lt; @maxPrice&quot;</span>);</div>
+<div class="line">        cmdSelect-&gt;GetParameters()-&gt;AddWithValue(<span class="stringliteral">&quot;@maxPrice&quot;</span>, 100);</div>
+<div class="line"> </div>
+<div class="line">        <span class="keyword">auto</span> reader = cmdSelect-&gt;ExecuteReader();</div>
+<div class="line">        <span class="keywordflow">while</span> (reader-&gt;Read()) {</div>
+<div class="line">            <span class="keywordtype">int</span> <span class="keywordtype">id</span> = reader-&gt;GetInt32(0);</div>
+<div class="line">            <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> name = reader-&gt;GetString(1);</div>
+<div class="line">            <span class="keywordtype">int</span> price = reader-&gt;GetInt32(2);</div>
+<div class="line"> </div>
+<div class="line">            <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a60be1f4ca619de39b9fceabe6c37f512">Console::Write</a>(<span class="stringliteral">&quot;Item: &quot;</span>);</div>
+<div class="line">            <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a60be1f4ca619de39b9fceabe6c37f512">Console::Write</a>(name);</div>
+<div class="line">            <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a60be1f4ca619de39b9fceabe6c37f512">Console::Write</a>(<span class="stringliteral">&quot; costs $&quot;</span>);</div>
+<div class="line">            <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(price);</div>
+<div class="line">        }</div>
+<div class="line"> </div>
+<div class="line">        conn.Close();</div>
+<div class="line">    } <span class="keywordflow">catch</span> (<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_exception.html">Exception</a>&amp; ex) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a60be1f4ca619de39b9fceabe6c37f512">Console::Write</a>(<span class="stringliteral">&quot;Database Error: &quot;</span>);</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(ex.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_exception.html#a5a18322eb5117aaffd20a63b0d7cc341">What</a>());</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="a_sql_command_8h_html"><div class="ttname"><a href="_sql_command_8h.html">SqlCommand.h</a></div></div>
+<div class="ttc" id="a_sql_connection_8h_html"><div class="ttname"><a href="_sql_connection_8h.html">SqlConnection.h</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_console_html_a60be1f4ca619de39b9fceabe6c37f512"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_console.html#a60be1f4ca619de39b9fceabe6c37f512">DotNetDupe::System::Console::Write</a></div><div class="ttdeci">static void Write(bool bValue)</div><div class="ttdef"><b>Definition</b> <a href="_console_8cpp_source.html#l00087">Console.cpp:87</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_connection.html">DotNetDupe::System::Data::SqlClient::SqlConnection</a></div><div class="ttdoc">Represents a connection to a SQL database.</div><div class="ttdef"><b>Definition</b> <a href="_sql_connection_8h_source.html#l00016">SqlConnection.h:16</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_exception_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_exception.html">DotNetDupe::System::Exception</a></div><div class="ttdoc">Represents errors that occur during application execution.</div><div class="ttdef"><b>Definition</b> <a href="_exception_8h_source.html#l00019">Exception.h:19</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_exception_html_a5a18322eb5117aaffd20a63b0d7cc341"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_exception.html#a5a18322eb5117aaffd20a63b0d7cc341">DotNetDupe::System::Exception::What</a></div><div class="ttdeci">const char * What() const</div><div class="ttdoc">Gets a message that describes the current exception.</div><div class="ttdef"><b>Definition</b> <a href="_exception_8h_source.html#l00046">Exception.h:46</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">DotNetDupe::System::Data::SqlClient</a></div><div class="ttdef"><b>Definition</b> <a href="_sql_command_8h_source.html#l00008">SqlCommand.h:8</a></div></div>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md45"></a>
+STL vs DotNetDupe Comparison ⚖️</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the <a href="../index.html">Interactive Documentation Portal</a>.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md46"></a>
+Sample Client and Test Code 🧪</h2>
+<p>The repository includes <span class="tt">DotNetDupeDemo</span> (a sample console application) and <span class="tt">DotNetDupeTests</span> (unit tests) projects. These projects demonstrate how to integrate and use the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> library. You can refer to their <span class="tt">.vcxproj</span> files for examples of how to configure your own projects to consume the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> NuGet package.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md47"></a>
+API Reference 📖</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides comprehensive documentation through an interactive portal:</p>
+<ul>
+<li>🌐 <b><a href="../index.html">Interactive Documentation Portal</a></b>: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.</li>
+</ul>
+<dl class="section remark"><dt>Remarks</dt><dd><b>Generating API Documentation Locally</b>: You can rebuild the entire documentation suite locally at any time using PowerShell: <div class="fragment"><div class="line">powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1 -OpenBrowser</div>
+</div><!-- fragment --></dd></dl>
+<p>For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md48"></a>
+Namespace: <span class="tt">DotNetDupe::System</span></h2>
+<p><b>Core Primitives &amp; Base Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Object</b>  </td><td class="markdownTableBodyNone">Supports all classes in the .NET class hierarchy and provides low-level services to derived classes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SmartPointer&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Unified smart pointer supporting RAII unique and shared reference-counted ownership.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>EventArgs</b>  </td><td class="markdownTableBodyNone">Base class for event data payloads with <span class="tt">Empty</span> singleton representation.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>EventHandler&lt;TEventArgs&gt;</b>  </td><td class="markdownTableBodyNone">Multicast delegate supporting publisher-subscriber event model with token unsubscription.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Char</b>  </td><td class="markdownTableBodyNone">Represents character code points and provides Unicode classification and transformation methods.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>String</b>  </td><td class="markdownTableBodyNone">Represents immutable sequences of UTF-8 and UTF-16 characters (<span class="tt">String</span> and <span class="tt">WString</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Array&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Provides methods for creating, manipulating, searching, and sorting arrays.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>BitConverter</b>  </td><td class="markdownTableBodyNone">Converts base data types to arrays of bytes, and arrays of bytes to base data types.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Buffer</b>  </td><td class="markdownTableBodyNone">Manipulates arrays of primitive types efficiently.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Console</b>  </td><td class="markdownTableBodyNone">Reads and writes to standard I/O streams with full color control and stream redirection.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Convert</b>  </td><td class="markdownTableBodyNone">Converts base data types and hexadecimal strings.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>DateTime</b>  </td><td class="markdownTableBodyNone">Represents an instant in time, typically expressed as a date and time of day.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>DateTimeOffset</b>  </td><td class="markdownTableBodyNone">Represents a point in time relative to UTC with time zone offset.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TimeSpan</b>  </td><td class="markdownTableBodyNone">Represents a time interval.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>TimeZone</b>  </td><td class="markdownTableBodyNone">Represents a time zone.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TimeZoneInfo</b>  </td><td class="markdownTableBodyNone">Represents any time zone in the world with Daylight Saving adjustments.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>DaylightTime</b>  </td><td class="markdownTableBodyNone">Defines the period of daylight saving time.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TimeProvider</b>  </td><td class="markdownTableBodyNone">Provides a testable abstraction for date and time.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Guid</b>  </td><td class="markdownTableBodyNone">Represents a globally unique identifier (GUID).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Environment</b>  </td><td class="markdownTableBodyNone">Provides environment variables, machine info, and platform properties.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>OperatingSystem</b>  </td><td class="markdownTableBodyNone">Represents operating system platform identifiers and version metadata.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Random</b>  </td><td class="markdownTableBodyNone">Represents a pseudo-random number generator.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Uri</b>  </td><td class="markdownTableBodyNone">Provides an object representation of Uniform Resource Identifiers (URI).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>UriBuilder</b>  </td><td class="markdownTableBodyNone">Provides convenient mutation of URI components.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>UriComponents</b>  </td><td class="markdownTableBodyNone">Specifies parts of a URI.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>UriFormat</b>  </td><td class="markdownTableBodyNone">Controls how URI information is escaped.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>UriParser</b>  </td><td class="markdownTableBodyNone">Parses and validates URI schemes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>GenericUriParser</b>  </td><td class="markdownTableBodyNone">Customizable parser for hierarchical URI schemes.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Version</b>  </td><td class="markdownTableBodyNone">Represents version numbers (<span class="tt">major.minor.build.revision</span>).  </td></tr>
+</table>
+<p><b>Core Interfaces</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Interface  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IDisposable</b>  </td><td class="markdownTableBodyNone">Defines a mechanism for deterministic release of unmanaged resources.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>IClonable</b>  </td><td class="markdownTableBodyNone">Defines mechanisms for deep or shallow object cloning.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IComparable</b>  </td><td class="markdownTableBodyNone">Defines comparison method for sorting and ordering.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>IComparable&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Defines strongly-typed comparison method for sorting and ordering.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IFormatProvider&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Provides custom type-formatting services.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>IServiceProvider</b>  </td><td class="markdownTableBodyNone">Defines service object resolution mechanism for dependency injection.  </td></tr>
+</table>
+<p><b>Exceptions</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Exception  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Exception</b>  </td><td class="markdownTableBodyNone">Root exception class for all <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> library errors.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SystemException</b>  </td><td class="markdownTableBodyNone">Base class for system-level runtime exceptions.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ArgumentException</b>  </td><td class="markdownTableBodyNone">Thrown when an argument passed to a method is invalid.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ArgumentNullException</b>  </td><td class="markdownTableBodyNone">Thrown when a null argument is passed to a non-null parameter.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ArgumentOutOfRangeException</b>  </td><td class="markdownTableBodyNone">Thrown when an argument falls outside allowable boundary limits.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ArithmeticException</b>  </td><td class="markdownTableBodyNone">Thrown for errors in mathematical or arithmetic operations.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>FormatException</b>  </td><td class="markdownTableBodyNone">Thrown when string or argument formatting is invalid.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>NotImplementedException</b>  </td><td class="markdownTableBodyNone">Thrown when a requested method or feature is not implemented.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>OverflowException</b>  </td><td class="markdownTableBodyNone">Thrown on arithmetic or conversion overflow.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md50"></a>
+Namespace: <span class="tt">DotNetDupe::System::Collections::Generic</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>List&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Strongly-typed dynamic array list accessible by index.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Dictionary&lt;TKey, TValue&gt;</b>  </td><td class="markdownTableBodyNone">Key/value hash map collection.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>HashSet&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Set of unique elements backed by a hash table.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Queue&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">First-In-First-Out (FIFO) queue collection.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Stack&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Last-In-First-Out (LIFO) stack collection.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>PriorityQueue&lt;TElement, TPriority&gt;</b>  </td><td class="markdownTableBodyNone">Min-heap collection of prioritized items.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SortedDictionary&lt;TKey, TValue&gt;</b>  </td><td class="markdownTableBodyNone">Key/value collection sorted by key.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SortedSet&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Ordered unique collection maintained in sorted order.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>LinkedList&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Doubly-linked list collection.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Generic Collections Overview</b>  </td><td class="markdownTableBodyNone">Comprehensive guide and comparison of generic collection types.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md52"></a>
+Namespace: <span class="tt">DotNetDupe::System::Collections::Concurrent</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ConcurrentDictionary&lt;TKey, TValue&gt;</b>  </td><td class="markdownTableBodyNone">Thread-safe key/value collection for concurrent multi-threaded access.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ConcurrentQueue&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Lock-free thread-safe First-In-First-Out (FIFO) queue.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ConcurrentStack&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Lock-free thread-safe Last-In-First-Out (LIFO) stack.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ConcurrentBag&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Thread-safe unordered object container with thread-local storage.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>BlockingCollection&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Thread-safe collection providing blocking producer-consumer capabilities.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Concurrent Collections Overview</b>  </td><td class="markdownTableBodyNone">Comprehensive guide and architecture of lock-free and thread-safe collections.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
+Namespace: <span class="tt">DotNetDupe::System::IO</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>File</b>  </td><td class="markdownTableBodyNone">Static helper methods for file creation, reading, writing, moving, and deletion.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Directory</b>  </td><td class="markdownTableBodyNone">Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Path</b>  </td><td class="markdownTableBodyNone">Performs cross-platform directory and file path string operations.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Stream</b>  </td><td class="markdownTableBodyNone">Abstract base class for byte sequence streams.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>FileStream</b>  </td><td class="markdownTableBodyNone">Provides a byte stream for files supporting synchronous read/write.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>MemoryStream</b>  </td><td class="markdownTableBodyNone">Creates a stream whose backing store is memory.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>TextReader</b>  </td><td class="markdownTableBodyNone">Abstract reader for sequential character input.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TextWriter</b>  </td><td class="markdownTableBodyNone">Abstract writer for sequential character output.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>StringReader</b>  </td><td class="markdownTableBodyNone">Implements <span class="tt">TextReader</span> reading from a <span class="tt">String</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>StringWriter</b>  </td><td class="markdownTableBodyNone">Implements <span class="tt">TextWriter</span> writing characters into a string buffer.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>BinaryReader</b>  </td><td class="markdownTableBodyNone">Reads primitive data types as binary values in Little-Endian or Big-Endian encoding from a stream.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>BinaryWriter</b>  </td><td class="markdownTableBodyNone">Writes primitive data types in binary format with configurable endianness to a stream.  </td></tr>
+</table>
+<p><b>Exceptions</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Exception  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IOException</b>  </td><td class="markdownTableBodyNone">Thrown when an I/O or file system error occurs.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>FileNotFoundException</b>  </td><td class="markdownTableBodyNone">Thrown when an attempt to access a file that does not exist on disk fails.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>DirectoryNotFoundException</b>  </td><td class="markdownTableBodyNone">Thrown when part of a file or directory path cannot be found.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>EndOfStreamException</b>  </td><td class="markdownTableBodyNone">Thrown when reading is attempted past the end of a stream.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
+Namespace: <span class="tt">DotNetDupe::System::Threading</span> &amp; <span class="tt">System::Threading::Tasks</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Thread</b>  </td><td class="markdownTableBodyNone">Creates, configures, and controls OS threads.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ThreadPool</b>  </td><td class="markdownTableBodyNone">High-throughput worker thread pool managing parallel task execution.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Task</b>  </td><td class="markdownTableBodyNone">Represents asynchronous operations with continuation support.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Task&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Represents asynchronous operations returning a result value.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>WaitHandle</b>  </td><td class="markdownTableBodyNone">Abstract base class for thread synchronization handles.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>EventWaitHandle</b>  </td><td class="markdownTableBodyNone">Manages cross-thread and system synchronization event signals.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>AutoResetEvent</b>  </td><td class="markdownTableBodyNone">Notifies waiting threads and automatically resets to non-signaled state.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ManualResetEvent</b>  </td><td class="markdownTableBodyNone">Notifies waiting threads and remains signaled until manually reset.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Mutex</b>  </td><td class="markdownTableBodyNone">Mutual exclusion synchronization primitive (supports named inter-process mutexes).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Semaphore</b>  </td><td class="markdownTableBodyNone">Limits concurrent thread access to a bounded resource pool.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SemaphoreSlim</b>  </td><td class="markdownTableBodyNone">Lightweight alternative to <span class="tt">Semaphore</span> avoiding kernel transitions for fast locking.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>CriticalSection</b>  </td><td class="markdownTableBodyNone">Low-overhead recursive mutex primitive for intra-process synchronization.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Interlocked</b>  </td><td class="markdownTableBodyNone">Provides atomic hardware operations (<span class="tt">Increment</span>, <span class="tt">Decrement</span>, <span class="tt">Exchange</span>, <span class="tt">CompareExchange</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Lock&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Exception-safe RAII lock wrapper for synchronization primitives.  </td></tr>
+</table>
+<p><b>Exceptions</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Exception  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ThreadStateException</b>  </td><td class="markdownTableBodyNone">Thrown when a thread is in an invalid state for the requested operation.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ThreadInterruptedException</b>  </td><td class="markdownTableBodyNone">Thrown when a thread is interrupted while waiting.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SynchronizationLockException</b>  </td><td class="markdownTableBodyNone">Thrown when unlocking a synchronization object not owned by the caller.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>AbandonedMutexException</b>  </td><td class="markdownTableBodyNone">Thrown when a thread acquires a mutex abandoned by another terminating thread.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>WaitHandleCannotBeOpenedException</b>  </td><td class="markdownTableBodyNone">Thrown when attempting to open a non-existent named system sync handle.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SemaphoreFullException</b>  </td><td class="markdownTableBodyNone">Thrown when releasing a semaphore whose count is already at maximum capacity.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>TaskCanceledException</b>  </td><td class="markdownTableBodyNone">Thrown when a task execution is canceled.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
+Namespace: <span class="tt">DotNetDupe::System::Diagnostics</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Process</b>  </td><td class="markdownTableBodyNone">Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Stopwatch</b>  </td><td class="markdownTableBodyNone">High-resolution performance timer for measuring elapsed time.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>EventLog</b>  </td><td class="markdownTableBodyNone">Interacts with OS diagnostic event logs and writes operational entries.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>EtwLogReader</b>  </td><td class="markdownTableBodyNone">Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SystemMetrics</b>  </td><td class="markdownTableBodyNone">Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>RealtimeTelemetry</b>  </td><td class="markdownTableBodyNone">High-frequency telemetry metrics streaming and real-time dashboard endpoint.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ActiveUserSession</b>  </td><td class="markdownTableBodyNone">Enumerates active and terminal user sessions across the system.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TerminalSession</b>  </td><td class="markdownTableBodyNone">Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ProcessStreamer</b>  </td><td class="markdownTableBodyNone">Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
+Namespace: <span class="tt">DotNetDupe::System::Net</span>, <span class="tt">System::Net::Sockets</span> &amp; <span class="tt">System::Net::Security</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Dns</b>  </td><td class="markdownTableBodyNone">Provides domain name resolution and IP address lookup.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Socket</b>  </td><td class="markdownTableBodyNone">Low-level cross-platform BSD/WinSock socket abstraction.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>NetworkStream</b>  </td><td class="markdownTableBodyNone">Implements <span class="tt">Stream</span> backed by a network socket.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TcpClient</b>  </td><td class="markdownTableBodyNone">Client connection wrapper for TCP network services.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>TcpListener</b>  </td><td class="markdownTableBodyNone">TCP listener for accepting incoming network connections.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>UdpClient</b>  </td><td class="markdownTableBodyNone">User Datagram Protocol (UDP) client for datagram transmission.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SslStream</b>  </td><td class="markdownTableBodyNone">TLS/SSL secure stream wrapper built on OpenSSL.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
+Namespace: <span class="tt">DotNetDupe::System::Net::Http</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>HttpClient</b>  </td><td class="markdownTableBodyNone">Sends HTTP/HTTPS requests and receives responses from URI endpoints.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>RestClient&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Strongly-typed REST client with automated C++ structure JSON serialization/deserialization.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>FileDownloader</b>  </td><td class="markdownTableBodyNone">High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>HttpRequestMessage</b>  </td><td class="markdownTableBodyNone">Represents an outgoing HTTP request with headers, method, and payload.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>HttpResponseMessage</b>  </td><td class="markdownTableBodyNone">Represents an HTTP response with status code, response headers, and content stream.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>HttpContent</b>  </td><td class="markdownTableBodyNone">Base class for HTTP entity bodies and content headers.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>StringContent</b>  </td><td class="markdownTableBodyNone">HTTP content wrapper for text and JSON payloads.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ByteArrayContent</b>  </td><td class="markdownTableBodyNone">HTTP content wrapper for raw byte arrays and binary payloads.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>HttpMethod</b>  </td><td class="markdownTableBodyNone">Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.).  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
+Namespace: <span class="tt">DotNetDupe::System::Text</span> &amp; <span class="tt">System::Text::Json</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>StringBuilder</b>  </td><td class="markdownTableBodyNone">Mutable string buffer for high-performance string concatenation.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>TextEncoding</b>  </td><td class="markdownTableBodyNone">Represents character encodings (UTF-8, ASCII, UTF-16).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>JsonSerializer</b>  </td><td class="markdownTableBodyNone">Serializes objects to JSON strings and deserializes JSON to C++ types.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
+Namespace: <span class="tt">DotNetDupe::System::Utils</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>StringConvert</b>  </td><td class="markdownTableBodyNone">Static helper methods for UTF-8 / UTF-16 conversions and type transformations.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
+Namespace: <span class="tt">DotNetDupe::System::Security</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>UserPrincipal</b>  </td><td class="markdownTableBodyNone">Cross-platform user account enumeration, group memberships, and administrative privilege inspection.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>HMACSHA256</b>  </td><td class="markdownTableBodyNone">Computes SHA256 Hash-based Message Authentication Codes.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>X509Certificate2</b>  </td><td class="markdownTableBodyNone">Loads and inspects X.509 SSL/TLS certificates and private keys.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>JWTToken</b>  </td><td class="markdownTableBodyNone">Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
+Namespace: <span class="tt">DotNetDupe::System::Data::SqlClient</span></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SqlConnection</b>  </td><td class="markdownTableBodyNone">Represents an open connection to a database (supports In-Memory emulation and SQLite persistence).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SqlCommand</b>  </td><td class="markdownTableBodyNone">Represents SQL statements and queries to execute against a database.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>SqlDataReader</b>  </td><td class="markdownTableBodyNone">Forward-only cursor for reading result rows from SQL queries.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>SqlParameter</b>  </td><td class="markdownTableBodyNone">Parameter for parameterized SQL commands protecting against SQL injection.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+Namespace: <span class="tt">DotNetDupe::Extensions::DependencyInjection</span></h2>
+<p><b>Classes &amp; Interfaces</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Type  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ServiceCollection</b>  </td><td class="markdownTableBodyNone">Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ServiceProvider</b>  </td><td class="markdownTableBodyNone">Dependency injection container resolving registered service dependencies.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ServiceScope</b>  </td><td class="markdownTableBodyNone">Represents a lifetime scope for resolving scoped service instances.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ServiceScopeFactory</b>  </td><td class="markdownTableBodyNone">Factory for creating scoped service containers.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IServiceCollection</b>  </td><td class="markdownTableBodyNone">Contract for service collection builders.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>IServiceScope</b>  </td><td class="markdownTableBodyNone">Contract for lifetime scopes.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>IServiceScopeFactory</b>  </td><td class="markdownTableBodyNone">Contract for service scope factories.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+Namespace: <span class="tt">DotNetDupe::Extensions::Logging</span></h2>
+<p><b>Classes &amp; Interfaces</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Type  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>LogManager</b>  </td><td class="markdownTableBodyNone">Global thread-safe static factory and cache for category loggers and file/console providers.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>LoggerTextWriter</b>  </td><td class="markdownTableBodyNone">High-performance stream redirector bridging <span class="tt">TextWriter</span> output into <span class="tt">LogManager</span>.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>LoggerFactory</b>  </td><td class="markdownTableBodyNone">Configures providers and generates category loggers.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Logger&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Generic category logger for class-specific logging.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ConsoleLoggerProvider</b>  </td><td class="markdownTableBodyNone">Renders structured console log records (Plain text and JSON format).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>FileLoggerProvider</b>  </td><td class="markdownTableBodyNone">Thread-safe file logging provider with auto directory creation and relative path resolution.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ILogger</b>  </td><td class="markdownTableBodyNone">Core interface for emitting structured diagnostic log events.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ILoggerOf&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Generic category logger interface.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ILoggerProvider</b>  </td><td class="markdownTableBodyNone">Provider factory interface for creating loggers.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ILoggerFactory</b>  </td><td class="markdownTableBodyNone">Logging factory interface.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+Namespace: <span class="tt">DotNetDupe::WebAppCore</span></h2>
+<p><b>Builder, Controllers &amp; Server</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>WebApplicationBuilder</b>  </td><td class="markdownTableBodyNone">Configures services, dependency injection, and builds the <span class="tt">WebApplication</span> host.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>WebApplication</b>  </td><td class="markdownTableBodyNone">Configures routing endpoints and executes the HTTP server listener.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>WebAppServer</b>  </td><td class="markdownTableBodyNone">Web server hosting static website content (<span class="tt">index.html</span>, CSS, JS) and REST APIs simultaneously.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>ControllerBase</b>  </td><td class="markdownTableBodyNone">Base class for ASP.NET MVC / Web API style controllers (<span class="tt">Ok</span>, <span class="tt">Created</span>, <span class="tt">NotFound</span>, <span class="tt">BadRequest</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>ControllerRouteBuilder&lt;T&gt;</b>  </td><td class="markdownTableBodyNone">Maps controller actions and automates JSON payload serialization and deserialization.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>HttpContext</b>  </td><td class="markdownTableBodyNone">Encapsulates HTTP request and response context for individual HTTP transactions.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>HttpRequest</b>  </td><td class="markdownTableBodyNone">Represents incoming HTTP request headers, query parameters, and body.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>HttpResponse</b>  </td><td class="markdownTableBodyNone">Represents outgoing HTTP response status codes, headers, and body.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Push Notifications (SSE &amp; WebSockets)</b>  </td><td class="markdownTableBodyNone">Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets.  </td></tr>
+</table>
+<hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+Project Status 🚧</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is currently <b>under active development</b>. I am continuously working on expanding the API coverage and improving stability.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
+Contributions 👋</h1>
+<p>Contributions to the <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project">GitHub's general contributing guidelines</a> for more information on how to get started.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+CI/CD Pipeline 🚀</h1>
+<p>This repository uses GitHub Actions to automate the build, test, and release process.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md81"></a>
+Workflow Details</h2>
+<ul>
+<li><b>Build &amp; Test Matrix</b>: Every push to <span class="tt">main</span> and all pull requests trigger a full build (Debug &amp; Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.</li>
+<li><b>GitHub CodeQL Analysis</b>: Continuous semantic security vulnerability scanning on every push, pull request, and weekly schedule via <span class="tt">github/codeql-action</span>.</li>
+<li><b>Quality Gates &amp; Static Analysis</b>: Automated enforcement of 11 Quality Gate metrics (LLOC &le; 15, CCN &le; 10, Nesting depth &le; 4, Hungarian SmartPointers, zero empty catch blocks, zero standard <span class="tt">throw std::*</span> exceptions, zero raw pointer ownership).</li>
+<li><b>Code Coverage</b>: Automated code coverage measurement via OpenCppCoverage (&gt; 80% line coverage required) and static analysis HTML report generation.</li>
+<li><b>NuGet Release</b>: Pushing a tag (e.g., <span class="tt">v1.0.0</span>) triggers the creation and publishing of the NuGet package to <a href="https://www.nuget.org/">nuget.org</a>.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
+Code Coverage &amp; Static Analysis 📊</h2>
+<ul>
+<li><b>Online Reports:</b><ul>
+<li>📈 <a href="https://sudheeshps.github.io/dotnetdupe/CodeCoverage/index.html">OpenCppCoverage HTML Report</a></li>
+<li>🔍 <a href="https://sudheeshps.github.io/dotnetdupe/CodeCoverage/StaticAnalysis.html">Static Analysis &amp; Quality Gate Report</a></li>
+</ul>
+</li>
+<li><b>Live Documentation Portal:</b> <a href="https://sudheeshps.github.io/dotnetdupe/">https://sudheeshps.github.io/dotnetdupe/</a></li>
+<li><b>Local Generation:</b> Run <span class="tt">powershell .\scripts\Generate-CoverageReport.ps1</span> to execute tests under OpenCppCoverage and refresh the <span class="tt">CodeCoverage/</span> folder.</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md83"></a>
+How to Release</h2>
+<ol type="1">
+<li>Update the version in <span class="tt">DotNetDupe.nuspec</span>.</li>
+<li>Commit and push the changes.</li>
+<li>Create and push a new tag: <div class="fragment"><div class="line">git tag v1.0.0</div>
+<div class="line">git push origin v1.0.0</div>
+</div><!-- fragment --> <em>Note: Requires <span class="tt">NUGET_API_KEY</span> to be set in GitHub repository secrets.</em></li>
+</ol>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
+License 📄</h1>
+<p>This project is licensed under the <b>MIT License</b>. See the [LICENSE](LICENSE) file for details.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md85"></a>
+Generated Content 🤖</h1>
+<p>This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.</p>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
+Contact 📧</h1>
+<p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>. </p>
+</div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>
 </div><!-- contents -->
 </div><!-- doc-content -->

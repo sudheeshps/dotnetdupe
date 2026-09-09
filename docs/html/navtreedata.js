@@ -25,6 +25,7 @@
 var NAVTREE =
 [
   [ "DotNetDupe", "index.html", [
+    [ "DotNetDupe 🚀", "index.html", "index" ],
     [ "Namespaces", "namespaces.html", [
       [ "Namespace List", "namespaces.html", "namespaces_dup" ],
       [ "Namespace Members", "namespacemembers.html", [
@@ -85,10 +86,10 @@ var NAVTREEINDEX =
 "class_dot_net_dupe_1_1_system_1_1_time_zone_info.html#a5dee03ae7a68a9237380aa60621d4dd3",
 "class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html#a6d505ede578c0f5b2bd050c76833436a",
 "functions_func_e.html",
-"namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a99a323dea7989b0870ae90881421e600",
-"namespace_dot_net_dupe_1_1_system_1_1_threading.html#a64fd10db7e533e5e5445c5b441eae6ef",
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_network_usage_info.html#a1ce14572996173844d236ee6fae7f1b0",
-"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#a065d914146c882751fbcb1b99c7d5b6a"
+"namespace_dot_net_dupe_1_1_system.html#aec8618e96a4d83f2ea7cc9fedb135059",
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44",
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_disk_info.html",
+"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_functor_holder.html#a614bf5fe8b39735fb4df014c4c318aec"
 ];
 
 const SYNCONMSG = 'click to disable panel synchronization';
