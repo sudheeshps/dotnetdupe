@@ -65,7 +65,7 @@ if ([string]::IsNullOrWhitespace($Version)) {
 
     # 4. Default fallback
     if ([string]::IsNullOrWhitespace($Version)) {
-        $Version = "4.0.3"
+        $Version = "4.0.5"
     }
 }
 
@@ -136,6 +136,43 @@ if (Test-Path $outputHtml) {
     $doxyIndexContent = $doxyIndexContent.Replace('href="Include/', 'href="../../Include/')
     [System.IO.File]::WriteAllText($outputHtml, $doxyIndexContent, [System.Text.Encoding]::UTF8)
     Write-Host "[INFO] Relinked docs/index.html, CodeCoverage, and Include in generated Doxygen index." -ForegroundColor Gray
+
+    # Inject dynamic NuGet version updater script into docs/html/index.html and docs/html/namespaces.html
+    $pagesToUpdate = @($outputHtml, (Join-Path $rootDir "docs\html\namespaces.html"))
+    foreach ($pagePath in $pagesToUpdate) {
+        if (Test-Path $pagePath) {
+            $pageContent = [System.IO.File]::ReadAllText($pagePath, [System.Text.Encoding]::UTF8)
+            if (-not $pageContent.Contains('api.nuget.org/v3-flatcontainer/dotnetdupe')) {
+                $dynamicScript = @"
+<!-- Dynamic NuGet Version Updater -->
+<script type="text/javascript">
+(function() {
+  function updateNuGetVersion() {
+    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && data.versions && data.versions.length > 0) {
+          var latestVersion = data.versions[data.versions.length - 1];
+          var elem = document.getElementById('projectnumber');
+          if (elem) { elem.innerHTML = '&#160;' + latestVersion; }
+        }
+      })
+      .catch(function() {});
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
+  } else {
+    updateNuGetVersion();
+  }
+})();
+</script>
+"@
+                $pageContent = $pageContent.Replace('</body>', "$dynamicScript`n</body>")
+                [System.IO.File]::WriteAllText($pagePath, $pageContent, [System.Text.Encoding]::UTF8)
+                Write-Host "[INFO] Injected dynamic NuGet version script into $pagePath." -ForegroundColor Gray
+            }
+        }
+    }
 
     Write-Host "`n[SUCCESS] API Documentation generated in $elapsed seconds!" -ForegroundColor Green
     Write-Host "  -> API Reference: $outputHtml" -ForegroundColor Green

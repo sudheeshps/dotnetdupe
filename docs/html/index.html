@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
 <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
@@ -26,7 +26,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DotNetDupe<span id="projectnumber">&#160;4.0.3</span>
+   <div id="projectname">DotNetDupe<span id="projectnumber">&#160;4.0.5</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -1399,5 +1399,31 @@ Contact 📧</h1>
     <li class="footer">Generated on <span class="timestamp"></span> for DotNetDupe by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
   </ul>
 </div>
+<!-- Dynamic NuGet Version Updater -->
+<script type="text/javascript">
+(function() {
+  function updateNuGetVersion() {
+    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && data.versions && data.versions.length > 0) {
+          var latestVersion = data.versions[data.versions.length - 1];
+          var elem = document.getElementById('projectnumber');
+          if (elem) {
+            elem.innerHTML = '&#160;' + latestVersion;
+          }
+        }
+      })
+      .catch(function() {
+        // Fallback: retain the built-in version if offline or unreachable
+      });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
+  } else {
+    updateNuGetVersion();
+  }
+})();
+</script>
 </body>
 </html>

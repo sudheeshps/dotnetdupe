@@ -192,42 +192,4 @@ jobs:
       run: |
         nuget source Add -Name "GitHub" -Source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" -UserName "${{ github.repository_owner }}" -Password "${{ secrets.GITHUB_TOKEN }}"
         nuget push artifacts\*.nupkg -Source "GitHub" -SkipDuplicate
-
-    - name: Update Documentation Version to Published Package Version
-      shell: powershell
-      run: |
-        # Extract published package version from DotNetDupe.nuspec
-        [xml]$nuspec = Get-Content 'DotNetDupe.nuspec'
-        $version = $nuspec.package.metadata.version.Trim()
-        Write-Host "Updating documentation header to published package version: $version"
-
-        # Configure git identity
-        git config --global user.name "github-actions[bot]"
-        git config --global user.email "github-actions[bot]@users.noreply.github.com"
-
-        # Checkout main branch and rebase to ensure clean fast-forward push
-        git fetch origin main
-        git checkout main
-        git pull origin main --rebase
-
-        # Update documentation and regenerate API documentation on main
-        .\scripts\Generate-Docs.ps1 -Version $version
-
-        # Commit and push updated documentation if changed
-        git add docs/ Doxyfile
-        $diff = git diff --staged --name-only
-        if ($diff) {
-            git commit -m "docs: sync documentation version to published package $version [skip ci]"
-            for ($i = 0; $i -lt 3; $i++) {
-                git pull origin main --rebase
-                git push origin main
-                if ($LASTEXITCODE -eq 0) {
-                    Write-Host "Documentation successfully pushed to main." -ForegroundColor Green
-                    break
-                }
-                Start-Sleep -Seconds 2
-            }
-            if ($LASTEXITCODE -ne 0) {
-                Write-Warning "Could not push documentation sync to main. This may be due to GitHub branch protection rules."
-            }
-        }
+
