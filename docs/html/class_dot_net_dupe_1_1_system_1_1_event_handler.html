@@ -130,7 +130,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0e67b6090fa12c7d5828e4d125a584f7" id="r_a0e67b6090fa12c7d5828e4d125a584f7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a0e67b6090fa12c7d5828e4d125a584f7">~EventHandler</a> ()=default</td></tr>
 <tr class="memdesc:a0e67b6090fa12c7d5828e4d125a584f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <br /></td></tr>
 <tr class="memitem:a805ecfb3ff24047cbca41fb05a80b528" id="r_a805ecfb3ff24047cbca41fb05a80b528"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#a805ecfb3ff24047cbca41fb05a80b528">Add</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt; const void *, const TEventArgs &amp; &gt; &amp;fnHandler)</td></tr>
-<tr class="memdesc:a805ecfb3ff24047cbca41fb05a80b528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a> delegate handler and returns a monotonic subscription token.  <br /></td></tr>
+<tr class="memdesc:a805ecfb3ff24047cbca41fb05a80b528"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> delegate handler and returns a monotonic subscription token.  <br /></td></tr>
 <tr class="memitem:ace52e8d5c6655f8f828ea4172c90e3a6" id="r_ace52e8d5c6655f8f828ea4172c90e3a6"><td class="memTemplParams" colspan="2">template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, EventHandler&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&lt;const void*, const TEventArgs&amp;&gt;&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, const void*, const TEventArgs&amp;&gt;&gt;&gt; </td></tr>
 <tr class="memitem:ace52e8d5c6655f8f828ea4172c90e3a6 template"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#ace52e8d5c6655f8f828ea4172c90e3a6">Add</a> (F &amp;&amp;fnHandler)</td></tr>
 <tr class="memdesc:ace52e8d5c6655f8f828ea4172c90e3a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Subscribes a generic callable object (lambda or function pointer).  <br /></td></tr>
@@ -150,7 +150,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a218b220c954d7266071c3f2cf857d5a3" id="r_a218b220c954d7266071c3f2cf857d5a3"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a218b220c954d7266071c3f2cf857d5a3">operator()</a> (const void *pSender, const TEventArgs &amp;e) const</td></tr>
 <tr class="memdesc:a218b220c954d7266071c3f2cf857d5a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invocation call operator.  <br /></td></tr>
 <tr class="memitem:ad1122040c0ff7b29247cf1637975ec7b" id="r_ad1122040c0ff7b29247cf1637975ec7b"><td class="memItemLeft">size_t&#160;</td><td class="memItemRight"><a class="el" href="#ad1122040c0ff7b29247cf1637975ec7b">operator+=</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt; const void *, const TEventArgs &amp; &gt; &amp;fnHandler)</td></tr>
-<tr class="memdesc:ad1122040c0ff7b29247cf1637975ec7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multicast addition operator. Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a> callback.  <br /></td></tr>
+<tr class="memdesc:ad1122040c0ff7b29247cf1637975ec7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multicast addition operator. Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> callback.  <br /></td></tr>
 <tr class="memitem:a5a20da725f913e3359d41053ffe95108" id="r_a5a20da725f913e3359d41053ffe95108"><td class="memItemLeft"><a class="el" href="#ad4cefe5312db054f2cf451e26d48ac58">EventHandler</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a5a20da725f913e3359d41053ffe95108">operator+=</a> (const <a class="el" href="#ad4cefe5312db054f2cf451e26d48ac58">EventHandler</a> &amp;other)</td></tr>
 <tr class="memdesc:a5a20da725f913e3359d41053ffe95108"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multicast addition operator. Appends all subscribers from another <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html" title="Represents the method that will handle an event when the event provides data.">EventHandler</a>.  <br /></td></tr>
 <tr class="memitem:adafba1e6dbf3e013506b6ec85ec91337" id="r_adafba1e6dbf3e013506b6ec85ec91337"><td class="memTemplParams" colspan="2">template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, EventHandler&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&lt;const void*, const TEventArgs&amp;&gt;&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, const void*, const TEventArgs&amp;&gt;&gt;&gt; </td></tr>
@@ -332,7 +332,7 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a> delegate handler and returns a monotonic subscription token. </p>
+<p>Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> delegate handler and returns a monotonic subscription token. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fnHandler</td><td>The delegate to invoke on event dispatch. </td></tr>
@@ -658,7 +658,7 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Multicast addition operator. Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a> callback. </p>
+<p>Multicast addition operator. Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> callback. </p>
 
 <p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00105">105</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 

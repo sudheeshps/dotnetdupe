@@ -1,5 +1,15 @@
 var NAVTREEINDEX32 =
 {
+"struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html#af53a1ac71bc46cccfe07317e9b34d6f0":[107,0,0,1,8,1,0,0],
+"struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html#af53a1ac71bc46cccfe07317e9b34d6f0":[108,0,0,1,8,1,0,0],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter.html":[107,0,0,1,9,0,0],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter.html":[108,0,0,1,9,0,0],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html":[107,0,0,1,9,0,2],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html":[108,0,0,1,9,0,2],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#a065d914146c882751fbcb1b99c7d5b6a":[107,0,0,1,9,0,2,0],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#a065d914146c882751fbcb1b99c7d5b6a":[108,0,0,1,9,0,2,0],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#aa6fad393130087cddcef27d1f495009c":[107,0,0,1,9,0,2,1],
+"struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#aa6fad393130087cddcef27d1f495009c":[108,0,0,1,9,0,2,1],
 "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4.html":[107,0,0,1,9,0,3],
 "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4.html":[108,0,0,1,9,0,3],
 "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4.html#a1cc7a9ed1cab48c1f3894b473049f518":[107,0,0,1,9,0,3,1],

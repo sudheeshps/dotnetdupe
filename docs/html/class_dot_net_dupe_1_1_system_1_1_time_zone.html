@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Represents a time zone and handles time zone conversions.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_time_zone_8h_source.html">TimeZone.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::TimeZone:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,12 +132,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a43189a0649a20e7ba46c97ff4dce9931" id="r_a43189a0649a20e7ba46c97ff4dce9931"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_daylight_time.html">DaylightTime</a>&#160;</td><td class="memItemRight"><a class="el" href="#a43189a0649a20e7ba46c97ff4dce9931">GetDaylightChanges</a> (int year)=0</td></tr>
+<tr class="memdesc:a43189a0649a20e7ba46c97ff4dce9931"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the daylight saving time period for a particular year.  <br /></td></tr>
 <tr class="memitem:ab84d8f829e4118dbc976e83f5b188794" id="r_ab84d8f829e4118dbc976e83f5b188794"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab84d8f829e4118dbc976e83f5b188794">GetDaylightName</a> () const =0</td></tr>
+<tr class="memdesc:ab84d8f829e4118dbc976e83f5b188794"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the daylight saving time zone name.  <br /></td></tr>
 <tr class="memitem:a5a6975924618dc828c73dac5dfe329bf" id="r_a5a6975924618dc828c73dac5dfe329bf"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a5a6975924618dc828c73dac5dfe329bf">GetStandardName</a> () const =0</td></tr>
+<tr class="memdesc:a5a6975924618dc828c73dac5dfe329bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the standard time zone name.  <br /></td></tr>
 <tr class="memitem:ad73f7f04a07dcc8f94f4af6dc62438b9" id="r_ad73f7f04a07dcc8f94f4af6dc62438b9"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html">TimeSpan</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad73f7f04a07dcc8f94f4af6dc62438b9">GetUtcOffset</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;time)=0</td></tr>
+<tr class="memdesc:ad73f7f04a07dcc8f94f4af6dc62438b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Coordinated Universal Time (UTC) offset for the specified time.  <br /></td></tr>
 <tr class="memitem:ae3101659295939783f673751fdaf2772" id="r_ae3101659295939783f673751fdaf2772"><td class="memItemLeft">virtual bool&#160;</td><td class="memItemRight"><a class="el" href="#ae3101659295939783f673751fdaf2772">IsDaylightSavingTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;time)</td></tr>
+<tr class="memdesc:ae3101659295939783f673751fdaf2772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a value indicating whether the specified date and time is within a daylight saving time period.  <br /></td></tr>
 <tr class="memitem:a985e4fe14606c1c30320903e3b4b40bd" id="r_a985e4fe14606c1c30320903e3b4b40bd"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#a985e4fe14606c1c30320903e3b4b40bd">ToLocalTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;time)</td></tr>
+<tr class="memdesc:a985e4fe14606c1c30320903e3b4b40bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the local time that corresponds to a specified date and time value.  <br /></td></tr>
 <tr class="memitem:abe33312261a78a7f62b96ac0ea54c411" id="r_abe33312261a78a7f62b96ac0ea54c411"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#abe33312261a78a7f62b96ac0ea54c411">ToUniversalTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;time)</td></tr>
+<tr class="memdesc:abe33312261a78a7f62b96ac0ea54c411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the Coordinated Universal Time (UTC) that corresponds to a specified time.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -152,14 +162,18 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a94c5ace257e913619aa34816a57603a5" id="r_a94c5ace257e913619aa34816a57603a5"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_zone.html">TimeZone</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a94c5ace257e913619aa34816a57603a5">GetCurrentTimeZone</a> ()</td></tr>
+<tr class="memdesc:a94c5ace257e913619aa34816a57603a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the time zone of the current computer.  <br /></td></tr>
 <tr class="memitem:a564826fc93f3197b4a8fca02ce2b7d1d" id="r_a564826fc93f3197b4a8fca02ce2b7d1d"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a564826fc93f3197b4a8fca02ce2b7d1d">IsDaylightSavingTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;time, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_daylight_time.html">DaylightTime</a> &amp;daylightTimes)</td></tr>
+<tr class="memdesc:a564826fc93f3197b4a8fca02ce2b7d1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a value indicating whether the specified date and time is within the specified daylight saving time period.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_time_zone_8h_source.html#l00012">12</a> of file <a class="el" href="_time_zone_8h_source.html">TimeZone.h</a>.</p>
+<div class="textblock"><p>Represents a time zone and handles time zone conversions. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_zone.html" title="Represents a time zone and handles time zone conversions.">System.TimeZone</a>. Supports querying standard and daylight names, daylight changes, UTC offset calculations, and UTC/local time conversions. </p>
+
+<p class="definition">Definition at line <a class="el" href="_time_zone_8h_source.html#l00018">18</a> of file <a class="el" href="_time_zone_8h_source.html">TimeZone.h</a>.</p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a94c5ace257e913619aa34816a57603a5" name="a94c5ace257e913619aa34816a57603a5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a94c5ace257e913619aa34816a57603a5">&#9670;&#160;</a></span>GetCurrentTimeZone()</h2>
@@ -184,7 +198,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00067">67</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+<p>Gets the time zone of the current computer. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the local <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_zone.html" title="Represents a time zone and handles time zone conversions.">TimeZone</a> singleton instance. </dd></dl>
+<p>Retrieve singleton current time zone instance.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00071">71</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a5a6975924618dc828c73dac5dfe329bf">GetStandardName()</a>.</p>
 
@@ -213,7 +231,16 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
+<p>Returns the daylight saving time period for a particular year. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">year</td><td>The year to evaluate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dot_net_dupe_1_1_system_1_1_daylight_time.html" title="Defines the period of daylight saving time for a region.">DaylightTime</a> structure specifying daylight start, end, and delta. </dd></dl>
+
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>.</p>
 
 </div>
 </div>
@@ -240,7 +267,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
+<p>Gets the daylight saving time zone name. </p>
+<dl class="section return"><dt>Returns</dt><dd>The daylight name string. </dd></dl>
+
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>.</p>
 
 </div>
 </div>
@@ -267,7 +297,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00067">GetCurrentTimeZone()</a>.</p>
+<p>Gets the standard time zone name. </p>
+<dl class="section return"><dt>Returns</dt><dd>The standard name string. </dd></dl>
+
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00071">GetCurrentTimeZone()</a>.</p>
 
 </div>
 </div>
@@ -294,9 +327,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, <a class="el" href="_time_zone_8cpp_source.html#l00072">IsDaylightSavingTime()</a>, <a class="el" href="_time_zone_8cpp_source.html#l00082">ToLocalTime()</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00086">ToUniversalTime()</a>.</p>
+<p>Returns the Coordinated Universal Time (UTC) offset for the specified time. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time</td><td>The point in time to evaluate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html" title="Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...">TimeSpan</a> representing the UTC offset. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_time_zone_8cpp_source.html#l00082">ToLocalTime()</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00086">ToUniversalTime()</a>.</p>
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>, <a class="el" href="_time_zone_8cpp_source.html#l00077">IsDaylightSavingTime()</a>, <a class="el" href="_time_zone_8cpp_source.html#l00088">ToLocalTime()</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00093">ToUniversalTime()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_time_zone_8cpp_source.html#l00088">ToLocalTime()</a>, and <a class="el" href="_time_zone_8cpp_source.html#l00093">ToUniversalTime()</a>.</p>
 
 </div>
 </div>
@@ -323,7 +365,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00072">72</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+<p>Returns a value indicating whether the specified date and time is within a daylight saving time period. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time</td><td>The date and time to evaluate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if time falls within daylight saving time; otherwise false. </dd></dl>
+<p>Step: Check if current time falls within active daylight saving period.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00077">77</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#ad73f7f04a07dcc8f94f4af6dc62438b9">GetUtcOffset()</a>.</p>
 
@@ -356,9 +408,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00090">90</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+<p>Returns a value indicating whether the specified date and time is within the specified daylight saving time period. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time</td><td>A date and time value. </td></tr>
+    <tr><td class="paramname">daylightTimes</td><td>A daylight saving time period. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if time is in daylight saving period; otherwise false. </dd></dl>
+<p>Guard: If delta is zero or start equals end, daylight saving is not active.</p>
+<p>Check if time falls between daylight transition start and end bounds.</p>
 
-<p class="reference">References <a class="el" href="_daylight_time_8cpp_source.html#l00018">DotNetDupe::System::DaylightTime::GetDelta()</a>, <a class="el" href="_daylight_time_8cpp_source.html#l00014">DotNetDupe::System::DaylightTime::GetEnd()</a>, <a class="el" href="_daylight_time_8cpp_source.html#l00010">DotNetDupe::System::DaylightTime::GetStart()</a>, and <a class="el" href="_time_span_8h_source.html#l00041">DotNetDupe::System::TimeSpan::GetTicks()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00098">98</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_daylight_time_8cpp_source.html#l00021">DotNetDupe::System::DaylightTime::GetDelta()</a>, <a class="el" href="_daylight_time_8cpp_source.html#l00016">DotNetDupe::System::DaylightTime::GetEnd()</a>, <a class="el" href="_daylight_time_8cpp_source.html#l00011">DotNetDupe::System::DaylightTime::GetStart()</a>, and <a class="el" href="_time_span_8h_source.html#l00041">DotNetDupe::System::TimeSpan::GetTicks()</a>.</p>
 
 </div>
 </div>
@@ -385,7 +449,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00082">82</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+<p>Returns the local time that corresponds to a specified date and time value. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time</td><td>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Converted local <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a>. </dd></dl>
+<p>Step: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_convert.html" title="Converts a base data type to another base data type.">Convert</a> UTC time to local time by adding current UTC offset.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00088">88</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_date_time_offset_8h_source.html#l00020">DotNetDupe::System::DateTimeOffset::DateTimeOffset()</a>, <a class="el" href="_date_time_offset_8h_source.html#l00028">DotNetDupe::System::DateTimeOffset::GetTicks()</a>, and <a class="el" href="#ad73f7f04a07dcc8f94f4af6dc62438b9">GetUtcOffset()</a>.</p>
 
@@ -416,7 +490,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00086">86</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
+<p>Returns the Coordinated Universal Time (UTC) that corresponds to a specified time. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">time</td><td>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Converted UTC <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a>. </dd></dl>
+<p>Step: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_convert.html" title="Converts a base data type to another base data type.">Convert</a> local time to universal time by subtracting current UTC offset.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_zone_8cpp_source.html#l00093">93</a> of file <a class="el" href="_time_zone_8cpp_source.html">TimeZone.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_date_time_offset_8h_source.html#l00020">DotNetDupe::System::DateTimeOffset::DateTimeOffset()</a>, <a class="el" href="_date_time_offset_8h_source.html#l00028">DotNetDupe::System::DateTimeOffset::GetTicks()</a>, and <a class="el" href="#ad73f7f04a07dcc8f94f4af6dc62438b9">GetUtcOffset()</a>.</p>
 

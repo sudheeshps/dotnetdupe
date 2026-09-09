@@ -16,5 +16,6 @@ var searchData=
   ['func_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20const_20dotnetdupe_3a_3asystem_3a_3asmartpointer_3c_20dotnetdupe_3a_3awebappcore_3a_3abuilder_3a_3awebapplication_20_3e_20_26_2c_20const_20dotnetdupe_3a_3asystem_3a_3asmartpointer_3c_20dotnetdupe_3a_3awebappcore_3a_3ahttp_3a_3ahttpcontext_20_3e_20_26_20_3e_13',['Func&lt; DotNetDupe::System::String, const DotNetDupe::System::SmartPointer&lt; DotNetDupe::WebAppCore::Builder::WebApplication &gt; &amp;, const DotNetDupe::System::SmartPointer&lt; DotNetDupe::WebAppCore::Http::HttpContext &gt; &amp; &gt;',['../class_dot_net_dupe_1_1_system_1_1_func.html',1,'DotNetDupe::System']]],
   ['func_3c_20tresult_20_3e_14',['Func&lt; TResult &gt;',['../class_dot_net_dupe_1_1_system_1_1_func_3_01_t_result_01_4.html',1,'DotNetDupe::System']]],
   ['func_3c_20tresult_2c_20arg1_2c_20args_2e_2e_2e_20_3e_15',['Func&lt; TResult, Arg1, Args... &gt;',['../class_dot_net_dupe_1_1_system_1_1_func_3_01_t_result_00_01_arg1_00_01_args_8_8_8_01_4.html',1,'DotNetDupe::System']]],
-  ['functorholder_16',['FunctorHolder',['../struct_dot_net_dupe_1_1_system_1_1_internal_1_1_functor_holder.html',1,'DotNetDupe::System::Internal']]]
+  ['func_3c_20tresult_2c_20arg1_2c_20args_3a_3a_3a_3a_3a_3a_3e_16',['Func&lt; TResult, Arg1, Args::::::&gt;',['../class_func_3_01_t_result_00_01_arg1_00_01_args_1_1_1_1_1_1_4.html',1,'']]],
+  ['functorholder_17',['FunctorHolder',['../struct_dot_net_dupe_1_1_system_1_1_internal_1_1_functor_holder.html',1,'DotNetDupe::System::Internal']]]
 ];

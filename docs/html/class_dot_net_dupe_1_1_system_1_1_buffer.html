@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
-<p>Manipulates arrays of primitive types.  
+<p>Manipulates arrays of primitive types efficiently at the byte level.  
  <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_buffer_8h_source.html">Buffer.h</a>&gt;</code></p>
@@ -164,10 +164,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:aeb7b24e0c63162a91a37aec1a8ed20d4 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns wide-character string representation.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Manipulates arrays of primitive types. </p>
-<p>Provides methods to copy bytes from one array of primitive types to another, get a byte from an array, set a byte in an array, and obtain byte length. </p>
+<div class="textblock"><p>Manipulates arrays of primitive types efficiently at the byte level. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_buffer.html" title="Manipulates arrays of primitive types efficiently at the byte level.">System.Buffer</a>. Provides methods to copy bytes between arrays, retrieve individual bytes, assign byte values, and calculate byte lengths. </p>
 
-<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00027">27</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00020">20</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a3e1e2b41b7424fd969d442c3337bd593" name="a3e1e2b41b7424fd969d442c3337bd593"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e1e2b41b7424fd969d442c3337bd593">&#9670;&#160;</a></span>BlockCopy()</h2>
@@ -232,14 +232,15 @@ template&lt;typename T&gt; </div>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_null_exception.html" title="The exception that is thrown when a null reference is passed to a method that does not accept it as a...">ArgumentNullException</a></td><td>If src or dst is null. </td></tr>
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html" title="The exception that is thrown when the value of an argument is outside the allowable range of values a...">ArgumentOutOfRangeException</a></td><td>If offsets or count are negative. </td></tr>
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_exception.html" title="The exception that is thrown when one of the arguments provided to a method is not valid.">ArgumentException</a></td><td>If offsets + count exceeds byte length of either array. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_null_exception.html" title="The exception that is thrown when a null reference is passed to a method that does not accept it as a...">DotNetDupe::System::ArgumentNullException</a></td><td>If src or dst is null. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html" title="The exception that is thrown when the value of an argument is outside the allowable range of values a...">DotNetDupe::System::ArgumentOutOfRangeException</a></td><td>If offsets or count are negative. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_exception.html" title="The exception that is thrown when one of the arguments provided to a method is not valid.">DotNetDupe::System::ArgumentException</a></td><td>If offsets + count exceeds byte length of either array. </td></tr>
   </table>
   </dd>
 </dl>
+<p>Step: Copy contiguous byte segments from source into destination offset.</p>
 
-<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00042">42</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00033">33</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_argument_null_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentNullException::ArgumentNullException()</a>, <a class="el" href="_argument_out_of_range_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentOutOfRangeException::ArgumentOutOfRangeException()</a>, <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_array_8h_source.html#l00137">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>, and <a class="el" href="_array_8h_source.html#l00161">DotNetDupe::System::Array&lt; T &gt;::IsNull()</a>.</p>
 
@@ -284,12 +285,18 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Total byte length of array. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_null_exception.html" title="The exception that is thrown when a null reference is passed to a method that does not accept it as a...">DotNetDupe::System::ArgumentNullException</a></td><td>If array is null. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00074">74</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00063">63</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_argument_null_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentNullException::ArgumentNullException()</a>, <a class="el" href="_array_8h_source.html#l00137">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>, and <a class="el" href="_array_8h_source.html#l00161">DotNetDupe::System::Array&lt; T &gt;::IsNull()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_buffer_8h_source.html#l00088">GetByte()</a>, and <a class="el" href="_buffer_8h_source.html#l00102">SetByte()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_buffer_8h_source.html#l00076">GetByte()</a>, and <a class="el" href="_buffer_8h_source.html#l00089">SetByte()</a>.</p>
 
 </div>
 </div>
@@ -337,10 +344,16 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The byte at the specified index. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html" title="The exception that is thrown when the value of an argument is outside the allowable range of values a...">DotNetDupe::System::ArgumentOutOfRangeException</a></td><td>If index is out of range. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00088">88</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00076">76</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_out_of_range_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentOutOfRangeException::ArgumentOutOfRangeException()</a>, <a class="el" href="_buffer_8h_source.html#l00074">ByteLength()</a>, and <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_out_of_range_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentOutOfRangeException::ArgumentOutOfRangeException()</a>, <a class="el" href="_buffer_8h_source.html#l00063">ByteLength()</a>, and <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>.</p>
 
 </div>
 </div>
@@ -393,10 +406,16 @@ template&lt;typename T&gt; </div>
   </table>
   </dd>
 </dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_out_of_range_exception.html" title="The exception that is thrown when the value of an argument is outside the allowable range of values a...">DotNetDupe::System::ArgumentOutOfRangeException</a></td><td>If index is out of range. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00102">102</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_buffer_8h_source.html#l00089">89</a> of file <a class="el" href="_buffer_8h_source.html">Buffer.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_out_of_range_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentOutOfRangeException::ArgumentOutOfRangeException()</a>, <a class="el" href="_buffer_8h_source.html#l00074">ByteLength()</a>, and <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_out_of_range_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentOutOfRangeException::ArgumentOutOfRangeException()</a>, <a class="el" href="_buffer_8h_source.html#l00063">ByteLength()</a>, and <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>.</p>
 
 </div>
 </div>

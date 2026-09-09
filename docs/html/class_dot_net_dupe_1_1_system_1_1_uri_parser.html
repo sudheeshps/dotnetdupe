@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Parses a new URI scheme and provides scheme-specific component extraction.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_uri_parser_8h_source.html">UriParser.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::UriParser:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -123,14 +126,16 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
   <img src="class_dot_net_dupe_1_1_system_1_1_uri_parser.png" usemap="#DotNetDupe_3A_3ASystem_3A_3AUriParser_map" alt=""/>
   <map id="DotNetDupe_3A_3ASystem_3A_3AUriParser_map" name="DotNetDupe_3A_3ASystem_3A_3AUriParser_map">
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="0,0,231,24"/>
-<area href="class_dot_net_dupe_1_1_system_1_1_generic_uri_parser.html" alt="DotNetDupe::System::GenericUriParser" shape="rect" coords="0,112,231,136"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_generic_uri_parser.html" title="A customizable parser for a hierarchical URI." alt="DotNetDupe::System::GenericUriParser" shape="rect" coords="0,112,231,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a07cdce64edb853be9c155c5b25992831" id="r_a07cdce64edb853be9c155c5b25992831"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a07cdce64edb853be9c155c5b25992831">UriParser</a> ()</td></tr>
+<tr class="memdesc:a07cdce64edb853be9c155c5b25992831"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a default instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri_parser.html" title="Parses a new URI scheme and provides scheme-specific component extraction.">UriParser</a>.  <br /></td></tr>
 <tr class="memitem:aed072a99b32dd50e9ded2dcab03dbbc9" id="r_aed072a99b32dd50e9ded2dcab03dbbc9"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aed072a99b32dd50e9ded2dcab03dbbc9">GetComponents</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri.html">Uri</a> &amp;uri, <a class="el" href="namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620">UriComponents</a> components, <a class="el" href="namespace_dot_net_dupe_1_1_system.html#aefdd84b71a07ee894378b0ae16c28801">UriFormat</a> format)</td></tr>
+<tr class="memdesc:aed072a99b32dd50e9ded2dcab03dbbc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the components from a URI formatted as specified.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -148,15 +153,20 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f25c818525c95f0561f4f6534f20964" id="r_a8f25c818525c95f0561f4f6534f20964"><td class="memItemLeft">static <a class="el" href="#a07cdce64edb853be9c155c5b25992831">UriParser</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a8f25c818525c95f0561f4f6534f20964">GetParser</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;schemeName)</td></tr>
+<tr class="memdesc:a8f25c818525c95f0561f4f6534f20964"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the registered parser associated with a scheme.  <br /></td></tr>
 <tr class="memitem:aca395226a34de880faa96670518c6e01" id="r_aca395226a34de880faa96670518c6e01"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#aca395226a34de880faa96670518c6e01">IsKnownScheme</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;schemeName)</td></tr>
+<tr class="memdesc:aca395226a34de880faa96670518c6e01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the parser for a scheme is registered.  <br /></td></tr>
 <tr class="memitem:a9229e7525f0dff9fbc97f946559f6c57" id="r_a9229e7525f0dff9fbc97f946559f6c57"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a9229e7525f0dff9fbc97f946559f6c57">Register</a> (<a class="el" href="#a07cdce64edb853be9c155c5b25992831">UriParser</a> *uriParser, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;schemeName, int defaultPort)</td></tr>
+<tr class="memdesc:a9229e7525f0dff9fbc97f946559f6c57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a custom parser and default port for a specific URI scheme.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_uri_parser_8h_source.html#l00013">13</a> of file <a class="el" href="_uri_parser_8h_source.html">UriParser.h</a>.</p>
+<div class="textblock"><p>Parses a new URI scheme and provides scheme-specific component extraction. </p>
+<p>Modeled after .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri_parser.html" title="Parses a new URI scheme and provides scheme-specific component extraction.">System.UriParser</a>. Manages registered scheme parsers and handles custom parsing behaviors for standard and application-defined protocol schemes. </p>
+
+<p class="definition">Definition at line <a class="el" href="_uri_parser_8h_source.html#l00018">18</a> of file <a class="el" href="_uri_parser_8h_source.html">UriParser.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a07cdce64edb853be9c155c5b25992831" name="a07cdce64edb853be9c155c5b25992831"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a07cdce64edb853be9c155c5b25992831">&#9670;&#160;</a></span>UriParser()</h2>
@@ -173,9 +183,12 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Constructs a default instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri_parser.html" title="Parses a new URI scheme and provides scheme-specific component extraction.">UriParser</a>. </p>
+<p>Default initialization of base URI parser.</p>
+
 <p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00012">12</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_uri_parser_8cpp_source.html#l00036">DotNetDupe::System::GenericUriParser::GenericUriParser()</a>, <a class="el" href="_uri_parser_8cpp_source.html#l00022">GetParser()</a>, and <a class="el" href="_uri_parser_8cpp_source.html#l00014">Register()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_uri_parser_8cpp_source.html#l00040">DotNetDupe::System::GenericUriParser::GenericUriParser()</a>, <a class="el" href="_uri_parser_8cpp_source.html#l00026">GetParser()</a>, and <a class="el" href="_uri_parser_8cpp_source.html#l00016">Register()</a>.</p>
 
 </div>
 </div>
@@ -212,9 +225,21 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00030">30</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
+<p>Gets the components from a URI formatted as specified. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uri</td><td>The source <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri.html" title="Represents an object representation of a Uniform Resource Identifier (URI) and provides easy access t...">Uri</a> to extract components from. </td></tr>
+    <tr><td class="paramname">components</td><td>Bitwise combination of <a class="el" href="namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620" title="Specifies the parts of a Uniform Resource Identifier (URI) to return.">UriComponents</a> to extract. </td></tr>
+    <tr><td class="paramname">format</td><td>The escaping format specification. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Extracted component string. </dd></dl>
+<p>Base implementation: return absolute URI string.</p>
 
-<p class="reference">References <a class="el" href="_uri_8cpp_source.html#l00087">DotNetDupe::System::Uri::GetAbsoluteUri()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00035">35</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_uri_8cpp_source.html#l00103">DotNetDupe::System::Uri::GetAbsoluteUri()</a>.</p>
 
 </div>
 </div>
@@ -241,7 +266,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00022">22</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
+<p>Retrieves the registered parser associated with a scheme. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">schemeName</td><td>The scheme name to look up. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to the registered <a class="el" href="class_dot_net_dupe_1_1_system_1_1_uri_parser.html" title="Parses a new URI scheme and provides scheme-specific component extraction.">UriParser</a>, or nullptr if not found. </dd></dl>
+<p>Step: Search for registered parser matching scheme name.</p>
+
+<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00026">26</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_uri_parser_8cpp_source.html#l00012">UriParser()</a>.</p>
 
@@ -270,7 +305,17 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00018">18</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
+<p>Indicates whether the parser for a scheme is registered. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">schemeName</td><td>The scheme name to check. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if scheme is registered; otherwise false. </dd></dl>
+<p>Check if scheme is registered in parser map.</p>
+
+<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00021">21</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
 
 </div>
 </div>
@@ -306,7 +351,18 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00014">14</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
+<p>Registers a custom parser and default port for a specific URI scheme. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uriParser</td><td>Pointer to the parser instance to register. </td></tr>
+    <tr><td class="paramname">schemeName</td><td>The protocol scheme name (e.g. "http", "custom"). </td></tr>
+    <tr><td class="paramname">defaultPort</td><td>The default TCP/UDP port associated with the scheme. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Associate parser instance and default port with given scheme name.</p>
+
+<p class="definition">Definition at line <a class="el" href="_uri_parser_8cpp_source.html#l00016">16</a> of file <a class="el" href="_uri_parser_8cpp_source.html">UriParser.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_uri_parser_8cpp_source.html#l00012">UriParser()</a>.</p>
 

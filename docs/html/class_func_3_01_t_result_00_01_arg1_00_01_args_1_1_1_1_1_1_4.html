@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DotNetDupe: DotNetDupe/dllmain.cpp Source File</title>
+<title>DotNetDupe: Func&lt; TResult, Arg1, Args::::::&gt; Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', codefold.init);
   </div>
 </div>
 <script type="text/javascript">
-document.addEventListener('DOMContentLoaded',() => { initNavTree('dllmain_8cpp_source.html','',''); });
+document.addEventListener('DOMContentLoaded',() => { initNavTree('class_func_3_01_t_result_00_01_arg1_00_01_args_1_1_1_1_1_1_4.html','',''); });
 </script>
 <div id="container">
 <div id="doc-content">
@@ -110,39 +110,42 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('dllmain_8cpp_s
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">dllmain.cpp</div></div>
+  <div class="headertitle"><div class="title">Func&lt; TResult, Arg1, Args::::::&gt; Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<a href="dllmain_8cpp.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a id="l00001" name="l00001"></a><span class="lineno">    1</span><span class="comment">// dllmain.cpp : Defines the entry point for the DLL application.</span></div>
-<div class="line"><a id="l00002" name="l00002"></a><span class="lineno">    2</span><span class="preprocessor">#include &quot;<a class="code" href="pch_8h.html">pch.h</a>&quot;</span></div>
-<div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
-<div class="foldopen" id="foldopen00004" data-start="{" data-end="}">
-<div class="line"><a id="l00004" name="l00004"></a><span class="lineno"><a class="line" href="dllmain_8cpp.html#a26e64fb39b69bcd9d1274d279f1561b9">    4</a></span>BOOL APIENTRY <a class="code hl_function" href="dllmain_8cpp.html#a26e64fb39b69bcd9d1274d279f1561b9">DllMain</a>( HMODULE hModule,</div>
-<div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span>                       DWORD  ul_reason_for_call,</div>
-<div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span>                       LPVOID lpReserved</div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span>                     )</div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span>{</div>
-<div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span>    <span class="keywordflow">switch</span> (ul_reason_for_call)</div>
-<div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span>    {</div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span>    <span class="keywordflow">case</span> DLL_PROCESS_ATTACH:</div>
-<div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span>    <span class="keywordflow">case</span> DLL_THREAD_ATTACH:</div>
-<div class="line"><a id="l00014" name="l00014"></a><span class="lineno">   14</span>    <span class="keywordflow">case</span> DLL_THREAD_DETACH:</div>
-<div class="line"><a id="l00015" name="l00015"></a><span class="lineno">   15</span>    <span class="keywordflow">case</span> DLL_PROCESS_DETACH:</div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno">   16</span>        <span class="keywordflow">break</span>;</div>
-<div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    }</div>
-<div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>    <span class="keywordflow">return</span> TRUE;</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>}</div>
-</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span> </div>
-<div class="ttc" id="adllmain_8cpp_html_a26e64fb39b69bcd9d1274d279f1561b9"><div class="ttname"><a href="dllmain_8cpp.html#a26e64fb39b69bcd9d1274d279f1561b9">DllMain</a></div><div class="ttdeci">BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved)</div><div class="ttdef"><b>Definition</b> <a href="#l00004">dllmain.cpp:4</a></div></div>
-<div class="ttc" id="apch_8h_html"><div class="ttname"><a href="pch_8h.html">pch.h</a></div></div>
-</div><!-- fragment --></div><!-- contents -->
+
+<p>Encapsulates a method that has one or more parameters and returns a value of type TResult.  
+ <a href="#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="_func_8h_source.html">Func.h</a>&gt;</code></p>
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Encapsulates a method that has one or more parameters and returns a value of type TResult. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">TResult</td><td>The return type. </td></tr>
+    <tr><td class="paramname">Arg1</td><td>The first argument type. </td></tr>
+    <tr><td class="paramname">Args</td><td>Additional argument types. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Safe for concurrent invocation if the underlying callable is reentrant. Standard Citation: ECMA-335 CLI Common Language Infrastructure. </dd></dl>
+</div><hr/>The documentation for this class was generated from the following file:<ul>
+<li>Include/System/<a class="el" href="_func_8h_source.html">Func.h</a></li>
+</ul>
+</div><!-- contents -->
 </div><!-- doc-content -->
+<div id="page-nav" class="page-nav-panel">
+<div id="page-nav-resize-handle"></div>
+<div id="page-nav-tree">
+<div id="page-nav-contents">
+</div><!-- page-nav-contents -->
+</div><!-- page-nav-tree -->
+</div><!-- page-nav -->
 </div><!-- container -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><a href="dir_e0c57509dc83900265365b58250cbedc.html">DotNetDupe</a></li><li class="navelem"><a href="dllmain_8cpp.html">dllmain.cpp</a></li>
+    <li class="navelem"><a href="class_func_3_01_t_result_00_01_arg1_00_01_args_1_1_1_1_1_1_4.html">Func&lt; TResult, Arg1, Args::::::&gt;</a></li>
     <li class="footer">Generated on <span class="timestamp"></span> for DotNetDupe by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
   </ul>
 </div>

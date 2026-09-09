@@ -119,21 +119,32 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:acb65fc8e692b156de7078fc0fe454898" id="r_acb65fc8e692b156de7078fc0fe454898"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#acb65fc8e692b156de7078fc0fe454898">Action</a> ()</td></tr>
+<tr class="memdesc:acb65fc8e692b156de7078fc0fe454898"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor creating an empty unassigned <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a>.  <br /></td></tr>
 <tr class="memitem:a7e5c6a1140c414cb5ae27285c2bc337a" id="r_a7e5c6a1140c414cb5ae27285c2bc337a"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a7e5c6a1140c414cb5ae27285c2bc337a">Action</a> (Action &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a7e5c6a1140c414cb5ae27285c2bc337a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move constructor transferring delegate ownership.  <br /></td></tr>
 <tr class="memitem:ad039720c64e43d6f6377b1997af55169" id="r_ad039720c64e43d6f6377b1997af55169"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad039720c64e43d6f6377b1997af55169">Action</a> (const Action &amp;other)</td></tr>
+<tr class="memdesc:ad039720c64e43d6f6377b1997af55169"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy constructor performing deep clone of target delegate.  <br /></td></tr>
 <tr class="memitem:a144d1bca5be6f22b9dcc02b80cdd0cdf" id="r_a144d1bca5be6f22b9dcc02b80cdd0cdf"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a144d1bca5be6f22b9dcc02b80cdd0cdf">Action</a> (decltype(nullptr))</td></tr>
+<tr class="memdesc:a144d1bca5be6f22b9dcc02b80cdd0cdf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an empty <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> from nullptr.  <br /></td></tr>
 <tr class="memitem:ae62082e89e891856ebe418ee7214b281" id="r_ae62082e89e891856ebe418ee7214b281"><td class="memTemplParams" colspan="2">template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;&gt;&gt;&gt; </td></tr>
 <tr class="memitem:ae62082e89e891856ebe418ee7214b281 template"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ae62082e89e891856ebe418ee7214b281">Action</a> (F &amp;&amp;func)</td></tr>
+<tr class="memdesc:ae62082e89e891856ebe418ee7214b281"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> wrapping the specified callable functor.  <br /></td></tr>
 <tr class="memitem:a318c08f5e2d69d1d7d87a474ede482d3" id="r_a318c08f5e2d69d1d7d87a474ede482d3"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a318c08f5e2d69d1d7d87a474ede482d3">~Action</a> ()</td></tr>
+<tr class="memdesc:a318c08f5e2d69d1d7d87a474ede482d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor releasing target callable holder.  <br /></td></tr>
 <tr class="memitem:af859f82aa1f7634d77ec98ad4e20aeb1" id="r_af859f82aa1f7634d77ec98ad4e20aeb1"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af859f82aa1f7634d77ec98ad4e20aeb1">Invoke</a> () const</td></tr>
+<tr class="memdesc:af859f82aa1f7634d77ec98ad4e20aeb1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Invokes the wrapped action delegate.  <br /></td></tr>
 <tr class="memitem:afba7feab9658a10d4ef5c1c49d983db6" id="r_afba7feab9658a10d4ef5c1c49d983db6"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#afba7feab9658a10d4ef5c1c49d983db6">operator bool</a> () const</td></tr>
+<tr class="memdesc:afba7feab9658a10d4ef5c1c49d983db6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean conversion testing whether a target delegate is bound.  <br /></td></tr>
 <tr class="memitem:af804ac6dd84cbb4035e188c2f2b62adc" id="r_af804ac6dd84cbb4035e188c2f2b62adc"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af804ac6dd84cbb4035e188c2f2b62adc">operator()</a> () const</td></tr>
+<tr class="memdesc:af804ac6dd84cbb4035e188c2f2b62adc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function call operator executing Invoke.  <br /></td></tr>
 <tr class="memitem:a112e09cd43fa3eb318482682da9408a6" id="r_a112e09cd43fa3eb318482682da9408a6"><td class="memItemLeft"><a class="el" href="#acb65fc8e692b156de7078fc0fe454898">Action</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a112e09cd43fa3eb318482682da9408a6">operator=</a> (<a class="el" href="#acb65fc8e692b156de7078fc0fe454898">Action</a> &amp;&amp;other) noexcept</td></tr>
+<tr class="memdesc:a112e09cd43fa3eb318482682da9408a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move assignment operator.  <br /></td></tr>
 <tr class="memitem:acd09feafc2b92d092994c99d51b7249e" id="r_acd09feafc2b92d092994c99d51b7249e"><td class="memItemLeft"><a class="el" href="#acb65fc8e692b156de7078fc0fe454898">Action</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#acd09feafc2b92d092994c99d51b7249e">operator=</a> (const <a class="el" href="#acb65fc8e692b156de7078fc0fe454898">Action</a> &amp;other)</td></tr>
+<tr class="memdesc:acd09feafc2b92d092994c99d51b7249e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copy assignment operator.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00037">37</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00046">46</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="acb65fc8e692b156de7078fc0fe454898" name="acb65fc8e692b156de7078fc0fe454898"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acb65fc8e692b156de7078fc0fe454898">&#9670;&#160;</a></span>Action() <span class="overload">[1/5]</span></h2>
@@ -158,9 +169,11 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00039">39</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Default constructor creating an empty unassigned <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a>. </p>
 
-<p class="reference">Referenced by <a class="el" href="_action_8h_source.html#l00047">Action()</a>, <a class="el" href="_action_8h_source.html#l00045">Action()</a>, <a class="el" href="_action_8h_source.html#l00059">operator=()</a>, and <a class="el" href="_action_8h_source.html#l00051">operator=()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00049">49</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_action_8h_source.html#l00066">Action()</a>, <a class="el" href="_action_8h_source.html#l00062">Action()</a>, <a class="el" href="_action_8h_source.html#l00080">operator=()</a>, and <a class="el" href="_action_8h_source.html#l00071">operator=()</a>.</p>
 
 </div>
 </div>
@@ -187,7 +200,9 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00040">40</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Constructs an empty <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> from nullptr. </p>
+
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00052">52</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
 
 </div>
 </div>
@@ -216,7 +231,21 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00043">43</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Constructs an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> wrapping the specified callable functor. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">F</td><td>The callable functor type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">func</td><td>The callable object. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00058">58</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
 
 </div>
 </div>
@@ -243,9 +272,17 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00045">45</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Copy constructor performing deep clone of target delegate. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> to copy. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_action_8h_source.html#l00039">Action()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00062">62</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_action_8h_source.html#l00049">Action()</a>.</p>
 
 </div>
 </div>
@@ -272,9 +309,17 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00047">47</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Move constructor transferring delegate ownership. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">other</td><td>The <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> to move from. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_action_8h_source.html#l00039">Action()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00066">66</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_action_8h_source.html#l00049">Action()</a>.</p>
 
 </div>
 </div>
@@ -301,7 +346,9 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00068">68</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Destructor releasing target callable holder. </p>
+
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00090">90</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
 
 </div>
 </div>
@@ -329,9 +376,11 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00073">73</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Invokes the wrapped action delegate. </p>
 
-<p class="reference">Referenced by <a class="el" href="_action_8h_source.html#l00077">operator()()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00096">96</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_action_8h_source.html#l00101">operator()()</a>.</p>
 
 </div>
 </div>
@@ -358,7 +407,9 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00081">81</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Boolean conversion testing whether a target delegate is bound. </p>
+
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00106">106</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
 
 </div>
 </div>
@@ -385,9 +436,11 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00077">77</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Function call operator executing Invoke. </p>
 
-<p class="reference">References <a class="el" href="_action_8h_source.html#l00073">Invoke()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00101">101</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_action_8h_source.html#l00096">Invoke()</a>.</p>
 
 </div>
 </div>
@@ -414,9 +467,11 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00059">59</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Move assignment operator. </p>
 
-<p class="reference">References <a class="el" href="_action_8h_source.html#l00039">Action()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00080">80</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_action_8h_source.html#l00049">Action()</a>.</p>
 
 </div>
 </div>
@@ -443,9 +498,11 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00051">51</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+<p>Copy assignment operator. </p>
 
-<p class="reference">References <a class="el" href="_action_8h_source.html#l00039">Action()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_action_8h_source.html#l00071">71</a> of file <a class="el" href="_action_8h_source.html">Action.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_action_8h_source.html#l00049">Action()</a>.</p>
 
 </div>
 </div>

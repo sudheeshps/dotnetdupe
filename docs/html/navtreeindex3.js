@@ -1,5 +1,6 @@
 var NAVTREEINDEX3 =
 {
+"class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a0f7359334d3d509fe005f1876c6277ac":[108,0,0,0,1,0,0],
 "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a2334834a13ffbf195dd81d0f21e399f0":[107,0,0,0,1,0,2],
 "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a2334834a13ffbf195dd81d0f21e399f0":[108,0,0,0,1,0,2],
 "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a7e084d636e6507161879463879535941":[107,0,0,0,1,0,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX3 =
 "class_dot_net_dupe_1_1_system_1_1_action_3_4.html#af859f82aa1f7634d77ec98ad4e20aeb1":[108,0,0,1,14,6],
 "class_dot_net_dupe_1_1_system_1_1_action_3_4.html#afba7feab9658a10d4ef5c1c49d983db6":[107,0,0,1,14,7],
 "class_dot_net_dupe_1_1_system_1_1_action_3_4.html#afba7feab9658a10d4ef5c1c49d983db6":[108,0,0,1,14,7],
-"class_dot_net_dupe_1_1_system_1_1_aggregate_exception.html":[107,0,0,1,15],
-"class_dot_net_dupe_1_1_system_1_1_aggregate_exception.html":[108,0,0,1,15]
+"class_dot_net_dupe_1_1_system_1_1_aggregate_exception.html":[107,0,0,1,15]
 };

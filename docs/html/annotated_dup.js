@@ -347,5 +347,7 @@ var annotated_dup =
         ] ]
       ] ]
     ] ],
-    [ "_init_list_with_indexer", "struct__init__list__with__indexer.html", "struct__init__list__with__indexer" ]
+    [ "_init_list_with_indexer", "struct__init__list__with__indexer.html", "struct__init__list__with__indexer" ],
+    [ "Action&lt; Arg1, Args::::::&gt;", "class_action_3_01_arg1_00_01_args_1_1_1_1_1_1_4.html", null ],
+    [ "Func&lt; TResult, Arg1, Args::::::&gt;", "class_func_3_01_t_result_00_01_arg1_00_01_args_1_1_1_1_1_1_4.html", null ]
 ];

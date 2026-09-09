@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DotNetDupe: DotNetDupe::System::IClonable Class Reference</title>
+<title>DotNetDupe: DotNetDupe::System::IClonable Interface Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -110,20 +110,56 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">DotNetDupe::System::IClonable Class Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+  <div class="headertitle"><div class="title">DotNetDupe::System::IClonable Interface Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Supports cloning, which creates a new instance of a class with the same value as an existing instance.  
+ <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_clonable_8h_source.html">Clonable.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:ac3c492d50184dd6980502985960052fc" id="r_ac3c492d50184dd6980502985960052fc"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#ac3c492d50184dd6980502985960052fc">~IClonable</a> ()=default</td></tr>
+<tr class="memdesc:ac3c492d50184dd6980502985960052fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a42af7fcf7eacf589fe0356b1f92d0782" id="r_a42af7fcf7eacf589fe0356b1f92d0782"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a>&#160;</td><td class="memItemRight"><a class="el" href="#a42af7fcf7eacf589fe0356b1f92d0782">Clone</a> ()=0</td></tr>
+<tr class="memdesc:a42af7fcf7eacf589fe0356b1f92d0782"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new object that is a copy of the current instance.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_clonable_8h_source.html#l00005">5</a> of file <a class="el" href="_clonable_8h_source.html">Clonable.h</a>.</p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<div class="textblock"><p>Supports cloning, which creates a new instance of a class with the same value as an existing instance. </p>
+<p>Standard Citation: ECMA-335 CLI Common Language Infrastructure. </p>
+
+<p class="definition">Definition at line <a class="el" href="_clonable_8h_source.html#l00015">15</a> of file <a class="el" href="_clonable_8h_source.html">Clonable.h</a>.</p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="ac3c492d50184dd6980502985960052fc" name="ac3c492d50184dd6980502985960052fc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac3c492d50184dd6980502985960052fc">&#9670;&#160;</a></span>~IClonable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual DotNetDupe::System::IClonable::~IClonable </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a42af7fcf7eacf589fe0356b1f92d0782" name="a42af7fcf7eacf589fe0356b1f92d0782"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a42af7fcf7eacf589fe0356b1f92d0782">&#9670;&#160;</a></span>Clone()</h2>
 
@@ -147,9 +183,12 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Creates a new object that is a copy of the current instance. </p>
+<dl class="section return"><dt>Returns</dt><dd>A new object that is a copy of this instance. </dd></dl>
+
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this interface was generated from the following file:<ul>
 <li>Include/System/<a class="el" href="_clonable_8h_source.html">Clonable.h</a></li>
 </ul>
 </div><!-- contents -->

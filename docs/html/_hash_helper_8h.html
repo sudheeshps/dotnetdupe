@@ -113,6 +113,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_hash_helper_8
   <div class="headertitle"><div class="title">HashHelper.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Provides internal hashing algorithms and type specializations for computing 32-bit integer hash codes.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_common_8h_source.html">Common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_object_8h_source.html">System/Object.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_string_8h_source.html">System/String.h</a>&quot;</code><br />
@@ -131,6 +134,7 @@ Classes</h2></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20String_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20String_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper_3_01_string_01_4.html">DotNetDupe::System::HashHelper&lt; String &gt;</a></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20T_20_2A_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20T_20_2A_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper_3_01_t_01_5_01_4.html">DotNetDupe::System::HashHelper&lt; T * &gt;</a></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20T_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20T_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper.html">DotNetDupe::System::HashHelper&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary template for generating 32-bit hash codes from arbitrary types using byte-level folding.  <a href="struct_dot_net_dupe_1_1_system_1_1_hash_helper.html#details">More...</a><br /></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20char_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20char_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper_3_01unsigned_01char_01_4.html">DotNetDupe::System::HashHelper&lt; unsigned char &gt;</a></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20int_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20int_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper_3_01unsigned_01int_01_4.html">DotNetDupe::System::HashHelper&lt; unsigned int &gt;</a></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20long_20long_20_3E" id="r_DotNetDupe_3A_3ASystem_3A_3AHashHelper_3C_20unsigned_20long_20long_20_3E"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_hash_helper_3_01unsigned_01long_01long_01_4.html">DotNetDupe::System::HashHelper&lt; unsigned long long &gt;</a></td></tr>
@@ -142,7 +146,12 @@ Namespaces</h2></td></tr>
 <tr class="memitem:DotNetDupe" id="r_DotNetDupe"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem" id="r_DotNetDupe_3A_3ASystem"><td class="memItemLeft">namespace &#160;</td><td class="memItemRight"><a class="el" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a></td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Provides internal hashing algorithms and type specializations for computing 32-bit integer hash codes. </p>
+<p>Modeled after .NET System.Collections.Generic hashing utilities (ECMA-335). </p>
+
+<p class="definition">Definition in file <a class="el" href="_hash_helper_8h_source.html">HashHelper.h</a>.</p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">
 <div id="page-nav-resize-handle"></div>

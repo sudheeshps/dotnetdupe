@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>An abstraction that provides time-related functions to enable testability of time-dependent code.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_time_provider_8h_source.html">TimeProvider.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::TimeProvider:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,12 +132,19 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a3e7c82ae19b64443da7be29d158085f1" id="r_a3e7c82ae19b64443da7be29d158085f1"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a3e7c82ae19b64443da7be29d158085f1">~TimeProvider</a> ()=default</td></tr>
+<tr class="memdesc:a3e7c82ae19b64443da7be29d158085f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a2448f5d641707c5a56abf4142deb2362" id="r_a2448f5d641707c5a56abf4142deb2362"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html">TimeSpan</a>&#160;</td><td class="memItemRight"><a class="el" href="#a2448f5d641707c5a56abf4142deb2362">GetElapsedTime</a> (int64_t startingTimestamp) const</td></tr>
+<tr class="memdesc:a2448f5d641707c5a56abf4142deb2362"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the elapsed time since the startingTimestamp was recorded.  <br /></td></tr>
 <tr class="memitem:a0b0aa5df5e037b6f80ed5082b6b4a326" id="r_a0b0aa5df5e037b6f80ed5082b6b4a326"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html">TimeSpan</a>&#160;</td><td class="memItemRight"><a class="el" href="#a0b0aa5df5e037b6f80ed5082b6b4a326">GetElapsedTime</a> (int64_t startingTimestamp, int64_t endingTimestamp) const</td></tr>
+<tr class="memdesc:a0b0aa5df5e037b6f80ed5082b6b4a326"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the elapsed time between two timestamp values.  <br /></td></tr>
 <tr class="memitem:a066805b4a8ceac01b2d106d523ca5079" id="r_a066805b4a8ceac01b2d106d523ca5079"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#a066805b4a8ceac01b2d106d523ca5079">GetLocalNow</a> () const =0</td></tr>
+<tr class="memdesc:a066805b4a8ceac01b2d106d523ca5079"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value that is set to the current date and time in the local time zone.  <br /></td></tr>
 <tr class="memitem:af5634546ab1021b1348abdadd8148165" id="r_af5634546ab1021b1348abdadd8148165"><td class="memItemLeft">virtual int64_t&#160;</td><td class="memItemRight"><a class="el" href="#af5634546ab1021b1348abdadd8148165">GetTimestamp</a> () const =0</td></tr>
+<tr class="memdesc:af5634546ab1021b1348abdadd8148165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current high-frequency counter value in ticks.  <br /></td></tr>
 <tr class="memitem:ab1eda0c1aaae9990f249046b5f52aaf9" id="r_ab1eda0c1aaae9990f249046b5f52aaf9"><td class="memItemLeft">virtual int64_t&#160;</td><td class="memItemRight"><a class="el" href="#ab1eda0c1aaae9990f249046b5f52aaf9">GetTimestampFrequency</a> () const =0</td></tr>
+<tr class="memdesc:ab1eda0c1aaae9990f249046b5f52aaf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the frequency of the high-frequency counter in ticks per second.  <br /></td></tr>
 <tr class="memitem:a4c8790b12a48c1fd5a40f20f9783ad88" id="r_a4c8790b12a48c1fd5a40f20f9783ad88"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4c8790b12a48c1fd5a40f20f9783ad88">GetUtcNow</a> () const =0</td></tr>
+<tr class="memdesc:a4c8790b12a48c1fd5a40f20f9783ad88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value that is set to the current Coordinated Universal Time (UTC) date and time.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -152,13 +162,17 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a300c5f63b429bf230a83386a8fe34dfb" id="r_a300c5f63b429bf230a83386a8fe34dfb"><td class="memItemLeft">static <a class="el" href="namespace_dot_net_dupe_1_1_system.html#a107b70077a0c58eb6a35aa41f2e5fadb">TimeProviderPtr</a>&#160;</td><td class="memItemRight"><a class="el" href="#a300c5f63b429bf230a83386a8fe34dfb">GetSystem</a> ()</td></tr>
+<tr class="memdesc:a300c5f63b429bf230a83386a8fe34dfb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">TimeProvider</a> that provides the system's current time and high-resolution timer.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_time_provider_8h_source.html#l00014">14</a> of file <a class="el" href="_time_provider_8h_source.html">TimeProvider.h</a>.</p>
+<div class="textblock"><p>An abstraction that provides time-related functions to enable testability of time-dependent code. </p>
+<p>Modeled after .NET 8 <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">System.TimeProvider</a>. Provides mockable access to high-resolution timestamps, UTC now, local now, and elapsed duration calculations.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">TimeProvider</a> implementations are thread-safe. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_time_provider_8h_source.html#l00025">25</a> of file <a class="el" href="_time_provider_8h_source.html">TimeProvider.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3e7c82ae19b64443da7be29d158085f1" name="a3e7c82ae19b64443da7be29d158085f1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3e7c82ae19b64443da7be29d158085f1">&#9670;&#160;</a></span>~TimeProvider()</h2>
@@ -183,6 +197,8 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Virtual destructor for polymorphic cleanup. </p>
+
 </div>
 </div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
@@ -201,11 +217,21 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00069">69</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
+<p>Gets the elapsed time since the startingTimestamp was recorded. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">startingTimestamp</td><td>The timestamp obtained from a previous call to GetTimestamp. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html" title="Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...">TimeSpan</a> representing elapsed duration. </dd></dl>
+<p>Compute elapsed time from starting timestamp to current timestamp.</p>
 
-<p class="reference">References <a class="el" href="_time_provider_8cpp_source.html#l00069">GetElapsedTime()</a>, and <a class="el" href="#af5634546ab1021b1348abdadd8148165">GetTimestamp()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00073">73</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00069">GetElapsedTime()</a>, and <a class="el" href="#ab1eda0c1aaae9990f249046b5f52aaf9">GetTimestampFrequency()</a>.</p>
+<p class="reference">References <a class="el" href="_time_provider_8cpp_source.html#l00073">GetElapsedTime()</a>, and <a class="el" href="#af5634546ab1021b1348abdadd8148165">GetTimestamp()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00073">GetElapsedTime()</a>, and <a class="el" href="#ab1eda0c1aaae9990f249046b5f52aaf9">GetTimestampFrequency()</a>.</p>
 
 </div>
 </div>
@@ -228,7 +254,18 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00073">73</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
+<p>Gets the elapsed time between two timestamp values. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">startingTimestamp</td><td>The initial timestamp value. </td></tr>
+    <tr><td class="paramname">endingTimestamp</td><td>The final timestamp value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html" title="Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...">TimeSpan</a> representing the duration between the timestamps. </dd></dl>
+<p>Compute elapsed <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_span.html" title="Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...">TimeSpan</a> based on timestamp frequency ticks per second.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00078">78</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_time_span_8h_source.html#l00033">DotNetDupe::System::TimeSpan::TimeSpan()</a>, <a class="el" href="#ab1eda0c1aaae9990f249046b5f52aaf9">GetTimestampFrequency()</a>, and <a class="el" href="_time_span_8h_source.html#l00021">DotNetDupe::System::TimeSpan::TicksPerSecond</a>.</p>
 
@@ -257,7 +294,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
+<p>Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value that is set to the current date and time in the local time zone. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current local <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a>. </dd></dl>
+
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_date_time_offset_8cpp_source.html#l00010">DotNetDupe::System::DateTimeOffset::Now()</a>.</p>
 
@@ -286,7 +326,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00078">78</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
+<p>Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">TimeProvider</a> that provides the system's current time and high-resolution timer. </p>
+<dl class="section return"><dt>Returns</dt><dd>The default system <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">TimeProvider</a> singleton. </dd></dl>
+<p>Retrieve singleton shared instance of system <a class="el" href="class_dot_net_dupe_1_1_system_1_1_time_provider.html" title="An abstraction that provides time-related functions to enable testability of time-dependent code.">TimeProvider</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_time_provider_8cpp_source.html#l00084">84</a> of file <a class="el" href="_time_provider_8cpp_source.html">TimeProvider.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00587">DotNetDupe::System::DynamicCast()</a>, and <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>.</p>
 
@@ -317,9 +361,12 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
+<p>Gets the current high-frequency counter value in ticks. </p>
+<dl class="section return"><dt>Returns</dt><dd>An integer representing high-frequency timer ticks. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00069">GetElapsedTime()</a>, and <a class="el" href="_stopwatch_8cpp_source.html#l00069">DotNetDupe::System::Diagnostics::Stopwatch::Restart()</a>.</p>
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00073">GetElapsedTime()</a>, and <a class="el" href="_stopwatch_8cpp_source.html#l00069">DotNetDupe::System::Diagnostics::Stopwatch::Restart()</a>.</p>
 
 </div>
 </div>
@@ -346,9 +393,12 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, <a class="el" href="_time_provider_8cpp_source.html#l00069">GetElapsedTime()</a>, and <a class="el" href="_time_provider_8cpp_source.html#l00078">GetSystem()</a>.</p>
+<p>Gets the frequency of the high-frequency counter in ticks per second. </p>
+<dl class="section return"><dt>Returns</dt><dd>Frequency in Hertz. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00073">GetElapsedTime()</a>.</p>
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>, <a class="el" href="_time_provider_8cpp_source.html#l00073">GetElapsedTime()</a>, and <a class="el" href="_time_provider_8cpp_source.html#l00084">GetSystem()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_time_provider_8cpp_source.html#l00078">GetElapsedTime()</a>.</p>
 
 </div>
 </div>
@@ -375,7 +425,10 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
+<p>Gets a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> value that is set to the current Coordinated Universal Time (UTC) date and time. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current UTC <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a>. </dd></dl>
+
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_date_time_offset_8cpp_source.html#l00015">DotNetDupe::System::DateTimeOffset::UtcNow()</a>.</p>
 

@@ -132,6 +132,7 @@ var NAVTREEINDEX2 =
 "_x509_certificate2_8h.html":[109,0,2,1,7,0,0,0],
 "_x509_certificate2_8h_source.html":[109,0,2,1,7,0,0,0],
 "annotated.html":[108,0],
+"class_action_3_01_arg1_00_01_args_1_1_1_1_1_1_4.html":[108,0,2],
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html":[107,0,0,0,0,0],
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html":[108,0,0,0,0,0],
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html#a030668979b342a36ca523c65a667a2c7":[107,0,0,0,0,0,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_scope_factory.html#ae7edca790ec6bca6b23424025703dac6":[108,0,0,0,0,7,2],
 "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html":[107,0,0,0,1,0],
 "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html":[108,0,0,0,1,0],
-"class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a0f7359334d3d509fe005f1876c6277ac":[107,0,0,0,1,0,0],
-"class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a0f7359334d3d509fe005f1876c6277ac":[108,0,0,0,1,0,0]
+"class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html#a0f7359334d3d509fe005f1876c6277ac":[107,0,0,0,1,0,0]
 };

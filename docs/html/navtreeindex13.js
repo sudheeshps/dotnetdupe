@@ -1,5 +1,14 @@
 var NAVTREEINDEX13 =
 {
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#aee213e5a7686deb4d072288eb61fdc59":[108,0,0,1,6,12,8],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af176281eb905404a2923cd21f3102daa":[107,0,0,1,6,12,22],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af176281eb905404a2923cd21f3102daa":[108,0,0,1,6,12,22],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af20ab761c6754a3cf49bba80eea7c3e5":[107,0,0,1,6,12,20],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af20ab761c6754a3cf49bba80eea7c3e5":[108,0,0,1,6,12,20],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af785e2a0be5840ef9fb8b6605d3e02fa":[107,0,0,1,6,12,9],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#af785e2a0be5840ef9fb8b6605d3e02fa":[108,0,0,1,6,12,9],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html":[107,0,0,1,6,13],
+"class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html":[108,0,0,1,6,13],
 "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a115f97e9d4c7a1e7d682b10cd593f4a7":[107,0,0,1,6,13,9],
 "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a115f97e9d4c7a1e7d682b10cd593f4a7":[108,0,0,1,6,13,9],
 "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a26160e2fb22648bdbfb7255b94e11da1":[107,0,0,1,6,13,0],
@@ -240,14 +249,5 @@ var NAVTREEINDEX13 =
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html#a92affdeb81671b5606f9313074e73de3":[108,0,0,1,7,0,1,1],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html#abe048e775f9090d5e37c2bcc911ec0f0":[107,0,0,1,7,0,1,0],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html#abe048e775f9090d5e37c2bcc911ec0f0":[108,0,0,1,7,0,1,0],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html":[107,0,0,1,7,0,3],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html":[108,0,0,1,7,0,3],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a0129216e7688e1097773a274a75a38ce":[107,0,0,1,7,0,3,3],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a0129216e7688e1097773a274a75a38ce":[108,0,0,1,7,0,3,3],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a86ce78143e04410becae0540453f0437":[107,0,0,1,7,0,3,5],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a86ce78143e04410becae0540453f0437":[108,0,0,1,7,0,3,5],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a92d52abab470013ca5c4adadaad314cb":[107,0,0,1,7,0,3,2],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a92d52abab470013ca5c4adadaad314cb":[108,0,0,1,7,0,3,2],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a9a1ca0c4ce1abe2b13acb17e96d88666":[107,0,0,1,7,0,3,0],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#a9a1ca0c4ce1abe2b13acb17e96d88666":[108,0,0,1,7,0,3,0]
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html":[107,0,0,1,7,0,3]
 };

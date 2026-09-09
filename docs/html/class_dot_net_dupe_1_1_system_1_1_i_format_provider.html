@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.18.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>DotNetDupe: DotNetDupe::System::IFormatProvider&lt; T &gt; Class Template Reference</title>
+<title>DotNetDupe: DotNetDupe::System::IFormatProvider&lt; T &gt; Interface Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="dynsections.js"></script>
 <script type="text/javascript" src="codefolding.js"></script>
@@ -110,21 +110,64 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div>
 
 <div class="header">
-  <div class="headertitle"><div class="title">DotNetDupe::System::IFormatProvider&lt; T &gt; Class Template Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
+  <div class="headertitle"><div class="title">DotNetDupe::System::IFormatProvider&lt; T &gt; Interface Template Reference<span class="mlabels"><span class="mlabel abstract">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Provides a mechanism for retrieving an object to control formatting.  
+ <a href="#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_format_provider_8h_source.html">FormatProvider.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
+<tr class="memitem:a9e9842acce4a10a3d5de5a37efdba9b6" id="r_a9e9842acce4a10a3d5de5a37efdba9b6"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a9e9842acce4a10a3d5de5a37efdba9b6">~IFormatProvider</a> ()=default</td></tr>
+<tr class="memdesc:a9e9842acce4a10a3d5de5a37efdba9b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a09e38aa8b4643609e8d8358237a1135f" id="r_a09e38aa8b4643609e8d8358237a1135f"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> *&#160;</td><td class="memItemRight"><a class="el" href="#a09e38aa8b4643609e8d8358237a1135f">GetFormat</a> (const T *formatType)=0</td></tr>
+<tr class="memdesc:a09e38aa8b4643609e8d8358237a1135f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns an object that provides formatting services for the specified type.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
-class DotNetDupe::System::IFormatProvider&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="_format_provider_8h_source.html#l00005">5</a> of file <a class="el" href="_format_provider_8h_source.html">FormatProvider.h</a>.</p>
-</div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+interface DotNetDupe::System::IFormatProvider&lt; T &gt;</div><p>Provides a mechanism for retrieving an object to control formatting. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The type of format service to retrieve. Standard Citation: ECMA-335 CLI Common Language Infrastructure. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_format_provider_8h_source.html#l00017">17</a> of file <a class="el" href="_format_provider_8h_source.html">FormatProvider.h</a>.</p>
+</div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
+<a id="a9e9842acce4a10a3d5de5a37efdba9b6" name="a9e9842acce4a10a3d5de5a37efdba9b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9e9842acce4a10a3d5de5a37efdba9b6">&#9670;&#160;</a></span>~IFormatProvider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_format_provider.html">DotNetDupe::System::IFormatProvider</a>&lt; T &gt;::~<a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_format_provider.html">IFormatProvider</a> </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel virtual">virtual</span><span class="mlabel default">default</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="a09e38aa8b4643609e8d8358237a1135f" name="a09e38aa8b4643609e8d8358237a1135f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a09e38aa8b4643609e8d8358237a1135f">&#9670;&#160;</a></span>GetFormat()</h2>
 
@@ -150,9 +193,18 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Returns an object that provides formatting services for the specified type. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">formatType</td><td>An object that specifies the type of format object to return. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An instance of the object that provides formatting services, or nullptr if unavailable. </dd></dl>
+
 </div>
 </div>
-<hr/>The documentation for this class was generated from the following file:<ul>
+<hr/>The documentation for this interface was generated from the following file:<ul>
 <li>Include/System/<a class="el" href="_format_provider_8h_source.html">FormatProvider.h</a></li>
 </ul>
 </div><!-- contents -->

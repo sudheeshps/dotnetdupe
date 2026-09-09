@@ -114,21 +114,34 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct__init__
 </div><!--header-->
 <div class="contents">
 
+<p>Helper wrapper allowing random-access bracket indexing over std::initializer_list.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_utils_8h_source.html">Utils.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0c750b18bd9ea4040e6ad215b1c8549c" id="r_a0c750b18bd9ea4040e6ad215b1c8549c"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a0c750b18bd9ea4040e6ad215b1c8549c">_init_list_with_indexer</a> (const std::initializer_list&lt; T &gt; &amp;_list)</td></tr>
+<tr class="memdesc:a0c750b18bd9ea4040e6ad215b1c8549c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a wrapper over the provided initializer list.  <br /></td></tr>
 <tr class="memitem:a9e3aa704d4a9f255afb8efd5e4d1c5d7" id="r_a9e3aa704d4a9f255afb8efd5e4d1c5d7"><td class="memItemLeft">T&#160;</td><td class="memItemRight"><a class="el" href="#a9e3aa704d4a9f255afb8efd5e4d1c5d7">operator[]</a> (unsigned int index)</td></tr>
+<tr class="memdesc:a9e3aa704d4a9f255afb8efd5e4d1c5d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Accesses the element at the specified index.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:abccff9621c8ae219d077ec77a47f1e47" id="r_abccff9621c8ae219d077ec77a47f1e47"><td class="memItemLeft">const std::initializer_list&lt; T &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#abccff9621c8ae219d077ec77a47f1e47">list</a></td></tr>
+<tr class="memdesc:abccff9621c8ae219d077ec77a47f1e47"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reference to the wrapped initializer list.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;class T&gt;<br />
-struct _init_list_with_indexer&lt; T &gt;</div>
-<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00004">4</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+struct _init_list_with_indexer&lt; T &gt;</div><p>Helper wrapper allowing random-access bracket indexing over std::initializer_list. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The element type in the initializer list. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00008">8</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0c750b18bd9ea4040e6ad215b1c8549c" name="a0c750b18bd9ea4040e6ad215b1c8549c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0c750b18bd9ea4040e6ad215b1c8549c">&#9670;&#160;</a></span>_init_list_with_indexer()</h2>
@@ -155,9 +168,17 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00006">6</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+<p>Constructs a wrapper over the provided initializer list. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_list</td><td>The initializer list to wrap. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">References <a class="el" href="_utils_8h_source.html#l00005">list</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00013">13</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_utils_8h_source.html#l00009">list</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00061">DotNetDupe::System::IO::Path::Combine()</a>.</p>
 
@@ -189,9 +210,18 @@ template&lt;class T&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00009">9</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+<p>Accesses the element at the specified index. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">index</td><td>Zero-based element index. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The element at the specified position. </dd></dl>
 
-<p class="reference">References <a class="el" href="_utils_8h_source.html#l00005">list</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00020">20</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_utils_8h_source.html#l00009">list</a>.</p>
 
 </div>
 </div>
@@ -210,9 +240,11 @@ template&lt;class T&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00005">5</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+<p>Reference to the wrapped initializer list. </p>
 
-<p class="reference">Referenced by <a class="el" href="_utils_8h_source.html#l00006">_init_list_with_indexer()</a>, and <a class="el" href="_utils_8h_source.html#l00009">operator[]()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_utils_8h_source.html#l00009">9</a> of file <a class="el" href="_utils_8h_source.html">Utils.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_utils_8h_source.html#l00013">_init_list_with_indexer()</a>, and <a class="el" href="_utils_8h_source.html#l00020">operator[]()</a>.</p>
 
 </div>
 </div>

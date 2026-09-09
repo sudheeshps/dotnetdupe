@@ -1,6 +1,7 @@
 var hierarchy =
 [
     [ "_init_list_with_indexer&lt; T &gt;", "struct__init__list__with__indexer.html", null ],
+    [ "Action&lt; Arg1, Args::::::&gt;", "class_action_3_01_arg1_00_01_args_1_1_1_1_1_1_4.html", null ],
     [ "DotNetDupe::Extensions::Logging::FileRolloverConfig", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_rollover_config.html", null ],
     [ "DotNetDupe::Extensions::Logging::LoggerConfiguration", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html", null ],
     [ "DotNetDupe::System::Action&lt; Args &gt;", "class_dot_net_dupe_1_1_system_1_1_action.html", null ],
@@ -294,6 +295,7 @@ var hierarchy =
     [ "DotNetDupe::System::Threading::Lock&lt; T &gt;", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html", null ],
     [ "DotNetDupe::System::Threading::Lock&lt; CriticalSection &gt;", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_3_01_critical_section_01_4.html", null ],
     [ "DotNetDupe::System::Utils::StringConvert", "class_dot_net_dupe_1_1_system_1_1_utils_1_1_string_convert.html", null ],
+    [ "Func&lt; TResult, Arg1, Args::::::&gt;", "class_func_3_01_t_result_00_01_arg1_00_01_args_1_1_1_1_1_1_4.html", null ],
     [ "std::exception", null, [
       [ "std::runtime_error", null, [
         [ "DotNetDupe::System::Exception", "class_dot_net_dupe_1_1_system_1_1_exception.html", [
