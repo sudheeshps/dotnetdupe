@@ -1,0 +1,12 @@
+var _json_serializer_8h =
+[
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01bool_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01bool_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01double_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01double_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01float_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01float_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01int_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01int_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01long_01long_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01long_01long_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_string_01_4.html", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_string_01_4" ],
+    [ "DotNetDupe::System::Text::Json::JsonSerializer", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer" ]
+];

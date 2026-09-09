@@ -26,10 +26,13 @@ namespace DotNetDupe {
         }
 
         Guid::Guid(const String& g) {
+            /// Normalize string by stripping enclosing braces and hyphens.
             String s = g.Replace("{", "").Replace("}", "").Replace("-", "");
 
+            /// Guard: Validate normalized hex string contains exactly 32 hexadecimal characters.
             if (s.GetLength() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");
 
+            /// Parse 16 two-character hexadecimal octets into internal byte array.
             for (size_t i = 0; i < 16; ++i) {
                 unsigned int byteVal;
                 String sub = s.Substring(static_cast<int>(i * 2), 2);
@@ -44,14 +47,17 @@ namespace DotNetDupe {
         }
 
         Guid Guid::NewGuid() {
-            // Very simple random Guid for now
+            /// Generate 16 pseudo-random octets.
             Array<uint8_t> data(16);
             for (size_t i = 0; i < 16; ++i) {
                 data[static_cast<int>(i)] = static_cast<uint8_t>(rand() % 256);
             }
-            // Set version 4 and variant
+
+            /// Set Version 4 bits (0100b) in byte 6 and RFC 4122 variant bits (10b) in byte 8.
             data[6] = (data[6] & 0x0F) | 0x40;
             data[8] = (data[8] & 0x3F) | 0x80;
+
+            /// Return constructed Version 4 Guid instance.
             return Guid(data);
         }
 

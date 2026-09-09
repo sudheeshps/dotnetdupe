@@ -30,6 +30,7 @@ namespace DotNetDupe {
         namespace Diagnostics {
 
 #if defined(_WIN32)
+            /// Populate fast tier-1 process metadata on Windows.
             static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo& proc) {
                 proc.iProcessId = pe32->th32ProcessID;
                 proc.sName = String(pe32->szExeFile);
@@ -50,6 +51,7 @@ namespace DotNetDupe {
                 ::CloseHandle(hProc);
             }
 
+            /// Collect process snapshot using Toolhelp32 on Windows.
             static void CollectTier1Processes(std::vector<ProcessInfo>& vecProcs, int iSessionId) {
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
                 if (hSnapshot == INVALID_HANDLE_VALUE) throw SystemException("Failed to create system process snapshot.");
@@ -67,6 +69,7 @@ namespace DotNetDupe {
                 ::CloseHandle(hSnapshot);
             }
 #else
+            /// Populate fast tier-1 process metadata on Linux.
             static void FastPopulateLinuxProc(const std::string& dname, ProcessInfo& proc) {
                 proc.iProcessId = std::stoi(dname);
                 std::ifstream commFile("/proc/" + dname + "/comm");
@@ -80,6 +83,7 @@ namespace DotNetDupe {
                 }
             }
 
+            /// Collect process snapshot reading /proc entries on Linux.
             static void CollectTier1Processes(std::vector<ProcessInfo>& vecProcs, int iSessionId) {
                 DIR* dir = ::opendir("/proc");
                 if (!dir) throw SystemException("Failed to open /proc directory.");
@@ -99,6 +103,7 @@ namespace DotNetDupe {
 #endif
 
             static void DeepEnrichProc(ProcessInfo& proc, bool bIncludeNetwork) {
+                /// Deep enrichment helper.
                 SystemMetrics::EnrichProcessInfo(proc, bIncludeNetwork);
             }
 
@@ -172,6 +177,7 @@ namespace DotNetDupe {
                 }
 
                 void ExecuteStream() {
+                    /// Primary background streaming loop.
                     try {
                         std::vector<ProcessInfo> vecProcs;
                         CollectTier1Processes(vecProcs, m_options.iSessionId);
@@ -188,10 +194,13 @@ namespace DotNetDupe {
                 }
 
                 void Start(const SmartPointer<Impl>& spSelf) {
+                    /// Guard: Validate batch options and state.
                     if (m_options.iBatchSize < 0 || m_options.iBatchIntervalMs < 0) {
                         throw ArgumentException("ProcessStreamOptions batch parameters cannot be negative.");
                     }
                     if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
+
+                    /// Spawn background streaming worker thread.
                     m_bCancelled.store(false);
                     m_spWorkerThread = SmartPointer<Threading::Thread>::NewShared([spSelf]() {
                         if (spSelf) spSelf->ExecuteStream();
@@ -200,6 +209,7 @@ namespace DotNetDupe {
                 }
 
                 void Cancel() {
+                    /// Signal cancellation and await worker thread join.
                     m_bCancelled.store(true);
                     if (m_spWorkerThread && m_spWorkerThread->IsAlive()) {
                         if (Threading::Thread::GetCurrentThreadId() != m_spWorkerThread->GetCurrentThreadId()) {

@@ -10,13 +10,18 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
+                /// \class LinkedListNode
+                /// \brief Represents a node in a LinkedList.
+                /// \tparam T Specifies the element type of the linked list.
                 template <typename T>
                 class LinkedListNode : public Object {
                 public:
-                    T Value;
-                    LinkedListNode<T>* Next;
-                    LinkedListNode<T>* Previous;
+                    T Value;                    ///< The value contained in the node.
+                    LinkedListNode<T>* Next;     ///< Gets the next node in the LinkedList.
+                    LinkedListNode<T>* Previous; ///< Gets the previous node in the LinkedList.
 
+                    /// \brief Initializes a new instance of the LinkedListNode class, containing the specified value.
+                    /// \param val The value to contain in the LinkedListNode.
                     LinkedListNode(const T& val) : Value(val), Next(nullptr), Previous(nullptr) {}
 
                     void* operator new(size_t size) {
@@ -27,6 +32,12 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \class LinkedList
+                /// \brief Represents a doubly linked list.
+                ///
+                /// \tparam T Specifies the element type of the linked list.
+                /// \note Conforms to ECMA-335 Partition IV Section 5.42 (System.Collections.Generic.LinkedList<T>).
+                ///       Provides constant time O(1) insertion and removal at both ends.
                 template <typename T>
                 class LinkedList : public Object {
                 private:
@@ -35,14 +46,24 @@ namespace DotNetDupe {
                     int m_iCount;
 
                 public:
+                    /// \brief Initializes a new instance of the LinkedList class that is empty.
                     LinkedList() : m_pHead(nullptr), m_pTail(nullptr), m_iCount(0) {}
 
+                    /// \brief Destructor. Clears all nodes.
                     ~LinkedList() override {
                         Clear();
                     }
 
+                    /// \brief Gets the number of nodes actually contained in the LinkedList.
+                    /// \return The number of nodes contained in the LinkedList.
                     int GetCount() const { return m_iCount; }
+
+                    /// \brief Gets the first node of the LinkedList.
+                    /// \return The first LinkedListNode of the LinkedList.
                     LinkedListNode<T>* GetFirst() const { return m_pHead; }
+
+                    /// \brief Gets the last node of the LinkedList.
+                    /// \return The last LinkedListNode of the LinkedList.
                     LinkedListNode<T>* GetLast() const { return m_pTail; }
 
                     LinkedListNode<T>* AddFirst(const T& value) {

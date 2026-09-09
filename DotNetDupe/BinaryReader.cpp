@@ -1,4 +1,4 @@
-﻿#include "pch.h"
+#include "pch.h"
 #include "System/IO/BinaryReader.h"
 #include "System/IO/EndOfStreamException.h"
 #include "System/ArgumentNullException.h"
@@ -16,6 +16,7 @@ namespace DotNetDupe {
                   m_bLeaveOpen(bLeaveOpen),
                   m_bIsLittleEndian(bIsLittleEndian),
                   m_bDisposed(false) {
+                /// Guard: Validate stream pointer.
                 if (m_pStream == nullptr) {
                     throw ArgumentNullException("pStream cannot be null.");
                 }
@@ -27,26 +28,31 @@ namespace DotNetDupe {
                   m_bLeaveOpen(bLeaveOpen),
                   m_bIsLittleEndian(bIsLittleEndian),
                   m_bDisposed(false) {
+                /// Guard: Validate smart pointer stream.
                 if (m_pStream == nullptr) {
                     throw ArgumentNullException("spStream cannot be null.");
                 }
             }
 
             BinaryReader::~BinaryReader() {
+                /// Release reader and stream resources.
                 Dispose();
             }
 
             void BinaryReader::EnsureNotDisposed() const {
+                /// Guard: Check reader lifecycle status.
                 if (m_bDisposed) {
                     throw InvalidOperationException("BinaryReader is disposed.");
                 }
             }
 
             void BinaryReader::Close() {
+                /// Close and dispose reader.
                 Dispose();
             }
 
             void BinaryReader::Dispose() {
+                /// Deterministic resource cleanup.
                 if (!m_bDisposed) {
                     m_bDisposed = true;
                     if (!m_bLeaveOpen && m_pStream != nullptr) {
@@ -68,7 +74,10 @@ namespace DotNetDupe {
             }
 
             void BinaryReader::FillBuffer(char* pBuffer, int iCount) {
+                /// Guard: Check active stream state.
                 EnsureNotDisposed();
+
+                /// Read required bytes in a loop until buffer is filled.
                 int iTotalRead = 0;
                 while (iTotalRead < iCount) {
                     int iRead = m_pStream->Read(pBuffer + iTotalRead, 0, iCount - iTotalRead);
@@ -79,6 +88,7 @@ namespace DotNetDupe {
                 }
             }
 
+            /// Reverse bytes in place for endian conversion.
             static void ReverseBytes(char* pBuf, int iSize) {
                 for (int i = 0, j = iSize - 1; i < j; ++i, --j) {
                     char chTemp = pBuf[i];
@@ -106,10 +116,13 @@ namespace DotNetDupe {
             }
 
             Array<byte> BinaryReader::ReadBytes(int iCount) {
+                /// Guard: Validate count non-negative.
                 if (iCount < 0) {
                     throw ArgumentOutOfRangeException("iCount must be non-negative.");
                 }
                 EnsureNotDisposed();
+
+                /// Read each byte sequentially.
                 Array<byte> arrBytes(iCount);
                 for (int i = 0; i < iCount; ++i) {
                     arrBytes[i] = ReadByte();
@@ -118,10 +131,13 @@ namespace DotNetDupe {
             }
 
             int BinaryReader::Read(Array<byte>& arrBuffer, int iIndex, int iCount) {
+                /// Guard: Validate bounds.
                 EnsureNotDisposed();
                 if (iIndex < 0 || iCount < 0 || (iIndex + iCount) > arrBuffer.GetLength()) {
                     throw ArgumentOutOfRangeException("Invalid index and count bounds.");
                 }
+
+                /// Read directly into buffer slice.
                 int iRead = m_pStream->Read(reinterpret_cast<char*>(arrBuffer.GetData()) + iIndex, 0, iCount);
                 return iRead < 0 ? 0 : iRead;
             }
@@ -194,12 +210,15 @@ namespace DotNetDupe {
             }
 
             String BinaryReader::ReadString(int iLength) {
+                /// Guard: Validate length.
                 if (iLength < 0) {
                     throw ArgumentOutOfRangeException("iLength must be non-negative.");
                 }
                 if (iLength == 0) {
                     return String("");
                 }
+
+                /// Read raw bytes and convert to null-terminated string.
                 Array<byte> arrBytes = ReadBytes(iLength);
                 Array<char> arrChars(iLength + 1);
                 for (int i = 0; i < iLength; ++i) {

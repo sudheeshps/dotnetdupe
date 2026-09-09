@@ -15,6 +15,7 @@ namespace DotNetDupe {
                   m_bLeaveOpen(bLeaveOpen),
                   m_bIsLittleEndian(bIsLittleEndian),
                   m_bDisposed(false) {
+                /// Guard: Validate stream pointer.
                 if (m_pStream == nullptr) {
                     throw ArgumentNullException("pStream cannot be null.");
                 }
@@ -26,26 +27,31 @@ namespace DotNetDupe {
                   m_bLeaveOpen(bLeaveOpen),
                   m_bIsLittleEndian(bIsLittleEndian),
                   m_bDisposed(false) {
+                /// Guard: Validate smart pointer stream.
                 if (m_pStream == nullptr) {
                     throw ArgumentNullException("spStream cannot be null.");
                 }
             }
 
             BinaryWriter::~BinaryWriter() {
+                /// Clean up binary writer state and underlying stream.
                 Dispose();
             }
 
             void BinaryWriter::EnsureNotDisposed() const {
+                /// Guard: Check lifecycle state.
                 if (m_bDisposed) {
                     throw InvalidOperationException("BinaryWriter is disposed.");
                 }
             }
 
             void BinaryWriter::Close() {
+                /// Close and dispose writer.
                 Dispose();
             }
 
             void BinaryWriter::Dispose() {
+                /// Deterministic resource cleanup.
                 if (!m_bDisposed) {
                     m_bDisposed = true;
                     if (!m_bLeaveOpen && m_pStream != nullptr) {
@@ -55,7 +61,10 @@ namespace DotNetDupe {
             }
 
             void BinaryWriter::Flush() {
+                /// Guard: Check stream state.
                 EnsureNotDisposed();
+
+                /// Flush underlying stream.
                 m_pStream->Flush();
             }
 
@@ -72,15 +81,22 @@ namespace DotNetDupe {
             }
 
             long BinaryWriter::Seek(long lOffset, int iOrigin) {
+                /// Guard: Check stream state.
                 EnsureNotDisposed();
+
+                /// Forward seek operation to underlying stream.
                 return m_pStream->Seek(lOffset, iOrigin);
             }
 
             void BinaryWriter::WriteInternal(const char* pBuffer, int iCount) {
+                /// Guard: Check stream state.
                 EnsureNotDisposed();
+
+                /// Write buffer to base stream.
                 m_pStream->Write(pBuffer, 0, iCount);
             }
 
+            /// Reverse bytes in place for endian conversion.
             static void ReverseBytes(char* pBuf, int iSize) {
                 for (int i = 0, j = iSize - 1; i < j; ++i, --j) {
                     char chTemp = pBuf[i];
@@ -113,10 +129,13 @@ namespace DotNetDupe {
             }
 
             void BinaryWriter::Write(const Array<byte>& arrBuffer, int iIndex, int iCount) {
+                /// Guard: Check state and bounds.
                 EnsureNotDisposed();
                 if (iIndex < 0 || iCount < 0 || (iIndex + iCount) > arrBuffer.GetLength()) {
                     throw ArgumentOutOfRangeException("Invalid index and count bounds.");
                 }
+
+                /// Write array slice to stream.
                 const char* pData = reinterpret_cast<const char*>(arrBuffer.GetData()) + iIndex;
                 WriteInternal(pData, iCount);
             }
@@ -179,6 +198,7 @@ namespace DotNetDupe {
             }
 
             void BinaryWriter::Write(const String& sValue) {
+                /// Write raw string characters to stream.
                 int iLen = sValue.GetLength();
                 if (iLen > 0) {
                     WriteInternal(sValue.GetRawString(), iLen);

@@ -1,0 +1,28 @@
+var class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element =
+[
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#aa8e615b00cbc72a60dfb7535e8a18c6b", null ],
+    [ "~JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#ad25c691062a42bf0b2d39f7de35a8f0e", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#ab9a9e6fd1db90185738d1b82bc62d6b9", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a222670ba7889403cbc44485be22fb36c", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a160d70e219bf506ec11b5ff219a71b95", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a30a2bccc53e4921388d254e2edeb9817", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a1b1245988ae1b2ca354f52fa214ab286", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#af07ca68b1ac35adf1c78b25663a5df23", null ],
+    [ "JsonElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a68ef8d80b971a31c80b5b2f792e45e2d", null ],
+    [ "AddArrayElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#ac177bc53bbe65f6ba45a5b7d7e9a69ff", null ],
+    [ "GetArrayElement", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#aa285bfe3f7b96d92cc1cfcf85ddfabf2", null ],
+    [ "GetArrayLength", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a04fa3ab6a692a4101eec56d166c155ed", null ],
+    [ "GetBoolean", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#acc530d761e9c30ee21f11123e9bf246e", null ],
+    [ "GetDouble", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#affdb28f5e03059a19bf62052f4c461c0", null ],
+    [ "GetInt32", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a070506f66ce852b2eb2ac1414cc29080", null ],
+    [ "GetInt64", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#acb30806723b53709f2777e395eb69444", null ],
+    [ "GetPropertyNames", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a50297f9ff3627eac6dc24e13faf2a8b1", null ],
+    [ "GetString", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a02e182a3b93259b2d66752d8e42e6fdb", null ],
+    [ "GetValueKind", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a605390eea607d72fd3b0019044a42391", null ],
+    [ "operator=", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a68950d739fe786bef8f4e960eaf9ec57", null ],
+    [ "operator=", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#ad9361e624c5c4f666b1ee08d658eb937", null ],
+    [ "Parse", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#ae46b2aaf5e3ac11fbfc9e3de9b528cdf", null ],
+    [ "SetProperty", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#afe30de1a4ada66ca869dae40052fbf2f", null ],
+    [ "ToString", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a977bb34a0f3841dfa2230ba819e25ec7", null ],
+    [ "TryGetProperty", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#a792d45f4976ccd9313b8c87610e967ef", null ]
+];

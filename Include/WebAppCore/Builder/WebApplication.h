@@ -1,3 +1,6 @@
+/// \file WebApplication.h
+/// \brief Represents the web application used to configure the HTTP pipeline and routes mirroring ASP.NET Core WebApplication.
+
 #pragma once
 
 #include "Common.h"
@@ -19,6 +22,14 @@ namespace DotNetDupe {
 
             class WebApplicationBuilder;
 
+            /// \brief Configures HTTP request pipelines, minimalist routing endpoints, WebSockets, and hosts web servers.
+            ///
+            /// Models ASP.NET Core minimal API hosting in C++ with integrated Dependency Injection,
+            /// multithreaded worker pools, and controller mapping.
+            /// Thread-safe for route registration prior to Run(); immutable during execution.
+            ///
+            /// \note Conforms to RFC 9110 (HTTP Semantics) and ASP.NET Core Minimal API specifications.
+            /// \see WebApplicationBuilder, HttpContext
             class WebApplication : public virtual DotNetDupe::System::Object {
             public:
                 using ControllerRegistrar = DotNetDupe::System::Action<const DotNetDupe::System::SmartPointer<WebApplication>&>;
@@ -31,6 +42,8 @@ namespace DotNetDupe {
                 DOTNETDUPE_API WebApplication(WebApplication&&) noexcept;
                 DOTNETDUPE_API WebApplication& operator=(WebApplication&&) noexcept;
 
+                /// \brief Initializes a new instance of the WebApplicationBuilder class with pre-configured defaults.
+                /// \return A SmartPointer to the newly created WebApplicationBuilder.
                 DOTNETDUPE_API static DotNetDupe::System::SmartPointer<WebApplicationBuilder> CreateBuilder();
                 
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> GetServices() const { return m_spServices; }

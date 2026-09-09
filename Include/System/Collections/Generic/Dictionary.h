@@ -14,15 +14,28 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
+                /// \struct KeyValuePair
+                /// \brief Defines a key/value pair that can be set or retrieved.
+                /// \tparam TKey The type of the key.
+                /// \tparam TValue The type of the value.
                 template <typename TKey, typename TValue>
                 struct KeyValuePair {
-                    TKey Key;
-                    TValue Value;
+                    TKey Key;     ///< Gets or sets the key in the key/value pair.
+                    TValue Value; ///< Gets or sets the value in the key/value pair.
+
+                    /// \brief Initializes a new instance of the KeyValuePair structure with default values.
                     KeyValuePair() {}
+
+                    /// \brief Initializes a new instance of the KeyValuePair structure with the specified key and value.
+                    /// \param k The object defined in each key/value pair.
+                    /// \param v The definition associated with key.
                     KeyValuePair(TKey k, TValue v) : Key(k), Value(v) {}
                 };
 
+                /// \struct HashHelpers
+                /// \brief Provides prime modulus capacity calculation for hash-based collections.
                 struct HashHelpers {
+                    /// \brief Array of prime capacities to distribute hash values evenly.
                     inline static const int s_primes[] = {
                         3, 7, 11, 17, 23, 29, 37, 47, 59, 71, 89, 107, 131, 163, 197, 239, 293, 353, 431, 521, 631, 761, 919,
                         1103, 1327, 1597, 1931, 2333, 2801, 3371, 4049, 4861, 5839, 7013, 8419, 10103, 12143, 14591,
@@ -30,6 +43,10 @@ namespace DotNetDupe {
                         187751, 225307, 270371, 324449, 389357, 467237, 560689, 672827, 807403, 968897, 1162687, 1395263,
                         1674319, 2009191, 2411033, 2893249, 3471899, 4166287, 4999559, 5999471, 7199369
                     };
+
+                    /// \brief Finds the smallest prime number greater than or equal to min.
+                    /// \param min The minimum capacity value.
+                    /// \return A prime number >= min.
                     static int GetPrime(int min) {
                         for (int i = 0; i < (int)(sizeof(s_primes) / sizeof(s_primes[0])); ++i) {
                             if (s_primes[i] >= min) return s_primes[i];
@@ -38,6 +55,13 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \class Dictionary
+                /// \brief Represents a collection of keys and values.
+                ///
+                /// \tparam TKey The type of the keys in the dictionary.
+                /// \tparam TValue The type of the values in the dictionary.
+                /// \note Conforms to ECMA-335 Partition IV Section 5.38 (System.Collections.Generic.Dictionary<TKey, TValue>).
+                ///       Implements a closed-addressing hash table with prime modulus bucket indexing and collision resolution through singly-linked entry chains.
                 template <typename TKey, typename TValue>
                 class Dictionary : public Object {
                 private:

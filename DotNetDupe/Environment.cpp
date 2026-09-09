@@ -139,6 +139,7 @@ namespace DotNetDupe {
 #endif
 
         int64_t Environment::GetWorkingSet() {
+            /// Query resident physical memory working set from operating system.
 #if defined(_WIN32)
             PROCESS_MEMORY_COUNTERS pmc;
             if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) return (int64_t)pmc.WorkingSetSize;
@@ -153,6 +154,7 @@ namespace DotNetDupe {
         }
 
         String Environment::ExpandEnvironmentVariables(const String& sName) {
+            /// Expand embedded environment variable tokens in target string.
 #if defined(_WIN32)
             std::wstring sWName = Utf8ToWChar(sName.GetRawString());
             DWORD nSize = ::ExpandEnvironmentStringsW(sWName.c_str(), NULL, 0);

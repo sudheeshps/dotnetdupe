@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['databaseengine_0',['DatabaseEngine',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_database_engine.html',1,'DotNetDupe::System::Data::Internal']]],
+  ['datetime_1',['DateTime',['../class_dot_net_dupe_1_1_system_1_1_date_time.html',1,'DotNetDupe::System']]],
+  ['datetimeoffset_2',['DateTimeOffset',['../class_dot_net_dupe_1_1_system_1_1_date_time_offset.html',1,'DotNetDupe::System']]],
+  ['daylighttime_3',['DaylightTime',['../class_dot_net_dupe_1_1_system_1_1_daylight_time.html',1,'DotNetDupe::System']]],
+  ['dbcommand_4',['DbCommand',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html',1,'DotNetDupe::System::Data::Common']]],
+  ['dbconnection_5',['DbConnection',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_connection.html',1,'DotNetDupe::System::Data::Common']]],
+  ['dbdatareader_6',['DbDataReader',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_data_reader.html',1,'DotNetDupe::System::Data::Common']]],
+  ['dbparameter_7',['DbParameter',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_parameter.html',1,'DotNetDupe::System::Data::Common']]],
+  ['dbparametercollection_8',['DbParameterCollection',['../class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_parameter_collection.html',1,'DotNetDupe::System::Data::Common']]],
+  ['dictionary_9',['Dictionary',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['dictionary_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20dotnetdupe_3a_3asystem_3a_3afunc_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20dotnetdupe_3a_3asystem_3a_3asmartpointer_3c_20dotnetdupe_3a_3awebappcore_3a_3ahttp_3a_3ahttpcontext_20_3e_20_3e_20_3e_10',['Dictionary&lt; DotNetDupe::System::String, DotNetDupe::System::Func&lt; DotNetDupe::System::String, DotNetDupe::System::SmartPointer&lt; DotNetDupe::WebAppCore::Http::HttpContext &gt; &gt; &gt;',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['dictionary_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20dotnetdupe_3a_3asystem_3a_3asmartpointer_3c_20dotnetdupe_3a_3awebappcore_3a_3awebsockets_3a_3aiwebsockethandler_20_3e_20_3e_11',['Dictionary&lt; DotNetDupe::System::String, DotNetDupe::System::SmartPointer&lt; DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler &gt; &gt;',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['dictionary_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20dotnetdupe_3a_3asystem_3a_3astring_20_3e_12',['Dictionary&lt; DotNetDupe::System::String, DotNetDupe::System::String &gt;',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['dictionary_3c_20dotnetdupe_3a_3asystem_3a_3astring_2c_20dotnetdupe_3a_3asystem_3a_3atext_3a_3ajson_3a_3ajsonelement_20_3e_13',['Dictionary&lt; DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement &gt;',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['dictionary_3c_20t_2c_20bool_20_3e_14',['Dictionary&lt; T, bool &gt;',['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html',1,'DotNetDupe::System::Collections::Generic']]],
+  ['directory_15',['Directory',['../class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html',1,'DotNetDupe::System::IO']]],
+  ['directorynotfoundexception_16',['DirectoryNotFoundException',['../class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html',1,'DotNetDupe::System::IO']]],
+  ['diskinfo_17',['DiskInfo',['../struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_disk_info.html',1,'DotNetDupe::System::Diagnostics']]],
+  ['dns_18',['Dns',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html',1,'DotNetDupe::System::Net']]],
+  ['downloadcompletedeventargs_19',['DownloadCompletedEventArgs',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html',1,'DotNetDupe::System::Net::Http']]],
+  ['downloadprogress_20',['DownloadProgress',['../struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html',1,'DotNetDupe::System::Net::Http']]],
+  ['downloadprogresschangedeventargs_21',['DownloadProgressChangedEventArgs',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html',1,'DotNetDupe::System::Net::Http']]]
+];

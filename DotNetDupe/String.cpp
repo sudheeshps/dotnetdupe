@@ -63,22 +63,29 @@ namespace DotNetDupe {
 		}
 		String::String() { m_pImpl = new StringImpl("");  }
 		String::~String() { delete m_pImpl; }
+
 		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
+			/// Extract integer argument index between placeholder braces {N}.
 			std::string num = sFmt.substr(i + 1, end - i - 1);
 			size_t idx = 0;
 			int argIdx = std::stoi(num, &idx);
 			if (idx != num.length() || argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
+
+			/// Append resolved string argument to target buffer.
 			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
 		}
 
 		static void FormatOpenBrace(const std::string& sFmt, size_t& i, int& iAutoIndex, const String* pArgs, int iArgCount, std::string& sRes) {
+			/// Handle escaped open brace '{{' by appending a single literal '{'.
 			if (i + 1 < sFmt.length() && sFmt[i+1] == '{') {
 				sRes += '{'; i++;
 			} else if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
+				/// Handle auto-indexed placeholder '{}' by advancing sequential index.
 				if (iAutoIndex >= iArgCount) throw FormatException("Index out of bounds");
 				sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
 				iAutoIndex++; i++;
 			} else {
+				/// Scan for closing delimiter and resolve explicit positional argument.
 				size_t end = sFmt.find('}', i + 1);
 				if (end == std::string::npos) throw FormatException("Unclosed brace");
 				AppendExplicitArg(sFmt, i, end, pArgs, iArgCount, sRes);
@@ -87,17 +94,21 @@ namespace DotNetDupe {
 		}
 
 		static void FormatClosingBrace(const std::string& sFmt, size_t& i, std::string& sRes) {
+			/// Handle escaped closing brace '}}' by appending a literal '}'.
 			if (i + 1 < sFmt.length() && sFmt[i+1] == '}') {
 				sRes += '}'; i++;
 			} else {
+				/// Reject isolated, unescaped closing brace as malformed format syntax.
 				throw FormatException("Unescaped closing brace");
 			}
 		}
 
 		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
+			/// Guard: Validate format string pointer and argument array.
 			if (!pFormat) throw ArgumentException("Format string cannot be null.");
 			if (iArgCount == 0 || !pArgs) return String(pFormat);
 
+			/// Parse format string and sequentially substitute placeholders.
 			std::string sFmt = pFormat;
 			std::string sRes;
 			int iAutoIndex = 0;
@@ -110,6 +121,8 @@ namespace DotNetDupe {
 					sRes += sFmt[i];
 				}
 			}
+
+			/// Return constructed composite string.
 			return String(sRes.c_str());
 		}
 

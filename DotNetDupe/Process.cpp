@@ -296,8 +296,11 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static bool QueryProcessNameById(int iProcessId, String& sOutName, HANDLE& hOutProc) {
+                /// Open limited query handle to inspect process image without elevated privileges.
                 hOutProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, static_cast<DWORD>(iProcessId));
                 if (hOutProc == NULL) return false;
+
+                /// Query full native executable image path and extract trailing file name.
                 WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
                 if (::QueryFullProcessImageNameW(hOutProc, 0, szPath, &dwLen)) {
                     std::wstring ws(szPath);
@@ -310,9 +313,12 @@ namespace DotNetDupe {
             }
 #else
             static bool QueryLinuxProcessNameById(int iProcessId, String& sOutName) {
+                /// Open /proc/[pid]/comm pseudo-filesystem entry to read process command name.
                 std::string sPath = "/proc/" + std::to_string(iProcessId) + "/comm";
                 std::ifstream commFile(sPath);
                 std::string sComm;
+
+                /// Extract first line containing process command name.
                 if (commFile.is_open() && std::getline(commFile, sComm)) {
                     sOutName = String(sComm.c_str());
                     return true;
@@ -323,8 +329,11 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static void EnumerateWin32Processes(Collections::Generic::List<SmartPointer<Process>>& lstProcs) {
+                /// Take atomic kernel snapshot of all active system processes via Toolhelp32.
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
                 if (hSnapshot == INVALID_HANDLE_VALUE) return;
+
+                /// Iterate snapshot entries via Process32FirstW and Process32NextW.
                 PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
                 if (::Process32FirstW(hSnapshot, &pe32)) {
                     do {
@@ -332,6 +341,8 @@ namespace DotNetDupe {
                         lstProcs.Add(SmartPointer<Process>::NewShared(static_cast<int>(pe32.th32ProcessID), String(pe32.szExeFile), nullptr));
                     } while (::Process32NextW(hSnapshot, &pe32));
                 }
+
+                /// Release snapshot handle.
                 ::CloseHandle(hSnapshot);
             }
 #else

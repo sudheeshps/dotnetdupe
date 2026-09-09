@@ -1,3 +1,8 @@
+/**
+ * @file ConcurrentQueue.h
+ * @brief Thread-safe FIFO queue mirroring .NET System.Collections.Concurrent.ConcurrentQueue<T>.
+ */
+
 #pragma once
 
 #include "Common.h"
@@ -12,6 +17,14 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Concurrent {
 
+                /**
+                 * @class ConcurrentQueue
+                 * @brief Represents a thread-safe first-in, first-out (FIFO) collection.
+                 * @tparam T The type of the elements contained in the queue.
+                 * 
+                 * Provides thread-safe concurrent enqueuing, dequeuing, and peeking
+                 * with RAII critical section synchronization.
+                 */
                 template <typename T>
                 class ConcurrentQueue : public Object {
                 private:
@@ -19,13 +32,20 @@ namespace DotNetDupe {
                     Generic::LinkedList<T> m_list;
 
                 public:
+                    /**
+                     * @brief Initializes a new instance of the ConcurrentQueue class.
+                     */
                     ConcurrentQueue() = default;
 
+                    // Algorithm: Thread-Safe Enqueue
+                    // Acquires RAII critical section lock and appends to tail of linked list in O(1).
                     void Enqueue(const T& item) {
                         Threading::CriticalSectionLock lock(m_csLock);
                         m_list.AddLast(item);
                     }
 
+                    // Algorithm: Thread-Safe Dequeue
+                    // Acquires RAII critical section lock, checks emptiness, and removes head node in O(1).
                     bool TryDequeue(T& result) {
                         Threading::CriticalSectionLock lock(m_csLock);
                         if (m_list.GetCount() == 0) {

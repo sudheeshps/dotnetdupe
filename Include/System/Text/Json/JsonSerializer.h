@@ -12,19 +12,33 @@ namespace DotNetDupe {
         namespace Text {
             namespace Json {
 
-                // Primary template for converters.
-                // Users can specialize this template for their own classes.
+                /// \struct JsonConverter
+                /// \brief Primary template for type-specific JSON serialization converters.
+                /// \tparam T Type to serialize or deserialize.
                 template <typename T, typename Enable = void>
                 struct JsonConverter;
 
+                /// \class JsonSerializer
+                /// \brief Provides functionality to serialize objects to JSON strings and deserialize JSON strings to objects.
+                ///
+                /// \details Complies with RFC 8259 and ECMA-404 specifications. Converts C++ objects and primitives
+                /// into JSON text and deserializes JSON text into strongly typed C++ objects via JsonConverter specializations.
                 class JsonSerializer {
                 public:
+                    /// \brief Converts the value of a type specified by a generic type parameter into a JSON string.
+                    /// \tparam T The type of the value to serialize.
+                    /// \param value The value to convert.
+                    /// \return A JSON string representation of the value.
                     template <typename T>
                     static String Serialize(const T& value) {
                         JsonElement element = JsonConverter<T>::Write(value);
                         return element.ToString();
                     }
 
+                    /// \brief Parses the text representing a single JSON value into an instance of the type specified by a generic type parameter.
+                    /// \tparam T The target type of the JSON value.
+                    /// \param sJson The JSON text to parse.
+                    /// \return A T representation of the JSON value.
                     template <typename T>
                     static T Deserialize(const String& sJson) {
                         JsonElement element = JsonElement::Parse(sJson);
@@ -34,7 +48,7 @@ namespace DotNetDupe {
 
                 // Specializations for Primitive types
                 
-                // Int
+                /// \brief JsonConverter specialization for int.
                 template <>
                 struct JsonConverter<int> {
                     static JsonElement Write(const int& value) {
@@ -45,7 +59,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // Long Long
+                /// \brief JsonConverter specialization for long long.
                 template <>
                 struct JsonConverter<long long> {
                     static JsonElement Write(const long long& value) {
@@ -56,7 +70,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // Double
+                /// \brief JsonConverter specialization for double.
                 template <>
                 struct JsonConverter<double> {
                     static JsonElement Write(const double& value) {
@@ -67,7 +81,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // Float
+                /// \brief JsonConverter specialization for float.
                 template <>
                 struct JsonConverter<float> {
                     static JsonElement Write(const float& value) {
@@ -78,7 +92,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // Bool
+                /// \brief JsonConverter specialization for bool.
                 template <>
                 struct JsonConverter<bool> {
                     static JsonElement Write(const bool& value) {
@@ -89,7 +103,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // String
+                /// \brief JsonConverter specialization for String.
                 template <>
                 struct JsonConverter<String> {
                     static JsonElement Write(const String& value) {
@@ -100,7 +114,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // List<U>
+                /// \brief JsonConverter specialization for List<U>.
                 template <typename U>
                 struct JsonConverter<Collections::Generic::List<U>> {
                     static JsonElement Write(const Collections::Generic::List<U>& value) {
@@ -120,7 +134,7 @@ namespace DotNetDupe {
                     }
                 };
 
-                // Dictionary<String, U>
+                /// \brief JsonConverter specialization for Dictionary<String, U>.
                 template <typename U>
                 struct JsonConverter<Collections::Generic::Dictionary<String, U>> {
                     static JsonElement Write(const Collections::Generic::Dictionary<String, U>& value) {

@@ -9,24 +9,28 @@ namespace DotNetDupe {
         Random::Random(int seed) : _seed(seed) { }
 
         int Random::Next() {
+            /// Initialize Mersenne Twister engine with current seed and draw non-negative integer.
             std::mt19937 gen(_seed);
             std::uniform_int_distribution<> distrib(0, 2147483647);
             return distrib(gen);
         }
 
         int Random::Next(int maxValue) {
+            /// Sample uniform distribution across [0, maxValue].
             std::mt19937 gen(_seed);
             std::uniform_int_distribution<> distrib(0, maxValue);
             return distrib(gen);
         }
 
         int Random::Next(int minValue, int maxValue) {
+            /// Sample uniform distribution across [minValue, maxValue].
             std::mt19937 gen(_seed);
             std::uniform_int_distribution<> distrib(minValue, maxValue);
             return distrib(gen);
         }
 
         void Random::NextBytes(unsigned char* buffer, int bufferSize) {
+            /// Generate random bytes across entire buffer span.
             std::mt19937 gen(_seed);
             std::uniform_int_distribution<> distrib(0, 255);
             for (int i = 0; i < bufferSize; ++i) {
@@ -35,6 +39,7 @@ namespace DotNetDupe {
         }
 
         double Random::NextDouble() {
+            /// Sample uniform real distribution in interval [0.0, 1.0).
             std::mt19937 gen(_seed);
             std::uniform_real_distribution<> distrib(0.0, 1.0);
             return distrib(gen);

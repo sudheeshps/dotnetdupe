@@ -1,3 +1,8 @@
+/**
+ * @file List.h
+ * @brief Represents a strongly typed list of objects that can be accessed by index mirroring .NET List<T>.
+ */
+
 #pragma once
 
 #include "Common.h"
@@ -12,10 +17,26 @@ namespace DotNetDupe {
 		namespace Collections {
 			namespace Generic {
 
+				/**
+				 * @class List
+				 * @brief Represents a strongly typed list of objects accessible by index.
+				 * @tparam T The type of elements in the list.
+				 * 
+				 * Implements dynamic array resizing with amortized O(1) additions, binary search,
+				 * sorting, and placement new allocation without STL container leakage.
+				 */
 				template <typename T>
 				class List : public Object {
 				public:
+					/**
+					 * @brief Initializes a new instance of the List class that is empty.
+					 */
 					List() { }
+
+					/**
+					 * @brief Initializes a new instance of the List class with specified capacity.
+					 * @param iCapacity Initial buffer capacity.
+					 */
 					List(int iCapacity) { SetCapacity(iCapacity); }
 					List(const std::initializer_list<T>& vCollection) {
                         SetCapacity((int)vCollection.size());
@@ -68,6 +89,8 @@ namespace DotNetDupe {
 					int GetCount() const { return m_iCount; }
 					int GetCapacity() const { return m_iCapacity; }
 					
+					// Algorithm: Geometric Capacity Growth & Placement Move
+					// Reallocates contiguous memory block and transfers elements via placement move constructor.
                     void SetCapacity(int iValue) {
                         if (iValue > m_iCapacity) {
                             T* pNewData = static_cast<T*>(AllocateCollectionBuffer(sizeof(T) * iValue));
@@ -88,6 +111,7 @@ namespace DotNetDupe {
 						return m_pData[iIndex];
 					}
 
+					// Amortized O(1) insertion: doubles capacity when current storage is exhausted.
 					void Add(const T& item) {
                         if (m_iCount == m_iCapacity) {
                             SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);
@@ -125,6 +149,9 @@ namespace DotNetDupe {
                         return -1;
 					}
 
+					// Algorithm: Binary Search with Bitwise Complement
+					// Performs logarithmic O(log N) lookup. If the key is not found, returns bitwise
+					// complement (~low) of the index of the first element larger than the searched value.
 					int BinarySearch(const T& item) const {
                         int low = 0;
                         int high = m_iCount - 1;

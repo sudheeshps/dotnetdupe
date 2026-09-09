@@ -349,11 +349,14 @@ namespace DotNetDupe {
         }
 
         static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector<char>& decoded) {
+            /// Map remainder Base64 characters to 6-bit numerical values.
             for (int j = 0; j < i; j++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[j]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
                 char_array_4[j] = static_cast<unsigned char>(ptr - base64_chars);
             }
+
+            /// Unpack 6-bit values into 1 or 2 trailing raw bytes.
             unsigned char char_array_3[2];
             char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
             if (i > 2) {
@@ -366,6 +369,7 @@ namespace DotNetDupe {
         }
 
         static void DecodeBase64Loop(const std::string& sInput, std::vector<char>& decoded) {
+            /// Stream 4-character 6-bit Base64 blocks and decode into 3-byte groups.
             size_t in_len = sInput.size();
             int i = 0, in_ = 0;
             unsigned char char_array_4[4];
@@ -376,6 +380,8 @@ namespace DotNetDupe {
                     i = 0;
                 }
             }
+
+            /// Process any trailing non-padded remainder characters.
             if (i) DecodeBase64Remainder(char_array_4, i, decoded);
         }
 

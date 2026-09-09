@@ -1,3 +1,8 @@
+/**
+ * @file PriorityQueue.h
+ * @brief Represents a collection of items that have a value and a priority mirroring .NET PriorityQueue<TElement, TPriority>.
+ */
+
 #pragma once
 
 #include "Common.h"
@@ -12,6 +17,14 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
+                /**
+                 * @class PriorityQueue
+                 * @brief Represents a collection of items with prioritized ordering backed by a binary min-heap.
+                 * @tparam TElement Specifies the type of elements in the queue.
+                 * @tparam TPriority Specifies the type of the priority associated with elements.
+                 * 
+                 * Enqueues items with associated priorities and dequeues elements in ascending priority order (lowest value first).
+                 */
                 template <typename TElement, typename TPriority>
                 class PriorityQueue : public Object {
                 private:
@@ -30,6 +43,9 @@ namespace DotNetDupe {
 
                     List<ElementPriorityPair> m_lstItems;
 
+                    // Algorithm: Binary Min-Heap Sift-Up (O(log N))
+                    // Traverses upward from leaf to root, swapping the item with its parent
+                    // at (index - 1) / 2 while child priority < parent priority.
                     void SiftUp(int index) {
                         while (index > 0) {
                             int parent = (index - 1) / 2;
@@ -42,6 +58,9 @@ namespace DotNetDupe {
                         }
                     }
 
+                    // Algorithm: Binary Min-Heap Sift-Down (O(log N))
+                    // Moves the top element down by iteratively comparing against the smaller
+                    // of its left (2*i + 1) and right (2*i + 2) children until heap order is restored.
                     void SiftDown(int index) {
                         int count = m_lstItems.GetCount();
                         while (index * 2 + 1 < count) {

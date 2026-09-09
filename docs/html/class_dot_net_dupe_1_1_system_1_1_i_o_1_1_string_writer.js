@@ -1,0 +1,28 @@
+var class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer =
+[
+    [ "StringWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#ab62189963e0a7170a4fd940c0282fd78", null ],
+    [ "StringWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a1acfd2eeb3b5fb3bdda1a9e969ba2bb8", null ],
+    [ "~StringWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a0479e29ed2e92dfc784303d05af926aa", null ],
+    [ "Close", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a129193987661aad0dc79cc05c03cf170", null ],
+    [ "Dispose", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a2c91ca128edcf60f02397f92e84dd3a6", null ],
+    [ "Flush", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a3be20911dedca0d387b204f48bb7e557", null ],
+    [ "GetEncoding", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#af73671f5e1f586e9c9c7623765e17f0b", null ],
+    [ "ToString", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a0a42cbc1eb056f1640cbf15ce4efc75c", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a9f734463f1e6ea7aadf93d4809a570d1", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a31ddb4c6490d158e380a2610e0449cb4", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a76a7f89f6e0c624175be109627fbedc4", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a1f764ed72379087ba953525b57a4f345", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a07619aff1251b5770136c5d9c1d4ff22", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a15693fe98402abb0049d1ad6d252fe8b", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a1fbee11436b458f771850a265c598afc", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#ab07a653a3f8f7d9bebd65f45617ff179", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a3843f37dc459396499e51944e723e142", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a7d21ee3d058778834378427e8d27f1f7", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#af2ef6fb135942b1b750cc21017c5bf9c", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#aa23dcd77699e2649b21c65814c70c679", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a5e0d0421659b2d0c94d5b097c01b24dc", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#ad7eb4ea4b714c648c82904f405b3d2e3", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a97c29924fd0081a53a745d0a1d906073", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#a0098944d81ca89881a301b33941a8887", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html#af242a054bfd94e816726a1faadd84d06", null ]
+];

@@ -51,14 +51,19 @@ namespace {
 void InternalWrite(const String& sValue) {
     SmartPointer<IO::TextWriter> pWriter = nullptr;
     {
+        /// Acquire recursive mutex lock for thread-safe output dispatch.
         std::lock_guard<std::recursive_mutex> lk(s_mutex);
         s_accumulator = s_accumulator + sValue;
         pWriter = s_pOutWriter;
+
+        /// Output directly to std::cout if standard output writer is not redirected.
         if (!pWriter) {
             std::cout << sValue.GetRawString() << std::flush;
             return;
         }
     }
+
+    /// Dispatch output to custom redirected TextWriter.
     pWriter->Write(sValue);
 }
 

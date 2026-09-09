@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include "Common.h"
 #include "System/SystemException.h"
@@ -56,14 +56,15 @@ namespace DotNetDupe {
         template <typename T>
         class EnableSharedFromThis;
 
-        /**
-         * @brief A unified Smart Pointer that supports both unique and shared ownership semantics.
-         * 
-         * Improvised Interface:
-         * - SmartPointer<T> p;       -> Automatically allocates new T() (if T is not abstract). Unique ownership.
-         * - SmartPointer<T> p(true); -> Automatically allocates new T() and enables Shared ownership.
-         * - SmartPointer<T> p(ptr);  -> Takes ownership of an existing raw pointer. Unique ownership.
-         */
+        /// \brief A unified smart pointer that supports both unique and shared ownership semantics.
+        ///
+        /// Provides high-performance automatic lifetime management without raw pointer leaks:
+        /// - Unique mode: Zero-overhead RAII ownership (default).
+        /// - Shared mode: Atomic reference counting with intrusive or external reference counter blocks.
+        /// Thread-safe for reference count increments and decrements in shared mode.
+        ///
+        /// \note Conforms to DotNetDupe RAII Memory Management Standards (Quality Gate 8 & 11).
+        /// \see Object, EnableSharedFromThis
         template <typename T>
         class SmartPointer {
             template <typename U>
@@ -525,12 +526,14 @@ namespace DotNetDupe {
             }
 
             void InternalCleanup() {
+                /// Shared ownership mode: atomically decrement reference counter and free if zero.
                 if (m_pnRefCount != nullptr) {
                     if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
                         if (m_pObject != nullptr) delete m_pObject;
                         delete const_cast<long*>(m_pnRefCount);
                     }
                 } else if (m_pObject != nullptr) {
+                    /// Unique ownership mode: directly delete managed object without atomic overhead.
                     delete m_pObject;
                 }
                 m_pObject = nullptr;

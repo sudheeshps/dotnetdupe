@@ -24,6 +24,7 @@ namespace DotNetDupe {
                 : EventWaitHandle(initialState, true, sName, openAlways, bCreatedNew) {}
 
             SmartPointer<ManualResetEvent> ManualResetEvent::OpenExisting(const String& sName) {
+                /// Open existing system manual-reset event.
                 SmartPointer<ManualResetEvent> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
@@ -32,12 +33,16 @@ namespace DotNetDupe {
             }
 
             bool ManualResetEvent::TryOpenExisting(const String& sName, SmartPointer<ManualResetEvent>& pResult) {
+                /// Guard: Check empty name.
                 pResult = SmartPointer<ManualResetEvent>();
                 if (sName.IsEmpty()) return false;
+
 #if defined(_WIN32)
+                /// Attempt Win32 OpenEventW.
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h == NULL) return false;
+
                 SmartPointer<ManualResetEvent> spEvt = SmartPointer<ManualResetEvent>::NewShared(false);
                 spEvt->_name = sName;
                 spEvt->_hHandle = h;

@@ -4,6 +4,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
 [![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
 [![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
+[![API Docs](https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&logo=doxygen)](docs/index.html)
 [![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/DotNetDupe)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
@@ -745,6 +746,19 @@ DotNetDupe is designed to be more intuitive and less verbose than the standard C
 The repository includes `DotNetDupeDemo` (a sample console application) and `DotNetDupeTests` (unit tests) projects. These projects demonstrate how to integrate and use the `DotNetDupe` library. You can refer to their `.vcxproj` files for examples of how to configure your own projects to consume the `DotNetDupe` NuGet package.
 
 ## API Reference 📖
+
+DotNetDupe provides comprehensive documentation through multiple interconnected channels:
+
+* 🌐 **[Interactive Documentation Portal](docs/index.html)**: Modern web interface with real-time class search, namespace categorization, and C# vs C++ code comparisons.
+* 📚 **[Doxygen HTML API Reference](docs/html/index.html)**: Exhaustive class and member documentation with parameter specifications, return types, exception contracts, and inheritance hierarchies.
+* 📝 **Thematic Markdown Guides**: Focused architectural deep-dives for each class, listed below.
+
+> [!TIP]
+> **Generating API Documentation Locally**:
+> You can rebuild the entire documentation suite locally at any time using PowerShell:
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1 -OpenBrowser
+> ```
 
 For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:
 

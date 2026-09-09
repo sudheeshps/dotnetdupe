@@ -40,6 +40,7 @@ namespace DotNetDupe {
                     return m_pImpl->m_parameters;
                 }
 
+                /// Extract parameter key-value pairs into dictionary.
                 static Collections::Generic::Dictionary<String, String> ExtractDbParameters(const DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbParameterCollection>& pParams) {
                     Collections::Generic::Dictionary<String, String> dict;
                     for (int i = 0; i < pParams->GetCount(); ++i) {
@@ -50,24 +51,31 @@ namespace DotNetDupe {
                 }
 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbDataReader> SqlCommand::ExecuteReader() {
+                    /// Resolve database name and extract query parameters.
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
                     auto params = ExtractDbParameters(m_pImpl->m_parameters);
                     Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
+
+                    /// Execute query and return reader.
                     auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl->m_sCommandText, params, columns, rowsAffected);
                     return DotNetDupe::System::SmartPointer<SqlDataReader>::NewShared(std::move(resultRows), std::move(columns));
                 }
 
                 int SqlCommand::ExecuteNonQuery() {
+                    /// Resolve database name and extract query parameters.
                     DotNetDupe::System::String dbName = (m_pImpl->m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl->m_connection->GetDatabaseName();
                     auto params = ExtractDbParameters(m_pImpl->m_parameters);
                     Collections::Generic::List<String> columns;
                     int rowsAffected = 0;
+
+                    /// Execute modification query and return affected row count.
                     DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl->m_sCommandText, params, columns, rowsAffected);
                     return rowsAffected;
                 }
 
                 DotNetDupe::System::String SqlCommand::ExecuteScalar() {
+                    /// Execute reader and return first column of first row.
                     auto reader = ExecuteReader();
                     if (reader->Read()) {
                         return reader->GetString(0);

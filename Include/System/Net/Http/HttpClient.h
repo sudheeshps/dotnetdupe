@@ -1,3 +1,8 @@
+/**
+ * @file HttpClient.h
+ * @brief Provides a base class for sending HTTP requests and receiving HTTP responses mirroring .NET HttpClient.
+ */
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"
@@ -19,19 +24,36 @@ namespace DotNetDupe {
 			}
 			namespace Http {
 
+				/**
+				 * @enum HttpCompletionOption
+				 * @brief Indicates if HttpClient operations should be considered completed as soon as a response is available, or after reading the entire response content.
+				 */
 				enum class HttpCompletionOption {
 					ResponseContentRead,
 					ResponseHeadersRead
 				};
 
+				/**
+				 * @class HttpClient
+				 * @brief Sends HTTP requests and receives HTTP responses from a resource identified by a URI.
+				 * 
+				 * Supports standard HTTP verbs (GET, POST, PUT, DELETE), header manipulation,
+				 * Pimpl ABI isolation, and seamless stream and byte array conversions.
+				 */
 				class HttpClient : public Object {
 				public:
 					DOTNETDUPE_API HttpClient();
 					DOTNETDUPE_API ~HttpClient();
 
+					/**
+					 * @brief Sends a GET request to the specified Uri as an asynchronous operation.
+					 */
 					DOTNETDUPE_API HttpResponseMessagePtr Get(const String& requestUri);
 					DOTNETDUPE_API HttpResponseMessagePtr Get(const Uri& requestUri);
 
+					/**
+					 * @brief Sends a POST request to the specified Uri as an asynchronous operation.
+					 */
 					DOTNETDUPE_API HttpResponseMessagePtr Post(const String& requestUri, const HttpContentPtr& content);
 					DOTNETDUPE_API HttpResponseMessagePtr Post(const Uri& requestUri, const HttpContentPtr& content);
 

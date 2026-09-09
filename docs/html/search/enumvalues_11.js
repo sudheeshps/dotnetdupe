@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['safeunescaped_0',['SafeUnescaped',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620aecdddc4dd0fc27bfb60fe28833f1b500',1,'DotNetDupe::System::SafeUnescaped'],['../namespace_dot_net_dupe_1_1_system.html#aefdd84b71a07ee894378b0ae16c28801aecdddc4dd0fc27bfb60fe28833f1b500',1,'DotNetDupe::System::SafeUnescaped']]],
+  ['scheme_1',['Scheme',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a827452688eed02a12178e96f924ac529',1,'DotNetDupe::System']]],
+  ['schemeandserver_2',['SchemeAndServer',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620abaafc686ded2377660b91aa4833943f6',1,'DotNetDupe::System']]],
+  ['scoped_3',['Scoped',['../namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html#a26d83cc6b703b6b3d42e2de4874c2a68a423f62fd0413b98ab4dd487ec060e628',1,'DotNetDupe::Extensions::DependencyInjection']]],
+  ['seeother_4',['SeeOther',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a7843649eb3841f496a79303fd815029e',1,'DotNetDupe::System::Net']]],
+  ['selecterror_5',['SelectError',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a4787b13b32d03c3e8f1a121601b98fc5a252178c012604de6c7ce8502d741457e',1,'DotNetDupe::System::Net::Sockets']]],
+  ['selectread_6',['SelectRead',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a4787b13b32d03c3e8f1a121601b98fc5a2bf3a758df2c88f39efe286eea5d090b',1,'DotNetDupe::System::Net::Sockets']]],
+  ['selectwrite_7',['SelectWrite',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a4787b13b32d03c3e8f1a121601b98fc5a3b4a9edad12e9e5001d2a116e64f568c',1,'DotNetDupe::System::Net::Sockets']]],
+  ['send_8',['Send',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a76f691f86239f2de1975e630b98d9ec5a94966d90747b97d1f0f206c98a8b1ac3',1,'DotNetDupe::System::Net::Sockets']]],
+  ['sendto_9',['SendTo',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a8289fd524027f398e97fbd79faf724a8',1,'DotNetDupe::System::Environment']]],
+  ['serviceunavailable_10',['ServiceUnavailable',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a2a4581043d849bcb0e4747970ef1489b',1,'DotNetDupe::System::Net']]],
+  ['shadow_11',['Shadow',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2a805da56f8f3d09bfad61b11cfb69eaa3f39588bb19e28051d9aedfbb170025c',1,'DotNetDupe::System::Diagnostics']]],
+  ['singleton_12',['Singleton',['../namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html#a26d83cc6b703b6b3d42e2de4874c2a68a6ff5f73c8b5ebd311406568c8ef50bfd',1,'DotNetDupe::Extensions::DependencyInjection']]],
+  ['sparsefile_13',['SparseFile',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a665edbfa4075b64522e0304e3b81dbeb',1,'DotNetDupe::System::IO']]],
+  ['startmenu_14',['StartMenu',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a11be5a46cecdc713a8bf9daf0aca0590',1,'DotNetDupe::System::Environment']]],
+  ['startup_15',['Startup',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a13e685964c2548aa748f7ea263bad4e5',1,'DotNetDupe::System::Environment']]],
+  ['stream_16',['Stream',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#afec951c777f0ece787b8baec03e6fc73aeae835e83c0494a376229f254f7d3392',1,'DotNetDupe::System::Net::Sockets']]],
+  ['string_17',['String',['../namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4a27118326006d3829667a400ad23d5d98',1,'DotNetDupe::System::Text::Json']]],
+  ['strongport_18',['StrongPort',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620adedb207fd8a720b080f08c2116d2c4d9',1,'DotNetDupe::System']]],
+  ['success_19',['Success',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190a505a83f220c02df2f85c3810cd9ceb38',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['successaudit_20',['SuccessAudit',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a8a7692fe4125976d7c32ac4a1d7e5a93ad243b3849467242f79435c1e1a4c8b19',1,'DotNetDupe::System::Diagnostics']]],
+  ['switchingprotocols_21',['SwitchingProtocols',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a548c5a637eddf65132b21411aeafc6a1',1,'DotNetDupe::System::Net']]],
+  ['system_22',['System',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1aa45da96d0bf6575970f2d27af22be28a',1,'DotNetDupe::System::Environment::System'],['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280aa45da96d0bf6575970f2d27af22be28a',1,'DotNetDupe::System::IO::System'],['../namespace_dot_net_dupe_1_1_system_1_1_security_1_1_principal.html#aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a',1,'DotNetDupe::System::Security::Principal::System']]]
+];

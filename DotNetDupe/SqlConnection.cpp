@@ -62,30 +62,35 @@ namespace DotNetDupe {
                     return m_pImpl->m_bIsOpen;
                 }
 
-                void SqlConnection::Open() {
-                    m_pImpl->m_bIsOpen = true;
-
-                    std::string engineUpper = m_pImpl->m_engineType;
+                static void RegisterSelectedBackend(const std::string& engineType, const std::string& dbName, const DotNetDupe::System::String& sConnStr) {
+                    std::string engineUpper = engineType;
                     std::transform(engineUpper.begin(), engineUpper.end(), engineUpper.begin(), ::toupper);
-
                     if (engineUpper == "SQLITE") {
 #if defined(DOTNETDUPE_USE_SQLITE)
-                        auto sqliteBackend = DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Internal::SqliteDatabaseBackend>::NewShared(m_pImpl->m_sConnectionString.GetRawString());
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl->m_dbName.c_str()), sqliteBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
+                        auto sqliteBackend = DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Internal::SqliteDatabaseBackend>::NewShared(sConnStr.GetRawString());
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(dbName.c_str()), sqliteBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
 #else
                         throw DotNetDupe::System::InvalidOperationException("SQLite database engine is not compiled in this build.");
 #endif
                     } else {
                         auto inMemoryBackend = DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Internal::InMemoryDatabaseBackend>::NewShared();
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl->m_dbName.c_str()), inMemoryBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(dbName.c_str()), inMemoryBackend.DynamicCast<DotNetDupe::System::Data::Internal::IDatabaseBackend>());
                     }
                 }
 
+                void SqlConnection::Open() {
+                    /// Mark connection as open and register engine backend.
+                    m_pImpl->m_bIsOpen = true;
+                    RegisterSelectedBackend(m_pImpl->m_engineType, m_pImpl->m_dbName, m_pImpl->m_sConnectionString);
+                }
+
                 void SqlConnection::Close() {
+                    /// Mark connection as closed.
                     m_pImpl->m_bIsOpen = false;
                 }
 
                 DotNetDupe::System::SmartPointer<DotNetDupe::System::Data::Common::DbCommand> SqlConnection::CreateCommand() {
+                    /// Create SqlCommand associated with this connection.
                     return DotNetDupe::System::SmartPointer<SqlCommand>::NewShared("", this);
                 }
 

@@ -1,3 +1,6 @@
+/// \file Convert.h
+/// \brief Converts a base data type to another base data type, and encodes/decodes Base64 data.
+
 #pragma once
 
 #include "Common.h"
@@ -7,6 +10,14 @@
 
 namespace DotNetDupe {
     namespace System {
+        /// \brief Converts a base data type to another base data type.
+        ///
+        /// Provides static conversion methods between primitives (bool, byte, int, long, double, string),
+        /// arbitrary number base radix conversions (binary, octal, decimal, hexadecimal), and RFC 4648 Base64 encoding.
+        /// Thread-safe for all concurrent operations.
+        ///
+        /// \note Conforms to ECMA-335 Partition IV Section 5.11 (System.Convert) and RFC 4648 (The Base16, Base32, and Base64 Data Encodings).
+        /// \see BitConverter, String
         class Convert : public Object {
         public:
             // Boolean

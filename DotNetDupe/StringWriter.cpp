@@ -21,7 +21,7 @@ namespace DotNetDupe {
             }
 
             void StringWriter::Flush() {
-                // Nothing to flush
+                // In-memory string writer requires no flush
             }
 
             Text::EncodingPtr StringWriter::GetEncoding() const {

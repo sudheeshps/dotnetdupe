@@ -31,25 +31,31 @@ namespace DotNetDupe {
             }
 
             void ConditionVariable::Wait(CriticalSection& cs) {
+                /// Wait on condition variable using CriticalSection lock adapter.
                 CSLockAdapter adapter{cs};
                 m_pImpl->cv.wait(adapter);
             }
 
             bool ConditionVariable::Wait(CriticalSection& cs, int millisecondsTimeout) {
+                /// Guard: Handle negative timeout as indefinite wait.
                 if (millisecondsTimeout < 0) {
                     Wait(cs);
                     return true;
                 }
+
+                /// Timed wait via condition variable any.
                 CSLockAdapter adapter{cs};
                 auto status = m_pImpl->cv.wait_for(adapter, std::chrono::milliseconds(millisecondsTimeout));
                 return status == std::cv_status::no_timeout;
             }
 
             void ConditionVariable::Pulse() {
+                /// Wake single waiting thread.
                 m_pImpl->cv.notify_one();
             }
 
             void ConditionVariable::PulseAll() {
+                /// Wake all waiting threads.
                 m_pImpl->cv.notify_all();
             }
         }

@@ -27,11 +27,14 @@ namespace DotNetDupe {
             }
 
             void TextWriter::Write(const char* pValue) {
+                /// Guard: Check null pointer.
                 if (pValue == nullptr) return;
+
                 Write(String(pValue));
             }
 
             void TextWriter::Write(const String& sValue) {
+                /// Write string character-by-character.
                 for (int iIdx = 0; iIdx < sValue.GetLength(); iIdx++) {
                     Write((char)sValue[iIdx]);
                 }

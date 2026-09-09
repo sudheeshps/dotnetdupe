@@ -165,6 +165,7 @@ namespace DotNetDupe {
 
             if (nLength == 0) return String("");
 
+            /// Stream each byte as an uppercase 2-digit zero-padded hexadecimal number separated by '-'.
             std::stringstream ss;
             for (int iIndex = 0; iIndex < nLength; ++iIndex) {
                 if (iIndex > 0) ss << "-";
@@ -174,12 +175,14 @@ namespace DotNetDupe {
         }
 
         long long BitConverter::DoubleToInt64Bits(double value) {
+            /// Reinterpret IEEE 754 floating-point bits to 64-bit integer via std::memcpy.
             long long llResult;
             std::memcpy(&llResult, &value, sizeof(double));
             return llResult;
         }
 
         double BitConverter::Int64BitsToDouble(long long llValue) {
+            /// Reinterpret 64-bit integer bits to IEEE 754 double via std::memcpy.
             double result;
             std::memcpy(&result, &llValue, sizeof(long long));
             return result;

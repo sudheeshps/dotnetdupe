@@ -13,18 +13,25 @@
 namespace DotNetDupe {
     namespace System {
         Exception::Exception() : std::runtime_error("Exception of type 'DotNetDupe::System::Exception' was thrown.") {
+            /// Initialize exception with default type message and null inner exception.
         }
         
         Exception::Exception(const String& sMessage) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : "") {
+            /// Initialize exception with caller-supplied diagnostic message.
         }
         
-        Exception::Exception(const String& sMessage, const Exception& innerException) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
+        Exception::Exception(const String& sMessage, const Exception& innerException)
+            : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
+            /// Chain inner exception cause.
         }
         
-        Exception::Exception(const Exception& other) : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
+        Exception::Exception(const Exception& other)
+            : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
+            /// Deep-copy inner exception chain.
         }
         
         Exception& Exception::operator=(const Exception& other) {
+            /// Guard: Check self-assignment.
             if (this != &other) {
                 std::runtime_error::operator=(other);
                 delete m_pInnerException;
@@ -34,6 +41,7 @@ namespace DotNetDupe {
         }
         
         Exception::~Exception() { 
+            /// Free inner exception chain recursively.
             delete m_pInnerException; 
         }
 

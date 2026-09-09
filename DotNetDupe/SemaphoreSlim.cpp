@@ -23,6 +23,7 @@ namespace DotNetDupe {
                 : _count(initialCount), _maxCount(maximumCount), _pImpl(new Impl()) {}
 
             SemaphoreSlim::~SemaphoreSlim() {
+                /// Clean up synchronization structures.
                 if (_pImpl) {
                     delete _pImpl;
                     _pImpl = nullptr;
@@ -30,7 +31,10 @@ namespace DotNetDupe {
             }
 
             bool SemaphoreSlim::WaitOne() {
+                /// Guard: Check valid implementation.
                 if (!_pImpl) return false;
+
+                /// Wait until a slot becomes available.
                 std::unique_lock<std::mutex> lock(_pImpl->mutex);
                 _pImpl->cv.wait(lock, [this]() { return _count > 0; });
                 --_count;
@@ -38,7 +42,10 @@ namespace DotNetDupe {
             }
 
             bool SemaphoreSlim::WaitOne(int millisecondsTimeout) {
+                /// Guard: Check valid implementation.
                 if (!_pImpl) return false;
+
+                /// Wait with timeout until a slot becomes available.
                 std::unique_lock<std::mutex> lock(_pImpl->mutex);
                 bool result = _pImpl->cv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return _count > 0; });
                 if (result) {
@@ -50,7 +57,10 @@ namespace DotNetDupe {
             }
 
             int SemaphoreSlim::Release(int releaseCount) {
+                /// Guard: Check valid implementation.
                 if (!_pImpl) return 0;
+
+                /// Verify max count invariant and notify waiting threads.
                 std::lock_guard<std::mutex> lock(_pImpl->mutex);
                 if (_count + releaseCount > _maxCount) {
                     throw SemaphoreFullException("Semaphore count exceeded maximum count.");
@@ -62,6 +72,7 @@ namespace DotNetDupe {
             }
 
             int SemaphoreSlim::GetCurrentCount() const {
+                /// Query remaining count under lock.
                 if (!_pImpl) return _count;
                 std::lock_guard<std::mutex> lock(_pImpl->mutex);
                 return _count;
