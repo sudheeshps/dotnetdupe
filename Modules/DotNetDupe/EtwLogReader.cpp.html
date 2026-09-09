@@ -43,14 +43,16 @@ namespace DotNetDupe {
                 StopListening();
             }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::RegisterChannelIfNew(const String&amp; sChannelName) {
-                for (const auto&amp; ch : s_vRegisteredChannels) {
+<span style = "background-color:#dfd">            void EtwLogReader::RegisterChannelIfNew(const String&amp; sChannelName) {</span>
+                /// Step: Check whether channel is already recorded in the registry.
+<span style = "background-color:#dfd">                for (const auto&amp; ch : s_vRegisteredChannels) {
                     if (ch.Equals(sChannelName)) return;</span>
                 }
 <span style = "background-color:#dfd">                s_vRegisteredChannels.push_back(sChannelName);
             }</span>
 
             static bool MatchEventLevelFilter(const EtwEvent&amp; evt, EtwEventLevel level) {
+                /// Step: Filter event based on standard severity level definitions.
                 if (level == EtwEventLevel::All) return true;
                 if (level == EtwEventLevel::Critical) return evt.iLevel == 1;
                 if (level == EtwEventLevel::Error) return evt.iLevel == 2;
@@ -62,6 +64,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static bool RenderSystemProperties(EVT_HANDLE hContext, EVT_HANDLE hEvt, std::vector&lt;BYTE&gt;&amp; vBuffer) {
+                /// Step: Determine required buffer size and render system property variants.
                 if (hContext == NULL || hEvt == NULL) return false;
                 DWORD dwBufferUsed = 0, dwPropertyCount = 0;
                 if (::EvtRender(hContext, hEvt, EvtRenderEventValues, 0, NULL, &amp;dwBufferUsed, &amp;dwPropertyCount)) return false;
@@ -72,6 +75,7 @@ namespace DotNetDupe {
             }
 
             static void ExtractProviderAndId(PEVT_VARIANT pValues, EtwEvent&amp; evt) {
+                /// Step: Extract publishing provider name and event ID.
                 if (pValues[EvtSystemProviderName].Type == EvtVarTypeString &amp;&amp; pValues[EvtSystemProviderName].StringVal != NULL) {
                     std::string sProv = Utils::StringConvert::WCharToUtf8(pValues[EvtSystemProviderName].StringVal);
                     evt.sProviderName = String(sProv.c_str());
@@ -84,6 +88,7 @@ namespace DotNetDupe {
             }
 
             static void ExtractLevelAndTime(PEVT_VARIANT pValues, EtwEvent&amp; evt) {
+                /// Step: Extract event level and creation FILETIME.
                 if (pValues[EvtSystemLevel].Type == EvtVarTypeByte) {
                     evt.iLevel = static_cast&lt;int&gt;(pValues[EvtSystemLevel].ByteVal);
                 } else if (pValues[EvtSystemLevel].Type == EvtVarTypeUInt16) {
@@ -99,8 +104,9 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            static void PopulateEventProperties(EVT_HANDLE hContext, EVT_HANDLE hEvt, EtwEvent&amp; evt) {
-                std::vector&lt;BYTE&gt; vBuffer;
+<span style = "background-color:#dfd">            static void PopulateEventProperties(EVT_HANDLE hContext, EVT_HANDLE hEvt, EtwEvent&amp; evt) {</span>
+                /// Step: Render system properties and extract metadata fields.
+<span style = "background-color:#dfd">                std::vector&lt;BYTE&gt; vBuffer;
                 if (!RenderSystemProperties(hContext, hEvt, vBuffer)) return;</span>
 
 <span style = "background-color:#dfd">                PEVT_VARIANT pValues = reinterpret_cast&lt;PEVT_VARIANT&gt;(vBuffer.data());
@@ -108,8 +114,9 @@ namespace DotNetDupe {
                 ExtractLevelAndTime(pValues, evt);
             }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent&amp; evt) {
-                DWORD dwUsed = 0, dwProps = 0;
+<span style = "background-color:#dfd">            void EtwLogReader::FormatEtwEventXml(EVT_HANDLE hEvt, EtwEvent&amp; evt) {</span>
+                /// Step: Render full XML payload for the event record.
+<span style = "background-color:#dfd">                DWORD dwUsed = 0, dwProps = 0;
                 WCHAR wXmlBuffer[4096] = { 0 };</span>
 
 <span style = "background-color:#dfd">                if (::EvtRender(NULL, hEvt, EvtRenderEventXml, 4096, wXmlBuffer, &amp;dwUsed, &amp;dwProps)) {
@@ -120,8 +127,9 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent&amp; evt) {
-                DWORD dwUsed = 0;
+<span style = "background-color:#dfd">            void EtwLogReader::FormatEtwEventMessage(EVT_HANDLE hEvt, EtwEvent&amp; evt) {</span>
+                /// Step: Format localized message text via event metadata publisher.
+<span style = "background-color:#dfd">                DWORD dwUsed = 0;
                 WCHAR wMsgBuf[2048] = { 0 };</span>
 
 <span style = "background-color:#dfd">                if (::EvtFormatMessage(NULL, hEvt, 0, 0, NULL, EvtFormatMessageEvent, 2048, wMsgBuf, &amp;dwUsed) &amp;&amp; dwUsed &gt; 0) {
@@ -133,8 +141,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                evt.sMessage = evt.sRawXml.IsEmpty() ? String("ETW System Event") : evt.sRawXml;
             }</span>
 
-<span style = "background-color:#dfd">            EtwEvent EtwLogReader::ProcessSingleEtwEvent(EVT_HANDLE hContext, EVT_HANDLE hEvt, const String&amp; sChannelName) {
-                EtwEvent evt;
+<span style = "background-color:#dfd">            EtwEvent EtwLogReader::ProcessSingleEtwEvent(EVT_HANDLE hContext, EVT_HANDLE hEvt, const String&amp; sChannelName) {</span>
+                /// Step: Initialize event structure and populate properties, XML, and message text.
+<span style = "background-color:#dfd">                EtwEvent evt;
                 evt.sChannelName = sChannelName;
                 evt.iEventId = 0;</span>
                 evt.iLevel = 0;
@@ -147,12 +156,14 @@ namespace DotNetDupe {
                 return evt;
             }</span>
 
-<span style = "background-color:#fdd">            DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {
-                if (action != EvtSubscribeActionDeliver || pUserContext == nullptr || hEvent == NULL) return 0;</span>
+<span style = "background-color:#fdd">            DWORD WINAPI EtwLogReader::Win32EvtSubscribeCallback(EVT_SUBSCRIBE_NOTIFY_ACTION action, PVOID pUserContext, EVT_HANDLE hEvent) {</span>
+                /// Step: Validate callback action and context.
+<span style = "background-color:#fdd">                if (action != EvtSubscribeActionDeliver || pUserContext == nullptr || hEvent == NULL) return 0;</span>
 
                 auto pCallback = static_cast&lt;Action&lt;const EtwEvent&amp;&gt;*&gt;(pUserContext);
 <span style = "background-color:#fdd">                if (!pCallback || !(*pCallback)) return 0;</span>
 
+                /// Step: Render event and invoke subscription callback.
 <span style = "background-color:#fdd">                EVT_HANDLE hContext = ::EvtCreateRenderContext(0, NULL, EvtRenderContextSystem);
                 EtwEvent evt = ProcessSingleEtwEvent(hContext, hEvent, "Windows-ETW");
                 if (hContext) ::EvtClose(hContext);
@@ -161,6 +172,7 @@ namespace DotNetDupe {
             }</span>
 
             EVT_HANDLE EtwLogReader::SubscribeWin32Channel(const String&amp; sChannelName, Action&lt;const EtwEvent&amp;&gt;* pCallback) {
+                /// Step: Subscribe to future events on the specified ETW channel.
                 const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
                 std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);
                 EVT_HANDLE hSub = ::EvtSubscribe(NULL, NULL, wChannel.c_str(), L"*", NULL, pCallback, (EVT_SUBSCRIBE_CALLBACK)Win32EvtSubscribeCallback, EvtSubscribeToFutureEvents);
@@ -169,18 +181,19 @@ namespace DotNetDupe {
                     if (err == ERROR_ACCESS_DENIED) {
                         throw UnauthorizedAccessException("Access denied subscribing to ETW channel. Administrator or Performance Log Users membership required.");
                     }
-                    char buf [256] = { 0 };
+                    char buf[256] = { 0 };
                     snprintf(buf, sizeof(buf), "EvtSubscribe failed with error code %lu", err);
                     throw SystemException(buf);
                 }
                 return hSub;
             }
 
-<span style = "background-color:#dfd">            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List&lt;String&gt;&amp; lstChannels) {
-                EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
+<span style = "background-color:#dfd">            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List&lt;String&gt;&amp; lstChannels) {</span>
+                /// Step: Open channel enumerator and iterate paths.
+<span style = "background-color:#dfd">                EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
                 if (hEnum == NULL) return;</span>
 
-<span style = "background-color:#dfd">                WCHAR wBuffer [512] = { 0 };
+<span style = "background-color:#dfd">                WCHAR wBuffer[512] = { 0 };
                 DWORD dwReturned = 0;
                 while (::EvtNextChannelPath(hEnum, 512, wBuffer, &amp;dwReturned)) {
                     std::string sPath = Utils::StringConvert::WCharToUtf8(wBuffer);
@@ -190,6 +203,7 @@ namespace DotNetDupe {
             }</span>
 
             static std::wstring BuildLevelQuery(EtwEventLevel level) {
+                /// Step: Build XPath query string for the requested severity level.
                 if (level == EtwEventLevel::Critical) return L"*[System[(Level=1)]]";
                 if (level == EtwEventLevel::Error) return L"*[System[(Level=2)]]";
                 if (level == EtwEventLevel::Warning) return L"*[System[(Level=3)]]";
@@ -198,8 +212,9 @@ namespace DotNetDupe {
                 return L"*";
             }
 
-<span style = "background-color:#dfd">            bool EtwLogReader::IterateEvtBatch(EVT_HANDLE hContext, EVT_HANDLE* arrEvents, DWORD dwReturned, const String&amp; sChannelName, int iMaxEvents, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
-                for (DWORD idx = 0; idx &lt; dwReturned; idx++) {
+<span style = "background-color:#dfd">            bool EtwLogReader::IterateEvtBatch(EVT_HANDLE hContext, EVT_HANDLE* arrEvents, DWORD dwReturned, const String&amp; sChannelName, int iMaxEvents, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {</span>
+                /// Step: Process a batch of event handles and filter by level.
+<span style = "background-color:#dfd">                for (DWORD idx = 0; idx &lt; dwReturned; idx++) {
                     EtwEvent evt = ProcessSingleEtwEvent(hContext, arrEvents[idx], sChannelName);
                     ::EvtClose(arrEvents[idx]);
                     if (!MatchEventLevelFilter(evt, level)) continue;
@@ -210,6 +225,7 @@ namespace DotNetDupe {
             }</span>
 
             static void HandleQueryFailure(DWORD err) {
+                /// Step: Handle known query failures or propagate unauthorized access.
                 if (err == ERROR_EVT_CHANNEL_NOT_FOUND || err == ERROR_FILE_NOT_FOUND || err == ERROR_NOT_FOUND || err == ERROR_EVT_INVALID_CHANNEL_PATH) return;
                 if (err == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying ETW event channel.");
                 char szBuf[128] = { 0 };
@@ -218,6 +234,7 @@ namespace DotNetDupe {
             }
 
             void EtwLogReader::IterateEvtResults(EVT_HANDLE hContext, EVT_HANDLE hResults, const String&amp; sChannelName, int iMaxEvents, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
+                /// Step: Loop over query result batches.
                 if (!hContext || !hResults) return;
                 EVT_HANDLE hEvents[10] = { 0 };
                 DWORD dwReturned = 0;
@@ -227,8 +244,9 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            void EtwLogReader::ReadWin32EvtChannel(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
-                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
+<span style = "background-color:#dfd">            void EtwLogReader::ReadWin32EvtChannel(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {</span>
+                /// Step: Query channel events using EvtQuery.
+<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
                 std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);
                 DWORD dwFlags = EvtQueryChannelPath | EvtQueryTolerateQueryErrors | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), BuildLevelQuery(level).c_str(), dwFlags);
@@ -249,6 +267,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static bool QueryWin32LogRecordCount(const std::wstring&amp; wChannel, unsigned long long&amp; uCount) {
+                /// Step: Open channel log and query number of log records.
                 EVT_HANDLE hLog = ::EvtOpenLog(NULL, wChannel.c_str(), EvtOpenChannelPath);
                 if (!hLog) return false;
                 DWORD dwBufferUsed = 0;
@@ -261,8 +280,9 @@ namespace DotNetDupe {
             }
 #endif
 
-<span style = "background-color:#dfd">            unsigned long long EtwLogReader::GetChannelEventCount(const String&amp; sChannelName) {
-                if (sChannelName.IsEmpty()) return 0;
+<span style = "background-color:#dfd">            unsigned long long EtwLogReader::GetChannelEventCount(const String&amp; sChannelName) {</span>
+                /// Step: Query event record count for channel.
+<span style = "background-color:#dfd">                if (sChannelName.IsEmpty()) return 0;
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
 #if defined(_WIN32) || defined(_WIN64)
 <span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
@@ -275,6 +295,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             unsigned long long EtwLogReader::FastQueryLevelCount(const std::wstring&amp; wChannel, const wchar_t* pwszFilter) {
+                /// Step: Execute fast counting query across event handles.
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), pwszFilter, EvtQueryChannelPath | EvtQueryTolerateQueryErrors);
                 if (hResults == NULL) return 0;
                 EVT_HANDLE hEvents[100];
@@ -288,8 +309,9 @@ namespace DotNetDupe {
                 return uCount;
             }
 
-<span style = "background-color:#dfd">            void EtwLogReader::CountWin32EventsByLevel(const std::wstring&amp; wChannel, EtwEventLevelCounts&amp; counts) {
-                counts.uCriticalCount = FastQueryLevelCount(wChannel, L"*[System[(Level=1)]]");
+<span style = "background-color:#dfd">            void EtwLogReader::CountWin32EventsByLevel(const std::wstring&amp; wChannel, EtwEventLevelCounts&amp; counts) {</span>
+                /// Step: Query event counts partitioned across all five severity levels.
+<span style = "background-color:#dfd">                counts.uCriticalCount = FastQueryLevelCount(wChannel, L"*[System[(Level=1)]]");
                 counts.uErrorCount = FastQueryLevelCount(wChannel, L"*[System[(Level=2)]]");
                 counts.uWarningCount = FastQueryLevelCount(wChannel, L"*[System[(Level=3)]]");
                 counts.uInfoCount = FastQueryLevelCount(wChannel, L"*[System[(Level=4 or Level=0)]]");
@@ -297,8 +319,9 @@ namespace DotNetDupe {
             }</span>
 #endif
 
-<span style = "background-color:#dfd">            EtwEventLevelCounts EtwLogReader::GetChannelEventLevelCounts(const String&amp; sChannelName) {
-                EtwEventLevelCounts counts = { 0, 0, 0, 0, 0 };
+<span style = "background-color:#dfd">            EtwEventLevelCounts EtwLogReader::GetChannelEventLevelCounts(const String&amp; sChannelName) {</span>
+                /// Step: Aggregate counts by level.
+<span style = "background-color:#dfd">                EtwEventLevelCounts counts = { 0, 0, 0, 0, 0 };
                 if (sChannelName.IsEmpty()) return counts;
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
 #if defined(_WIN32) || defined(_WIN64)
@@ -309,8 +332,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return counts;
             }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;String&gt; EtwLogReader::GetEventChannels() {
-                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;String&gt; EtwLogReader::GetEventChannels() {</span>
+                /// Step: Enumerate all registered and synthesized event channels.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
                 Collections::Generic::List&lt;String&gt; lstChannels;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                EnumerateWin32Channels(lstChannels);</span>
@@ -331,6 +355,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection) { return ReadEvents(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, EtwEventLevel::All); }</span>
 
             static void FilterChannelEvents(const std::vector&lt;EtwEvent&gt;&amp; events, EtwEventLevel level, int iStartIndex, int iMaxEvents, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {
+                /// Step: Filter and paginate channel events in memory.
                 int iSkipped = 0;
                 for (const auto&amp; evt : events) {
                     if (!MatchEventLevelFilter(evt, level)) continue;
@@ -340,23 +365,29 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level) {
-                if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;EtwEvent&gt; EtwLogReader::ReadEvents(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level) {</span>
+                /// Step: Validate parameter and synchronize access.
+<span style = "background-color:#dfd">                if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
                 RegisterChannelIfNew(sChannelName);
                 Collections::Generic::List&lt;EtwEvent&gt; lstEvents;</span>
+
+                /// Step: Read native Win32 EVT channel records.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                ReadWin32EvtChannel(sChannelName, iMaxEvents, iStartIndex, bReverseDirection, level, lstEvents);</span>
 #endif
+                /// Step: Append any memory-simulated events.
 <span style = "background-color:#dfd">                auto it = s_mapChannelEvents.find(sChannelName);
                 if (it != s_mapChannelEvents.end()) FilterChannelEvents(it-&gt;second, level, iStartIndex, iMaxEvents, lstEvents);
                 return lstEvents;
             }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::StartListening(const String&amp; sChannelName, Action&lt;const EtwEvent&amp;&gt; fnCallback) {
-                if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
+<span style = "background-color:#dfd">            void EtwLogReader::StartListening(const String&amp; sChannelName, Action&lt;const EtwEvent&amp;&gt; fnCallback) {</span>
+                /// Step: Guard against invalid or duplicate listeners.
+<span style = "background-color:#dfd">                if (sChannelName.IsEmpty()) throw ArgumentException("Channel name cannot be empty.");
                 if (m_bListening) throw InvalidOperationException("Already listening to an event channel.");</span>
 
+                /// Step: Register channel and initialize subscription handle.
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
                 RegisterChannelIfNew(sChannelName);
                 m_bListening = true;
@@ -369,8 +400,9 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void EtwLogReader::StopListening() {
-                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
+<span style = "background-color:#dfd">            void EtwLogReader::StopListening() {</span>
+                /// Step: Close active subscription handle and reset state.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);
                 if (!m_bListening) return;</span>
 
 #if defined(_WIN32)

@@ -30,8 +30,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    : m_pClientSocket(socket) {
                 }</span>
 
-<span style = "background-color:#dfd">                TcpClient::~TcpClient() {
-                    Close();
+<span style = "background-color:#dfd">                TcpClient::~TcpClient() {</span>
+                    /// Close connection on destruction.
+<span style = "background-color:#dfd">                    Close();
                 }</span>
 
                 TcpClient::TcpClient(TcpClient&amp;&amp; other) noexcept
@@ -39,8 +40,9 @@ namespace DotNetDupe {
                       m_pNetworkStream(std::move(other.m_pNetworkStream)) {
                 }</span>
 
-<span style = "background-color:#fdd">                TcpClient&amp; TcpClient::operator=(TcpClient&amp;&amp; other) noexcept {
-                    if (this != &amp;other) {
+<span style = "background-color:#fdd">                TcpClient&amp; TcpClient::operator=(TcpClient&amp;&amp; other) noexcept {</span>
+                    /// Guard: Check self-assignment.
+<span style = "background-color:#fdd">                    if (this != &amp;other) {
                         Close();
                         m_pClientSocket = std::move(other.m_pClientSocket);
                         m_pNetworkStream = std::move(other.m_pNetworkStream);</span>
@@ -48,25 +50,32 @@ namespace DotNetDupe {
                     return *this;
 <span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#dfd">                void TcpClient::Connect(const String&amp; ip, int port) {
-                    if (m_pClientSocket.IsNull()) {</span>
+<span style = "background-color:#dfd">                void TcpClient::Connect(const String&amp; ip, int port) {</span>
+                    /// Lazily instantiate socket if null.
+<span style = "background-color:#dfd">                    if (m_pClientSocket.IsNull()) {</span>
 <span style = "background-color:#fdd">                        m_pClientSocket.Attach(new Socket(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp), true);</span>
                     }
+
+                    /// Connect socket to remote endpoint.
 <span style = "background-color:#dfd">                    m_pClientSocket-&gt;Connect(ip, port);
                 }</span>
 
-<span style = "background-color:#dfd">                SmartPointer&lt;NetworkStream&gt; TcpClient::GetStream() {
-                    if (m_pClientSocket.IsNull() || !m_pClientSocket-&gt;Connected()) {
+<span style = "background-color:#dfd">                SmartPointer&lt;NetworkStream&gt; TcpClient::GetStream() {</span>
+                    /// Guard: Ensure socket is connected.
+<span style = "background-color:#dfd">                    if (m_pClientSocket.IsNull() || !m_pClientSocket-&gt;Connected()) {
                         throw SocketException(-1, String("TcpClient is not connected."));</span>
                     }
+
+                    /// Lazily create NetworkStream wrapping active socket.
 <span style = "background-color:#dfd">                    if (m_pNetworkStream.IsNull()) {
                         m_pNetworkStream.Attach(new NetworkStream(m_pClientSocket, true), true);</span>
                     }
 <span style = "background-color:#dfd">                    return m_pNetworkStream;
                 }</span>
 
-<span style = "background-color:#dfd">                void TcpClient::Close() {
-                    if (!m_pNetworkStream.IsNull()) {
+<span style = "background-color:#dfd">                void TcpClient::Close() {</span>
+                    /// Close stream then socket.
+<span style = "background-color:#dfd">                    if (!m_pNetworkStream.IsNull()) {
                         m_pNetworkStream-&gt;Close();
                         m_pNetworkStream = nullptr;</span>
                     }

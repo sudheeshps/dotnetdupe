@@ -24,6 +24,7 @@
 namespace fs = std::filesystem;
 
 namespace {
+    /// Convert library String to std::filesystem::path.
     fs::path ToFsPath(const DotNetDupe::System::String&amp; sPath) {
 #if defined(_WIN32)
         return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
@@ -40,27 +41,37 @@ namespace DotNetDupe {
                 std::fstream fs;
             };
 
-<span style = "background-color:#dfd">            static std::ios_base::openmode DetermineOpenMode(int iMode, const String&amp; sPath, bool&amp; bCanRead, bool&amp; bCanWrite, bool&amp; bCanSeek) {
-                if (iMode &lt; 0 || iMode &gt; 5) throw ArgumentException("Invalid FileMode");
-                if (iMode == 0 &amp;&amp; fs::exists(ToFsPath(sPath))) throw IOException("File already exists.");
-                if (iMode == 5) {
+            /// Determine stream openmode and capability flags from FileMode.
+<span style = "background-color:#dfd">            static std::ios_base::openmode DetermineOpenMode(int iMode, const String&amp; sPath, bool&amp; bCanRead, bool&amp; bCanWrite, bool&amp; bCanSeek) {</span>
+                /// Guard: Validate mode range.
+<span style = "background-color:#dfd">                if (iMode &lt; 0 || iMode &gt; 5) throw ArgumentException("Invalid FileMode");
+                if (iMode == 0 &amp;&amp; fs::exists(ToFsPath(sPath))) throw IOException("File already exists.");</span>
+
+                /// Handle append mode separately.
+<span style = "background-color:#dfd">                if (iMode == 5) {
                     bCanRead = false; bCanWrite = true; bCanSeek = false;
                     return std::ios_base::binary | std::ios_base::out | std::ios_base::app;</span>
                 }
+
+                /// Configure read-write seeking stream.
 <span style = "background-color:#dfd">                bCanRead = true; bCanWrite = true; bCanSeek = true;
                 std::ios_base::openmode m = std::ios_base::binary | std::ios_base::in | std::ios_base::out;
                 if (iMode == 0 || iMode == 1 || iMode == 4) m |= std::ios_base::trunc;
                 return m;
             }</span>
 
-<span style = "background-color:#dfd">            FileStream::FileStream(const String&amp; sPath, int iMode) : m_pImpl(new Impl()), m_sPath(sPath), m_iMode(iMode) {
-                std::ios_base::openmode openMode = DetermineOpenMode(iMode, sPath, m_bCanRead, m_bCanWrite, m_bCanSeek);
-                m_pImpl-&gt;fs.open(ToFsPath(sPath), openMode);
+<span style = "background-color:#dfd">            FileStream::FileStream(const String&amp; sPath, int iMode) : m_pImpl(new Impl()), m_sPath(sPath), m_iMode(iMode) {</span>
+                /// Compute open mode and flags.
+<span style = "background-color:#dfd">                std::ios_base::openmode openMode = DetermineOpenMode(iMode, sPath, m_bCanRead, m_bCanWrite, m_bCanSeek);</span>
+
+                /// Open native file stream.
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.open(ToFsPath(sPath), openMode);
                 if (!m_pImpl-&gt;fs.is_open()) throw IOException("Could not open file.");
             }</span>
 
-<span style = "background-color:#dfd">            FileStream::~FileStream() {
-                Dispose();
+<span style = "background-color:#dfd">            FileStream::~FileStream() {</span>
+                /// Release native file descriptor and allocated impl.
+<span style = "background-color:#dfd">                Dispose();
                 if (m_pImpl) {</span>
                     delete m_pImpl;
 <span style = "background-color:#dfd">                    m_pImpl = nullptr;</span>
@@ -79,10 +90,13 @@ namespace DotNetDupe {
                 return m_bCanWrite;
             }</span>
 
-<span style = "background-color:#dfd">            long FileStream::GetLength() const {
-                if (!CanSeek() || !m_pImpl) {
+<span style = "background-color:#dfd">            long FileStream::GetLength() const {</span>
+                /// Guard: Validate stream capability and state.
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) {
                     throw IOException("Stream does not support seeking.");</span>
                 }
+
+                /// Query file length by seeking to end and restoring position.
                 auto&amp; mutableStream = m_pImpl-&gt;fs;
 <span style = "background-color:#dfd">                long iCurrentPos = static_cast&lt;long&gt;(mutableStream.tellg());
                 mutableStream.seekg(0, std::ios_base::end);
@@ -91,46 +105,64 @@ namespace DotNetDupe {
                 return iLength;
             }</span>
 
-<span style = "background-color:#dfd">            long FileStream::GetPosition() const {
-                if (!CanSeek() || !m_pImpl) {
+<span style = "background-color:#dfd">            long FileStream::GetPosition() const {</span>
+                /// Guard: Validate seeking support.
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) {
                     throw IOException("Stream does not support seeking.");</span>
                 }
+
+                /// Return current file pointer position.
 <span style = "background-color:#dfd">                return static_cast&lt;long&gt;(m_pImpl-&gt;fs.tellg());
             }</span>
 
-<span style = "background-color:#dfd">            void FileStream::SetPosition(long llValue) {
-                if (!CanSeek() || !m_pImpl) {
+<span style = "background-color:#dfd">            void FileStream::SetPosition(long llValue) {</span>
+                /// Guard: Validate seeking support.
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) {
                     throw IOException("Stream does not support seeking.");</span>
                 }
+
+                /// Reposition stream cursor.
 <span style = "background-color:#dfd">                m_pImpl-&gt;fs.seekg(llValue);
             }</span>
 
-<span style = "background-color:#dfd">            void FileStream::Flush() {
-                if (!m_pImpl) return;
-                m_pImpl-&gt;fs.flush();
+<span style = "background-color:#dfd">            void FileStream::Flush() {</span>
+                /// Guard: Check valid impl.
+<span style = "background-color:#dfd">                if (!m_pImpl) return;</span>
+
+                /// Flush underlying buffers.
+<span style = "background-color:#dfd">                m_pImpl-&gt;fs.flush();
                 if (m_pImpl-&gt;fs.bad()) {</span>
 <span style = "background-color:#fdd">                    throw IOException("Flush failed.");</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            int FileStream::Read(char* pBuffer, int iOffset, int nCount) {
-                if (!CanRead() || !m_pImpl) {
+<span style = "background-color:#dfd">            int FileStream::Read(char* pBuffer, int iOffset, int nCount) {</span>
+                /// Guard: Validate readability.
+<span style = "background-color:#dfd">                if (!CanRead() || !m_pImpl) {
                     throw IOException("Stream does not support reading.");</span>
                 }
+
+                /// Perform binary read from native stream.
 <span style = "background-color:#dfd">                m_pImpl-&gt;fs.read(pBuffer + iOffset, nCount);
                 if (m_pImpl-&gt;fs.bad()) {</span>
 <span style = "background-color:#fdd">                    throw IOException("A read error occurred.");</span>
                 }
+
+                /// Clear EOF flag on partial reads to allow subsequent operations.
 <span style = "background-color:#dfd">                if (m_pImpl-&gt;fs.eof()) {</span>
 <span style = "background-color:#fdd">                    m_pImpl-&gt;fs.clear();</span>
                 }
+
 <span style = "background-color:#dfd">                return static_cast&lt;int&gt;(m_pImpl-&gt;fs.gcount());
             }</span>
 
-<span style = "background-color:#dfd">            long FileStream::Seek(long llOffset, int iOrigin) {
-                if (!CanSeek() || !m_pImpl) {
+<span style = "background-color:#dfd">            long FileStream::Seek(long llOffset, int iOrigin) {</span>
+                /// Guard: Validate seek support.
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) {
                     throw IOException("Stream does not support seeking.");</span>
                 }
+
+                /// Map SeekOrigin to std::ios_base direction.
                 std::ios_base::seekdir dir;
 <span style = "background-color:#dfd">                if (iOrigin == 0) {
                     dir = std::ios_base::beg;</span>
@@ -141,6 +173,8 @@ namespace DotNetDupe {
                 } else {
 <span style = "background-color:#fdd">                    throw ArgumentException("Invalid SeekOrigin");</span>
                 }
+
+                /// Seek and return updated position.
 <span style = "background-color:#dfd">                m_pImpl-&gt;fs.seekg(llOffset, dir);
                 return static_cast&lt;long&gt;(m_pImpl-&gt;fs.tellg());
             }</span>
@@ -149,20 +183,26 @@ namespace DotNetDupe {
                 throw IOException("SetLength is not supported.");</span>
             }
 
-<span style = "background-color:#dfd">            void FileStream::Write(const char* pBuffer, int iOffset, int nCount) {
-                if (!CanWrite() || !m_pImpl) {</span>
+<span style = "background-color:#dfd">            void FileStream::Write(const char* pBuffer, int iOffset, int nCount) {</span>
+                /// Guard: Validate write capability.
+<span style = "background-color:#dfd">                if (!CanWrite() || !m_pImpl) {</span>
 <span style = "background-color:#fdd">                    throw IOException("Stream does not support writing.");</span>
                 }
+
+                /// Perform binary write to native stream.
 <span style = "background-color:#dfd">                m_pImpl-&gt;fs.write(pBuffer + iOffset, nCount);
                 if (m_pImpl-&gt;fs.bad() || m_pImpl-&gt;fs.fail()) {</span>
 <span style = "background-color:#fdd">                    throw IOException("A write error occurred.");</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void FileStream::Dispose() {
-                if (m_pImpl &amp;&amp; m_pImpl-&gt;fs.is_open()) {
+<span style = "background-color:#dfd">            void FileStream::Dispose() {</span>
+                /// Close native file handle if still open.
+<span style = "background-color:#dfd">                if (m_pImpl &amp;&amp; m_pImpl-&gt;fs.is_open()) {
                     m_pImpl-&gt;fs.close();</span>
                 }
+
+                /// Invalidate capability flags.
 <span style = "background-color:#dfd">                m_bCanRead = false;</span>
                 m_bCanWrite = false;
 <span style = "background-color:#dfd">                m_bCanSeek = false;

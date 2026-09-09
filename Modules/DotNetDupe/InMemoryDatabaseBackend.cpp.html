@@ -34,8 +34,9 @@ namespace DotNetDupe {
                 struct InMemoryDatabaseBackend::Impl {
                     std::unordered_map&lt;std::string, StdTable&gt; m_tables;
 
-<span style = "background-color:#dfd">                    void ExecuteCreate(const std::vector&lt;std::string&gt;&amp; tokens) {
-                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "TABLE") {
+<span style = "background-color:#dfd">                    void ExecuteCreate(const std::vector&lt;std::string&gt;&amp; tokens) {</span>
+                        /// Step: Parse CREATE TABLE statement.
+<span style = "background-color:#dfd">                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "TABLE") {
                             std::string tableName = tokens[2];
                             StdTable t;</span>
                             size_t idx = 3;
@@ -60,8 +61,9 @@ namespace DotNetDupe {
 
                     void ExecuteInsert(const std::vector&lt;std::string&gt;&amp; tokens,
                                        const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
-<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {
-                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "INTO") {
+<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {</span>
+                        /// Step: Parse INSERT INTO statement.
+<span style = "background-color:#dfd">                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "INTO") {
                             std::string tableName = tokens[2];
                             auto tIt = m_tables.find(tableName);
                             if (tIt == m_tables.end()) return;</span>
@@ -116,8 +118,9 @@ namespace DotNetDupe {
 
                     std::vector&lt;StdRow&gt; ExecuteSelect(const std::vector&lt;std::string&gt;&amp; tokens,
                                                       const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
-<span style = "background-color:#dfd">                                                      std::vector&lt;std::string&gt;&amp; columnNames) {
-                        std::vector&lt;std::string&gt; selectCols;
+<span style = "background-color:#dfd">                                                      std::vector&lt;std::string&gt;&amp; columnNames) {</span>
+                        /// Step: Parse SELECT column projections and FROM table.
+<span style = "background-color:#dfd">                        std::vector&lt;std::string&gt; selectCols;
                         size_t idx = 1;
                         while (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) != "FROM") {
                             selectCols.push_back(tokens[idx]);
@@ -135,6 +138,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                        StdTable&amp; t = tIt-&gt;second;</span>
 
+                        /// Step: Evaluate WHERE filter condition.
 <span style = "background-color:#dfd">                        std::string whereCol;
                         std::string whereVal;
                         if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "WHERE") {
@@ -147,6 +151,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Map projected column indices.
 <span style = "background-color:#dfd">                        std::vector&lt;size_t&gt; colIndices;
                         if (selectCols.size() == 1 &amp;&amp; selectCols[0] == "*") {
                             columnNames = t.Columns;
@@ -169,6 +174,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Collect matching rows.
 <span style = "background-color:#dfd">                        std::vector&lt;StdRow&gt; resultRows;
                         for (auto const&amp; row : t.Rows) {
                             if (whereColIdx != -1) {
@@ -187,8 +193,9 @@ namespace DotNetDupe {
 
                     void ExecuteUpdate(const std::vector&lt;std::string&gt;&amp; tokens,
                                        const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
-<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {
-                        std::string tableName = tokens[1];
+<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {</span>
+                        /// Step: Parse UPDATE table and SET assignments.
+<span style = "background-color:#dfd">                        std::string tableName = tokens[1];
                         auto tIt = m_tables.find(tableName);
                         if (tIt == m_tables.end()) return;</span>
 
@@ -211,6 +218,7 @@ namespace DotNetDupe {
                             }
                         }</span>
 
+                        /// Step: Evaluate WHERE clause filter.
 <span style = "background-color:#dfd">                        std::string whereCol;
                         std::string whereVal;
                         if (idx &lt; tokens.size() &amp;&amp; ToUpper(tokens[idx]) == "WHERE") {
@@ -231,6 +239,7 @@ namespace DotNetDupe {
                             }
                         }
 
+                        /// Step: Apply column updates to matching rows.
 <span style = "background-color:#dfd">                        for (auto&amp; row : t.Rows) {
                             if (whereColIdx != -1) {
                                 if (row.Values[whereColIdx] != whereVal) {</span>
@@ -250,8 +259,9 @@ namespace DotNetDupe {
 
                     void ExecuteDelete(const std::vector&lt;std::string&gt;&amp; tokens,
                                        const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters,
-<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {
-                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "FROM") {
+<span style = "background-color:#dfd">                                       int&amp; rowsAffected) {</span>
+                        /// Step: Parse DELETE FROM table.
+<span style = "background-color:#dfd">                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "FROM") {
                             std::string tableName = tokens[2];
                             auto tIt = m_tables.find(tableName);
                             if (tIt == m_tables.end()) return;</span>
@@ -279,6 +289,7 @@ namespace DotNetDupe {
                                 }
                             }
 
+                            /// Step: Erase matching rows from table.
 <span style = "background-color:#dfd">                            auto it = t.Rows.begin();
                             while (it != t.Rows.end()) {
                                 if (whereColIdx != -1) {
@@ -297,8 +308,9 @@ namespace DotNetDupe {
                         }
                     }</span>
 
-<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; Tokenize(const std::string&amp; s) const {
-                        std::vector&lt;std::string&gt; tokens;
+<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; Tokenize(const std::string&amp; s) const {</span>
+                        /// Step: Tokenize SQL query preserving quoted literals.
+<span style = "background-color:#dfd">                        std::vector&lt;std::string&gt; tokens;
                         std::string token;
                         bool inQuotes = false;
                         for (size_t i = 0; i &lt; s.length(); ++i) {
@@ -325,12 +337,14 @@ namespace DotNetDupe {
                     }</span>
 
                     std::string ToUpper(std::string s) const {
+                        /// Step: Convert string to uppercase for case-insensitive keywords.
                         std::transform(s.begin(), s.end(), s.begin(), ::toupper);
                         return s;
                     }
 
-<span style = "background-color:#dfd">                    std::string ResolveValue(const std::string&amp; val, const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters) const {
-                        if (!val.empty() &amp;&amp; val[0] == '@') {
+<span style = "background-color:#dfd">                    std::string ResolveValue(const std::string&amp; val, const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters) const {</span>
+                        /// Step: Resolve @param references or unquote literals.
+<span style = "background-color:#dfd">                        if (!val.empty() &amp;&amp; val[0] == '@') {
                             auto it = parameters.find(val);
                             if (it != parameters.end()) {
                                 return it-&gt;second;</span>
@@ -343,8 +357,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                        return val;</span>
 <span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#dfd">                    std::vector&lt;StdRow&gt; DispatchCommand(const std::string&amp; cmd, const std::vector&lt;std::string&gt;&amp; tokens, const std::unordered_map&lt;std::string, std::string&gt;&amp; stdParams, std::vector&lt;std::string&gt;&amp; stdColNames, int&amp; rowsAffected) {
-                        if (cmd == "CREATE") ExecuteCreate(tokens);
+<span style = "background-color:#dfd">                    std::vector&lt;StdRow&gt; DispatchCommand(const std::string&amp; cmd, const std::vector&lt;std::string&gt;&amp; tokens, const std::unordered_map&lt;std::string, std::string&gt;&amp; stdParams, std::vector&lt;std::string&gt;&amp; stdColNames, int&amp; rowsAffected) {</span>
+                        /// Step: Dispatch token stream to matching DDL/DML handler.
+<span style = "background-color:#dfd">                        if (cmd == "CREATE") ExecuteCreate(tokens);
                         else if (cmd == "INSERT") ExecuteInsert(tokens, stdParams, rowsAffected);
                         else if (cmd == "SELECT") return ExecuteSelect(tokens, stdParams, stdColNames);
                         else if (cmd == "UPDATE") ExecuteUpdate(tokens, stdParams, rowsAffected);
@@ -356,12 +371,14 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                InMemoryDatabaseBackend::InMemoryDatabaseBackend() : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
 <span style = "background-color:#fdd">                InMemoryDatabaseBackend::~InMemoryDatabaseBackend() = default;</span>
 
-<span style = "background-color:#fdd">                void InMemoryDatabaseBackend::ClearDatabase() {
-                    m_pImpl-&gt;m_tables.clear();</span>
+<span style = "background-color:#fdd">                void InMemoryDatabaseBackend::ClearDatabase() {</span>
+                    /// Step: Clear in-memory table store.
+<span style = "background-color:#fdd">                    m_pImpl-&gt;m_tables.clear();</span>
                 }
 
-<span style = "background-color:#dfd">                static std::unordered_map&lt;std::string, std::string&gt; ConvertParamsMap(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters) {
-                    std::unordered_map&lt;std::string, std::string&gt; stdParams;
+<span style = "background-color:#dfd">                static std::unordered_map&lt;std::string, std::string&gt; ConvertParamsMap(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters) {</span>
+                    /// Step: Convert library Dictionary into std::unordered_map.
+<span style = "background-color:#dfd">                    std::unordered_map&lt;std::string, std::string&gt; stdParams;
                     auto keys = parameters.GetKeys();
                     for (int i = 0; i &lt; keys.GetLength(); ++i) {
                         String val;
@@ -371,9 +388,12 @@ namespace DotNetDupe {
                     return stdParams;
                 }</span>
 
-<span style = "background-color:#dfd">                static Collections::Generic::List&lt;Row&gt; ConvertResultRows(const std::vector&lt;StdRow&gt;&amp; stdResRows, const std::vector&lt;std::string&gt;&amp; stdColNames, Collections::Generic::List&lt;String&gt;&amp; columnNames) {
-                    for (const auto&amp; col : stdColNames) columnNames.Add(String(col.c_str()));
-                    Collections::Generic::List&lt;Row&gt; resultRows;
+<span style = "background-color:#dfd">                static Collections::Generic::List&lt;Row&gt; ConvertResultRows(const std::vector&lt;StdRow&gt;&amp; stdResRows, const std::vector&lt;std::string&gt;&amp; stdColNames, Collections::Generic::List&lt;String&gt;&amp; columnNames) {</span>
+                    /// Step: Copy column headers to output list.
+<span style = "background-color:#dfd">                    for (const auto&amp; col : stdColNames) columnNames.Add(String(col.c_str()));</span>
+
+                    /// Step: Convert STL row vectors to library Row structures.
+<span style = "background-color:#dfd">                    Collections::Generic::List&lt;Row&gt; resultRows;
                     for (const auto&amp; sr : stdResRows) {
                         Row r;
                         for (const auto&amp; v : sr.Values) r.Values.Add(String(v.c_str()));
@@ -387,13 +407,17 @@ namespace DotNetDupe {
                     const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters,
                     Collections::Generic::List&lt;String&gt;&amp; columnNames,
                     int&amp; rowsAffected
-<span style = "background-color:#dfd">                ) {
-                    rowsAffected = 0;
-                    columnNames.Clear();
-                    std::unordered_map&lt;std::string, std::string&gt; stdParams = ConvertParamsMap(parameters);
+<span style = "background-color:#dfd">                ) {</span>
+                    /// Step: Initialize outputs.
+<span style = "background-color:#dfd">                    rowsAffected = 0;
+                    columnNames.Clear();</span>
+
+                    /// Step: Convert parameter dictionary and tokenize input SQL.
+<span style = "background-color:#dfd">                    std::unordered_map&lt;std::string, std::string&gt; stdParams = ConvertParamsMap(parameters);
                     std::vector&lt;std::string&gt; tokens = m_pImpl-&gt;Tokenize(sql.GetRawString());
                     if (tokens.empty()) return Collections::Generic::List&lt;Row&gt;();</span>
 
+                    /// Step: Dispatch SQL command and convert results.
 <span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; stdColNames;
                     std::vector&lt;StdRow&gt; stdResRows = m_pImpl-&gt;DispatchCommand(m_pImpl-&gt;ToUpper(tokens[0]), tokens, stdParams, stdColNames, rowsAffected);
                     return ConvertResultRows(stdResRows, stdColNames, columnNames);

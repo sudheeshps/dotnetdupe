@@ -9,6 +9,9 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file Char.h
+/// \brief Represents a Unicode character code point mirroring .NET System.Char.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"
@@ -17,20 +20,42 @@
 namespace DotNetDupe {
     namespace System {
         
+        /// \brief Represents a Unicode character (as a UTF-32 char32_t code point).
+        ///
+        /// Provides static methods for classifying Unicode characters, converting between
+        /// upper/lower cases, validating ASCII and Latin-1 ranges, and querying numeric values.
+        /// Immutable value type; thread-safe for all operations.
+        ///
+        /// \note Conforms to ECMA-335 Partition IV Section 5.13 (System.Char) and Unicode 15.0.
+        /// \see String, BitConverter
         class Char : public Object {
         private:
             char32_t m_c;
 
         public:
+            /// \brief Initializes a new instance of the Char class with null character.
             DOTNETDUPE_API Char();
+
+            /// \brief Initializes a new instance of the Char class with the specified Unicode code point.
+            /// \param c 32-bit Unicode code point.
             DOTNETDUPE_API Char(char32_t c);
 
             DOTNETDUPE_API void operator=(char32_t c);
             DOTNETDUPE_API bool Equals(char32_t c) const;
             DOTNETDUPE_API bool operator==(char32_t c) const;
 
+            /**
+             * @brief Converts the specified numeric Unicode character to a double-precision floating point number.
+             * @param c Unicode code point to evaluate.
+             * @return Numeric value of character if numeric; otherwise -1.0.
+             */
             DOTNETDUPE_API static double GetNumericValue(char32_t c);
+
+            /**
+             * @brief Indicates whether the specified character is categorized as an ASCII character (0x00 - 0x7F).
+             */
             DOTNETDUPE_API static bool IsAscii(char32_t c);
+
             DOTNETDUPE_API static bool IsAsciiDigit(char32_t c);
             DOTNETDUPE_API static bool IsAsciiHexDigit(char32_t c);
             DOTNETDUPE_API static bool IsAsciiHexDigitLower(char32_t c);

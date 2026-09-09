@@ -17,6 +17,7 @@ namespace DotNetDupe {
         namespace Net {
             namespace Http {
 
+                /// Static singleton instances for RFC 9110 standard HTTP verbs.
 <span style = "background-color:#dfd">                const HttpMethod HttpMethod::Get("GET");
                 const HttpMethod HttpMethod::Post("POST");
                 const HttpMethod HttpMethod::Put("PUT");
@@ -26,26 +27,33 @@ namespace DotNetDupe {
                 const HttpMethod HttpMethod::Trace("TRACE");
                 const HttpMethod HttpMethod::Patch("PATCH");</span>
 
-<span style = "background-color:#dfd">                HttpMethod::HttpMethod(const String&amp; method) : m_sMethod(method) {}</span>
+<span style = "background-color:#dfd">                HttpMethod::HttpMethod(const String&amp; method) : m_sMethod(method) {</span>
+                    /// Initialize method string representation.
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                String HttpMethod::GetMethod() const {
-                    return m_sMethod;
+<span style = "background-color:#dfd">                String HttpMethod::GetMethod() const {</span>
+                    /// Return underlying HTTP method string.
+<span style = "background-color:#dfd">                    return m_sMethod;
                 }</span>
 
-<span style = "background-color:#dfd">                String HttpMethod::ToString() const {
-                    return m_sMethod;
+<span style = "background-color:#dfd">                String HttpMethod::ToString() const {</span>
+                    /// Return string representation.
+<span style = "background-color:#dfd">                    return m_sMethod;
                 }</span>
 
-<span style = "background-color:#dfd">                bool HttpMethod::Equals(const HttpMethod&amp; other) const {
-                    return m_sMethod.ToUpper() == other.m_sMethod.ToUpper();
+<span style = "background-color:#dfd">                bool HttpMethod::Equals(const HttpMethod&amp; other) const {</span>
+                    /// Case-insensitive comparison per RFC 9110.
+<span style = "background-color:#dfd">                    return m_sMethod.ToUpper() == other.m_sMethod.ToUpper();
                 }</span>
 
-<span style = "background-color:#dfd">                bool HttpMethod::operator==(const HttpMethod&amp; other) const {
-                    return Equals(other);</span>
+<span style = "background-color:#dfd">                bool HttpMethod::operator==(const HttpMethod&amp; other) const {</span>
+                    /// Delegate to Equals().
+<span style = "background-color:#dfd">                    return Equals(other);</span>
                 }
 
-<span style = "background-color:#dfd">                bool HttpMethod::operator!=(const HttpMethod&amp; other) const {
-                    return !Equals(other);
+<span style = "background-color:#dfd">                bool HttpMethod::operator!=(const HttpMethod&amp; other) const {</span>
+                    /// Invert equality comparison.
+<span style = "background-color:#dfd">                    return !Equals(other);
                 }</span>
 
             }

@@ -18,44 +18,58 @@ namespace DotNetDupe {
             namespace Http {
 
                 HttpRequestMessage::HttpRequestMessage()
-<span style = "background-color:#fdd">                    : m_method(HttpMethod::Get), m_requestUri("http://localhost"), m_pContent(nullptr) {}</span>
-
-                HttpRequestMessage::HttpRequestMessage(const HttpMethod&amp; method, const Uri&amp; requestUri)
-<span style = "background-color:#dfd">                    : m_method(method), m_requestUri(requestUri), m_pContent(nullptr) {}</span>
-
-                HttpRequestMessage::HttpRequestMessage(const HttpMethod&amp; method, const String&amp; requestUri)
-<span style = "background-color:#fdd">                    : m_method(method), m_requestUri(Uri(requestUri)), m_pContent(nullptr) {}</span>
-
-<span style = "background-color:#dfd">                HttpMethod HttpRequestMessage::GetMethod() const {
-                    return m_method;
-                }</span>
-
-<span style = "background-color:#dfd">                void HttpRequestMessage::SetMethod(const HttpMethod&amp; method) {
-                    m_method = method;</span>
+<span style = "background-color:#fdd">                    : m_method(HttpMethod::Get), m_requestUri("http://localhost"), m_pContent(nullptr) {</span>
+                    /// Default initialize with GET verb and localhost URI.
 <span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#dfd">                Uri HttpRequestMessage::GetRequestUri() const {
-                    return m_requestUri;
+                HttpRequestMessage::HttpRequestMessage(const HttpMethod&amp; method, const Uri&amp; requestUri)
+<span style = "background-color:#dfd">                    : m_method(method), m_requestUri(requestUri), m_pContent(nullptr) {</span>
+                    /// Initialize with method and target Uri object.
+<span style = "background-color:#dfd">                }</span>
+
+                HttpRequestMessage::HttpRequestMessage(const HttpMethod&amp; method, const String&amp; requestUri)
+<span style = "background-color:#fdd">                    : m_method(method), m_requestUri(Uri(requestUri)), m_pContent(nullptr) {</span>
+                    /// Initialize with method and parsed URI string.
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                HttpMethod HttpRequestMessage::GetMethod() const {</span>
+                    /// Return assigned HTTP verb.
+<span style = "background-color:#dfd">                    return m_method;
                 }</span>
 
-<span style = "background-color:#dfd">                void HttpRequestMessage::SetRequestUri(const Uri&amp; requestUri) {
-                    m_requestUri = requestUri;</span>
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetMethod(const HttpMethod&amp; method) {</span>
+                    /// Mutate request HTTP verb.
+<span style = "background-color:#dfd">                    m_method = method;</span>
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                Uri HttpRequestMessage::GetRequestUri() const {</span>
+                    /// Return target request Uri.
+<span style = "background-color:#dfd">                    return m_requestUri;
+                }</span>
+
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetRequestUri(const Uri&amp; requestUri) {</span>
+                    /// Mutate target request Uri.
+<span style = "background-color:#dfd">                    m_requestUri = requestUri;</span>
                 }
 
-<span style = "background-color:#dfd">                HttpContentPtr HttpRequestMessage::GetContent() const {
-                    return m_pContent;
+<span style = "background-color:#dfd">                HttpContentPtr HttpRequestMessage::GetContent() const {</span>
+                    /// Return message entity body content pointer.
+<span style = "background-color:#dfd">                    return m_pContent;
                 }</span>
 
-<span style = "background-color:#dfd">                void HttpRequestMessage::SetContent(const HttpContentPtr&amp; content) {
-                    m_pContent = content;</span>
+<span style = "background-color:#dfd">                void HttpRequestMessage::SetContent(const HttpContentPtr&amp; content) {</span>
+                    /// Assign message entity body content pointer.
+<span style = "background-color:#dfd">                    m_pContent = content;</span>
                 }
 
-<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() {
-                    return m_headers;
+<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() {</span>
+                    /// Return mutable reference to request headers dictionary.
+<span style = "background-color:#dfd">                    return m_headers;
                 }</span>
 
-<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() const {
-                    return m_headers;
+<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpRequestMessage::GetHeaders() const {</span>
+                    /// Return read-only const reference to request headers dictionary.
+<span style = "background-color:#dfd">                    return m_headers;
                 }</span>
 
             }

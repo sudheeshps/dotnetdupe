@@ -40,22 +40,26 @@ namespace DotNetDupe {
         namespace Security {
             namespace Principal {
 
-<span style = "background-color:#fdd">                UserPrincipal::UserPrincipal() {
-                }</span>
+<span style = "background-color:#fdd">                UserPrincipal::UserPrincipal() {</span>
+                    /// Step: Construct UserPrincipal instance.
+<span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#fdd">                UserPrincipal::~UserPrincipal() {
-                }</span>
+<span style = "background-color:#fdd">                UserPrincipal::~UserPrincipal() {</span>
+                    /// Step: Destroy UserPrincipal instance.
+<span style = "background-color:#fdd">                }</span>
 
 #if defined(_WIN32)
                 static UserClass ClassifyWindowsUser(DWORD dwPriv, DWORD dwFlags) {
+                    /// Step: Map Win32 account flags and privileges to UserClass enum.
                     if (dwFlags &amp; UF_ACCOUNTDISABLE) return UserClass::Guest;
                     if (dwPriv == USER_PRIV_ADMIN) return UserClass::Admin;
                     if (dwPriv == USER_PRIV_GUEST) return UserClass::Guest;
                     return UserClass::Normal;
                 }
 
-<span style = "background-color:#dfd">                static void PopulateWin32UserGroups(LPCWSTR pwszUser, Collections::Generic::List&lt;String&gt;&amp; lstGroups, Collections::Generic::List&lt;String&gt;&amp; lstPermissions) {
-                    LPGROUP_USERS_INFO_0 pGroups = NULL;
+<span style = "background-color:#dfd">                static void PopulateWin32UserGroups(LPCWSTR pwszUser, Collections::Generic::List&lt;String&gt;&amp; lstGroups, Collections::Generic::List&lt;String&gt;&amp; lstPermissions) {</span>
+                    /// Step: Query group membership via NetUserGetGroups.
+<span style = "background-color:#dfd">                    LPGROUP_USERS_INFO_0 pGroups = NULL;
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0;</span>
 
 <span style = "background-color:#dfd">                    NET_API_STATUS nStatus = ::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&amp;pGroups, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries);
@@ -63,6 +67,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                        throw UnauthorizedAccessException("Access denied querying user groups. Administrator privileges required.");</span>
                     }
 
+                    /// Step: Populate group names and member permissions.
 <span style = "background-color:#dfd">                    if (nStatus == NERR_Success) {
                         for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
                             std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
@@ -74,6 +79,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                static void PopulateWin32SidAndDomain(LPCWSTR pwszUser, UserInfo&amp; info) {</span>
+                    /// Step: Lookup account SID and domain name via LookupAccountNameW.
                     BYTE sidBuffer[SECURITY_MAX_SID_SIZE];
 <span style = "background-color:#dfd">                    DWORD cbSid = sizeof(sidBuffer);
                     WCHAR szDomain[256] = { 0 };
@@ -92,8 +98,9 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
-                    UserInfo info;
+<span style = "background-color:#dfd">                static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {</span>
+                    /// Step: Build UserInfo struct from Win32 USER_INFO_1 record.
+<span style = "background-color:#dfd">                    UserInfo info;
                     std::string sName = StringConvertInternal::WCharToUtf8(pUi-&gt;usri1_name);
                     info.sUsername = sName.c_str();</span>
 
@@ -117,6 +124,7 @@ namespace DotNetDupe {
                 }</span>
 
                 static void EnumerateWin32Users(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    /// Step: Enumerate domain and local accounts via NetUserEnum.
                     LPUSER_INFO_1 pBuf = NULL;
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0, dwResumeHandle = 0;
 
@@ -137,6 +145,7 @@ namespace DotNetDupe {
                 }
 #else
                 static UserInfo BuildLinuxUserInfo(const struct passwd* pw) {
+                    /// Step: Construct UserInfo from POSIX struct passwd.
                     UserInfo info;
                     info.sUsername = pw-&gt;pw_name;
                     info.sDomain = "LOCAL";
@@ -161,6 +170,7 @@ namespace DotNetDupe {
                 }
 
                 static void EnumerateLinuxUsers(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    /// Step: Iterate POSIX password database via setpwent / getpwent.
                     errno = 0;
                     setpwent();
                     struct passwd* pw;
@@ -175,8 +185,9 @@ namespace DotNetDupe {
                 }
 #endif
 
-<span style = "background-color:#dfd">                Collections::Generic::List&lt;UserInfo&gt; UserPrincipal::EnumerateUsers() {
-                    Collections::Generic::List&lt;UserInfo&gt; lstUsers;</span>
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;UserInfo&gt; UserPrincipal::EnumerateUsers() {</span>
+                    /// Step: Enumerate host user accounts based on active platform.
+<span style = "background-color:#dfd">                    Collections::Generic::List&lt;UserInfo&gt; lstUsers;</span>
 
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                    EnumerateWin32Users(lstUsers);</span>
@@ -189,6 +200,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
                 static UserInfo QueryWin32User(const String&amp; sUsername) {
+                    /// Step: Query account details via NetUserGetInfo.
                     std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
                     LPUSER_INFO_1 pBuf = NULL;
                     NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&amp;pBuf);
@@ -203,6 +215,7 @@ namespace DotNetDupe {
                 }
 
                 static std::string GetCurrentWin32UserName() {
+                    /// Step: Query current thread / process security context username.
                     WCHAR szName[256] = { 0 };
                     DWORD dwSize = 256;
                     if (!::GetUserNameW(szName, &amp;dwSize)) {
@@ -214,6 +227,7 @@ namespace DotNetDupe {
                 }
 #else
                 static UserInfo QueryLinuxUser(const String&amp; sUsername) {
+                    /// Step: Query user information via POSIX getpwnam.
                     errno = 0;
                     struct passwd* pw = getpwnam(sUsername.GetRawString());
                     if (pw == NULL) {
@@ -224,6 +238,7 @@ namespace DotNetDupe {
                 }
 
                 static UserInfo QueryCurrentLinuxUser() {
+                    /// Step: Query current UID and look up user via getpwuid.
                     errno = 0;
                     struct passwd* pw = getpwuid(getuid());
                     if (pw == NULL) {
@@ -234,8 +249,9 @@ namespace DotNetDupe {
                 }
 #endif
 
-<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetUser(const String&amp; sUsername) {
-                    if (sUsername.IsEmpty()) throw ArgumentException("Username cannot be empty.");</span>
+<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetUser(const String&amp; sUsername) {</span>
+                    /// Guard: Ensure username is non-empty.
+<span style = "background-color:#dfd">                    if (sUsername.IsEmpty()) throw ArgumentException("Username cannot be empty.");</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                    return QueryWin32User(sUsername);</span>
 #else
@@ -244,6 +260,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                UserInfo UserPrincipal::GetCurrent() {</span>
+                    /// Return: User account details for current process context.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                    return GetUser(GetCurrentWin32UserName().c_str());</span>
 #else

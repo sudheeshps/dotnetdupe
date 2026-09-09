@@ -31,6 +31,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             RdpSessionState TerminalSession::ConvertWtsState(int iState) {
+                /// Step: Map WTS_CONNECTSTATE_CLASS native integer to RdpSessionState enum.
                 switch (iState) {
                 case WTSActive: return RdpSessionState::Active;
                 case WTSConnected: return RdpSessionState::Connected;
@@ -46,8 +47,9 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            String TerminalSession::QueryWtsString(unsigned long uSessionId, unsigned int eInfoClass) {
-                LPWSTR pBuffer = NULL;
+<span style = "background-color:#dfd">            String TerminalSession::QueryWtsString(unsigned long uSessionId, unsigned int eInfoClass) {</span>
+                /// Step: Query WTS information string buffer.
+<span style = "background-color:#dfd">                LPWSTR pBuffer = NULL;
                 DWORD dwBytesReturned = 0;
                 String sResult;</span>
 
@@ -63,8 +65,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return sResult;
             }</span>
 
-<span style = "background-color:#dfd">            void TerminalSession::QuerySessionDetails(unsigned long uSessionId, const String&amp; sSessionName, RdpSessionState eState, RdpSessionInfo&amp; info) {
-                info.uSessionId = uSessionId;
+<span style = "background-color:#dfd">            void TerminalSession::QuerySessionDetails(unsigned long uSessionId, const String&amp; sSessionName, RdpSessionState eState, RdpSessionInfo&amp; info) {</span>
+                /// Step: Populate session identifiers and query user, domain, and client endpoint.
+<span style = "background-color:#dfd">                info.uSessionId = uSessionId;
                 info.sSessionName = sSessionName;
                 info.eState = eState;
                 info.sUserName = QueryWtsString(uSessionId, WTSUserName);
@@ -74,8 +77,9 @@ namespace DotNetDupe {
                 info.bIsRdpSession = !info.sClientName.IsEmpty() || info.sSessionName.Contains("RDP");
             }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetSessions() {
-                Collections::Generic::List&lt;RdpSessionInfo&gt; lstResult;
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetSessions() {</span>
+                /// Step: Enumerate all Terminal Services sessions via native WTS API.
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;RdpSessionInfo&gt; lstResult;
                 WTS_SESSION_INFOW* pSessionInfo = NULL;
                 DWORD dwCount = 0;
                 if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwCount)) {
@@ -98,8 +102,9 @@ namespace DotNetDupe {
             }
 #endif
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetActiveSessions() {
-                auto lstAll = GetSessions();
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetActiveSessions() {</span>
+                /// Step: Filter sessions for Active state.
+<span style = "background-color:#dfd">                auto lstAll = GetSessions();
                 Collections::Generic::List&lt;RdpSessionInfo&gt; lstActive;
                 for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
                     if (lstAll[i].eState == RdpSessionState::Active) lstActive.Add(lstAll[i]);</span>
@@ -107,8 +112,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return lstActive;
             }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetDisconnectedSessions() {
-                auto lstAll = GetSessions();
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;RdpSessionInfo&gt; TerminalSession::GetDisconnectedSessions() {</span>
+                /// Step: Filter sessions for Disconnected state.
+<span style = "background-color:#dfd">                auto lstAll = GetSessions();
                 Collections::Generic::List&lt;RdpSessionInfo&gt; lstDisconnected;
                 for (int i = 0; i &lt; lstAll.GetCount(); ++i) {
                     if (lstAll[i].eState == RdpSessionState::Disconnected) lstDisconnected.Add(lstAll[i]);</span>

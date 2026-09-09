@@ -27,6 +27,7 @@ namespace DotNetDupe {
         namespace ComponentModel {
 
 <span style = "background-color:#dfd">            static String FormatErrorMessage(int nErrorCode) {</span>
+                /// Step: Format native error code into localized message string.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                LPWSTR lpMsgBuf = nullptr;
                 DWORD dwLen = ::FormatMessageW(</span>
@@ -39,6 +40,7 @@ namespace DotNetDupe {
                     nullptr
                 );
 
+                /// Step: Trim trailing whitespace and convert to UTF-8.
 <span style = "background-color:#dfd">                if (dwLen &gt; 0 &amp;&amp; lpMsgBuf != nullptr) {
                     while (dwLen &gt; 0 &amp;&amp; (lpMsgBuf[dwLen - 1] == L'\r' || lpMsgBuf[dwLen - 1] == L'\n')) {
                         lpMsgBuf[--dwLen] = L'\0';</span>
@@ -60,18 +62,21 @@ namespace DotNetDupe {
 #else
                 : Win32Exception(errno)
 #endif
-<span style = "background-color:#fdd">            {
-            }</span>
+<span style = "background-color:#fdd">            {</span>
+                /// Step: Default-initialized with last native error code.
+<span style = "background-color:#fdd">            }</span>
 
             Win32Exception::Win32Exception(int nNativeErrorCode)
 <span style = "background-color:#dfd">                : SystemException(FormatErrorMessage(nNativeErrorCode)), m_nNativeErrorCode(nNativeErrorCode)
-            {
-            }</span>
+            {</span>
+                /// Step: Initialized with native error code.
+<span style = "background-color:#dfd">            }</span>
 
             Win32Exception::Win32Exception(int nNativeErrorCode, const String&amp; sMessage)
 <span style = "background-color:#dfd">                : SystemException(sMessage), m_nNativeErrorCode(nNativeErrorCode)
-            {
-            }</span>
+            {</span>
+                /// Step: Initialized with native error code and custom message.
+<span style = "background-color:#dfd">            }</span>
 
             Win32Exception::Win32Exception(const String&amp; sMessage)
 #if defined(_WIN32)
@@ -79,8 +84,9 @@ namespace DotNetDupe {
 #else
                 : SystemException(sMessage), m_nNativeErrorCode(errno)
 #endif
-<span style = "background-color:#dfd">            {
-            }</span>
+<span style = "background-color:#dfd">            {</span>
+                /// Step: Initialized with custom message and last native error code.
+<span style = "background-color:#dfd">            }</span>
 
         }
     }

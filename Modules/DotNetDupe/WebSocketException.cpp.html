@@ -19,31 +19,38 @@ namespace DotNetDupe {
             namespace WebSockets {
 
                 WebSocketException::WebSocketException(const String&amp; sMessage)
-<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(WebSocketError::Faulted), m_iNativeErrorCode(0) {
-                }</span>
+<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(WebSocketError::Faulted), m_iNativeErrorCode(0) {</span>
+                    /// Initialize: Set default Faulted error code and zero native error code.
+<span style = "background-color:#dfd">                }</span>
 
                 WebSocketException::WebSocketException(WebSocketError eError, const String&amp; sMessage)
-<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {
-                }</span>
+<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {</span>
+                    /// Initialize: Set explicit WebSocketError code.
+<span style = "background-color:#dfd">                }</span>
 
                 WebSocketException::WebSocketException(WebSocketError eError, int iNativeErrorCode, const String&amp; sMessage)
-<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(iNativeErrorCode) {
-                }</span>
+<span style = "background-color:#dfd">                    : SystemException(sMessage), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(iNativeErrorCode) {</span>
+                    /// Initialize: Set WebSocketError code and native OS error code.
+<span style = "background-color:#dfd">                }</span>
 
                 WebSocketException::WebSocketException(WebSocketError eError, const Exception&amp; innerException)
-<span style = "background-color:#dfd">                    : SystemException(String(innerException.What()), innerException), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {
-                }</span>
+<span style = "background-color:#dfd">                    : SystemException(String(innerException.What()), innerException), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {</span>
+                    /// Initialize: Wrap inner exception and assign WebSocketError code.
+<span style = "background-color:#dfd">                }</span>
 
                 WebSocketException::WebSocketException(WebSocketError eError, const String&amp; sMessage, const Exception&amp; innerException)
-<span style = "background-color:#dfd">                    : SystemException(sMessage, innerException), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {
+<span style = "background-color:#dfd">                    : SystemException(sMessage, innerException), m_eWebSocketErrorCode(eError), m_iNativeErrorCode(0) {</span>
+                    /// Initialize: Assign message, inner exception, and WebSocketError code.
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                WebSocketError WebSocketException::GetWebSocketErrorCode() const {</span>
+                    /// Return result: Return structured WebSocket error code.
+<span style = "background-color:#dfd">                    return m_eWebSocketErrorCode;
                 }</span>
 
-<span style = "background-color:#dfd">                WebSocketError WebSocketException::GetWebSocketErrorCode() const {
-                    return m_eWebSocketErrorCode;
-                }</span>
-
-<span style = "background-color:#dfd">                int WebSocketException::GetErrorCode() const {
-                    return m_iNativeErrorCode;
+<span style = "background-color:#dfd">                int WebSocketException::GetErrorCode() const {</span>
+                    /// Return result: Return native operating system error integer.
+<span style = "background-color:#dfd">                    return m_iNativeErrorCode;
                 }</span>
 
             }

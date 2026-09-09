@@ -19,34 +19,46 @@ namespace DotNetDupe {
             // Static member initialization
 <span style = "background-color:#dfd">            UTF8EncodingPtr TextEncoding::s_utf8EncodingInstance(nullptr);</span>
 
-<span style = "background-color:#dfd">            Array&lt;char&gt; UTF8Encoding::GetBytes(const String&amp; s) {
-                const char* raw = (const char*)s;
-                if (!raw) return Array&lt;char&gt;(0);
-                int length = s.GetLength();
+<span style = "background-color:#dfd">            Array&lt;char&gt; UTF8Encoding::GetBytes(const String&amp; s) {</span>
+                /// Guard: Return empty array for empty strings.
+<span style = "background-color:#dfd">                const char* raw = (const char*)s;
+                if (!raw) return Array&lt;char&gt;(0);</span>
+
+                /// Allocate and copy raw UTF-8 bytes into managed array.
+<span style = "background-color:#dfd">                int length = s.GetLength();
                 Array&lt;char&gt; bytes(length);
                 for (int i = 0; i &lt; length; i++) bytes[i] = raw[i];
                 return bytes;
             }</span>
 
-<span style = "background-color:#dfd">            String UTF8Encoding::GetString(const Array&lt;char&gt;&amp; bytes) {
-                if (bytes.GetLength() == 0) {</span>
+<span style = "background-color:#dfd">            String UTF8Encoding::GetString(const Array&lt;char&gt;&amp; bytes) {</span>
+                /// Guard: Return empty string for zero-length arrays.
+<span style = "background-color:#dfd">                if (bytes.GetLength() == 0) {</span>
 <span style = "background-color:#fdd">                    return String("");</span>
                 }
+
+                /// Delegate to raw pointer decoding.
 <span style = "background-color:#dfd">                return GetString(bytes.GetData(), bytes.GetLength());
             }</span>
 
-<span style = "background-color:#dfd">            String UTF8Encoding::GetString(const char* bytes, int byteCount) {
-                if (bytes == nullptr || byteCount == 0) {</span>
+<span style = "background-color:#dfd">            String UTF8Encoding::GetString(const char* bytes, int byteCount) {</span>
+                /// Guard: Validate input buffer and byte count.
+<span style = "background-color:#dfd">                if (bytes == nullptr || byteCount == 0) {</span>
 <span style = "background-color:#fdd">                    return String("");</span>
                 }
+
+                /// Construct string from contiguous byte span.
 <span style = "background-color:#dfd">                std::string tempString(bytes, byteCount);
                 return String(tempString.c_str());
             }</span>
 
-<span style = "background-color:#dfd">            EncodingPtr TextEncoding::UTF8() {
-                if (s_utf8EncodingInstance.IsNull()) {
+<span style = "background-color:#dfd">            EncodingPtr TextEncoding::UTF8() {</span>
+                /// Lazy-initialize singleton UTF-8 encoding instance.
+<span style = "background-color:#dfd">                if (s_utf8EncodingInstance.IsNull()) {
                     s_utf8EncodingInstance = SmartPointer&lt;UTF8Encoding&gt;::NewShared();</span>
                 }
+
+                /// Return polymorphic Encoding smart pointer.
 <span style = "background-color:#dfd">                return s_utf8EncodingInstance.DynamicCast&lt;Encoding&gt;();
             }</span>
         }

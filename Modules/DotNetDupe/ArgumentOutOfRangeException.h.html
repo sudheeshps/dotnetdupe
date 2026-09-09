@@ -9,14 +9,25 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file ArgumentOutOfRangeException.h
+/// \brief Defines the exception thrown when an argument value is outside the acceptable range of values.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/ArgumentException.h"
 
 namespace DotNetDupe {
 	namespace System {
 
+		/// \class ArgumentOutOfRangeException
+		/// \brief The exception that is thrown when the value of an argument is outside the allowable range of values as defined by the invoked method.
+		///
+		/// \note Conforms to ECMA-335 Partition IV Section 5.27 (System.ArgumentOutOfRangeException).
 		class ArgumentOutOfRangeException : public ArgumentException {
 		public:
+			/// \brief Initializes a new instance of the ArgumentOutOfRangeException class with a specified error message.
+			/// \param sMessage The error message that explains the reason for the exception.
 <span style = "background-color:#dfd">			ArgumentOutOfRangeException(const String&amp; sMessage) : ArgumentException(sMessage) { }</span>
 		};
 

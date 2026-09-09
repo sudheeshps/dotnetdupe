@@ -23,25 +23,26 @@ namespace DotNetDupe {
         namespace Logging {
 
             FileLoggerProvider::FileLoggerProvider()
-<span style = "background-color:#dfd">                : FileLoggerProvider(LogManager::GetConfiguration()) {
-            }</span>
+<span style = "background-color:#dfd">                : FileLoggerProvider(LogManager::GetConfiguration()) {</span>
+                /// Initialize with global LogManager configuration.
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            static DotNetDupe::System::String ResolveAndPrepareLogPath(const DotNetDupe::System::String&amp; rawFilePath) {</span>
                 using namespace DotNetDupe::System::IO;
-<span style = "background-color:#dfd">                DotNetDupe::System::String targetPath = rawFilePath;</span>
+                /// Fallback to default directory if path is unspecified.
+<span style = "background-color:#dfd">                DotNetDupe::System::String sTargetPath = rawFilePath.IsEmpty() ? DotNetDupe::System::String("logs/app.log") : rawFilePath;</span>
 
-<span style = "background-color:#dfd">                if (targetPath.IsEmpty()) {
-                    targetPath = "logs/app.log";</span>
+                /// Resolve full normalized path.
+<span style = "background-color:#dfd">                DotNetDupe::System::String sFullPath = Path::GetFullPath(sTargetPath);
+                DotNetDupe::System::String sParentDir = Path::GetDirectoryName(sFullPath);</span>
+
+                /// Ensure target parent directory exists on disk.
+<span style = "background-color:#dfd">                if (!sParentDir.IsEmpty() &amp;&amp; !Directory::Exists(sParentDir)) {</span>
+<span style = "background-color:#fdd">                    Directory::CreateDirectory(sParentDir, true);</span>
                 }
 
-<span style = "background-color:#dfd">                DotNetDupe::System::String fullPath = Path::GetFullPath(targetPath);
-                DotNetDupe::System::String parentDir = Path::GetDirectoryName(fullPath);</span>
-
-<span style = "background-color:#dfd">                if (!parentDir.IsEmpty() &amp;&amp; !Directory::Exists(parentDir)) {</span>
-<span style = "background-color:#fdd">                    Directory::CreateDirectory(parentDir, true);</span>
-                }
-
-<span style = "background-color:#dfd">                return fullPath;
+                /// Return normalized full path.
+<span style = "background-color:#dfd">                return sFullPath;
             }</span>
 
             struct FileLoggerProvider::Impl {
@@ -50,26 +51,33 @@ namespace DotNetDupe {
             };
 
             FileLoggerProvider::FileLoggerProvider(const LoggerConfiguration&amp; config)
-<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
-                m_pImpl-&gt;config = config;
-                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(config.FilePath);
-                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {</span>
+                /// Prepare file path and ensure directory structure.
+<span style = "background-color:#dfd">                m_pImpl-&gt;config = config;
+                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(config.FilePath);</span>
+
+                /// Initialize shared file context with mutex and file stream.
+<span style = "background-color:#dfd">                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
                 m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
                 m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }</span>
 
             FileLoggerProvider::FileLoggerProvider(const DotNetDupe::System::String&amp; filePath, bool isJsonFormat, LogLevel minLevel)
-<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
-                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(filePath);
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {</span>
+                /// Configure file path, JSON format flag, and minimum severity level.
+<span style = "background-color:#dfd">                m_pImpl-&gt;config.FilePath = ResolveAndPrepareLogPath(filePath);
                 m_pImpl-&gt;config.IsJsonFormat = isJsonFormat;
-                m_pImpl-&gt;config.MinLevel = minLevel;
-                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
+                m_pImpl-&gt;config.MinLevel = minLevel;</span>
+
+                /// Initialize shared file context with mutex and file stream.
+<span style = "background-color:#dfd">                m_pImpl-&gt;pContext = DotNetDupe::System::SmartPointer&lt;FileLoggerContext&gt;::NewShared();
                 m_pImpl-&gt;pContext-&gt;fileMutex = std::make_shared&lt;std::mutex&gt;();
                 m_pImpl-&gt;pContext-&gt;fileStream = std::make_shared&lt;std::ofstream&gt;(m_pImpl-&gt;config.FilePath.GetRawString(), std::ios::out | std::ios::app);
             }</span>
 
-<span style = "background-color:#dfd">            FileLoggerProvider::~FileLoggerProvider() {
-                if (m_pImpl &amp;&amp; m_pImpl-&gt;pContext &amp;&amp; m_pImpl-&gt;pContext-&gt;fileMutex &amp;&amp; m_pImpl-&gt;pContext-&gt;fileStream) {
+<span style = "background-color:#dfd">            FileLoggerProvider::~FileLoggerProvider() {</span>
+                /// Safely close the shared file stream on provider destruction.
+<span style = "background-color:#dfd">                if (m_pImpl &amp;&amp; m_pImpl-&gt;pContext &amp;&amp; m_pImpl-&gt;pContext-&gt;fileMutex &amp;&amp; m_pImpl-&gt;pContext-&gt;fileStream) {
                     std::lock_guard&lt;std::mutex&gt; lock(*(m_pImpl-&gt;pContext-&gt;fileMutex));
                     if (m_pImpl-&gt;pContext-&gt;fileStream-&gt;is_open()) {
                         m_pImpl-&gt;pContext-&gt;fileStream-&gt;close();</span>
@@ -77,12 +85,15 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }
             }</span>
             
-<span style = "background-color:#dfd">            const DotNetDupe::System::String&amp; FileLoggerProvider::GetFilePath() const {
-                return m_pImpl-&gt;config.FilePath;
+<span style = "background-color:#dfd">            const DotNetDupe::System::String&amp; FileLoggerProvider::GetFilePath() const {</span>
+                /// Return active file path string.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;config.FilePath;
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; FileLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
-                return DotNetDupe::System::SmartPointer&lt;FileLogger&gt;::NewShared(categoryName, m_pImpl-&gt;config, m_pImpl-&gt;pContext);
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; FileLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {</span>
+                /// Instantiate a new FileLogger sharing the provider's file context.
+<span style = "background-color:#dfd">                auto pLogger = DotNetDupe::System::SmartPointer&lt;FileLogger&gt;::NewShared(categoryName, m_pImpl-&gt;config, m_pImpl-&gt;pContext);
+                return DotNetDupe::System::SmartPointer&lt;ILogger&gt;(pLogger);
             }</span>
 
         }

@@ -24,6 +24,7 @@ namespace DotNetDupe {
         class SystemTimeProvider : public TimeProvider {
         public:
 <span style = "background-color:#dfd">            DateTimeOffset GetUtcNow() const override {</span>
+                /// Step: Query high-precision UTC system time and convert to .NET epoch ticks.
 #if defined(_WIN32)
                 FILETIME ft;
 <span style = "background-color:#dfd">                GetSystemTimePreciseAsFileTime(&amp;ft);
@@ -42,6 +43,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            DateTimeOffset GetLocalNow() const override {</span>
+                /// Step: Query local system time and convert to .NET epoch ticks.
 #if defined(_WIN32)
                 SYSTEMTIME st;
 <span style = "background-color:#dfd">                GetLocalTime(&amp;st);</span>
@@ -56,6 +58,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            int64_t GetTimestamp() const override {</span>
+                /// Step: Query high-resolution performance counter timestamp.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
 <span style = "background-color:#dfd">                QueryPerformanceCounter(&amp;li);
@@ -67,6 +70,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            int64_t GetTimestampFrequency() const override {</span>
+                /// Step: Query high-resolution performance counter frequency.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
 <span style = "background-color:#fdd">                QueryPerformanceFrequency(&amp;li);
@@ -77,18 +81,21 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            }</span>
         };
 
-<span style = "background-color:#dfd">        TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp) const {
-            return GetElapsedTime(startingTimestamp, GetTimestamp());
+<span style = "background-color:#dfd">        TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp) const {</span>
+            /// Compute elapsed time from starting timestamp to current timestamp.
+<span style = "background-color:#dfd">            return GetElapsedTime(startingTimestamp, GetTimestamp());
         }</span>
 
-<span style = "background-color:#dfd">        TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const {
-            double ticks = (double)(endingTimestamp - startingTimestamp) * TimeSpan::TicksPerSecond / GetTimestampFrequency();
+<span style = "background-color:#dfd">        TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const {</span>
+            /// Compute elapsed TimeSpan based on timestamp frequency ticks per second.
+<span style = "background-color:#dfd">            double ticks = (double)(endingTimestamp - startingTimestamp) * TimeSpan::TicksPerSecond / GetTimestampFrequency();
             return TimeSpan((int64_t)ticks);
         }</span>
 
-<span style = "background-color:#dfd">        TimeProviderPtr TimeProvider::GetSystem() {
-            static auto system = SmartPointer&lt;SystemTimeProvider&gt;::NewShared();
-            return system.template DynamicCast&lt;TimeProvider&gt;();
+<span style = "background-color:#dfd">        TimeProviderPtr TimeProvider::GetSystem() {</span>
+            /// Retrieve singleton shared instance of system TimeProvider.
+<span style = "background-color:#dfd">            static auto s_spSystem = SmartPointer&lt;SystemTimeProvider&gt;::NewShared();
+            return s_spSystem.template DynamicCast&lt;TimeProvider&gt;();
         }</span>
     }
 }</pre>

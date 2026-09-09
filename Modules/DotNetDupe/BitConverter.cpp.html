@@ -21,152 +21,185 @@ namespace DotNetDupe {
     namespace System {
         const bool BitConverter::IsLittleEndian = true; // Most modern systems are little-endian
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(bool bValue) {
-            Array&lt;byte&gt; result(1);
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(bool bValue) {</span>
+            /// Step: Convert boolean to single byte.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(1);
             result[0] = bValue ? 1 : 0;</span>
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(char chValue) {
-            Array&lt;byte&gt; result(1);
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(char chValue) {</span>
+            /// Step: Convert char to single byte.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(1);
             result[0] = (byte)chValue;</span>
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(double value) {
-            Array&lt;byte&gt; result(8);
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(double value) {</span>
+            /// Step: Copy IEEE 754 64-bit double bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);
             std::memcpy(result.GetData(), &amp;value, 8);</span>
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(short iValue) {
-            Array&lt;byte&gt; result(2);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(short iValue) {</span>
+            /// Step: Copy 16-bit signed integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);</span>
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(int iValue) {
-            Array&lt;byte&gt; result(4);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(int iValue) {</span>
+            /// Step: Copy 32-bit signed integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);</span>
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(long long llValue) {
-            Array&lt;byte&gt; result(8);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(long long llValue) {</span>
+            /// Step: Copy 64-bit signed integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);</span>
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(float value) {
-            Array&lt;byte&gt; result(4);
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(float value) {</span>
+            /// Step: Copy IEEE 754 32-bit float bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);
             std::memcpy(result.GetData(), &amp;value, 4);</span>
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned short iValue) {
-            Array&lt;byte&gt; result(2);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned short iValue) {</span>
+            /// Step: Copy 16-bit unsigned integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);</span>
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned int iValue) {
-            Array&lt;byte&gt; result(4);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned int iValue) {</span>
+            /// Step: Copy 32-bit unsigned integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);</span>
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned long long llValue) {
-            Array&lt;byte&gt; result(8);</span>
+<span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned long long llValue) {</span>
+            /// Step: Copy 64-bit unsigned integer bytes into byte array.
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);</span>
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        bool BitConverter::ToBoolean(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
-            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");
-            return value[iStartIndex] != 0;
+<span style = "background-color:#dfd">        bool BitConverter::ToBoolean(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Return: Boolean evaluation.
+<span style = "background-color:#dfd">            return value[iStartIndex] != 0;
         }</span>
 
-<span style = "background-color:#dfd">        char BitConverter::ToChar(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
-            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");
-            return (char)value[iStartIndex];
+<span style = "background-color:#dfd">        char BitConverter::ToChar(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
+            if (iStartIndex &lt; 0 || iStartIndex &gt;= value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Return: Char conversion.
+<span style = "background-color:#dfd">            return (char)value[iStartIndex];
         }</span>
 
-<span style = "background-color:#dfd">        double BitConverter::ToDouble(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        double BitConverter::ToDouble(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 8 bytes into IEEE 754 double.
             double result;
 <span style = "background-color:#dfd">            std::memcpy(&amp;result, value.GetData() + iStartIndex, 8);
             return result;
         }</span>
 
-<span style = "background-color:#dfd">        short BitConverter::ToInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        short BitConverter::ToInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 2 bytes into 16-bit integer.
             short iResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
             return iResult;
         }</span>
 
-<span style = "background-color:#dfd">        int BitConverter::ToInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        int BitConverter::ToInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 4 bytes into 32-bit integer.
             int iResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
             return iResult;
         }</span>
 
-<span style = "background-color:#dfd">        long long BitConverter::ToInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        long long BitConverter::ToInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 8 bytes into 64-bit integer.
             long long llResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
             return llResult;
         }</span>
 
-<span style = "background-color:#dfd">        float BitConverter::ToSingle(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        float BitConverter::ToSingle(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 4 bytes into IEEE 754 float.
             float result;
 <span style = "background-color:#dfd">            std::memcpy(&amp;result, value.GetData() + iStartIndex, 4);
             return result;
         }</span>
 
-<span style = "background-color:#dfd">        unsigned short BitConverter::ToUInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        unsigned short BitConverter::ToUInt16(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 2 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 2 bytes into 16-bit unsigned integer.
             unsigned short iResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 2);
             return iResult;
         }</span>
 
-<span style = "background-color:#dfd">        unsigned int BitConverter::ToUInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        unsigned int BitConverter::ToUInt32(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 4 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 4 bytes into 32-bit unsigned integer.
             unsigned int iResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;iResult, value.GetData() + iStartIndex, 4);
             return iResult;
         }</span>
 
-<span style = "background-color:#dfd">        unsigned long long BitConverter::ToUInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            if (value.GetLength() == 0) throw ArgumentNullException("value");
+<span style = "background-color:#dfd">        unsigned long long BitConverter::ToUInt64(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Guard: Validate input buffer bounds.
+<span style = "background-color:#dfd">            if (value.GetLength() == 0) throw ArgumentNullException("value");
             if (iStartIndex &lt; 0 || iStartIndex + 8 &gt; value.GetLength()) throw ArgumentOutOfRangeException("iStartIndex");</span>
+            /// Step: Copy 8 bytes into 64-bit unsigned integer.
             unsigned long long llResult;
 <span style = "background-color:#dfd">            std::memcpy(&amp;llResult, value.GetData() + iStartIndex, 8);
             return llResult;
         }</span>
 
-<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value) {
-            return ToString(value, 0, value.GetLength());
+<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value) {</span>
+            /// Forward: Delegate with full array range.
+<span style = "background-color:#dfd">            return ToString(value, 0, value.GetLength());
         }</span>
 
-<span style = "background-color:#fdd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex) {
-            return ToString(value, iStartIndex, value.GetLength() - iStartIndex);
+<span style = "background-color:#fdd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
+            /// Forward: Delegate with start index and remaining range.
+<span style = "background-color:#fdd">            return ToString(value, iStartIndex, value.GetLength() - iStartIndex);
         }</span>
 
-<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex, int nLength) {
-            int nArrayLength = value.GetLength();
+<span style = "background-color:#dfd">        String BitConverter::ToString(Array&lt;byte&gt;&amp; value, int iStartIndex, int nLength) {</span>
+            /// Guard: Validate index and range parameters.
+<span style = "background-color:#dfd">            int nArrayLength = value.GetLength();
             if (iStartIndex &lt; 0 || (iStartIndex &gt;= nArrayLength &amp;&amp; nArrayLength &gt; 0))</span>
 <span style = "background-color:#fdd">                throw ArgumentOutOfRangeException("iStartIndex");</span>
 <span style = "background-color:#dfd">            if (nLength &lt; 0)</span>
@@ -176,6 +209,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            if (nLength == 0) return String("");</span>
 
+            /// Stream each byte as an uppercase 2-digit zero-padded hexadecimal number separated by '-'.
 <span style = "background-color:#dfd">            std::stringstream ss;
             for (int iIndex = 0; iIndex &lt; nLength; ++iIndex) {
                 if (iIndex &gt; 0) ss &lt;&lt; "-";
@@ -185,24 +219,28 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#dfd">        long long BitConverter::DoubleToInt64Bits(double value) {</span>
+            /// Reinterpret IEEE 754 floating-point bits to 64-bit integer via std::memcpy.
             long long llResult;
             std::memcpy(&amp;llResult, &amp;value, sizeof(double));
 <span style = "background-color:#dfd">            return llResult;
         }</span>
 
 <span style = "background-color:#dfd">        double BitConverter::Int64BitsToDouble(long long llValue) {</span>
+            /// Reinterpret 64-bit integer bits to IEEE 754 double via std::memcpy.
             double result;
 <span style = "background-color:#dfd">            std::memcpy(&amp;result, &amp;llValue, sizeof(long long));
             return result;
         }</span>
 
 <span style = "background-color:#dfd">        int BitConverter::SingleToInt32Bits(float value) {</span>
+            /// Reinterpret 32-bit float bits to 32-bit integer via std::memcpy.
             int iResult;
             std::memcpy(&amp;iResult, &amp;value, sizeof(float));
 <span style = "background-color:#dfd">            return iResult;
         }</span>
 
 <span style = "background-color:#dfd">        float BitConverter::Int32BitsToSingle(int iValue) {</span>
+            /// Reinterpret 32-bit integer bits to 32-bit float via std::memcpy.
             float result;
 <span style = "background-color:#dfd">            std::memcpy(&amp;result, &amp;iValue, sizeof(int));
             return result;

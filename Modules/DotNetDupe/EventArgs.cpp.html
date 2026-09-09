@@ -15,11 +15,13 @@
 namespace DotNetDupe {
     namespace System {
 
-<span style = "background-color:#dfd">        EventArgs::EventArgs() {
-        }</span>
+<span style = "background-color:#dfd">        EventArgs::EventArgs() {</span>
+            /// Initialize empty event arguments payload.
+<span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        const EventArgs&amp; EventArgs::Empty() {
-            static const EventArgs s_emptyArgs;</span>
+<span style = "background-color:#dfd">        const EventArgs&amp; EventArgs::Empty() {</span>
+            /// Return static immutable empty event arguments singleton.
+<span style = "background-color:#dfd">            static const EventArgs s_emptyArgs;</span>
             return s_emptyArgs;
 <span style = "background-color:#dfd">        }</span>
 

@@ -19,96 +19,122 @@ namespace DotNetDupe {
         namespace Logging {
 
             LoggerTextWriter::LoggerTextWriter(const DotNetDupe::System::String&amp; sCategoryName, LogLevel logLevel)
-<span style = "background-color:#dfd">                : m_pLogger(LogManager::GetLogger(sCategoryName)), m_logLevel(logLevel) {
-            }</span>
+<span style = "background-color:#dfd">                : m_pLogger(LogManager::GetLogger(sCategoryName)), m_logLevel(logLevel) {</span>
+                /// Resolve target logger from LogManager by category name.
+<span style = "background-color:#dfd">            }</span>
 
             LoggerTextWriter::LoggerTextWriter(const DotNetDupe::System::SmartPointer&lt;ILogger&gt;&amp; pLogger, LogLevel logLevel)
-<span style = "background-color:#fdd">                : m_pLogger(pLogger), m_logLevel(logLevel) {
+<span style = "background-color:#fdd">                : m_pLogger(pLogger), m_logLevel(logLevel) {</span>
+                /// Initialize writer wrapping explicit ILogger instance.
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Close() {</span>
+                /// Flush buffered data and close writer.
+<span style = "background-color:#fdd">                Flush();</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Dispose() {</span>
+                /// Dispose resources and release logger handle.
+<span style = "background-color:#fdd">                Close();</span>
+            }
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::Flush() {</span>
+                /// No-op: Log entries are flushed synchronously per write call.
+                (void)0;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            System::Text::EncodingPtr LoggerTextWriter::GetEncoding() const {</span>
+                /// Return standard UTF-8 text encoding.
+<span style = "background-color:#fdd">                return DotNetDupe::System::Text::TextEncoding::UTF8();
             }</span>
 
-<span style = "background-color:#dfd">            void LoggerTextWriter::Close() {
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(bool bValue) {</span>
+                /// Format boolean and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", bValue));
             }</span>
 
-<span style = "background-color:#dfd">            void LoggerTextWriter::Dispose() {
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(char chValue) {</span>
+                /// Format char and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", chValue));
             }</span>
 
-<span style = "background-color:#dfd">            void LoggerTextWriter::Flush() {
-            }</span>
-
-<span style = "background-color:#fdd">            System::Text::EncodingPtr LoggerTextWriter::GetEncoding() const {
-                return DotNetDupe::System::Text::TextEncoding::UTF8();
-            }</span>
-
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(bool bValue) {
-                Write(DotNetDupe::System::String::Format("{0}", bValue));
-            }</span>
-
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(char chValue) {
-                Write(DotNetDupe::System::String::Format("{0}", chValue));
-            }</span>
-
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(const char* pValue) {
-                if (pValue) {
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(const char* pValue) {</span>
+                /// Guard: Check null pointer and forward.
+<span style = "background-color:#fdd">                if (pValue) {
                     Write(DotNetDupe::System::String(pValue));</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void LoggerTextWriter::Write(const DotNetDupe::System::String&amp; sValue) {
-                if (!sValue.IsEmpty() &amp;&amp; !m_pLogger.IsNull()) {
+<span style = "background-color:#dfd">            void LoggerTextWriter::Write(const DotNetDupe::System::String&amp; sValue) {</span>
+                /// Emit message line to underlying logger.
+<span style = "background-color:#dfd">                if (!sValue.IsEmpty() &amp;&amp; !m_pLogger.IsNull()) {
                     m_pLogger-&gt;Log(m_logLevel, sValue);</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(int iValue) {
-                Write(DotNetDupe::System::String::Format("{0}", iValue));
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(int iValue) {</span>
+                /// Format integer and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", iValue));
             }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(long long llValue) {
-                Write(DotNetDupe::System::String::Format("{0}", llValue));
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(long long llValue) {</span>
+                /// Format 64-bit integer and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", llValue));
             }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(float fValue) {
-                Write(DotNetDupe::System::String::Format("{0}", fValue));
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(float fValue) {</span>
+                /// Format float and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", fValue));
             }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::Write(double dValue) {
-                Write(DotNetDupe::System::String::Format("{0}", dValue));
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(double dValue) {</span>
+                /// Format double and forward to string write.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String::Format("{0}", dValue));
             }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine() {
-                Write(DotNetDupe::System::String(""));
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine() {</span>
+                /// Write empty newline entry.
+<span style = "background-color:#fdd">                Write(DotNetDupe::System::String(""));
             }</span>
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(bool bValue) {
-                Write(bValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(bool bValue) {</span>
+                /// Write boolean line.
+<span style = "background-color:#fdd">                Write(bValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(char chValue) {
-                Write(chValue);</span>
+<span style = "background-color:#dfd">            void LoggerTextWriter::WriteLine(char chValue) {</span>
+                /// Write char line.
+<span style = "background-color:#dfd">                Write(chValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(const char* pValue) {
-                Write(pValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(const char* pValue) {</span>
+                /// Write C-string line.
+<span style = "background-color:#fdd">                Write(pValue);</span>
             }
 
-<span style = "background-color:#dfd">            void LoggerTextWriter::WriteLine(const DotNetDupe::System::String&amp; sValue) {
-                Write(sValue);</span>
+<span style = "background-color:#dfd">            void LoggerTextWriter::WriteLine(const DotNetDupe::System::String&amp; sValue) {</span>
+                /// Write String line.
+<span style = "background-color:#dfd">                Write(sValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(int iValue) {
-                Write(iValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(int iValue) {</span>
+                /// Write integer line.
+<span style = "background-color:#fdd">                Write(iValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(long long llValue) {
-                Write(llValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(long long llValue) {</span>
+                /// Write 64-bit integer line.
+<span style = "background-color:#fdd">                Write(llValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(float fValue) {
-                Write(fValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(float fValue) {</span>
+                /// Write float line.
+<span style = "background-color:#fdd">                Write(fValue);</span>
             }
 
-<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(double dValue) {
-                Write(dValue);</span>
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(double dValue) {</span>
+                /// Write double line.
+<span style = "background-color:#fdd">                Write(dValue);</span>
             }
 
         }

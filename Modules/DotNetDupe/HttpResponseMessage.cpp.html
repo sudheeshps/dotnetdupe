@@ -19,61 +19,78 @@ namespace DotNetDupe {
             namespace Http {
 
                 HttpResponseMessage::HttpResponseMessage()
-<span style = "background-color:#dfd">                    : m_statusCode(HttpStatusCode::OK), m_pContent(nullptr) {}</span>
+<span style = "background-color:#dfd">                    : m_statusCode(HttpStatusCode::OK), m_pContent(nullptr) {</span>
+                    /// Default initialize with HTTP 200 OK status.
+<span style = "background-color:#dfd">                }</span>
 
                 HttpResponseMessage::HttpResponseMessage(HttpStatusCode statusCode)
-<span style = "background-color:#dfd">                    : m_statusCode(statusCode), m_pContent(nullptr) {}</span>
+<span style = "background-color:#dfd">                    : m_statusCode(statusCode), m_pContent(nullptr) {</span>
+                    /// Initialize with given HTTP status code.
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                HttpStatusCode HttpResponseMessage::GetStatusCode() const {
-                    return m_statusCode;
+<span style = "background-color:#dfd">                HttpStatusCode HttpResponseMessage::GetStatusCode() const {</span>
+                    /// Return HTTP status code.
+<span style = "background-color:#dfd">                    return m_statusCode;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpResponseMessage::SetStatusCode(HttpStatusCode statusCode) {
-                    m_statusCode = statusCode;
+<span style = "background-color:#fdd">                void HttpResponseMessage::SetStatusCode(HttpStatusCode statusCode) {</span>
+                    /// Mutate HTTP status code.
+<span style = "background-color:#fdd">                    m_statusCode = statusCode;
                 }</span>
 
-<span style = "background-color:#dfd">                String HttpResponseMessage::GetReasonPhrase() const {
-                    return m_sReasonPhrase;
+<span style = "background-color:#dfd">                String HttpResponseMessage::GetReasonPhrase() const {</span>
+                    /// Return HTTP status reason phrase.
+<span style = "background-color:#dfd">                    return m_sReasonPhrase;
                 }</span>
 
-<span style = "background-color:#dfd">                void HttpResponseMessage::SetReasonPhrase(const String&amp; reasonPhrase) {
-                    m_sReasonPhrase = reasonPhrase;</span>
+<span style = "background-color:#dfd">                void HttpResponseMessage::SetReasonPhrase(const String&amp; reasonPhrase) {</span>
+                    /// Mutate HTTP status reason phrase.
+<span style = "background-color:#dfd">                    m_sReasonPhrase = reasonPhrase;</span>
 <span style = "background-color:#fdd">                }</span>
 
 <span style = "background-color:#dfd">                bool HttpResponseMessage::IsSuccessStatusCode() const {</span>
+                    /// Successful HTTP status codes are in the range [200, 299].
                     int code = static_cast&lt;int&gt;(m_statusCode);
 <span style = "background-color:#dfd">                    return code &gt;= 200 &amp;&amp; code &lt;= 299;
                 }</span>
 
-<span style = "background-color:#dfd">                HttpContentPtr HttpResponseMessage::GetContent() const {
-                    return m_pContent;
+<span style = "background-color:#dfd">                HttpContentPtr HttpResponseMessage::GetContent() const {</span>
+                    /// Return payload content pointer.
+<span style = "background-color:#dfd">                    return m_pContent;
                 }</span>
 
-<span style = "background-color:#fdd">                void HttpResponseMessage::SetContent(const HttpContentPtr&amp; content) {
-                    m_pContent = content;</span>
+<span style = "background-color:#fdd">                void HttpResponseMessage::SetContent(const HttpContentPtr&amp; content) {</span>
+                    /// Assign payload content pointer.
+<span style = "background-color:#fdd">                    m_pContent = content;</span>
                 }
 
-<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpResponseMessage::GetHeaders() {
-                    return m_headers;
+<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpResponseMessage::GetHeaders() {</span>
+                    /// Return mutable reference to response headers dictionary.
+<span style = "background-color:#dfd">                    return m_headers;
                 }</span>
 
-<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpResponseMessage::GetHeaders() const {
-                    return m_headers;
+<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpResponseMessage::GetHeaders() const {</span>
+                    /// Return read-only const reference to response headers dictionary.
+<span style = "background-color:#dfd">                    return m_headers;
                 }</span>
 
-<span style = "background-color:#dfd">                void HttpResponseMessage::EnsureSuccessStatusCode() {
-                    if (!IsSuccessStatusCode()) {
-                        std::string msg = "Response status code does not indicate success: ";
-                        msg += std::to_string(static_cast&lt;int&gt;(m_statusCode));
-                        if (!m_sReasonPhrase.IsEmpty()) {
-                            msg += " (";
-                            msg += m_sReasonPhrase.GetRawString();
-                            msg += ")";</span>
-                        }
-<span style = "background-color:#dfd">                        msg += ".";
-                        throw HttpRequestException(msg.c_str());</span>
+<span style = "background-color:#dfd">                void HttpResponseMessage::EnsureSuccessStatusCode() {</span>
+                    /// Guard: Verify status is within successful range [200, 299].
+<span style = "background-color:#dfd">                    if (IsSuccessStatusCode()) {</span>
+                        return;
                     }
-<span style = "background-color:#dfd">                }</span>
+                    /// Format failure message with code and optional reason phrase.
+<span style = "background-color:#dfd">                    std::string msg = "Response status code does not indicate success: ";
+                    msg += std::to_string(static_cast&lt;int&gt;(m_statusCode));
+                    if (!m_sReasonPhrase.IsEmpty()) {
+                        msg += " (";
+                        msg += m_sReasonPhrase.GetRawString();
+                        msg += ")";</span>
+                    }
+<span style = "background-color:#dfd">                    msg += ".";</span>
+                    /// Throw library HttpRequestException.
+<span style = "background-color:#dfd">                    throw HttpRequestException(msg.c_str());
+                }</span>
 
             }
         }

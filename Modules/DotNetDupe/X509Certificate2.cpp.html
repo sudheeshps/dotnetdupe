@@ -38,6 +38,7 @@ namespace DotNetDupe {
                     static std::once_flag s_cryptoInitOnce;
 
                     static void InitializeCrypto() {
+                        /// Step: Register OpenSSL algorithms and error strings once per process.
                         std::call_once(s_cryptoInitOnce, []() {
                             OpenSSL_add_all_algorithms();
                             ERR_load_crypto_strings();
@@ -45,8 +46,11 @@ namespace DotNetDupe {
                     }
 
                     static X509* LoadPemCert(const String&amp; certPath) {
+                        /// Guard: Open file BIO for certificate path.
                         BIO* pCertBio = BIO_new_file(certPath.GetRawString(), "r");
                         if (!pCertBio) throw IO::IOException("Could not open certificate file.");
+
+                        /// Step: Parse PEM X.509 certificate and release BIO handle.
                         X509* pCert = PEM_read_bio_X509(pCertBio, nullptr, nullptr, nullptr);
                         BIO_free(pCertBio);
                         if (!pCert) throw ArgumentException("Invalid PEM certificate.");
@@ -54,8 +58,11 @@ namespace DotNetDupe {
                     }
 
                     static EVP_PKEY* LoadPemKey(const String&amp; keyPath) {
+                        /// Guard: Open file BIO for private key path.
                         BIO* pKeyBio = BIO_new_file(keyPath.GetRawString(), "r");
                         if (!pKeyBio) throw IO::IOException("Could not open private key file.");
+
+                        /// Step: Parse PEM private key and release BIO handle.
                         EVP_PKEY* pKey = PEM_read_bio_PrivateKey(pKeyBio, nullptr, nullptr, nullptr);
                         BIO_free(pKeyBio);
                         if (!pKey) throw ArgumentException("Invalid PEM private key.");
@@ -63,33 +70,41 @@ namespace DotNetDupe {
                     }
 
                     X509Certificate2::X509Certificate2(const String&amp; certPath, const String&amp; keyPath)
-<span style = "background-color:#dfd">                        : m_pCert(nullptr), m_pKey(nullptr) {
-                        InitializeCrypto();
-                        X509* pCert = LoadPemCert(certPath);</span>
+<span style = "background-color:#dfd">                        : m_pCert(nullptr), m_pKey(nullptr) {</span>
+                        /// Step: Initialize cryptographic subsystem.
+<span style = "background-color:#dfd">                        InitializeCrypto();</span>
+
+                        /// Step: Load certificate and key with exception cleanup.
+<span style = "background-color:#dfd">                        X509* pCert = LoadPemCert(certPath);</span>
                         try {
 <span style = "background-color:#dfd">                            m_pKey = LoadPemKey(keyPath);
                             m_pCert = pCert;</span>
-<span style = "background-color:#fdd">                        } catch (...) {
-                            X509_free(pCert);
+<span style = "background-color:#fdd">                        } catch (...) {</span>
+                            /// Cleanup: Free allocated certificate on private key load failure.
+<span style = "background-color:#fdd">                            X509_free(pCert);
                             throw;</span>
                         }
 <span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#fdd">                    X509Certificate2::~X509Certificate2() {
-                        if (m_pCert) {
+<span style = "background-color:#fdd">                    X509Certificate2::~X509Certificate2() {</span>
+                        /// Step: Release OpenSSL X509 certificate structure.
+<span style = "background-color:#fdd">                        if (m_pCert) {
                             X509_free(static_cast&lt;X509*&gt;(m_pCert));</span>
                         }
+                        /// Step: Release OpenSSL EVP_PKEY private key structure.
 <span style = "background-color:#fdd">                        if (m_pKey) {
                             EVP_PKEY_free(static_cast&lt;EVP_PKEY*&gt;(m_pKey));</span>
                         }
 <span style = "background-color:#fdd">                    }</span>
 
-<span style = "background-color:#dfd">                    void* X509Certificate2::GetInternalCert() const {
-                        return m_pCert;
+<span style = "background-color:#dfd">                    void* X509Certificate2::GetInternalCert() const {</span>
+                        /// Return: Internal OpenSSL X509* pointer.
+<span style = "background-color:#dfd">                        return m_pCert;
                     }</span>
 
-<span style = "background-color:#dfd">                    void* X509Certificate2::GetInternalKey() const {
-                        return m_pKey;
+<span style = "background-color:#dfd">                    void* X509Certificate2::GetInternalKey() const {</span>
+                        /// Return: Internal OpenSSL EVP_PKEY* pointer.
+<span style = "background-color:#dfd">                        return m_pKey;
                     }</span>
 
                 }

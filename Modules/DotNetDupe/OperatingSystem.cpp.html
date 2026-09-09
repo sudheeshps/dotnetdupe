@@ -26,16 +26,19 @@ namespace DotNetDupe {
         OperatingSystem::OperatingSystem(PlatformID ePlatform, const Version&amp; vVersion)
 <span style = "background-color:#dfd">            : m_ePlatform(ePlatform), m_vVersion(vVersion) { }</span>
 
-<span style = "background-color:#dfd">        PlatformID OperatingSystem::GetPlatform() const {
-            return m_ePlatform;
+<span style = "background-color:#dfd">        PlatformID OperatingSystem::GetPlatform() const {</span>
+            /// Return stored platform identifier enumeration value.
+<span style = "background-color:#dfd">            return m_ePlatform;
         }</span>
 
-<span style = "background-color:#dfd">        const Version&amp; OperatingSystem::GetVersion() const {
-            return m_vVersion;
+<span style = "background-color:#dfd">        const Version&amp; OperatingSystem::GetVersion() const {</span>
+            /// Return stored operating system version reference.
+<span style = "background-color:#dfd">            return m_vVersion;
         }</span>
 
 <span style = "background-color:#dfd">        String OperatingSystem::GetServicePack() const {</span>
 #if defined(_WIN32)
+            /// Query extended OS version info via ntdll RtlGetVersion to bypass manifest compatibility checks.
             OSVERSIONINFOEXW info;
 <span style = "background-color:#dfd">            ZeroMemory(&amp;info, sizeof(OSVERSIONINFOEXW));
             info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEXW);</span>
@@ -48,18 +51,22 @@ namespace DotNetDupe {
                 }
             }
 
+            /// Convert wide CSDVersion string to UTF-8.
 <span style = "background-color:#dfd">            return String(WCharToUtf8(info.szCSDVersion).c_str());</span>
 #else
+            /// Non-Windows platforms do not provide Windows-style service pack strings.
             return String("");
 #endif
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        String OperatingSystem::GetVersionString() const {
-            return m_vVersion.ToString();
+<span style = "background-color:#dfd">        String OperatingSystem::GetVersionString() const {</span>
+            /// Format operating system version string.
+<span style = "background-color:#dfd">            return m_vVersion.ToString();
         }</span>
 
 <span style = "background-color:#dfd">        bool OperatingSystem::IsWindows() {</span>
 #if defined(_WIN32)
+            /// Platform compile target is Windows.
 <span style = "background-color:#dfd">            return true;</span>
 #else
             return false;
@@ -68,6 +75,7 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">        bool OperatingSystem::IsLinux() {</span>
 #if defined(__linux__)
+            /// Platform compile target is Linux.
             return true;
 #else
 <span style = "background-color:#dfd">            return false;</span>

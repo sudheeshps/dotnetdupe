@@ -32,29 +32,41 @@ namespace DotNetDupe {
 
                 DatabaseEngine::~DatabaseEngine() = default;
 
-<span style = "background-color:#dfd">                DatabaseEngine&amp; DatabaseEngine::Instance() {
-                    static DatabaseEngine instance;
+<span style = "background-color:#dfd">                DatabaseEngine&amp; DatabaseEngine::Instance() {</span>
+                    /// Step: Maintain thread-safe static singleton instance.
+<span style = "background-color:#dfd">                    static DatabaseEngine instance;
                     return instance;
                 }</span>
 
-<span style = "background-color:#dfd">                void DatabaseEngine::RegisterBackend(const DotNetDupe::System::String&amp; dbName, DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; backend) {
-                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);
-                    m_pImpl-&gt;m_pBackends[dbName.GetRawString()] = backend;
+<span style = "background-color:#dfd">                void DatabaseEngine::RegisterBackend(const DotNetDupe::System::String&amp; dbName, DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; backend) {</span>
+                    /// Step: Synchronize access to backend map.
+<span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);</span>
+
+                    /// Step: Store backend reference keyed by database name.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_pBackends[dbName.GetRawString()] = backend;
                 }</span>
 
-<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; DatabaseEngine::GetBackend(const DotNetDupe::System::String&amp; dbName) {
-                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);
-                    auto it = m_pImpl-&gt;m_pBackends.find(dbName.GetRawString());
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt; DatabaseEngine::GetBackend(const DotNetDupe::System::String&amp; dbName) {</span>
+                    /// Step: Synchronize access to backend registry.
+<span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;m_mutex);</span>
+
+                    /// Step: Look up backend by name.
+<span style = "background-color:#dfd">                    auto it = m_pImpl-&gt;m_pBackends.find(dbName.GetRawString());
                     if (it != m_pImpl-&gt;m_pBackends.end()) {
                         return it-&gt;second;</span>
                     }
+
+                    /// Step: Return null pointer if backend is unregistered.
                     return DotNetDupe::System::SmartPointer&lt;IDatabaseBackend&gt;(nullptr);
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                void DatabaseEngine::ClearDatabase(const DotNetDupe::System::String&amp; dbName) {
-                    auto backend = GetBackend(dbName);
-                    if (backend) {</span>
-<span style = "background-color:#fdd">                        backend-&gt;ClearDatabase();</span>
+<span style = "background-color:#dfd">                void DatabaseEngine::ClearDatabase(const DotNetDupe::System::String&amp; dbName) {</span>
+                    /// Step: Resolve backend by name.
+<span style = "background-color:#dfd">                    auto spBackend = GetBackend(dbName);</span>
+
+                    /// Step: Invoke backend-specific purge if registered.
+<span style = "background-color:#dfd">                    if (spBackend) {</span>
+<span style = "background-color:#fdd">                        spBackend-&gt;ClearDatabase();</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
@@ -64,11 +76,14 @@ namespace DotNetDupe {
                     const Collections::Generic::Dictionary&lt;String, String&gt;&amp; parameters,
                     Collections::Generic::List&lt;String&gt;&amp; columnNames,
                     int&amp; rowsAffected
-<span style = "background-color:#fdd">                ) {
-                    auto backend = GetBackend(dbName);
-                    if (backend) {
-                        return backend-&gt;Execute(sql, parameters, columnNames, rowsAffected);</span>
+<span style = "background-color:#fdd">                ) {</span>
+                    /// Step: Locate target database backend.
+<span style = "background-color:#fdd">                    auto spBackend = GetBackend(dbName);
+                    if (spBackend) {
+                        return spBackend-&gt;Execute(sql, parameters, columnNames, rowsAffected);</span>
                     }
+
+                    /// Step: Reset outputs and return empty list on missing backend.
 <span style = "background-color:#fdd">                    rowsAffected = 0;
                     columnNames.Clear();
                     return Collections::Generic::List&lt;Row&gt;();

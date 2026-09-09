@@ -20,21 +20,24 @@ namespace DotNetDupe {
             namespace Sockets {
 
                 NetworkStream::NetworkStream(const SmartPointer&lt;Socket&gt;&amp; socket)
-<span style = "background-color:#fdd">                    : m_pSocket(socket), m_bOwnsSocket(false), m_bDisposed(false) {
-                    if (socket.IsNull()) {
+<span style = "background-color:#fdd">                    : m_pSocket(socket), m_bOwnsSocket(false), m_bDisposed(false) {</span>
+                    /// Guard: Validate input socket.
+<span style = "background-color:#fdd">                    if (socket.IsNull()) {
                         throw ArgumentNullException("Socket cannot be null.");</span>
                     }
 <span style = "background-color:#fdd">                }</span>
 
                 NetworkStream::NetworkStream(const SmartPointer&lt;Socket&gt;&amp; socket, bool bOwnsSocket)
-<span style = "background-color:#dfd">                    : m_pSocket(socket), m_bOwnsSocket(bOwnsSocket), m_bDisposed(false) {
-                    if (socket.IsNull()) {</span>
+<span style = "background-color:#dfd">                    : m_pSocket(socket), m_bOwnsSocket(bOwnsSocket), m_bDisposed(false) {</span>
+                    /// Guard: Validate input socket.
+<span style = "background-color:#dfd">                    if (socket.IsNull()) {</span>
 <span style = "background-color:#fdd">                        throw ArgumentNullException("Socket cannot be null.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                NetworkStream::~NetworkStream() {
-                    Dispose();
+<span style = "background-color:#dfd">                NetworkStream::~NetworkStream() {</span>
+                    /// Deterministic stream disposal.
+<span style = "background-color:#dfd">                    Dispose();
                 }</span>
 
 <span style = "background-color:#dfd">                bool NetworkStream::CanRead() const {
@@ -61,12 +64,16 @@ namespace DotNetDupe {
                     throw IO::IOException("NetworkStream does not support seeking.");</span>
                 }
 
-<span style = "background-color:#dfd">                void NetworkStream::Flush() {
-                }</span>
+<span style = "background-color:#dfd">                void NetworkStream::Flush() {</span>
+                    /// No-op for unbuffered network socket stream.
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                int NetworkStream::Read(char* buffer, int offset, int count) {
-                    if (m_bDisposed) throw IO::IOException("Stream is disposed.");
-                    return m_pSocket-&gt;Receive(buffer, offset, count);
+<span style = "background-color:#dfd">                int NetworkStream::Read(char* buffer, int offset, int count) {</span>
+                    /// Guard: Check disposed status.
+<span style = "background-color:#dfd">                    if (m_bDisposed) throw IO::IOException("Stream is disposed.");</span>
+
+                    /// Receive bytes from underlying socket.
+<span style = "background-color:#dfd">                    return m_pSocket-&gt;Receive(buffer, offset, count);
                 }</span>
 
 <span style = "background-color:#fdd">                long NetworkStream::Seek(long offset, int origin) {
@@ -77,13 +84,17 @@ namespace DotNetDupe {
                     throw IO::IOException("NetworkStream does not support seeking.");</span>
                 }
 
-<span style = "background-color:#dfd">                void NetworkStream::Write(const char* buffer, int offset, int count) {
-                    if (m_bDisposed) throw IO::IOException("Stream is disposed.");
-                    m_pSocket-&gt;Send(buffer, offset, count);
+<span style = "background-color:#dfd">                void NetworkStream::Write(const char* buffer, int offset, int count) {</span>
+                    /// Guard: Check disposed status.
+<span style = "background-color:#dfd">                    if (m_bDisposed) throw IO::IOException("Stream is disposed.");</span>
+
+                    /// Send bytes through underlying socket.
+<span style = "background-color:#dfd">                    m_pSocket-&gt;Send(buffer, offset, count);
                 }</span>
 
-<span style = "background-color:#dfd">                void NetworkStream::Dispose() {
-                    if (!m_bDisposed) {</span>
+<span style = "background-color:#dfd">                void NetworkStream::Dispose() {</span>
+                    /// Guard: Check already disposed.
+<span style = "background-color:#dfd">                    if (!m_bDisposed) {</span>
                         m_bDisposed = true;
 <span style = "background-color:#dfd">                        if (m_bOwnsSocket &amp;&amp; !m_pSocket.IsNull()) {
                             m_pSocket-&gt;Close();</span>

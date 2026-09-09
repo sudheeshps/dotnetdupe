@@ -9,6 +9,11 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file UnknownException.h
+/// \brief Represents an unknown or unmapped exception encountered during execution.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 #include "Common.h"
@@ -16,15 +21,28 @@
 namespace DotNetDupe {
     namespace System {
 
+        /// \class UnknownException
+        /// \brief Represents an unknown or unmapped exception encountered during execution.
+        ///
+        /// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
         class UnknownException : public SystemException {
         public:
+            /// \brief Initializes a new instance of the UnknownException class with a default message.
             DOTNETDUPE_API UnknownException();
+
+            /// \brief Initializes a new instance of the UnknownException class with a specified error message.
+            /// \param sMessage The error message that explains the reason for the exception.
 <span style = "background-color:#dfd">            DOTNETDUPE_API UnknownException(const String&amp; sMessage) : SystemException(sMessage) {}</span>
+
+            /// \brief Initializes a new instance of the UnknownException class with a specified error message and inner exception.
+            /// \param sMessage The error message that explains the reason for the exception.
+            /// \param innerException The exception that is the cause of the current exception.
 <span style = "background-color:#fdd">            DOTNETDUPE_API UnknownException(const String&amp; sMessage, const Exception&amp; innerException) : SystemException(sMessage, innerException) {}</span>
         };
 
     }
-}</pre>
+}
+</pre>
         <hr />
         <table width="100%">
             <thead>

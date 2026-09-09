@@ -16,102 +16,128 @@ namespace DotNetDupe {
     namespace System {
         namespace IO {
             StringWriter::StringWriter()
-<span style = "background-color:#dfd">                : m_pSb(new Text::StringBuilder()), m_bIsOpen(true) {
-            }</span>
+<span style = "background-color:#dfd">                : m_pSb(new Text::StringBuilder()), m_bIsOpen(true) {</span>
+                /// Step: Construct new StringBuilder instance.
+<span style = "background-color:#dfd">            }</span>
 
             StringWriter::StringWriter(Text::StringBuilder&amp; sbOutput)
-<span style = "background-color:#fdd">                : m_pSb(&amp;sbOutput), m_bIsOpen(true) {
+<span style = "background-color:#fdd">                : m_pSb(&amp;sbOutput), m_bIsOpen(true) {</span>
+                /// Step: Bind to provided StringBuilder instance.
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            void StringWriter::Close() {</span>
+                /// Step: Close the string writer.
+<span style = "background-color:#dfd">                m_bIsOpen = false;
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Close() {
-                m_bIsOpen = false;
-            }</span>
-
-<span style = "background-color:#fdd">            void StringWriter::Dispose() {
-                m_bIsOpen = false;
+<span style = "background-color:#fdd">            void StringWriter::Dispose() {</span>
+                /// Step: Mark string writer as closed and disposed.
+<span style = "background-color:#fdd">                m_bIsOpen = false;
             }</span>
 
 <span style = "background-color:#dfd">            void StringWriter::Flush() {</span>
-                // Nothing to flush
+                /// Note: In-memory string writer requires no flush operations.
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            Text::EncodingPtr StringWriter::GetEncoding() const {
-                return Text::TextEncoding::UTF8();
+<span style = "background-color:#fdd">            Text::EncodingPtr StringWriter::GetEncoding() const {</span>
+                /// Return: UTF-8 encoding pointer.
+<span style = "background-color:#fdd">                return Text::TextEncoding::UTF8();
             }</span>
 
-<span style = "background-color:#dfd">            String StringWriter::ToString() const {
-                return m_pSb-&gt;ToString();
+<span style = "background-color:#dfd">            String StringWriter::ToString() const {</span>
+                /// Return: Serialized string from the underlying builder.
+<span style = "background-color:#dfd">                return m_pSb-&gt;ToString();
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(bool bValue) {
-                TextWriter::Write(bValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(bool bValue) {</span>
+                /// Forward: Delegate boolean serialization to base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::Write(bValue);</span>
             }
 
-<span style = "background-color:#dfd">            void StringWriter::Write(char chValue) {
-                if (!m_bIsOpen) return;
-                m_pSb-&gt;Append(chValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(char chValue) {</span>
+                /// Guard: Check if writer is open.
+<span style = "background-color:#dfd">                if (!m_bIsOpen) return;</span>
+                /// Step: Append character to underlying builder.
+<span style = "background-color:#dfd">                m_pSb-&gt;Append(chValue);</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(const String&amp; sValue) {
-                if (!m_bIsOpen) return;
-                m_pSb-&gt;Append(sValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(const String&amp; sValue) {</span>
+                /// Guard: Check if writer is open.
+<span style = "background-color:#dfd">                if (!m_bIsOpen) return;</span>
+                /// Step: Append string to underlying builder.
+<span style = "background-color:#dfd">                m_pSb-&gt;Append(sValue);</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(const char* pValue) {
-                if (!m_bIsOpen) return;
-                m_pSb-&gt;Append(pValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(const char* pValue) {</span>
+                /// Guard: Check if writer is open.
+<span style = "background-color:#dfd">                if (!m_bIsOpen) return;</span>
+                /// Step: Append C-string to underlying builder.
+<span style = "background-color:#dfd">                m_pSb-&gt;Append(pValue);</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(int iValue) {
-                TextWriter::Write(iValue);
+<span style = "background-color:#dfd">            void StringWriter::Write(int iValue) {</span>
+                /// Forward: Delegate integer serialization to base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::Write(iValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(long long llValue) {
-                TextWriter::Write(llValue);
+<span style = "background-color:#dfd">            void StringWriter::Write(long long llValue) {</span>
+                /// Forward: Delegate 64-bit integer serialization to base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::Write(llValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::Write(float fValue) {
-                TextWriter::Write(fValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(float fValue) {</span>
+                /// Forward: Delegate float serialization to base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::Write(fValue);</span>
             }
 
-<span style = "background-color:#dfd">            void StringWriter::Write(double dValue) {
-                TextWriter::Write(dValue);</span>
+<span style = "background-color:#dfd">            void StringWriter::Write(double dValue) {</span>
+                /// Forward: Delegate double serialization to base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::Write(dValue);</span>
             }
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine() {
-                TextWriter::WriteLine();
+<span style = "background-color:#dfd">            void StringWriter::WriteLine() {</span>
+                /// Forward: Write newline via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine();
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(bool bValue) {
-                TextWriter::WriteLine(bValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(bool bValue) {</span>
+                /// Forward: Write boolean line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(bValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(char chValue) {
-                TextWriter::WriteLine(chValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(char chValue) {</span>
+                /// Forward: Write character line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(chValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(const char* pValue) {
-                TextWriter::WriteLine(pValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(const char* pValue) {</span>
+                /// Forward: Write C-string line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(pValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(const String&amp; sValue) {
-                TextWriter::WriteLine(sValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(const String&amp; sValue) {</span>
+                /// Forward: Write string line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(sValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(int iValue) {
-                TextWriter::WriteLine(iValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(int iValue) {</span>
+                /// Forward: Write integer line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(iValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(long long llValue) {
-                TextWriter::WriteLine(llValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(long long llValue) {</span>
+                /// Forward: Write 64-bit integer line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(llValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(float fValue) {
-                TextWriter::WriteLine(fValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(float fValue) {</span>
+                /// Forward: Write float line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(fValue);
             }</span>
 
-<span style = "background-color:#dfd">            void StringWriter::WriteLine(double dValue) {
-                TextWriter::WriteLine(dValue);
+<span style = "background-color:#dfd">            void StringWriter::WriteLine(double dValue) {</span>
+                /// Forward: Write double line via base TextWriter.
+<span style = "background-color:#dfd">                TextWriter::WriteLine(dValue);
             }</span>
         }
     }

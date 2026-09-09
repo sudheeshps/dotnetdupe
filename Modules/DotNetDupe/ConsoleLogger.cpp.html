@@ -19,22 +19,28 @@ namespace DotNetDupe {
         namespace Logging {
 
             ConsoleLogger::ConsoleLogger(const DotNetDupe::System::String&amp; categoryName, const LoggerConfiguration&amp; config)
-<span style = "background-color:#fdd">                : LoggerBase(categoryName, config) {}</span>
+<span style = "background-color:#fdd">                : LoggerBase(categoryName, config) {</span>
+                /// Initialize base logger with category and configuration.
+<span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void ConsoleLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
-                LoggerBase::Log(logLevel, message);</span>
+<span style = "background-color:#dfd">            void ConsoleLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {</span>
+                /// Delegate simple message logging to base implementation.
+<span style = "background-color:#dfd">                LoggerBase::Log(logLevel, message);</span>
             }
 
             void ConsoleLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
-<span style = "background-color:#dfd">                                     const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
-                if (!IsEnabled(logLevel)) return;
-                DotNetDupe::System::String formatted = BuildLogMessage(logLevel, message, properties);</span>
+<span style = "background-color:#dfd">                                     const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {</span>
+                /// Guard: Check if message severity satisfies configured minimum level.
+<span style = "background-color:#dfd">                if (!IsEnabled(logLevel)) return;</span>
+
+                /// Format the log line with timestamps, category, and properties.
+<span style = "background-color:#dfd">                DotNetDupe::System::String sFormatted = BuildLogMessage(logLevel, message, properties);</span>
                 
-                // If Console::Out() has been redirected (e.g. to a LoggerTextWriter), write directly to std::cout to avoid an infinite recursion loop
+                /// Emit to standard output, bypassing redirected Console::Out to avoid recursion.
 <span style = "background-color:#dfd">                if (!DotNetDupe::System::Console::Out().IsNull()) {
-                    std::cout &lt;&lt; formatted.GetRawString() &lt;&lt; std::endl;
+                    std::cout &lt;&lt; sFormatted.GetRawString() &lt;&lt; std::endl;
                 } else {
-                    DotNetDupe::System::Console::WriteLine(formatted);</span>
+                    DotNetDupe::System::Console::WriteLine(sFormatted);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 

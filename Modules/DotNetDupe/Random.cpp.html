@@ -19,34 +19,39 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">        Random::Random(int seed) : _seed(seed) { }</span>
 
-<span style = "background-color:#dfd">        int Random::Next() {
-            std::mt19937 gen(_seed);</span>
+<span style = "background-color:#dfd">        int Random::Next() {</span>
+            /// Initialize Mersenne Twister engine with current seed and draw non-negative integer.
+<span style = "background-color:#dfd">            std::mt19937 gen(_seed);</span>
             std::uniform_int_distribution&lt;&gt; distrib(0, 2147483647);
 <span style = "background-color:#dfd">            return distrib(gen);
         }</span>
 
-<span style = "background-color:#dfd">        int Random::Next(int maxValue) {
-            std::mt19937 gen(_seed);</span>
+<span style = "background-color:#dfd">        int Random::Next(int maxValue) {</span>
+            /// Sample uniform distribution across [0, maxValue].
+<span style = "background-color:#dfd">            std::mt19937 gen(_seed);</span>
             std::uniform_int_distribution&lt;&gt; distrib(0, maxValue);
 <span style = "background-color:#dfd">            return distrib(gen);
         }</span>
 
-<span style = "background-color:#dfd">        int Random::Next(int minValue, int maxValue) {
-            std::mt19937 gen(_seed);</span>
+<span style = "background-color:#dfd">        int Random::Next(int minValue, int maxValue) {</span>
+            /// Sample uniform distribution across [minValue, maxValue].
+<span style = "background-color:#dfd">            std::mt19937 gen(_seed);</span>
             std::uniform_int_distribution&lt;&gt; distrib(minValue, maxValue);
 <span style = "background-color:#dfd">            return distrib(gen);
         }</span>
 
-<span style = "background-color:#dfd">        void Random::NextBytes(unsigned char* buffer, int bufferSize) {
-            std::mt19937 gen(_seed);</span>
+<span style = "background-color:#dfd">        void Random::NextBytes(unsigned char* buffer, int bufferSize) {</span>
+            /// Generate random bytes across entire buffer span.
+<span style = "background-color:#dfd">            std::mt19937 gen(_seed);</span>
             std::uniform_int_distribution&lt;&gt; distrib(0, 255);
 <span style = "background-color:#dfd">            for (int i = 0; i &lt; bufferSize; ++i) {
                 buffer [i] = static_cast&lt;unsigned char&gt;(distrib(gen));</span>
             }
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        double Random::NextDouble() {
-            std::mt19937 gen(_seed);</span>
+<span style = "background-color:#dfd">        double Random::NextDouble() {</span>
+            /// Sample uniform real distribution in interval [0.0, 1.0).
+<span style = "background-color:#dfd">            std::mt19937 gen(_seed);</span>
             std::uniform_real_distribution&lt;&gt; distrib(0.0, 1.0);
 <span style = "background-color:#dfd">            return distrib(gen);
         }</span>

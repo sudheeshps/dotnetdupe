@@ -46,6 +46,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static HANDLE OpenOrCreateWin32Event(const std::wstring&amp; wsName, bool manualReset, bool initialState, bool openAlways, bool&amp; bCreatedNew) {
+                /// Attempt Win32 CreateEventW.
                 HANDLE hHandle = ::CreateEventW(NULL, manualReset ? TRUE : FALSE, initialState ? TRUE : FALSE, wsName.c_str());
                 if (hHandle != NULL) {
                     bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
@@ -54,6 +55,8 @@ namespace DotNetDupe {
                 if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied creating EventWaitHandle synchronization object.");
                 }
+
+                /// Fallback to open existing.
                 bCreatedNew = false;
                 if (!openAlways) {
                     throw WaitHandleCannotBeOpenedException("Event creation returned null handle and openAlways is false.");
@@ -72,6 +75,7 @@ namespace DotNetDupe {
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
 <span style = "background-color:#dfd">                : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {</span>
 #if defined(_WIN32)
+                /// Named event creation on Windows.
 <span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Event(wsName, manualReset, initialState, openAlways, bCreatedNew);
@@ -84,6 +88,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            EventWaitHandle::~EventWaitHandle() {</span>
+                /// Release system handle and internal memory.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     ::CloseHandle((HANDLE)_hHandle);
@@ -96,22 +101,27 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            SmartPointer&lt;EventWaitHandle&gt; EventWaitHandle::OpenExisting(const String&amp; sName) {
-                SmartPointer&lt;EventWaitHandle&gt; pResult = nullptr;
+<span style = "background-color:#dfd">            SmartPointer&lt;EventWaitHandle&gt; EventWaitHandle::OpenExisting(const String&amp; sName) {</span>
+                /// Open named event.
+<span style = "background-color:#dfd">                SmartPointer&lt;EventWaitHandle&gt; pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;</span>
                 }
 <span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No event handle of the given name exists.");
             }</span>
 
-<span style = "background-color:#dfd">            bool EventWaitHandle::TryOpenExisting(const String&amp; sName, SmartPointer&lt;EventWaitHandle&gt;&amp; pResult) {
-                pResult = nullptr;
+<span style = "background-color:#dfd">            bool EventWaitHandle::TryOpenExisting(const String&amp; sName, SmartPointer&lt;EventWaitHandle&gt;&amp; pResult) {</span>
+                /// Guard: Check empty name.
+<span style = "background-color:#dfd">                pResult = nullptr;
                 if (sName.IsEmpty()) return false;</span>
+
 #if defined(_WIN32)
+                /// Open existing system event.
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (!h) return false;
-                auto spEvt = SmartPointer&lt;EventWaitHandle&gt;::NewShared(false, false);
+                if (!h) return false;</span>
+
+<span style = "background-color:#dfd">                auto spEvt = SmartPointer&lt;EventWaitHandle&gt;::NewShared(false, false);
                 spEvt-&gt;_name = sName;
                 spEvt-&gt;_hHandle = h;
                 pResult = std::move(spEvt);
@@ -122,6 +132,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::Set() {</span>
+                /// Signal system event or condition variable.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     return (::SetEvent((HANDLE)_hHandle) != FALSE);</span>
@@ -139,6 +150,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#fdd">            bool EventWaitHandle::Reset() {</span>
+                /// Reset system event or local state.
 #if defined(_WIN32)
 <span style = "background-color:#fdd">                if (_hHandle != nullptr) {
                     return (::ResetEvent((HANDLE)_hHandle) != FALSE);</span>
@@ -151,14 +163,16 @@ namespace DotNetDupe {
             }</span>
 
             static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool&amp; bState, bool bManualReset) {
+                /// Wait for condition variable signal.
                 std::unique_lock&lt;std::mutex&gt; lock(pImpl-&gt;mutex);
                 pImpl-&gt;cv.wait(lock, [&amp;bState]() { return bState; });
                 if (!bManualReset) bState = false;
                 return true;
             }
 
-<span style = "background-color:#dfd">            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool&amp; bState, bool bManualReset, int msTimeout) {
-                std::unique_lock&lt;std::mutex&gt; lock(pImpl-&gt;mutex);
+<span style = "background-color:#dfd">            static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool&amp; bState, bool bManualReset, int msTimeout) {</span>
+                /// Timed wait for condition variable signal.
+<span style = "background-color:#dfd">                std::unique_lock&lt;std::mutex&gt; lock(pImpl-&gt;mutex);
                 bool bRes = pImpl-&gt;cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&amp;bState]() { return bState; });
                 if (bRes) {
                     if (!bManualReset) bState = false;
@@ -168,6 +182,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne() {</span>
+                /// Synchronize via native handle or CV.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {</span>
 <span style = "background-color:#fdd">                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
@@ -179,6 +194,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool EventWaitHandle::WaitOne(int millisecondsTimeout) {</span>
+                /// Timed synchronization.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);

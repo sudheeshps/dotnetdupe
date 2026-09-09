@@ -268,8 +268,9 @@ namespace DotNetDupe {
                 FileDownloader::FileDownloader(const String&amp; sUrl, const String&amp; sDestinationPath)
 <span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()),
                       DownloadProgressChanged(m_pImpl-&gt;DownloadProgressChanged),
-                      DownloadCompleted(m_pImpl-&gt;DownloadCompleted) {
-                    m_pImpl-&gt;m_sUrl = sUrl;
+                      DownloadCompleted(m_pImpl-&gt;DownloadCompleted) {</span>
+                    /// Validate parameters and store endpoint state.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_sUrl = sUrl;
                     m_pImpl-&gt;m_sDestinationPath = sDestinationPath;
                     if (sUrl.IsEmpty()) throw ArgumentException("sUrl cannot be empty.");
                     if (sDestinationPath.IsEmpty()) throw ArgumentException("sDestinationPath cannot be empty.");
@@ -279,28 +280,34 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                FileDownloader::~FileDownloader() {
-                    m_pImpl-&gt;m_bPauseRequested = true;
+<span style = "background-color:#dfd">                FileDownloader::~FileDownloader() {</span>
+                    /// Signal pause to terminate active download worker thread.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_bPauseRequested = true;
                 }</span>
 
-<span style = "background-color:#dfd">                DownloadProgress FileDownloader::GetProgress() const {
-                    return m_pImpl-&gt;GetProgress();
+<span style = "background-color:#dfd">                DownloadProgress FileDownloader::GetProgress() const {</span>
+                    /// Query telemetry progress snapshot.
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;GetProgress();
                 }</span>
 
-<span style = "background-color:#dfd">                DownloadStatus FileDownloader::GetStatus() const {
-                    return m_pImpl-&gt;m_status.load();
+<span style = "background-color:#dfd">                DownloadStatus FileDownloader::GetStatus() const {</span>
+                    /// Return atomic status value.
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_status.load();
                 }</span>
 
-<span style = "background-color:#dfd">                void FileDownloader::Pause() {
-                    if (m_pImpl-&gt;m_status.load() == DownloadStatus::Downloading) {
+<span style = "background-color:#dfd">                void FileDownloader::Pause() {</span>
+                    /// Guard: Signal pause only if currently downloading.
+<span style = "background-color:#dfd">                    if (m_pImpl-&gt;m_status.load() == DownloadStatus::Downloading) {
                         m_pImpl-&gt;m_bPauseRequested = true;
                         Console::WriteLine("[FileDownloader] Pause requested.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                bool FileDownloader::Start() {
-                    if (m_pImpl-&gt;m_status.load() == DownloadStatus::Downloading) return false;</span>
+<span style = "background-color:#dfd">                bool FileDownloader::Start() {</span>
+                    /// Guard: Prevent concurrent duplicate starts.
+<span style = "background-color:#dfd">                    if (m_pImpl-&gt;m_status.load() == DownloadStatus::Downloading) return false;</span>
 
+                    /// Reset transfer telemetry counters.
 <span style = "background-color:#dfd">                    m_pImpl-&gt;m_bPauseRequested = false;
                     m_pImpl-&gt;m_llDownloadedBytes = 0;
                     m_pImpl-&gt;m_llTotalBytes = 0;
@@ -308,34 +315,40 @@ namespace DotNetDupe {
                     m_pImpl-&gt;m_status = DownloadStatus::Downloading;
                     Console::WriteLine(String("[FileDownloader] Starting download from ") + m_pImpl-&gt;m_sUrl);</span>
 
+                    /// Spawn background download worker thread.
 <span style = "background-color:#dfd">                    auto pImpl = m_pImpl;
                     m_pImpl-&gt;m_pWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
                     m_pImpl-&gt;m_pWorkerThread-&gt;Start();
                     return true;
                 }</span>
 
-<span style = "background-color:#dfd">                bool FileDownloader::Resume() {
-                    DownloadStatus currentStatus = m_pImpl-&gt;m_status.load();
+<span style = "background-color:#dfd">                bool FileDownloader::Resume() {</span>
+                    /// Guard: Can only resume if currently suspended or failed.
+<span style = "background-color:#dfd">                    DownloadStatus currentStatus = m_pImpl-&gt;m_status.load();
                     if (currentStatus == DownloadStatus::Downloading || currentStatus == DownloadStatus::Completed) return false;</span>
 
+                    /// Mark status as downloading.
 <span style = "background-color:#dfd">                    m_pImpl-&gt;m_bPauseRequested = false;
                     m_pImpl-&gt;m_status = DownloadStatus::Downloading;
                     Console::WriteLine(String("[FileDownloader] Resuming download for ") + m_pImpl-&gt;m_sDestinationPath);</span>
 
+                    /// Launch background worker for remaining chunks.
 <span style = "background-color:#dfd">                    auto pImpl = m_pImpl;
                     m_pImpl-&gt;m_pWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared(Threading::ThreadStart([pImpl]() { pImpl-&gt;DownloadLoop(); }));
                     m_pImpl-&gt;m_pWorkerThread-&gt;Start();
                     return true;
                 }</span>
 
-<span style = "background-color:#fdd">                void FileDownloader::AddHeaders(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; headers) {
-                    for (auto const&amp; [sKey, sVal] : headers) {
+<span style = "background-color:#fdd">                void FileDownloader::AddHeaders(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; headers) {</span>
+                    /// Copy user-specified headers into dictionary.
+<span style = "background-color:#fdd">                    for (auto const&amp; [sKey, sVal] : headers) {
                         m_pImpl-&gt;m_customHeaders[sKey] = sVal;
                     }
                 }</span>
 
-<span style = "background-color:#dfd">                void FileDownloader::SetUserAgent(const String&amp; sUserAgent) {
-                    m_pImpl-&gt;m_customHeaders["User-Agent"] = sUserAgent;
+<span style = "background-color:#dfd">                void FileDownloader::SetUserAgent(const String&amp; sUserAgent) {</span>
+                    /// Update custom User-Agent header.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_customHeaders["User-Agent"] = sUserAgent;
                 }</span>
 
             }

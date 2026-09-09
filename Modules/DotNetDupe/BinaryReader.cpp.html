@@ -1,0 +1,259 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>BinaryReader.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/BinaryReader.h"
+#include "System/IO/EndOfStreamException.h"
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/InvalidOperationException.h"
+#include "System/BitConverter.h"
+#include &lt;cstring&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+
+            BinaryReader::BinaryReader(Stream* pStream, bool bLeaveOpen, bool bIsLittleEndian)
+<span style = "background-color:#dfd">                : m_pStream(pStream),
+                  m_bLeaveOpen(bLeaveOpen),
+                  m_bIsLittleEndian(bIsLittleEndian),
+                  m_bDisposed(false) {</span>
+                /// Guard: Validate stream pointer.
+<span style = "background-color:#dfd">                if (m_pStream == nullptr) {
+                    throw ArgumentNullException("pStream cannot be null.");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            BinaryReader::BinaryReader(SmartPointer&lt;Stream&gt; spStream, bool bLeaveOpen, bool bIsLittleEndian)
+<span style = "background-color:#dfd">                : m_pStream(spStream.Get()),
+                  m_spOwnedStream(spStream),
+                  m_bLeaveOpen(bLeaveOpen),
+                  m_bIsLittleEndian(bIsLittleEndian),
+                  m_bDisposed(false) {</span>
+                /// Guard: Validate smart pointer stream.
+<span style = "background-color:#dfd">                if (m_pStream == nullptr) {
+                    throw ArgumentNullException("spStream cannot be null.");</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            BinaryReader::~BinaryReader() {</span>
+                /// Release reader and stream resources.
+<span style = "background-color:#dfd">                Dispose();
+            }</span>
+
+            void BinaryReader::EnsureNotDisposed() const {
+                /// Guard: Check reader lifecycle status.
+                if (m_bDisposed) {
+                    throw InvalidOperationException("BinaryReader is disposed.");
+                }
+            }
+
+<span style = "background-color:#dfd">            void BinaryReader::Close() {</span>
+                /// Close and dispose reader.
+<span style = "background-color:#dfd">                Dispose();</span>
+            }
+
+<span style = "background-color:#dfd">            void BinaryReader::Dispose() {</span>
+                /// Deterministic resource cleanup.
+<span style = "background-color:#dfd">                if (!m_bDisposed) {</span>
+                    m_bDisposed = true;
+<span style = "background-color:#dfd">                    if (!m_bLeaveOpen &amp;&amp; m_pStream != nullptr) {</span>
+<span style = "background-color:#fdd">                        m_pStream-&gt;Dispose();</span>
+                    }
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Stream* BinaryReader::GetBaseStream() const {
+                return m_pStream;
+            }</span>
+
+<span style = "background-color:#dfd">            bool BinaryReader::IsLittleEndian() const {
+                return m_bIsLittleEndian;
+            }</span>
+
+<span style = "background-color:#fdd">            void BinaryReader::SetLittleEndian(bool bIsLittleEndian) {
+                m_bIsLittleEndian = bIsLittleEndian;
+            }</span>
+
+            void BinaryReader::FillBuffer(char* pBuffer, int iCount) {
+                /// Guard: Check active stream state.
+                EnsureNotDisposed();
+
+                /// Read required bytes in a loop until buffer is filled.
+                int iTotalRead = 0;
+                while (iTotalRead &lt; iCount) {
+                    int iRead = m_pStream-&gt;Read(pBuffer + iTotalRead, 0, iCount - iTotalRead);
+                    if (iRead &lt;= 0) {
+                        throw EndOfStreamException("Unable to read beyond the end of the stream.");
+                    }
+                    iTotalRead += iRead;
+                }
+            }
+
+            /// Reverse bytes in place for endian conversion.
+            static void ReverseBytes(char* pBuf, int iSize) {
+                for (int i = 0, j = iSize - 1; i &lt; j; ++i, --j) {
+                    char chTemp = pBuf[i];
+                    pBuf[i] = pBuf[j];
+                    pBuf[j] = chTemp;
+                }
+            }
+
+<span style = "background-color:#dfd">            bool BinaryReader::ReadBoolean() {
+                return ReadByte() != 0;
+            }</span>
+
+<span style = "background-color:#dfd">            byte BinaryReader::ReadByte() {
+                char chBuf = 0;
+                FillBuffer(&amp;chBuf, 1);
+                return static_cast&lt;byte&gt;(chBuf);
+            }</span>
+
+<span style = "background-color:#dfd">            signed char BinaryReader::ReadSByte() {
+                return static_cast&lt;signed char&gt;(ReadByte());</span>
+            }
+
+<span style = "background-color:#dfd">            char BinaryReader::ReadChar() {
+                return static_cast&lt;char&gt;(ReadByte());</span>
+            }
+
+<span style = "background-color:#dfd">            Array&lt;byte&gt; BinaryReader::ReadBytes(int iCount) {</span>
+                /// Guard: Validate count non-negative.
+<span style = "background-color:#dfd">                if (iCount &lt; 0) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentOutOfRangeException("iCount must be non-negative.");</span>
+                }
+<span style = "background-color:#dfd">                EnsureNotDisposed();</span>
+
+                /// Read each byte sequentially.
+<span style = "background-color:#dfd">                Array&lt;byte&gt; arrBytes(iCount);
+                for (int i = 0; i &lt; iCount; ++i) {
+                    arrBytes[i] = ReadByte();</span>
+                }
+<span style = "background-color:#dfd">                return arrBytes;
+            }</span>
+
+<span style = "background-color:#fdd">            int BinaryReader::Read(Array&lt;byte&gt;&amp; arrBuffer, int iIndex, int iCount) {</span>
+                /// Guard: Validate bounds.
+<span style = "background-color:#fdd">                EnsureNotDisposed();
+                if (iIndex &lt; 0 || iCount &lt; 0 || (iIndex + iCount) &gt; arrBuffer.GetLength()) {
+                    throw ArgumentOutOfRangeException("Invalid index and count bounds.");</span>
+                }
+
+                /// Read directly into buffer slice.
+<span style = "background-color:#fdd">                int iRead = m_pStream-&gt;Read(reinterpret_cast&lt;char*&gt;(arrBuffer.GetData()) + iIndex, 0, iCount);
+                return iRead &lt; 0 ? 0 : iRead;
+            }</span>
+
+<span style = "background-color:#dfd">            short BinaryReader::ReadInt16() {
+                char szBuf[2] = { 0 };
+                FillBuffer(szBuf, 2);
+                if (m_bIsLittleEndian != BitConverter::IsLittleEndian) {
+                    ReverseBytes(szBuf, 2);</span>
+                }
+                short iVal = 0;
+                std::memcpy(&amp;iVal, szBuf, 2);
+<span style = "background-color:#dfd">                return iVal;
+            }</span>
+
+<span style = "background-color:#dfd">            unsigned short BinaryReader::ReadUInt16() {
+                return static_cast&lt;unsigned short&gt;(ReadInt16());</span>
+            }
+
+<span style = "background-color:#dfd">            int BinaryReader::ReadInt32() {
+                char szBuf[4] = { 0 };
+                FillBuffer(szBuf, 4);
+                if (m_bIsLittleEndian != BitConverter::IsLittleEndian) {
+                    ReverseBytes(szBuf, 4);</span>
+                }
+                int iVal = 0;
+                std::memcpy(&amp;iVal, szBuf, 4);
+<span style = "background-color:#dfd">                return iVal;
+            }</span>
+
+<span style = "background-color:#dfd">            unsigned int BinaryReader::ReadUInt32() {
+                return static_cast&lt;unsigned int&gt;(ReadInt32());</span>
+            }
+
+<span style = "background-color:#fdd">            long long BinaryReader::ReadInt64() {
+                char szBuf[8] = { 0 };
+                FillBuffer(szBuf, 8);
+                if (m_bIsLittleEndian != BitConverter::IsLittleEndian) {
+                    ReverseBytes(szBuf, 8);</span>
+                }
+                long long llVal = 0;
+                std::memcpy(&amp;llVal, szBuf, 8);
+<span style = "background-color:#fdd">                return llVal;
+            }</span>
+
+<span style = "background-color:#dfd">            unsigned long long BinaryReader::ReadUInt64() {
+                return static_cast&lt;unsigned long long&gt;(ReadInt64());</span>
+            }
+
+<span style = "background-color:#dfd">            float BinaryReader::ReadSingle() {
+                char szBuf[4] = { 0 };
+                FillBuffer(szBuf, 4);
+                if (m_bIsLittleEndian != BitConverter::IsLittleEndian) {</span>
+<span style = "background-color:#fdd">                    ReverseBytes(szBuf, 4);</span>
+                }
+                float fVal = 0.0f;
+<span style = "background-color:#dfd">                std::memcpy(&amp;fVal, szBuf, 4);
+                return fVal;
+            }</span>
+
+<span style = "background-color:#fdd">            double BinaryReader::ReadDouble() {
+                char szBuf[8] = { 0 };
+                FillBuffer(szBuf, 8);
+                if (m_bIsLittleEndian != BitConverter::IsLittleEndian) {
+                    ReverseBytes(szBuf, 8);</span>
+                }
+                double dVal = 0.0;
+<span style = "background-color:#fdd">                std::memcpy(&amp;dVal, szBuf, 8);
+                return dVal;
+            }</span>
+
+<span style = "background-color:#dfd">            String BinaryReader::ReadString(int iLength) {</span>
+                /// Guard: Validate length.
+<span style = "background-color:#dfd">                if (iLength &lt; 0) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentOutOfRangeException("iLength must be non-negative.");</span>
+                }
+<span style = "background-color:#dfd">                if (iLength == 0) {</span>
+<span style = "background-color:#fdd">                    return String("");</span>
+                }
+
+                /// Read raw bytes and convert to null-terminated string.
+<span style = "background-color:#dfd">                Array&lt;byte&gt; arrBytes = ReadBytes(iLength);
+                Array&lt;char&gt; arrChars(iLength + 1);
+                for (int i = 0; i &lt; iLength; ++i) {
+                    arrChars[i] = static_cast&lt;char&gt;(arrBytes[i]);</span>
+                }
+<span style = "background-color:#dfd">                arrChars[iLength] = '\0';
+                return String(arrChars.GetData());
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

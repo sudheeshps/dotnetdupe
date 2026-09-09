@@ -48,9 +48,12 @@ namespace DotNetDupe {
 #endif
             }
 
+            /// Extract IPv4 string representations from linked addrinfo structures.
 <span style = "background-color:#dfd">            static std::vector&lt;String&gt; CollectIpv4Addresses(struct addrinfo* result) {
-                std::vector&lt;String&gt; addresses;
-                for (struct addrinfo* ptr = result; ptr != nullptr; ptr = ptr-&gt;ai_next) {
+                std::vector&lt;String&gt; addresses;</span>
+
+                /// Iterate over linked addrinfo nodes.
+<span style = "background-color:#dfd">                for (struct addrinfo* ptr = result; ptr != nullptr; ptr = ptr-&gt;ai_next) {
                     if (ptr-&gt;ai_family == AF_INET) {</span>
                         auto* ipv4 = reinterpret_cast&lt;struct sockaddr_in*&gt;(ptr-&gt;ai_addr);
                         char ipAddress[INET_ADDRSTRLEN];
@@ -61,25 +64,33 @@ namespace DotNetDupe {
                 return addresses;
 <span style = "background-color:#dfd">            }</span>
 
+            /// Query system DNS resolver via getaddrinfo.
             static struct addrinfo* ResolveHostAddrInfo(const char* host) {
                 struct addrinfo hints;
                 std::memset(&amp;hints, 0, sizeof(hints));
                 hints.ai_family = AF_INET;
                 hints.ai_socktype = SOCK_STREAM;
                 struct addrinfo* result = nullptr;
+
+                /// Invoke native DNS resolution.
                 if (getaddrinfo(host, nullptr, &amp;hints, &amp;result) != 0) {
                     throw Sockets::SocketException(-1, "Failed to resolve host.");
                 }
                 return result;
             }
 
-<span style = "background-color:#dfd">            Array&lt;String&gt; Dns::GetHostAddresses(const String&amp; hostName) {
-                if (hostName.IsEmpty()) throw ArgumentException("hostName cannot be empty.");
-                InitializeSockets();
+<span style = "background-color:#dfd">            Array&lt;String&gt; Dns::GetHostAddresses(const String&amp; hostName) {</span>
+                /// Guard: Validate input hostname.
+<span style = "background-color:#dfd">                if (hostName.IsEmpty()) throw ArgumentException("hostName cannot be empty.");</span>
+
+                /// Initialize socket subsystem and resolve address info.
+<span style = "background-color:#dfd">                InitializeSockets();
                 struct addrinfo* result = ResolveHostAddrInfo(hostName.GetRawString());
                 std::vector&lt;String&gt; addresses = CollectIpv4Addresses(result);
-                freeaddrinfo(result);
-                if (addresses.empty()) throw Sockets::SocketException(-1, String("No addresses found for host."));
+                freeaddrinfo(result);</span>
+
+                /// Verify results and convert to library array.
+<span style = "background-color:#dfd">                if (addresses.empty()) throw Sockets::SocketException(-1, String("No addresses found for host."));
                 Array&lt;String&gt; arrAddresses(static_cast&lt;int&gt;(addresses.size()));
                 for (size_t i = 0; i &lt; addresses.size(); ++i) arrAddresses[static_cast&lt;int&gt;(i)] = addresses[i];
                 return arrAddresses;

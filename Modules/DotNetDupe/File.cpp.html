@@ -27,6 +27,7 @@ namespace fs = std::filesystem;
 
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String&amp; sPath) {
+        /// Convert UTF-8 path string to native filesystem path representation.
 #if defined(_WIN32)
         return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
@@ -38,15 +39,19 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-<span style = "background-color:#dfd">            bool File::Exists(const String&amp; sPath) {
-                return fs::exists(ToFsPath(sPath));
+<span style = "background-color:#dfd">            bool File::Exists(const String&amp; sPath) {</span>
+                /// Query filesystem for presence of regular file at resolved path.
+<span style = "background-color:#dfd">                return fs::exists(ToFsPath(sPath));
             }</span>
 
-<span style = "background-color:#dfd">            String File::ReadAllText(const String&amp; sPath) {
-                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
+<span style = "background-color:#dfd">            String File::ReadAllText(const String&amp; sPath) {</span>
+                /// Open binary file stream to preserve exact byte sequence without CRLF translation.
+<span style = "background-color:#dfd">                std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
                 if (!fileStream.is_open()) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for reading.");</span>
                 }
+
+                /// Read entire file stream into stringstream buffer.
 <span style = "background-color:#dfd">                std::stringstream buffer;
                 buffer &lt;&lt; fileStream.rdbuf();
                 std::string charContent = buffer.str();</span>

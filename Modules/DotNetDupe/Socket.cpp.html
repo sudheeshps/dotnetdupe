@@ -122,17 +122,23 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
 
                 Socket::Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
-<span style = "background-color:#dfd">                    : m_pImpl(new SocketImpl()) {
-                    InitializeSockets();
-                    m_pImpl-&gt;hSocket = CreateNativeSocket(addressFamily, socketType, protocolType);
+<span style = "background-color:#dfd">                    : m_pImpl(new SocketImpl()) {</span>
+                    /// Initialize networking subsystem.
+<span style = "background-color:#dfd">                    InitializeSockets();</span>
+
+                    /// Create native operating system socket handle.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;hSocket = CreateNativeSocket(addressFamily, socketType, protocolType);
                     if (m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to create native socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
                 Socket::Socket(void* pNativeHandle)
-<span style = "background-color:#fdd">                    : m_pImpl(new SocketImpl()) {
-                    InitializeSockets();</span>
+<span style = "background-color:#fdd">                    : m_pImpl(new SocketImpl()) {</span>
+                    /// Initialize networking subsystem.
+<span style = "background-color:#fdd">                    InitializeSockets();</span>
+
+                    /// Adopt existing native handle.
 #if defined(_WIN32)
 <span style = "background-color:#fdd">                    m_pImpl-&gt;hSocket = reinterpret_cast&lt;SOCKET&gt;(pNativeHandle);</span>
 #else
@@ -149,8 +155,11 @@ namespace DotNetDupe {
                     return *this;
                 }</span>
 
-<span style = "background-color:#dfd">                void Socket::Bind(const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, String("Socket is closed."));</span>
+<span style = "background-color:#dfd">                void Socket::Bind(const String&amp; ip, int port) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, String("Socket is closed."));</span>
+
+                    /// Set reuse address socket option.
                     sockaddr_in addr;
 <span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
                     int optval = 1;</span>
@@ -159,25 +168,32 @@ namespace DotNetDupe {
 #else
                     ::setsockopt(m_pImpl-&gt;hSocket, SOL_SOCKET, SO_REUSEADDR, &amp;optval, sizeof(optval));
 #endif
+
+                    /// Bind to endpoint address.
 <span style = "background-color:#dfd">                    if (bind(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to bind socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                void Socket::Listen(int backlog) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
+<span style = "background-color:#dfd">                void Socket::Listen(int backlog) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
+
+                    /// Transition socket into listen state.
 <span style = "background-color:#dfd">                    if (listen(m_pImpl-&gt;hSocket, backlog) == SOCKET_ERROR) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(GetLastErrorCode(), "Failed to listen on socket.");</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                SmartPointer&lt;Socket&gt; Socket::Accept() {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
+<span style = "background-color:#dfd">                SmartPointer&lt;Socket&gt; Socket::Accept() {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(-1, "Socket is closed.");</span>
                     }
 
+                    /// Accept incoming connection.
                     sockaddr_in clientAddr;
 <span style = "background-color:#dfd">                    SockLen clientSize = sizeof(clientAddr);</span>
 #if defined(_WIN32)
@@ -192,8 +208,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return SmartPointer&lt;Socket&gt;(new Socket(reinterpret_cast&lt;void*&gt;(clientSocket)), true);
                 }</span>
 
-<span style = "background-color:#dfd">                void Socket::Connect(const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+<span style = "background-color:#dfd">                void Socket::Connect(const String&amp; ip, int port) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+
+                    /// Initialize endpoint and connect.
                     sockaddr_in addr;
 <span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
                     if (connect(m_pImpl-&gt;hSocket, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr)) == SOCKET_ERROR) {
@@ -201,22 +220,31 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                int Socket::Send(const char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
-                    int bytesSent = send(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
+<span style = "background-color:#dfd">                int Socket::Send(const char* buffer, int offset, int size) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+
+                    /// Transmit byte stream through native send.
+<span style = "background-color:#dfd">                    int bytesSent = send(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
                     if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data.");</span>
                     return bytesSent;
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                int Socket::Receive(char* buffer, int offset, int size) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
-                    int bytesReceived = recv(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
+<span style = "background-color:#dfd">                int Socket::Receive(char* buffer, int offset, int size) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+
+                    /// Receive byte stream through native recv.
+<span style = "background-color:#dfd">                    int bytesReceived = recv(m_pImpl-&gt;hSocket, buffer + offset, size, 0);
                     if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data.");</span>
                     return bytesReceived;
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                int Socket::SendTo(const char* buffer, int offset, int size, const String&amp; ip, int port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+<span style = "background-color:#dfd">                int Socket::SendTo(const char* buffer, int offset, int size, const String&amp; ip, int port) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+
+                    /// Format destination endpoint and send datagram.
                     sockaddr_in addr;
 <span style = "background-color:#dfd">                    InitSockAddrIn(ip, port, addr);
                     int bytesSent = sendto(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), sizeof(addr));
@@ -232,24 +260,32 @@ namespace DotNetDupe {
                     port = ntohs(addr.sin_port);
                 }
 
-<span style = "background-color:#dfd">                int Socket::ReceiveFrom(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+<span style = "background-color:#dfd">                int Socket::ReceiveFrom(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#dfd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");</span>
+
+                    /// Receive datagram and capture sender address.
                     sockaddr_in addr;
 <span style = "background-color:#dfd">                    SockLen addrSize = sizeof(addr);
                     std::memset(&amp;addr, 0, sizeof(addr));
                     int bytesReceived = recvfrom(m_pImpl-&gt;hSocket, buffer + offset, size, 0, reinterpret_cast&lt;sockaddr*&gt;(&amp;addr), &amp;addrSize);
-                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");
-                    FormatSockAddrIp(addr, ip, port);
+                    if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");</span>
+
+<span style = "background-color:#dfd">                    FormatSockAddrIp(addr, ip, port);
                     return bytesReceived;
                 }</span>
 
-<span style = "background-color:#dfd">                void Socket::Close() {
-                    if (m_pImpl) m_pImpl-&gt;Cleanup();
+<span style = "background-color:#dfd">                void Socket::Close() {</span>
+                    /// Release socket resource.
+<span style = "background-color:#dfd">                    if (m_pImpl) m_pImpl-&gt;Cleanup();
                 }</span>
 
-<span style = "background-color:#fdd">                void Socket::Shutdown(SocketShutdown how) {
-                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) return;
-                    int nativeHow = (how == SocketShutdown::Receive) ? SD_RECEIVE : ((how == SocketShutdown::Send) ? SD_SEND : SD_BOTH);
+<span style = "background-color:#fdd">                void Socket::Shutdown(SocketShutdown how) {</span>
+                    /// Guard: Check valid handle.
+<span style = "background-color:#fdd">                    if (!m_pImpl || m_pImpl-&gt;hSocket == INVALID_SOCKET) return;</span>
+
+                    /// Shutdown transmission directions.
+<span style = "background-color:#fdd">                    int nativeHow = (how == SocketShutdown::Receive) ? SD_RECEIVE : ((how == SocketShutdown::Send) ? SD_SEND : SD_BOTH);
                     shutdown(m_pImpl-&gt;hSocket, nativeHow);
                 }</span>
 

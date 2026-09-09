@@ -23,20 +23,27 @@
 
 namespace DotNetDupe {
     namespace System {
-<span style = "background-color:#fdd">        Exception::Exception() : std::runtime_error("Exception of type 'DotNetDupe::System::Exception' was thrown.") {
-        }</span>
+<span style = "background-color:#fdd">        Exception::Exception() : std::runtime_error("Exception of type 'DotNetDupe::System::Exception' was thrown.") {</span>
+            /// Initialize exception with default type message and null inner exception.
+<span style = "background-color:#fdd">        }</span>
         
-<span style = "background-color:#dfd">        Exception::Exception(const String&amp; sMessage) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : "") {
-        }</span>
+<span style = "background-color:#dfd">        Exception::Exception(const String&amp; sMessage) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : "") {</span>
+            /// Initialize exception with caller-supplied diagnostic message.
+<span style = "background-color:#dfd">        }</span>
         
-<span style = "background-color:#dfd">        Exception::Exception(const String&amp; sMessage, const Exception&amp; innerException) : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {
-        }</span>
+        Exception::Exception(const String&amp; sMessage, const Exception&amp; innerException)
+<span style = "background-color:#dfd">            : std::runtime_error(sMessage.GetRawString() ? sMessage.GetRawString() : ""), m_pInnerException(new Exception(innerException)) {</span>
+            /// Chain inner exception cause.
+<span style = "background-color:#dfd">        }</span>
         
-<span style = "background-color:#dfd">        Exception::Exception(const Exception&amp; other) : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {
-        }</span>
+        Exception::Exception(const Exception&amp; other)
+<span style = "background-color:#dfd">            : std::runtime_error(other), m_pInnerException(other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr) {</span>
+            /// Deep-copy inner exception chain.
+<span style = "background-color:#dfd">        }</span>
         
-<span style = "background-color:#fdd">        Exception&amp; Exception::operator=(const Exception&amp; other) {
-            if (this != &amp;other) {
+<span style = "background-color:#fdd">        Exception&amp; Exception::operator=(const Exception&amp; other) {</span>
+            /// Guard: Check self-assignment.
+<span style = "background-color:#fdd">            if (this != &amp;other) {
                 std::runtime_error::operator=(other);
                 delete m_pInnerException;
                 m_pInnerException = other.m_pInnerException ? new Exception(*other.m_pInnerException) : nullptr;</span>
@@ -44,8 +51,9 @@ namespace DotNetDupe {
             return *this;
 <span style = "background-color:#fdd">        }</span>
         
-<span style = "background-color:#dfd">        Exception::~Exception() { 
-            delete m_pInnerException; 
+<span style = "background-color:#dfd">        Exception::~Exception() { </span>
+            /// Free inner exception chain recursively.
+<span style = "background-color:#dfd">            delete m_pInnerException; 
         }</span>
 
 <span style = "background-color:#fdd">        SystemException::SystemException() : Exception() {}</span>

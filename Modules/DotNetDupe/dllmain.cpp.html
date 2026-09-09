@@ -17,6 +17,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 <span style = "background-color:#dfd">{</span>
+    /// Step: Process DLL attach and detach notifications.
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH:
@@ -25,6 +26,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     case DLL_PROCESS_DETACH:
         break;
     }
+    /// Return success status for DLL entry point.
 <span style = "background-color:#dfd">    return TRUE;
 }</span>
 </pre>

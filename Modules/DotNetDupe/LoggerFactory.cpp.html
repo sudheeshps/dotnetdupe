@@ -25,25 +25,36 @@ namespace DotNetDupe {
             };
 
             LoggerFactory::LoggerFactory()
-<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {</span>
+                /// Initialize logger factory implementation.
+<span style = "background-color:#dfd">            }</span>
                 
 <span style = "background-color:#fdd">            LoggerFactory::~LoggerFactory() = default;</span>
 
-<span style = "background-color:#dfd">            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {
-                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
+<span style = "background-color:#dfd">            void LoggerFactory::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {</span>
+                /// Guard: Ignore null provider.
+<span style = "background-color:#dfd">                if (pProvider.IsNull()) return;</span>
+
+                /// Thread-safely register provider.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
                 m_pImpl-&gt;pProviders.push_back(pProvider);
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LoggerFactory::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
-                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
-                auto aggregate = DotNetDupe::System::SmartPointer&lt;AggregateLogger&gt;::NewShared();
-                for (auto&amp; pProvider : m_pImpl-&gt;pProviders) {
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LoggerFactory::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {</span>
+                /// Synchronize provider access.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;mutex);
+                auto pAggregate = DotNetDupe::System::SmartPointer&lt;AggregateLogger&gt;::NewShared();</span>
+
+                /// Query each registered provider to create a category sink.
+<span style = "background-color:#dfd">                for (auto&amp; pProvider : m_pImpl-&gt;pProviders) {
                     auto pLogger = pProvider-&gt;CreateLogger(categoryName);
                     if (!pLogger.IsNull()) {
-                        aggregate-&gt;AddLogger(pLogger);</span>
+                        pAggregate-&gt;AddLogger(pLogger);</span>
                     }
-<span style = "background-color:#dfd">                }
-                return aggregate;
+<span style = "background-color:#dfd">                }</span>
+
+                /// Return composite aggregate logger.
+<span style = "background-color:#dfd">                return pAggregate;
             }</span>
 
         }

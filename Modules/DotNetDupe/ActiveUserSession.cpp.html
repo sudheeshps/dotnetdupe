@@ -28,14 +28,16 @@ namespace DotNetDupe {
             ActiveUserSession::~ActiveUserSession() {}</span>
 
 #if defined(_WIN32)
-<span style = "background-color:#dfd">            static void PopulateSessionInfo(const WTS_SESSION_INFOW&amp; wtsInfo, UserSessionInfo&amp; session) {
-                LPWSTR pBuffer = NULL; DWORD dwBytes = 0;
+<span style = "background-color:#dfd">            static void PopulateSessionInfo(const WTS_SESSION_INFOW&amp; wtsInfo, UserSessionInfo&amp; session) {</span>
+                /// Step: Query username associated with WTS session.
+<span style = "background-color:#dfd">                LPWSTR pBuffer = NULL; DWORD dwBytes = 0;
                 String sUsername = "SYSTEM";
                 if (::WTSQuerySessionInformationW(WTS_CURRENT_SERVER_HANDLE, wtsInfo.SessionId, WTSUserName, &amp;pBuffer, &amp;dwBytes) &amp;&amp; pBuffer &amp;&amp; dwBytes &gt; 2) {
                     sUsername = String(pBuffer);
                     ::WTSFreeMemory(pBuffer);</span>
                 }
 
+                /// Step: Populate session properties and status timestamps.
 <span style = "background-color:#dfd">                session.uSessionId = wtsInfo.SessionId;
                 session.sUsername = sUsername;
                 session.bIsActive = (wtsInfo.State == WTSActive);
@@ -44,8 +46,9 @@ namespace DotNetDupe {
                 session.sLogoutTimestamp = session.bIsActive ? "Active Session" : "Session Disconnected";
             }</span>
 
-<span style = "background-color:#dfd">            void ActiveUserSession::EnumerateWin32Sessions(Collections::Generic::List&lt;UserSessionInfo&gt;&amp; lstSessions) {
-                WTS_SESSION_INFOW* pSessionInfo = NULL;
+<span style = "background-color:#dfd">            void ActiveUserSession::EnumerateWin32Sessions(Collections::Generic::List&lt;UserSessionInfo&gt;&amp; lstSessions) {</span>
+                /// Step: Enumerate all interactive sessions on the local server.
+<span style = "background-color:#dfd">                WTS_SESSION_INFOW* pSessionInfo = NULL;
                 DWORD dwSessionCount = 0;</span>
 
 <span style = "background-color:#dfd">                if (::WTSEnumerateSessionsW(WTS_CURRENT_SERVER_HANDLE, 0, 1, &amp;pSessionInfo, &amp;dwSessionCount) &amp;&amp; pSessionInfo) {
@@ -61,16 +64,18 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 #endif
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetAllSessions() {
-                Collections::Generic::List&lt;UserSessionInfo&gt; lstSessions;</span>
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetAllSessions() {</span>
+                /// Step: Enumerate all sessions via platform API.
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;UserSessionInfo&gt; lstSessions;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                EnumerateWin32Sessions(lstSessions);</span>
 #endif
 <span style = "background-color:#dfd">                return lstSessions;
             }</span>
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetActiveSessions() {
-                auto lstAll = GetAllSessions();
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetActiveSessions() {</span>
+                /// Step: Filter full session list for active sessions only.
+<span style = "background-color:#dfd">                auto lstAll = GetAllSessions();
                 Collections::Generic::List&lt;UserSessionInfo&gt; lstActive;
                 for (int i = 0; i &lt; lstAll.GetCount(); i++) {
                     if (lstAll[i].bIsActive) lstActive.Add(lstAll[i]);</span>
@@ -78,8 +83,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return lstActive;
             }</span>
 
-<span style = "background-color:#fdd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetExpiredSessions() {
-                auto lstAll = GetAllSessions();
+<span style = "background-color:#fdd">            Collections::Generic::List&lt;UserSessionInfo&gt; ActiveUserSession::GetExpiredSessions() {</span>
+                /// Step: Filter full session list for inactive/disconnected sessions.
+<span style = "background-color:#fdd">                auto lstAll = GetAllSessions();
                 Collections::Generic::List&lt;UserSessionInfo&gt; lstExpired;
                 for (int i = 0; i &lt; lstAll.GetCount(); i++) {
                     if (!lstAll[i].bIsActive) lstExpired.Add(lstAll[i]);</span>

@@ -23,20 +23,27 @@ namespace DotNetDupe {
         namespace Logging {
 
             LoggerBase::LoggerBase(const DotNetDupe::System::String&amp; categoryName, const LoggerConfiguration&amp; config)
-<span style = "background-color:#dfd">                : m_categoryName(categoryName), m_config(config) {}</span>
+<span style = "background-color:#dfd">                : m_categoryName(categoryName), m_config(config) {</span>
+                /// Initialize base logger with category and configuration.
+<span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            bool LoggerBase::IsEnabled(LogLevel logLevel) const {
-                return logLevel &gt;= m_config.MinLevel &amp;&amp; logLevel != LogLevel::None;
+<span style = "background-color:#dfd">            bool LoggerBase::IsEnabled(LogLevel logLevel) const {</span>
+                /// Check if level meets configured minimum threshold and is not None.
+<span style = "background-color:#dfd">                return logLevel &gt;= m_config.MinLevel &amp;&amp; logLevel != LogLevel::None;
             }</span>
 
-<span style = "background-color:#dfd">            void LoggerBase::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
-                if (!IsEnabled(logLevel)) return;
-                DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt; emptyProps;
+<span style = "background-color:#dfd">            void LoggerBase::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {</span>
+                /// Guard: Skip if log level is disabled.
+<span style = "background-color:#dfd">                if (!IsEnabled(logLevel)) return;</span>
+
+                /// Delegate to structured overload with empty property bag.
+<span style = "background-color:#dfd">                DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt; emptyProps;
                 Log(logLevel, message, emptyProps);
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::GetFormattedTimestamp(const DotNetDupe::System::String&amp; formatFmt) const {
-                auto now = std::chrono::system_clock::now();
+<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::GetFormattedTimestamp(const DotNetDupe::System::String&amp; formatFmt) const {</span>
+                /// Capture current system wall clock time.
+<span style = "background-color:#dfd">                auto now = std::chrono::system_clock::now();
                 auto time = std::chrono::system_clock::to_time_t(now);</span>
                 struct tm buf;
 #if defined(_WIN32)
@@ -44,9 +51,10 @@ namespace DotNetDupe {
 #else
                 gmtime_r(&amp;time, &amp;buf);
 #endif
-<span style = "background-color:#dfd">                std::string fmt = formatFmt.IsEmpty() ? "%Y-%m-%d %H:%M:%S" : formatFmt.GetRawString();
+                /// Format timestamp using strftime pattern.
+<span style = "background-color:#dfd">                std::string sFmt = formatFmt.IsEmpty() ? "%Y-%m-%d %H:%M:%S" : formatFmt.GetRawString();
                 char timeStr[255] = { 0 };
-                size_t written = std::strftime(timeStr, sizeof(timeStr), fmt.c_str(), &amp;buf);
+                size_t written = std::strftime(timeStr, sizeof(timeStr), sFmt.c_str(), &amp;buf);
                 if (written &gt; 0) {
                     return DotNetDupe::System::String(timeStr);</span>
                 }
@@ -54,6 +62,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
             const char* LoggerBase::LogLevelToString(LogLevel level) const {
+                /// Map enum to standard uppercase severity label.
                 switch (level) {
                     case LogLevel::Trace: return "Trace";
                     case LogLevel::Debug: return "Debug";
@@ -66,6 +75,7 @@ namespace DotNetDupe {
             }
 
             static void ReplaceToken(std::string&amp; str, const std::string&amp; from, const char* to) {
+                /// Replace all occurrences of placeholder token with replacement text.
                 size_t pos = 0;
                 std::string sTo = to ? to : "";
                 while ((pos = str.find(from, pos)) != std::string::npos) {
@@ -74,10 +84,11 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            static void ReplaceDynamicPropertyTokens(std::string&amp; str, const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties, std::vector&lt;std::string&gt;&amp; usedKeys) {
-                auto keys = properties.GetKeys();
-                for (int i = 0; i &lt; keys.GetLength(); ++i) {
-                    DotNetDupe::System::String key = keys[i];
+<span style = "background-color:#dfd">            static void ReplaceDynamicPropertyTokens(std::string&amp; str, const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties, std::vector&lt;std::string&gt;&amp; usedKeys) {</span>
+                /// Iterate dictionary keys and interpolate matching placeholders.
+<span style = "background-color:#dfd">                auto keys = properties.GetKeys();
+                for (int iIdx = 0; iIdx &lt; keys.GetLength(); ++iIdx) {
+                    DotNetDupe::System::String key = keys[iIdx];
                     std::string placeholder = "{" + std::string(key.GetRawString()) + "}";
                     if (str.find(placeholder) != std::string::npos) {
                         DotNetDupe::System::String val;
@@ -88,25 +99,29 @@ namespace DotNetDupe {
                 }
             }</span>
 
-<span style = "background-color:#dfd">            static std::string SerializeUnusedPropertiesText(const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties, const std::vector&lt;std::string&gt;&amp; usedKeys) {
-                if (properties.GetCount() == 0) return "";
+<span style = "background-color:#dfd">            static std::string SerializeUnusedPropertiesText(const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties, const std::vector&lt;std::string&gt;&amp; usedKeys) {</span>
+                /// Guard: Return empty if no properties exist.
+<span style = "background-color:#dfd">                if (properties.GetCount() == 0) return "";
                 std::stringstream ss;
                 auto keys = properties.GetKeys();
-                bool bFirst = true;
-                for (int i = 0; i &lt; keys.GetLength(); ++i) {
-                    std::string k = keys[i].GetRawString();
+                bool bFirst = true;</span>
+
+                /// Append unused properties in key: value format.
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; keys.GetLength(); ++iIdx) {
+                    std::string k = keys[iIdx].GetRawString();
                     if (std::find(usedKeys.begin(), usedKeys.end(), k) != usedKeys.end()) continue;
                     if (!bFirst) ss &lt;&lt; ", ";
                     DotNetDupe::System::String val;
-                    properties.TryGetValue(keys[i], val);
+                    properties.TryGetValue(keys[iIdx], val);
                     ss &lt;&lt; k &lt;&lt; ": " &lt;&lt; val.GetRawString();
                     bFirst = false;
                 }
                 return ss.str();
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::FormatLogLine(const DotNetDupe::System::String&amp; fmt, const DotNetDupe::System::String&amp; timestamp, const DotNetDupe::System::String&amp; level, const DotNetDupe::System::String&amp; category, const DotNetDupe::System::String&amp; message, const DotNetDupe::System::String&amp; properties, const DotNetDupe::System::String&amp; processId, const DotNetDupe::System::String&amp; threadId) const {
-                std::string res = fmt.GetRawString();
+<span style = "background-color:#dfd">            DotNetDupe::System::String LoggerBase::FormatLogLine(const DotNetDupe::System::String&amp; fmt, const DotNetDupe::System::String&amp; timestamp, const DotNetDupe::System::String&amp; level, const DotNetDupe::System::String&amp; category, const DotNetDupe::System::String&amp; message, const DotNetDupe::System::String&amp; properties, const DotNetDupe::System::String&amp; processId, const DotNetDupe::System::String&amp; threadId) const {</span>
+                /// Apply template replacements for standard token identifiers.
+<span style = "background-color:#dfd">                std::string res = fmt.GetRawString();
                 ReplaceToken(res, "{Timestamp}", timestamp.GetRawString());
                 ReplaceToken(res, "{Level}", level.GetRawString());
                 ReplaceToken(res, "{Category}", category.GetRawString());
@@ -117,41 +132,51 @@ namespace DotNetDupe {
                 return DotNetDupe::System::String(res.c_str());
             }</span>
 
-<span style = "background-color:#dfd">            static void AddJsonLogProperties(DotNetDupe::System::Text::Json::JsonElement&amp; logObj, const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
-                if (properties.GetCount() == 0) return;
+<span style = "background-color:#dfd">            static void AddJsonLogProperties(DotNetDupe::System::Text::Json::JsonElement&amp; logObj, const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {</span>
+                /// Guard: Skip if dictionary is empty.
+<span style = "background-color:#dfd">                if (properties.GetCount() == 0) return;
                 DotNetDupe::System::Text::Json::JsonElement propsObj(DotNetDupe::System::Text::Json::JsonValueKind::Object);
-                auto keys = properties.GetKeys();
-                for (int i = 0; i &lt; keys.GetLength(); ++i) {
+                auto keys = properties.GetKeys();</span>
+
+                /// Serialize dictionary entries into JSON properties object.
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; keys.GetLength(); ++iIdx) {
                     DotNetDupe::System::String val;
-                    properties.TryGetValue(keys[i], val);
-                    propsObj.SetProperty(keys[i], DotNetDupe::System::Text::Json::JsonElement(val));
+                    properties.TryGetValue(keys[iIdx], val);
+                    propsObj.SetProperty(keys[iIdx], DotNetDupe::System::Text::Json::JsonElement(val));
                 }
                 logObj.SetProperty("properties", propsObj);
             }</span>
 
 <span style = "background-color:#dfd">            static DotNetDupe::System::String BuildJsonLog(const DotNetDupe::System::String&amp; timestamp, const char* level, const DotNetDupe::System::String&amp; category, int procId, unsigned long threadId, const DotNetDupe::System::String&amp; message, const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {</span>
                 using namespace DotNetDupe::System::Text::Json;
+                /// Construct root JSON event object with standard diagnostic fields.
 <span style = "background-color:#dfd">                JsonElement logObj(JsonValueKind::Object);
                 logObj.SetProperty("timestamp", JsonElement(timestamp));
                 logObj.SetProperty("level", JsonElement(DotNetDupe::System::String(level)));
                 logObj.SetProperty("category", JsonElement(category));
                 logObj.SetProperty("processId", JsonElement(static_cast&lt;double&gt;(procId)));
                 logObj.SetProperty("threadId", JsonElement(static_cast&lt;double&gt;(threadId)));
-                logObj.SetProperty("message", JsonElement(message));
-                AddJsonLogProperties(logObj, properties);
+                logObj.SetProperty("message", JsonElement(message));</span>
+
+                /// Append structured property attributes and return serialized JSON.
+<span style = "background-color:#dfd">                AddJsonLogProperties(logObj, properties);
                 return logObj.ToString();
             }</span>
 
             DotNetDupe::System::String LoggerBase::BuildLogMessage(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
-<span style = "background-color:#dfd">                                                    const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) const {
-                DotNetDupe::System::String timestamp = GetFormattedTimestamp(m_config.TimestampFormat);
+<span style = "background-color:#dfd">                                                    const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) const {</span>
+                /// Collect process, thread, and timestamp diagnostic context.
+<span style = "background-color:#dfd">                DotNetDupe::System::String timestamp = GetFormattedTimestamp(m_config.TimestampFormat);
                 const char* levelStr = LogLevelToString(logLevel);
                 int procId = DotNetDupe::System::Diagnostics::Process::GetCurrentProcessId();
                 unsigned long threadId = DotNetDupe::System::Threading::Thread::GetCurrentThreadId();</span>
 
+                /// Route to JSON serialization if enabled.
 <span style = "background-color:#dfd">                if (m_config.IsJsonFormat) {
                     return BuildJsonLog(timestamp, levelStr, m_categoryName, procId, threadId, message, properties);</span>
                 }
+
+                /// Perform plain text template substitution.
 <span style = "background-color:#dfd">                std::vector&lt;std::string&gt; usedKeys;
                 std::string sWorkingFmt = m_config.PlainTextFormat.GetRawString();
                 ReplaceDynamicPropertyTokens(sWorkingFmt, properties, usedKeys);

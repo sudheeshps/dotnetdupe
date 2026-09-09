@@ -285,91 +285,114 @@ namespace DotNetDupe {
                     }</span>
                 };
 
-<span style = "background-color:#dfd">                HttpClient::HttpClient() : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {}
-                HttpClient::~HttpClient() = default;</span>
+<span style = "background-color:#dfd">                HttpClient::HttpClient() : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {</span>
+                    /// Initialize Pimpl implementation pointer.
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const String&amp; requestUri) {
-                    return Get(Uri(requestUri));
+<span style = "background-color:#dfd">                HttpClient::~HttpClient() = default;</span>
+
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const String&amp; requestUri) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#dfd">                    return Get(Uri(requestUri));
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const Uri&amp; requestUri) {
-                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Get, requestUri);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Get(const Uri&amp; requestUri) {</span>
+                    /// Build GET request message and dispatch.
+<span style = "background-color:#dfd">                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Get, requestUri);
                     return Send(request);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const String&amp; requestUri, const HttpContentPtr&amp; content) {
-                    return Post(Uri(requestUri), content);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const String&amp; requestUri, const HttpContentPtr&amp; content) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#dfd">                    return Post(Uri(requestUri), content);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {
-                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Post, requestUri);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Post(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {</span>
+                    /// Build POST request message with payload and dispatch.
+<span style = "background-color:#dfd">                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Post, requestUri);
                     request-&gt;SetContent(content);
                     return Send(request);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const String&amp; requestUri, const HttpContentPtr&amp; content) {
-                    return Put(Uri(requestUri), content);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const String&amp; requestUri, const HttpContentPtr&amp; content) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#dfd">                    return Put(Uri(requestUri), content);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {
-                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Put, requestUri);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Put(const Uri&amp; requestUri, const HttpContentPtr&amp; content) {</span>
+                    /// Build PUT request message with payload and dispatch.
+<span style = "background-color:#dfd">                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Put, requestUri);
                     request-&gt;SetContent(content);
                     return Send(request);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const String&amp; requestUri) {
-                    return Delete(Uri(requestUri));
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const String&amp; requestUri) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#dfd">                    return Delete(Uri(requestUri));
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const Uri&amp; requestUri) {
-                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Delete, requestUri);
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Delete(const Uri&amp; requestUri) {</span>
+                    /// Build DELETE request message and dispatch.
+<span style = "background-color:#dfd">                    auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Delete, requestUri);
                     return Send(request);
                 }</span>
 
-<span style = "background-color:#dfd">                String HttpClient::GetString(const String&amp; requestUri) {
-                    return GetString(Uri(requestUri));
+<span style = "background-color:#dfd">                String HttpClient::GetString(const String&amp; requestUri) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#dfd">                    return GetString(Uri(requestUri));
                 }</span>
 
-<span style = "background-color:#dfd">                String HttpClient::GetString(const Uri&amp; requestUri) {
-                    auto response = Get(requestUri);
+<span style = "background-color:#dfd">                String HttpClient::GetString(const Uri&amp; requestUri) {</span>
+                    /// Send GET request, ensure success, and read content as string.
+<span style = "background-color:#dfd">                    auto response = Get(requestUri);
                     response-&gt;EnsureSuccessStatusCode();
                     auto content = response-&gt;GetContent();
                     if (content.IsNull()) return String("");</span>
 <span style = "background-color:#fdd">                    return content-&gt;ReadAsString();</span>
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const String&amp; requestUri) {
-                    return GetByteArray(Uri(requestUri));
+<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const String&amp; requestUri) {</span>
+                    /// Forward to Uri overload.
+<span style = "background-color:#fdd">                    return GetByteArray(Uri(requestUri));
                 }</span>
 
-<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const Uri&amp; requestUri) {
-                    auto response = Get(requestUri);
+<span style = "background-color:#fdd">                Array&lt;char&gt; HttpClient::GetByteArray(const Uri&amp; requestUri) {</span>
+                    /// Send GET request, ensure success, and read content as byte array.
+<span style = "background-color:#fdd">                    auto response = Get(requestUri);
                     response-&gt;EnsureSuccessStatusCode();
                     auto content = response-&gt;GetContent();
                     if (content.IsNull()) return Array&lt;char&gt;(0);
                     return content-&gt;ReadAsByteArray();
                 }</span>
 
-<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() {
-                    return m_pImpl-&gt;m_defaultRequestHeaders;
+<span style = "background-color:#dfd">                Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() {</span>
+                    /// Return default request headers.
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_defaultRequestHeaders;
                 }</span>
 
-<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() const {
-                    return m_pImpl-&gt;m_defaultRequestHeaders;
+<span style = "background-color:#dfd">                const Collections::Generic::Dictionary&lt;String, String&gt;&amp; HttpClient::GetDefaultRequestHeaders() const {</span>
+                    /// Return read-only default request headers.
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_defaultRequestHeaders;
                 }</span>
 
-<span style = "background-color:#fdd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request) {
-                    return Send(request, HttpCompletionOption::ResponseContentRead);
+<span style = "background-color:#fdd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request) {</span>
+                    /// Forward to Send overload with ResponseContentRead option.
+<span style = "background-color:#fdd">                    return Send(request, HttpCompletionOption::ResponseContentRead);
                 }</span>
 
-<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request, HttpCompletionOption completionOption) {
-                    if (request.IsNull()) throw ArgumentNullException("request");
-                    Uri uri = request-&gt;GetRequestUri();
+<span style = "background-color:#dfd">                HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr&amp; request, HttpCompletionOption completionOption) {</span>
+                    /// Guard: Ensure request instance is valid.
+<span style = "background-color:#dfd">                    if (request.IsNull()) throw ArgumentNullException("request");</span>
+                    /// Validate URI scheme (HTTP/HTTPS).
+<span style = "background-color:#dfd">                    Uri uri = request-&gt;GetRequestUri();
                     String scheme = uri.GetScheme().ToLower();
-                    if (scheme != "http" &amp;&amp; scheme != "https") throw ArgumentException("Only 'http' and 'https' schemes are supported.");
-                    auto spStream = m_pImpl-&gt;ConnectStream(uri, scheme);
-                    m_pImpl-&gt;SendRequest(spStream, m_pImpl-&gt;PrepareHeaders(request, uri), request-&gt;GetContent());
-                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) return m_pImpl-&gt;BuildStreamResponse(spStream);
+                    if (scheme != "http" &amp;&amp; scheme != "https") throw ArgumentException("Only 'http' and 'https' schemes are supported.");</span>
+                    /// Connect transport stream (TCP/SSL).
+<span style = "background-color:#dfd">                    auto spStream = m_pImpl-&gt;ConnectStream(uri, scheme);</span>
+                    /// Serialize and transmit request headers and content.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;SendRequest(spStream, m_pImpl-&gt;PrepareHeaders(request, uri), request-&gt;GetContent());</span>
+                    /// Return streaming response or buffer entire body.
+<span style = "background-color:#dfd">                    if (completionOption == HttpCompletionOption::ResponseHeadersRead) return m_pImpl-&gt;BuildStreamResponse(spStream);
                     return m_pImpl-&gt;PrepareResponse(spStream);
                 }</span>
 

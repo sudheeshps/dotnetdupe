@@ -41,6 +41,7 @@ namespace DotNetDupe {
         namespace Diagnostics {
 
 #if defined(_WIN32)
+            /// Populate fast tier-1 process metadata on Windows.
 <span style = "background-color:#dfd">            static void FastPopulateProc(PROCESSENTRY32W* pe32, ProcessInfo&amp; proc) {
                 proc.iProcessId = pe32-&gt;th32ProcessID;
                 proc.sName = String(pe32-&gt;szExeFile);
@@ -61,6 +62,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                ::CloseHandle(hProc);
             }</span>
 
+            /// Collect process snapshot using Toolhelp32 on Windows.
 <span style = "background-color:#dfd">            static void CollectTier1Processes(std::vector&lt;ProcessInfo&gt;&amp; vecProcs, int iSessionId) {
                 HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
                 if (hSnapshot == INVALID_HANDLE_VALUE) throw SystemException("Failed to create system process snapshot.");
@@ -78,6 +80,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);
             }</span>
 #else
+            /// Populate fast tier-1 process metadata on Linux.
             static void FastPopulateLinuxProc(const std::string&amp; dname, ProcessInfo&amp; proc) {
                 proc.iProcessId = std::stoi(dname);
                 std::ifstream commFile("/proc/" + dname + "/comm");
@@ -91,6 +94,7 @@ namespace DotNetDupe {
                 }
             }
 
+            /// Collect process snapshot reading /proc entries on Linux.
             static void CollectTier1Processes(std::vector&lt;ProcessInfo&gt;&amp; vecProcs, int iSessionId) {
                 DIR* dir = ::opendir("/proc");
                 if (!dir) throw SystemException("Failed to open /proc directory.");
@@ -110,6 +114,7 @@ namespace DotNetDupe {
 #endif
 
             static void DeepEnrichProc(ProcessInfo&amp; proc, bool bIncludeNetwork) {
+                /// Deep enrichment helper.
                 SystemMetrics::EnrichProcessInfo(proc, bIncludeNetwork);
             }
 
@@ -183,6 +188,7 @@ namespace DotNetDupe {
                 }
 
 <span style = "background-color:#dfd">                void ExecuteStream() {</span>
+                    /// Primary background streaming loop.
                     try {
 <span style = "background-color:#dfd">                        std::vector&lt;ProcessInfo&gt; vecProcs;
                         CollectTier1Processes(vecProcs, m_options.iSessionId);
@@ -198,20 +204,24 @@ namespace DotNetDupe {
                     }</span>
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                void Start(const SmartPointer&lt;Impl&gt;&amp; spSelf) {
-                    if (m_options.iBatchSize &lt; 0 || m_options.iBatchIntervalMs &lt; 0) {
+<span style = "background-color:#dfd">                void Start(const SmartPointer&lt;Impl&gt;&amp; spSelf) {</span>
+                    /// Guard: Validate batch options and state.
+<span style = "background-color:#dfd">                    if (m_options.iBatchSize &lt; 0 || m_options.iBatchIntervalMs &lt; 0) {
                         throw ArgumentException("ProcessStreamOptions batch parameters cannot be negative.");</span>
                     }
-<span style = "background-color:#dfd">                    if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");
-                    m_bCancelled.store(false);
+<span style = "background-color:#dfd">                    if (m_bRunning.exchange(true)) throw InvalidOperationException("ProcessStreamer is already running.");</span>
+
+                    /// Spawn background streaming worker thread.
+<span style = "background-color:#dfd">                    m_bCancelled.store(false);
                     m_spWorkerThread = SmartPointer&lt;Threading::Thread&gt;::NewShared([spSelf]() {</span>
                         if (spSelf) spSelf-&gt;ExecuteStream();
                     });
 <span style = "background-color:#dfd">                    m_spWorkerThread-&gt;Start();
                 }</span>
 
-<span style = "background-color:#dfd">                void Cancel() {
-                    m_bCancelled.store(true);
+<span style = "background-color:#dfd">                void Cancel() {</span>
+                    /// Signal cancellation and await worker thread join.
+<span style = "background-color:#dfd">                    m_bCancelled.store(true);
                     if (m_spWorkerThread &amp;&amp; m_spWorkerThread-&gt;IsAlive()) {
                         if (Threading::Thread::GetCurrentThreadId() != m_spWorkerThread-&gt;GetCurrentThreadId()) {</span>
 <span style = "background-color:#fdd">                            m_spWorkerThread-&gt;Join();</span>
@@ -222,12 +232,12 @@ namespace DotNetDupe {
             };
 
             ProcessStreamer::ProcessStreamer(const ProcessStreamOptions&amp; options)
-<span style = "background-color:#dfd">                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)),
-                  ProcessDiscovered(m_pImpl-&gt;ProcessDiscovered),
+                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)),
+<span style = "background-color:#dfd">                  ProcessDiscovered(m_pImpl-&gt;ProcessDiscovered),</span>
                   BatchReady(m_pImpl-&gt;BatchReady),
                   ProcessUpdated(m_pImpl-&gt;ProcessUpdated),
                   Completed(m_pImpl-&gt;Completed),
-                  Error(m_pImpl-&gt;Error) {}</span>
+<span style = "background-color:#dfd">                  Error(m_pImpl-&gt;Error) {}</span>
 
 <span style = "background-color:#fdd">            ProcessStreamer::~ProcessStreamer() {}</span>
 

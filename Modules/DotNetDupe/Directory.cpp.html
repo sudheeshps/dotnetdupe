@@ -64,22 +64,27 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-<span style = "background-color:#dfd">            bool Directory::Exists(const String&amp; sPath) {
-                if (sPath.IsEmpty()) return false;</span>
+<span style = "background-color:#dfd">            bool Directory::Exists(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return false;</span>
                 std::error_code ec;
+                /// Return: Filesystem directory existence check.
 <span style = "background-color:#dfd">                return fs::is_directory(ToFsPath(sPath), ec);
             }</span>
 
-<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath) {
-                CreateDirectory(sPath, true);</span>
+<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath) {</span>
+                /// Forward: Delegate to recursive directory creation overload.
+<span style = "background-color:#dfd">                CreateDirectory(sPath, true);</span>
             }
 
-<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath, bool bRecursive) {
-                if (sPath.IsEmpty()) {
+<span style = "background-color:#dfd">            void Directory::CreateDirectory(const String&amp; sPath, bool bRecursive) {</span>
+                /// Guard: Validate path parameter.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) {
                     throw ArgumentException("Path cannot be empty.");</span>
                 }
-<span style = "background-color:#dfd">                std::error_code ec;
-                if (bRecursive) {
+<span style = "background-color:#dfd">                std::error_code ec;</span>
+                /// Step: Create single or recursive directories.
+<span style = "background-color:#dfd">                if (bRecursive) {
                     fs::create_directories(ToFsPath(sPath), ec);
                 } else {
                     fs::create_directory(ToFsPath(sPath), ec);</span>
@@ -89,12 +94,14 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath) {
-                Delete(sPath, false);</span>
+<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath) {</span>
+                /// Forward: Delegate to non-recursive delete.
+<span style = "background-color:#dfd">                Delete(sPath, false);</span>
             }
 
-<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath, bool bRecursive) {
-                if (sPath.IsEmpty()) {</span>
+<span style = "background-color:#dfd">            void Directory::Delete(const String&amp; sPath, bool bRecursive) {</span>
+                /// Guard: Validate directory existence.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) {</span>
 <span style = "background-color:#fdd">                    throw ArgumentException("Path cannot be empty.");</span>
                 }
 <span style = "background-color:#dfd">                fs::path p = ToFsPath(sPath);
@@ -103,6 +110,7 @@ namespace DotNetDupe {
                     throw IO::IOException("Directory does not exist.");</span>
                 }
 
+                /// Step: Remove directory or subtree.
 <span style = "background-color:#dfd">                if (bRecursive) {
                     fs::remove_all(p, ec);
                 } else {</span>
@@ -113,29 +121,34 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void Directory::Move(const String&amp; sSourceDirName, const String&amp; sDestDirName) {
-                if (sSourceDirName.IsEmpty() || sDestDirName.IsEmpty()) {</span>
+<span style = "background-color:#dfd">            void Directory::Move(const String&amp; sSourceDirName, const String&amp; sDestDirName) {</span>
+                /// Guard: Validate directory names.
+<span style = "background-color:#dfd">                if (sSourceDirName.IsEmpty() || sDestDirName.IsEmpty()) {</span>
 <span style = "background-color:#fdd">                    throw ArgumentException("Source and destination paths cannot be empty.");</span>
                 }
                 std::error_code ec;
+                /// Step: Rename directory path.
 <span style = "background-color:#dfd">                fs::rename(ToFsPath(sSourceDirName), ToFsPath(sDestDirName), ec);
                 if (ec) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath) {
-                return GetFiles(sPath, "*");
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath) {</span>
+                /// Forward: Delegate with wildcard pattern "*".
+<span style = "background-color:#dfd">                return GetFiles(sPath, "*");
             }</span>
 
-<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath, const String&amp; sSearchPattern) {
-                if (!Exists(sPath)) {</span>
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
+                /// Guard: Validate directory existence.
+<span style = "background-color:#dfd">                if (!Exists(sPath)) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
                 std::regex reg = PatternToRegex(sSearchPattern);</span>
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching files.
 <span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     if (entry.is_regular_file(ec)) {
                         std::string filename = entry.path().filename().string();
@@ -143,24 +156,28 @@ namespace DotNetDupe {
                             results.push_back(String(entry.path().string().c_str()));</span>
                         }
 <span style = "background-color:#dfd">                    }
-                }
-                Array&lt;String&gt; arr((int)results.size());
+                }</span>
+                /// Return: Array of matching file paths.
+<span style = "background-color:#dfd">                Array&lt;String&gt; arr((int)results.size());
                 for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }</span>
 
-<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath) {
-                return GetDirectories(sPath, "*");
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath) {</span>
+                /// Forward: Delegate with wildcard pattern "*".
+<span style = "background-color:#dfd">                return GetDirectories(sPath, "*");
             }</span>
 
-<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath, const String&amp; sSearchPattern) {
-                if (!Exists(sPath)) {</span>
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
+                /// Guard: Validate directory existence.
+<span style = "background-color:#dfd">                if (!Exists(sPath)) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
                 std::regex reg = PatternToRegex(sSearchPattern);</span>
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching directories.
 <span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     if (entry.is_directory(ec)) {
                         std::string filename = entry.path().filename().string();
@@ -168,37 +185,43 @@ namespace DotNetDupe {
                             results.push_back(String(entry.path().string().c_str()));</span>
                         }
 <span style = "background-color:#dfd">                    }
-                }
-                Array&lt;String&gt; arr((int)results.size());
+                }</span>
+                /// Return: Array of matching directory paths.
+<span style = "background-color:#dfd">                Array&lt;String&gt; arr((int)results.size());
                 for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }</span>
 
-<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath) {
-                return GetFileSystemEntries(sPath, "*");
+<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath) {</span>
+                /// Forward: Delegate with wildcard pattern "*".
+<span style = "background-color:#fdd">                return GetFileSystemEntries(sPath, "*");
             }</span>
 
-<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath, const String&amp; sSearchPattern) {
-                if (!Exists(sPath)) {
+<span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
+                /// Guard: Validate directory existence.
+<span style = "background-color:#fdd">                if (!Exists(sPath)) {
                     throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#fdd">                std::vector&lt;String&gt; results;
                 std::regex reg = PatternToRegex(sSearchPattern);</span>
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching items.
 <span style = "background-color:#fdd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     std::string filename = entry.path().filename().string();
                     if (std::regex_match(filename, reg)) {
                         results.push_back(String(entry.path().string().c_str()));</span>
                     }
-<span style = "background-color:#fdd">                }
-                Array&lt;String&gt; arr((int)results.size());
+<span style = "background-color:#fdd">                }</span>
+                /// Return: Array of matching entry paths.
+<span style = "background-color:#fdd">                Array&lt;String&gt; arr((int)results.size());
                 for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }</span>
 
-<span style = "background-color:#dfd">            String Directory::GetCurrentDirectory() {
-                std::error_code ec;
+<span style = "background-color:#dfd">            String Directory::GetCurrentDirectory() {</span>
+                /// Step: Query current working directory from filesystem.
+<span style = "background-color:#dfd">                std::error_code ec;
                 fs::path p = fs::current_path(ec);
                 if (ec) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
@@ -206,26 +229,31 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return String(p.string().c_str());
             }</span>
 
-<span style = "background-color:#fdd">            void Directory::SetCurrentDirectory(const String&amp; sPath) {
-                if (sPath.IsEmpty()) {
+<span style = "background-color:#fdd">            void Directory::SetCurrentDirectory(const String&amp; sPath) {</span>
+                /// Guard: Validate target path.
+<span style = "background-color:#fdd">                if (sPath.IsEmpty()) {
                     throw ArgumentException("Path cannot be empty.");</span>
                 }
                 std::error_code ec;
+                /// Step: Set current working directory.
 <span style = "background-color:#fdd">                fs::current_path(ToFsPath(sPath), ec);
                 if (ec) {
                     throw IO::IOException(ec.message().c_str());</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#fdd">            String Directory::GetDirectoryRoot(const String&amp; sPath) {
-                return Path::GetPathRoot(sPath);
+<span style = "background-color:#fdd">            String Directory::GetDirectoryRoot(const String&amp; sPath) {</span>
+                /// Forward: Delegate to Path::GetPathRoot.
+<span style = "background-color:#fdd">                return Path::GetPathRoot(sPath);
             }</span>
 
-<span style = "background-color:#fdd">            DateTimeOffset Directory::GetCreationTime(const String&amp; sPath) {
-                return GetLastWriteTime(sPath);
+<span style = "background-color:#fdd">            DateTimeOffset Directory::GetCreationTime(const String&amp; sPath) {</span>
+                /// Forward: Delegate to GetLastWriteTime.
+<span style = "background-color:#fdd">                return GetLastWriteTime(sPath);
             }</span>
 
 <span style = "background-color:#fdd">            DateTimeOffset Directory::GetLastWriteTime(const String&amp; sPath) {</span>
+                /// Step: Query filesystem last write time.
                 std::error_code ec;
 <span style = "background-color:#fdd">                auto ftime = fs::last_write_time(ToFsPath(sPath), ec);
                 if (ec) {
@@ -234,8 +262,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                return FileTimeToDateTimeOffset(ftime);
             }</span>
 
-<span style = "background-color:#fdd">            DateTimeOffset Directory::GetLastAccessTime(const String&amp; sPath) {
-                return GetLastWriteTime(sPath);
+<span style = "background-color:#fdd">            DateTimeOffset Directory::GetLastAccessTime(const String&amp; sPath) {</span>
+                /// Forward: Delegate to GetLastWriteTime.
+<span style = "background-color:#fdd">                return GetLastWriteTime(sPath);
             }</span>
         }
     }

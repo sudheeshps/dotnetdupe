@@ -51,8 +51,9 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-<span style = "background-color:#dfd">            String Path::ChangeExtension(const String&amp; sFilePath, const String&amp; sExtension) {
-                if (sFilePath.GetLength() &lt;= 0 || sExtension.GetLength() &lt;= 0)
+<span style = "background-color:#dfd">            String Path::ChangeExtension(const String&amp; sFilePath, const String&amp; sExtension) {</span>
+                /// Guard: Validate input path and extension parameters.
+<span style = "background-color:#dfd">                if (sFilePath.GetLength() &lt;= 0 || sExtension.GetLength() &lt;= 0)
                     throw ArgumentException("Invalid argument");
                 if (sFilePath.GetLength() &lt;= sExtension.GetLength())
                     throw ArgumentException("Invalid argument");
@@ -60,6 +61,7 @@ namespace DotNetDupe {
                 if (sFilePath [0] == '.')</span>
 <span style = "background-color:#fdd">                    sTempFilePath = sFilePath.Remove(0);</span>
 
+                /// Step: Replace path extension via filesystem path.
 <span style = "background-color:#dfd">                fs::path path = ToFsPath(sTempFilePath);</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                path.replace_extension(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sExtension.GetRawString()));</span>
@@ -70,11 +72,14 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            String Path::Combine(const std::initializer_list&lt;String&gt; sPaths) {</span>
+                /// Guard: Check root directory structure.
                 auto indexedList = _init_list_with_indexer(sPaths);
 <span style = "background-color:#dfd">                fs::path rootPath = ToFsPath(indexedList [0]);
                 if (!rootPath.has_root_directory())
-                    return indexedList [0];
-                String sCombinedPath("");
+                    return indexedList [0];</span>
+
+                /// Step: Concatenate paths with separator.
+<span style = "background-color:#dfd">                String sCombinedPath("");
                 for (auto sPath : sPaths) {
                     sCombinedPath.Append(sPath);
                     sCombinedPath.Append(static_cast&lt;char&gt;(fs::path::preferred_separator));
@@ -82,56 +87,70 @@ namespace DotNetDupe {
                 return sCombinedPath.Remove(sCombinedPath.GetLength() - 1);
             }</span>
 
-<span style = "background-color:#dfd">            bool Path::EndsInDirectorySeparator(const String&amp; sFilePath) {
-                if (sFilePath.IsEmpty()) return false;
-                char chLastChar = sFilePath[sFilePath.GetLength() - 1];
-                return chLastChar == '\\' || chLastChar == '/';
+<span style = "background-color:#dfd">            bool Path::EndsInDirectorySeparator(const String&amp; sFilePath) {</span>
+                /// Guard: Empty path check.
+<span style = "background-color:#dfd">                if (sFilePath.IsEmpty()) return false;
+                char chLastChar = sFilePath[sFilePath.GetLength() - 1];</span>
+                /// Return: True if path ends in slash or backslash.
+<span style = "background-color:#dfd">                return chLastChar == '\\' || chLastChar == '/';
             }</span>
 
-<span style = "background-color:#dfd">            bool Path::Exists(const String&amp; sFilePath) {
-                return fs::exists(ToFsPath(sFilePath));
+<span style = "background-color:#dfd">            bool Path::Exists(const String&amp; sFilePath) {</span>
+                /// Return: Filesystem path existence check.
+<span style = "background-color:#dfd">                return fs::exists(ToFsPath(sFilePath));
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetDirectoryName(const String&amp; sFilePath) {
-                if (sFilePath.IsEmpty())
+<span style = "background-color:#dfd">            String Path::GetDirectoryName(const String&amp; sFilePath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sFilePath.IsEmpty())
                     return "";</span>
 
+                /// Return: Parent directory path string.
 <span style = "background-color:#dfd">                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.parent_path());
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetFileName(const String&amp; sFilePath) {
-                if (sFilePath.IsEmpty())
-                    return "";
-                fs::path path = ToFsPath(sFilePath);
+<span style = "background-color:#dfd">            String Path::GetFileName(const String&amp; sFilePath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sFilePath.IsEmpty())
+                    return "";</span>
+                /// Return: Path filename component.
+<span style = "background-color:#dfd">                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.filename());
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetExtension(const String&amp; sFilePath) {
-                if (sFilePath.IsEmpty())</span>
+<span style = "background-color:#dfd">            String Path::GetExtension(const String&amp; sFilePath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sFilePath.IsEmpty())</span>
 <span style = "background-color:#fdd">                    return "";</span>
 
+                /// Return: Path extension component.
 <span style = "background-color:#dfd">                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.extension());
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetFileNameWithoutExtension(const String&amp; sFilePath) {
-                if (sFilePath.IsEmpty())
+<span style = "background-color:#dfd">            String Path::GetFileNameWithoutExtension(const String&amp; sFilePath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sFilePath.IsEmpty())
                     return "";</span>
 
+                /// Return: Stem filename component without extension.
 <span style = "background-color:#dfd">                fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.stem());
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetFullPath(const String&amp; sPath) {
-                if (sPath.IsEmpty())</span>
+<span style = "background-color:#dfd">            String Path::GetFullPath(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty())</span>
 <span style = "background-color:#fdd">                    return "";</span>
 
+                /// Return: Absolute canonical path.
 <span style = "background-color:#dfd">                return FromFsPath(fs::absolute(ToFsPath(sPath)));
             }</span>
 
-<span style = "background-color:#dfd">            Array&lt;char&gt; Path::GetInvalidFileNameChars() {
-                static const std::vector&lt;char&gt; tempInvalidChars = {</span>
+<span style = "background-color:#dfd">            Array&lt;char&gt; Path::GetInvalidFileNameChars() {</span>
+                /// Return: Array of invalid filename characters.
+<span style = "background-color:#dfd">                static const std::vector&lt;char&gt; tempInvalidChars = {</span>
                     '"', '&lt;', '&gt;', '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F',
@@ -141,8 +160,9 @@ namespace DotNetDupe {
                 return invalidChars;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            Array&lt;char&gt; Path::GetInvalidPathChars() {
-                static const std::vector&lt;char&gt; tempInvalidChars = {</span>
+<span style = "background-color:#dfd">            Array&lt;char&gt; Path::GetInvalidPathChars() {</span>
+                /// Return: Array of invalid path characters.
+<span style = "background-color:#dfd">                static const std::vector&lt;char&gt; tempInvalidChars = {</span>
                     '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
                     '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18', '\x19', '\x1A', '\x1B', '\x1C', '\x1D', '\x1E', '\x1F' };
@@ -152,8 +172,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
             String Path::GetRandomFileName()
-<span style = "background-color:#dfd">            {
-                const char chChars[] = "abcdefghijklmnopqrstuvwxyz0123456789";</span>
+<span style = "background-color:#dfd">            {</span>
+                /// Step: Generate random 8.3 formatted filename string.
+<span style = "background-color:#dfd">                const char chChars[] = "abcdefghijklmnopqrstuvwxyz0123456789";</span>
                 const int nCharsLen = sizeof(chChars) / sizeof(char) - 1;
 
                 std::random_device rd;
@@ -175,13 +196,14 @@ namespace DotNetDupe {
             }</span>
 
             String Path::GetPathRoot(const String&amp; sPath)
-<span style = "background-color:#dfd">            {
-                if (sPath.IsEmpty())
+<span style = "background-color:#dfd">            {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty())
                     return "";</span>
 
+                /// Step: Parse UNC path or root path components.
 <span style = "background-color:#dfd">                if (sPath.StartsWith("\\", false))</span>
                 {
-                    // UNC path like \\server\share
                     int nLen = sPath.GetLength();
 <span style = "background-color:#dfd">                    if (nLen &gt; 2)</span>
                     {
@@ -200,8 +222,9 @@ namespace DotNetDupe {
                 return FromFsPath(p.root_path());
             }</span>
 
-<span style = "background-color:#dfd">            String Path::GetRelativePath(const String&amp; sRelativeTo, const String&amp; sPath) {
-                const fs::path fsRelativeTo = ToFsPath(GetFullPath(sRelativeTo));
+<span style = "background-color:#dfd">            String Path::GetRelativePath(const String&amp; sRelativeTo, const String&amp; sPath) {</span>
+                /// Step: Resolve relative filesystem path between two absolute paths.
+<span style = "background-color:#dfd">                const fs::path fsRelativeTo = ToFsPath(GetFullPath(sRelativeTo));
                 const fs::path fsPath = ToFsPath(GetFullPath(sPath));</span>
 
 #if defined(_WIN32)
@@ -214,6 +237,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            static String GenerateRandomTempFileName(const String&amp; sTempDir) {</span>
+                /// Step: Generate and create empty unique temporary file in temp directory.
                 std::random_device rd;
 <span style = "background-color:#dfd">                std::mt19937 generator(rd());</span>
                 std::uniform_int_distribution&lt;int&gt; dist(0, 35);
@@ -231,11 +255,13 @@ namespace DotNetDupe {
                 throw IOException("Could not create a unique temporary file.");</span>
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            String Path::GetTempFileName() {
-                return GenerateRandomTempFileName(GetTempPath());
+<span style = "background-color:#dfd">            String Path::GetTempFileName() {</span>
+                /// Forward: Delegate with current temp directory path.
+<span style = "background-color:#dfd">                return GenerateRandomTempFileName(GetTempPath());
             }</span>
 
 <span style = "background-color:#dfd">            String Path::GetTempPath() {</span>
+                /// Step: Query system temporary path based on active platform.
 #if defined(_WIN32)
                 wchar_t buffer [MAX_PATH];
 <span style = "background-color:#dfd">                ::GetTempPathW(MAX_PATH, buffer);
@@ -250,8 +276,9 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            bool Path::HasExtension(const String&amp; sPath) {
-                if (sPath.IsEmpty()) return false;
+<span style = "background-color:#dfd">            bool Path::HasExtension(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path or dot references.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return false;
                 String sFilenameStr = GetFileName(sPath);
                 if (sFilenameStr.IsEmpty() || sFilenameStr == "." || sFilenameStr == "..") return false;
                 std::string sFilename((const char*)sFilenameStr);
@@ -259,14 +286,18 @@ namespace DotNetDupe {
                 return (nDotPos != std::string::npos &amp;&amp; nDotPos != sFilename.length() - 1);
             }</span>
 
-<span style = "background-color:#dfd">            bool Path::IsPathFullyQualified(const String&amp; sPath) {
-                if (sPath.IsEmpty()) return false;
-                return ToFsPath(sPath).is_absolute();
+<span style = "background-color:#dfd">            bool Path::IsPathFullyQualified(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return false;</span>
+                /// Return: True if path is absolute.
+<span style = "background-color:#dfd">                return ToFsPath(sPath).is_absolute();
             }</span>
 
-<span style = "background-color:#dfd">            bool Path::IsPathRooted(const String&amp; sPath) {
-                if (sPath.IsEmpty()) return false;</span>
+<span style = "background-color:#dfd">            bool Path::IsPathRooted(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return false;</span>
                 int nLen = sPath.GetLength();
+                /// Step: Test slash, backslash, or drive letter root prefixes.
 <span style = "background-color:#dfd">                if (sPath[0] == '\\' || sPath[0] == '/') return true;
                 if (nLen &gt;= 2 &amp;&amp; sPath[1] == ':' &amp;&amp; std::isalpha(static_cast&lt;unsigned char&gt;(sPath[0]))) {
                     return (nLen &gt;= 3 &amp;&amp; (sPath[2] == '\\' || sPath[2] == '/'));</span>
@@ -274,13 +305,15 @@ namespace DotNetDupe {
                 return false;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            String Path::Join(const std::initializer_list&lt;String&gt; sPaths) {
-                String sResult("");
+<span style = "background-color:#dfd">            String Path::Join(const std::initializer_list&lt;String&gt; sPaths) {</span>
+                /// Step: Attempt path join or throw ArgumentException on invalid characters.
+<span style = "background-color:#dfd">                String sResult("");
                 if (TryJoin(sPaths, sResult)) return sResult;
                 throw ArgumentException("Invalid character in path.");
             }</span>
 
             static bool ValidatePathChars(const std::initializer_list&lt;String&gt;&amp; sPaths) {
+                /// Step: Check whether any segment contains illegal path characters.
                 auto invalidPathChars = Path::GetInvalidPathChars();
                 for (const auto&amp; sPath : sPaths) {
                     for (auto ch : invalidPathChars) {
@@ -290,9 +323,11 @@ namespace DotNetDupe {
                 return true;
             }
 
-<span style = "background-color:#dfd">            static void AppendPathSegment(String&amp; sJoined, const String&amp; sPath) {
-                if (sPath.IsEmpty()) return;
-                if (sJoined.IsEmpty()) {
+<span style = "background-color:#dfd">            static void AppendPathSegment(String&amp; sJoined, const String&amp; sPath) {</span>
+                /// Guard: Skip empty segment.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return;</span>
+                /// Step: Append segment with separator as needed.
+<span style = "background-color:#dfd">                if (sJoined.IsEmpty()) {
                     sJoined = sPath;</span>
                 } else {
 <span style = "background-color:#dfd">                    char chLast = sJoined[sJoined.GetLength() - 1];
@@ -305,8 +340,9 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            bool Path::TryJoin(const std::initializer_list&lt;String&gt; sPaths, String&amp; sResult) {
-                if (!ValidatePathChars(sPaths)) {
+<span style = "background-color:#dfd">            bool Path::TryJoin(const std::initializer_list&lt;String&gt; sPaths, String&amp; sResult) {</span>
+                /// Step: Validate characters and concatenate segments.
+<span style = "background-color:#dfd">                if (!ValidatePathChars(sPaths)) {
                     sResult = String("");
                     return false;</span>
                 }
@@ -316,10 +352,12 @@ namespace DotNetDupe {
                 return true;
             }</span>
 
-<span style = "background-color:#dfd">            String Path::TrimEndingDirectorySeparator(const String&amp; sPath) {
-                if (sPath.IsEmpty()) return sPath;
+<span style = "background-color:#dfd">            String Path::TrimEndingDirectorySeparator(const String&amp; sPath) {</span>
+                /// Guard: Check for empty path or rooted drive path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) return sPath;
                 if (Path::IsPathRooted(sPath) &amp;&amp; sPath.GetLength() &lt;= 3) return sPath;</span>
 
+                /// Step: Strip trailing slash or backslash.
 <span style = "background-color:#dfd">                char chLastChar = sPath[sPath.GetLength() - 1];
                 if (chLastChar == '\\' || chLastChar == '/') {
                     return sPath.Substring(0, sPath.GetLength() - 1);</span>
@@ -327,19 +365,23 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return sPath;
             }</span>
 
-<span style = "background-color:#fdd">            char Path::GetDirectorySeparatorChar() {
-                return static_cast&lt;char&gt;(fs::path::preferred_separator);
+<span style = "background-color:#fdd">            char Path::GetDirectorySeparatorChar() {</span>
+                /// Return: Preferred directory separator character.
+<span style = "background-color:#fdd">                return static_cast&lt;char&gt;(fs::path::preferred_separator);
             }</span>
 
-<span style = "background-color:#fdd">            char Path::GetAltDirectorySeparatorChar() {
-                return (fs::path::preferred_separator == '/') ? '\\' : '/';
+<span style = "background-color:#fdd">            char Path::GetAltDirectorySeparatorChar() {</span>
+                /// Return: Alternate directory separator character.
+<span style = "background-color:#fdd">                return (fs::path::preferred_separator == '/') ? '\\' : '/';
             }</span>
 
-<span style = "background-color:#fdd">            char Path::GetVolumeSeparatorChar() {
-                return ':';
+<span style = "background-color:#fdd">            char Path::GetVolumeSeparatorChar() {</span>
+                /// Return: Volume separator character ':'.
+<span style = "background-color:#fdd">                return ':';
             }</span>
 
 <span style = "background-color:#fdd">            char Path::GetPathSeparator() {</span>
+                /// Return: Platform search path delimiter.
 #if defined(_WIN32)
 <span style = "background-color:#fdd">                return ';';</span>
 #else

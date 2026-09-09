@@ -9,6 +9,9 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file Task.h
+/// \brief Represents an asynchronous operation mirroring .NET System.Threading.Tasks.Task.
+
 #pragma once
 
 #include "Common.h"
@@ -24,64 +27,53 @@ namespace DotNetDupe {
         namespace Threading {
             namespace Tasks {
 
-                /**
-                 * @brief Represents an asynchronous operation.
-                 */
+                /// \brief Represents an asynchronous operation.
+                ///
+                /// Provides task scheduling on the ThreadPool, completion synchronization via ManualResetEvent,
+                /// and status querying (Created, Running, RanToCompletion, Faulted, Canceled).
+                /// Thread-safe for concurrent status queries and Wait() invocations.
+                ///
+                /// \note Conforms to the .NET Task-based Asynchronous Pattern (TAP).
+                /// \see ThreadPool, Thread
                 class Task : public Object {
                 public:
-                    /**
-                     * @brief Initializes a new Task with the specified action.
-                     * @param objAction The delegate that represents the code to execute in the Task.
-                     */
+                    /// \brief Initializes a new Task with the specified action delegate.
+                    /// \param objAction The delegate that represents the code to execute in the Task.
                     DOTNETDUPE_API Task(Action&lt;&gt; objAction);
                     
-                    /**
-                     * @brief Destructor for Task.
-                     */
+                    /// \brief Destructor for Task.
                     DOTNETDUPE_API virtual ~Task();
 
-                    /**
-                     * @brief Starts the Task, scheduling it for execution to the current TaskScheduler.
-                     */
+                    /// \brief Starts the Task, scheduling it for execution to the ThreadPool.
                     DOTNETDUPE_API void Start();
 
-                    /**
-                     * @brief Waits for the Task to complete execution.
-                     */
+                    /// \brief Waits indefinitely for the Task to complete execution.
                     DOTNETDUPE_API void Wait();
 
-                    /**
-                     * @brief Waits for the Task to complete execution within a specified time interval.
-                     * @param iMillisecondsTimeout The number of milliseconds to wait, or -1 to wait indefinitely.
-                     * @return true if the Task completed execution within the allotted time; otherwise, false.
-                     */
+                    /// \brief Waits for the Task to complete execution within a specified time interval.
+                    /// \param iMillisecondsTimeout The number of milliseconds to wait, or -1 to wait indefinitely.
+                    /// \return True if the Task completed execution within the allotted time; otherwise, false.
                     DOTNETDUPE_API bool Wait(int iMillisecondsTimeout);
                     
-                    /**
-                     * @brief Gets the TaskStatus of this task.
-                     */
+                    /// \brief Gets the TaskStatus of this task.
+                    /// \return The current lifecycle status of the Task.
                     DOTNETDUPE_API TaskStatus GetStatus() const;
 
-                    /**
-                     * @brief Gets whether this Task has completed.
-                     */
+                    /// \brief Gets whether this Task has completed.
+                    /// \return True if the task has completed (RanToCompletion, Faulted, or Canceled).
                     DOTNETDUPE_API bool GetIsCompleted() const;
 
-                    /**
-                     * @brief Gets whether the Task completed due to an unhandled exception.
-                     */
+                    /// \brief Gets whether the Task completed due to an unhandled exception.
+                    /// \return True if the task threw an unhandled exception; otherwise, false.
                     DOTNETDUPE_API bool GetIsFaulted() const;
 
-                    /**
-                     * @brief Gets whether this Task instance has completed execution due to being canceled.
-                     */
+                    /// \brief Gets whether this Task instance has completed execution due to being canceled.
+                    /// \return True if the task was canceled; otherwise, false.
                     DOTNETDUPE_API bool GetIsCanceled() const;
 
-                    /**
-                     * @brief Queues the specified work to run on the ThreadPool and returns a Task object that represents that work.
-                     * @param objAction The work to execute asynchronously.
-                     * @return A Task that represents the work queued to execute in the ThreadPool.
-                     */
+                    /// \brief Queues the specified work to run on the ThreadPool and returns a Task representing that work.
+                    /// \param objAction The work delegate to execute asynchronously.
+                    /// \return A SmartPointer to the running Task.
                     DOTNETDUPE_API static SmartPointer&lt;Task&gt; Run(Action&lt;&gt; objAction);
 
                 private:

@@ -37,13 +37,16 @@ namespace DotNetDupe {
                 // Base class does not know how to write, should be overridden
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(const char* pValue) {
-                if (pValue == nullptr) return;
-                Write(String(pValue));
+<span style = "background-color:#fdd">            void TextWriter::Write(const char* pValue) {</span>
+                /// Guard: Check null pointer.
+<span style = "background-color:#fdd">                if (pValue == nullptr) return;</span>
+
+<span style = "background-color:#fdd">                Write(String(pValue));
             }</span>
 
-<span style = "background-color:#fdd">            void TextWriter::Write(const String&amp; sValue) {
-                for (int iIdx = 0; iIdx &lt; sValue.GetLength(); iIdx++) {
+<span style = "background-color:#fdd">            void TextWriter::Write(const String&amp; sValue) {</span>
+                /// Write string character-by-character.
+<span style = "background-color:#fdd">                for (int iIdx = 0; iIdx &lt; sValue.GetLength(); iIdx++) {
                     Write((char)sValue[iIdx]);</span>
                 }
 <span style = "background-color:#fdd">            }</span>

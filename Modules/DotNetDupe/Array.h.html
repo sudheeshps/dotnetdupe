@@ -9,6 +9,11 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file Array.h
+/// \brief Provides methods for creating, manipulating, searching, and sorting arrays.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"
@@ -25,6 +30,12 @@
 
 namespace DotNetDupe {
 	namespace System {
+
+		/// \class Array
+		/// \brief Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the base class for all arrays in the common language runtime.
+		///
+		/// \tparam T The element type contained in the array.
+		/// \note Conforms to ECMA-335 Partition IV Section 5.20 (System.Array).
 		template &lt;class T&gt;
 		class Array : public Object {
 		private:
@@ -56,13 +67,21 @@ namespace DotNetDupe {
 			}
 
 		public:
+			/// \brief Initializes an empty Array instance.
 			Array() = default;
+
+			/// \brief Initializes an Array of the specified length with default-constructed elements.
+			/// \param iLength The number of elements in the array.
 <span style = "background-color:#dfd">			Array(int iLength) {
 				Allocate(iLength);
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					::new ((void*)&amp;m_pData[i]) T();</span>
 				}
 <span style = "background-color:#dfd">			}</span>
+
+			/// \brief Initializes an Array by copying elements from a raw pointer buffer.
+			/// \param pData Pointer to the source elements buffer.
+			/// \param iLength The number of elements to copy.
 			Array(const T* pData, int iLength) {
 				Allocate(iLength);
 				if (pData) {
@@ -75,6 +94,9 @@ namespace DotNetDupe {
 					}
 				}
 			}
+
+			/// \brief Initializes an Array from an initializer list of elements.
+			/// \param vItems Initializer list containing array elements.
 			Array(const std::initializer_list&lt;T&gt;&amp; vItems) {
 				Allocate(static_cast&lt;int&gt;(vItems.size()));
 				int iIdx = 0;
@@ -82,12 +104,16 @@ namespace DotNetDupe {
 					::new ((void*)&amp;m_pData[iIdx++]) T(item);
 				}
 			}
+
+			/// \brief Copy constructor. Performs a deep copy of elements.
 <span style = "background-color:#dfd">			Array(const Array&amp; other) {
 				Allocate(other.m_iLength);</span>
 				for (int i = 0; i &lt; m_iLength; ++i) {
 <span style = "background-color:#dfd">					::new ((void*)&amp;m_pData[i]) T(other.m_pData[i]);</span>
 				}
 <span style = "background-color:#dfd">			}</span>
+
+			/// \brief Copy assignment operator.
 			Array&amp; operator=(const Array&amp; other) {
 				if (this != &amp;other) {
 					Free();
@@ -98,10 +124,14 @@ namespace DotNetDupe {
 				}
 				return *this;
 			}
+
+			/// \brief Move constructor.
 			Array(Array&amp;&amp; other) noexcept : m_pData(other.m_pData), m_iLength(other.m_iLength) {
 				other.m_pData = nullptr;
 				other.m_iLength = 0;
 			}
+
+			/// \brief Move assignment operator.
 			Array&amp; operator=(Array&amp;&amp; other) noexcept {
 				if (this != &amp;other) {
 					Free();
@@ -112,24 +142,49 @@ namespace DotNetDupe {
 				}
 				return *this;
 			}
+
+			/// \brief Destroys array elements and releases allocated storage.
 <span style = "background-color:#fdd">			~Array() override {
 				Free();
 			}</span>
 
+			/// \brief Gets the total number of elements in all dimensions of the Array.
+			/// \return The total number of elements.
 			int GetLength() const { return m_iLength; }
+
+			/// \brief Gets a pointer to the contiguous internal element buffer.
+			/// \return A pointer to the element array.
 			T* GetData() { return m_pData; }
+
+			/// \brief Gets a const pointer to the contiguous internal element buffer.
+			/// \return A const pointer to the element array.
 			const T* GetData() const { return m_pData; }
 
+			/// \brief Returns an iterator to the first element of the array.
 			T* begin() { return m_pData; }
+
+			/// \brief Returns an iterator to the element following the last element of the array.
 			T* end() { return m_pData + m_iLength; }
+
+			/// \brief Returns a const iterator to the first element of the array.
 			const T* begin() const { return m_pData; }
+
+			/// \brief Returns a const iterator to the element following the last element of the array.
 			const T* end() const { return m_pData + m_iLength; }
 
+			/// \brief Checks whether the array has zero length.
+			/// \return true if length is 0; otherwise, false.
 			bool IsNull() const { return m_iLength == 0; }
 
+			/// \brief Accesses the element at the specified index.
 			T&amp; operator[](int iIndex) { return m_pData[iIndex]; }
+
+			/// \brief Accesses the const element at the specified index.
 			const T&amp; operator[](int iIndex) const { return m_pData[iIndex]; }
 
+			/// \brief Searches for the specified object and returns the index of its first occurrence.
+			/// \param value The object to locate in the Array.
+			/// \return The zero-based index of the first occurrence of value, if found; otherwise, -1.
 			int IndexOf(const T&amp; value) const {
 				for (int iIdx = 0; iIdx &lt; m_iLength; ++iIdx) {
 					if (m_pData[iIdx] == value) return iIdx;
@@ -137,6 +192,9 @@ namespace DotNetDupe {
 				return -1;
 			}
 
+			/// \brief Searches for the specified object and returns the index of the last occurrence.
+			/// \param value The object to locate in the Array.
+			/// \return The zero-based index of the last occurrence of value, if found; otherwise, -1.
 			int LastIndexOf(const T&amp; value) const {
 				for (int iIdx = m_iLength - 1; iIdx &gt;= 0; --iIdx) {
 					if (m_pData[iIdx] == value) return iIdx;
@@ -144,6 +202,7 @@ namespace DotNetDupe {
 				return -1;
 			}
 
+			/// \brief Sorts the elements in an entire Array using the default comparison.
 			void Sort() {
 				for (int i = 0; i &lt; m_iLength - 1; ++i) {
 					for (int j = 0; j &lt; m_iLength - i - 1; ++j) {
@@ -154,6 +213,7 @@ namespace DotNetDupe {
 				}
 			}
 
+			/// \brief Reverses the sequence of the elements in the entire Array.
 			void Reverse() {
 				int left = 0;
 				int right = m_iLength - 1;
@@ -164,15 +224,20 @@ namespace DotNetDupe {
 				}
 			}
 
+			/// \brief Sets a range of elements in the Array to the default value of each element type.
 			void Clear() {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					m_pData[i] = T();
 				}
 			}
 
+			/// \brief Copies all elements of the current Array to the specified destination Array starting at the specified destination index.
 			void CopyTo(Array&lt;T&gt;&amp; arrTarget, int iIndex);
+
+			/// \brief Copies a range of elements from an Array starting at the first element and pastes them to another Array starting at the first element.
 			static void Copy(Array&lt;T&gt;&amp; arrSource, Array&lt;T&gt;&amp; arrDestination, int iLength);
 
+			/// \brief Determines whether the specified array contains elements that match the conditions defined by the specified predicate.
 			bool Exists(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					if (fnPredicate(m_pData[i])) return true;
@@ -180,6 +245,7 @@ namespace DotNetDupe {
 				return false;
 			}
 
+			/// \brief Searches for an element that matches the conditions defined by the specified predicate, and returns the first occurrence.
 			T Find(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					if (fnPredicate(m_pData[i])) return m_pData[i];
@@ -187,6 +253,7 @@ namespace DotNetDupe {
 				return T();
 			}
 
+			/// \brief Retrieves all the elements that match the conditions defined by the specified predicate.
 			Array&lt;T&gt; FindAll(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				int count = 0;
 				for (int i = 0; i &lt; m_iLength; ++i) {
@@ -202,6 +269,7 @@ namespace DotNetDupe {
 				return arrNew;
 			}
 
+			/// \brief Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence.
 			int FindIndex(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					if (fnPredicate(m_pData[i])) return i;
@@ -209,6 +277,7 @@ namespace DotNetDupe {
 				return -1;
 			}
 
+			/// \brief Searches for an element that matches the conditions defined by the specified predicate, and returns the last occurrence.
 			T FindLast(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = m_iLength - 1; i &gt;= 0; --i) {
 					if (fnPredicate(m_pData[i])) return m_pData[i];
@@ -216,6 +285,7 @@ namespace DotNetDupe {
 				return T();
 			}
 
+			/// \brief Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence.
 			int FindLastIndex(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = m_iLength - 1; i &gt;= 0; --i) {
 					if (fnPredicate(m_pData[i])) return i;
@@ -223,12 +293,14 @@ namespace DotNetDupe {
 				return -1;
 			}
 
+			/// \brief Performs the specified action on each element of the specified array.
 			void ForEach(const Action&lt;T&gt;&amp; fnAction) {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					fnAction(m_pData[i]);
 				}
 			}
 
+			/// \brief Determines whether every element in the array matches the conditions defined by the specified predicate.
 			bool TrueForAll(const Predicate&lt;T&gt;&amp; fnPredicate) const {
 				for (int i = 0; i &lt; m_iLength; ++i) {
 					if (!fnPredicate(m_pData[i])) return false;
@@ -245,9 +317,11 @@ namespace DotNetDupe {
 	namespace System {
 		template &lt;class T&gt;
 		inline void Array&lt;T&gt;::CopyTo(Array&lt;T&gt;&amp; arrTarget, int iIndex) {
+			/// Guard: Validate target index boundary.
 			if (iIndex &lt; 0) throw ArgumentOutOfRangeException("iIndex");
 			if (iIndex + GetLength() &gt; arrTarget.GetLength()) throw ArgumentException("Destination array was not long enough.");
 
+			/// Copy elements sequentially into target buffer.
 			for (int iIdx = 0; iIdx &lt; GetLength(); ++iIdx) {
 				arrTarget[iIndex + iIdx] = m_pData[iIdx];
 			}
@@ -255,10 +329,12 @@ namespace DotNetDupe {
 
 		template &lt;class T&gt;
 		inline void Array&lt;T&gt;::Copy(Array&lt;T&gt;&amp; arrSource, Array&lt;T&gt;&amp; arrDestination, int iLength) {
+			/// Guard: Validate length boundary against source and destination capacities.
 			if (iLength &lt; 0) throw ArgumentOutOfRangeException("iLength");
 			if (arrSource.GetLength() &lt; iLength) throw ArgumentException("Source array was not long enough.");
 			if (arrDestination.GetLength() &lt; iLength) throw ArgumentException("Destination array was not long enough.");
 
+			/// Copy elements across array bounds.
 			for (int iIdx = 0; iIdx &lt; iLength; ++iIdx) {
 				arrDestination[iIdx] = arrSource[iIdx];
 			}

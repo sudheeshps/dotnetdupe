@@ -18,26 +18,40 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Builder {
 
+            /// \brief Default constructor.
 <span style = "background-color:#fdd">            WebApplicationBuilder::WebApplicationBuilder() = default;</span>
 
+            /// \brief Move constructor.
             WebApplicationBuilder::WebApplicationBuilder(WebApplicationBuilder&amp;&amp; other) noexcept
 <span style = "background-color:#fdd">                : m_services(std::move(other.m_services)),
                   m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
 
-<span style = "background-color:#fdd">            WebApplicationBuilder&amp; WebApplicationBuilder::operator=(WebApplicationBuilder&amp;&amp; other) noexcept {
-                if (this != &amp;other) {
-                    m_services = std::move(other.m_services);
+            /// \brief Move assignment operator.
+<span style = "background-color:#fdd">            WebApplicationBuilder&amp; WebApplicationBuilder::operator=(WebApplicationBuilder&amp;&amp; other) noexcept {</span>
+                /// Guard: Check for self-assignment.
+<span style = "background-color:#fdd">                if (this != &amp;other) {</span>
+                    /// Move: Transfer registered services and controller route registrars.
+<span style = "background-color:#fdd">                    m_services = std::move(other.m_services);
                     m_controllerRegistrars = std::move(other.m_controllerRegistrars);</span>
                 }
+                /// Return result: Return self reference.
 <span style = "background-color:#fdd">                return *this;
             }</span>
 
-<span style = "background-color:#dfd">            System::SmartPointer&lt;WebApplication&gt; WebApplicationBuilder::Build() {
-                auto spProvider = m_services.BuildServiceProvider();
-                auto spApp = System::SmartPointer&lt;WebApplication&gt;::NewShared(spProvider);
-                spApp-&gt;SetSelfPointer(spApp);
-                spApp-&gt;SetControllerRegistrars(std::move(m_controllerRegistrars));
-                return spApp;
+            /// \brief Builds the application instance with configured services and controllers.
+<span style = "background-color:#dfd">            System::SmartPointer&lt;WebApplication&gt; WebApplicationBuilder::Build() {</span>
+                /// Initialize: Build root service provider from registered service collection.
+<span style = "background-color:#dfd">                auto spProvider = m_services.BuildServiceProvider();</span>
+
+                /// Construct: Instantiate WebApplication instance with resolved IoC provider.
+<span style = "background-color:#dfd">                auto spApp = System::SmartPointer&lt;WebApplication&gt;::NewShared(spProvider);</span>
+
+                /// Bind: Set self weak reference and forward controller route registrars.
+<span style = "background-color:#dfd">                spApp-&gt;SetSelfPointer(spApp);
+                spApp-&gt;SetControllerRegistrars(std::move(m_controllerRegistrars));</span>
+
+                /// Return result: Return configured WebApplication host instance.
+<span style = "background-color:#dfd">                return spApp;
             }</span>
 
         }

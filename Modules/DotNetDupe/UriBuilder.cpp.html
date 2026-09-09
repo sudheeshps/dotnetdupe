@@ -53,13 +53,17 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">        String UriBuilder::GetPassword() const { return _password; }
         void UriBuilder::SetPassword(const String&amp; value) { _password = value; }</span>
 
-<span style = "background-color:#dfd">        Uri UriBuilder::GetUri() {
-            return Uri(ToString());
+<span style = "background-color:#dfd">        Uri UriBuilder::GetUri() {</span>
+            /// Construct and return Uri instance from current string representation.
+<span style = "background-color:#dfd">            return Uri(ToString());
         }</span>
 
         static void AppendAuthority(std::string&amp; result, const String&amp; host, const String&amp; user, const String&amp; pass, int port) {
+            /// Guard: Do not append authority if host is empty.
             if (host.IsEmpty()) return;
             result += "//";
+
+            /// Step: Append credentials if present.
             if (!user.IsEmpty()) {
                 result += (const char*)user;
                 if (!pass.IsEmpty()) {
@@ -67,32 +71,42 @@ namespace DotNetDupe {
                 }
                 result += "@";
             }
+
+            /// Step: Append host and optional custom port.
             result += (const char*)host;
             if (port != -1) {
                 result += ":"; result += std::to_string(port);
             }
         }
 
-<span style = "background-color:#dfd">        static void AppendPathAndQuery(std::string&amp; result, const String&amp; path, const String&amp; query, const String&amp; fragment) {
-            if (!path.IsEmpty()) {
+<span style = "background-color:#dfd">        static void AppendPathAndQuery(std::string&amp; result, const String&amp; path, const String&amp; query, const String&amp; fragment) {</span>
+            /// Step: Append path with leading slash delimiter.
+<span style = "background-color:#dfd">            if (!path.IsEmpty()) {
                 if (path[0] != '/') result += "/";
                 result += (const char*)path;</span>
             }
+
+            /// Step: Append query with leading question mark delimiter.
 <span style = "background-color:#dfd">            if (!query.IsEmpty()) {
                 if (query[0] != '?') result += "?";
                 result += (const char*)query;</span>
             }
+
+            /// Step: Append fragment with leading hash delimiter.
 <span style = "background-color:#dfd">            if (!fragment.IsEmpty()) {
                 if (fragment[0] != '#') result += "#";
                 result += (const char*)fragment;</span>
             }
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        String UriBuilder::ToString() {
-            std::string result;
+<span style = "background-color:#dfd">        String UriBuilder::ToString() {</span>
+            /// Step: Format scheme prefix.
+<span style = "background-color:#dfd">            std::string result;
             if (!_scheme.IsEmpty()) {
                 result += (const char*)_scheme; result += ":";</span>
             }
+
+            /// Step: Assemble authority, path, query, and fragment parts into URI string.
 <span style = "background-color:#dfd">            AppendAuthority(result, _host, _userName, _password, _port);
             AppendPathAndQuery(result, _path, _query, _fragment);
             return String(result.c_str());

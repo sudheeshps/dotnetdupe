@@ -19,18 +19,27 @@ namespace DotNetDupe {
         namespace Logging {
 
             ConsoleLoggerProvider::ConsoleLoggerProvider()
-<span style = "background-color:#fdd">                : ConsoleLoggerProvider(LogManager::GetConfiguration()) {}</span>
+<span style = "background-color:#fdd">                : ConsoleLoggerProvider(LogManager::GetConfiguration()) {</span>
+                /// Initialize with global LogManager configuration.
+<span style = "background-color:#fdd">            }</span>
 
             ConsoleLoggerProvider::ConsoleLoggerProvider(const LoggerConfiguration&amp; config)
-<span style = "background-color:#fdd">                : m_config(config) {}</span>
+<span style = "background-color:#fdd">                : m_config(config) {</span>
+                /// Initialize with explicit configuration options.
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            ConsoleLoggerProvider::ConsoleLoggerProvider(bool isJsonFormat, LogLevel minLevel) {</span>
+                /// Configure format flag and minimum severity threshold.
                 m_config.IsJsonFormat = isJsonFormat;
                 m_config.MinLevel = minLevel;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; ConsoleLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {
-                return DotNetDupe::System::SmartPointer&lt;ConsoleLogger&gt;::NewShared(categoryName, m_config);
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; ConsoleLoggerProvider::CreateLogger(const DotNetDupe::System::String&amp; categoryName) {</span>
+                /// Instantiate a ConsoleLogger configured for this category.
+<span style = "background-color:#dfd">                auto pLogger = DotNetDupe::System::SmartPointer&lt;ConsoleLogger&gt;::NewShared(categoryName, m_config);</span>
+
+                /// Return the created logger interface.
+<span style = "background-color:#dfd">                return DotNetDupe::System::SmartPointer&lt;ILogger&gt;(pLogger);
             }</span>
 
         }

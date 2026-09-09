@@ -23,26 +23,26 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
 
-            /**
-             * @brief Represents a single task in the thread pool queue.
-             */
+            /// \struct ThreadPoolTask
+            /// \brief Represents a single task in the thread pool queue.
             struct ThreadPoolTask {
                 WaitCallback Callback;
                 Object* State;
             };
 
-            /**
-             * @brief Internal implementation of the thread pool manager.
-             * Manages worker threads and task dispatching using DotNetDupe primitives.
-             */
+            /// \class ThreadPoolInternal
+            /// \brief Internal implementation of the thread pool manager.
+            /// Manages worker threads and task dispatching using DotNetDupe primitives.
             class ThreadPoolInternal {
             public:
-<span style = "background-color:#dfd">                static ThreadPoolInternal&amp; GetInstance() {
-                    static ThreadPoolInternal instance;</span>
+<span style = "background-color:#dfd">                static ThreadPoolInternal&amp; GetInstance() {</span>
+                    /// Step: Return singleton thread pool instance.
+<span style = "background-color:#dfd">                    static ThreadPoolInternal instance;</span>
                     return instance;
 <span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                bool QueueTask(WaitCallback callback, Object* pState) {</span>
+                    /// Guard: Check shutdown state and enqueue task under synchronization lock.
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         if (m_bIsShuttingDown) return false;</span>
@@ -51,16 +51,19 @@ namespace DotNetDupe {
                         objTask.Callback = callback;
                         objTask.State = pState;
                         m_qTasks.Add(objTask);
-                    }
-                    m_evtWorkAvailable.Set();
+                    }</span>
+                    /// Step: Signal waiting worker thread that work is available.
+<span style = "background-color:#dfd">                    m_evtWorkAvailable.Set();
                     return true;
                 }</span>
 
-<span style = "background-color:#dfd">                bool SetMinThreads(int iMinThreads) {
-                    if (iMinThreads &lt;= 0) return false;
+<span style = "background-color:#dfd">                bool SetMinThreads(int iMinThreads) {</span>
+                    /// Guard: Validate minimum thread count.
+<span style = "background-color:#dfd">                    if (iMinThreads &lt;= 0) return false;
                     Lock&lt;CriticalSection&gt; lock(m_csSync);
-                    if (m_bIsShuttingDown) return false;
-                    while (m_pvWorkerThreads.GetCount() &lt; iMinThreads) {
+                    if (m_bIsShuttingDown) return false;</span>
+                    /// Step: Spawn worker threads up to minimum threshold.
+<span style = "background-color:#dfd">                    while (m_pvWorkerThreads.GetCount() &lt; iMinThreads) {
                         SmartPointer&lt;Thread&gt; pWorker = SmartPointer&lt;Thread&gt;::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker-&gt;Start();
                         m_pvWorkerThreads.Add(std::move(pWorker));
@@ -71,7 +74,7 @@ namespace DotNetDupe {
             private:
 <span style = "background-color:#dfd">                ThreadPoolInternal() 
                     : m_bIsShuttingDown(false), m_evtWorkAvailable(false, false) {</span>
-                    
+                    /// Step: Query processor count and pre-allocate worker threads.
 <span style = "background-color:#dfd">                    int iThreadCount = Environment::GetProcessorCount();
                     if (iThreadCount &lt; 10) iThreadCount = 10;</span>
 
@@ -83,6 +86,7 @@ namespace DotNetDupe {
                 }</span>
 
 <span style = "background-color:#dfd">                ~ThreadPoolInternal() {</span>
+                    /// Step: Signal shutdown state and wake all worker threads.
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_bIsShuttingDown = true;
@@ -102,6 +106,7 @@ namespace DotNetDupe {
                 }</span>
 
 <span style = "background-color:#dfd">                void WorkerLoop() {</span>
+                    /// Step: Continuously retrieve and process tasks until shutdown.
                     while (true) {
 <span style = "background-color:#dfd">                        ThreadPoolTask objTask;
                         bool bHasTask = false;</span>
@@ -150,16 +155,19 @@ namespace DotNetDupe {
                 bool m_bIsShuttingDown;
             };
 
-<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback) {
-                return QueueUserWorkItem(callback, nullptr);
+<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback) {</span>
+                /// Forward to QueueUserWorkItem with null state parameter.
+<span style = "background-color:#dfd">                return QueueUserWorkItem(callback, nullptr);
             }</span>
 
-<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback, Object* pState) {
-                return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
+<span style = "background-color:#dfd">            bool ThreadPool::QueueUserWorkItem(WaitCallback callback, Object* pState) {</span>
+                /// Forward task to ThreadPoolInternal singleton instance.
+<span style = "background-color:#dfd">                return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
             }</span>
 
-<span style = "background-color:#fdd">            bool ThreadPool::SetMinThreads(int iMinThreads) {
-                return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
+<span style = "background-color:#fdd">            bool ThreadPool::SetMinThreads(int iMinThreads) {</span>
+                /// Forward min threads configuration to ThreadPoolInternal singleton.
+<span style = "background-color:#fdd">                return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
             }</span>
         }
     }

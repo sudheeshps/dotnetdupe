@@ -28,19 +28,24 @@ namespace DotNetDupe {
                 m_iPos = m_nLength;
             }</span>
 
-<span style = "background-color:#dfd">            int StringReader::Peek() {
-                if (m_iPos &gt;= m_nLength) return -1;
+<span style = "background-color:#dfd">            int StringReader::Peek() {</span>
+                /// Guard: Check EOF.
+<span style = "background-color:#dfd">                if (m_iPos &gt;= m_nLength) return -1;
                 return (int)(unsigned char)m_sSource[m_iPos];
             }</span>
 
-<span style = "background-color:#dfd">            int StringReader::Read() {
-                if (m_iPos &gt;= m_nLength) return -1;
+<span style = "background-color:#dfd">            int StringReader::Read() {</span>
+                /// Guard: Check EOF.
+<span style = "background-color:#dfd">                if (m_iPos &gt;= m_nLength) return -1;
                 return (int)(unsigned char)m_sSource[m_iPos++];
             }</span>
 
-<span style = "background-color:#dfd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {
-                if (pBuffer == nullptr) return 0;
-                int nRead = (std::min)(nCount, m_nLength - m_iPos);
+<span style = "background-color:#dfd">            int StringReader::Read(char* pBuffer, int iIndex, int nCount) {</span>
+                /// Guard: Check null buffer.
+<span style = "background-color:#dfd">                if (pBuffer == nullptr) return 0;</span>
+
+                /// Copy characters up to nCount or remaining string length.
+<span style = "background-color:#dfd">                int nRead = (std::min)(nCount, m_nLength - m_iPos);
                 for (int i = 0; i &lt; nRead; i++) {
                     pBuffer[iIndex + i] = (char)m_sSource[m_iPos + i];</span>
                 }
@@ -48,6 +53,7 @@ namespace DotNetDupe {
                 return nRead;
             }</span>
 
+            /// Find index of newline character in source string.
             static int FindNewlineIndex(const String&amp; sSource, int startPos, int length) {
                 for (int i = startPos; i &lt; length; ++i) {
                     char c = (char)sSource[i];
@@ -56,9 +62,12 @@ namespace DotNetDupe {
                 return -1;
             }
 
-<span style = "background-color:#dfd">            String StringReader::ReadLine() {
-                if (m_iPos &gt;= m_nLength) return String("");
-                int nlIdx = FindNewlineIndex(m_sSource, m_iPos, m_nLength);
+<span style = "background-color:#dfd">            String StringReader::ReadLine() {</span>
+                /// Guard: Check EOF.
+<span style = "background-color:#dfd">                if (m_iPos &gt;= m_nLength) return String("");</span>
+
+                /// Locate line terminator.
+<span style = "background-color:#dfd">                int nlIdx = FindNewlineIndex(m_sSource, m_iPos, m_nLength);
                 if (nlIdx != -1) {
                     String sResult = m_sSource.Substring(m_iPos, nlIdx - m_iPos);
                     char c = (char)m_sSource[nlIdx];
@@ -66,14 +75,19 @@ namespace DotNetDupe {
                     if (c == '\r' &amp;&amp; m_iPos &lt; m_nLength &amp;&amp; (char)m_sSource[m_iPos] == '\n') m_iPos++;
                     return sResult;</span>
                 }
+
+                /// No terminator found; return remainder of string.
 <span style = "background-color:#dfd">                String sResult = m_sSource.Substring(m_iPos, m_nLength - m_iPos);
                 m_iPos = m_nLength;
                 return sResult;
             }</span>
 
-<span style = "background-color:#dfd">            String StringReader::ReadToEnd() {
-                if (m_iPos &gt;= m_nLength) return String("");
-                String sResult = m_sSource.Substring(m_iPos, m_nLength - m_iPos);
+<span style = "background-color:#dfd">            String StringReader::ReadToEnd() {</span>
+                /// Guard: Check EOF.
+<span style = "background-color:#dfd">                if (m_iPos &gt;= m_nLength) return String("");</span>
+
+                /// Return slice from current pos to end.
+<span style = "background-color:#dfd">                String sResult = m_sSource.Substring(m_iPos, m_nLength - m_iPos);
                 m_iPos = m_nLength;
                 return sResult;
             }</span>

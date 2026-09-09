@@ -23,27 +23,31 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            CriticalSection::CriticalSection() : m_pImpl(new Impl()) {}</span>
 
-<span style = "background-color:#dfd">            CriticalSection::~CriticalSection() {
-                if (m_pImpl) {
+<span style = "background-color:#dfd">            CriticalSection::~CriticalSection() {</span>
+                /// Release internal mutex allocation.
+<span style = "background-color:#dfd">                if (m_pImpl) {
                     delete m_pImpl;
                     m_pImpl = nullptr;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void CriticalSection::Enter() {
-                if (m_pImpl) {
+<span style = "background-color:#dfd">            void CriticalSection::Enter() {</span>
+                /// Acquire recursive lock.
+<span style = "background-color:#dfd">                if (m_pImpl) {
                     m_pImpl-&gt;mtx.lock();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void CriticalSection::Leave() {
-                if (m_pImpl) {
+<span style = "background-color:#dfd">            void CriticalSection::Leave() {</span>
+                /// Release recursive lock.
+<span style = "background-color:#dfd">                if (m_pImpl) {
                     m_pImpl-&gt;mtx.unlock();</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            bool CriticalSection::TryEnter() {
-                return m_pImpl ? m_pImpl-&gt;mtx.try_lock() : false;
+<span style = "background-color:#dfd">            bool CriticalSection::TryEnter() {</span>
+                /// Attempt non-blocking recursive lock acquisition.
+<span style = "background-color:#dfd">                return m_pImpl ? m_pImpl-&gt;mtx.try_lock() : false;
             }</span>
         }
     }

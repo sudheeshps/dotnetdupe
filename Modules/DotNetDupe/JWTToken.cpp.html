@@ -24,8 +24,9 @@ namespace DotNetDupe {
             namespace Tokens {
                 namespace Jwt {
 
-<span style = "background-color:#dfd">                    static String Base64ToBase64Url(const String&amp; base64) {
-                        std::string s = base64.GetRawString();
+<span style = "background-color:#dfd">                    static String Base64ToBase64Url(const String&amp; base64) {</span>
+                        /// Step: Convert standard Base64 characters (+, /) to URL-safe characters (-, _) and strip padding.
+<span style = "background-color:#dfd">                        std::string s = base64.GetRawString();
                         for (char&amp; c : s) {
                             if (c == '+') c = '-';
                             else if (c == '/') c = '_';</span>
@@ -36,8 +37,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        return String(s.c_str());
                     }</span>
 
-<span style = "background-color:#dfd">                    static String Base64UrlToBase64(const String&amp; base64Url) {
-                        std::string s = base64Url.GetRawString();
+<span style = "background-color:#dfd">                    static String Base64UrlToBase64(const String&amp; base64Url) {</span>
+                        /// Step: Convert URL-safe Base64 characters back to standard Base64 with '=' padding.
+<span style = "background-color:#dfd">                        std::string s = base64Url.GetRawString();
                         for (char&amp; c : s) {
                             if (c == '-') c = '+';
                             else if (c == '_') c = '/';</span>
@@ -48,40 +50,48 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        return String(s.c_str());
                     }</span>
 
-<span style = "background-color:#dfd">                    JWTToken::JWTToken() {
-                        m_header.Add("alg", "HS256");
+<span style = "background-color:#dfd">                    JWTToken::JWTToken() {</span>
+                        /// Step: Initialize default JOSE header claims (HS256, JWT).
+<span style = "background-color:#dfd">                        m_header.Add("alg", "HS256");
                         m_header.Add("typ", "JWT");
                     }</span>
 
-<span style = "background-color:#fdd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() {
-                        return m_header;
+<span style = "background-color:#fdd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() {</span>
+                        /// Return: Mutable reference to header claims dictionary.
+<span style = "background-color:#fdd">                        return m_header;
                     }</span>
 
-<span style = "background-color:#fdd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() const {
-                        return m_header;
+<span style = "background-color:#fdd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetHeader() const {</span>
+                        /// Return: Const reference to header claims dictionary.
+<span style = "background-color:#fdd">                        return m_header;
                     }</span>
 
-<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() {
-                        return m_payload;
+<span style = "background-color:#dfd">                    Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() {</span>
+                        /// Return: Mutable reference to payload claims dictionary.
+<span style = "background-color:#dfd">                        return m_payload;
                     }</span>
 
-<span style = "background-color:#dfd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() const {
-                        return m_payload;
+<span style = "background-color:#dfd">                    const Collections::Generic::Dictionary&lt;String, String&gt;&amp; JWTToken::GetPayload() const {</span>
+                        /// Return: Const reference to payload claims dictionary.
+<span style = "background-color:#dfd">                        return m_payload;
                     }</span>
 
-<span style = "background-color:#fdd">                    String JWTToken::GetSignature() const {
-                        return m_signature;
+<span style = "background-color:#fdd">                    String JWTToken::GetSignature() const {</span>
+                        /// Return: Token cryptographic signature.
+<span style = "background-color:#fdd">                        return m_signature;
                     }</span>
 
-<span style = "background-color:#dfd">                    static String EncodeDictToBase64Url(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; dict) {
-                        String json = Text::Json::JsonSerializer::Serialize(dict);
+<span style = "background-color:#dfd">                    static String EncodeDictToBase64Url(const Collections::Generic::Dictionary&lt;String, String&gt;&amp; dict) {</span>
+                        /// Step: Serialize dictionary to JSON and encode as Base64URL string.
+<span style = "background-color:#dfd">                        String json = Text::Json::JsonSerializer::Serialize(dict);
                         Array&lt;char&gt; bytes(json.GetLength());
                         std::memcpy(bytes.GetData(), json.GetRawString(), json.GetLength());
                         return Base64ToBase64Url(Convert::ToBase64String(bytes));
                     }</span>
 
-<span style = "background-color:#dfd">                    static String ComputeJwtSignature(const String&amp; rawToken, const String&amp; secretKey) {
-                        Array&lt;char&gt; tokenBytes(rawToken.GetLength());
+<span style = "background-color:#dfd">                    static String ComputeJwtSignature(const String&amp; rawToken, const String&amp; secretKey) {</span>
+                        /// Step: Compute HMAC-SHA256 signature and return Base64URL encoded hash.
+<span style = "background-color:#dfd">                        Array&lt;char&gt; tokenBytes(rawToken.GetLength());
                         std::memcpy(tokenBytes.GetData(), rawToken.GetRawString(), rawToken.GetLength());
                         Array&lt;char&gt; keyBytes(secretKey.GetLength());
                         std::memcpy(keyBytes.GetData(), secretKey.GetRawString(), secretKey.GetLength());
@@ -89,25 +99,30 @@ namespace DotNetDupe {
                         return Base64ToBase64Url(Convert::ToBase64String(sigHash));
                     }</span>
 
-<span style = "background-color:#dfd">                    String JWTToken::CreateToken(const String&amp; secretKey) {
-                        String headerB64Url = EncodeDictToBase64Url(m_header);
+<span style = "background-color:#dfd">                    String JWTToken::CreateToken(const String&amp; secretKey) {</span>
+                        /// Step: Encode header, payload, and compute cryptographic signature.
+<span style = "background-color:#dfd">                        String headerB64Url = EncodeDictToBase64Url(m_header);
                         String payloadB64Url = EncodeDictToBase64Url(m_payload);
                         m_rawTokenWithoutSignature = headerB64Url + "." + payloadB64Url;
                         m_signature = ComputeJwtSignature(m_rawTokenWithoutSignature, secretKey);
                         return m_rawTokenWithoutSignature + "." + m_signature;
                     }</span>
 
-<span style = "background-color:#dfd">                    static Collections::Generic::Dictionary&lt;String, String&gt; DecodeBase64UrlToDict(const String&amp; b64url) {
-                        String b64 = Base64UrlToBase64(b64url);
+<span style = "background-color:#dfd">                    static Collections::Generic::Dictionary&lt;String, String&gt; DecodeBase64UrlToDict(const String&amp; b64url) {</span>
+                        /// Step: Decode Base64URL segment and deserialize JSON dictionary.
+<span style = "background-color:#dfd">                        String b64 = Base64UrlToBase64(b64url);
                         Array&lt;char&gt; bytes = Convert::FromBase64String(b64);
                         std::string jsonStr(bytes.GetData(), bytes.GetLength());
                         return Text::Json::JsonSerializer::Deserialize&lt;Collections::Generic::Dictionary&lt;String, String&gt;&gt;(String(jsonStr.c_str()));
                     }</span>
 
-<span style = "background-color:#dfd">                    SmartPointer&lt;JWTToken&gt; JWTToken::Parse(const String&amp; tokenStr) {
-                        Array&lt;String&gt; parts = tokenStr.Split('.');
-                        if (parts.GetLength() != 3) throw ArgumentException("Invalid JWT token format.");
-                        auto pToken = SmartPointer&lt;JWTToken&gt;::NewShared();
+<span style = "background-color:#dfd">                    SmartPointer&lt;JWTToken&gt; JWTToken::Parse(const String&amp; tokenStr) {</span>
+                        /// Guard: Validate token segment structure.
+<span style = "background-color:#dfd">                        Array&lt;String&gt; parts = tokenStr.Split('.');
+                        if (parts.GetLength() != 3) throw ArgumentException("Invalid JWT token format.");</span>
+
+                        /// Step: Deserialize header, payload, and store signature.
+<span style = "background-color:#dfd">                        auto pToken = SmartPointer&lt;JWTToken&gt;::NewShared();
                         pToken-&gt;m_header = DecodeBase64UrlToDict(parts[0]);
                         pToken-&gt;m_payload = DecodeBase64UrlToDict(parts[1]);
                         pToken-&gt;m_rawTokenWithoutSignature = parts[0] + "." + parts[1];
@@ -118,10 +133,12 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    bool JWTToken::Verify(const String&amp; secretKey) const {</span>
                         using namespace DotNetDupe::System::Security::Cryptography;
 
+                        /// Guard: Ensure token contains valid unsigned payload and signature.
 <span style = "background-color:#dfd">                        if (m_rawTokenWithoutSignature.IsEmpty() || m_signature.IsEmpty()) {</span>
 <span style = "background-color:#fdd">                            return false;</span>
                         }
 
+                        /// Step: Compute expected signature using secret key.
 <span style = "background-color:#dfd">                        Array&lt;char&gt; tokenBytes(m_rawTokenWithoutSignature.GetLength());
                         std::memcpy(tokenBytes.GetData(), m_rawTokenWithoutSignature.GetRawString(), m_rawTokenWithoutSignature.GetLength());</span>
 
@@ -132,6 +149,7 @@ namespace DotNetDupe {
                         String signatureB64 = Convert::ToBase64String(signatureHash);
                         String expectedSignature = Base64ToBase64Url(signatureB64);</span>
 
+                        /// Return: Verification comparison result.
 <span style = "background-color:#dfd">                        return m_signature == expectedSignature;
                     }</span>
 

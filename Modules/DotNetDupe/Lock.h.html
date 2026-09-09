@@ -9,6 +9,9 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file Lock.h
+/// \brief Provides an RAII-style scoped lock wrapper around synchronization primitives.
+
 #pragma once
 #include "Common.h"
 #include "System/Threading/CriticalSection.h"
@@ -20,10 +23,18 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
 
-            // Primary template
+            /// \class Lock
+            /// \brief Provides an RAII-style scoped lock wrapper around synchronization primitives.
+            ///
+            /// \details Acquires lock ownership on construction and releases ownership automatically
+            /// upon destruction (scope exit), preventing deadlocks caused by unhandled exceptions.
             template &lt;typename T&gt;
             class Lock {
             public:
+                /// \brief Acquires the synchronization lock on the specified object.
+                /// \param syncObject The synchronization object to lock.
+                /// \param millisecondsTimeout The timeout in milliseconds (-1 for infinite).
+                /// \param releaseCount The number of units to release on exit (-1 defaults to 1).
                 Lock(T&amp; syncObject, int millisecondsTimeout = -1, int releaseCount = -1) 
                     : _syncObject(syncObject), _releaseCount(releaseCount == -1 ? 1 : releaseCount) {
                     
@@ -33,33 +44,53 @@ namespace DotNetDupe {
                         _syncObject.WaitOne(millisecondsTimeout);
                     }
                 }
+
+                /// \brief Releases the synchronization lock upon destruction.
                 ~Lock() {
                     _syncObject.Release(_releaseCount);
                 }
+
             private:
                 T&amp; _syncObject;
                 int _releaseCount;
             };
 
-            // --- Specialization for CriticalSection ---
+            /// \brief Specialization of Lock for CriticalSection objects.
             template &lt;&gt;
             class Lock&lt;CriticalSection&gt; {
             public:
+                /// \brief Enters the critical section upon construction.
+                /// \param cs The CriticalSection to lock.
+                /// \param millisecondsTimeout Not used for CriticalSection.
+                /// \param releaseCount Not used for CriticalSection.
                 Lock(CriticalSection&amp; cs, int millisecondsTimeout = -1, int releaseCount = -1) 
                     : _cs(cs) {
                     _cs.Enter();
                 }
+
+                /// \brief Leaves the critical section upon destruction.
 <span style = "background-color:#dfd">                ~Lock() {
                     _cs.Leave();</span>
 <span style = "background-color:#fdd">                }</span>
+
             private:
                 CriticalSection&amp; _cs;
             };
 
-            // Type Aliases for convenience
+            /// \typedef CriticalSectionLock
+            /// \brief Convenience alias for Lock&lt;CriticalSection&gt;.
             typedef Lock&lt;CriticalSection&gt; CriticalSectionLock;
+
+            /// \typedef MutexLock
+            /// \brief Convenience alias for Lock&lt;Mutex&gt;.
             typedef Lock&lt;Mutex&gt; MutexLock;
+
+            /// \typedef SemaphoreLock
+            /// \brief Convenience alias for Lock&lt;Semaphore&gt;.
             typedef Lock&lt;Semaphore&gt; SemaphoreLock;
+
+            /// \typedef SemaphoreSlimLock
+            /// \brief Convenience alias for Lock&lt;SemaphoreSlim&gt;.
             typedef Lock&lt;SemaphoreSlim&gt; SemaphoreSlimLock;
         }
     }

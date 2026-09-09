@@ -9,6 +9,11 @@
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
+/// \file Action.h
+/// \brief Encapsulates a delegate method that has parameters and returns void.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include &lt;type_traits&gt;
 #include &lt;utility&gt;
@@ -16,6 +21,8 @@
 namespace DotNetDupe {
     namespace System {
         namespace Internal {
+            /// \struct IActionHolder
+            /// \brief Type-erased polymorphic interface for invocable action delegates.
             template &lt;typename... Args&gt;
             struct IActionHolder {
                 virtual ~IActionHolder() = default;
@@ -23,6 +30,8 @@ namespace DotNetDupe {
                 virtual IActionHolder* Clone() const = 0;
             };
 
+            /// \struct ActionHolder
+            /// \brief Concrete wrapper holding a callable functor or lambda instance.
             template &lt;typename F, typename... Args&gt;
             struct ActionHolder : IActionHolder&lt;Args...&gt; {
                 F m_fn;
@@ -39,26 +48,42 @@ namespace DotNetDupe {
             };
         }
 
-        // Primary Template
+        /// \class Action
+        /// \brief Encapsulates a method that has parameters and does not return a value.
+        ///
+        /// Modeled after .NET System.Action delegates. Provides type-erased functor wrapping
+        /// for free functions, member functions, functors, and C++ lambdas.
         template&lt;typename... Args&gt;
         class Action;
 
-        // Specialization: Parameterless Action (0 Arguments)
+        /// \class Action&lt;&gt;
+        /// \brief Encapsulates a parameterless method that does not return a value.
         template&lt;&gt;
         class Action&lt;&gt; {
         public:
+            /// \brief Default constructor creating an empty unassigned Action.
             Action() : m_pHolder(nullptr) {}
+
+            /// \brief Constructs an empty Action from nullptr.
             Action(decltype(nullptr)) : m_pHolder(nullptr) {}
             
+            /// \brief Constructs an Action wrapping the specified callable functor.
+            /// \tparam F The callable functor type.
+            /// \param func The callable object.
             template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;&gt;&gt;&gt;
             Action(F&amp;&amp; func) : m_pHolder(new Internal::ActionHolder&lt;std::decay_t&lt;F&gt;&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
 
+            /// \brief Copy constructor performing deep clone of target delegate.
+            /// \param other The Action to copy.
             Action(const Action&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
 
+            /// \brief Move constructor transferring delegate ownership.
+            /// \param other The Action to move from.
             Action(Action&amp;&amp; other) noexcept : m_pHolder(other.m_pHolder) {
                 other.m_pHolder = nullptr;
             }
 
+            /// \brief Copy assignment operator.
             Action&amp; operator=(const Action&amp; other) {
                 if (this != &amp;other) {
                     delete m_pHolder;
@@ -67,6 +92,7 @@ namespace DotNetDupe {
                 return *this;
             }
 
+            /// \brief Move assignment operator.
             Action&amp; operator=(Action&amp;&amp; other) noexcept {
                 if (this != &amp;other) {
                     delete m_pHolder;
@@ -76,41 +102,53 @@ namespace DotNetDupe {
                 return *this;
             }
 
+            /// \brief Destructor releasing target callable holder.
 <span style = "background-color:#dfd">            ~Action() {
                 delete m_pHolder;</span>
                 m_pHolder = nullptr;
 <span style = "background-color:#dfd">            }</span>
             
+            /// \brief Invokes the wrapped action delegate.
             void Invoke() const {
                 if (m_pHolder) m_pHolder-&gt;Invoke();
             }
             
+            /// \brief Function call operator executing Invoke.
             void operator()() const {
                 Invoke();
             }
             
+            /// \brief Boolean conversion testing whether a target delegate is bound.
             explicit operator bool() const { return m_pHolder != nullptr; }
 
         private:
             Internal::IActionHolder&lt;&gt;* m_pHolder;
         };
 
-        // Partial Specialization: Parameterized Action (1 or more arguments)
+        /// \class Action&lt;Arg1, Args...&gt;
+        /// \brief Encapsulates a method that has one or more parameters and does not return a value.
         template&lt;typename Arg1, typename... Args&gt;
         class Action&lt;Arg1, Args...&gt; {
         public:
+            /// \brief Default constructor.
             Action() : m_pHolder(nullptr) {}
+
+            /// \brief Nullptr constructor.
             Action(decltype(nullptr)) : m_pHolder(nullptr) {}
             
+            /// \brief Constructs an Action wrapping the specified callable object.
             template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, Arg1, Args...&gt;&gt;&gt;
             Action(F&amp;&amp; func) : m_pHolder(new Internal::ActionHolder&lt;std::decay_t&lt;F&gt;, Arg1, Args...&gt;(static_cast&lt;F&amp;&amp;&gt;(func))) {}
 
+            /// \brief Copy constructor.
             Action(const Action&amp; other) : m_pHolder(other.m_pHolder ? other.m_pHolder-&gt;Clone() : nullptr) {}
 
+            /// \brief Move constructor.
             Action(Action&amp;&amp; other) noexcept : m_pHolder(other.m_pHolder) {
                 other.m_pHolder = nullptr;
             }
 
+            /// \brief Copy assignment operator.
             Action&amp; operator=(const Action&amp; other) {
                 if (this != &amp;other) {
                     delete m_pHolder;
@@ -119,6 +157,7 @@ namespace DotNetDupe {
                 return *this;
             }
 
+            /// \brief Move assignment operator.
             Action&amp; operator=(Action&amp;&amp; other) noexcept {
                 if (this != &amp;other) {
                     delete m_pHolder;
@@ -128,24 +167,29 @@ namespace DotNetDupe {
                 return *this;
             }
 
+            /// \brief Destructor.
 <span style = "background-color:#dfd">            ~Action() {
                 delete m_pHolder;</span>
                 m_pHolder = nullptr;
 <span style = "background-color:#dfd">            }</span>
             
+            /// \brief Invokes the wrapped action delegate with arguments.
             void Invoke(Arg1 arg1, Args... args) const {
                 if (m_pHolder) m_pHolder-&gt;Invoke(arg1, args...);
             }
             
+            /// \brief Function call operator executing Invoke.
             void operator()(Arg1 arg1, Args... args) const {
                 Invoke(arg1, args...);
             }
             
+            /// \brief Boolean conversion operator.
             explicit operator bool() const { return m_pHolder != nullptr; }
 
         private:
             Internal::IActionHolder&lt;Arg1, Args...&gt;* m_pHolder;
         };
+
     }
 }</pre>
         <hr />

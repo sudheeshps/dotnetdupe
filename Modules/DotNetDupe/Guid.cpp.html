@@ -36,11 +36,14 @@ namespace DotNetDupe {
             }
 <span style = "background-color:#fdd">        }</span>
 
-<span style = "background-color:#dfd">        Guid::Guid(const String&amp; g) {
-            String s = g.Replace("{", "").Replace("}", "").Replace("-", "");</span>
+<span style = "background-color:#dfd">        Guid::Guid(const String&amp; g) {</span>
+            /// Normalize string by stripping enclosing braces and hyphens.
+<span style = "background-color:#dfd">            String s = g.Replace("{", "").Replace("}", "").Replace("-", "");</span>
 
+            /// Guard: Validate normalized hex string contains exactly 32 hexadecimal characters.
 <span style = "background-color:#dfd">            if (s.GetLength() != 32) throw FormatException("Guid string should only contain 32 hexadecimal characters.");</span>
 
+            /// Parse 16 two-character hexadecimal octets into internal byte array.
 <span style = "background-color:#dfd">            for (size_t i = 0; i &lt; 16; ++i) {</span>
                 unsigned int byteVal;
 <span style = "background-color:#dfd">                String sub = s.Substring(static_cast&lt;int&gt;(i * 2), 2);</span>
@@ -55,15 +58,18 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#dfd">        Guid Guid::NewGuid() {</span>
-            // Very simple random Guid for now
+            /// Generate 16 pseudo-random octets.
 <span style = "background-color:#dfd">            Array&lt;uint8_t&gt; data(16);
             for (size_t i = 0; i &lt; 16; ++i) {
                 data[static_cast&lt;int&gt;(i)] = static_cast&lt;uint8_t&gt;(rand() % 256);</span>
             }
-            // Set version 4 and variant
+
+            /// Set Version 4 bits (0100b) in byte 6 and RFC 4122 variant bits (10b) in byte 8.
 <span style = "background-color:#dfd">            data[6] = (data[6] &amp; 0x0F) | 0x40;
-            data[8] = (data[8] &amp; 0x3F) | 0x80;
-            return Guid(data);
+            data[8] = (data[8] &amp; 0x3F) | 0x80;</span>
+
+            /// Return constructed Version 4 Guid instance.
+<span style = "background-color:#dfd">            return Guid(data);
         }</span>
 
 <span style = "background-color:#fdd">        Array&lt;uint8_t&gt; Guid::ToByteArray() const {

@@ -34,8 +34,9 @@ namespace DotNetDupe {
                 static std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; s_pConsoleLoggerCache;
                 static std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; s_pFileLoggerCache;</span>
 
-<span style = "background-color:#dfd">                void EnsureFactoryInitializedLocked() {
-                    if (!s_pFactory) {
+<span style = "background-color:#dfd">                void EnsureFactoryInitializedLocked() {</span>
+                    /// Lazy-initialize global logger factory and default providers.
+<span style = "background-color:#dfd">                    if (!s_pFactory) {
                         s_pFactory = DotNetDupe::System::SmartPointer&lt;LoggerFactory&gt;::NewShared();
                         s_pConsoleProvider = DotNetDupe::System::SmartPointer&lt;ConsoleLoggerProvider&gt;::NewShared(s_globalConfig);
                         s_pFileProvider = DotNetDupe::System::SmartPointer&lt;FileLoggerProvider&gt;::NewShared(s_globalConfig);
@@ -45,58 +46,69 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
             }
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetLogger(const DotNetDupe::System::String&amp; sCategoryName) {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
-                std::string key = sCategoryName.GetRawString();</span>
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetLogger(const DotNetDupe::System::String&amp; sCategoryName) {</span>
+                /// Synchronize global cache lookup.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string sKey = sCategoryName.GetRawString();</span>
 
-<span style = "background-color:#dfd">                auto it = s_pLoggerCache.find(key);
+                /// Check if logger is already cached.
+<span style = "background-color:#dfd">                auto it = s_pLoggerCache.find(sKey);
                 if (it != s_pLoggerCache.end()) {
                     return it-&gt;second;</span>
                 }
 
+                /// Initialize factory and instantiate category logger.
 <span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
                 auto pLogger = s_pFactory-&gt;CreateLogger(sCategoryName);
-                s_pLoggerCache[key] = pLogger;
+                s_pLoggerCache[sKey] = pLogger;
                 return pLogger;
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetConsoleLogger(const DotNetDupe::System::String&amp; sCategoryName) {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
-                std::string key = sCategoryName.GetRawString();</span>
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetConsoleLogger(const DotNetDupe::System::String&amp; sCategoryName) {</span>
+                /// Synchronize console cache lookup.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string sKey = sCategoryName.GetRawString();</span>
 
-<span style = "background-color:#dfd">                auto it = s_pConsoleLoggerCache.find(key);
+                /// Check if console logger is already cached.
+<span style = "background-color:#dfd">                auto it = s_pConsoleLoggerCache.find(sKey);
                 if (it != s_pConsoleLoggerCache.end()) {</span>
 <span style = "background-color:#fdd">                    return it-&gt;second;</span>
                 }
 
+                /// Initialize provider and instantiate console logger.
 <span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
                 auto pLogger = s_pConsoleProvider-&gt;CreateLogger(sCategoryName);
-                s_pConsoleLoggerCache[key] = pLogger;
+                s_pConsoleLoggerCache[sKey] = pLogger;
                 return pLogger;
             }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetFileLogger(const DotNetDupe::System::String&amp; sCategoryName) {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
-                std::string key = sCategoryName.GetRawString();</span>
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetFileLogger(const DotNetDupe::System::String&amp; sCategoryName) {</span>
+                /// Synchronize file cache lookup.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string sKey = sCategoryName.GetRawString();</span>
 
-<span style = "background-color:#dfd">                auto it = s_pFileLoggerCache.find(key);
+                /// Check if file logger is already cached.
+<span style = "background-color:#dfd">                auto it = s_pFileLoggerCache.find(sKey);
                 if (it != s_pFileLoggerCache.end()) {</span>
 <span style = "background-color:#fdd">                    return it-&gt;second;</span>
                 }
 
+                /// Initialize provider and instantiate file logger.
 <span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
                 auto pLogger = s_pFileProvider-&gt;CreateLogger(sCategoryName);
-                s_pFileLoggerCache[key] = pLogger;
+                s_pFileLoggerCache[sKey] = pLogger;
                 return pLogger;
             }</span>
 
-<span style = "background-color:#dfd">            void LogManager::Configure(const LoggerConfiguration&amp; config) {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+<span style = "background-color:#dfd">            void LogManager::Configure(const LoggerConfiguration&amp; config) {</span>
+                /// Synchronize global reconfiguration.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
                 s_globalConfig = config;
                 s_pLoggerCache.clear();
                 s_pConsoleLoggerCache.clear();
                 s_pFileLoggerCache.clear();</span>
                 
+                /// Re-initialize factory and default providers with new configuration.
 <span style = "background-color:#dfd">                s_pFactory = DotNetDupe::System::SmartPointer&lt;LoggerFactory&gt;::NewShared();
                 s_pConsoleProvider = DotNetDupe::System::SmartPointer&lt;ConsoleLoggerProvider&gt;::NewShared(s_globalConfig);
                 s_pFileProvider = DotNetDupe::System::SmartPointer&lt;FileLoggerProvider&gt;::NewShared(s_globalConfig);
@@ -104,20 +116,26 @@ namespace DotNetDupe {
                 s_pFactory-&gt;AddProvider(s_pFileProvider);
             }</span>
 
-<span style = "background-color:#fdd">            const LoggerConfiguration&amp; LogManager::GetConfiguration() {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+<span style = "background-color:#fdd">            const LoggerConfiguration&amp; LogManager::GetConfiguration() {</span>
+                /// Return active global configuration under lock.
+<span style = "background-color:#fdd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
                 return s_globalConfig;
             }</span>
 
-<span style = "background-color:#fdd">            void LogManager::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+<span style = "background-color:#fdd">            void LogManager::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {</span>
+                /// Guard: Ignore null provider.
+<span style = "background-color:#fdd">                if (pProvider.IsNull()) return;</span>
+
+                /// Synchronize provider addition and invalidate cache.
+<span style = "background-color:#fdd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
                 EnsureFactoryInitializedLocked();
                 s_pFactory-&gt;AddProvider(pProvider);
                 s_pLoggerCache.clear();
             }</span>
 
-<span style = "background-color:#dfd">            void LogManager::Reset() {
-                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+<span style = "background-color:#dfd">            void LogManager::Reset() {</span>
+                /// Synchronize reset and purge all cached loggers and providers.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
                 s_globalConfig = LoggerConfiguration();
                 s_pLoggerCache.clear();
                 s_pConsoleLoggerCache.clear();

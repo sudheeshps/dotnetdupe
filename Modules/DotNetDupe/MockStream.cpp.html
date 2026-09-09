@@ -31,8 +31,9 @@ namespace DotNetDupe {
             };
 
             MockStream::MockStream(bool bCanRead, bool bCanWrite, bool bCanSeek)
-<span style = "background-color:#dfd">                : m_pImpl(new Impl()) {
-                m_pImpl-&gt;m_lPosition = 0;
+<span style = "background-color:#dfd">                : m_pImpl(new Impl()) {</span>
+                /// Step: Initialize mock stream state and capabilities.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_lPosition = 0;
                 m_pImpl-&gt;m_bCanRead = bCanRead;
                 m_pImpl-&gt;m_bCanWrite = bCanWrite;</span>
                 m_pImpl-&gt;m_bCanSeek = bCanSeek;
@@ -41,50 +42,95 @@ namespace DotNetDupe {
                 m_pImpl-&gt;m_bIsDisposed = false;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            MockStream::~MockStream() {
-                delete m_pImpl;
+<span style = "background-color:#dfd">            MockStream::~MockStream() {</span>
+                /// Step: Release allocated implementation memory.
+<span style = "background-color:#dfd">                delete m_pImpl;
             }</span>
 
-<span style = "background-color:#dfd">            void MockStream::SetThrowOnRead(bool bThrow) { m_pImpl-&gt;m_bThrowOnRead = bThrow; }
-            void MockStream::SetThrowOnWrite(bool bThrow) { m_pImpl-&gt;m_bThrowOnWrite = bThrow; }</span>
-<span style = "background-color:#fdd">            void MockStream::SetCanRead(bool bCanRead) { m_pImpl-&gt;m_bCanRead = bCanRead; }
-            void MockStream::SetCanWrite(bool bCanWrite) { m_pImpl-&gt;m_bCanWrite = bCanWrite; }
-            void MockStream::SetCanSeek(bool bCanSeek) { m_pImpl-&gt;m_bCanSeek = bCanSeek; }</span>
-<span style = "background-color:#dfd">            bool MockStream::IsDisposed() const { return m_pImpl-&gt;m_bIsDisposed; }</span>
-
-<span style = "background-color:#dfd">            bool MockStream::CanRead() const { return m_pImpl-&gt;m_bCanRead &amp;&amp; !m_pImpl-&gt;m_bIsDisposed; }
-            bool MockStream::CanSeek() const { return m_pImpl-&gt;m_bCanSeek &amp;&amp; !m_pImpl-&gt;m_bIsDisposed; }
-            bool MockStream::CanWrite() const { return m_pImpl-&gt;m_bCanWrite &amp;&amp; !m_pImpl-&gt;m_bIsDisposed; }</span>
-
-<span style = "background-color:#dfd">            long MockStream::GetLength() const {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
-                return static_cast&lt;long&gt;(m_pImpl-&gt;m_buffer.size());
+<span style = "background-color:#dfd">            void MockStream::SetThrowOnRead(bool bThrow) {</span>
+                /// Step: Configure read fault injection.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_bThrowOnRead = bThrow;
             }</span>
 
-<span style = "background-color:#dfd">            long MockStream::GetPosition() const {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");</span>
+<span style = "background-color:#dfd">            void MockStream::SetThrowOnWrite(bool bThrow) {</span>
+                /// Step: Configure write fault injection.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_bThrowOnWrite = bThrow;
+            }</span>
+
+<span style = "background-color:#fdd">            void MockStream::SetCanRead(bool bCanRead) {</span>
+                /// Step: Set read capability flag.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_bCanRead = bCanRead;
+            }</span>
+
+<span style = "background-color:#fdd">            void MockStream::SetCanWrite(bool bCanWrite) {</span>
+                /// Step: Set write capability flag.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_bCanWrite = bCanWrite;
+            }</span>
+
+<span style = "background-color:#fdd">            void MockStream::SetCanSeek(bool bCanSeek) {</span>
+                /// Step: Set seek capability flag.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_bCanSeek = bCanSeek;
+            }</span>
+
+<span style = "background-color:#dfd">            bool MockStream::IsDisposed() const {</span>
+                /// Return: Stream disposal state.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;m_bIsDisposed;
+            }</span>
+
+<span style = "background-color:#dfd">            bool MockStream::CanRead() const {</span>
+                /// Return: True if readable and not disposed.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;m_bCanRead &amp;&amp; !m_pImpl-&gt;m_bIsDisposed;
+            }</span>
+
+<span style = "background-color:#dfd">            bool MockStream::CanSeek() const {</span>
+                /// Return: True if seekable and not disposed.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;m_bCanSeek &amp;&amp; !m_pImpl-&gt;m_bIsDisposed;
+            }</span>
+
+<span style = "background-color:#dfd">            bool MockStream::CanWrite() const {</span>
+                /// Return: True if writable and not disposed.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;m_bCanWrite &amp;&amp; !m_pImpl-&gt;m_bIsDisposed;
+            }</span>
+
+<span style = "background-color:#dfd">            long MockStream::GetLength() const {</span>
+                /// Guard: Check if disposed.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");</span>
+                /// Return: Total buffer length.
+<span style = "background-color:#dfd">                return static_cast&lt;long&gt;(m_pImpl-&gt;m_buffer.size());
+            }</span>
+
+<span style = "background-color:#dfd">            long MockStream::GetPosition() const {</span>
+                /// Guard: Check if disposed.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");</span>
+                /// Return: Current stream position.
 <span style = "background-color:#fdd">                return m_pImpl-&gt;m_lPosition;
             }</span>
 
-<span style = "background-color:#dfd">            void MockStream::SetPosition(long lValue) {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
-                if (!m_pImpl-&gt;m_bCanSeek) throw IOException("Stream does not support seeking.");
-                m_pImpl-&gt;m_lPosition = lValue;
+<span style = "background-color:#dfd">            void MockStream::SetPosition(long lValue) {</span>
+                /// Guard: Check if disposed or seek not supported.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+                if (!m_pImpl-&gt;m_bCanSeek) throw IOException("Stream does not support seeking.");</span>
+                /// Step: Update stream position.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_lPosition = lValue;
             }</span>
 
-<span style = "background-color:#fdd">            void MockStream::Flush() {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+<span style = "background-color:#fdd">            void MockStream::Flush() {</span>
+                /// Guard: Check if disposed.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
             }</span>
 
-<span style = "background-color:#dfd">            int MockStream::Read(char* pBuffer, int iOffset, int iCount) {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+<span style = "background-color:#dfd">            int MockStream::Read(char* pBuffer, int iOffset, int iCount) {</span>
+                /// Guard: Validate state, capabilities, and parameters.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
                 if (!m_pImpl-&gt;m_bCanRead) throw IOException("Stream does not support reading.");
                 if (m_pImpl-&gt;m_bThrowOnRead) throw IOException("Simulated read fault.");
                 if (!pBuffer || iOffset &lt; 0 || iCount &lt; 0) return 0;</span>
 
+                /// Step: Calculate available bytes.
 <span style = "background-color:#dfd">                long lAvailable = static_cast&lt;long&gt;(m_pImpl-&gt;m_buffer.size()) - m_pImpl-&gt;m_lPosition;
                 if (lAvailable &lt;= 0) return 0;</span>
 
+                /// Step: Copy bytes into destination buffer.
 <span style = "background-color:#dfd">                int iToRead = static_cast&lt;int&gt;(lAvailable &lt; iCount ? lAvailable : iCount);
                 for (int i = 0; i &lt; iToRead; ++i) {</span>
 <span style = "background-color:#fdd">                    pBuffer[iOffset + i] = m_pImpl-&gt;m_buffer[m_pImpl-&gt;m_lPosition + i];</span>
@@ -93,45 +139,54 @@ namespace DotNetDupe {
                 return iToRead;
             }</span>
 
-<span style = "background-color:#fdd">            long MockStream::Seek(long lOffset, int iOrigin) {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+<span style = "background-color:#fdd">            long MockStream::Seek(long lOffset, int iOrigin) {</span>
+                /// Guard: Validate state and seek capability.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
                 if (!m_pImpl-&gt;m_bCanSeek) throw IOException("Stream does not support seeking.");</span>
 
+                /// Step: Calculate target position relative to origin.
 <span style = "background-color:#fdd">                long lNewPos = m_pImpl-&gt;m_lPosition;
                 if (iOrigin == 0) lNewPos = lOffset;
                 else if (iOrigin == 1) lNewPos += lOffset;
                 else if (iOrigin == 2) lNewPos = static_cast&lt;long&gt;(m_pImpl-&gt;m_buffer.size()) + lOffset;</span>
 
+                /// Step: Clamp and assign new position.
                 if (lNewPos &lt; 0) lNewPos = 0;
 <span style = "background-color:#fdd">                m_pImpl-&gt;m_lPosition = lNewPos;
                 return m_pImpl-&gt;m_lPosition;
             }</span>
 
-<span style = "background-color:#fdd">            void MockStream::SetLength(long lValue) {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
-                if (!m_pImpl-&gt;m_bCanSeek || !m_pImpl-&gt;m_bCanWrite) throw IOException("Stream does not support seeking or writing.");
-                m_pImpl-&gt;m_buffer.resize(static_cast&lt;size_t&gt;(lValue), 0);
+<span style = "background-color:#fdd">            void MockStream::SetLength(long lValue) {</span>
+                /// Guard: Validate state and seek/write capabilities.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+                if (!m_pImpl-&gt;m_bCanSeek || !m_pImpl-&gt;m_bCanWrite) throw IOException("Stream does not support seeking or writing.");</span>
+                /// Step: Resize underlying storage buffer.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_buffer.resize(static_cast&lt;size_t&gt;(lValue), 0);
             }</span>
 
-<span style = "background-color:#dfd">            void MockStream::Write(const char* pBuffer, int iOffset, int iCount) {
-                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
+<span style = "background-color:#dfd">            void MockStream::Write(const char* pBuffer, int iOffset, int iCount) {</span>
+                /// Guard: Validate state, capabilities, and parameters.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_bIsDisposed) throw IOException("Stream is closed.");
                 if (!m_pImpl-&gt;m_bCanWrite) throw IOException("Stream does not support writing.");
                 if (m_pImpl-&gt;m_bThrowOnWrite) throw IOException("Simulated write fault.");
                 if (!pBuffer || iOffset &lt; 0 || iCount &lt;= 0) return;</span>
 
+                /// Step: Expand buffer if needed to accommodate data.
 <span style = "background-color:#dfd">                size_t uRequiredSize = static_cast&lt;size_t&gt;(m_pImpl-&gt;m_lPosition + iCount);
                 if (m_pImpl-&gt;m_buffer.size() &lt; uRequiredSize) {
                     m_pImpl-&gt;m_buffer.resize(uRequiredSize, 0);</span>
                 }
 
+                /// Step: Copy bytes into internal storage buffer.
 <span style = "background-color:#dfd">                for (int i = 0; i &lt; iCount; ++i) {
                     m_pImpl-&gt;m_buffer[m_pImpl-&gt;m_lPosition + i] = pBuffer[iOffset + i];</span>
                 }
 <span style = "background-color:#dfd">                m_pImpl-&gt;m_lPosition += iCount;
             }</span>
 
-<span style = "background-color:#dfd">            void MockStream::Dispose() {
-                m_pImpl-&gt;m_bIsDisposed = true;
+<span style = "background-color:#dfd">            void MockStream::Dispose() {</span>
+                /// Step: Mark stream instance as disposed.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_bIsDisposed = true;
             }</span>
 
         }

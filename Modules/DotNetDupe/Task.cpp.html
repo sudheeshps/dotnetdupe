@@ -28,14 +28,17 @@ namespace DotNetDupe {
                 static CriticalSection s_csActiveTasks;</span>
 
                 Task::Task(Action&lt;&gt; objAction)
-<span style = "background-color:#dfd">                    : m_objAction(objAction), m_eStatus(TaskStatus::Created) {
-                    m_pCompletionEvent = SmartPointer&lt;ManualResetEvent&gt;::NewShared(false);
+<span style = "background-color:#dfd">                    : m_objAction(objAction), m_eStatus(TaskStatus::Created) {</span>
+                    /// Step: Initialize task completion manual reset event.
+<span style = "background-color:#dfd">                    m_pCompletionEvent = SmartPointer&lt;ManualResetEvent&gt;::NewShared(false);
                 }</span>
 
-<span style = "background-color:#fdd">                Task::~Task() {
-                }</span>
+<span style = "background-color:#fdd">                Task::~Task() {</span>
+                    /// Step: Release task resources.
+<span style = "background-color:#fdd">                }</span>
 
 <span style = "background-color:#dfd">                void Task::Start() {</span>
+                    /// Guard: Ensure task has not already started.
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         if (m_eStatus != TaskStatus::Created) {</span>
@@ -44,14 +47,17 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        m_eStatus = TaskStatus::WaitingToRun;
                     }</span>
                     
+                    /// Step: Queue task to ThreadPool worker queue.
 <span style = "background-color:#dfd">                    ThreadPool::QueueUserWorkItem(&amp;Task::ThreadPoolCallback, this);
                 }</span>
 
-<span style = "background-color:#dfd">                void Task::Wait() {
-                    m_pCompletionEvent-&gt;WaitOne();</span>
+<span style = "background-color:#dfd">                void Task::Wait() {</span>
+                    /// Step: Block calling thread until task signals completion.
+<span style = "background-color:#dfd">                    m_pCompletionEvent-&gt;WaitOne();</span>
                 }
 
 <span style = "background-color:#dfd">                bool Task::Wait(int iMillisecondsTimeout) {</span>
+                    /// Step: Wait for completion with timeout.
                     try {
 <span style = "background-color:#dfd">                        return m_pCompletionEvent-&gt;WaitOne(iMillisecondsTimeout);
                     } catch (const TimeoutException&amp;) {
@@ -59,36 +65,42 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                TaskStatus Task::GetStatus() const {
-                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
+<span style = "background-color:#dfd">                TaskStatus Task::GetStatus() const {</span>
+                    /// Return: Thread-safe read of task execution status.
+<span style = "background-color:#dfd">                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus;
                 }</span>
 
-<span style = "background-color:#dfd">                bool Task::GetIsCompleted() const {
-                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
+<span style = "background-color:#dfd">                bool Task::GetIsCompleted() const {</span>
+                    /// Return: True if task has reached a terminal execution status.
+<span style = "background-color:#dfd">                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::RanToCompletion || </span>
                            m_eStatus == TaskStatus::Faulted || 
                            m_eStatus == TaskStatus::Canceled;
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                bool Task::GetIsFaulted() const {
-                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
+<span style = "background-color:#dfd">                bool Task::GetIsFaulted() const {</span>
+                    /// Return: True if task terminated with an unhandled exception.
+<span style = "background-color:#dfd">                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::Faulted;
                 }</span>
 
-<span style = "background-color:#fdd">                bool Task::GetIsCanceled() const {
-                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
+<span style = "background-color:#fdd">                bool Task::GetIsCanceled() const {</span>
+                    /// Return: True if task was canceled before or during execution.
+<span style = "background-color:#fdd">                    Lock&lt;CriticalSection&gt; lock(const_cast&lt;CriticalSection&amp;&gt;(m_csSync));
                     return m_eStatus == TaskStatus::Canceled;
                 }</span>
 
-<span style = "background-color:#dfd">                SmartPointer&lt;Task&gt; Task::Run(Action&lt;&gt; objAction) {
-                    SmartPointer&lt;Task&gt; pTask = SmartPointer&lt;Task&gt;::NewShared(objAction);
+<span style = "background-color:#dfd">                SmartPointer&lt;Task&gt; Task::Run(Action&lt;&gt; objAction) {</span>
+                    /// Step: Instantiate, retain, start, and return asynchronous task.
+<span style = "background-color:#dfd">                    SmartPointer&lt;Task&gt; pTask = SmartPointer&lt;Task&gt;::NewShared(objAction);
                     RetainTask(pTask);
                     pTask-&gt;Start();
                     return pTask;
                 }</span>
 
 <span style = "background-color:#dfd">                void Task::Execute() {</span>
+                    /// Step: Mark task running and execute user action within exception guard.
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_eStatus = TaskStatus::Running;
@@ -100,16 +112,18 @@ namespace DotNetDupe {
                     } catch (...) {
                         Lock&lt;CriticalSection&gt; lock(m_csSync);
                         m_eStatus = TaskStatus::Faulted;
-                    }
-                    m_pCompletionEvent-&gt;Set();
+                    }</span>
+                    /// Step: Signal completion event and remove from active list.
+<span style = "background-color:#dfd">                    m_pCompletionEvent-&gt;Set();
                     ReleaseTask(this);
                 }</span>
 
 <span style = "background-color:#dfd">                void Task::ThreadPoolCallback(Object* pState) {</span>
+                    /// Guard: Check valid state pointer.
                     Task* pTask = static_cast&lt;Task*&gt;(pState);
 <span style = "background-color:#dfd">                    if (pTask == nullptr) return;</span>
 
-                    // Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute()
+                    /// Step: Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute.
 <span style = "background-color:#dfd">                    SmartPointer&lt;Task&gt; spSelf(nullptr);</span>
                     {
 <span style = "background-color:#dfd">                        Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
@@ -121,17 +135,20 @@ namespace DotNetDupe {
                         }
 <span style = "background-color:#fdd">                    }</span>
 
+                    /// Step: Dispatch execution on worker thread.
 <span style = "background-color:#dfd">                    if (!spSelf.IsNull()) {
                         spSelf-&gt;Execute();</span>
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {
-                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
+<span style = "background-color:#dfd">                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {</span>
+                    /// Step: Add task to global active task retention registry.
+<span style = "background-color:#dfd">                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
                     s_pvActiveTasks.Add(pTask);
                 }</span>
 
                 void Task::ReleaseTask(Task* pTask) {
+                    /// Step: Remove task from global active task retention registry.
                     Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
                     for (int i = 0; i &lt; s_pvActiveTasks.GetCount(); ++i) {
                         if (s_pvActiveTasks[i].Get() == pTask) {

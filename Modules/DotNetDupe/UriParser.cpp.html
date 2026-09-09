@@ -20,18 +20,23 @@ namespace DotNetDupe {
     namespace System {
 <span style = "background-color:#dfd">        std::map&lt;String, std::pair&lt;UriParser*, int&gt;&gt; UriParser::_parsers;</span>
 
-<span style = "background-color:#dfd">        UriParser::UriParser() { }</span>
+<span style = "background-color:#dfd">        UriParser::UriParser() {</span>
+            /// Default initialization of base URI parser.
+<span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        void UriParser::Register(UriParser* uriParser, const String&amp; schemeName, int defaultPort) {
-            _parsers [schemeName] = std::make_pair(uriParser, defaultPort);
+<span style = "background-color:#dfd">        void UriParser::Register(UriParser* uriParser, const String&amp; schemeName, int defaultPort) {</span>
+            /// Associate parser instance and default port with given scheme name.
+<span style = "background-color:#dfd">            _parsers [schemeName] = std::make_pair(uriParser, defaultPort);
         }</span>
 
-<span style = "background-color:#dfd">        bool UriParser::IsKnownScheme(const String&amp; schemeName) {
-            return _parsers.find(schemeName) != _parsers.end();
+<span style = "background-color:#dfd">        bool UriParser::IsKnownScheme(const String&amp; schemeName) {</span>
+            /// Check if scheme is registered in parser map.
+<span style = "background-color:#dfd">            return _parsers.find(schemeName) != _parsers.end();
         }</span>
 
-<span style = "background-color:#fdd">        UriParser* UriParser::GetParser(const String&amp; schemeName) {
-            auto it = _parsers.find(schemeName);
+<span style = "background-color:#fdd">        UriParser* UriParser::GetParser(const String&amp; schemeName) {</span>
+            /// Step: Search for registered parser matching scheme name.
+<span style = "background-color:#fdd">            auto it = _parsers.find(schemeName);
             if (it != _parsers.end()) {
                 return it-&gt;second.first;</span>
             }
@@ -39,12 +44,13 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#fdd">        String UriParser::GetComponents(const Uri&amp; uri, UriComponents components, UriFormat format) {</span>
-            // This is a base implementation that can be overridden.
-            // It's not fully featured, but provides a starting point.
+            /// Base implementation: return absolute URI string.
 <span style = "background-color:#fdd">            return uri.GetAbsoluteUri();
         }</span>
 
-<span style = "background-color:#fdd">        GenericUriParser::GenericUriParser() : UriParser() { }</span>
+<span style = "background-color:#fdd">        GenericUriParser::GenericUriParser() : UriParser() {</span>
+            /// Default constructor initializing generic URI parser.
+<span style = "background-color:#fdd">        }</span>
     }
 }</pre>
         <hr />

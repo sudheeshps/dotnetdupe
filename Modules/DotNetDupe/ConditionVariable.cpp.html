@@ -42,26 +42,32 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void ConditionVariable::Wait(CriticalSection&amp; cs) {</span>
+                /// Wait on condition variable using CriticalSection lock adapter.
                 CSLockAdapter adapter{cs};
 <span style = "background-color:#dfd">                m_pImpl-&gt;cv.wait(adapter);
             }</span>
 
-<span style = "background-color:#fdd">            bool ConditionVariable::Wait(CriticalSection&amp; cs, int millisecondsTimeout) {
-                if (millisecondsTimeout &lt; 0) {
+<span style = "background-color:#fdd">            bool ConditionVariable::Wait(CriticalSection&amp; cs, int millisecondsTimeout) {</span>
+                /// Guard: Handle negative timeout as indefinite wait.
+<span style = "background-color:#fdd">                if (millisecondsTimeout &lt; 0) {
                     Wait(cs);
                     return true;</span>
                 }
+
+                /// Timed wait via condition variable any.
                 CSLockAdapter adapter{cs};
 <span style = "background-color:#fdd">                auto status = m_pImpl-&gt;cv.wait_for(adapter, std::chrono::milliseconds(millisecondsTimeout));
                 return status == std::cv_status::no_timeout;
             }</span>
 
-<span style = "background-color:#dfd">            void ConditionVariable::Pulse() {
-                m_pImpl-&gt;cv.notify_one();
+<span style = "background-color:#dfd">            void ConditionVariable::Pulse() {</span>
+                /// Wake single waiting thread.
+<span style = "background-color:#dfd">                m_pImpl-&gt;cv.notify_one();
             }</span>
 
-<span style = "background-color:#dfd">            void ConditionVariable::PulseAll() {
-                m_pImpl-&gt;cv.notify_all();
+<span style = "background-color:#dfd">            void ConditionVariable::PulseAll() {</span>
+                /// Wake all waiting threads.
+<span style = "background-color:#dfd">                m_pImpl-&gt;cv.notify_all();
             }</span>
         }
     }

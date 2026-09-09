@@ -32,52 +32,67 @@ namespace DotNetDupe {
                     m_pClientSocket-&gt;Bind(ip, port);
                 }</span>
 
-<span style = "background-color:#dfd">                UdpClient::~UdpClient() {
-                    Close();
+<span style = "background-color:#dfd">                UdpClient::~UdpClient() {</span>
+                    /// Close socket on destruction.
+<span style = "background-color:#dfd">                    Close();
                 }</span>
 
                 UdpClient::UdpClient(UdpClient&amp;&amp; other) noexcept
 <span style = "background-color:#fdd">                    : m_pClientSocket(std::move(other.m_pClientSocket)) {
                 }</span>
 
-<span style = "background-color:#fdd">                UdpClient&amp; UdpClient::operator=(UdpClient&amp;&amp; other) noexcept {
-                    if (this != &amp;other) {
+<span style = "background-color:#fdd">                UdpClient&amp; UdpClient::operator=(UdpClient&amp;&amp; other) noexcept {</span>
+                    /// Guard: Check self-assignment.
+<span style = "background-color:#fdd">                    if (this != &amp;other) {
                         Close();
                         m_pClientSocket = std::move(other.m_pClientSocket);</span>
                     }
                     return *this;
 <span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#fdd">                void UdpClient::Connect(const String&amp; ip, int port) {
-                    if (m_pClientSocket.IsNull()) {
+<span style = "background-color:#fdd">                void UdpClient::Connect(const String&amp; ip, int port) {</span>
+                    /// Lazily instantiate socket if null.
+<span style = "background-color:#fdd">                    if (m_pClientSocket.IsNull()) {
                         m_pClientSocket.Attach(new Socket(AddressFamily::InterNetwork, SocketType::Dgram, ProtocolType::Udp), true);</span>
                     }
+
+                    /// Associate default destination endpoint.
 <span style = "background-color:#fdd">                    m_pClientSocket-&gt;Connect(ip, port);
                 }</span>
 
-<span style = "background-color:#fdd">                int UdpClient::Send(const char* buffer, int offset, int size) {
-                    if (m_pClientSocket.IsNull()) {
+<span style = "background-color:#fdd">                int UdpClient::Send(const char* buffer, int offset, int size) {</span>
+                    /// Guard: Verify open socket.
+<span style = "background-color:#fdd">                    if (m_pClientSocket.IsNull()) {
                         throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
+
+                    /// Send datagram to default remote host.
 <span style = "background-color:#fdd">                    return m_pClientSocket-&gt;Send(buffer, offset, size);
                 }</span>
 
-<span style = "background-color:#dfd">                int UdpClient::Send(const char* buffer, int offset, int size, const String&amp; ip, int port) {
-                    if (m_pClientSocket.IsNull()) {</span>
+<span style = "background-color:#dfd">                int UdpClient::Send(const char* buffer, int offset, int size, const String&amp; ip, int port) {</span>
+                    /// Guard: Verify open socket.
+<span style = "background-color:#dfd">                    if (m_pClientSocket.IsNull()) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
+
+                    /// Send datagram to specified endpoint.
 <span style = "background-color:#dfd">                    return m_pClientSocket-&gt;SendTo(buffer, offset, size, ip, port);
                 }</span>
 
-<span style = "background-color:#dfd">                int UdpClient::Receive(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {
-                    if (m_pClientSocket.IsNull()) {</span>
+<span style = "background-color:#dfd">                int UdpClient::Receive(char* buffer, int offset, int size, String&amp; ip, int&amp; port) {</span>
+                    /// Guard: Verify open socket.
+<span style = "background-color:#dfd">                    if (m_pClientSocket.IsNull()) {</span>
 <span style = "background-color:#fdd">                        throw SocketException(-1, String("UdpClient is closed."));</span>
                     }
+
+                    /// Receive datagram and capture sender endpoint.
 <span style = "background-color:#dfd">                    return m_pClientSocket-&gt;ReceiveFrom(buffer, offset, size, ip, port);
                 }</span>
 
-<span style = "background-color:#dfd">                void UdpClient::Close() {
-                    if (!m_pClientSocket.IsNull()) {
+<span style = "background-color:#dfd">                void UdpClient::Close() {</span>
+                    /// Close underlying socket.
+<span style = "background-color:#dfd">                    if (!m_pClientSocket.IsNull()) {
                         m_pClientSocket-&gt;Close();
                         m_pClientSocket = nullptr;</span>
                     }

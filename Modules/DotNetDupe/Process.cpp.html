@@ -306,10 +306,13 @@ namespace DotNetDupe {
             }
 
 #if defined(_WIN32)
-<span style = "background-color:#dfd">            static bool QueryProcessNameById(int iProcessId, String&amp; sOutName, HANDLE&amp; hOutProc) {
-                hOutProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, static_cast&lt;DWORD&gt;(iProcessId));
-                if (hOutProc == NULL) return false;
-                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
+<span style = "background-color:#dfd">            static bool QueryProcessNameById(int iProcessId, String&amp; sOutName, HANDLE&amp; hOutProc) {</span>
+                /// Open limited query handle to inspect process image without elevated privileges.
+<span style = "background-color:#dfd">                hOutProc = ::OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, static_cast&lt;DWORD&gt;(iProcessId));
+                if (hOutProc == NULL) return false;</span>
+
+                /// Query full native executable image path and extract trailing file name.
+<span style = "background-color:#dfd">                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
                 if (::QueryFullProcessImageNameW(hOutProc, 0, szPath, &amp;dwLen)) {
                     std::wstring ws(szPath);
                     size_t pos = ws.find_last_of(L"\\/");
@@ -321,9 +324,12 @@ namespace DotNetDupe {
             }</span>
 #else
             static bool QueryLinuxProcessNameById(int iProcessId, String&amp; sOutName) {
+                /// Open /proc/[pid]/comm pseudo-filesystem entry to read process command name.
                 std::string sPath = "/proc/" + std::to_string(iProcessId) + "/comm";
                 std::ifstream commFile(sPath);
                 std::string sComm;
+
+                /// Extract first line containing process command name.
                 if (commFile.is_open() &amp;&amp; std::getline(commFile, sComm)) {
                     sOutName = String(sComm.c_str());
                     return true;
@@ -333,16 +339,21 @@ namespace DotNetDupe {
 #endif
 
 #if defined(_WIN32)
-<span style = "background-color:#dfd">            static void EnumerateWin32Processes(Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt;&amp; lstProcs) {
-                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-                if (hSnapshot == INVALID_HANDLE_VALUE) return;
-                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
+<span style = "background-color:#dfd">            static void EnumerateWin32Processes(Collections::Generic::List&lt;SmartPointer&lt;Process&gt;&gt;&amp; lstProcs) {</span>
+                /// Take atomic kernel snapshot of all active system processes via Toolhelp32.
+<span style = "background-color:#dfd">                HANDLE hSnapshot = ::CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+                if (hSnapshot == INVALID_HANDLE_VALUE) return;</span>
+
+                /// Iterate snapshot entries via Process32FirstW and Process32NextW.
+<span style = "background-color:#dfd">                PROCESSENTRY32W pe32; pe32.dwSize = sizeof(PROCESSENTRY32W);
                 if (::Process32FirstW(hSnapshot, &amp;pe32)) {</span>
                     do {
 <span style = "background-color:#dfd">                        if (pe32.th32ProcessID == 0) continue;
                         lstProcs.Add(SmartPointer&lt;Process&gt;::NewShared(static_cast&lt;int&gt;(pe32.th32ProcessID), String(pe32.szExeFile), nullptr));
                     } while (::Process32NextW(hSnapshot, &amp;pe32));</span>
                 }
+
+                /// Release snapshot handle.
 <span style = "background-color:#dfd">                ::CloseHandle(hSnapshot);
             }</span>
 #else

@@ -18,21 +18,27 @@
 
 namespace DotNetDupe {
     namespace System {
-<span style = "background-color:#dfd">        DateTimeOffset DateTimeOffset::Now() {
-            return TimeProvider::GetSystem()-&gt;GetLocalNow();
+<span style = "background-color:#dfd">        DateTimeOffset DateTimeOffset::Now() {</span>
+            /// Query current local time from the configured system time provider.
+<span style = "background-color:#dfd">            return TimeProvider::GetSystem()-&gt;GetLocalNow();
         }</span>
 
-<span style = "background-color:#fdd">        DateTimeOffset DateTimeOffset::UtcNow() {
-            return TimeProvider::GetSystem()-&gt;GetUtcNow();
+<span style = "background-color:#fdd">        DateTimeOffset DateTimeOffset::UtcNow() {</span>
+            /// Query current UTC time from the configured system time provider.
+<span style = "background-color:#fdd">            return TimeProvider::GetSystem()-&gt;GetUtcNow();
         }</span>
 
-<span style = "background-color:#dfd">        String DateTimeOffset::ToString() const {
-            return ToString("yyyy-MM-dd HH:mm:ss");
+<span style = "background-color:#dfd">        String DateTimeOffset::ToString() const {</span>
+            /// Format using ISO 8601 extended standard pattern.
+<span style = "background-color:#dfd">            return ToString("yyyy-MM-dd HH:mm:ss");
         }</span>
 
-<span style = "background-color:#dfd">        String DateTimeOffset::ToString(const String&amp; sFormat) const {
-            int64_t iSeconds = _ticks / 10000000LL - 62135596800LL;</span>
+<span style = "background-color:#dfd">        String DateTimeOffset::ToString(const String&amp; sFormat) const {</span>
+            /// Convert ticks to total seconds offset by the Unix epoch (1970-01-01).
+<span style = "background-color:#dfd">            int64_t iSeconds = _ticks / 10000000LL - 62135596800LL;</span>
             if (iSeconds &lt; 0) iSeconds = 0;
+
+            /// Convert seconds to platform calendar breakdown.
 <span style = "background-color:#dfd">            std::time_t tTime = static_cast&lt;std::time_t&gt;(iSeconds);
             std::tm tmTime{};</span>
 #if defined(_WIN32)
@@ -40,6 +46,8 @@ namespace DotNetDupe {
 #else
             localtime_r(&amp;tTime, &amp;tmTime);
 #endif
+
+            /// Format timestamp into fixed-width buffer and return String.
 <span style = "background-color:#dfd">            char szBuf[128] = { 0 };
             std::snprintf(szBuf, sizeof(szBuf), "%04d-%02d-%02d %02d:%02d:%02d",</span>
                 tmTime.tm_year + 1900, tmTime.tm_mon + 1, tmTime.tm_mday,

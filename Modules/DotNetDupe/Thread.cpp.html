@@ -61,8 +61,11 @@ namespace DotNetDupe {
                 m_pImpl-&gt;isAlive = true;
             }
 
-<span style = "background-color:#dfd">            static void SafelyJoinOrDetach(const std::unique_ptr&lt;std::thread&gt;&amp; pThread) {
-                if (!pThread || !pThread-&gt;joinable()) return;</span>
+<span style = "background-color:#dfd">            static void SafelyJoinOrDetach(const std::unique_ptr&lt;std::thread&gt;&amp; pThread) {</span>
+                /// Guard: Verify thread exists and is joinable.
+<span style = "background-color:#dfd">                if (!pThread || !pThread-&gt;joinable()) return;</span>
+
+                /// Safely detach if current thread is tearing down itself, otherwise join.
                 try {
 <span style = "background-color:#fdd">                    if (pThread-&gt;get_id() == std::this_thread::get_id()) {
                         pThread-&gt;detach();</span>
@@ -74,8 +77,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }
             }</span>
 
-<span style = "background-color:#dfd">            Thread::~Thread() {
-                if (m_pImpl) {
+<span style = "background-color:#dfd">            Thread::~Thread() {</span>
+                /// Clean up internal thread and release implementation state.
+<span style = "background-color:#dfd">                if (m_pImpl) {
                     SafelyJoinOrDetach(m_pImpl-&gt;internalThread);
                     delete m_pImpl;
                     m_pImpl = nullptr;</span>
@@ -86,24 +90,32 @@ namespace DotNetDupe {
                 Start(nullptr);</span>
             }
 
-<span style = "background-color:#dfd">            void Thread::Start(Object* parameter) {
-                if (!m_pImpl || m_pImpl-&gt;isAlive) return;
-                m_pImpl-&gt;isAlive = true;
+<span style = "background-color:#dfd">            void Thread::Start(Object* parameter) {</span>
+                /// Guard: Ensure thread is not already running or disposed.
+<span style = "background-color:#dfd">                if (!m_pImpl || m_pImpl-&gt;isAlive) return;</span>
+
+                /// Initialize execution state and spawn native worker thread.
+<span style = "background-color:#dfd">                m_pImpl-&gt;isAlive = true;
                 m_pImpl-&gt;completed = false;
                 m_pImpl-&gt;internalThread = std::make_unique&lt;std::thread&gt;(&amp;Thread::ThreadMain, this, parameter);
             }</span>
 
-<span style = "background-color:#dfd">            void Thread::Join() {
-                if (!m_pImpl || !m_pImpl-&gt;internalThread || !m_pImpl-&gt;internalThread-&gt;joinable()) return;
-                if (m_pImpl-&gt;internalThread-&gt;get_id() == std::this_thread::get_id()) return;
-                m_pImpl-&gt;internalThread-&gt;join();
+<span style = "background-color:#dfd">            void Thread::Join() {</span>
+                /// Guard: Verify thread is valid, joinable, and not the current calling thread.
+<span style = "background-color:#dfd">                if (!m_pImpl || !m_pImpl-&gt;internalThread || !m_pImpl-&gt;internalThread-&gt;joinable()) return;
+                if (m_pImpl-&gt;internalThread-&gt;get_id() == std::this_thread::get_id()) return;</span>
+
+                /// Block until native worker thread finishes execution.
+<span style = "background-color:#dfd">                m_pImpl-&gt;internalThread-&gt;join();
             }</span>
 
-<span style = "background-color:#fdd">            bool Thread::Join(int millisecondsTimeout) {
-                if (!m_pImpl) return true;
+<span style = "background-color:#fdd">            bool Thread::Join(int millisecondsTimeout) {</span>
+                /// Guard: Return immediately if thread is already completed or inactive.
+<span style = "background-color:#fdd">                if (!m_pImpl) return true;
                 if (!m_pImpl-&gt;isAlive &amp;&amp; m_pImpl-&gt;completed) return true;
                 if (!m_pImpl-&gt;internalThread) return true;</span>
 
+                /// Wait on condition variable until worker signals completion or timeout expires.
 <span style = "background-color:#fdd">                std::unique_lock&lt;std::mutex&gt; lock(m_pImpl-&gt;joinMutex);
                 if (m_pImpl-&gt;joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return m_pImpl-&gt;completed; })) {
                     if (m_pImpl-&gt;internalThread-&gt;joinable()) {
@@ -112,11 +124,13 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    return true;</span>
                 }
                 
+                /// Timeout expired without worker completion: throw descriptive exception.
 <span style = "background-color:#fdd">                throw TimeoutException("The thread did not terminate within the allotted time.");
             }</span>
 
-<span style = "background-color:#dfd">            void Thread::Sleep(int millisecondsTimeout) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(millisecondsTimeout));
+<span style = "background-color:#dfd">            void Thread::Sleep(int millisecondsTimeout) {</span>
+                /// Suspend calling thread execution using std::this_thread::sleep_for.
+<span style = "background-color:#dfd">                std::this_thread::sleep_for(std::chrono::milliseconds(millisecondsTimeout));
             }</span>
 
 <span style = "background-color:#dfd">            bool Thread::IsAlive() const {
@@ -131,15 +145,19 @@ namespace DotNetDupe {
                 if (m_pImpl) m_pImpl-&gt;name = name;
             }</span>
 
-<span style = "background-color:#dfd">            Thread* Thread::GetCurrentThread() {
-                if (_currentThread == nullptr) {
+<span style = "background-color:#dfd">            Thread* Thread::GetCurrentThread() {</span>
+                /// Check thread-local cache and initialize shared wrapper instance on demand.
+<span style = "background-color:#dfd">                if (_currentThread == nullptr) {
                     s_pCurrentThreadStorage = CreateCurrentThreadWrapper();
                     _currentThread = s_pCurrentThreadStorage.Get();</span>
                 }
+
+                /// Return cached thread-local instance.
                 return _currentThread;
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            int Thread::GetCurrentThreadId() {</span>
+                /// Query operating system kernel for current native thread ID.
 #if defined(_WIN32)
 <span style = "background-color:#fdd">                return static_cast&lt;int&gt;(::GetCurrentThreadId());</span>
 #else
@@ -151,20 +169,27 @@ namespace DotNetDupe {
                 return SmartPointer&lt;Thread&gt;(new Thread(), true);
             }
 
-<span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {
-                _currentThread = this;</span>
+<span style = "background-color:#dfd">            void Thread::ThreadMain(Object* parameter) {</span>
+                /// Register current thread instance in thread-local storage.
+<span style = "background-color:#dfd">                _currentThread = this;</span>
+
+                /// Execute thread entry point delegate.
                 try {
 <span style = "background-color:#dfd">                    if (m_pImpl-&gt;start) m_pImpl-&gt;start();
                     else if (m_pImpl-&gt;parameterizedStart) m_pImpl-&gt;parameterizedStart(parameter);
                 } catch (...) {</span>
                     (void)0;
 <span style = "background-color:#dfd">                }</span>
+
+                /// Transition thread state to completed under mutex protection.
                 {
 <span style = "background-color:#dfd">                    std::lock_guard&lt;std::mutex&gt; lock(m_pImpl-&gt;joinMutex);
                     m_pImpl-&gt;completed = true;
                     m_pImpl-&gt;isAlive = false;
-                }
-                m_pImpl-&gt;joinCv.notify_all();
+                }</span>
+
+                /// Wake all waiting join threads via condition variable broadcast.
+<span style = "background-color:#dfd">                m_pImpl-&gt;joinCv.notify_all();
             }</span>
         }
     }

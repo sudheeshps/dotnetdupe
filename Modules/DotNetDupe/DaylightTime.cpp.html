@@ -15,22 +15,27 @@
 namespace DotNetDupe {
     namespace System {
         DaylightTime::DaylightTime(DateTimeOffset start, DateTimeOffset end, TimeSpan delta)
-<span style = "background-color:#dfd">            : _start(start), _end(end), _delta(delta) {
+<span style = "background-color:#dfd">            : _start(start), _end(end), _delta(delta) {</span>
+            /// Initialize DaylightTime instance with transition start, end, and offset delta.
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#fdd">        DateTimeOffset DaylightTime::GetStart() const {</span>
+            /// Return starting DateTimeOffset of daylight saving transition.
+<span style = "background-color:#fdd">            return _start;
         }</span>
 
-<span style = "background-color:#fdd">        DateTimeOffset DaylightTime::GetStart() const {
-            return _start;
+<span style = "background-color:#fdd">        DateTimeOffset DaylightTime::GetEnd() const {</span>
+            /// Return ending DateTimeOffset of daylight saving transition.
+<span style = "background-color:#fdd">            return _end;
         }</span>
 
-<span style = "background-color:#fdd">        DateTimeOffset DaylightTime::GetEnd() const {
-            return _end;
-        }</span>
-
-<span style = "background-color:#fdd">        TimeSpan DaylightTime::GetDelta() const {
-            return _delta;
+<span style = "background-color:#fdd">        TimeSpan DaylightTime::GetDelta() const {</span>
+            /// Return time offset delta applied during daylight saving.
+<span style = "background-color:#fdd">            return _delta;
         }</span>
     }
-}</pre>
+}
+</pre>
         <hr />
         <table width="100%">
             <thead>

@@ -17,12 +17,14 @@ namespace DotNetDupe {
         namespace Net {
             namespace Sockets {
                 SocketException::SocketException(int errorCode, const String&amp; message)
-<span style = "background-color:#dfd">                    : SystemException(message) {
-                    m_errorCode = errorCode;
+<span style = "background-color:#dfd">                    : SystemException(message) {</span>
+                    /// Step: Record native socket error code.
+<span style = "background-color:#dfd">                    m_errorCode = errorCode;
                 }</span>
 
-<span style = "background-color:#dfd">                int SocketException::GetErrorCode() const {
-                    return m_errorCode;
+<span style = "background-color:#dfd">                int SocketException::GetErrorCode() const {</span>
+                    /// Return: Native socket error code.
+<span style = "background-color:#dfd">                    return m_errorCode;
                 }</span>
             }
         }

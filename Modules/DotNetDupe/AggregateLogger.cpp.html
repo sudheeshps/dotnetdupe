@@ -22,31 +22,42 @@ namespace DotNetDupe {
             };
 
             AggregateLogger::AggregateLogger()
-<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {}</span>
+<span style = "background-color:#dfd">                : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {</span>
+                /// Initialize aggregate composite implementation state.
+<span style = "background-color:#dfd">            }</span>
                 
 <span style = "background-color:#fdd">            AggregateLogger::~AggregateLogger() = default;</span>
 
-<span style = "background-color:#fdd">            void AggregateLogger::AddLogger(const DotNetDupe::System::SmartPointer&lt;ILogger&gt;&amp; pLogger) {
-                m_pImpl-&gt;pLoggers.Add(pLogger);</span>
-            }
+<span style = "background-color:#fdd">            void AggregateLogger::AddLogger(const DotNetDupe::System::SmartPointer&lt;ILogger&gt;&amp; pLogger) {</span>
+                /// Guard: Ignore null logger instances.
+<span style = "background-color:#fdd">                if (pLogger.IsNull()) return;</span>
 
-<span style = "background-color:#dfd">            void AggregateLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {
-                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
-                    m_pImpl-&gt;pLoggers[i]-&gt;Log(logLevel, message);</span>
+                /// Append logger destination to internal list.
+<span style = "background-color:#fdd">                m_pImpl-&gt;pLoggers.Add(pLogger);
+            }</span>
+
+<span style = "background-color:#dfd">            void AggregateLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message) {</span>
+                /// Fan out log message to all aggregated logger sinks.
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; m_pImpl-&gt;pLoggers.GetCount(); ++iIdx) {
+                    m_pImpl-&gt;pLoggers[iIdx]-&gt;Log(logLevel, message);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
             void AggregateLogger::Log(LogLevel logLevel, const DotNetDupe::System::String&amp; message, 
-<span style = "background-color:#dfd">                                     const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {
-                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
-                    m_pImpl-&gt;pLoggers[i]-&gt;Log(logLevel, message, properties);</span>
+<span style = "background-color:#dfd">                                     const DotNetDupe::System::Collections::Generic::Dictionary&lt;DotNetDupe::System::String, DotNetDupe::System::String&gt;&amp; properties) {</span>
+                /// Fan out structured message with metadata to all aggregated sinks.
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; m_pImpl-&gt;pLoggers.GetCount(); ++iIdx) {
+                    m_pImpl-&gt;pLoggers[iIdx]-&gt;Log(logLevel, message, properties);</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            bool AggregateLogger::IsEnabled(LogLevel logLevel) const {
-                for (int i = 0; i &lt; m_pImpl-&gt;pLoggers.GetCount(); ++i) {
-                    if (m_pImpl-&gt;pLoggers[i]-&gt;IsEnabled(logLevel)) return true;</span>
+<span style = "background-color:#dfd">            bool AggregateLogger::IsEnabled(LogLevel logLevel) const {</span>
+                /// Check if any underlying sink accepts this log level.
+<span style = "background-color:#dfd">                for (int iIdx = 0; iIdx &lt; m_pImpl-&gt;pLoggers.GetCount(); ++iIdx) {
+                    if (m_pImpl-&gt;pLoggers[iIdx]-&gt;IsEnabled(logLevel)) return true;</span>
                 }
+
+                /// Return false if no sinks accept this level.
 <span style = "background-color:#dfd">                return false;
             }</span>
 

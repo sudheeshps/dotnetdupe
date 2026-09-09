@@ -87,43 +87,55 @@ namespace DotNetDupe {
             return c &gt;= minInclusive &amp;&amp; c &lt;= maxInclusive;
         }</span>
 
-<span style = "background-color:#dfd">        bool Char::IsControl(char32_t c) {
-            if (c &lt;= 0x1F || (c &gt;= 0x7F &amp;&amp; c &lt;= 0x9F)) return true;
-            if (c &gt;= 0xFFFFFF7F &amp;&amp; c &lt;= 0xFFFFFF9F) return true; // Handling signed char cast
-            if (c &lt;= 0xFFFF) return std::iswcntrl(static_cast&lt;wint_t&gt;(c)) != 0;</span>
+<span style = "background-color:#dfd">        bool Char::IsControl(char32_t c) {</span>
+            /// Check C0 control codes (0x00-0x1F), Delete (0x7F), and C1 control codes (0x80-0x9F).
+<span style = "background-color:#dfd">            if (c &lt;= 0x1F || (c &gt;= 0x7F &amp;&amp; c &lt;= 0x9F)) return true;
+            if (c &gt;= 0xFFFFFF7F &amp;&amp; c &lt;= 0xFFFFFF9F) return true; // Handling signed char cast</span>
+
+            /// Inspect BMP locale classification and supplementary control plane (0xE0000-0xE007F).
+<span style = "background-color:#dfd">            if (c &lt;= 0xFFFF) return std::iswcntrl(static_cast&lt;wint_t&gt;(c)) != 0;</span>
 <span style = "background-color:#fdd">            return (c &gt;= 0xE0000 &amp;&amp; c &lt;= 0xE007F);</span>
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        bool Char::IsDigit(char32_t c) {
-            if (c &lt;= 0xFFFF) return std::iswdigit(static_cast&lt;wint_t&gt;(c)) != 0;
+<span style = "background-color:#dfd">        bool Char::IsDigit(char32_t c) {</span>
+            /// Check BMP digits via std::iswdigit and Mathematical alphanumeric supplementary range.
+<span style = "background-color:#dfd">            if (c &lt;= 0xFFFF) return std::iswdigit(static_cast&lt;wint_t&gt;(c)) != 0;
             return (c &gt;= 0x1D7CE &amp;&amp; c &lt;= 0x1D7FF);
         }</span>
 
-<span style = "background-color:#dfd">        bool Char::IsLower(char32_t c) {
-            if (c &lt;= 0xFFFF) return std::iswlower(static_cast&lt;wint_t&gt;(c)) != 0;</span>
+<span style = "background-color:#dfd">        bool Char::IsLower(char32_t c) {</span>
+            /// Check BMP lowercase letters and Deseret supplementary plane lowercase range.
+<span style = "background-color:#dfd">            if (c &lt;= 0xFFFF) return std::iswlower(static_cast&lt;wint_t&gt;(c)) != 0;</span>
 <span style = "background-color:#fdd">            return (c &gt;= 0x10428 &amp;&amp; c &lt;= 0x1044F);</span>
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        bool Char::IsLetter(char32_t c) {
-            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return true;
+<span style = "background-color:#dfd">        bool Char::IsLetter(char32_t c) {</span>
+            /// Fast check for ASCII letters and Latin-1 supplement letters.
+<span style = "background-color:#dfd">            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return true;
             if (c &gt;= 'a' &amp;&amp; c &lt;= 'z') return true;
             if (c &gt;= 0xC0 &amp;&amp; c &lt;= 0xD6) return true;
             if (c &gt;= 0xD8 &amp;&amp; c &lt;= 0xF6) return true;
-            if (c &gt;= 0xF8 &amp;&amp; c &lt;= 0xFF) return true;
-            if (c &lt;= 0xFFFF) return std::iswalpha(static_cast&lt;wint_t&gt;(c)) != 0;
+            if (c &gt;= 0xF8 &amp;&amp; c &lt;= 0xFF) return true;</span>
+
+            /// Evaluate BMP alpha status and CJK Unified Ideographs Extension B.
+<span style = "background-color:#dfd">            if (c &lt;= 0xFFFF) return std::iswalpha(static_cast&lt;wint_t&gt;(c)) != 0;
             return (c &gt;= 0x20000 &amp;&amp; c &lt;= 0x2A6DF);
         }</span>
 
-<span style = "background-color:#fdd">        bool Char::IsLetterOrDigit(char32_t c) {
-            if (c &lt;= 0xFFFF) return std::iswalnum(static_cast&lt;wint_t&gt;(c)) != 0;
+<span style = "background-color:#fdd">        bool Char::IsLetterOrDigit(char32_t c) {</span>
+            /// Combine letter and digit evaluations across Unicode planes.
+<span style = "background-color:#fdd">            if (c &lt;= 0xFFFF) return std::iswalnum(static_cast&lt;wint_t&gt;(c)) != 0;
             return IsLetter(c) || IsDigit(c);
         }</span>
 
-<span style = "background-color:#dfd">        char32_t Char::ToLower(char32_t c) {
-            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return c + 0x20;
+<span style = "background-color:#dfd">        char32_t Char::ToLower(char32_t c) {</span>
+            /// Fold ASCII and Latin-1 uppercase letters to lowercase via +0x20 offset.
+<span style = "background-color:#dfd">            if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') return c + 0x20;
             if (c &gt;= 0xC0 &amp;&amp; c &lt;= 0xD6) return c + 0x20;
-            if (c &gt;= 0xD8 &amp;&amp; c &lt;= 0xDE) return c + 0x20;
-            if (c &lt;= 0xFFFF) {
+            if (c &gt;= 0xD8 &amp;&amp; c &lt;= 0xDE) return c + 0x20;</span>
+
+            /// Fold BMP wide-character locale code points.
+<span style = "background-color:#dfd">            if (c &lt;= 0xFFFF) {
                 wint_t lower = std::towlower(static_cast&lt;wint_t&gt;(c));
                 if (lower != static_cast&lt;wint_t&gt;(c)) return static_cast&lt;char32_t&gt;(lower);</span>
             }

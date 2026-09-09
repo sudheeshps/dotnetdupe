@@ -40,8 +40,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    JsonElementImpl(JsonValueKind kind) : eKind(kind) {}</span>
                 };
 
-<span style = "background-color:#dfd">                static String EscapeString(const String&amp; sInput) {
-                    std::string sResult = "\"";
+<span style = "background-color:#dfd">                static String EscapeString(const String&amp; sInput) {</span>
+                    /// Step: Escape control characters and enclose string in JSON quotes.
+<span style = "background-color:#dfd">                    std::string sResult = "\"";
                     const char* pRaw = sInput.GetRawString();
                     while (*pRaw) {</span>
                         char c = *pRaw;
@@ -71,8 +72,9 @@ namespace DotNetDupe {
 
                 class JsonParser {
                 public:
-<span style = "background-color:#dfd">                    static JsonElement Parse(const String&amp; sJson) {
-                        std::string s = sJson.GetRawString();
+<span style = "background-color:#dfd">                    static JsonElement Parse(const String&amp; sJson) {</span>
+                        /// Step: Parse root JSON value and ensure no trailing characters.
+<span style = "background-color:#dfd">                        std::string s = sJson.GetRawString();
                         size_t index = 0;
                         SkipWhitespace(s, index);
                         JsonElement res = ParseValue(s, index);
@@ -84,14 +86,16 @@ namespace DotNetDupe {
                     }</span>
 
                 private:
-<span style = "background-color:#dfd">                    static void SkipWhitespace(const std::string&amp; s, size_t&amp; index) {
-                        while (index &lt; s.length() &amp;&amp; (s[index] == ' ' || s[index] == '\t' || s[index] == '\n' || s[index] == '\r')) {
+<span style = "background-color:#dfd">                    static void SkipWhitespace(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Advance parser position past whitespace characters.
+<span style = "background-color:#dfd">                        while (index &lt; s.length() &amp;&amp; (s[index] == ' ' || s[index] == '\t' || s[index] == '\n' || s[index] == '\r')) {
                             index++;</span>
                         }
 <span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#dfd">                    static JsonElement ParseValue(const std::string&amp; s, size_t&amp; index) {
-                        SkipWhitespace(s, index);
+<span style = "background-color:#dfd">                    static JsonElement ParseValue(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Inspect next token and route to corresponding JSON type parser.
+<span style = "background-color:#dfd">                        SkipWhitespace(s, index);
                         if (index &gt;= s.length()) {</span>
 <span style = "background-color:#fdd">                            throw JsonException("Unexpected end of JSON input");</span>
                         }
@@ -113,8 +117,9 @@ namespace DotNetDupe {
                         }
 <span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#dfd">                    static JsonElement ParseObject(const std::string&amp; s, size_t&amp; index) {
-                        index++; // Skip '{'
+<span style = "background-color:#dfd">                    static JsonElement ParseObject(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Parse JSON object key-value pairs separated by commas.
+<span style = "background-color:#dfd">                        index++; // Skip '{'
                         JsonElement obj(JsonValueKind::Object);
                         SkipWhitespace(s, index);
                         if (index &lt; s.length() &amp;&amp; s[index] == '}') {</span>
@@ -148,8 +153,9 @@ namespace DotNetDupe {
                         return obj;
                     }</span>
 
-<span style = "background-color:#dfd">                    static JsonElement ParseArray(const std::string&amp; s, size_t&amp; index) {
-                        index++; // Skip '['
+<span style = "background-color:#dfd">                    static JsonElement ParseArray(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Parse JSON array elements separated by commas.
+<span style = "background-color:#dfd">                        index++; // Skip '['
                         JsonElement arr(JsonValueKind::Array);
                         SkipWhitespace(s, index);
                         if (index &lt; s.length() &amp;&amp; s[index] == ']') {</span>
@@ -173,6 +179,7 @@ namespace DotNetDupe {
                     }</span>
 
                     static void ParseUnicodeEscape(const std::string&amp; s, size_t&amp; index, std::string&amp; res) {
+                        /// Step: Decode 4-digit hex unicode escape into UTF-8 sequence.
                         if (index + 4 &gt; s.length()) {
                             throw JsonException("Invalid unicode escape sequence");
                         }
@@ -193,8 +200,9 @@ namespace DotNetDupe {
                         }
                     }
 
-<span style = "background-color:#dfd">                    static JsonElement ParseString(const std::string&amp; s, size_t&amp; index) {
-                        index++; // Skip starting '\"'
+<span style = "background-color:#dfd">                    static JsonElement ParseString(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Parse quoted string content and escape sequences.
+<span style = "background-color:#dfd">                        index++; // Skip starting '\"'
                         std::string res;</span>
 
 <span style = "background-color:#dfd">                        while (index &lt; s.length()) {
@@ -234,6 +242,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    }</span>
 
                     static JsonElement ParseBool(const std::string&amp; s, size_t&amp; index) {
+                        /// Step: Parse boolean literal (true or false).
                         if (s.compare(index, 4, "true") == 0) {
                             index += 4;
                             return JsonElement(true);
@@ -245,6 +254,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseNull(const std::string&amp; s, size_t&amp; index) {
+                        /// Step: Parse literal null value.
                         if (s.compare(index, 4, "null") == 0) {
                             index += 4;
                             return JsonElement(nullptr);
@@ -252,8 +262,9 @@ namespace DotNetDupe {
                         throw JsonException("Expected null value");
                     }
 
-<span style = "background-color:#dfd">                    static JsonElement ParseNumber(const std::string&amp; s, size_t&amp; index) {
-                        size_t start = index;
+<span style = "background-color:#dfd">                    static JsonElement ParseNumber(const std::string&amp; s, size_t&amp; index) {</span>
+                        /// Step: Extract numeric substring and parse IEEE 754 floating point number.
+<span style = "background-color:#dfd">                        size_t start = index;
                         if (s[index] == '-') {</span>
 <span style = "background-color:#fdd">                            index++;</span>
                         }
@@ -271,15 +282,18 @@ namespace DotNetDupe {
                 };
 
                 JsonElement::JsonElement() 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Undefined)) {
-                }</span>
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Undefined)) {</span>
+                    /// Step: Construct default undefined JsonElement.
+<span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                JsonElement::~JsonElement() {
-                }</span>
+<span style = "background-color:#dfd">                JsonElement::~JsonElement() {</span>
+                    /// Step: Release JsonElement internal resources.
+<span style = "background-color:#dfd">                }</span>
 
                 JsonElement::JsonElement(const JsonElement&amp; objOther) 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New()) {
-                    if (objOther.m_pImpl) {
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New()) {</span>
+                    /// Step: Deep copy state from source JsonElement.
+<span style = "background-color:#dfd">                    if (objOther.m_pImpl) {
                         m_pImpl-&gt;eKind = objOther.m_pImpl-&gt;eKind;
                         m_pImpl-&gt;bBoolValue = objOther.m_pImpl-&gt;bBoolValue;
                         m_pImpl-&gt;dNumValue = objOther.m_pImpl-&gt;dNumValue;
@@ -296,8 +310,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    }
                 }</span>
 
-<span style = "background-color:#dfd">                JsonElement&amp; JsonElement::operator=(const JsonElement&amp; objOther) {
-                    if (this != &amp;objOther) {
+<span style = "background-color:#dfd">                JsonElement&amp; JsonElement::operator=(const JsonElement&amp; objOther) {</span>
+                    /// Step: Deep copy assign state from source JsonElement.
+<span style = "background-color:#dfd">                    if (this != &amp;objOther) {
                         m_pImpl = SmartPointer&lt;JsonElementImpl&gt;::New();
                         if (objOther.m_pImpl) {
                             m_pImpl-&gt;eKind = objOther.m_pImpl-&gt;eKind;
@@ -319,89 +334,107 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                }</span>
 
                 JsonElement::JsonElement(JsonElement&amp;&amp; objOther) noexcept 
-<span style = "background-color:#fdd">                    : m_pImpl(std::move(objOther.m_pImpl)) {
-                }</span>
+<span style = "background-color:#fdd">                    : m_pImpl(std::move(objOther.m_pImpl)) {</span>
+                    /// Step: Move construct from rvalue JsonElement.
+<span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#fdd">                JsonElement&amp; JsonElement::operator=(JsonElement&amp;&amp; objOther) noexcept {
-                    if (this != &amp;objOther) {
+<span style = "background-color:#fdd">                JsonElement&amp; JsonElement::operator=(JsonElement&amp;&amp; objOther) noexcept {</span>
+                    /// Step: Move assign from rvalue JsonElement.
+<span style = "background-color:#fdd">                    if (this != &amp;objOther) {
                         m_pImpl = std::move(objOther.m_pImpl);</span>
                     }
 <span style = "background-color:#fdd">                    return *this;
                 }</span>
 
                 JsonElement::JsonElement(JsonValueKind eKind) 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(eKind)) {
-                }</span>
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(eKind)) {</span>
+                    /// Step: Initialize with specified JsonValueKind.
+<span style = "background-color:#dfd">                }</span>
 
                 JsonElement::JsonElement(bool bValue) 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(bValue ? JsonValueKind::True : JsonValueKind::False)) {
-                    m_pImpl-&gt;bBoolValue = bValue;
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(bValue ? JsonValueKind::True : JsonValueKind::False)) {</span>
+                    /// Step: Initialize with boolean value.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;bBoolValue = bValue;
                 }</span>
 
                 JsonElement::JsonElement(double dValue) 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Number)) {
-                    m_pImpl-&gt;dNumValue = dValue;
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Number)) {</span>
+                    /// Step: Initialize with numeric value.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;dNumValue = dValue;
                 }</span>
 
                 JsonElement::JsonElement(const String&amp; sValue) 
-<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::String)) {
-                    m_pImpl-&gt;sStrValue = sValue;
+<span style = "background-color:#dfd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::String)) {</span>
+                    /// Step: Initialize with string value.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;sStrValue = sValue;
                 }</span>
 
                 JsonElement::JsonElement(std::nullptr_t) 
-<span style = "background-color:#fdd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Null)) {
+<span style = "background-color:#fdd">                    : m_pImpl(SmartPointer&lt;JsonElementImpl&gt;::New(JsonValueKind::Null)) {</span>
+                    /// Step: Initialize with null literal.
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                JsonValueKind JsonElement::GetValueKind() const {</span>
+                    /// Return: Current JSON value kind.
+<span style = "background-color:#dfd">                    return m_pImpl ? m_pImpl-&gt;eKind : JsonValueKind::Undefined;
                 }</span>
 
-<span style = "background-color:#dfd">                JsonValueKind JsonElement::GetValueKind() const {
-                    return m_pImpl ? m_pImpl-&gt;eKind : JsonValueKind::Undefined;
-                }</span>
-
-<span style = "background-color:#dfd">                bool JsonElement::GetBoolean() const {
-                    if (GetValueKind() == JsonValueKind::True) return true;
+<span style = "background-color:#dfd">                bool JsonElement::GetBoolean() const {</span>
+                    /// Guard: Ensure element is True or False kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() == JsonValueKind::True) return true;
                     if (GetValueKind() == JsonValueKind::False) return false;</span>
 <span style = "background-color:#fdd">                    throw InvalidOperationException("JsonElement is not a boolean.");</span>
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                double JsonElement::GetDouble() const {
-                    if (GetValueKind() != JsonValueKind::Number) throw InvalidOperationException("JsonElement is not a number.");
+<span style = "background-color:#dfd">                double JsonElement::GetDouble() const {</span>
+                    /// Guard: Ensure element is Number kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Number) throw InvalidOperationException("JsonElement is not a number.");
                     return m_pImpl-&gt;dNumValue;
                 }</span>
 
-<span style = "background-color:#dfd">                int JsonElement::GetInt32() const {
-                    return static_cast&lt;int&gt;(GetDouble());
+<span style = "background-color:#dfd">                int JsonElement::GetInt32() const {</span>
+                    /// Return: Truncated 32-bit signed integer.
+<span style = "background-color:#dfd">                    return static_cast&lt;int&gt;(GetDouble());
                 }</span>
 
-<span style = "background-color:#fdd">                long long JsonElement::GetInt64() const {
-                    return static_cast&lt;long long&gt;(GetDouble());
+<span style = "background-color:#fdd">                long long JsonElement::GetInt64() const {</span>
+                    /// Return: Truncated 64-bit signed integer.
+<span style = "background-color:#fdd">                    return static_cast&lt;long long&gt;(GetDouble());
                 }</span>
 
-<span style = "background-color:#dfd">                String JsonElement::GetString() const {
-                    if (GetValueKind() != JsonValueKind::String) throw InvalidOperationException("JsonElement is not a string.");
+<span style = "background-color:#dfd">                String JsonElement::GetString() const {</span>
+                    /// Guard: Ensure element is String kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::String) throw InvalidOperationException("JsonElement is not a string.");
                     return m_pImpl-&gt;sStrValue;
                 }</span>
 
-<span style = "background-color:#dfd">                int JsonElement::GetArrayLength() const {
-                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
+<span style = "background-color:#dfd">                int JsonElement::GetArrayLength() const {</span>
+                    /// Guard: Ensure element is Array kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl-&gt;lstArray.GetCount();
                 }</span>
 
-<span style = "background-color:#dfd">                JsonElement JsonElement::GetArrayElement(int iIndex) const {
-                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
+<span style = "background-color:#dfd">                JsonElement JsonElement::GetArrayElement(int iIndex) const {</span>
+                    /// Guard: Ensure element is Array kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl-&gt;lstArray[iIndex];
                 }</span>
 
-<span style = "background-color:#dfd">                void JsonElement::AddArrayElement(const JsonElement&amp; objElement) {
-                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
+<span style = "background-color:#dfd">                void JsonElement::AddArrayElement(const JsonElement&amp; objElement) {</span>
+                    /// Guard: Ensure element is Array kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     m_pImpl-&gt;lstArray.Add(objElement);
                 }</span>
 
-<span style = "background-color:#dfd">                bool JsonElement::TryGetProperty(const String&amp; sPropertyName, JsonElement&amp; objValue) const {
-                    if (GetValueKind() != JsonValueKind::Object) return false;
+<span style = "background-color:#dfd">                bool JsonElement::TryGetProperty(const String&amp; sPropertyName, JsonElement&amp; objValue) const {</span>
+                    /// Guard: Ensure element is Object kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) return false;
                     return m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue);
                 }</span>
 
-<span style = "background-color:#dfd">                void JsonElement::SetProperty(const String&amp; sPropertyName, const JsonElement&amp; objValue) {
-                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
+<span style = "background-color:#dfd">                void JsonElement::SetProperty(const String&amp; sPropertyName, const JsonElement&amp; objValue) {</span>
+                    /// Guard: Ensure element is Object kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     if (m_pImpl-&gt;dictObject.ContainsKey(sPropertyName)) {</span>
 <span style = "background-color:#fdd">                        m_pImpl-&gt;dictObject[sPropertyName] = objValue;</span>
                     } else {
@@ -409,13 +442,15 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                Array&lt;String&gt; JsonElement::GetPropertyNames() const {
-                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
+<span style = "background-color:#dfd">                Array&lt;String&gt; JsonElement::GetPropertyNames() const {</span>
+                    /// Guard: Ensure element is Object kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     return m_pImpl-&gt;dictObject.GetKeys();
                 }</span>
 
-<span style = "background-color:#dfd">                static String FormatJsonArray(const Collections::Generic::List&lt;JsonElement&gt;&amp; lstArray) {
-                    std::string sRes = "[";
+<span style = "background-color:#dfd">                static String FormatJsonArray(const Collections::Generic::List&lt;JsonElement&gt;&amp; lstArray) {</span>
+                    /// Step: Format array elements into serialized JSON array string.
+<span style = "background-color:#dfd">                    std::string sRes = "[";
                     for (int i = 0; i &lt; lstArray.GetCount(); ++i) {
                         if (i &gt; 0) sRes += ",";
                         sRes += lstArray[i].ToString().GetRawString();</span>
@@ -423,8 +458,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return String((sRes + "]").c_str());
                 }</span>
 
-<span style = "background-color:#dfd">                static String FormatJsonObject(const Collections::Generic::Dictionary&lt;String, JsonElement&gt;&amp; dictObject) {
-                    std::string sRes = "{";
+<span style = "background-color:#dfd">                static String FormatJsonObject(const Collections::Generic::Dictionary&lt;String, JsonElement&gt;&amp; dictObject) {</span>
+                    /// Step: Format key-value pairs into serialized JSON object string.
+<span style = "background-color:#dfd">                    std::string sRes = "{";
                     auto keys = dictObject.GetKeys();
                     for (int i = 0; i &lt; keys.GetLength(); ++i) {
                         if (i &gt; 0) sRes += ",";
@@ -436,14 +472,16 @@ namespace DotNetDupe {
                 }</span>
 
                 static String FormatJsonNumber(double dVal) {
+                    /// Step: Format numeric value with integer truncation check.
                     if (dVal == static_cast&lt;long long&gt;(dVal)) return String(std::to_string(static_cast&lt;long long&gt;(dVal)).c_str());
                     char buf[64];
                     snprintf(buf, sizeof(buf), "%g", dVal);
                     return String(buf);
                 }
 
-<span style = "background-color:#dfd">                String JsonElement::ToString() const {
-                    if (!m_pImpl) return "null";
+<span style = "background-color:#dfd">                String JsonElement::ToString() const {</span>
+                    /// Step: Format JsonElement based on current kind.
+<span style = "background-color:#dfd">                    if (!m_pImpl) return "null";
                     switch (m_pImpl-&gt;eKind) {</span>
                         case JsonValueKind::Null: return "null";
 <span style = "background-color:#dfd">                        case JsonValueKind::True: return "true";
@@ -456,8 +494,9 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#fdd">                }</span>
 
-<span style = "background-color:#dfd">                JsonElement JsonElement::Parse(const String&amp; sJson) {
-                    return JsonParser::Parse(sJson);
+<span style = "background-color:#dfd">                JsonElement JsonElement::Parse(const String&amp; sJson) {</span>
+                    /// Forward: Delegate JSON parsing to parser engine.
+<span style = "background-color:#dfd">                    return JsonParser::Parse(sJson);
                 }</span>
 
             }

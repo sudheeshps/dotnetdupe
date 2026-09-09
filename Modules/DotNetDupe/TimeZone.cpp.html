@@ -23,6 +23,7 @@ namespace DotNetDupe {
         class CurrentTimeZoneImpl : public TimeZone {
         public:
 <span style = "background-color:#fdd">            String GetDaylightName() const override {</span>
+                /// Step: Retrieve daylight saving zone name from platform API.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
 <span style = "background-color:#fdd">                if (GetTimeZoneInformation(&amp;tzi) != TIME_ZONE_ID_INVALID) {
@@ -35,6 +36,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            String GetStandardName() const override {</span>
+                /// Step: Retrieve standard zone name from platform API.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
 <span style = "background-color:#dfd">                if (GetTimeZoneInformation(&amp;tzi) != TIME_ZONE_ID_INVALID) {
@@ -47,6 +49,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            DaylightTime GetDaylightChanges(int year) override {</span>
+                /// Step: Retrieve daylight changes for the current year.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
 <span style = "background-color:#fdd">                if (GetTimeZoneInformation(&amp;tzi) != TIME_ZONE_ID_INVALID) {
@@ -57,6 +60,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            TimeSpan GetUtcOffset(const DateTimeOffset&amp; time) override {</span>
+                /// Step: Compute effective UTC offset including bias and daylight adjustment.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
 <span style = "background-color:#dfd">                DWORD result = GetTimeZoneInformation(&amp;tzi);
@@ -75,12 +79,14 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
         };
 
-<span style = "background-color:#dfd">        TimeZone* TimeZone::GetCurrentTimeZone() {
-            static CurrentTimeZoneImpl instance;</span>
+<span style = "background-color:#dfd">        TimeZone* TimeZone::GetCurrentTimeZone() {</span>
+            /// Retrieve singleton current time zone instance.
+<span style = "background-color:#dfd">            static CurrentTimeZoneImpl instance;</span>
             return &amp;instance;
 <span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#fdd">        bool TimeZone::IsDaylightSavingTime(const DateTimeOffset&amp; time) {</span>
+            /// Step: Check if current time falls within active daylight saving period.
 #if defined(_WIN32)
             TIME_ZONE_INFORMATION tzi;
 <span style = "background-color:#fdd">            DWORD result = GetTimeZoneInformation(&amp;tzi);
@@ -90,18 +96,22 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#fdd">        }</span>
 
-<span style = "background-color:#dfd">        DateTimeOffset TimeZone::ToLocalTime(const DateTimeOffset&amp; time) {
-            return DateTimeOffset(time.GetTicks() + GetUtcOffset(time).GetTicks());
+<span style = "background-color:#dfd">        DateTimeOffset TimeZone::ToLocalTime(const DateTimeOffset&amp; time) {</span>
+            /// Step: Convert UTC time to local time by adding current UTC offset.
+<span style = "background-color:#dfd">            return DateTimeOffset(time.GetTicks() + GetUtcOffset(time).GetTicks());
         }</span>
 
-<span style = "background-color:#dfd">        DateTimeOffset TimeZone::ToUniversalTime(const DateTimeOffset&amp; time) {
-            return DateTimeOffset(time.GetTicks() - GetUtcOffset(time).GetTicks());
+<span style = "background-color:#dfd">        DateTimeOffset TimeZone::ToUniversalTime(const DateTimeOffset&amp; time) {</span>
+            /// Step: Convert local time to universal time by subtracting current UTC offset.
+<span style = "background-color:#dfd">            return DateTimeOffset(time.GetTicks() - GetUtcOffset(time).GetTicks());
         }</span>
 
-<span style = "background-color:#dfd">        bool TimeZone::IsDaylightSavingTime(const DateTimeOffset&amp; time, const DaylightTime&amp; daylightTimes) {
-            if (daylightTimes.GetDelta().GetTicks() == 0) return false;
-            if (daylightTimes.GetStart() == daylightTimes.GetEnd()) return false;
-            return time &gt;= daylightTimes.GetStart() &amp;&amp; time &lt; daylightTimes.GetEnd();
+<span style = "background-color:#dfd">        bool TimeZone::IsDaylightSavingTime(const DateTimeOffset&amp; time, const DaylightTime&amp; daylightTimes) {</span>
+            /// Guard: If delta is zero or start equals end, daylight saving is not active.
+<span style = "background-color:#dfd">            if (daylightTimes.GetDelta().GetTicks() == 0) return false;
+            if (daylightTimes.GetStart() == daylightTimes.GetEnd()) return false;</span>
+            /// Check if time falls between daylight transition start and end bounds.
+<span style = "background-color:#dfd">            return time &gt;= daylightTimes.GetStart() &amp;&amp; time &lt; daylightTimes.GetEnd();
         }</span>
     }
 }</pre>

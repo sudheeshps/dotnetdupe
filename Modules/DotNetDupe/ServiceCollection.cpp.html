@@ -16,11 +16,15 @@
 namespace DotNetDupe {
     namespace Extensions {
         namespace DependencyInjection {
-<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; ServiceCollection::BuildServiceProvider() {
-                return DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt;(</span>
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; ServiceCollection::BuildServiceProvider() {</span>
+                /// Instantiate the concrete root ServiceProvider with the current descriptor registry.
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::IServiceProvider&gt; pProvider(</span>
                     new ServiceProvider(*this),
                     true
                 );
+
+                /// Return the initialized container instance.
+                return pProvider;
 <span style = "background-color:#dfd">            }</span>
         }
     }

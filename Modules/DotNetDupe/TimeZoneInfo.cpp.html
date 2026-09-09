@@ -34,9 +34,11 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::Local() {</span>
 #if defined(_WIN32)
+            /// Query dynamic time zone details from the Windows kernel.
             DYNAMIC_TIME_ZONE_INFORMATION dtzi;
 <span style = "background-color:#dfd">            DWORD result = GetDynamicTimeZoneInformation(&amp;dtzi);</span>
             
+            /// Extract time zone key identifier, UTC bias, and standard/daylight names.
 <span style = "background-color:#dfd">            String id = String(WCharToUtf8(dtzi.TimeZoneKeyName).c_str());
             TimeSpan baseUtcOffset(dtzi.Bias * -600000000LL);
             String displayName = String(WCharToUtf8(dtzi.StandardName).c_str()); 
@@ -44,41 +46,50 @@ namespace DotNetDupe {
             String daylightName = String(WCharToUtf8(dtzi.DaylightName).c_str());
             bool supportsDaylightSavingTime = (result != TIME_ZONE_ID_UNKNOWN);</span>
 
+            /// Return configured local time zone representation.
 <span style = "background-color:#dfd">            return TimeZoneInfo(id, baseUtcOffset, displayName, standardName, daylightName, supportsDaylightSavingTime);</span>
 #else
-            return Utc(); // Placeholder for non-Windows
+            /// Default to UTC zone on non-Windows platforms.
+            return Utc();
 #endif
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::Utc() {
-            return TimeZoneInfo(String("UTC"), TimeSpan(0), String("(UTC) Coordinated Universal Time"), String("Coordinated Universal Time"), String("Coordinated Universal Time"), false);
+<span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::Utc() {</span>
+            /// Return static constant UTC representation with zero bias.
+<span style = "background-color:#dfd">            return TimeZoneInfo(String("UTC"), TimeSpan(0), String("(UTC) Coordinated Universal Time"), String("Coordinated Universal Time"), String("Coordinated Universal Time"), false);
         }</span>
 
-<span style = "background-color:#dfd">        TimeSpan TimeZoneInfo::GetUtcOffset(const DateTimeOffset&amp; dateTimeOffset) const {
-            if (_id == "UTC") return TimeSpan(0);</span>
+<span style = "background-color:#dfd">        TimeSpan TimeZoneInfo::GetUtcOffset(const DateTimeOffset&amp; dateTimeOffset) const {</span>
+            /// Compute effective UTC offset.
+<span style = "background-color:#dfd">            if (_id == "UTC") return TimeSpan(0);</span>
             return _baseUtcOffset; 
 <span style = "background-color:#dfd">        }</span>
 
 <span style = "background-color:#dfd">        bool TimeZoneInfo::IsDaylightSavingTime(const DateTimeOffset&amp; dateTimeOffset) const {</span>
+            /// Check daylight saving activation for the given timestamp.
             if (!_supportsDaylightSavingTime) return false;
 <span style = "background-color:#dfd">            return false;
         }</span>
 
-<span style = "background-color:#fdd">        DateTimeOffset TimeZoneInfo::ConvertTime(const DateTimeOffset&amp; dateTimeOffset, const TimeZoneInfo&amp; destinationTimeZone) {
-            return dateTimeOffset; 
+<span style = "background-color:#fdd">        DateTimeOffset TimeZoneInfo::ConvertTime(const DateTimeOffset&amp; dateTimeOffset, const TimeZoneInfo&amp; destinationTimeZone) {</span>
+            /// Transform timestamp into destination time zone representation.
+<span style = "background-color:#fdd">            return dateTimeOffset; 
         }</span>
 
-<span style = "background-color:#fdd">        DateTimeOffset TimeZoneInfo::ConvertTime(const DateTimeOffset&amp; dateTimeOffset, const TimeZoneInfo&amp; sourceTimeZone, const TimeZoneInfo&amp; destinationTimeZone) {
-            return dateTimeOffset;
+<span style = "background-color:#fdd">        DateTimeOffset TimeZoneInfo::ConvertTime(const DateTimeOffset&amp; dateTimeOffset, const TimeZoneInfo&amp; sourceTimeZone, const TimeZoneInfo&amp; destinationTimeZone) {</span>
+            /// Transform timestamp from source to destination time zone.
+<span style = "background-color:#fdd">            return dateTimeOffset;
         }</span>
 
-<span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::FindSystemTimeZoneById(const String&amp; id) {
-            if (id == "UTC") return Utc();
+<span style = "background-color:#dfd">        TimeZoneInfo TimeZoneInfo::FindSystemTimeZoneById(const String&amp; id) {</span>
+            /// Lookup system time zone database by key identifier.
+<span style = "background-color:#dfd">            if (id == "UTC") return Utc();
             return Utc(); 
         }</span>
 
-<span style = "background-color:#dfd">        bool TimeZoneInfo::Equals(const TimeZoneInfo&amp; other) const {
-            return _id == other._id;
+<span style = "background-color:#dfd">        bool TimeZoneInfo::Equals(const TimeZoneInfo&amp; other) const {</span>
+            /// Compare equivalence using canonical zone identifier.
+<span style = "background-color:#dfd">            return _id == other._id;
         }</span>
     }
 }</pre>

@@ -73,31 +73,36 @@ namespace DotNetDupe {
                     return m_pImpl-&gt;m_bIsOpen;
                 }</span>
 
-<span style = "background-color:#dfd">                void SqlConnection::Open() {
-                    m_pImpl-&gt;m_bIsOpen = true;</span>
-
-<span style = "background-color:#dfd">                    std::string engineUpper = m_pImpl-&gt;m_engineType;
-                    std::transform(engineUpper.begin(), engineUpper.end(), engineUpper.begin(), ::toupper);</span>
-
-<span style = "background-color:#dfd">                    if (engineUpper == "SQLITE") {</span>
+<span style = "background-color:#dfd">                static void RegisterSelectedBackend(const std::string&amp; engineType, const std::string&amp; dbName, const DotNetDupe::System::String&amp; sConnStr) {
+                    std::string engineUpper = engineType;
+                    std::transform(engineUpper.begin(), engineUpper.end(), engineUpper.begin(), ::toupper);
+                    if (engineUpper == "SQLITE") {</span>
 #if defined(DOTNETDUPE_USE_SQLITE)
-                        auto sqliteBackend = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Internal::SqliteDatabaseBackend&gt;::NewShared(m_pImpl-&gt;m_sConnectionString.GetRawString());
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl-&gt;m_dbName.c_str()), sqliteBackend.DynamicCast&lt;DotNetDupe::System::Data::Internal::IDatabaseBackend&gt;());
+                        auto sqliteBackend = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Internal::SqliteDatabaseBackend&gt;::NewShared(sConnStr.GetRawString());
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(dbName.c_str()), sqliteBackend.DynamicCast&lt;DotNetDupe::System::Data::Internal::IDatabaseBackend&gt;());
 #else
 <span style = "background-color:#dfd">                        throw DotNetDupe::System::InvalidOperationException("SQLite database engine is not compiled in this build.");</span>
 #endif
                     } else {
 <span style = "background-color:#dfd">                        auto inMemoryBackend = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Internal::InMemoryDatabaseBackend&gt;::NewShared();
-                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(m_pImpl-&gt;m_dbName.c_str()), inMemoryBackend.DynamicCast&lt;DotNetDupe::System::Data::Internal::IDatabaseBackend&gt;());
+                        DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().RegisterBackend(DotNetDupe::System::String(dbName.c_str()), inMemoryBackend.DynamicCast&lt;DotNetDupe::System::Data::Internal::IDatabaseBackend&gt;());
                     }
                 }</span>
 
-<span style = "background-color:#dfd">                void SqlConnection::Close() {
-                    m_pImpl-&gt;m_bIsOpen = false;
+<span style = "background-color:#dfd">                void SqlConnection::Open() {</span>
+                    /// Mark connection as open and register engine backend.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_bIsOpen = true;
+                    RegisterSelectedBackend(m_pImpl-&gt;m_engineType, m_pImpl-&gt;m_dbName, m_pImpl-&gt;m_sConnectionString);</span>
+                }
+
+<span style = "background-color:#dfd">                void SqlConnection::Close() {</span>
+                    /// Mark connection as closed.
+<span style = "background-color:#dfd">                    m_pImpl-&gt;m_bIsOpen = false;
                 }</span>
 
-<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbCommand&gt; SqlConnection::CreateCommand() {
-                    return DotNetDupe::System::SmartPointer&lt;SqlCommand&gt;::NewShared("", this);
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbCommand&gt; SqlConnection::CreateCommand() {</span>
+                    /// Create SqlCommand associated with this connection.
+<span style = "background-color:#dfd">                    return DotNetDupe::System::SmartPointer&lt;SqlCommand&gt;::NewShared("", this);
                 }</span>
 
             }

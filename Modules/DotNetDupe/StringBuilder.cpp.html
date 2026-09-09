@@ -28,95 +28,115 @@ namespace DotNetDupe {
                 std::string buffer;
             };
 
-<span style = "background-color:#dfd">            StringBuilder::StringBuilder() : m_pImpl(new Impl()) {}</span>
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder() : m_pImpl(new Impl()) {</span>
+                /// Allocate default buffer implementation.
+<span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            StringBuilder::StringBuilder(int nCapacity) : m_pImpl(new Impl()) {
-                if (nCapacity &gt; 0) {
+<span style = "background-color:#fdd">            StringBuilder::StringBuilder(int nCapacity) : m_pImpl(new Impl()) {</span>
+                /// Reserve initial buffer capacity if greater than zero.
+<span style = "background-color:#fdd">                if (nCapacity &gt; 0) {
                     m_pImpl-&gt;buffer.reserve(nCapacity);</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder::StringBuilder(const String&amp; sValue) : m_pImpl(new Impl()) {
-                m_pImpl-&gt;buffer = (const char*)sValue;
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder(const String&amp; sValue) : m_pImpl(new Impl()) {</span>
+                /// Initialize buffer with initial string content.
+<span style = "background-color:#dfd">                m_pImpl-&gt;buffer = (const char*)sValue;
             }</span>
 
-<span style = "background-color:#dfd">            StringBuilder::~StringBuilder() {
-                if (m_pImpl) {
+<span style = "background-color:#dfd">            StringBuilder::~StringBuilder() {</span>
+                /// Release internal Pimpl buffer.
+<span style = "background-color:#dfd">                if (m_pImpl) {
                     delete m_pImpl;
                     m_pImpl = nullptr;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            int StringBuilder::GetLength() const {
-                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length()) : 0;
+<span style = "background-color:#dfd">            int StringBuilder::GetLength() const {</span>
+                /// Query accumulated buffer character count.
+<span style = "background-color:#dfd">                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length()) : 0;
             }</span>
 
-<span style = "background-color:#fdd">            void StringBuilder::SetLength(int nLength) {
-                if (nLength &lt; 0 || !m_pImpl) return;
+<span style = "background-color:#fdd">            void StringBuilder::SetLength(int nLength) {</span>
+                /// Guard: Validate length boundary and resize buffer.
+<span style = "background-color:#fdd">                if (nLength &lt; 0 || !m_pImpl) return;
                 m_pImpl-&gt;buffer.resize(nLength);
             }</span>
 
-<span style = "background-color:#dfd">            int StringBuilder::GetCapacity() const {
-                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.capacity()) : 0;
+<span style = "background-color:#dfd">            int StringBuilder::GetCapacity() const {</span>
+                /// Query underlying buffer allocated capacity.
+<span style = "background-color:#dfd">                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.capacity()) : 0;
             }</span>
 
-<span style = "background-color:#dfd">            void StringBuilder::SetCapacity(int nCapacity) {
-                if (!m_pImpl || nCapacity &lt; static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length())) return;
+<span style = "background-color:#dfd">            void StringBuilder::SetCapacity(int nCapacity) {</span>
+                /// Guard: Capacity must accommodate current length.
+<span style = "background-color:#dfd">                if (!m_pImpl || nCapacity &lt; static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length())) return;
                 m_pImpl-&gt;buffer.reserve(nCapacity);</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(const String&amp; sValue) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append((const char*)sValue);</span>
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(const String&amp; sValue) {</span>
+                /// Append String content to buffer.
+<span style = "background-color:#fdd">                if (m_pImpl) m_pImpl-&gt;buffer.append((const char*)sValue);</span>
                 return *this;
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(const char* pValue) {
-                if (m_pImpl &amp;&amp; pValue) m_pImpl-&gt;buffer.append(pValue);</span>
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(const char* pValue) {</span>
+                /// Append C-string characters to buffer.
+<span style = "background-color:#dfd">                if (m_pImpl &amp;&amp; pValue) m_pImpl-&gt;buffer.append(pValue);</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(char chValue) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append(1, chValue);</span>
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(char chValue) {</span>
+                /// Append single character to buffer.
+<span style = "background-color:#fdd">                if (m_pImpl) m_pImpl-&gt;buffer.append(1, chValue);</span>
                 return *this;
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(int iValue) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(iValue));</span>
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(int iValue) {</span>
+                /// Format 32-bit integer and append.
+<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(iValue));</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(long long llValue) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(llValue));</span>
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(long long llValue) {</span>
+                /// Format 64-bit integer and append.
+<span style = "background-color:#fdd">                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(llValue));</span>
                 return *this;
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(double value) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(value));</span>
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(double value) {</span>
+                /// Format double-precision float and append.
+<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(value));</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(bool bValue) {
-                if (m_pImpl) m_pImpl-&gt;buffer.append(bValue ? "True" : "False");</span>
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(bool bValue) {</span>
+                /// Append Boolean literal representation.
+<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;buffer.append(bValue ? "True" : "False");</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::AppendLine() {
-                if (m_pImpl) m_pImpl-&gt;buffer.append("\r\n");</span>
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::AppendLine() {</span>
+                /// Append standard CRLF line termination.
+<span style = "background-color:#fdd">                if (m_pImpl) m_pImpl-&gt;buffer.append("\r\n");</span>
                 return *this;
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::AppendLine(const String&amp; sValue) {
-                Append(sValue);
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::AppendLine(const String&amp; sValue) {</span>
+                /// Append value followed by line break.
+<span style = "background-color:#dfd">                Append(sValue);
                 return AppendLine();
             }</span>
 
-<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Clear() {
-                if (m_pImpl) m_pImpl-&gt;buffer.clear();</span>
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Clear() {</span>
+                /// Clear buffer contents while preserving capacity.
+<span style = "background-color:#dfd">                if (m_pImpl) m_pImpl-&gt;buffer.clear();</span>
                 return *this;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            String StringBuilder::ToString() const {
-                return m_pImpl ? String(m_pImpl-&gt;buffer.c_str()) : String("");
+<span style = "background-color:#dfd">            String StringBuilder::ToString() const {</span>
+                /// Convert internal character sequence to immutable String.
+<span style = "background-color:#dfd">                return m_pImpl ? String(m_pImpl-&gt;buffer.c_str()) : String("");
             }</span>
         }
     }

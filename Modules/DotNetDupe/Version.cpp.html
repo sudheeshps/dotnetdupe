@@ -20,11 +20,16 @@
 namespace DotNetDupe {
     namespace System {
 
-<span style = "background-color:#dfd">        static bool ParseComponent(const std::string&amp; sPart, int&amp; iVal) {
-            if (sPart.empty()) return false;
-            for (char c : sPart) {
+<span style = "background-color:#dfd">        static bool ParseComponent(const std::string&amp; sPart, int&amp; iVal) {</span>
+            /// Guard: Check against empty component string.
+<span style = "background-color:#dfd">            if (sPart.empty()) return false;</span>
+
+            /// Validate all characters in component are ASCII decimal digits.
+<span style = "background-color:#dfd">            for (char c : sPart) {
                 if (c &lt; '0' || c &gt; '9') return false;</span>
             }
+
+            /// Convert component to integer and enforce non-negative range.
             try {
 <span style = "background-color:#dfd">                long long llVal = std::stoll(sPart);
                 if (llVal &lt; 0 || llVal &gt; 2147483647LL) return false;
@@ -35,22 +40,30 @@ namespace DotNetDupe {
             }
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        static bool SplitVersionParts(const String&amp; sInput, std::vector&lt;std::string&gt;&amp; vecParts) {
-            if (sInput.IsEmpty()) return false;
+<span style = "background-color:#dfd">        static bool SplitVersionParts(const String&amp; sInput, std::vector&lt;std::string&gt;&amp; vecParts) {</span>
+            /// Guard: Validate input is not empty and has no leading or trailing dot.
+<span style = "background-color:#dfd">            if (sInput.IsEmpty()) return false;
             std::string s = sInput.GetRawString();
-            if (s.empty() || s.front() == '.' || s.back() == '.') return false;
-            std::stringstream ss(s);
+            if (s.empty() || s.front() == '.' || s.back() == '.') return false;</span>
+
+            /// Tokenize string by dot delimiter into individual component tokens.
+<span style = "background-color:#dfd">            std::stringstream ss(s);
             std::string item;
             while (std::getline(ss, item, '.')) {
                 if (item.empty()) return false;
                 vecParts.push_back(item);</span>
             }
+
+            /// Verify component count is strictly between 2 and 4.
 <span style = "background-color:#dfd">            return (vecParts.size() &gt;= 2 &amp;&amp; vecParts.size() &lt;= 4);
         }</span>
 
         static bool TryParseInternal(const String&amp; sInput, int&amp; iMajor, int&amp; iMinor, int&amp; iBuild, int&amp; iRevision, int&amp; iCount) {
+            /// Split and validate dot-delimited tokens.
             std::vector&lt;std::string&gt; vecParts;
             if (!SplitVersionParts(sInput, vecParts)) return false;
+
+            /// Parse each component integer and assign to respective positions.
             iCount = static_cast&lt;int&gt;(vecParts.size());
             int arrVals[4] = { 0, 0, 0, 0 };
             for (size_t i = 0; i &lt; vecParts.size(); ++i) {

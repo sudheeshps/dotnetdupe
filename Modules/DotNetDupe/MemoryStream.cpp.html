@@ -34,16 +34,19 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            MemoryStream::MemoryStream() : m_pImpl(new MemoryStreamImpl()) {}</span>
 
-<span style = "background-color:#fdd">            MemoryStream::MemoryStream(const Array&lt;char&gt;&amp; buffer) : m_pImpl(new MemoryStreamImpl()) {
-                m_pImpl-&gt;m_buffer.assign(buffer.GetData(), buffer.GetData() + buffer.GetLength());
+<span style = "background-color:#dfd">            MemoryStream::MemoryStream(const Array&lt;char&gt;&amp; buffer) : m_pImpl(new MemoryStreamImpl()) {</span>
+                /// Copy input array into memory buffer.
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_buffer.assign(buffer.GetData(), buffer.GetData() + buffer.GetLength());
             }</span>
 
-<span style = "background-color:#fdd">            MemoryStream::MemoryStream(const Array&lt;char&gt;&amp; buffer, bool writable) : m_pImpl(new MemoryStreamImpl(writable)) {
-                m_pImpl-&gt;m_buffer.assign(buffer.GetData(), buffer.GetData() + buffer.GetLength());
+<span style = "background-color:#fdd">            MemoryStream::MemoryStream(const Array&lt;char&gt;&amp; buffer, bool writable) : m_pImpl(new MemoryStreamImpl(writable)) {</span>
+                /// Copy input array into memory buffer with writability flag.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_buffer.assign(buffer.GetData(), buffer.GetData() + buffer.GetLength());
             }</span>
 
-<span style = "background-color:#dfd">            MemoryStream::~MemoryStream() {
-                Dispose();
+<span style = "background-color:#dfd">            MemoryStream::~MemoryStream() {</span>
+                /// Clean up memory stream buffer and state.
+<span style = "background-color:#dfd">                Dispose();
                 delete m_pImpl;
             }</span>
 
@@ -59,40 +62,48 @@ namespace DotNetDupe {
                 return m_pImpl-&gt;m_writable &amp;&amp; !m_pImpl-&gt;m_disposed;
             }</span>
 
-<span style = "background-color:#dfd">            long MemoryStream::GetLength() const {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+<span style = "background-color:#dfd">            long MemoryStream::GetLength() const {</span>
+                /// Guard: Check disposed status.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
                 return static_cast&lt;long&gt;(m_pImpl-&gt;m_buffer.size());
             }</span>
 
-<span style = "background-color:#fdd">            long MemoryStream::GetPosition() const {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+<span style = "background-color:#fdd">            long MemoryStream::GetPosition() const {</span>
+                /// Guard: Check disposed status.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
                 return m_pImpl-&gt;m_position;
             }</span>
 
-<span style = "background-color:#dfd">            void MemoryStream::SetPosition(long value) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
-                if (value &lt; 0) throw ArgumentOutOfRangeException("position");
-                m_pImpl-&gt;m_position = value;
+<span style = "background-color:#dfd">            void MemoryStream::SetPosition(long value) {</span>
+                /// Guard: Check disposed status and bounds.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+                if (value &lt; 0) throw ArgumentOutOfRangeException("position");</span>
+
+<span style = "background-color:#dfd">                m_pImpl-&gt;m_position = value;
             }</span>
 
 <span style = "background-color:#dfd">            void MemoryStream::Flush() {</span>
-                // No-op
+                /// No-op for in-memory byte buffers.
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            int MemoryStream::Read(char* buffer, int offset, int count) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+<span style = "background-color:#dfd">            int MemoryStream::Read(char* buffer, int offset, int count) {</span>
+                /// Guard: Validate stream state and parameters.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
                 if (buffer == nullptr) throw ArgumentNullException("buffer");
                 if (offset &lt; 0 || count &lt; 0) throw ArgumentOutOfRangeException("offset or count");</span>
 
+                /// Compute available bytes.
 <span style = "background-color:#dfd">                long remaining = GetLength() - m_pImpl-&gt;m_position;
                 if (remaining &lt;= 0) return 0;</span>
 
+                /// Copy bytes and advance position.
 <span style = "background-color:#dfd">                int toRead = static_cast&lt;int&gt;((std::min)(static_cast&lt;long&gt;(count), remaining));
                 std::memcpy(buffer + offset, m_pImpl-&gt;m_buffer.data() + m_pImpl-&gt;m_position, toRead);
                 m_pImpl-&gt;m_position += toRead;
                 return toRead;
             }</span>
 
+            /// Calculate new absolute position from origin and offset.
             static long CalculateSeekPosition(long currentPos, long length, long offset, int origin) {
                 if (origin == 0) return offset;
                 if (origin == 1) return currentPos + offset;
@@ -100,46 +111,57 @@ namespace DotNetDupe {
                 throw ArgumentException("Invalid seek origin.");
             }
 
-<span style = "background-color:#fdd">            long MemoryStream::Seek(long offset, int origin) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
-                long newPosition = CalculateSeekPosition(m_pImpl-&gt;m_position, GetLength(), offset, origin);
-                if (newPosition &lt; 0) throw IOException("An attempt was made to move the file pointer before the beginning of the file.");
-                m_pImpl-&gt;m_position = newPosition;
+<span style = "background-color:#fdd">            long MemoryStream::Seek(long offset, int origin) {</span>
+                /// Guard: Check disposed status.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");</span>
+
+                /// Compute new position and ensure non-negative.
+<span style = "background-color:#fdd">                long newPosition = CalculateSeekPosition(m_pImpl-&gt;m_position, GetLength(), offset, origin);
+                if (newPosition &lt; 0) throw IOException("An attempt was made to move the file pointer before the beginning of the file.");</span>
+
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_position = newPosition;
                 return m_pImpl-&gt;m_position;
             }</span>
 
-<span style = "background-color:#fdd">            void MemoryStream::SetLength(long value) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+<span style = "background-color:#fdd">            void MemoryStream::SetLength(long value) {</span>
+                /// Guard: Check disposed status, writability, and bounds.
+<span style = "background-color:#fdd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
                 if (!m_pImpl-&gt;m_writable) throw IOException("Stream is not writable.");
                 if (value &lt; 0) throw ArgumentOutOfRangeException("value");</span>
 
+                /// Resize underlying buffer and clamp position if needed.
 <span style = "background-color:#fdd">                m_pImpl-&gt;m_buffer.resize(static_cast&lt;size_t&gt;(value), 0);
                 if (m_pImpl-&gt;m_position &gt; value) {
                     m_pImpl-&gt;m_position = value;</span>
                 }
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void MemoryStream::Write(const char* buffer, int offset, int count) {
-                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
+<span style = "background-color:#dfd">            void MemoryStream::Write(const char* buffer, int offset, int count) {</span>
+                /// Guard: Validate state and parameters.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;m_disposed) throw IOException("Stream is closed.");
                 if (!m_pImpl-&gt;m_writable) throw IOException("Stream is not writable.");
                 if (buffer == nullptr) throw ArgumentNullException("buffer");
                 if (offset &lt; 0 || count &lt; 0) throw ArgumentOutOfRangeException("offset or count");</span>
 
+                /// Expand buffer if write exceeds current capacity.
 <span style = "background-color:#dfd">                long requiredSize = m_pImpl-&gt;m_position + count;
                 if (requiredSize &gt; GetLength()) {
                     m_pImpl-&gt;m_buffer.resize(static_cast&lt;size_t&gt;(requiredSize));</span>
                 }
 
+                /// Copy bytes and advance position.
 <span style = "background-color:#dfd">                std::memcpy(m_pImpl-&gt;m_buffer.data() + m_pImpl-&gt;m_position, buffer + offset, count);
                 m_pImpl-&gt;m_position += count;
             }</span>
 
-<span style = "background-color:#fdd">            void MemoryStream::Dispose() {
-                m_pImpl-&gt;m_disposed = true;
+<span style = "background-color:#fdd">            void MemoryStream::Dispose() {</span>
+                /// Mark stream as closed/disposed.
+<span style = "background-color:#fdd">                m_pImpl-&gt;m_disposed = true;
             }</span>
 
-<span style = "background-color:#fdd">            Array&lt;char&gt; MemoryStream::ToArray() const {
-                int size = static_cast&lt;int&gt;(m_pImpl-&gt;m_buffer.size());
+<span style = "background-color:#fdd">            Array&lt;char&gt; MemoryStream::ToArray() const {</span>
+                /// Allocate library array and copy buffer contents.
+<span style = "background-color:#fdd">                int size = static_cast&lt;int&gt;(m_pImpl-&gt;m_buffer.size());
                 Array&lt;char&gt; arr(size);</span>
                 if (size &gt; 0) {
 <span style = "background-color:#fdd">                    std::memcpy(arr.GetData(), m_pImpl-&gt;m_buffer.data(), size);</span>

@@ -22,34 +22,47 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
             AutoResetEvent::AutoResetEvent(bool initialState)
-<span style = "background-color:#dfd">                : EventWaitHandle(initialState, false) {}</span>
+<span style = "background-color:#dfd">                : EventWaitHandle(initialState, false) {</span>
+                /// Step: Initialize unnamed auto-reset event with initial signaling state.
+<span style = "background-color:#dfd">            }</span>
 
             static bool s_autoDummyCreatedNew = false;
             AutoResetEvent::AutoResetEvent(const String&amp; sName, bool initialState, bool openAlways)
-<span style = "background-color:#fdd">                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {}</span>
+<span style = "background-color:#fdd">                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {</span>
+                /// Step: Initialize named auto-reset event.
+<span style = "background-color:#fdd">            }</span>
 
             AutoResetEvent::AutoResetEvent(bool initialState, const String&amp; sName, bool openAlways)
-<span style = "background-color:#fdd">                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {}</span>
+<span style = "background-color:#fdd">                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {</span>
+                /// Step: Initialize named auto-reset event overload.
+<span style = "background-color:#fdd">            }</span>
 
             AutoResetEvent::AutoResetEvent(bool initialState, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
-<span style = "background-color:#dfd">                : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {}</span>
+<span style = "background-color:#dfd">                : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {</span>
+                /// Step: Initialize named auto-reset event tracking createdNew status.
+<span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            SmartPointer&lt;AutoResetEvent&gt; AutoResetEvent::OpenExisting(const String&amp; sName) {
-                SmartPointer&lt;AutoResetEvent&gt; pResult = nullptr;
+<span style = "background-color:#dfd">            SmartPointer&lt;AutoResetEvent&gt; AutoResetEvent::OpenExisting(const String&amp; sName) {</span>
+                /// Open existing system auto-reset event.
+<span style = "background-color:#dfd">                SmartPointer&lt;AutoResetEvent&gt; pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;</span>
                 }
 <span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No AutoResetEvent handle of the given name exists.");
             }</span>
 
-<span style = "background-color:#dfd">            bool AutoResetEvent::TryOpenExisting(const String&amp; sName, SmartPointer&lt;AutoResetEvent&gt;&amp; pResult) {
-                pResult = nullptr;
+<span style = "background-color:#dfd">            bool AutoResetEvent::TryOpenExisting(const String&amp; sName, SmartPointer&lt;AutoResetEvent&gt;&amp; pResult) {</span>
+                /// Guard: Check empty name.
+<span style = "background-color:#dfd">                pResult = nullptr;
                 if (sName.IsEmpty()) return false;</span>
+
 #if defined(_WIN32)
+                /// Attempt Win32 OpenEventW.
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
-                if (!h) return false;
-                auto spEvt = SmartPointer&lt;AutoResetEvent&gt;::NewShared(false);
+                if (!h) return false;</span>
+
+<span style = "background-color:#dfd">                auto spEvt = SmartPointer&lt;AutoResetEvent&gt;::NewShared(false);
                 spEvt-&gt;_name = sName;
                 spEvt-&gt;_hHandle = h;
                 pResult = std::move(spEvt);

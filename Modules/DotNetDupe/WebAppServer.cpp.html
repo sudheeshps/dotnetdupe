@@ -27,8 +27,9 @@ namespace DotNetDupe {
         namespace Server {
 
             WebAppServer::WebAppServer(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; app, const DotNetDupe::System::String&amp; webRoot)
-<span style = "background-color:#dfd">                : m_spApp(app), m_sWebRoot(webRoot), m_sDefaultDocument("index.html"), m_bStaticFilesEnabled(true) {
-                if (app.IsNull()) {</span>
+<span style = "background-color:#dfd">                : m_spApp(app), m_sWebRoot(webRoot), m_sDefaultDocument("index.html"), m_bStaticFilesEnabled(true) {</span>
+                /// Guard: Ensure WebApplication host instance is not null.
+<span style = "background-color:#dfd">                if (app.IsNull()) {</span>
 <span style = "background-color:#fdd">                    throw DotNetDupe::System::ArgumentException("WebApplication cannot be null");</span>
                 }
 <span style = "background-color:#dfd">            }</span>
@@ -40,27 +41,34 @@ namespace DotNetDupe {
                   m_bStaticFilesEnabled(other.m_bStaticFilesEnabled) {
             }</span>
 
-<span style = "background-color:#fdd">            WebAppServer&amp; WebAppServer::operator=(WebAppServer&amp;&amp; other) noexcept {
-                if (this != &amp;other) {
-                    m_spApp = std::move(other.m_spApp);
+<span style = "background-color:#fdd">            WebAppServer&amp; WebAppServer::operator=(WebAppServer&amp;&amp; other) noexcept {</span>
+                /// Guard: Check for self-assignment.
+<span style = "background-color:#fdd">                if (this != &amp;other) {</span>
+                    /// Move: Transfer application host pointer, root path, and configuration settings.
+<span style = "background-color:#fdd">                    m_spApp = std::move(other.m_spApp);
                     m_sWebRoot = std::move(other.m_sWebRoot);
                     m_sDefaultDocument = std::move(other.m_sDefaultDocument);
                     m_bStaticFilesEnabled = other.m_bStaticFilesEnabled;</span>
                 }
+                /// Return result: Return self reference.
                 return *this;
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            void WebAppServer::EnableStaticFiles(const DotNetDupe::System::String&amp; defaultDocument) {
-                m_bStaticFilesEnabled = true;
+<span style = "background-color:#dfd">            void WebAppServer::EnableStaticFiles(const DotNetDupe::System::String&amp; defaultDocument) {</span>
+                /// Configure: Enable static file serving flag and update default fallback document.
+<span style = "background-color:#dfd">                m_bStaticFilesEnabled = true;
                 m_sDefaultDocument = defaultDocument;</span>
 <span style = "background-color:#fdd">            }</span>
 
-<span style = "background-color:#dfd">            DotNetDupe::System::String WebAppServer::GetMimeType(const DotNetDupe::System::String&amp; filePath) {
-                DotNetDupe::System::String ext = DotNetDupe::System::IO::Path::GetExtension(filePath);
+<span style = "background-color:#dfd">            DotNetDupe::System::String WebAppServer::GetMimeType(const DotNetDupe::System::String&amp; filePath) {</span>
+                /// Parse: Extract and lowercase file extension.
+<span style = "background-color:#dfd">                DotNetDupe::System::String ext = DotNetDupe::System::IO::Path::GetExtension(filePath);
                 std::string s = ext.GetRawString();
                 std::transform(s.begin(), s.end(), s.begin(), ::tolower);
-                if (s.rfind('.', 0) == 0) s = s.substr(1);
-                static const std::unordered_map&lt;std::string, const char*&gt; mimeMap = {</span>
+                if (s.rfind('.', 0) == 0) s = s.substr(1);</span>
+
+                /// Lookup: Match against standard MIME types table.
+<span style = "background-color:#dfd">                static const std::unordered_map&lt;std::string, const char*&gt; mimeMap = {</span>
                     {"html", "text/html; charset=utf-8"}, {"htm", "text/html; charset=utf-8"},
                     {"css", "text/css; charset=utf-8"}, {"js", "application/javascript; charset=utf-8"},
                     {"json", "application/json; charset=utf-8"}, {"png", "image/png"},
@@ -68,33 +76,41 @@ namespace DotNetDupe {
                     {"svg", "image/svg+xml"}, {"ico", "image/x-icon"}, {"txt", "text/plain; charset=utf-8"},
                     {"pdf", "application/pdf"}, {"woff", "font/woff"}, {"woff2", "font/woff2"}
                 };
-<span style = "background-color:#dfd">                auto it = mimeMap.find(s);
-                return (it != mimeMap.end()) ? it-&gt;second : "application/octet-stream";
+<span style = "background-color:#dfd">                auto it = mimeMap.find(s);</span>
+                /// Return result: Return resolved MIME type string or fallback octet-stream.
+<span style = "background-color:#dfd">                return (it != mimeMap.end()) ? it-&gt;second : "application/octet-stream";
             }</span>
 
-<span style = "background-color:#dfd">            static DotNetDupe::System::String ResolveStaticPath(const DotNetDupe::System::String&amp; reqPath, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
-                std::string rel = reqPath.GetRawString();
+<span style = "background-color:#dfd">            static DotNetDupe::System::String ResolveStaticPath(const DotNetDupe::System::String&amp; reqPath, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {</span>
+                /// Sanitize: Trim leading slash and check for directory traversal attempts.
+<span style = "background-color:#dfd">                std::string rel = reqPath.GetRawString();
                 if (!rel.empty() &amp;&amp; (rel[0] == '/' || rel[0] == '\\')) rel = rel.substr(1);
                 if (rel.empty()) rel = defaultDoc.GetRawString();
-                if (rel.find("..") != std::string::npos) return "";
-                DotNetDupe::System::String target = DotNetDupe::System::IO::Path::Combine({webRoot, DotNetDupe::System::String(rel.c_str())});</span>
+                if (rel.find("..") != std::string::npos) return "";</span>
+
+                /// Combine: Form target filesystem path.
+<span style = "background-color:#dfd">                DotNetDupe::System::String target = DotNetDupe::System::IO::Path::Combine({webRoot, DotNetDupe::System::String(rel.c_str())});</span>
                 DotNetDupe::System::IO::FileAttributes attr;
 <span style = "background-color:#dfd">                if (DotNetDupe::System::IO::File::GetAttributes(target, attr) &amp;&amp; (static_cast&lt;int&gt;(attr) &amp; static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::Directory)) != 0) {</span>
 <span style = "background-color:#fdd">                    target = DotNetDupe::System::IO::Path::Combine({target, defaultDoc});</span>
                 }
+                /// Return result: Return verified filesystem target path.
 <span style = "background-color:#dfd">                return target;
             }</span>
 
-<span style = "background-color:#dfd">            static DotNetDupe::System::String ServeStaticFile(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; spContext, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
-                DotNetDupe::System::String target = ResolveStaticPath(spContext-&gt;GetRequest()-&gt;GetPath(), webRoot, defaultDoc);
+<span style = "background-color:#dfd">            static DotNetDupe::System::String ServeStaticFile(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; spContext, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {</span>
+                /// Resolve: Map request URI to filesystem path.
+<span style = "background-color:#dfd">                DotNetDupe::System::String target = ResolveStaticPath(spContext-&gt;GetRequest()-&gt;GetPath(), webRoot, defaultDoc);
                 if (target.IsEmpty()) {</span>
 <span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(403); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     return "403 Forbidden: Invalid file path";</span>
                 }
+                /// Verify: Check that the requested file exists on disk.
 <span style = "background-color:#dfd">                if (!DotNetDupe::System::IO::File::Exists(target)) {</span>
 <span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(404); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     return "404 Not Found";</span>
                 }
+                /// Read: Read file content and set appropriate Content-Type headers.
 <span style = "background-color:#dfd">                try {
                     DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
                     spContext-&gt;GetResponse()-&gt;SetStatusCode(200);
@@ -107,28 +123,33 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            static DotNetDupe::System::String HandleStaticRouteOrWebSocket(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; spApp, const DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt;&amp; ctx, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {
-                if (spApp-&gt;HasWebSocketRoute(ctx-&gt;GetRequest()-&gt;GetPath())) {</span>
+<span style = "background-color:#dfd">            static DotNetDupe::System::String HandleStaticRouteOrWebSocket(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; spApp, const DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt;&amp; ctx, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {</span>
+                /// Check: Check if path matches an active WebSocket endpoint.
+<span style = "background-color:#dfd">                if (spApp-&gt;HasWebSocketRoute(ctx-&gt;GetRequest()-&gt;GetPath())) {</span>
 <span style = "background-color:#fdd">                    ctx-&gt;GetResponse()-&gt;SetStatusCode(426);
                     ctx-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     ctx-&gt;GetResponse()-&gt;GetHeaders()["Upgrade"] = "websocket";
                     ctx-&gt;GetResponse()-&gt;GetHeaders()["Connection"] = "Upgrade";
                     return "426 Upgrade Required";</span>
                 }
+                /// Fallback: Serve matching static file asset from web root.
 <span style = "background-color:#dfd">                return ServeStaticFile(ctx, webRoot, defaultDoc);
             }</span>
 
-<span style = "background-color:#dfd">            void WebAppServer::Run(const DotNetDupe::System::String&amp; url, int threadCount) {
-                if (m_bStaticFilesEnabled) {
+<span style = "background-color:#dfd">            void WebAppServer::Run(const DotNetDupe::System::String&amp; url, int threadCount) {</span>
+                /// Configure: Register catch-all static file handler route if enabled.
+<span style = "background-color:#dfd">                if (m_bStaticFilesEnabled) {
                     m_spApp-&gt;MapGet("/{*filepath}", [this](DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; ctx) {</span>
                         return HandleStaticRouteOrWebSocket(m_spApp, ctx, m_sWebRoot, m_sDefaultDocument);
                     });
                 }
+                /// Execute: Start listening for HTTP requests on the application host.
 <span style = "background-color:#dfd">                m_spApp-&gt;Run(url, threadCount);
             }</span>
 
-<span style = "background-color:#fdd">            void WebAppServer::Stop() {
-                m_spApp-&gt;Stop();</span>
+<span style = "background-color:#fdd">            void WebAppServer::Stop() {</span>
+                /// Shutdown: Stop underlying WebApplication server.
+<span style = "background-color:#fdd">                m_spApp-&gt;Stop();</span>
             }
 
         }

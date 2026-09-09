@@ -25,13 +25,16 @@ namespace DotNetDupe {
 
             class ProcessStreamer;
 
+            /// \struct MemoryInfo
+            /// \brief Snapshot of physical and virtual memory utilization for the system or a specific process.
             struct MemoryInfo {
-                double dMemoryUsagePercent;
-                unsigned long long uMemoryTotalBytes;
-                unsigned long long uMemoryUsedBytes;
-                long long lPrivateBytes;
-                long long lPhysicalMemoryBytes; // Working Set
+                double dMemoryUsagePercent;             ///&lt; Percentage of total physical memory currently in use (0.0 - 100.0).
+                unsigned long long uMemoryTotalBytes;   ///&lt; Total physical RAM installed on the host in bytes.
+                unsigned long long uMemoryUsedBytes;    ///&lt; Currently consumed physical RAM across all processes.
+                long long lPrivateBytes;                ///&lt; Private bytes allocated by the target process (-1 if unavailable).
+                long long lPhysicalMemoryBytes;         ///&lt; Working set size (physical RAM resident) for the target process.
 
+                /// \brief Default constructor initializing default counters.
                 MemoryInfo()
                     : dMemoryUsagePercent(0.0),
                       uMemoryTotalBytes(0ULL),
@@ -40,52 +43,67 @@ namespace DotNetDupe {
                       lPhysicalMemoryBytes(-1) {}
             };
 
+            /// \struct DiskInfo
+            /// \brief Rate or aggregate count of disk read and write operations.
             struct DiskInfo {
-                long long lDiskReadBytes;
-                long long lDiskWriteBytes;
+                long long lDiskReadBytes;   ///&lt; Disk read throughput in bytes per second or total transfer count.
+                long long lDiskWriteBytes;  ///&lt; Disk write throughput in bytes per second or total transfer count.
 
+                /// \brief Default constructor initializing to unpopulated (-1).
                 DiskInfo() : lDiskReadBytes(-1), lDiskWriteBytes(-1) {}
             };
 
+            /// \struct NetworkUsageInfo
+            /// \brief Network throughput counters for bytes transmitted and received.
             struct NetworkUsageInfo {
-                long long lNetworkReadBytes;
-                long long lNetworkWriteBytes;
+                long long lNetworkReadBytes;    ///&lt; Incoming network throughput in bytes or octets.
+                long long lNetworkWriteBytes;   ///&lt; Outgoing network throughput in bytes or octets.
 
+                /// \brief Default constructor initializing to unpopulated (-1).
                 NetworkUsageInfo() : lNetworkReadBytes(-1), lNetworkWriteBytes(-1) {}
             };
 
+            /// \struct NetworkConnectionInfo
+            /// \brief Telemetry describing an active TCP or UDP socket endpoint.
             struct NetworkConnectionInfo {
-                String sLocalAddress;
-                int iLocalPort;
-                String sRemoteAddress;
-                int iRemotePort;
-                String sState; // e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT", etc.
+                String sLocalAddress;   ///&lt; Local IPv4 or IPv6 IP address.
+                int iLocalPort;         ///&lt; Local listening or bound port.
+                String sRemoteAddress;  ///&lt; Remote peer IP address.
+                int iRemotePort;        ///&lt; Remote peer port.
+                String sState;          ///&lt; Socket connection state (e.g. "ESTABLISHED", "LISTEN", "TIME_WAIT").
 
+                /// \brief Default constructor.
 <span style = "background-color:#dfd">                NetworkConnectionInfo() : iLocalPort(0), iRemotePort(0) {}</span>
             };
 
+            /// \struct ProcessNetworkConnectionInfo
+            /// \brief Collection of open ports and active connections attributed to a specific process.
             struct ProcessNetworkConnectionInfo {
-                Collections::Generic::List&lt;int&gt; lstOpenPorts;
-                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;
-                bool bHasEstablishedInboundConnection;
+                Collections::Generic::List&lt;int&gt; lstOpenPorts;                       ///&lt; List of TCP/UDP ports bound or in LISTEN state.
+                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;    ///&lt; Detailed active socket connections.
+                bool bHasEstablishedInboundConnection;                              ///&lt; True if process possesses at least one established connection.
 
+                /// \brief Default constructor.
                 ProcessNetworkConnectionInfo() : bHasEstablishedInboundConnection(false) {}
             };
 
+            /// \struct ProcessInfo
+            /// \brief Comprehensive telemetry snapshot for an operating system process.
             struct ProcessInfo {
-                int iProcessId;
-                int iSessionId;
-                String sName;
-                String sPath;
-                String sCommandLine;
-                double dCpuUsagePercent;
-                MemoryInfo memory;
-                DiskInfo disk;
-                NetworkUsageInfo network;
-                Collections::Generic::List&lt;int&gt; lstOpenPorts;
-                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;
-                bool bHasEstablishedConnection;
+                int iProcessId;                                                 ///&lt; Operating system process identifier (PID).
+                int iSessionId;                                                 ///&lt; Terminal Services session ID.
+                String sName;                                                   ///&lt; Process executable name without path.
+                String sPath;                                                   ///&lt; Full filesystem path to the executable image.
+                String sCommandLine;                                            ///&lt; Full command-line arguments used to spawn the process.
+                double dCpuUsagePercent;                                        ///&lt; Process CPU consumption percentage (0.0 - 100.0).
+                MemoryInfo memory;                                              ///&lt; Memory allocation statistics.
+                DiskInfo disk;                                                  ///&lt; Disk I/O telemetry.
+                NetworkUsageInfo network;                                       ///&lt; Network traffic metrics.
+                Collections::Generic::List&lt;int&gt; lstOpenPorts;                   ///&lt; Open listening ports.
+                Collections::Generic::List&lt;NetworkConnectionInfo&gt; lstConnections;///&lt; Active socket connections.
+                bool bHasEstablishedConnection;                                 ///&lt; True if any connection is established.
 
+                /// \brief Default constructor.
                 ProcessInfo()
                     : iProcessId(0),
                       iSessionId(0),
@@ -93,45 +111,117 @@ namespace DotNetDupe {
                       bHasEstablishedConnection(false) {}
             };
 
+            /// \struct ServiceInfo
+            /// \brief Telemetry snapshot for a system background service or daemon.
             struct ServiceInfo {
-                String sServiceName;
-                String sDisplayName;
-                String sStatus; // e.g. "Running", "Stopped", "Paused", "StartPending", etc.
-                String sStartType; // e.g. "Automatic", "Manual", "Disabled", etc.
-                int iProcessId;
+                String sServiceName;    ///&lt; Internal service key identifier.
+                String sDisplayName;    ///&lt; Human-readable friendly display name.
+                String sStatus;         ///&lt; Current service state (e.g. "Running", "Stopped", "Paused").
+                String sStartType;      ///&lt; Startup behavior (e.g. "Automatic", "Manual", "Disabled").
+                int iProcessId;         ///&lt; Process ID hosting the service (0 if stopped).
 
+                /// \brief Default constructor.
                 ServiceInfo() : iProcessId(0) {}
             };
 
+            /// \class SystemMetrics
+            /// \brief Provides cross-platform diagnostic counters for CPU, memory, disk, network, processes, and services.
+            ///
+            /// Interfaces directly with native platform APIs: on Windows, uses PDH (Performance Data Helper),
+            /// PSAPI, IPHLPAPI, Winternl NT queries, and Service Control Manager; on Linux, inspects `/proc`
+            /// filesystems (`/proc/stat`, `/proc/meminfo`, `/proc/net/dev`, `/proc/[pid]/io`).
             class SystemMetrics : public Object {
             public:
+                /// \brief Initializes a new instance of SystemMetrics.
                 DOTNETDUPE_API SystemMetrics();
+
+                /// \brief Virtual destructor.
                 DOTNETDUPE_API virtual ~SystemMetrics();
 
                 // System-wide metrics
+
+                /// \brief Retrieves total and consumed physical memory metrics for the entire machine.
+                /// \return MemoryInfo structure.
                 DOTNETDUPE_API static MemoryInfo GetSystemMemoryUsage();
+
+                /// \brief Computes total system CPU usage percentage across all processors.
+                /// \return Double representing total CPU load (0.0 - 100.0).
                 DOTNETDUPE_API static double GetSystemCpuUsage();
+
+                /// \brief Retrieves total disk read and write transfer rates for the system.
+                /// \return DiskInfo structure.
                 DOTNETDUPE_API static DiskInfo GetSystemDiskUsage();
+
+                /// \brief Computes total network traffic throughput across all operational interfaces in Megabits per second.
+                /// \return Double representing aggregated throughput in Mbps.
                 DOTNETDUPE_API static double GetSystemNetworkUsage();
 
-                // Process-specific metrics (by process name, internally using handle-based APIs)
+                // Process-specific metrics (by process name)
+
+                /// \brief Queries the full command line used to launch a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return The command line string.
                 DOTNETDUPE_API static String GetProcessCommandLine(const String&amp; sProcessName);
+
+                /// \brief Queries memory allocation details for a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return MemoryInfo structure.
                 DOTNETDUPE_API static MemoryInfo GetProcessMemoryUsage(const String&amp; sProcessName);
+
+                /// \brief Queries disk transfer throughput for a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return DiskInfo structure.
                 DOTNETDUPE_API static DiskInfo GetProcessDiskUsage(const String&amp; sProcessName);
+
+                /// \brief Queries network transfer metrics for a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return NetworkUsageInfo structure.
                 DOTNETDUPE_API static NetworkUsageInfo GetProcessNetworkUsage(const String&amp; sProcessName);
+
+                /// \brief Retrieves open listening ports bound by a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return List of port numbers.
                 DOTNETDUPE_API static Collections::Generic::List&lt;int&gt; GetProcessNetworkPort(const String&amp; sProcessName);
+
+                /// \brief Queries detailed socket connections for a process by name.
+                /// \param sProcessName The process executable name.
+                /// \return ProcessNetworkConnectionInfo structure.
                 DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(const String&amp; sProcessName);
 
                 // Process-specific metrics by PID
+
+                /// \brief Retrieves open listening ports bound by a process by PID.
+                /// \param iProcessId Target process identifier.
+                /// \return List of port numbers.
                 DOTNETDUPE_API static Collections::Generic::List&lt;int&gt; GetProcessNetworkPort(int iProcessId);
+
+                /// \brief Queries socket connections for a process by PID.
+                /// \param iProcessId Target process identifier.
+                /// \return ProcessNetworkConnectionInfo structure.
                 DOTNETDUPE_API static ProcessNetworkConnectionInfo GetProcessNetworkInfo(int iProcessId);
+
+                /// \brief Enriches an existing ProcessInfo instance with CPU, memory, disk, and network telemetry.
+                /// \param proc Target ProcessInfo to populate.
+                /// \param bIncludeNetwork True to perform socket table scans.
+                /// \throws DotNetDupe::System::ArgumentException If process ID is invalid.
                 DOTNETDUPE_API static void EnrichProcessInfo(ProcessInfo&amp; proc, bool bIncludeNetwork = true);
 
                 // Progressive Streaming APIs
+
+                /// \brief Creates a background process streaming engine configured with options.
+                /// \param options Configuration settings for batching and depth.
+                /// \return Smart pointer to initialized ProcessStreamer.
                 DOTNETDUPE_API static SmartPointer&lt;ProcessStreamer&gt; CreateProcessStreamer(const ProcessStreamOptions&amp; options = ProcessStreamOptions());
+
+                /// \brief Asynchronously discovers processes on the host using fast discovery mode.
+                /// \param fnOnProcess Callback invoked for each discovered process.
+                /// \param fnOnComplete Optional callback invoked when enumeration finishes.
                 DOTNETDUPE_API static void EnumerateProcessesAsync(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess, const Action&lt;&gt;&amp; fnOnComplete = nullptr);
 
                 // Service enumeration API
+
+                /// \brief Enumerates all registered system background services and their current execution status.
+                /// \return List of ServiceInfo structures.
                 DOTNETDUPE_API static Collections::Generic::List&lt;ServiceInfo&gt; GetAllServices();
 
             private:

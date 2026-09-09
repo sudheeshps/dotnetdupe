@@ -53,29 +53,33 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            Stopwatch::~Stopwatch() = default;</span>
 
-<span style = "background-color:#dfd">            void Stopwatch::Start() {
-                if (!m_pImpl-&gt;isRunning) {
+<span style = "background-color:#dfd">            void Stopwatch::Start() {</span>
+                /// Capture starting timestamp if not already running.
+<span style = "background-color:#dfd">                if (!m_pImpl-&gt;isRunning) {
                     m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
                     m_pImpl-&gt;isRunning = true;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void Stopwatch::Stop() {
-                if (m_pImpl-&gt;isRunning) {
+<span style = "background-color:#dfd">            void Stopwatch::Stop() {</span>
+                /// Accumulate elapsed interval and mark as stopped.
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;isRunning) {
                     long long endTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
                     m_pImpl-&gt;elapsedTicks += (endTimeStamp - m_pImpl-&gt;startTimeStamp);
                     m_pImpl-&gt;isRunning = false;</span>
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void Stopwatch::Reset() {
-                m_pImpl-&gt;elapsedTicks = 0;
+<span style = "background-color:#dfd">            void Stopwatch::Reset() {</span>
+                /// Reset elapsed accumulator and state.
+<span style = "background-color:#dfd">                m_pImpl-&gt;elapsedTicks = 0;
                 m_pImpl-&gt;isRunning = false;
                 m_pImpl-&gt;startTimeStamp = 0;
             }</span>
 
-<span style = "background-color:#dfd">            void Stopwatch::Restart() {
-                m_pImpl-&gt;elapsedTicks = 0;
+<span style = "background-color:#dfd">            void Stopwatch::Restart() {</span>
+                /// Reset elapsed accumulator and start measuring immediately.
+<span style = "background-color:#dfd">                m_pImpl-&gt;elapsedTicks = 0;
                 m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
                 m_pImpl-&gt;isRunning = true;
             }</span>
@@ -84,19 +88,23 @@ namespace DotNetDupe {
                 return m_pImpl-&gt;isRunning;
             }</span>
 
-<span style = "background-color:#dfd">            TimeSpan Stopwatch::Elapsed() const {
-                return m_pImpl-&gt;timeProvider-&gt;GetElapsedTime(0, GetRawElapsedTicks());
+<span style = "background-color:#dfd">            TimeSpan Stopwatch::Elapsed() const {</span>
+                /// Compute TimeSpan from raw tick count.
+<span style = "background-color:#dfd">                return m_pImpl-&gt;timeProvider-&gt;GetElapsedTime(0, GetRawElapsedTicks());
             }</span>
 
-<span style = "background-color:#fdd">            long long Stopwatch::ElapsedMilliseconds() const {
-                return (long long)Elapsed().GetTotalMilliseconds();
+<span style = "background-color:#fdd">            long long Stopwatch::ElapsedMilliseconds() const {</span>
+                /// Return elapsed milliseconds.
+<span style = "background-color:#fdd">                return (long long)Elapsed().GetTotalMilliseconds();
             }</span>
 
-<span style = "background-color:#dfd">            long long Stopwatch::ElapsedTicks() const {
-                return (long long)Elapsed().GetTicks();
+<span style = "background-color:#dfd">            long long Stopwatch::ElapsedTicks() const {</span>
+                /// Return elapsed ticks.
+<span style = "background-color:#dfd">                return (long long)Elapsed().GetTicks();
             }</span>
 
             long long Stopwatch::GetRawElapsedTicks() const {
+                /// Add current running interval to accumulated ticks.
                 long long elapsed = m_pImpl-&gt;elapsedTicks;
                 if (m_pImpl-&gt;isRunning) {
                     elapsed += (m_pImpl-&gt;timeProvider-&gt;GetTimestamp() - m_pImpl-&gt;startTimeStamp);
@@ -104,19 +112,22 @@ namespace DotNetDupe {
                 return elapsed;
             }
 
-<span style = "background-color:#dfd">            Stopwatch Stopwatch::StartNew() {
-                Stopwatch sw;
+<span style = "background-color:#dfd">            Stopwatch Stopwatch::StartNew() {</span>
+                /// Create and start new stopwatch.
+<span style = "background-color:#dfd">                Stopwatch sw;
                 sw.Start();</span>
                 return sw;
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#fdd">            Stopwatch Stopwatch::StartNew(const TimeProviderPtr&amp; timeProvider) {
-                Stopwatch sw(timeProvider);
+<span style = "background-color:#fdd">            Stopwatch Stopwatch::StartNew(const TimeProviderPtr&amp; timeProvider) {</span>
+                /// Create and start new stopwatch with custom provider.
+<span style = "background-color:#fdd">                Stopwatch sw(timeProvider);
                 sw.Start();</span>
                 return sw;
 <span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            long long Stopwatch::GetTimestamp() {</span>
+                /// Retrieve high-resolution hardware timestamp.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
 <span style = "background-color:#dfd">                QueryPerformanceCounter(&amp;li);

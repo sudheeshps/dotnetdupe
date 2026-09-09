@@ -11,34 +11,51 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/Object.h"
+
 namespace DotNetDupe {
     namespace System {
-<span style = "background-color:#fdd">        bool Object::operator==(const Object&amp; obj) const {
-            return this == &amp;obj;
+<span style = "background-color:#fdd">        bool Object::operator==(const Object&amp; obj) const {</span>
+            /// Compare underlying memory addresses to determine pointer-level identity.
+<span style = "background-color:#fdd">            return this == &amp;obj;
         }</span>
 
-<span style = "background-color:#fdd">        bool Object::Equals(const Object&amp; obj) const {
-            return *this == obj;
+<span style = "background-color:#fdd">        bool Object::Equals(const Object&amp; obj) const {</span>
+            /// Virtual equality delegates to operator== by default for derived overrides.
+<span style = "background-color:#fdd">            return *this == obj;
         }</span>
 
-<span style = "background-color:#fdd">        bool Object::Equals(const Object&amp; obj1, const Object&amp; obj2) {
-            return obj1 == obj2;
-        }
-        int Object::GetHashCode() const {
-            return 0;
-        }
-        wchar_t* Object::ToStringW() const {
-            return nullptr;
-        }
-        char* Object::ToStringA() const {
-            return nullptr;
+<span style = "background-color:#fdd">        bool Object::Equals(const Object&amp; obj1, const Object&amp; obj2) {</span>
+            /// Delegate to equality operator between instances.
+<span style = "background-color:#fdd">            return obj1 == obj2;
+        }</span>
+
+<span style = "background-color:#fdd">        int Object::GetHashCode() const {</span>
+            /// Return default zero base; specialized derived classes override with custom hash algorithms.
+<span style = "background-color:#fdd">            return 0;
+        }</span>
+
+<span style = "background-color:#fdd">        wchar_t* Object::ToStringW() const {</span>
+            /// Base object returns null wide-character representation.
+<span style = "background-color:#fdd">            return nullptr;
+        }</span>
+
+<span style = "background-color:#fdd">        char* Object::ToStringA() const {</span>
+            /// Base object returns null narrow-character representation.
+<span style = "background-color:#fdd">            return nullptr;
         }</span>
     }
 }
 
 namespace DotNetDupe::System {
-<span style = "background-color:#dfd">    DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size) { return ::operator new(size); }
-    DOTNETDUPE_API void FreeCollectionBuffer(void* p) { ::operator delete(p); }</span>
+<span style = "background-color:#dfd">    DOTNETDUPE_API void* AllocateCollectionBuffer(size_t size) {</span>
+        /// Route directly to global operator new for aligned collection buffer allocation.
+<span style = "background-color:#dfd">        return ::operator new(size);</span>
+    }
+
+<span style = "background-color:#dfd">    DOTNETDUPE_API void FreeCollectionBuffer(void* p) {</span>
+        /// Release collection buffer memory back to heap via global operator delete.
+<span style = "background-color:#dfd">        ::operator delete(p);</span>
+    }
 }
 </pre>
         <hr />

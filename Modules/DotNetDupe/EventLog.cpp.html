@@ -84,6 +84,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             EventLogEntryType EventLog::MapWin32EventType(WORD wType) {
+                /// Step: Convert native Windows EVENTLOG type word to EventLogEntryType.
                 if (wType == EVENTLOG_ERROR_TYPE) return EventLogEntryType::Error;
                 if (wType == EVENTLOG_WARNING_TYPE) return EventLogEntryType::Warning;
                 if (wType == EVENTLOG_AUDIT_SUCCESS) return EventLogEntryType::SuccessAudit;
@@ -91,19 +92,23 @@ namespace DotNetDupe {
                 return EventLogEntryType::Information;
             }
 
-<span style = "background-color:#dfd">            EventLogEntry EventLog::ParseWin32Record(const PEVENTLOGRECORD pRec) {
-                EventLogEntryType eType = MapWin32EventType(pRec-&gt;EventType);
+<span style = "background-color:#dfd">            EventLogEntry EventLog::ParseWin32Record(const PEVENTLOGRECORD pRec) {</span>
+                /// Step: Extract event record source and message strings.
+<span style = "background-color:#dfd">                EventLogEntryType eType = MapWin32EventType(pRec-&gt;EventType);
                 std::string sSrc = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + sizeof(EVENTLOGRECORD)));
                 String sMsg = "";
                 if (pRec-&gt;NumStrings &gt; 0) {
                     std::string sNarrowMsg = Utils::StringConvert::WCharToUtf8((wchar_t*)((BYTE*)pRec + pRec-&gt;StringOffset));
                     sMsg = String(sNarrowMsg.c_str());
-                }
-                int64_t iTicks = ((int64_t)pRec-&gt;TimeGenerated + 62135596800LL) * 10000000LL;
+                }</span>
+
+                /// Step: Convert Windows time to .NET 100-nanosecond ticks.
+<span style = "background-color:#dfd">                int64_t iTicks = ((int64_t)pRec-&gt;TimeGenerated + 62135596800LL) * 10000000LL;
                 return EventLogEntry(sMsg, eType, (int)pRec-&gt;EventID, String(sSrc.c_str()), DateTimeOffset(iTicks));
             }</span>
 
             void EventLog::ProcessWin32EventBuffer(BYTE* buffer, DWORD dwBytesRead, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                /// Step: Iterate variable-length EVENTLOGRECORD headers across buffer.
                 DWORD dwOffset = 0;
                 while (dwOffset &lt; dwBytesRead) {
                     PEVENTLOGRECORD pRec = (PEVENTLOGRECORD)&amp;buffer[dwOffset];
@@ -113,6 +118,7 @@ namespace DotNetDupe {
             }
 
             static WORD MapEventLogEntryTypeToWin32(EventLogEntryType eType) {
+                /// Step: Map library EventLogEntryType enum to native EVENTLOG type.
                 if (eType == EventLogEntryType::Error) return EVENTLOG_ERROR_TYPE;
                 if (eType == EventLogEntryType::Warning) return EVENTLOG_WARNING_TYPE;
                 if (eType == EventLogEntryType::SuccessAudit) return EVENTLOG_AUDIT_SUCCESS;
@@ -121,6 +127,7 @@ namespace DotNetDupe {
             }
 
             static void ValidateWin32ReportResult(BOOL bReported, DWORD dwErr, const String&amp; sSource) {
+                /// Step: Verify ReportEvent status and report Win32 errors.
                 if (!bReported) {
                     if (dwErr == ERROR_ACCESS_DENIED) {
                         throw UnauthorizedAccessException("Access denied writing to EventLog for source: " + sSource);
@@ -129,8 +136,9 @@ namespace DotNetDupe {
                 }
             }
 
-<span style = "background-color:#dfd">            static HANDLE OpenWin32EventLogHandle(const String&amp; sLogName) {
-                std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
+<span style = "background-color:#dfd">            static HANDLE OpenWin32EventLogHandle(const String&amp; sLogName) {</span>
+                /// Step: Open native event log handle via OpenEventLogW.
+<span style = "background-color:#dfd">                std::string sStdLogName(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogName(sStdLogName.begin(), sStdLogName.end());
                 HANDLE h = ::OpenEventLogW(NULL, wLogName.c_str());
                 if (!h) {</span>
@@ -142,8 +150,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return h;
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::ReadWin32EventLog(const String&amp; sLogName, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
-                HANDLE hEventLog = OpenWin32EventLogHandle(sLogName);
+<span style = "background-color:#dfd">            void EventLog::ReadWin32EventLog(const String&amp; sLogName, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {</span>
+                /// Step: Open log and read records sequentially backwards.
+<span style = "background-color:#dfd">                HANDLE hEventLog = OpenWin32EventLogHandle(sLogName);
                 DWORD dwBytesRead = 0, dwNeeded = 0;</span>
                 BYTE buffer[0x10000];
 <span style = "background-color:#dfd">                while (::ReadEventLogW(hEventLog, EVENTLOG_SEQUENTIAL_READ | EVENTLOG_BACKWARDS_READ, 0, buffer, sizeof(buffer), &amp;dwBytesRead, &amp;dwNeeded)) {
@@ -152,8 +161,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                ::CloseEventLog(hEventLog);
             }</span>
 
-<span style = "background-color:#dfd">            static HANDLE RegisterWin32EventSourceHandle(const String&amp; sSource) {
-                std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
+<span style = "background-color:#dfd">            static HANDLE RegisterWin32EventSourceHandle(const String&amp; sSource) {</span>
+                /// Step: Register event source with Windows Event Log subsystem.
+<span style = "background-color:#dfd">                std::string sStdSource(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSource(sStdSource.begin(), sStdSource.end());
                 HANDLE h = ::RegisterEventSourceW(NULL, wSource.c_str());
                 if (!h) {</span>
@@ -164,8 +174,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return h;
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::WriteWin32EventLog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
-                HANDLE hEventLog = RegisterWin32EventSourceHandle(sSource);
+<span style = "background-color:#dfd">            void EventLog::WriteWin32EventLog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {</span>
+                /// Step: Register event source and report event record.
+<span style = "background-color:#dfd">                HANDLE hEventLog = RegisterWin32EventSourceHandle(sSource);
                 std::string sStdMsg(sMessage.GetRawString() ? sMessage.GetRawString() : "");
                 std::wstring wMsg(sStdMsg.begin(), sStdMsg.end());
                 LPCWSTR pStrings[1] = { wMsg.c_str() };
@@ -175,8 +186,9 @@ namespace DotNetDupe {
                 ValidateWin32ReportResult(bReported, dwErr, sSource);
             }</span>
 
-<span style = "background-color:#dfd">            bool EventLog::CreateWin32EventSource(const String&amp; sSource, const String&amp; sLogName) {
-                std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
+<span style = "background-color:#dfd">            bool EventLog::CreateWin32EventSource(const String&amp; sSource, const String&amp; sLogName) {</span>
+                /// Step: Register new event source in Windows registry under HKLM.
+<span style = "background-color:#dfd">                std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" +</span>
                                       std::wstring(sStdLog.begin(), sStdLog.end()) + L"\\" +
@@ -193,8 +205,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                return false;</span>
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            bool EventLog::Win32SourceExists(const String&amp; sSource) {
-                std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
+<span style = "background-color:#dfd">            bool EventLog::Win32SourceExists(const String&amp; sSource) {</span>
+                /// Step: Check registry under Application, System, and Security for registered source.
+<span style = "background-color:#dfd">                std::string sStdSrc(sSource.GetRawString() ? sSource.GetRawString() : "");
                 const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sStdSrc.begin(), sStdSrc.end());
@@ -207,8 +220,9 @@ namespace DotNetDupe {
                 return false;
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::DeleteWin32EventSource(const String&amp; sSource) {
-                const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
+<span style = "background-color:#dfd">            void EventLog::DeleteWin32EventSource(const String&amp; sSource) {</span>
+                /// Step: Delete registered event source key from HKLM registry.
+<span style = "background-color:#dfd">                const wchar_t* subKeys[] = { L"Application", L"System", L"Security" };
                 for (const wchar_t* pLog : subKeys) {
                     std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(pLog) + L"\\" + std::wstring(sSource.GetRawString(), sSource.GetRawString() + sSource.GetLength());
                     LONG lRes = ::RegDeleteKeyW(HKEY_LOCAL_MACHINE, wSubKey.c_str());
@@ -219,6 +233,7 @@ namespace DotNetDupe {
             }</span>
 #else
             void EventLog::WriteLinuxSyslog(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
+                /// Step: Map severity and write message via POSIX syslog(3).
                 int iPriority = LOG_INFO;
                 const char* szLevelStr = "Information";
                 if (eType == EventLogEntryType::Error) { iPriority = LOG_ERR; szLevelStr = "Error"; }
@@ -233,6 +248,7 @@ namespace DotNetDupe {
             }
 
             EventLogEntry EventLog::ParseSyslogLine(const String&amp; sLine) {
+                /// Step: Parse syslog line format into EventLogEntry.
                 EventLogEntryType eType = EventLogEntryType::Information;
                 std::string line = sLine.GetRawString() ? sLine.GetRawString() : "";
 
@@ -252,6 +268,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::ReadLinuxSyslogFile(const String&amp; sFilePath, Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                /// Step: Read syslog text file lines.
                 std::ifstream infile(sFilePath.GetRawString() ? sFilePath.GetRawString() : "");
                 if (!infile.is_open()) return;
 
@@ -263,6 +280,7 @@ namespace DotNetDupe {
             }
 
             void EventLog::ReadLinuxSyslog(Collections::Generic::List&lt;EventLogEntry&gt;&amp; lstEntries) {
+                /// Step: Search standard syslog paths (/var/log/syslog, /var/log/messages).
                 const char* syslogPaths[] = { "/var/log/syslog", "/var/log/messages" };
                 for (const char* path : syslogPaths) {
                     struct stat st;
@@ -274,14 +292,16 @@ namespace DotNetDupe {
             }
 #endif
 
-<span style = "background-color:#dfd">            Collections::Generic::List&lt;EventLogEntry&gt; EventLog::GetEntries() const {
-                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
+<span style = "background-color:#dfd">            Collections::Generic::List&lt;EventLogEntry&gt; EventLog::GetEntries() const {</span>
+                /// Step: Synchronize and query platform event logs.
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 Collections::Generic::List&lt;EventLogEntry&gt; lstEntries;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                ReadWin32EventLog(m_sLogName, lstEntries);</span>
 #else
                 ReadLinuxSyslog(lstEntries);
 #endif
+                /// Step: Merge entries recorded in the in-memory fallback store.
 <span style = "background-color:#dfd">                auto it = s_mapLogEntries.find(m_sLogName);
                 if (it != s_mapLogEntries.end()) {
                     for (const auto&amp; entry : it-&gt;second) {
@@ -312,8 +332,9 @@ namespace DotNetDupe {
                 WriteEntry(sSource, sMessage, eType, 0);</span>
             }
 
-<span style = "background-color:#dfd">            void EventLog::RecordInternalLogEntry(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
-                String sTargetLog = "Application";
+<span style = "background-color:#dfd">            void EventLog::RecordInternalLogEntry(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {</span>
+                /// Step: Map source to log name and save in internal store.
+<span style = "background-color:#dfd">                String sTargetLog = "Application";
                 auto itSource = s_mapSourceToLog.find(sSource);
                 if (itSource != s_mapSourceToLog.end()) {
                     sTargetLog = itSource-&gt;second;
@@ -324,15 +345,19 @@ namespace DotNetDupe {
                 s_mapLogEntries[sTargetLog].push_back(entry);
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::WriteEntry(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {
-                if (sSource.IsEmpty()) {
+<span style = "background-color:#dfd">            void EventLog::WriteEntry(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {</span>
+                /// Step: Validate parameter constraints.
+<span style = "background-color:#dfd">                if (sSource.IsEmpty()) {
                     throw ArgumentException("Source cannot be empty when writing to event log.");</span>
                 }
+
+                /// Step: Dispatch write to native platform logger.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                WriteWin32EventLog(sSource, sMessage, eType, iEventID);</span>
 #else
                 WriteLinuxSyslog(sSource, sMessage, eType, iEventID);
 #endif
+                /// Step: Synchronize and record in memory fallback table.
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 RecordInternalLogEntry(sSource, sMessage, eType, iEventID);
             }</span>
@@ -341,8 +366,9 @@ namespace DotNetDupe {
                 return SourceExists(sSource, ".");
             }</span>
 
-<span style = "background-color:#dfd">            bool EventLog::SourceExists(const String&amp; sSource, const String&amp; sMachineName) {
-                if (sSource.IsEmpty()) return false;</span>
+<span style = "background-color:#dfd">            bool EventLog::SourceExists(const String&amp; sSource, const String&amp; sMachineName) {</span>
+                /// Step: Check source existence on native platform and fallback map.
+<span style = "background-color:#dfd">                if (sSource.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (Win32SourceExists(sSource)) return true;</span>
 #endif
@@ -350,8 +376,9 @@ namespace DotNetDupe {
                 return s_mapSourceToLog.find(sSource) != s_mapSourceToLog.end();
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::CreateEventSource(const String&amp; sSource, const String&amp; sLogName) {
-                if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
+<span style = "background-color:#dfd">            void EventLog::CreateEventSource(const String&amp; sSource, const String&amp; sLogName) {</span>
+                /// Step: Guard parameter and register event source.
+<span style = "background-color:#dfd">                if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");
                 String sEffectiveLog = sLogName.IsEmpty() ? String("Application") : sLogName;</span>
 #if defined(_WIN32)
                 try {
@@ -375,8 +402,9 @@ namespace DotNetDupe {
                 Delete(sLogName, ".");
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::PurgeSourcesForLog(const String&amp; sLogName) {
-                std::vector&lt;String&gt; vSourcesToRemove;
+<span style = "background-color:#dfd">            void EventLog::PurgeSourcesForLog(const String&amp; sLogName) {</span>
+                /// Step: Purge source mapping associations for deleted log.
+<span style = "background-color:#dfd">                std::vector&lt;String&gt; vSourcesToRemove;
                 for (const auto&amp; pair : s_mapSourceToLog) {
                     if (pair.second == sLogName) vSourcesToRemove.push_back(pair.first);</span>
                 }
@@ -385,8 +413,9 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            void EventLog::Delete(const String&amp; sLogName, const String&amp; sMachineName) {
-                if (sLogName.IsEmpty()) throw ArgumentException("Log name cannot be empty.");</span>
+<span style = "background-color:#dfd">            void EventLog::Delete(const String&amp; sLogName, const String&amp; sMachineName) {</span>
+                /// Step: Validate parameter and delete log registry key.
+<span style = "background-color:#dfd">                if (sLogName.IsEmpty()) throw ArgumentException("Log name cannot be empty.");</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wLogKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(sStdLog.begin(), sStdLog.end());
@@ -401,8 +430,9 @@ namespace DotNetDupe {
                 DeleteEventSource(sSource, ".");
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::DeleteEventSource(const String&amp; sSource, const String&amp; sMachineName) {
-                if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");</span>
+<span style = "background-color:#dfd">            void EventLog::DeleteEventSource(const String&amp; sSource, const String&amp; sMachineName) {</span>
+                /// Step: Validate parameter and delete event source.
+<span style = "background-color:#dfd">                if (sSource.IsEmpty()) throw ArgumentException("Source cannot be empty.");</span>
 #if defined(_WIN32)
                 try {
 <span style = "background-color:#dfd">                    DeleteWin32EventSource(sSource);</span>
@@ -421,8 +451,9 @@ namespace DotNetDupe {
                 return Exists(sLogName, ".");
             }</span>
 
-<span style = "background-color:#dfd">            bool EventLog::Exists(const String&amp; sLogName, const String&amp; sMachineName) {
-                if (sLogName.IsEmpty()) return false;</span>
+<span style = "background-color:#dfd">            bool EventLog::Exists(const String&amp; sLogName, const String&amp; sMachineName) {</span>
+                /// Step: Verify log existence via registry or internal store.
+<span style = "background-color:#dfd">                if (sLogName.IsEmpty()) return false;</span>
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::string sStdLog(sLogName.GetRawString() ? sLogName.GetRawString() : "");
                 std::wstring wSubKey = L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\" + std::wstring(sStdLog.begin(), sStdLog.end());
@@ -442,8 +473,9 @@ namespace DotNetDupe {
                 return GetEventLogs(".");
             }</span>
 
-<span style = "background-color:#fdd">            Collections::Generic::List&lt;EventLog&gt; EventLog::GetEventLogs(const String&amp; sMachineName) {
-                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
+<span style = "background-color:#fdd">            Collections::Generic::List&lt;EventLog&gt; EventLog::GetEventLogs(const String&amp; sMachineName) {</span>
+                /// Step: Enumerate all registered event log stores.
+<span style = "background-color:#fdd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 Collections::Generic::List&lt;EventLog&gt; lstLogs;
                 for (const auto&amp; pair : s_mapLogEntries) {
                     lstLogs.Add(EventLog(pair.first, sMachineName));</span>
@@ -452,6 +484,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            void EventLog::Clear() {</span>
+                /// Step: Clear native event log via ClearEventLogW.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                std::string sStdLog(m_sLogName.GetRawString() ? m_sLogName.GetRawString() : "");
                 std::wstring wLog(sStdLog.begin(), sStdLog.end());
@@ -461,12 +494,14 @@ namespace DotNetDupe {
                     ::CloseEventLog(hLog);</span>
                 }
 #endif
+                /// Step: Clear in-memory event entries.
 <span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lock(s_mtxEventLog);
                 s_mapLogEntries[m_sLogName].clear();
             }</span>
 
-<span style = "background-color:#dfd">            void EventLog::Close() {
-            }</span>
+<span style = "background-color:#dfd">            void EventLog::Close() {</span>
+                /// Step: Close resources associated with event log.
+<span style = "background-color:#dfd">            }</span>
 
         }
     }

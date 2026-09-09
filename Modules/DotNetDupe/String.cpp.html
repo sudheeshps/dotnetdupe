@@ -74,22 +74,29 @@ namespace DotNetDupe {
 		}
 <span style = "background-color:#dfd">		String::String() { m_pImpl = new StringImpl("");  }
 		String::~String() { delete m_pImpl; }</span>
+
 		static void AppendExplicitArg(const std::string&amp; sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+			/// Extract integer argument index between placeholder braces {N}.
 			std::string num = sFmt.substr(i + 1, end - i - 1);
 			size_t idx = 0;
 			int argIdx = std::stoi(num, &amp;idx);
 			if (idx != num.length() || argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");
+
+			/// Append resolved string argument to target buffer.
 			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
 		}
 
-<span style = "background-color:#dfd">		static void FormatOpenBrace(const std::string&amp; sFmt, size_t&amp; i, int&amp; iAutoIndex, const String* pArgs, int iArgCount, std::string&amp; sRes) {
-			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '{') {
+<span style = "background-color:#dfd">		static void FormatOpenBrace(const std::string&amp; sFmt, size_t&amp; i, int&amp; iAutoIndex, const String* pArgs, int iArgCount, std::string&amp; sRes) {</span>
+			/// Handle escaped open brace '{{' by appending a single literal '{'.
+<span style = "background-color:#dfd">			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '{') {
 				sRes += '{'; i++;
 			} else if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {</span>
+				/// Handle auto-indexed placeholder '{}' by advancing sequential index.
 <span style = "background-color:#fdd">				if (iAutoIndex &gt;= iArgCount) throw FormatException("Index out of bounds");
 				sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
 				iAutoIndex++; i++;
 			} else {</span>
+				/// Scan for closing delimiter and resolve explicit positional argument.
 <span style = "background-color:#dfd">				size_t end = sFmt.find('}', i + 1);
 				if (end == std::string::npos) throw FormatException("Unclosed brace");
 				AppendExplicitArg(sFmt, i, end, pArgs, iArgCount, sRes);
@@ -98,17 +105,21 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">		}</span>
 
 		static void FormatClosingBrace(const std::string&amp; sFmt, size_t&amp; i, std::string&amp; sRes) {
+			/// Handle escaped closing brace '}}' by appending a literal '}'.
 			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {
 				sRes += '}'; i++;
 			} else {
+				/// Reject isolated, unescaped closing brace as malformed format syntax.
 				throw FormatException("Unescaped closing brace");
 			}
 		}
 
-<span style = "background-color:#dfd">		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
-			if (!pFormat) throw ArgumentException("Format string cannot be null.");
+<span style = "background-color:#dfd">		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {</span>
+			/// Guard: Validate format string pointer and argument array.
+<span style = "background-color:#dfd">			if (!pFormat) throw ArgumentException("Format string cannot be null.");
 			if (iArgCount == 0 || !pArgs) return String(pFormat);</span>
 
+			/// Parse format string and sequentially substitute placeholders.
 <span style = "background-color:#dfd">			std::string sFmt = pFormat;
 			std::string sRes;
 			int iAutoIndex = 0;
@@ -121,6 +132,8 @@ namespace DotNetDupe {
 					sRes += sFmt[i];</span>
 				}
 			}
+
+			/// Return constructed composite string.
 <span style = "background-color:#dfd">			return String(sRes.c_str());
 		}</span>
 
@@ -227,6 +240,9 @@ namespace DotNetDupe {
 		}
 		const char* String::GetRawString() const {
 			return m_pImpl-&gt;s.c_str();
+		}
+		const char* String::GetChars() const {
+			return GetRawString();
 		}
 		int String::GetHashCode() const {
 			const char* p = GetRawString();

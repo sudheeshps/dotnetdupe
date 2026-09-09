@@ -62,15 +62,20 @@ namespace {
 <span style = "background-color:#dfd">void InternalWrite(const String&amp; sValue) {
     SmartPointer&lt;IO::TextWriter&gt; pWriter = nullptr;</span>
     {
+        /// Acquire recursive mutex lock for thread-safe output dispatch.
 <span style = "background-color:#dfd">        std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
         s_accumulator = s_accumulator + sValue;
-        pWriter = s_pOutWriter;
-        if (!pWriter) {
+        pWriter = s_pOutWriter;</span>
+
+        /// Output directly to std::cout if standard output writer is not redirected.
+<span style = "background-color:#dfd">        if (!pWriter) {
             std::cout &lt;&lt; sValue.GetRawString() &lt;&lt; std::flush;
             return;</span>
         }
-<span style = "background-color:#fdd">    }
-    pWriter-&gt;Write(sValue);</span>
+<span style = "background-color:#fdd">    }</span>
+
+    /// Dispatch output to custom redirected TextWriter.
+<span style = "background-color:#fdd">    pWriter-&gt;Write(sValue);</span>
 <span style = "background-color:#dfd">}</span>
 
 <span style = "background-color:#dfd">void InternalWriteLine(const String&amp; sValue) {

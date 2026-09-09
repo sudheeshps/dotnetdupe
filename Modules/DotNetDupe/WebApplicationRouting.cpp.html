@@ -19,10 +19,12 @@ namespace DotNetDupe {
         namespace Builder {
             namespace Internal {
 
-<span style = "background-color:#dfd">                std::vector&lt;std::string&gt; GetPathSegments(const std::string&amp; path) {
-                    std::vector&lt;std::string&gt; segments;
+<span style = "background-color:#dfd">                std::vector&lt;std::string&gt; GetPathSegments(const std::string&amp; path) {</span>
+                    /// Initialize: Segment token vector.
+<span style = "background-color:#dfd">                    std::vector&lt;std::string&gt; segments;
                     std::string segment;</span>
 
+                    /// Parse: Split path by '/' delimiters.
 <span style = "background-color:#dfd">                    for (char c : path) {
                         if (c == '/') {
                             if (!segment.empty()) {
@@ -38,15 +40,18 @@ namespace DotNetDupe {
                         segments.push_back(segment);</span>
                     }
 
+                    /// Return result: Return path segments.
 <span style = "background-color:#dfd">                    return segments;
                 }</span>
 
-<span style = "background-color:#dfd">                bool MatchCatchAllRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
-                    size_t fixedCount = patternSegs.size() - 1;
+<span style = "background-color:#dfd">                bool MatchCatchAllRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {</span>
+                    /// Guard: Ensure path length is at least the number of fixed pattern segments.
+<span style = "background-color:#dfd">                    size_t fixedCount = patternSegs.size() - 1;
                     if (pathSegs.size() &lt; fixedCount) {</span>
                         return false;
                     }
 
+                    /// Match: Compare prefix segments prior to the catch-all parameter.
 <span style = "background-color:#dfd">                    for (size_t i = 0; i &lt; fixedCount; ++i) {</span>
 <span style = "background-color:#fdd">                        const std::string&amp; patternSeg = patternSegs[i];
                         const std::string&amp; pathSeg = pathSegs[i];
@@ -58,6 +63,7 @@ namespace DotNetDupe {
                         }
                     }
 
+                    /// Extract: Collect remaining path segments into the catch-all value.
 <span style = "background-color:#dfd">                    std::string catchAllName = patternSegs.back().substr(2, patternSegs.back().length() - 3);
                     std::string restPath;
                     for (size_t i = fixedCount; i &lt; pathSegs.size(); ++i) {
@@ -71,11 +77,13 @@ namespace DotNetDupe {
                     return true;
                 }</span>
 
-<span style = "background-color:#dfd">                bool MatchStandardRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
-                    if (patternSegs.size() != pathSegs.size()) {</span>
+<span style = "background-color:#dfd">                bool MatchStandardRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {</span>
+                    /// Guard: Segment count must match exactly.
+<span style = "background-color:#dfd">                    if (patternSegs.size() != pathSegs.size()) {</span>
                         return false;
                     }
 
+                    /// Match: Compare segments or bind route placeholder parameters.
 <span style = "background-color:#dfd">                    for (size_t i = 0; i &lt; patternSegs.size(); ++i) {
                         const std::string&amp; patternSeg = patternSegs[i];
                         const std::string&amp; pathSeg = pathSegs[i];
@@ -87,45 +95,44 @@ namespace DotNetDupe {
                         }
                     }
 
+                    /// Return result: Route matched successfully.
 <span style = "background-color:#dfd">                    return true;
                 }</span>
 
                 bool MatchRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
+                    /// Check: Route has wildcard catch-all pattern suffix.
                     if (!patternSegs.empty() &amp;&amp; patternSegs.back().length() &gt;= 3 &amp;&amp; patternSegs.back().front() == '{' &amp;&amp; patternSegs.back()[1] == '*' &amp;&amp; patternSegs.back().back() == '}') {
                         return MatchCatchAllRoute(patternSegs, pathSegs, extractedParams);
                     }
 
+                    /// Fallback: Evaluate standard exact segment matching.
                     return MatchStandardRoute(patternSegs, pathSegs, extractedParams);
                 }
 
-<span style = "background-color:#dfd">                void ParseServerUrl(const std::string&amp; sUrl, std::string&amp; host, int&amp; port) {
-                    host = "127.0.0.1";
+<span style = "background-color:#dfd">                void ParseServerUrl(const std::string&amp; sUrl, std::string&amp; host, int&amp; port) {</span>
+                    /// Initialize: Default host and port.
+<span style = "background-color:#dfd">                    host = "127.0.0.1";
                     port = 5000;</span>
 
+                    /// Parse: Strip protocol prefix if present.
 <span style = "background-color:#dfd">                    size_t protocolPos = sUrl.find("://");
                     std::string hostPort = (protocolPos != std::string::npos) ? sUrl.substr(protocolPos + 3) : sUrl;</span>
 
+                    /// Parse: Extract host and optional port.
 <span style = "background-color:#dfd">                    size_t colonPos = hostPort.find(':');</span>
 <span style = "background-color:#fdd">                    if (colonPos != std::string::npos) {</span>
 <span style = "background-color:#dfd">                        host = hostPort.substr(0, colonPos);
                         std::string sPort = hostPort.substr(colonPos + 1);
                         size_t slashPos = sPort.find('/');</span>
-<span style = "background-color:#fdd">                        if (slashPos != std::string::npos) {
-                            sPort = sPort.substr(0, slashPos);</span>
-                        }
-                        try {
-<span style = "background-color:#dfd">                            port = std::stoi(sPort);</span>
-<span style = "background-color:#fdd">                        } catch (const std::exception&amp;) {
-                            port = 5000;
-                        }</span>
-<span style = "background-color:#dfd">                    } else {</span>
+<span style = "background-color:#fdd">                        if (slashPos != std::string::npos) sPort = sPort.substr(0, slashPos);</span>
+<span style = "background-color:#dfd">                        try { port = std::stoi(sPort); } catch (const std::exception&amp;) { port = 5000; }
+                    } else {</span>
 <span style = "background-color:#fdd">                        size_t slashPos = hostPort.find('/');
                         host = (slashPos != std::string::npos) ? hostPort.substr(0, slashPos) : hostPort;</span>
                     }
 
-<span style = "background-color:#fdd">                    if (host == "localhost") {
-                        host = "127.0.0.1";</span>
-                    }
+                    /// Normalize: Translate localhost to loopback IP.
+<span style = "background-color:#fdd">                    if (host == "localhost") host = "127.0.0.1";</span>
 <span style = "background-color:#dfd">                }</span>
 
             }

@@ -34,8 +34,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}</span>
 
-<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
-                if (bInitiallyOwned) {
+<span style = "background-color:#dfd">            Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {</span>
+                /// Acquire lock immediately if requested.
+<span style = "background-color:#dfd">                if (bInitiallyOwned) {
                     _pImpl-&gt;mutex.lock();</span>
                 }
 <span style = "background-color:#dfd">            }</span>
@@ -49,6 +50,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static HANDLE OpenOrCreateWin32Mutex(const std::wstring&amp; wsName, bool bInitiallyOwned, bool openAlways, bool&amp; bCreatedNew) {
+                /// Attempt to create system mutex.
                 HANDLE hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
                 if (hHandle != NULL) {
                     bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
@@ -57,6 +59,8 @@ namespace DotNetDupe {
                 if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied creating Mutex synchronization object.");
                 }
+
+                /// Handle openAlways semantics.
                 bCreatedNew = false;
                 if (!openAlways) {
                     throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");
@@ -75,6 +79,7 @@ namespace DotNetDupe {
             Mutex::Mutex(bool bInitiallyOwned, const String&amp; sName, bool openAlways, bool&amp; bCreatedNew)
 <span style = "background-color:#dfd">                : _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {</span>
 #if defined(_WIN32)
+                /// Named mutex initialization on Win32.
 <span style = "background-color:#dfd">                if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
@@ -93,6 +98,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            Mutex::~Mutex() {</span>
+                /// Clean up operating system handle and internal implementation.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     ::CloseHandle((HANDLE)_hHandle);
@@ -105,22 +111,27 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
-<span style = "background-color:#dfd">            SmartPointer&lt;Mutex&gt; Mutex::OpenExisting(const String&amp; sName) {
-                SmartPointer&lt;Mutex&gt; pResult = nullptr;
+<span style = "background-color:#dfd">            SmartPointer&lt;Mutex&gt; Mutex::OpenExisting(const String&amp; sName) {</span>
+                /// Open existing mutex by name.
+<span style = "background-color:#dfd">                SmartPointer&lt;Mutex&gt; pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;</span>
                 }
 <span style = "background-color:#dfd">                throw WaitHandleCannotBeOpenedException("No mutex handle of the given name exists.");
             }</span>
 
-<span style = "background-color:#dfd">            bool Mutex::TryOpenExisting(const String&amp; sName, SmartPointer&lt;Mutex&gt;&amp; pResult) {
-                pResult = SmartPointer&lt;Mutex&gt;();
+<span style = "background-color:#dfd">            bool Mutex::TryOpenExisting(const String&amp; sName, SmartPointer&lt;Mutex&gt;&amp; pResult) {</span>
+                /// Guard: Check empty name.
+<span style = "background-color:#dfd">                pResult = SmartPointer&lt;Mutex&gt;();
                 if (sName.IsEmpty()) return false;</span>
+
 #if defined(_WIN32)
+                /// Attempt Win32 OpenMutexW call.
 <span style = "background-color:#dfd">                std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
-                if (h == NULL) return false;
-                SmartPointer&lt;Mutex&gt; spM = SmartPointer&lt;Mutex&gt;::NewShared();
+                if (h == NULL) return false;</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;Mutex&gt; spM = SmartPointer&lt;Mutex&gt;::NewShared();
                 spM-&gt;_name = sName;
                 spM-&gt;_hHandle = h;
                 pResult = std::move(spM);
@@ -131,6 +142,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            bool Mutex::WaitOne() {</span>
+                /// Synchronize via native OS handle or C++ timed mutex.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {</span>
 <span style = "background-color:#fdd">                    DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
@@ -142,6 +154,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            bool Mutex::WaitOne(int millisecondsTimeout) {</span>
+                /// Timed wait via native OS handle or std::timed_mutex.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);
@@ -158,6 +171,7 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            int Mutex::Release(int releaseCount) {</span>
+                /// Release lock ownership.
 #if defined(_WIN32)
 <span style = "background-color:#dfd">                if (_hHandle != nullptr) {
                     ::ReleaseMutex((HANDLE)_hHandle);</span>

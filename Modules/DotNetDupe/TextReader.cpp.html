@@ -34,9 +34,12 @@ namespace DotNetDupe {
                 return -1;
             }</span>
 
-<span style = "background-color:#fdd">            int TextReader::Read(char* pBuffer, int iIndex, int nCount) {
-                if (pBuffer == nullptr) return 0;
-                int iN = 0;
+<span style = "background-color:#fdd">            int TextReader::Read(char* pBuffer, int iIndex, int nCount) {</span>
+                /// Guard: Check null buffer.
+<span style = "background-color:#fdd">                if (pBuffer == nullptr) return 0;</span>
+
+                /// Read characters into buffer up to nCount.
+<span style = "background-color:#fdd">                int iN = 0;
                 while (iN &lt; nCount) {
                     int iCh = Read();
                     if (iCh == -1) break;
@@ -48,6 +51,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">            String TextReader::ReadLine() {
                 StringBuilder sbOutput;</span>
+
+                /// Read character loop consuming up to CR/LF or EOF.
                 while (true) {
 <span style = "background-color:#fdd">                    int iCh = Read();
                     if (iCh == -1) {
@@ -64,6 +69,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">            String TextReader::ReadToEnd() {
                 StringBuilder sbOutput;</span>
+
+                /// Consume all characters until EOF.
                 int iCh;
 <span style = "background-color:#fdd">                while ((iCh = Read()) != -1) {
                     sbOutput.Append((char)iCh);</span>

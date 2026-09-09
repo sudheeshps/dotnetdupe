@@ -2,15 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
         <meta charset="utf-8"/>
-	    <title>FileNotFoundException.h</title>
+	    <title>EndOfStreamException.h</title>
 	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
 	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
 	</head>
     <body onload="prettyPrint()">
         <h4></h4>
         <pre class="prettyprint lang-cpp linenums">
-/// \file FileNotFoundException.h
-/// \brief The exception that is thrown when an attempt to access a file that does not exist on disk fails.
+/// \file EndOfStreamException.h
+/// \brief The exception that is thrown when reading is attempted past the end of a stream.
 ///
 /// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
 
@@ -21,15 +21,15 @@ namespace DotNetDupe {
 	namespace System {
 		namespace IO {
 
-			/// \class FileNotFoundException
-			/// \brief The exception that is thrown when an attempt to access a file that does not exist on disk fails.
+			/// \class EndOfStreamException
+			/// \brief The exception that is thrown when reading is attempted past the end of a stream.
 			///
 			/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
-			class FileNotFoundException : public IOException {
+			class EndOfStreamException : public IOException {
 			public:
-				/// \brief Initializes a new instance of the FileNotFoundException class with a specified error message.
+				/// \brief Initializes a new instance of the EndOfStreamException class with a specified error message.
 				/// \param sMessage The error message that explains the reason for the exception.
-<span style = "background-color:#dfd">				FileNotFoundException(const String&amp; sMessage) : IOException(sMessage) { }</span>
+<span style = "background-color:#dfd">				EndOfStreamException(const String&amp; sMessage) : IOException(sMessage) { }</span>
 			};
 		}
 
