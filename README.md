@@ -758,7 +758,7 @@ For detailed information on the available classes, methods, and their usage, ple
 > [!TIP]
 > **Navigation**: Click any **Class Name** to inspect its C++ header interface, or click **📖** to open its generated Doxygen API reference.
 
-### Namespace: [`DotNetDupe::System`](Include/System/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html)
+### Namespace: [`DotNetDupe::System`](docs/html/namespace_dot_net_dupe_1_1_system.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html)
 
 **Core Primitives & Base Classes**
 
@@ -821,7 +821,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Collections::Generic`](Include/System/Collections/Generic/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html)
+### Namespace: [`DotNetDupe::System::Collections::Generic`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html)
 
 **Classes**
 
@@ -840,7 +840,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Collections::Concurrent`](Include/System/Collections/Concurrent/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html)
+### Namespace: [`DotNetDupe::System::Collections::Concurrent`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html)
 
 **Classes**
 
@@ -855,7 +855,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::IO`](Include/System/IO/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html)
+### Namespace: [`DotNetDupe::System::IO`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html)
 
 **Classes**
 
@@ -885,7 +885,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Threading`](Include/System/Threading/) & [`System::Threading::Tasks`](Include/System/Threading/Tasks/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html)
+### Namespace: [`DotNetDupe::System::Threading`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html) & [`System::Threading::Tasks`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html)
 
 **Classes**
 
@@ -920,7 +920,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Diagnostics`](Include/System/Diagnostics/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html)
+### Namespace: [`DotNetDupe::System::Diagnostics`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html)
 
 **Classes**
 
@@ -938,7 +938,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Net`](Include/System/Net/), [`Sockets`](Include/System/Net/Sockets/) & [`Security`](Include/System/Net/Security/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html)
+### Namespace: [`DotNetDupe::System::Net`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html), [`Sockets`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html) & [`Security`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html)
 
 **Classes**
 
@@ -954,7 +954,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Net::Http`](Include/System/Net/Http/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html)
+### Namespace: [`DotNetDupe::System::Net::Http`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html)
 
 **Classes**
 
@@ -972,7 +972,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Text`](Include/System/Text/) & [`System::Text::Json`](Include/System/Text/Json/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html)
+### Namespace: [`DotNetDupe::System::Text`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html) & [`System::Text::Json`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html)
 
 **Classes**
 
@@ -984,7 +984,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Utils`](Include/System/Utils/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html)
+### Namespace: [`DotNetDupe::System::Utils`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html)
 
 **Classes**
 
@@ -994,7 +994,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Security`](Include/System/Security/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html)
+### Namespace: [`DotNetDupe::System::Security`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html)
 
 **Classes**
 
@@ -1007,7 +1007,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::System::Data::SqlClient`](Include/System/Data/SqlClient/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html)
+### Namespace: [`DotNetDupe::System::Data::SqlClient`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html)
 
 **Classes**
 
@@ -1020,7 +1020,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::Extensions::DependencyInjection`](Include/Extensions/DependencyInjection/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html)
+### Namespace: [`DotNetDupe::Extensions::DependencyInjection`](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html)
 
 **Classes & Interfaces**
 
@@ -1036,7 +1036,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::Extensions::Logging`](Include/Extensions/Logging/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html)
+### Namespace: [`DotNetDupe::Extensions::Logging`](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html)
 
 **Classes & Interfaces**
 
@@ -1055,7 +1055,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 ---
 
-### Namespace: [`DotNetDupe::WebAppCore`](Include/WebAppCore/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_web_app_core.html)
+### Namespace: [`DotNetDupe::WebAppCore`](docs/html/namespace_dot_net_dupe_1_1_web_app_core.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_web_app_core.html)
 
 **Builder, Controllers & Server**
 
