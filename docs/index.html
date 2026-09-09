@@ -686,7 +686,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-badge">
-      <span id="hero-version-badge">🚀 Version 4.0.3 &bull; 100% Quality Gates Compliant</span>
+      <span id="hero-version-badge">🚀 Version 4.0.5 &bull; 100% Quality Gates Compliant</span>
     </div>
     <h1 class="hero-title">
       .NET Base Class Library<br>
@@ -1240,34 +1240,49 @@ if (scores.TryGetValue("Alice", val)) {
       }
     }
 
-    const savedTheme = localStorage.getItem('dotnetdupe_theme') || 'light';
-    applyTheme(savedTheme);
+    try {
+      const savedTheme = localStorage.getItem('dotnetdupe_theme') || 'light';
+      applyTheme(savedTheme);
 
-    themeBtn.addEventListener('click', () => {
-      const isDark = document.body.getAttribute('data-theme') === 'dark';
-      const newTheme = isDark ? 'light' : 'dark';
-      localStorage.setItem('dotnetdupe_theme', newTheme);
-      applyTheme(newTheme);
-    });
+      themeBtn.addEventListener('click', () => {
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const newTheme = isDark ? 'light' : 'dark';
+        try { localStorage.setItem('dotnetdupe_theme', newTheme); } catch (e) {}
+        applyTheme(newTheme);
+      });
+    } catch (e) {
+      applyTheme('light');
+    }
 
     // Dynamic published package version sync from NuGet API (nuget.org)
-    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data && Array.isArray(data.versions) && data.versions.length > 0) {
-          const publishedVersion = data.versions[data.versions.length - 1];
-          const badge = document.getElementById('hero-version-badge');
-          if (badge) {
-            badge.innerHTML = '&#128640; Version ' + publishedVersion + ' &bull; 100% Quality Gates Compliant';
-          }
-          const nugetBtn = document.getElementById('hero-btn-nuget');
-          if (nugetBtn) {
-            nugetBtn.href = 'https://www.nuget.org/packages/DotNetDupe/' + publishedVersion;
-            nugetBtn.title = 'Install DotNetDupe v' + publishedVersion + ' from NuGet';
-          }
-        }
-      })
-      .catch(() => { /* Maintain build-time static version */ });
+    (function() {
+      function syncNuGetVersion() {
+        fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
+          .then(res => res.ok ? res.json() : null)
+          .then(data => {
+            if (data && Array.isArray(data.versions) && data.versions.length > 0) {
+              const publishedVersion = data.versions[data.versions.length - 1];
+              const badge = document.getElementById('hero-version-badge');
+              if (badge) {
+                badge.innerHTML = '&#128640; Version ' + publishedVersion + ' &bull; 100% Quality Gates Compliant';
+              }
+              const nugetBtn = document.getElementById('hero-btn-nuget');
+              if (nugetBtn) {
+                nugetBtn.href = 'https://www.nuget.org/packages/DotNetDupe/' + publishedVersion;
+                nugetBtn.title = 'Install DotNetDupe v' + publishedVersion + ' from NuGet';
+                nugetBtn.innerHTML = '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Install v' + publishedVersion + ' from NuGet';
+              }
+            }
+          })
+          .catch(() => { /* Maintain build-time static version if offline */ });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', syncNuGetVersion);
+      } else {
+        syncNuGetVersion();
+      }
+    })();
   </script>
 </body>
 </html>
