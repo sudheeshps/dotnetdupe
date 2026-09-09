@@ -1,0 +1,4 @@
+var class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception =
+[
+    [ "WaitHandleCannotBeOpenedException", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html#ac865309f05902897283b4ba0fb91482e", null ]
+];

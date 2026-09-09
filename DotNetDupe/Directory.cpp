@@ -54,20 +54,25 @@ namespace DotNetDupe {
     namespace System {
         namespace IO {
             bool Directory::Exists(const String& sPath) {
+                /// Guard: Check for empty path.
                 if (sPath.IsEmpty()) return false;
                 std::error_code ec;
+                /// Return: Filesystem directory existence check.
                 return fs::is_directory(ToFsPath(sPath), ec);
             }
 
             void Directory::CreateDirectory(const String& sPath) {
+                /// Forward: Delegate to recursive directory creation overload.
                 CreateDirectory(sPath, true);
             }
 
             void Directory::CreateDirectory(const String& sPath, bool bRecursive) {
+                /// Guard: Validate path parameter.
                 if (sPath.IsEmpty()) {
                     throw ArgumentException("Path cannot be empty.");
                 }
                 std::error_code ec;
+                /// Step: Create single or recursive directories.
                 if (bRecursive) {
                     fs::create_directories(ToFsPath(sPath), ec);
                 } else {
@@ -79,10 +84,12 @@ namespace DotNetDupe {
             }
 
             void Directory::Delete(const String& sPath) {
+                /// Forward: Delegate to non-recursive delete.
                 Delete(sPath, false);
             }
 
             void Directory::Delete(const String& sPath, bool bRecursive) {
+                /// Guard: Validate directory existence.
                 if (sPath.IsEmpty()) {
                     throw ArgumentException("Path cannot be empty.");
                 }
@@ -92,6 +99,7 @@ namespace DotNetDupe {
                     throw IO::IOException("Directory does not exist.");
                 }
 
+                /// Step: Remove directory or subtree.
                 if (bRecursive) {
                     fs::remove_all(p, ec);
                 } else {
@@ -103,10 +111,12 @@ namespace DotNetDupe {
             }
 
             void Directory::Move(const String& sSourceDirName, const String& sDestDirName) {
+                /// Guard: Validate directory names.
                 if (sSourceDirName.IsEmpty() || sDestDirName.IsEmpty()) {
                     throw ArgumentException("Source and destination paths cannot be empty.");
                 }
                 std::error_code ec;
+                /// Step: Rename directory path.
                 fs::rename(ToFsPath(sSourceDirName), ToFsPath(sDestDirName), ec);
                 if (ec) {
                     throw IO::IOException(ec.message().c_str());
@@ -114,10 +124,12 @@ namespace DotNetDupe {
             }
 
             Array<String> Directory::GetFiles(const String& sPath) {
+                /// Forward: Delegate with wildcard pattern "*".
                 return GetFiles(sPath, "*");
             }
 
             Array<String> Directory::GetFiles(const String& sPath, const String& sSearchPattern) {
+                /// Guard: Validate directory existence.
                 if (!Exists(sPath)) {
                     throw IO::IOException("Directory does not exist.");
                 }
@@ -125,6 +137,7 @@ namespace DotNetDupe {
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching files.
                 for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     if (entry.is_regular_file(ec)) {
                         std::string filename = entry.path().filename().string();
@@ -133,16 +146,19 @@ namespace DotNetDupe {
                         }
                     }
                 }
+                /// Return: Array of matching file paths.
                 Array<String> arr((int)results.size());
                 for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }
 
             Array<String> Directory::GetDirectories(const String& sPath) {
+                /// Forward: Delegate with wildcard pattern "*".
                 return GetDirectories(sPath, "*");
             }
 
             Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern) {
+                /// Guard: Validate directory existence.
                 if (!Exists(sPath)) {
                     throw IO::IOException("Directory does not exist.");
                 }
@@ -150,6 +166,7 @@ namespace DotNetDupe {
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching directories.
                 for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     if (entry.is_directory(ec)) {
                         std::string filename = entry.path().filename().string();
@@ -158,16 +175,19 @@ namespace DotNetDupe {
                         }
                     }
                 }
+                /// Return: Array of matching directory paths.
                 Array<String> arr((int)results.size());
                 for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath) {
+                /// Forward: Delegate with wildcard pattern "*".
                 return GetFileSystemEntries(sPath, "*");
             }
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern) {
+                /// Guard: Validate directory existence.
                 if (!Exists(sPath)) {
                     throw IO::IOException("Directory does not exist.");
                 }
@@ -175,18 +195,21 @@ namespace DotNetDupe {
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
 
+                /// Step: Iterate entries and collect matching items.
                 for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
                     std::string filename = entry.path().filename().string();
                     if (std::regex_match(filename, reg)) {
                         results.push_back(String(entry.path().string().c_str()));
                     }
                 }
+                /// Return: Array of matching entry paths.
                 Array<String> arr((int)results.size());
                 for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
                 return arr;
             }
 
             String Directory::GetCurrentDirectory() {
+                /// Step: Query current working directory from filesystem.
                 std::error_code ec;
                 fs::path p = fs::current_path(ec);
                 if (ec) {
@@ -196,10 +219,12 @@ namespace DotNetDupe {
             }
 
             void Directory::SetCurrentDirectory(const String& sPath) {
+                /// Guard: Validate target path.
                 if (sPath.IsEmpty()) {
                     throw ArgumentException("Path cannot be empty.");
                 }
                 std::error_code ec;
+                /// Step: Set current working directory.
                 fs::current_path(ToFsPath(sPath), ec);
                 if (ec) {
                     throw IO::IOException(ec.message().c_str());
@@ -207,14 +232,17 @@ namespace DotNetDupe {
             }
 
             String Directory::GetDirectoryRoot(const String& sPath) {
+                /// Forward: Delegate to Path::GetPathRoot.
                 return Path::GetPathRoot(sPath);
             }
 
             DateTimeOffset Directory::GetCreationTime(const String& sPath) {
+                /// Forward: Delegate to GetLastWriteTime.
                 return GetLastWriteTime(sPath);
             }
 
             DateTimeOffset Directory::GetLastWriteTime(const String& sPath) {
+                /// Step: Query filesystem last write time.
                 std::error_code ec;
                 auto ftime = fs::last_write_time(ToFsPath(sPath), ec);
                 if (ec) {
@@ -224,6 +252,7 @@ namespace DotNetDupe {
             }
 
             DateTimeOffset Directory::GetLastAccessTime(const String& sPath) {
+                /// Forward: Delegate to GetLastWriteTime.
                 return GetLastWriteTime(sPath);
             }
         }

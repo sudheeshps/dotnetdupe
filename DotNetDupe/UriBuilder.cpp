@@ -43,12 +43,16 @@ namespace DotNetDupe {
         void UriBuilder::SetPassword(const String& value) { _password = value; }
 
         Uri UriBuilder::GetUri() {
+            /// Construct and return Uri instance from current string representation.
             return Uri(ToString());
         }
 
         static void AppendAuthority(std::string& result, const String& host, const String& user, const String& pass, int port) {
+            /// Guard: Do not append authority if host is empty.
             if (host.IsEmpty()) return;
             result += "//";
+
+            /// Step: Append credentials if present.
             if (!user.IsEmpty()) {
                 result += (const char*)user;
                 if (!pass.IsEmpty()) {
@@ -56,6 +60,8 @@ namespace DotNetDupe {
                 }
                 result += "@";
             }
+
+            /// Step: Append host and optional custom port.
             result += (const char*)host;
             if (port != -1) {
                 result += ":"; result += std::to_string(port);
@@ -63,14 +69,19 @@ namespace DotNetDupe {
         }
 
         static void AppendPathAndQuery(std::string& result, const String& path, const String& query, const String& fragment) {
+            /// Step: Append path with leading slash delimiter.
             if (!path.IsEmpty()) {
                 if (path[0] != '/') result += "/";
                 result += (const char*)path;
             }
+
+            /// Step: Append query with leading question mark delimiter.
             if (!query.IsEmpty()) {
                 if (query[0] != '?') result += "?";
                 result += (const char*)query;
             }
+
+            /// Step: Append fragment with leading hash delimiter.
             if (!fragment.IsEmpty()) {
                 if (fragment[0] != '#') result += "#";
                 result += (const char*)fragment;
@@ -78,10 +89,13 @@ namespace DotNetDupe {
         }
 
         String UriBuilder::ToString() {
+            /// Step: Format scheme prefix.
             std::string result;
             if (!_scheme.IsEmpty()) {
                 result += (const char*)_scheme; result += ":";
             }
+
+            /// Step: Assemble authority, path, query, and fragment parts into URI string.
             AppendAuthority(result, _host, _userName, _password, _port);
             AppendPathAndQuery(result, _path, _query, _fragment);
             return String(result.c_str());

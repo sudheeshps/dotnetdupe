@@ -43,6 +43,7 @@ namespace DotNetDupe {
             Stopwatch::~Stopwatch() = default;
 
             void Stopwatch::Start() {
+                /// Capture starting timestamp if not already running.
                 if (!m_pImpl->isRunning) {
                     m_pImpl->startTimeStamp = m_pImpl->timeProvider->GetTimestamp();
                     m_pImpl->isRunning = true;
@@ -50,6 +51,7 @@ namespace DotNetDupe {
             }
 
             void Stopwatch::Stop() {
+                /// Accumulate elapsed interval and mark as stopped.
                 if (m_pImpl->isRunning) {
                     long long endTimeStamp = m_pImpl->timeProvider->GetTimestamp();
                     m_pImpl->elapsedTicks += (endTimeStamp - m_pImpl->startTimeStamp);
@@ -58,12 +60,14 @@ namespace DotNetDupe {
             }
 
             void Stopwatch::Reset() {
+                /// Reset elapsed accumulator and state.
                 m_pImpl->elapsedTicks = 0;
                 m_pImpl->isRunning = false;
                 m_pImpl->startTimeStamp = 0;
             }
 
             void Stopwatch::Restart() {
+                /// Reset elapsed accumulator and start measuring immediately.
                 m_pImpl->elapsedTicks = 0;
                 m_pImpl->startTimeStamp = m_pImpl->timeProvider->GetTimestamp();
                 m_pImpl->isRunning = true;
@@ -74,18 +78,22 @@ namespace DotNetDupe {
             }
 
             TimeSpan Stopwatch::Elapsed() const {
+                /// Compute TimeSpan from raw tick count.
                 return m_pImpl->timeProvider->GetElapsedTime(0, GetRawElapsedTicks());
             }
 
             long long Stopwatch::ElapsedMilliseconds() const {
+                /// Return elapsed milliseconds.
                 return (long long)Elapsed().GetTotalMilliseconds();
             }
 
             long long Stopwatch::ElapsedTicks() const {
+                /// Return elapsed ticks.
                 return (long long)Elapsed().GetTicks();
             }
 
             long long Stopwatch::GetRawElapsedTicks() const {
+                /// Add current running interval to accumulated ticks.
                 long long elapsed = m_pImpl->elapsedTicks;
                 if (m_pImpl->isRunning) {
                     elapsed += (m_pImpl->timeProvider->GetTimestamp() - m_pImpl->startTimeStamp);
@@ -94,18 +102,21 @@ namespace DotNetDupe {
             }
 
             Stopwatch Stopwatch::StartNew() {
+                /// Create and start new stopwatch.
                 Stopwatch sw;
                 sw.Start();
                 return sw;
             }
 
             Stopwatch Stopwatch::StartNew(const TimeProviderPtr& timeProvider) {
+                /// Create and start new stopwatch with custom provider.
                 Stopwatch sw(timeProvider);
                 sw.Start();
                 return sw;
             }
 
             long long Stopwatch::GetTimestamp() {
+                /// Retrieve high-resolution hardware timestamp.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
                 QueryPerformanceCounter(&li);

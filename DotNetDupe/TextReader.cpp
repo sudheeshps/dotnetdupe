@@ -24,7 +24,10 @@ namespace DotNetDupe {
             }
 
             int TextReader::Read(char* pBuffer, int iIndex, int nCount) {
+                /// Guard: Check null buffer.
                 if (pBuffer == nullptr) return 0;
+
+                /// Read characters into buffer up to nCount.
                 int iN = 0;
                 while (iN < nCount) {
                     int iCh = Read();
@@ -37,6 +40,8 @@ namespace DotNetDupe {
 
             String TextReader::ReadLine() {
                 StringBuilder sbOutput;
+
+                /// Read character loop consuming up to CR/LF or EOF.
                 while (true) {
                     int iCh = Read();
                     if (iCh == -1) {
@@ -53,6 +58,8 @@ namespace DotNetDupe {
 
             String TextReader::ReadToEnd() {
                 StringBuilder sbOutput;
+
+                /// Consume all characters until EOF.
                 int iCh;
                 while ((iCh = Read()) != -1) {
                     sbOutput.Append((char)iCh);

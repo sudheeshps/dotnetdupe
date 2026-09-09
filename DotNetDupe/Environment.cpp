@@ -28,6 +28,7 @@ extern char** environ;
 namespace DotNetDupe {
     namespace System {
         String Environment::GetMachineName() {
+            /// Step: Query host machine computer name from platform API.
 #if defined(_WIN32)
             wchar_t buffer [MAX_COMPUTERNAME_LENGTH + 1];
             DWORD nSize = MAX_COMPUTERNAME_LENGTH + 1;
@@ -43,6 +44,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetUserName() {
+            /// Step: Query current authenticated user login name from operating system.
 #if defined(_WIN32)
             wchar_t buffer [256];
             DWORD nSize = 256;
@@ -59,6 +61,7 @@ namespace DotNetDupe {
         }
 
         int Environment::GetProcessorCount() {
+            /// Step: Query available logical processor core count from system information.
 #if defined(_WIN32)
             SYSTEM_INFO sysInfo;
             GetSystemInfo(&sysInfo);
@@ -69,6 +72,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetNewLine() {
+            /// Return: Platform standard newline string (\r\n on Windows, \n on POSIX).
 #if defined(_WIN32)
             return "\r\n";
 #else
@@ -77,6 +81,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetCurrentDirectory() {
+            /// Step: Query active working directory path.
 #if defined(_WIN32)
             wchar_t buffer [MAX_PATH];
             ::GetCurrentDirectoryW(MAX_PATH, buffer);
@@ -91,6 +96,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetSystemDirectory() {
+            /// Step: Query system directory location.
 #if defined(_WIN32)
             wchar_t buffer [MAX_PATH];
             ::GetSystemDirectoryW(buffer, MAX_PATH);
@@ -101,6 +107,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetOSVersion() {
+            /// Step: Query operating system version descriptor string.
 #if defined(_WIN32)
             OSVERSIONINFOEXW info;
             ZeroMemory(&info, sizeof(OSVERSIONINFOEXW));
@@ -120,6 +127,7 @@ namespace DotNetDupe {
         }
 
         String Environment::GetUserDomainName() {
+            /// Forward: Delegate to GetMachineName.
             return GetMachineName();
         }
 
@@ -139,6 +147,7 @@ namespace DotNetDupe {
 #endif
 
         int64_t Environment::GetWorkingSet() {
+            /// Query resident physical memory working set from operating system.
 #if defined(_WIN32)
             PROCESS_MEMORY_COUNTERS pmc;
             if (GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc))) return (int64_t)pmc.WorkingSetSize;
@@ -153,6 +162,7 @@ namespace DotNetDupe {
         }
 
         String Environment::ExpandEnvironmentVariables(const String& sName) {
+            /// Expand embedded environment variable tokens in target string.
 #if defined(_WIN32)
             std::wstring sWName = Utf8ToWChar(sName.GetRawString());
             DWORD nSize = ::ExpandEnvironmentStringsW(sWName.c_str(), NULL, 0);

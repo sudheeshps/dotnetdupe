@@ -1,0 +1,5 @@
+var struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a =
+[
+    [ "Read", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#a065d914146c882751fbcb1b99c7d5b6a", null ],
+    [ "Write", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html#aa6fad393130087cddcef27d1f495009c", null ]
+];

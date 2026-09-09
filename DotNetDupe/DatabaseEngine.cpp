@@ -22,28 +22,40 @@ namespace DotNetDupe {
                 DatabaseEngine::~DatabaseEngine() = default;
 
                 DatabaseEngine& DatabaseEngine::Instance() {
+                    /// Step: Maintain thread-safe static singleton instance.
                     static DatabaseEngine instance;
                     return instance;
                 }
 
                 void DatabaseEngine::RegisterBackend(const DotNetDupe::System::String& dbName, DotNetDupe::System::SmartPointer<IDatabaseBackend> backend) {
+                    /// Step: Synchronize access to backend map.
                     std::lock_guard<std::mutex> lock(m_pImpl->m_mutex);
+
+                    /// Step: Store backend reference keyed by database name.
                     m_pImpl->m_pBackends[dbName.GetRawString()] = backend;
                 }
 
                 DotNetDupe::System::SmartPointer<IDatabaseBackend> DatabaseEngine::GetBackend(const DotNetDupe::System::String& dbName) {
+                    /// Step: Synchronize access to backend registry.
                     std::lock_guard<std::mutex> lock(m_pImpl->m_mutex);
+
+                    /// Step: Look up backend by name.
                     auto it = m_pImpl->m_pBackends.find(dbName.GetRawString());
                     if (it != m_pImpl->m_pBackends.end()) {
                         return it->second;
                     }
+
+                    /// Step: Return null pointer if backend is unregistered.
                     return DotNetDupe::System::SmartPointer<IDatabaseBackend>(nullptr);
                 }
 
                 void DatabaseEngine::ClearDatabase(const DotNetDupe::System::String& dbName) {
-                    auto backend = GetBackend(dbName);
-                    if (backend) {
-                        backend->ClearDatabase();
+                    /// Step: Resolve backend by name.
+                    auto spBackend = GetBackend(dbName);
+
+                    /// Step: Invoke backend-specific purge if registered.
+                    if (spBackend) {
+                        spBackend->ClearDatabase();
                     }
                 }
 
@@ -54,10 +66,13 @@ namespace DotNetDupe {
                     Collections::Generic::List<String>& columnNames,
                     int& rowsAffected
                 ) {
-                    auto backend = GetBackend(dbName);
-                    if (backend) {
-                        return backend->Execute(sql, parameters, columnNames, rowsAffected);
+                    /// Step: Locate target database backend.
+                    auto spBackend = GetBackend(dbName);
+                    if (spBackend) {
+                        return spBackend->Execute(sql, parameters, columnNames, rowsAffected);
                     }
+
+                    /// Step: Reset outputs and return empty list on missing backend.
                     rowsAffected = 0;
                     columnNames.Clear();
                     return Collections::Generic::List<Row>();

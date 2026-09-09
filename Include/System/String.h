@@ -1,3 +1,6 @@
+/// \file String.h
+/// \brief High-performance UTF-8 / UTF-16 string manipulation class mirroring .NET System.String.
+
 #pragma once
 
 #include "System/ArgumentException.h"
@@ -17,19 +20,22 @@
 namespace DotNetDupe {
     namespace System {
         template<typename T> class Array;
+
+        /// \brief Specifies whether applicable Overload:Split methods include or omit empty substrings.
         enum class StringSplitOptions {
-            None,
-            RemoveEmptyEntries,
-            TrimEntries
+            None,               ///< Include empty substrings in the returned array.
+            RemoveEmptyEntries, ///< Omit substrings that contain an empty string from the array.
+            TrimEntries         ///< Trim white-space characters from each element in the array.
         };
 
-        // Helper for portable case-insensitive comparison
+        /// \brief Helper for portable ASCII case-insensitive comparison.
         struct CaseInsensitiveCompare {
             static bool Equals(char c1, char c2) {
                 return tolower(static_cast<unsigned char>(c1)) == tolower(static_cast<unsigned char>(c2));
             }
         };
 
+        /// \brief Helper for portable wide-character case-insensitive comparison.
         struct CaseInsensitiveCompareWChar {
             static bool Equals(wchar_t c1, wchar_t c2) {
                 return towlower(c1) == towlower(c2);
@@ -56,15 +62,47 @@ namespace DotNetDupe {
             static constexpr const wchar_t* Message = L"Input string was not in a correct format.";
         };
 
+        /// \brief Represents text as a sequence of UTF-8 code units with culture-invariant operations.
+        ///
+        /// The String class mirrors .NET System.String, providing rich manipulation,
+        /// formatting, splitting, trimming, searching, case transformations, and conversions.
+        /// Immutable by design and thread-safe for all concurrent const read operations.
+        ///
+        /// \note Conforms to ECMA-335 Partition IV Section 5.4 (System.String).
+        /// \note Implemented using the Pimpl idiom to guarantee ABI stability across library boundaries.
+        /// \see Char, StringBuilder
         class String {
         public:
+            /// \brief Initializes a new instance of the String class to an empty string.
             DOTNETDUPE_API String();
+
+            /// \brief Initializes a new instance of the String class from a null-terminated UTF-8 string.
+            /// \param pStr Null-terminated C-string pointer.
             DOTNETDUPE_API String(const char* pStr);
+
+            /// \brief Copy constructor.
+            /// \param sStr String instance to copy.
             DOTNETDUPE_API String(const String& sStr);
+
+            /// \brief Copy assignment operator.
+            /// \param sStr String instance to assign.
+            /// \return Reference to this String instance.
             DOTNETDUPE_API String& operator=(const String& sStr);
+
+            /// \brief Move constructor.
+            /// \param sStr String instance to move.
             DOTNETDUPE_API String(String&& sStr) noexcept;
+
+            /// \brief Move assignment operator.
+            /// \param sStr String instance to move from.
+            /// \return Reference to this String instance.
             DOTNETDUPE_API String& operator=(String&& sStr) noexcept;
+
+            /// \brief Assigns a null-terminated UTF-8 string to this instance.
+            /// \param pStr Null-terminated string pointer.
+            /// \return Reference to this String instance.
             DOTNETDUPE_API String& operator=(const char* pStr);
+
             DOTNETDUPE_API ~String();
 
             // Converting constructor & assignment for opposite character pointer type
@@ -80,6 +118,7 @@ namespace DotNetDupe {
                 throw ArgumentException("Invalid input integer");
             }
             DOTNETDUPE_API const char* GetRawString() const;
+            DOTNETDUPE_API const char* GetChars() const;
             operator const char* () const { return GetRawString(); }
             DOTNETDUPE_API int GetHashCode() const;
             DOTNETDUPE_API int GetLength() const;

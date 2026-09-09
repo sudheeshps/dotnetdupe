@@ -1,3 +1,6 @@
+/// \file ControllerRouteBuilder.h
+/// \brief Fluent route builder for mapping controller action methods to HTTP request endpoints.
+
 #pragma once
 
 #include "Common.h"
@@ -16,12 +19,25 @@ namespace DotNetDupe {
     namespace WebAppCore {
         namespace Controllers {
 
+            /// \brief Interface for late-binding controller routes to a WebApplication instance.
             class IControllerRouteRegistrar : public virtual DotNetDupe::System::Object {
             public:
+                /// \brief Virtual destructor.
                 virtual ~IControllerRouteRegistrar() = default;
+
+                /// \brief Registers the configured controller routes onto the target WebApplication.
+                /// \param app Target WebApplication host instance.
                 virtual void Register(const DotNetDupe::System::SmartPointer<Builder::WebApplication>& app) = 0;
             };
 
+            /// \brief Fluent builder for binding strongly-typed controller actions to HTTP verbs and route templates.
+            ///
+            /// Handles parameter extraction (route parameters, query strings, and JSON body payloads) and
+            /// serializes action returns into HTTP response streams.
+            ///
+            /// \tparam TController Type of the controller class deriving from ControllerBase.
+            /// \note Conforms to RFC 9110 (HTTP Semantics) and ASP.NET Core MVC routing specifications.
+            /// \see ControllerBase, WebApplication, WebApplicationBuilder
             template <typename TController>
             class ControllerRouteBuilder : public IControllerRouteRegistrar {
             private:

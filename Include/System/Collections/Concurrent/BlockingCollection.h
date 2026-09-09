@@ -15,6 +15,12 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Concurrent {
 
+                /// \class BlockingCollection
+                /// \brief Provides blocking and bounding capabilities for thread-safe collections implementing the Producer-Consumer pattern.
+                ///
+                /// \tparam T The type of elements in the collection.
+                /// \note Conforms to ECMA-335 Partition IV and .NET Concurrent Collections architecture.
+                ///       Coordinates concurrent producer and consumer threads using ConditionVariable signaling and optional bounded capacity limits.
                 template <typename T>
                 class BlockingCollection : public Object {
                 private:
@@ -26,14 +32,21 @@ namespace DotNetDupe {
                     bool m_bIsAddingCompleted;
 
                 public:
+                    /// \brief Initializes a new instance of the BlockingCollection class without an upper-bound.
                     BlockingCollection() : m_iBoundedCapacity(-1), m_bIsAddingCompleted(false) {}
                     
+                    /// \brief Initializes a new instance of the BlockingCollection class with the specified upper-bound.
+                    /// \param iBoundedCapacity The bounded size of the collection.
+                    /// \throws ArgumentException iBoundedCapacity is less than or equal to zero.
                     explicit BlockingCollection(int iBoundedCapacity) : m_iBoundedCapacity(iBoundedCapacity), m_bIsAddingCompleted(false) {
                         if (iBoundedCapacity <= 0) {
                             throw System::ArgumentException("Bounded capacity must be greater than zero.");
                         }
                     }
 
+                    /// \brief Adds an item to the BlockingCollection.
+                    /// \param item The item to be added to the collection.
+                    /// \throws InvalidOperationException The collection has been marked as complete for adding.
                     void Add(const T& item) {
                         m_csLock.Enter();
                         

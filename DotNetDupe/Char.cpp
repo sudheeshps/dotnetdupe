@@ -77,41 +77,53 @@ namespace DotNetDupe {
         }
 
         bool Char::IsControl(char32_t c) {
+            /// Check C0 control codes (0x00-0x1F), Delete (0x7F), and C1 control codes (0x80-0x9F).
             if (c <= 0x1F || (c >= 0x7F && c <= 0x9F)) return true;
             if (c >= 0xFFFFFF7F && c <= 0xFFFFFF9F) return true; // Handling signed char cast
+
+            /// Inspect BMP locale classification and supplementary control plane (0xE0000-0xE007F).
             if (c <= 0xFFFF) return std::iswcntrl(static_cast<wint_t>(c)) != 0;
             return (c >= 0xE0000 && c <= 0xE007F);
         }
 
         bool Char::IsDigit(char32_t c) {
+            /// Check BMP digits via std::iswdigit and Mathematical alphanumeric supplementary range.
             if (c <= 0xFFFF) return std::iswdigit(static_cast<wint_t>(c)) != 0;
             return (c >= 0x1D7CE && c <= 0x1D7FF);
         }
 
         bool Char::IsLower(char32_t c) {
+            /// Check BMP lowercase letters and Deseret supplementary plane lowercase range.
             if (c <= 0xFFFF) return std::iswlower(static_cast<wint_t>(c)) != 0;
             return (c >= 0x10428 && c <= 0x1044F);
         }
 
         bool Char::IsLetter(char32_t c) {
+            /// Fast check for ASCII letters and Latin-1 supplement letters.
             if (c >= 'A' && c <= 'Z') return true;
             if (c >= 'a' && c <= 'z') return true;
             if (c >= 0xC0 && c <= 0xD6) return true;
             if (c >= 0xD8 && c <= 0xF6) return true;
             if (c >= 0xF8 && c <= 0xFF) return true;
+
+            /// Evaluate BMP alpha status and CJK Unified Ideographs Extension B.
             if (c <= 0xFFFF) return std::iswalpha(static_cast<wint_t>(c)) != 0;
             return (c >= 0x20000 && c <= 0x2A6DF);
         }
 
         bool Char::IsLetterOrDigit(char32_t c) {
+            /// Combine letter and digit evaluations across Unicode planes.
             if (c <= 0xFFFF) return std::iswalnum(static_cast<wint_t>(c)) != 0;
             return IsLetter(c) || IsDigit(c);
         }
 
         char32_t Char::ToLower(char32_t c) {
+            /// Fold ASCII and Latin-1 uppercase letters to lowercase via +0x20 offset.
             if (c >= 'A' && c <= 'Z') return c + 0x20;
             if (c >= 0xC0 && c <= 0xD6) return c + 0x20;
             if (c >= 0xD8 && c <= 0xDE) return c + 0x20;
+
+            /// Fold BMP wide-character locale code points.
             if (c <= 0xFFFF) {
                 wint_t lower = std::towlower(static_cast<wint_t>(c));
                 if (lower != static_cast<wint_t>(c)) return static_cast<char32_t>(lower);

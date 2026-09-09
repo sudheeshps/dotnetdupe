@@ -13,6 +13,7 @@ namespace DotNetDupe {
         class SystemTimeProvider : public TimeProvider {
         public:
             DateTimeOffset GetUtcNow() const override {
+                /// Step: Query high-precision UTC system time and convert to .NET epoch ticks.
 #if defined(_WIN32)
                 FILETIME ft;
                 GetSystemTimePreciseAsFileTime(&ft);
@@ -31,6 +32,7 @@ namespace DotNetDupe {
             }
 
             DateTimeOffset GetLocalNow() const override {
+                /// Step: Query local system time and convert to .NET epoch ticks.
 #if defined(_WIN32)
                 SYSTEMTIME st;
                 GetLocalTime(&st);
@@ -45,6 +47,7 @@ namespace DotNetDupe {
             }
 
             int64_t GetTimestamp() const override {
+                /// Step: Query high-resolution performance counter timestamp.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
                 QueryPerformanceCounter(&li);
@@ -56,6 +59,7 @@ namespace DotNetDupe {
             }
 
             int64_t GetTimestampFrequency() const override {
+                /// Step: Query high-resolution performance counter frequency.
 #if defined(_WIN32)
                 LARGE_INTEGER li;
                 QueryPerformanceFrequency(&li);
@@ -67,17 +71,20 @@ namespace DotNetDupe {
         };
 
         TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp) const {
+            /// Compute elapsed time from starting timestamp to current timestamp.
             return GetElapsedTime(startingTimestamp, GetTimestamp());
         }
 
         TimeSpan TimeProvider::GetElapsedTime(int64_t startingTimestamp, int64_t endingTimestamp) const {
+            /// Compute elapsed TimeSpan based on timestamp frequency ticks per second.
             double ticks = (double)(endingTimestamp - startingTimestamp) * TimeSpan::TicksPerSecond / GetTimestampFrequency();
             return TimeSpan((int64_t)ticks);
         }
 
         TimeProviderPtr TimeProvider::GetSystem() {
-            static auto system = SmartPointer<SystemTimeProvider>::NewShared();
-            return system.template DynamicCast<TimeProvider>();
+            /// Retrieve singleton shared instance of system TimeProvider.
+            static auto s_spSystem = SmartPointer<SystemTimeProvider>::NewShared();
+            return s_spSystem.template DynamicCast<TimeProvider>();
         }
     }
 }

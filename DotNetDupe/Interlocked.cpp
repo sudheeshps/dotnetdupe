@@ -11,34 +11,43 @@ namespace DotNetDupe {
         namespace Threading {
 
             long InterlockedInternal::Increment32(volatile long* location) {
+                /// Atomic 32-bit increment.
 #if defined(_WIN32)
                 return _InterlockedIncrement(location);
 #else
                 return __sync_add_and_fetch(location, 1);
 #endif
             }
+
             long InterlockedInternal::Decrement32(volatile long* location) {
+                /// Atomic 32-bit decrement.
 #if defined(_WIN32)
                 return _InterlockedDecrement(location);
 #else
                 return __sync_sub_and_fetch(location, 1);
 #endif
             }
+
             long InterlockedInternal::Add32(volatile long* location, long value) {
+                /// Atomic 32-bit addition.
 #if defined(_WIN32)
                 return _InterlockedExchangeAdd(location, value) + value;
 #else
                 return __sync_add_and_fetch(location, value);
 #endif
             }
+
             long InterlockedInternal::Exchange32(volatile long* location, long value) {
+                /// Atomic 32-bit exchange.
 #if defined(_WIN32)
                 return _InterlockedExchange(location, value);
 #else
                 return __sync_lock_test_and_set(location, value);
 #endif
             }
+
             long InterlockedInternal::CompareExchange32(volatile long* location, long value, long comparand) {
+                /// Atomic 32-bit compare-and-swap.
 #if defined(_WIN32)
                 return _InterlockedCompareExchange(location, value, comparand);
 #else
@@ -47,6 +56,7 @@ namespace DotNetDupe {
             }
 
             long long InterlockedInternal::Increment64(volatile long long* location) {
+                /// Atomic 64-bit increment.
 #if defined(_WIN32)
 #if defined(_M_IX86)
                 long long oldVal, newVal;
@@ -62,7 +72,9 @@ namespace DotNetDupe {
                 return __sync_add_and_fetch(location, 1);
 #endif
             }
+
             long long InterlockedInternal::Decrement64(volatile long long* location) {
+                /// Atomic 64-bit decrement.
 #if defined(_WIN32)
 #if defined(_M_IX86)
                 long long oldVal, newVal;
@@ -78,7 +90,9 @@ namespace DotNetDupe {
                 return __sync_sub_and_fetch(location, 1);
 #endif
             }
+
             long long InterlockedInternal::Add64(volatile long long* location, long long value) {
+                /// Atomic 64-bit addition.
 #if defined(_WIN32)
 #if defined(_M_IX86)
                 long long oldVal, newVal;
@@ -94,7 +108,9 @@ namespace DotNetDupe {
                 return __sync_add_and_fetch(location, value);
 #endif
             }
+
             long long InterlockedInternal::Exchange64(volatile long long* location, long long value) {
+                /// Atomic 64-bit exchange.
 #if defined(_WIN32)
 #if defined(_M_IX86)
                 long long oldVal;
@@ -109,7 +125,9 @@ namespace DotNetDupe {
                 return __sync_lock_test_and_set(location, value);
 #endif
             }
+
             long long InterlockedInternal::CompareExchange64(volatile long long* location, long long value, long long comparand) {
+                /// Atomic 64-bit compare-and-swap.
 #if defined(_WIN32)
                 return _InterlockedCompareExchange64(location, value, comparand);
 #else

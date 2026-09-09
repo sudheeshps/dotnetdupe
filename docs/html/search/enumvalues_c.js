@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['nativeerror_0',['NativeError',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['networkauthenticationrequired_1',['NetworkAuthenticationRequired',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a52066ff32b30f46d30b87007cacf8f79',1,'DotNetDupe::System::Net']]],
+  ['nocontent_2',['NoContent',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982acd447f1ec89f564ebac583d60087df12',1,'DotNetDupe::System::Net']]],
+  ['nonauthoritativeinformation_3',['NonAuthoritativeInformation',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a2d0ea43e788b779c0aec92366b711c2f',1,'DotNetDupe::System::Net']]],
+  ['none_4',['None',['../namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea6adf97f83acf6453d4a6a4b1070f3754',1,'DotNetDupe::Extensions::Logging::None'],['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754',1,'DotNetDupe::System::Net::WebSockets::None'],['../namespace_dot_net_dupe_1_1_system.html#a1819abae29d9e44c83f2a4fccdb9896aa6adf97f83acf6453d4a6a4b1070f3754',1,'DotNetDupe::System::None']]],
+  ['normal_5',['Normal',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a960b44c579bc2f6818d2daaf9e4c16f0',1,'DotNetDupe::System::IO::Normal'],['../namespace_dot_net_dupe_1_1_system_1_1_security_1_1_principal.html#aaa2c27261ec7f50f0c7632d81ea0109ea960b44c579bc2f6818d2daaf9e4c16f0',1,'DotNetDupe::System::Security::Principal::Normal']]],
+  ['normalizedhost_6',['NormalizedHost',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a7bdf45907e3cecba3cc9eab322267abf',1,'DotNetDupe::System']]],
+  ['noscrubdata_7',['NoScrubData',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a46fb5b0b5312031f598898350090ca38',1,'DotNetDupe::System::IO']]],
+  ['notacceptable_8',['NotAcceptable',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982af83a928e6a3f3b502ffadd2a414ce48c',1,'DotNetDupe::System::Net']]],
+  ['notawebsocket_9',['NotAWebSocket',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['notcontentindexed_10',['NotContentIndexed',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280af5dda7285a5b290d1fa723217beb178d',1,'DotNetDupe::System::IO']]],
+  ['notextended_11',['NotExtended',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a8eff020959c41ba903e16d966855ce03',1,'DotNetDupe::System::Net']]],
+  ['notfound_12',['NotFound',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a38c300f4fc9ce8a77aad4a30de05cad8',1,'DotNetDupe::System::Net']]],
+  ['notimplemented_13',['NotImplemented',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a997ca4ce119685f40f03a9a8a6c5346e',1,'DotNetDupe::System::Net']]],
+  ['notmodified_14',['NotModified',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982ac169e6d9a1b9442001384de8dcf49ab9',1,'DotNetDupe::System::Net']]],
+  ['notstarted_15',['NotStarted',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181afa7be7845bc42b3491d9d0377958be94',1,'DotNetDupe::System::Net::Http']]],
+  ['null_16',['Null',['../namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4abbb93ef26e3c101ff11cdd21cab08a94',1,'DotNetDupe::System::Text::Json']]],
+  ['number_17',['Number',['../namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4ab2ee912b91d69b435159c7c3f6df7f5f',1,'DotNetDupe::System::Text::Json']]]
+];

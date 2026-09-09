@@ -20,6 +20,7 @@ namespace DotNetDupe {
                 }
 
                 TcpClient::~TcpClient() {
+                    /// Close connection on destruction.
                     Close();
                 }
 
@@ -29,6 +30,7 @@ namespace DotNetDupe {
                 }
 
                 TcpClient& TcpClient::operator=(TcpClient&& other) noexcept {
+                    /// Guard: Check self-assignment.
                     if (this != &other) {
                         Close();
                         m_pClientSocket = std::move(other.m_pClientSocket);
@@ -38,16 +40,22 @@ namespace DotNetDupe {
                 }
 
                 void TcpClient::Connect(const String& ip, int port) {
+                    /// Lazily instantiate socket if null.
                     if (m_pClientSocket.IsNull()) {
                         m_pClientSocket.Attach(new Socket(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp), true);
                     }
+
+                    /// Connect socket to remote endpoint.
                     m_pClientSocket->Connect(ip, port);
                 }
 
                 SmartPointer<NetworkStream> TcpClient::GetStream() {
+                    /// Guard: Ensure socket is connected.
                     if (m_pClientSocket.IsNull() || !m_pClientSocket->Connected()) {
                         throw SocketException(-1, String("TcpClient is not connected."));
                     }
+
+                    /// Lazily create NetworkStream wrapping active socket.
                     if (m_pNetworkStream.IsNull()) {
                         m_pNetworkStream.Attach(new NetworkStream(m_pClientSocket, true), true);
                     }
@@ -55,6 +63,7 @@ namespace DotNetDupe {
                 }
 
                 void TcpClient::Close() {
+                    /// Close stream then socket.
                     if (!m_pNetworkStream.IsNull()) {
                         m_pNetworkStream->Close();
                         m_pNetworkStream = nullptr;

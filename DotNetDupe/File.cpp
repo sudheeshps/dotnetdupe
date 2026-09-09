@@ -16,6 +16,7 @@ namespace fs = std::filesystem;
 
 namespace {
     fs::path ToFsPath(const DotNetDupe::System::String& sPath) {
+        /// Convert UTF-8 path string to native filesystem path representation.
 #if defined(_WIN32)
         return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
@@ -28,14 +29,18 @@ namespace DotNetDupe {
     namespace System {
         namespace IO {
             bool File::Exists(const String& sPath) {
+                /// Query filesystem for presence of regular file at resolved path.
                 return fs::exists(ToFsPath(sPath));
             }
 
             String File::ReadAllText(const String& sPath) {
+                /// Open binary file stream to preserve exact byte sequence without CRLF translation.
                 std::ifstream fileStream(ToFsPath(sPath), std::ios::binary);
                 if (!fileStream.is_open()) {
                     throw IO::IOException("Failed to open file for reading.");
                 }
+
+                /// Read entire file stream into stringstream buffer.
                 std::stringstream buffer;
                 buffer << fileStream.rdbuf();
                 std::string charContent = buffer.str();

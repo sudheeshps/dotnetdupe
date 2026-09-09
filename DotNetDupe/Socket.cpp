@@ -112,7 +112,10 @@ namespace DotNetDupe {
 
                 Socket::Socket(AddressFamily addressFamily, SocketType socketType, ProtocolType protocolType)
                     : m_pImpl(new SocketImpl()) {
+                    /// Initialize networking subsystem.
                     InitializeSockets();
+
+                    /// Create native operating system socket handle.
                     m_pImpl->hSocket = CreateNativeSocket(addressFamily, socketType, protocolType);
                     if (m_pImpl->hSocket == INVALID_SOCKET) {
                         throw SocketException(GetLastErrorCode(), "Failed to create native socket.");
@@ -121,7 +124,10 @@ namespace DotNetDupe {
 
                 Socket::Socket(void* pNativeHandle)
                     : m_pImpl(new SocketImpl()) {
+                    /// Initialize networking subsystem.
                     InitializeSockets();
+
+                    /// Adopt existing native handle.
 #if defined(_WIN32)
                     m_pImpl->hSocket = reinterpret_cast<SOCKET>(pNativeHandle);
 #else
@@ -139,7 +145,10 @@ namespace DotNetDupe {
                 }
 
                 void Socket::Bind(const String& ip, int port) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, String("Socket is closed."));
+
+                    /// Set reuse address socket option.
                     sockaddr_in addr;
                     InitSockAddrIn(ip, port, addr);
                     int optval = 1;
@@ -148,25 +157,32 @@ namespace DotNetDupe {
 #else
                     ::setsockopt(m_pImpl->hSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
 #endif
+
+                    /// Bind to endpoint address.
                     if (bind(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
                         throw SocketException(GetLastErrorCode(), "Failed to bind socket.");
                     }
                 }
 
                 void Socket::Listen(int backlog) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
                         throw SocketException(-1, "Socket is closed.");
                     }
+
+                    /// Transition socket into listen state.
                     if (listen(m_pImpl->hSocket, backlog) == SOCKET_ERROR) {
                         throw SocketException(GetLastErrorCode(), "Failed to listen on socket.");
                     }
                 }
 
                 SmartPointer<Socket> Socket::Accept() {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) {
                         throw SocketException(-1, "Socket is closed.");
                     }
 
+                    /// Accept incoming connection.
                     sockaddr_in clientAddr;
                     SockLen clientSize = sizeof(clientAddr);
 #if defined(_WIN32)
@@ -182,7 +198,10 @@ namespace DotNetDupe {
                 }
 
                 void Socket::Connect(const String& ip, int port) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+
+                    /// Initialize endpoint and connect.
                     sockaddr_in addr;
                     InitSockAddrIn(ip, port, addr);
                     if (connect(m_pImpl->hSocket, reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == SOCKET_ERROR) {
@@ -191,21 +210,30 @@ namespace DotNetDupe {
                 }
 
                 int Socket::Send(const char* buffer, int offset, int size) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+
+                    /// Transmit byte stream through native send.
                     int bytesSent = send(m_pImpl->hSocket, buffer + offset, size, 0);
                     if (bytesSent == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to send data.");
                     return bytesSent;
                 }
 
                 int Socket::Receive(char* buffer, int offset, int size) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+
+                    /// Receive byte stream through native recv.
                     int bytesReceived = recv(m_pImpl->hSocket, buffer + offset, size, 0);
                     if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data.");
                     return bytesReceived;
                 }
 
                 int Socket::SendTo(const char* buffer, int offset, int size, const String& ip, int port) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+
+                    /// Format destination endpoint and send datagram.
                     sockaddr_in addr;
                     InitSockAddrIn(ip, port, addr);
                     int bytesSent = sendto(m_pImpl->hSocket, buffer + offset, size, 0, reinterpret_cast<sockaddr*>(&addr), sizeof(addr));
@@ -222,22 +250,30 @@ namespace DotNetDupe {
                 }
 
                 int Socket::ReceiveFrom(char* buffer, int offset, int size, String& ip, int& port) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) throw SocketException(-1, "Socket is closed.");
+
+                    /// Receive datagram and capture sender address.
                     sockaddr_in addr;
                     SockLen addrSize = sizeof(addr);
                     std::memset(&addr, 0, sizeof(addr));
                     int bytesReceived = recvfrom(m_pImpl->hSocket, buffer + offset, size, 0, reinterpret_cast<sockaddr*>(&addr), &addrSize);
                     if (bytesReceived == SOCKET_ERROR) throw SocketException(GetLastErrorCode(), "Failed to receive data from host.");
+
                     FormatSockAddrIp(addr, ip, port);
                     return bytesReceived;
                 }
 
                 void Socket::Close() {
+                    /// Release socket resource.
                     if (m_pImpl) m_pImpl->Cleanup();
                 }
 
                 void Socket::Shutdown(SocketShutdown how) {
+                    /// Guard: Check valid handle.
                     if (!m_pImpl || m_pImpl->hSocket == INVALID_SOCKET) return;
+
+                    /// Shutdown transmission directions.
                     int nativeHow = (how == SocketShutdown::Receive) ? SD_RECEIVE : ((how == SocketShutdown::Send) ? SD_SEND : SD_BOTH);
                     shutdown(m_pImpl->hSocket, nativeHow);
                 }

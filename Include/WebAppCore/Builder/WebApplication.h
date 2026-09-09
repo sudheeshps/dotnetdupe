@@ -1,3 +1,6 @@
+/// \file WebApplication.h
+/// \brief Represents the web application used to configure the HTTP pipeline and routes mirroring ASP.NET Core WebApplication.
+
 #pragma once
 
 #include "Common.h"
@@ -19,6 +22,14 @@ namespace DotNetDupe {
 
             class WebApplicationBuilder;
 
+            /// \brief Configures HTTP request pipelines, minimalist routing endpoints, WebSockets, and hosts web servers.
+            ///
+            /// Models ASP.NET Core minimal API hosting in C++ with integrated Dependency Injection,
+            /// multithreaded worker pools, and controller mapping.
+            /// Thread-safe for route registration prior to Run(); immutable during execution.
+            ///
+            /// \note Conforms to RFC 9110 (HTTP Semantics) and ASP.NET Core Minimal API specifications.
+            /// \see WebApplicationBuilder, HttpContext
             class WebApplication : public virtual DotNetDupe::System::Object {
             public:
                 using ControllerRegistrar = DotNetDupe::System::Action<const DotNetDupe::System::SmartPointer<WebApplication>&>;
@@ -31,21 +42,57 @@ namespace DotNetDupe {
                 DOTNETDUPE_API WebApplication(WebApplication&&) noexcept;
                 DOTNETDUPE_API WebApplication& operator=(WebApplication&&) noexcept;
 
+                /// \brief Initializes a new instance of the WebApplicationBuilder class with pre-configured defaults.
+                /// \return A SmartPointer to the newly created WebApplicationBuilder.
                 DOTNETDUPE_API static DotNetDupe::System::SmartPointer<WebApplicationBuilder> CreateBuilder();
                 
+                /// \brief Gets the service provider holding the configured application dependencies.
+                /// \return SmartPointer to the root IServiceProvider.
                 DOTNETDUPE_API DotNetDupe::System::SmartPointer<DotNetDupe::System::IServiceProvider> GetServices() const { return m_spServices; }
 
+                /// \brief Registers an HTTP GET route endpoint with a synchronous lambda or delegate handler.
+                /// \param pattern URI route pattern (e.g., "/api/status", "/users/{id}").
+                /// \param handler Request handler function returning response content.
                 DOTNETDUPE_API void MapGet(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+
+                /// \brief Registers an HTTP POST route endpoint with a synchronous lambda or delegate handler.
+                /// \param pattern URI route pattern.
+                /// \param handler Request handler function returning response content.
                 DOTNETDUPE_API void MapPost(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+
+                /// \brief Registers an HTTP PUT route endpoint with a synchronous lambda or delegate handler.
+                /// \param pattern URI route pattern.
+                /// \param handler Request handler function returning response content.
                 DOTNETDUPE_API void MapPut(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+
+                /// \brief Registers an HTTP DELETE route endpoint with a synchronous lambda or delegate handler.
+                /// \param pattern URI route pattern.
+                /// \param handler Request handler function returning response content.
                 DOTNETDUPE_API void MapDelete(const DotNetDupe::System::String& pattern, DotNetDupe::System::Func<DotNetDupe::System::String, DotNetDupe::System::SmartPointer<Http::HttpContext>> handler);
+
+                /// \brief Maps an RFC 6455 WebSocket endpoint to an asynchronous lifecycle handler.
+                /// \param pattern URI route pattern (e.g., "/ws/chat").
+                /// \param handler SmartPointer to the IWebSocketHandler instance.
                 DOTNETDUPE_API void MapWebSocket(const DotNetDupe::System::String& pattern, DotNetDupe::System::SmartPointer<WebSockets::IWebSocketHandler> handler);
+
+                /// \brief Retrieves the list of all currently mapped WebSocket route patterns.
+                /// \return List of route pattern strings.
                 DOTNETDUPE_API DotNetDupe::System::Collections::Generic::List<DotNetDupe::System::String> GetWebSocketRoutes() const;
+
+                /// \brief Determines whether a registered WebSocket route matches the specified path.
+                /// \param path URI path to evaluate.
+                /// \return True if a matching WebSocket route is registered; otherwise, false.
                 DOTNETDUPE_API bool HasWebSocketRoute(const DotNetDupe::System::String& path) const;
 
+                /// \brief Dispatches and binds all registered controller routes to this application pipeline.
                 DOTNETDUPE_API void MapControllers();
 
+                /// \brief Starts the embedded HTTP/WebSocket server listener on the specified URL and worker thread pool.
+                /// \param url Listening URL containing protocol, host, and port (default "http://127.0.0.1:5000").
+                /// \param threadCount Minimum worker threads in the ThreadPool for connection handling (default 10).
                 DOTNETDUPE_API void Run(const DotNetDupe::System::String& url = "http://127.0.0.1:5000", int threadCount = 10);
+
+                /// \brief Stops the active TCP listener and releases connection worker threads.
                 DOTNETDUPE_API void Stop();
 
             private:

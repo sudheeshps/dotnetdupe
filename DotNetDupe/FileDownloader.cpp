@@ -258,6 +258,7 @@ namespace DotNetDupe {
                     : m_pImpl(SmartPointer<Impl>::NewShared()),
                       DownloadProgressChanged(m_pImpl->DownloadProgressChanged),
                       DownloadCompleted(m_pImpl->DownloadCompleted) {
+                    /// Validate parameters and store endpoint state.
                     m_pImpl->m_sUrl = sUrl;
                     m_pImpl->m_sDestinationPath = sDestinationPath;
                     if (sUrl.IsEmpty()) throw ArgumentException("sUrl cannot be empty.");
@@ -269,18 +270,22 @@ namespace DotNetDupe {
                 }
 
                 FileDownloader::~FileDownloader() {
+                    /// Signal pause to terminate active download worker thread.
                     m_pImpl->m_bPauseRequested = true;
                 }
 
                 DownloadProgress FileDownloader::GetProgress() const {
+                    /// Query telemetry progress snapshot.
                     return m_pImpl->GetProgress();
                 }
 
                 DownloadStatus FileDownloader::GetStatus() const {
+                    /// Return atomic status value.
                     return m_pImpl->m_status.load();
                 }
 
                 void FileDownloader::Pause() {
+                    /// Guard: Signal pause only if currently downloading.
                     if (m_pImpl->m_status.load() == DownloadStatus::Downloading) {
                         m_pImpl->m_bPauseRequested = true;
                         Console::WriteLine("[FileDownloader] Pause requested.");
@@ -288,8 +293,10 @@ namespace DotNetDupe {
                 }
 
                 bool FileDownloader::Start() {
+                    /// Guard: Prevent concurrent duplicate starts.
                     if (m_pImpl->m_status.load() == DownloadStatus::Downloading) return false;
 
+                    /// Reset transfer telemetry counters.
                     m_pImpl->m_bPauseRequested = false;
                     m_pImpl->m_llDownloadedBytes = 0;
                     m_pImpl->m_llTotalBytes = 0;
@@ -297,6 +304,7 @@ namespace DotNetDupe {
                     m_pImpl->m_status = DownloadStatus::Downloading;
                     Console::WriteLine(String("[FileDownloader] Starting download from ") + m_pImpl->m_sUrl);
 
+                    /// Spawn background download worker thread.
                     auto pImpl = m_pImpl;
                     m_pImpl->m_pWorkerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
                     m_pImpl->m_pWorkerThread->Start();
@@ -304,13 +312,16 @@ namespace DotNetDupe {
                 }
 
                 bool FileDownloader::Resume() {
+                    /// Guard: Can only resume if currently suspended or failed.
                     DownloadStatus currentStatus = m_pImpl->m_status.load();
                     if (currentStatus == DownloadStatus::Downloading || currentStatus == DownloadStatus::Completed) return false;
 
+                    /// Mark status as downloading.
                     m_pImpl->m_bPauseRequested = false;
                     m_pImpl->m_status = DownloadStatus::Downloading;
                     Console::WriteLine(String("[FileDownloader] Resuming download for ") + m_pImpl->m_sDestinationPath);
 
+                    /// Launch background worker for remaining chunks.
                     auto pImpl = m_pImpl;
                     m_pImpl->m_pWorkerThread = SmartPointer<Threading::Thread>::NewShared(Threading::ThreadStart([pImpl]() { pImpl->DownloadLoop(); }));
                     m_pImpl->m_pWorkerThread->Start();
@@ -318,12 +329,14 @@ namespace DotNetDupe {
                 }
 
                 void FileDownloader::AddHeaders(const Collections::Generic::Dictionary<String, String>& headers) {
+                    /// Copy user-specified headers into dictionary.
                     for (auto const& [sKey, sVal] : headers) {
                         m_pImpl->m_customHeaders[sKey] = sVal;
                     }
                 }
 
                 void FileDownloader::SetUserAgent(const String& sUserAgent) {
+                    /// Update custom User-Agent header.
                     m_pImpl->m_customHeaders["User-Agent"] = sUserAgent;
                 }
 

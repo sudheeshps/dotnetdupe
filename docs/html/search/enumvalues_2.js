@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['canceled_0',['Canceled',['../namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html#a3d0d702060f8a501f43e4986db96d4d1a0e22fe7d45f8e5632a4abf369b24e29c',1,'DotNetDupe::System::Threading::Tasks']]],
+  ['closed_1',['Closed',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44a03f4a47830f97377a35321051685071e',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['closereceived_2',['CloseReceived',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44afc641c864377e360da58341c83c17d98',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['closesent_3',['CloseSent',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44a0d17a38aefd18ec520fb9b20378916b0',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['commonapplicationdata_4',['CommonApplicationData',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a0d19fc54ba35cc9927c56964cea30ae0',1,'DotNetDupe::System::Environment']]],
+  ['commonprogramfiles_5',['CommonProgramFiles',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a4e2addfe8ebeb223b42691df4d256c3c',1,'DotNetDupe::System::Environment']]],
+  ['completed_6',['Completed',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181a07ca5050e697392c9ed47e6453f1453f',1,'DotNetDupe::System::Net::Http']]],
+  ['compressed_7',['Compressed',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a4d602abc0c0f2f7c1a5156d964517e4e',1,'DotNetDupe::System::IO']]],
+  ['conflict_8',['Conflict',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982af1d4ac54357cc0932f385d56814ba7e4',1,'DotNetDupe::System::Net']]],
+  ['connected_9',['Connected',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2a805da56f8f3d09bfad61b11cfb69eaa2ec0d16e4ca169baedb9b2d50ec5c6d7',1,'DotNetDupe::System::Diagnostics']]],
+  ['connecting_10',['Connecting',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['connectionclosedprematurely_11',['ConnectionClosedPrematurely',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b',1,'DotNetDupe::System::Net::WebSockets']]],
+  ['connectquery_12',['ConnectQuery',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2a805da56f8f3d09bfad61b11cfb69eaafec570051795baded5c6541cbd1464c2',1,'DotNetDupe::System::Diagnostics']]],
+  ['continue_13',['Continue',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982aa0bfb8e59e6c13fc8d990781f77694fe',1,'DotNetDupe::System::Net']]],
+  ['cookies_14',['Cookies',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1a597b56e53847cd6a4712ac183f61fa68',1,'DotNetDupe::System::Environment']]],
+  ['created_15',['Created',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6',1,'DotNetDupe::System::Net::Created'],['../namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html#a3d0d702060f8a501f43e4986db96d4d1a0eceeb45861f9585dd7a97a3e36f85c6',1,'DotNetDupe::System::Threading::Tasks::Created']]],
+  ['critical_16',['Critical',['../namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea278d01e5af56273bae1bb99a98b370cd',1,'DotNetDupe::Extensions::Logging::Critical'],['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a9df595a071c41aa77f05b905fab00771a278d01e5af56273bae1bb99a98b370cd',1,'DotNetDupe::System::Diagnostics::Critical']]],
+  ['cyan_17',['Cyan',['../namespace_dot_net_dupe_1_1_system.html#a77ff9075c27f2151179d1301073e3550a023c239d2f2538f140a20e72c7b73f20',1,'DotNetDupe::System']]]
+];

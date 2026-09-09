@@ -1,0 +1,9 @@
+var searchData=
+[
+  ['validatepathchars_0',['ValidatePathChars',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a1012709bfe045bde805fa1153eda7774',1,'DotNetDupe::System::IO']]],
+  ['validatewebsockethandshake_1',['ValidateWebSocketHandshake',['../namespace_dot_net_dupe_1_1_web_app_core_1_1_builder.html#a9627eae0564a071f4225ead4b3bf7657',1,'DotNetDupe::WebAppCore::Builder']]],
+  ['validatewin32reportresult_2',['ValidateWin32ReportResult',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#ac331c63a247d62179e2164cf741661af',1,'DotNetDupe::System::Diagnostics']]],
+  ['valueof_3',['ValueOf',['../class_dot_net_dupe_1_1_system_1_1_string.html#a07c291eefab76a22ada8feb167e94c9d',1,'DotNetDupe::System::String::ValueOf(int iValue)'],['../class_dot_net_dupe_1_1_system_1_1_string.html#a46609b3940f60a3b3e4fd782890ba1a4',1,'DotNetDupe::System::String::ValueOf(long long llValue)'],['../class_dot_net_dupe_1_1_system_1_1_string.html#ae755e3a32099d455ed364ae9cb15ec76',1,'DotNetDupe::System::String::ValueOf(double dValue)']]],
+  ['verify_4',['Verify',['../class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html#af7a718a75d87c92ce71105775412ac61',1,'DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken']]],
+  ['version_5',['Version',['../class_dot_net_dupe_1_1_system_1_1_version.html#a2d23e9be730d8ae22026c6aac2d371f1',1,'DotNetDupe::System::Version::Version(int iMajor, int iMinor, int iBuild, int iRevision)'],['../class_dot_net_dupe_1_1_system_1_1_version.html#a73db0d89da4537c117c10a60397004d6',1,'DotNetDupe::System::Version::Version(int iMajor, int iMinor, int iBuild)'],['../class_dot_net_dupe_1_1_system_1_1_version.html#ab6ce284b2fbd105839b7101f76bd1bc2',1,'DotNetDupe::System::Version::Version(int iMajor, int iMinor)'],['../class_dot_net_dupe_1_1_system_1_1_version.html#a977178b96fe1f7ff36922b7aecd56b07',1,'DotNetDupe::System::Version::Version()']]]
+];

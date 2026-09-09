@@ -180,6 +180,27 @@ jobs:
     - name: Create NuGet Package
       run: nuget pack DotNetDupe.nuspec -OutputDirectory artifacts
 
+    - name: Update Documentation Version to Published Package Version
+      shell: powershell
+      run: |
+        # Extract published package version from DotNetDupe.nuspec
+        [xml]$nuspec = Get-Content 'DotNetDupe.nuspec'
+        $version = $nuspec.package.metadata.version.Trim()
+        Write-Host "Updating documentation header to published package version: $version"
+
+        # Update documentation and regenerate API documentation
+        .\scripts\Generate-Docs.ps1 -Version $version
+
+        # Commit and push updated documentation if changed
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git add docs/ Doxyfile
+        $diff = git diff --staged --name-only
+        if ($diff) {
+            git commit -m "docs: sync documentation version to published package $version [skip ci]"
+            git push origin HEAD:main
+        }
+
     - name: Publish to NuGet.org
       if: startsWith(github.ref, 'refs/tags/v')
       run: |

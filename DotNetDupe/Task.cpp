@@ -18,13 +18,16 @@ namespace DotNetDupe {
 
                 Task::Task(Action<> objAction)
                     : m_objAction(objAction), m_eStatus(TaskStatus::Created) {
+                    /// Step: Initialize task completion manual reset event.
                     m_pCompletionEvent = SmartPointer<ManualResetEvent>::NewShared(false);
                 }
 
                 Task::~Task() {
+                    /// Step: Release task resources.
                 }
 
                 void Task::Start() {
+                    /// Guard: Ensure task has not already started.
                     {
                         Lock<CriticalSection> lock(m_csSync);
                         if (m_eStatus != TaskStatus::Created) {
@@ -33,14 +36,17 @@ namespace DotNetDupe {
                         m_eStatus = TaskStatus::WaitingToRun;
                     }
                     
+                    /// Step: Queue task to ThreadPool worker queue.
                     ThreadPool::QueueUserWorkItem(&Task::ThreadPoolCallback, this);
                 }
 
                 void Task::Wait() {
+                    /// Step: Block calling thread until task signals completion.
                     m_pCompletionEvent->WaitOne();
                 }
 
                 bool Task::Wait(int iMillisecondsTimeout) {
+                    /// Step: Wait for completion with timeout.
                     try {
                         return m_pCompletionEvent->WaitOne(iMillisecondsTimeout);
                     } catch (const TimeoutException&) {
@@ -49,11 +55,13 @@ namespace DotNetDupe {
                 }
 
                 TaskStatus Task::GetStatus() const {
+                    /// Return: Thread-safe read of task execution status.
                     Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus;
                 }
 
                 bool Task::GetIsCompleted() const {
+                    /// Return: True if task has reached a terminal execution status.
                     Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::RanToCompletion || 
                            m_eStatus == TaskStatus::Faulted || 
@@ -61,16 +69,19 @@ namespace DotNetDupe {
                 }
 
                 bool Task::GetIsFaulted() const {
+                    /// Return: True if task terminated with an unhandled exception.
                     Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::Faulted;
                 }
 
                 bool Task::GetIsCanceled() const {
+                    /// Return: True if task was canceled before or during execution.
                     Lock<CriticalSection> lock(const_cast<CriticalSection&>(m_csSync));
                     return m_eStatus == TaskStatus::Canceled;
                 }
 
                 SmartPointer<Task> Task::Run(Action<> objAction) {
+                    /// Step: Instantiate, retain, start, and return asynchronous task.
                     SmartPointer<Task> pTask = SmartPointer<Task>::NewShared(objAction);
                     RetainTask(pTask);
                     pTask->Start();
@@ -78,6 +89,7 @@ namespace DotNetDupe {
                 }
 
                 void Task::Execute() {
+                    /// Step: Mark task running and execute user action within exception guard.
                     {
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::Running;
@@ -90,15 +102,17 @@ namespace DotNetDupe {
                         Lock<CriticalSection> lock(m_csSync);
                         m_eStatus = TaskStatus::Faulted;
                     }
+                    /// Step: Signal completion event and remove from active list.
                     m_pCompletionEvent->Set();
                     ReleaseTask(this);
                 }
 
                 void Task::ThreadPoolCallback(Object* pState) {
+                    /// Guard: Check valid state pointer.
                     Task* pTask = static_cast<Task*>(pState);
                     if (pTask == nullptr) return;
 
-                    // Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute()
+                    /// Step: Retain shared ownership to prevent UAF when ReleaseTask is called inside Execute.
                     SmartPointer<Task> spSelf(nullptr);
                     {
                         Lock<CriticalSection> lock(s_csActiveTasks);
@@ -110,17 +124,20 @@ namespace DotNetDupe {
                         }
                     }
 
+                    /// Step: Dispatch execution on worker thread.
                     if (!spSelf.IsNull()) {
                         spSelf->Execute();
                     }
                 }
 
                 void Task::RetainTask(SmartPointer<Task> pTask) {
+                    /// Step: Add task to global active task retention registry.
                     Lock<CriticalSection> lock(s_csActiveTasks);
                     s_pvActiveTasks.Add(pTask);
                 }
 
                 void Task::ReleaseTask(Task* pTask) {
+                    /// Step: Remove task from global active task retention registry.
                     Lock<CriticalSection> lock(s_csActiveTasks);
                     for (int i = 0; i < s_pvActiveTasks.GetCount(); ++i) {
                         if (s_pvActiveTasks[i].Get() == pTask) {

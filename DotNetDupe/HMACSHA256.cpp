@@ -56,6 +56,7 @@ namespace DotNetDupe {
                 class SHA256Impl {
                 public:
                     void Init() {
+                        /// Step: Initialize SHA-256 standard round constants and length counters.
                         h[0] = 0x6a09e667;
                         h[1] = 0xbb67ae85;
                         h[2] = 0x3c6ef372;
@@ -69,6 +70,7 @@ namespace DotNetDupe {
                     }
 
                     void Transform(const unsigned char* message, unsigned int block_nb) {
+                        /// Step: Process 64-byte message chunks through SHA-256 compression function.
                         unsigned int w[64];
                         unsigned int wv[8];
                         unsigned int t1, t2;
@@ -103,6 +105,7 @@ namespace DotNetDupe {
                     }
 
                     void Update(const unsigned char* message, unsigned int message_len) {
+                        /// Step: Buffer and compress streaming message input.
                         unsigned int tmp_len = 64 - len;
                         unsigned int rem_len = message_len < tmp_len ? message_len : tmp_len;
                         std::memcpy(&block[len], message, rem_len);
@@ -120,6 +123,7 @@ namespace DotNetDupe {
                     }
 
                     void Final(unsigned char* digest) {
+                        /// Step: Pad message to 512-bit block boundary and extract 256-bit digest.
                         unsigned int block_nb = (64 - 9 < len) ? 2 : 1;
                         tot_len += len;
                         std::memset(&block[len], 0, 64 - len);
@@ -144,15 +148,21 @@ namespace DotNetDupe {
 
                 // --- HMACSHA256 implementation ---
 
-                HMACSHA256::HMACSHA256() : m_key(0) {}
+                HMACSHA256::HMACSHA256() : m_key(0) {
+                    /// Step: Initialize default instance with empty key.
+                }
 
-                HMACSHA256::HMACSHA256(const Array<char>& key) : m_key(key) {}
+                HMACSHA256::HMACSHA256(const Array<char>& key) : m_key(key) {
+                    /// Step: Initialize with supplied cryptographic key.
+                }
 
                 Array<char> HMACSHA256::ComputeHash(const Array<char>& buffer) {
+                    /// Step: Delegate to static hash calculation.
                     return ComputeHash(buffer, m_key);
                 }
 
                 static void PrepareHmacPads(const Array<char>& key, unsigned char* k_ipad, unsigned char* k_opad) {
+                    /// Step: Format and pad HMAC inner and outer key blocks per RFC 2104.
                     unsigned char key_hashed[32];
                     int key_len = key.GetLength();
                     const unsigned char* key_data = reinterpret_cast<const unsigned char*>(key.GetData());
@@ -166,6 +176,7 @@ namespace DotNetDupe {
                 }
 
                 static void ComputeHmacDigests(const unsigned char* k_ipad, const unsigned char* k_opad, const Array<char>& buffer, unsigned char* outer_digest) {
+                    /// Step: Perform two-pass inner and outer SHA-256 HMAC rounds.
                     unsigned char inner_digest[32];
                     SHA256Impl sha_inner; sha_inner.Init(); sha_inner.Update(k_ipad, 64);
                     if (buffer.GetLength() > 0) sha_inner.Update(reinterpret_cast<const unsigned char*>(buffer.GetData()), buffer.GetLength());
@@ -176,6 +187,7 @@ namespace DotNetDupe {
                 }
 
                 Array<char> HMACSHA256::ComputeHash(const Array<char>& buffer, const Array<char>& key) {
+                    /// Step: Allocate pads, calculate hash passes, and return byte array.
                     unsigned char k_ipad[64], k_opad[64], outer_digest[32];
                     PrepareHmacPads(key, k_ipad, k_opad);
                     ComputeHmacDigests(k_ipad, k_opad, buffer, outer_digest);

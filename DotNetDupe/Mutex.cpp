@@ -24,6 +24,7 @@ namespace DotNetDupe {
             Mutex::Mutex() : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {}
 
             Mutex::Mutex(bool bInitiallyOwned) : _name(""), _hHandle(nullptr), _pImpl(new Impl()) {
+                /// Acquire lock immediately if requested.
                 if (bInitiallyOwned) {
                     _pImpl->mutex.lock();
                 }
@@ -38,6 +39,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static HANDLE OpenOrCreateWin32Mutex(const std::wstring& wsName, bool bInitiallyOwned, bool openAlways, bool& bCreatedNew) {
+                /// Attempt to create system mutex.
                 HANDLE hHandle = ::CreateMutexW(NULL, bInitiallyOwned ? TRUE : FALSE, wsName.c_str());
                 if (hHandle != NULL) {
                     bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
@@ -46,6 +48,8 @@ namespace DotNetDupe {
                 if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied creating Mutex synchronization object.");
                 }
+
+                /// Handle openAlways semantics.
                 bCreatedNew = false;
                 if (!openAlways) {
                     throw WaitHandleCannotBeOpenedException("Mutex creation returned null handle and openAlways is false.");
@@ -64,6 +68,7 @@ namespace DotNetDupe {
             Mutex::Mutex(bool bInitiallyOwned, const String& sName, bool openAlways, bool& bCreatedNew)
                 : _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
+                /// Named mutex initialization on Win32.
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Mutex(wsName, bInitiallyOwned, openAlways, bCreatedNew);
@@ -82,6 +87,7 @@ namespace DotNetDupe {
             }
 
             Mutex::~Mutex() {
+                /// Clean up operating system handle and internal implementation.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     ::CloseHandle((HANDLE)_hHandle);
@@ -95,6 +101,7 @@ namespace DotNetDupe {
             }
 
             SmartPointer<Mutex> Mutex::OpenExisting(const String& sName) {
+                /// Open existing mutex by name.
                 SmartPointer<Mutex> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
@@ -103,12 +110,16 @@ namespace DotNetDupe {
             }
 
             bool Mutex::TryOpenExisting(const String& sName, SmartPointer<Mutex>& pResult) {
+                /// Guard: Check empty name.
                 pResult = SmartPointer<Mutex>();
                 if (sName.IsEmpty()) return false;
+
 #if defined(_WIN32)
+                /// Attempt Win32 OpenMutexW call.
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenMutexW(SYNCHRONIZE, FALSE, wsName.c_str());
                 if (h == NULL) return false;
+
                 SmartPointer<Mutex> spM = SmartPointer<Mutex>::NewShared();
                 spM->_name = sName;
                 spM->_hHandle = h;
@@ -120,6 +131,7 @@ namespace DotNetDupe {
             }
 
             bool Mutex::WaitOne() {
+                /// Synchronize via native OS handle or C++ timed mutex.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
@@ -131,6 +143,7 @@ namespace DotNetDupe {
             }
 
             bool Mutex::WaitOne(int millisecondsTimeout) {
+                /// Timed wait via native OS handle or std::timed_mutex.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);
@@ -147,6 +160,7 @@ namespace DotNetDupe {
             }
 
             int Mutex::Release(int releaseCount) {
+                /// Release lock ownership.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     ::ReleaseMutex((HANDLE)_hHandle);

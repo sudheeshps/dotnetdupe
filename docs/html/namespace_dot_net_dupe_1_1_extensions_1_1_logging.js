@@ -1,0 +1,38 @@
+var namespace_dot_net_dupe_1_1_extensions_1_1_logging =
+[
+    [ "AggregateLogger", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_aggregate_logger" ],
+    [ "ConsoleLogger", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger" ],
+    [ "ConsoleLoggerProvider", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_console_logger_provider" ],
+    [ "FileLogger", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger" ],
+    [ "FileLoggerContext", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_context.html", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_context" ],
+    [ "FileLoggerProvider", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider" ],
+    [ "FileRolloverConfig", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_rollover_config.html", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_rollover_config" ],
+    [ "ILogger", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger" ],
+    [ "ILoggerFactory", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory" ],
+    [ "ILoggerOf", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_of" ],
+    [ "ILoggerProvider", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_provider.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_provider" ],
+    [ "Logger", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger" ],
+    [ "LoggerBase", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_base.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_base" ],
+    [ "LoggerConfiguration", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html", "struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration" ],
+    [ "LoggerFactory", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_factory.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_factory" ],
+    [ "LoggerTextWriter", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer" ],
+    [ "LogManager", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager.html", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager" ],
+    [ "LogLevel", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ce", [
+      [ "Trace", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ceadd4ec0ac4e58f7c32a01244ae91150b1", null ],
+      [ "Debug", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ceaa603905470e2a5b8c13e96b579ef0dba", null ],
+      [ "Information", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660ceaa82be0f551b8708bc08eb33cd9ded0cf", null ],
+      [ "Warning", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea0eaadb4fcb48a0a0ed7bc9868be9fbaa", null ],
+      [ "Error", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea902b0d55fddef6f8d651fe1035b7d4bd", null ],
+      [ "Critical", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea278d01e5af56273bae1bb99a98b370cd", null ],
+      [ "None", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a0d015508065738a02eac64f4f98660cea6adf97f83acf6453d4a6a4b1070f3754", null ]
+    ] ],
+    [ "AddJsonLogProperties", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a15dba607c8b7ff0578c9d985ef75ece8", null ],
+    [ "BuildJsonLog", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#af29059d217a214d7d96677d519c93b17", null ],
+    [ "CheckAndRollover", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a61d790fb715034a2db5ac6927473ab4a", null ],
+    [ "ParseLogLevel", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#aeebbc278d876fcf60f9cc2d2c5bf6dcb", null ],
+    [ "PerformFileRollover", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a890f6e0fd32b066225a2201c27ac2830", null ],
+    [ "ReplaceDynamicPropertyTokens", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#acaeb3fd56c108aec2dc8281686b35288", null ],
+    [ "ReplaceToken", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#ae499c9c7b91d2477493b3814f88cc4b6", null ],
+    [ "ResolveAndPrepareLogPath", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a482f9255a3935bdf4e7f454e5faa9161", null ],
+    [ "SerializeUnusedPropertiesText", "namespace_dot_net_dupe_1_1_extensions_1_1_logging.html#a24a55a635880881d329be5fd19889684", null ]
+];

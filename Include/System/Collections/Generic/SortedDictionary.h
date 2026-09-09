@@ -12,6 +12,13 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
+                /// \class SortedDictionary
+                /// \brief Represents a collection of key/value pairs that are sorted on the key.
+                ///
+                /// \tparam TKey The type of the keys in the dictionary.
+                /// \tparam TValue The type of the values in the dictionary.
+                /// \note Conforms to ECMA-335 Partition IV Section 5.43 (System.Collections.Generic.SortedDictionary<TKey, TValue>).
+                ///       Maintains key-sorted element ordering using binary search.
                 template <typename TKey, typename TValue>
                 class SortedDictionary : public Object {
                 private:
@@ -35,10 +42,16 @@ namespace DotNetDupe {
                     List<KeyValuePair> m_lstItems;
 
                 public:
+                    /// \brief Initializes a new instance of the SortedDictionary class that is empty and is sorted by the key.
                     SortedDictionary() = default;
 
+                    /// \brief Gets the number of key/value pairs contained in the SortedDictionary.
+                    /// \return The number of key/value pairs contained in the SortedDictionary.
                     int GetCount() const { return m_lstItems.GetCount(); }
 
+                    /// \brief Gets or sets the value associated with the specified key.
+                    /// \param key The key of the value to get or set.
+                    /// \return The value associated with the specified key.
                     TValue& operator[](const TKey& key) {
                         int index = m_lstItems.BinarySearch(KeyValuePair{ key, TValue() });
                         if (index >= 0) {

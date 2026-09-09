@@ -1,0 +1,27 @@
+var class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer =
+[
+    [ "LoggerTextWriter", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a7806f9125d8d834a1157a2008fff9508", null ],
+    [ "LoggerTextWriter", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a35550046abb2d3338b210132306b029f", null ],
+    [ "~LoggerTextWriter", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#af0b441899292e77f98df1532d800bd85", null ],
+    [ "Close", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a26c5c7f7e5ec2ec833777e64a5cb20ce", null ],
+    [ "Dispose", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a0be876c8e20e8b0813285fbdba9400e9", null ],
+    [ "Flush", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a10ca041268caa3f239637f0590d69897", null ],
+    [ "GetEncoding", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#ad00e218bd2f16777cc0b3d2cda1c4dc1", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a6dec6052bf8454efb39be8c3a6a06673", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a6449bf2883f190b47232d841aacee9ac", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#abe908cfa5da31fd3f2ea69b8ef5b7b67", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#adee80fdf4d05f2a62f91ed3227e7414e", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#ae85b6ad81a62ec460de8aae2750fec95", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a83e67d8641f6a256c58ce79393fd8c28", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#ab11c8b7e9280a36d64cdf2164959361f", null ],
+    [ "Write", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a8f539ea8660c5d03d48879f4deec344c", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a7a592cf6ca0bfe0f3e437bf294bb9be9", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#ad3fef112397ec8bf02b3f46d30470b70", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a4efc60c15273c3625333199c507e5bea", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#ab7b3819324bd5d1369bcc6bbe630a513", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a9854af684d790850476c9169b95968cf", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a7e17fcf0d52a0a8967275ec2c036b2cf", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#af4956df7e0814c5d12196b078e25113b", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a711b7d819650d2575dc6528232f2bcde", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_text_writer.html#a4a2e09ddc8f6905372158b1a45272f07", null ]
+];

@@ -15,7 +15,9 @@ namespace DotNetDupe {
             namespace WebSockets {
 
                 static void BuildWebSocketFrameHeader(uint8_t opcode, size_t len, std::vector<uint8_t>& frame) {
+                    /// Frame: Add FIN bit and opcode.
                     frame.push_back(opcode);
+                    /// Encode: Determine 7-bit, 16-bit, or 64-bit payload length field per RFC 6455.
                     if (len <= 125) {
                         frame.push_back(static_cast<uint8_t>(len));
                     } else if (len <= 65535) {
@@ -38,11 +40,13 @@ namespace DotNetDupe {
                         : m_pStream(pStream), m_eState(WebSocketState::Open) {}
 
                     void CloseState() {
+                        /// Lock: Synchronize state change to Closed.
                         Threading::Lock<Threading::CriticalSection> lock(m_csLock);
                         m_eState = WebSocketState::Closed;
                     }
 
                     bool ReadExtended16(uint64_t& payloadLen) {
+                        /// Read: Read 16-bit extended length in network byte order.
                         uint8_t extLen[2] = { 0 };
                         int bytesRead = m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 2);
                         if (bytesRead <= 0) {
@@ -53,6 +57,7 @@ namespace DotNetDupe {
                     }
 
                     bool ReadExtended64(uint64_t& payloadLen) {
+                        /// Read: Read 64-bit extended length in network byte order.
                         uint8_t extLen[8] = { 0 };
                         int bytesRead = m_pStream->Read(reinterpret_cast<char*>(extLen), 0, 8);
                         if (bytesRead <= 0) {
@@ -64,6 +69,7 @@ namespace DotNetDupe {
                     }
 
                     bool ReadFrameHeader(uint8_t& opcode, bool& masked, uint64_t& payloadLen) {
+                        /// Read: Read 2-byte basic frame header.
                         uint8_t header[2] = { 0 };
                         int bytesRead = 0;
                         try {
@@ -72,6 +78,7 @@ namespace DotNetDupe {
                             throw WebSocketException(WebSocketError::NativeError, ex);
                         }
                         if (bytesRead <= 0) return false;
+                        /// Parse: Decode opcode, mask flag, and base payload length.
                         opcode = header[0] & 0x0F;
                         masked = (header[1] & 0x80) != 0;
                         payloadLen = header[1] & 0x7F;
@@ -79,12 +86,14 @@ namespace DotNetDupe {
                     }
 
                     bool ReadExtendedLength(uint64_t& payloadLen) {
+                        /// Check: Read extended length if base length is 126 or 127.
                         if (payloadLen == 126) return ReadExtended16(payloadLen);
                         if (payloadLen == 127) return ReadExtended64(payloadLen);
                         return true;
                     }
 
                     void ReadPayloadBytes(uint64_t payloadLen, std::vector<uint8_t>& payload) {
+                        /// Read: Read exact payload length bytes in chunks.
                         payload.resize(payloadLen, 0);
                         uint64_t totalRead = 0;
                         while (totalRead < payloadLen) {
@@ -98,12 +107,14 @@ namespace DotNetDupe {
                     }
 
                     void UnmaskPayload(const std::array<uint8_t, 4>& maskKey, uint64_t payloadLen, std::vector<uint8_t>& payload) {
+                        /// Transform: XOR unmask payload using 4-byte cyclical masking key per RFC 6455.
                         for (uint64_t i = 0; i < payloadLen; ++i) {
                             payload[i] ^= maskKey[i % 4];
                         }
                     }
 
                     bool ReadMaskKeyAndPayload(bool masked, uint64_t payloadLen, std::vector<uint8_t>& payload) {
+                        /// Read: Extract mask key if masked and unmask payload buffer.
                         std::array<uint8_t, 4> maskKey = { 0 };
                         if (masked && m_pStream->Read(reinterpret_cast<char*>(maskKey.data()), 0, 4) <= 0) {
                             throw WebSocketException(WebSocketError::ConnectionClosedPrematurely, "Connection lost while reading mask key.");
@@ -114,13 +125,16 @@ namespace DotNetDupe {
                     }
 
                     bool WriteFrame(uint8_t opcode, const uint8_t* pData, size_t len) {
+                        /// Guard: Verify connection state under synchronization lock.
                         Threading::Lock<Threading::CriticalSection> lock(m_csLock);
                         if (m_pStream.IsNull() || m_eState != WebSocketState::Open) {
                             throw WebSocketException(WebSocketError::InvalidState, "WebSocket is not connected or already closed.");
                         }
+                        /// Construct: Build frame header and append payload data.
                         std::vector<uint8_t> frame;
                         BuildWebSocketFrameHeader(opcode, len, frame);
                         if (pData != nullptr && len > 0) frame.insert(frame.end(), pData, pData + len);
+                        /// Transmit: Write frame bytes to network stream.
                         try {
                             m_pStream->Write(reinterpret_cast<const char*>(frame.data()), 0, static_cast<int>(frame.size()));
                         } catch (const Exception& ex) {
@@ -143,49 +157,61 @@ namespace DotNetDupe {
                 }
 
                 String WebSocket::ComputeSecWebSocketAccept(const String& secWebSocketKey) {
+                    /// Guard: Ensure challenge key string is non-empty.
                     if (secWebSocketKey.IsEmpty()) {
                         throw ArgumentException("secWebSocketKey cannot be empty.");
                     }
+                    /// Compute: Append RFC 6455 magic GUID and compute SHA-1 digest.
                     std::string key = secWebSocketKey.GetRawString();
                     std::string magic = key + "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
                     unsigned char hash[SHA_DIGEST_LENGTH];
                     SHA1(reinterpret_cast<const unsigned char*>(magic.c_str()), magic.length(), hash);
+                    /// Encode: Base64 encode the resulting 20-byte digest.
                     char encoded[128] = { 0 };
                     EVP_EncodeBlock(reinterpret_cast<unsigned char*>(encoded), hash, SHA_DIGEST_LENGTH);
+                    /// Return result: Return encoded accept key string.
                     return String(encoded);
                 }
 
                 bool WebSocket::SendAsync(const String& message) {
+                    /// Transmit: Write text frame (opcode 0x81).
                     std::string text = message.GetRawString();
                     return m_pImpl->WriteFrame(0x81, reinterpret_cast<const uint8_t*>(text.data()), text.length());
                 }
 
                 bool WebSocket::SendBytes(const Array<uint8_t>& data) {
+                    /// Transmit: Write binary frame (opcode 0x82).
                     return m_pImpl->WriteFrame(0x82, data.GetData(), data.GetLength());
                 }
 
                 bool WebSocket::ReceiveText(String& outMessage) {
+                    /// Guard: Verify socket state under critical section lock.
                     {
                         Threading::Lock<Threading::CriticalSection> lock(m_pImpl->m_csLock);
                         if (m_pImpl->m_pStream.IsNull() || m_pImpl->m_eState != WebSocketState::Open) {
                             throw WebSocketException(WebSocketError::InvalidState, "WebSocket is not connected or already closed.");
                         }
                     }
+                    /// Header: Read incoming frame header and inspect opcode.
                     uint8_t opcode = 0; bool masked = false; uint64_t payloadLen = 0;
                     if (!m_pImpl->ReadFrameHeader(opcode, masked, payloadLen) || opcode == 0x08) {
                         m_pImpl->CloseState();
                         return false;
                     }
+                    /// Payload: Read extended length and unmask received payload.
                     std::vector<uint8_t> payload;
                     m_pImpl->ReadExtendedLength(payloadLen);
                     m_pImpl->ReadMaskKeyAndPayload(masked, payloadLen, payload);
                     outMessage = String(std::string(payload.begin(), payload.end()).c_str());
+                    /// Return result: Text frame received successfully.
                     return true;
                 }
 
                 void WebSocket::Close() {
+                    /// Lock: Synchronize closing handshake.
                     Threading::Lock<Threading::CriticalSection> lock(m_pImpl->m_csLock);
                     if (m_pImpl->m_eState == WebSocketState::Open) {
+                        /// Frame: Send 2-byte empty close frame (opcode 0x88).
                         uint8_t closeFrame[2] = { 0x88, 0x00 };
                         if (!m_pImpl->m_pStream.IsNull()) {
                             try {
@@ -195,6 +221,7 @@ namespace DotNetDupe {
                                 (void)0;
                             }
                         }
+                        /// Update: Transition state to Closed.
                         m_pImpl->m_eState = WebSocketState::Closed;
                     }
                 }

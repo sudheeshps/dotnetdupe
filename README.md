@@ -4,6 +4,7 @@
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
 [![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
 [![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
+[![API Docs](https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&logo=doxygen)](docs/index.html)
 [![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/DotNetDupe)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
@@ -162,7 +163,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.3.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.4.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -294,7 +295,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.3.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.4.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -304,9 +305,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.3.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.4.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.3.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.4.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -733,18 +734,25 @@ void AccessDatabase() {
 
 ## STL vs DotNetDupe Comparison ⚖️
 
-DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL.
-
-*   **[General Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/Comparison.html)**: Covers Strings, Collections, Timing, etc.
-*   **[Threading Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/ThreadingComparison.html)**: Detailed comparison of thread synchronization primitives.
-*   **[Process Management Comparison Guide](https://sudheeshps.github.io/dotnetdupe/docs/ProcessComparison.html)**: Comparison of process execution and management.
-*   **[Authentication & Authorization Guide](https://sudheeshps.github.io/dotnetdupe/docs/Auth.html)**: Covers client-side and server-side JWT authentication and authorization.
+DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the [Interactive Documentation Portal](docs/index.html) and the [Doxygen HTML API Reference](docs/html/index.html).
 
 ### Sample Client and Test Code 🧪
 
 The repository includes `DotNetDupeDemo` (a sample console application) and `DotNetDupeTests` (unit tests) projects. These projects demonstrate how to integrate and use the `DotNetDupe` library. You can refer to their `.vcxproj` files for examples of how to configure your own projects to consume the `DotNetDupe` NuGet package.
 
 ## API Reference 📖
+
+DotNetDupe provides comprehensive documentation through multiple interconnected channels:
+
+* 🌐 **[Interactive Documentation Portal](docs/index.html)**: Modern web interface with real-time class search, namespace categorization, and C# vs C++ code comparisons.
+* 📚 **[Doxygen HTML API Reference](docs/html/index.html)**: Exhaustive class and member documentation with parameter specifications, return types, exception contracts, and inheritance hierarchies.
+
+> [!TIP]
+> **Generating API Documentation Locally**:
+> You can rebuild the entire documentation suite locally at any time using PowerShell:
+> ```powershell
+> powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1 -OpenBrowser
+> ```
 
 For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:
 
@@ -754,60 +762,60 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Object](docs/Object.md) | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
-| [SmartPointer&lt;T&gt;](docs/SmartPointer.md) | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
-| [EventArgs](docs/EventHandler.md) | Base class for event data payloads with `Empty` singleton representation. |
-| [EventHandler&lt;TEventArgs&gt;](docs/EventHandler.md) | Multicast delegate supporting publisher-subscriber event model with token unsubscription. |
-| [Char](docs/Char.md) | Represents character code points and provides Unicode classification and transformation methods. |
-| [String](docs/String.md) | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
-| [Array&lt;T&gt;](docs/Array.md) | Provides methods for creating, manipulating, searching, and sorting arrays. |
-| [BitConverter](docs/BitConverter.md) | Converts base data types to arrays of bytes, and arrays of bytes to base data types. |
-| [Buffer](docs/Buffer.md) | Manipulates arrays of primitive types efficiently. |
-| [Console](docs/Console.md) | Reads and writes to standard I/O streams with full color control and stream redirection. |
-| [Convert](docs/Convert.md) | Converts base data types and hexadecimal strings. |
-| [DateTime](docs/DateTime.md) | Represents an instant in time, typically expressed as a date and time of day. |
-| [DateTimeOffset](docs/DateTimeOffset.md) | Represents a point in time relative to UTC with time zone offset. |
-| [TimeSpan](docs/TimeSpan.md) | Represents a time interval. |
-| [TimeZone](docs/TimeZone.md) | Represents a time zone. |
-| [TimeZoneInfo](docs/TimeZoneInfo.md) | Represents any time zone in the world with Daylight Saving adjustments. |
-| [DaylightTime](docs/DaylightTime.md) | Defines the period of daylight saving time. |
-| [TimeProvider](docs/TimeProvider.md) | Provides a testable abstraction for date and time. |
-| [Guid](docs/Guid.md) | Represents a globally unique identifier (GUID). |
-| [Environment](docs/Environment.md) | Provides environment variables, machine info, and platform properties. |
-| [OperatingSystem](docs/OperatingSystem.md) | Represents operating system platform identifiers and version metadata. |
-| [Random](docs/Random.md) | Represents a pseudo-random number generator. |
-| [Uri](docs/Uri.md) | Provides an object representation of Uniform Resource Identifiers (URI). |
-| [UriBuilder](docs/UriBuilder.md) | Provides convenient mutation of URI components. |
-| [UriComponents](docs/UriComponents.md) | Specifies parts of a URI. |
-| [UriFormat](docs/UriFormat.md) | Controls how URI information is escaped. |
-| [UriParser](docs/UriParser.md) | Parses and validates URI schemes. |
-| [GenericUriParser](docs/GenericUriParser.md) | Customizable parser for hierarchical URI schemes. |
-| [Version](docs/Version.md) | Represents version numbers (`major.minor.build.revision`). |
+| **Object** | Supports all classes in the .NET class hierarchy and provides low-level services to derived classes. |
+| **SmartPointer&lt;T&gt;** | Unified smart pointer supporting RAII unique and shared reference-counted ownership. |
+| **EventArgs** | Base class for event data payloads with `Empty` singleton representation. |
+| **EventHandler&lt;TEventArgs&gt;** | Multicast delegate supporting publisher-subscriber event model with token unsubscription. |
+| **Char** | Represents character code points and provides Unicode classification and transformation methods. |
+| **String** | Represents immutable sequences of UTF-8 and UTF-16 characters (`String` and `WString`). |
+| **Array&lt;T&gt;** | Provides methods for creating, manipulating, searching, and sorting arrays. |
+| **BitConverter** | Converts base data types to arrays of bytes, and arrays of bytes to base data types. |
+| **Buffer** | Manipulates arrays of primitive types efficiently. |
+| **Console** | Reads and writes to standard I/O streams with full color control and stream redirection. |
+| **Convert** | Converts base data types and hexadecimal strings. |
+| **DateTime** | Represents an instant in time, typically expressed as a date and time of day. |
+| **DateTimeOffset** | Represents a point in time relative to UTC with time zone offset. |
+| **TimeSpan** | Represents a time interval. |
+| **TimeZone** | Represents a time zone. |
+| **TimeZoneInfo** | Represents any time zone in the world with Daylight Saving adjustments. |
+| **DaylightTime** | Defines the period of daylight saving time. |
+| **TimeProvider** | Provides a testable abstraction for date and time. |
+| **Guid** | Represents a globally unique identifier (GUID). |
+| **Environment** | Provides environment variables, machine info, and platform properties. |
+| **OperatingSystem** | Represents operating system platform identifiers and version metadata. |
+| **Random** | Represents a pseudo-random number generator. |
+| **Uri** | Provides an object representation of Uniform Resource Identifiers (URI). |
+| **UriBuilder** | Provides convenient mutation of URI components. |
+| **UriComponents** | Specifies parts of a URI. |
+| **UriFormat** | Controls how URI information is escaped. |
+| **UriParser** | Parses and validates URI schemes. |
+| **GenericUriParser** | Customizable parser for hierarchical URI schemes. |
+| **Version** | Represents version numbers (`major.minor.build.revision`). |
 
 **Core Interfaces**
 
 | Interface | Description |
 |---|---|
-| [IDisposable](docs/Interfaces.md) | Defines a mechanism for deterministic release of unmanaged resources. |
-| [IClonable](docs/Interfaces.md) | Defines mechanisms for deep or shallow object cloning. |
-| [IComparable](docs/Interfaces.md) | Defines comparison method for sorting and ordering. |
-| [IComparable&lt;T&gt;](docs/Interfaces.md) | Defines strongly-typed comparison method for sorting and ordering. |
-| [IFormatProvider&lt;T&gt;](docs/Interfaces.md) | Provides custom type-formatting services. |
-| [IServiceProvider](docs/DependencyInjection.md) | Defines service object resolution mechanism for dependency injection. |
+| **IDisposable** | Defines a mechanism for deterministic release of unmanaged resources. |
+| **IClonable** | Defines mechanisms for deep or shallow object cloning. |
+| **IComparable** | Defines comparison method for sorting and ordering. |
+| **IComparable&lt;T&gt;** | Defines strongly-typed comparison method for sorting and ordering. |
+| **IFormatProvider&lt;T&gt;** | Provides custom type-formatting services. |
+| **IServiceProvider** | Defines service object resolution mechanism for dependency injection. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| [Exception](docs/Exceptions.md) | Root exception class for all DotNetDupe library errors. |
-| [SystemException](docs/Exceptions.md) | Base class for system-level runtime exceptions. |
-| [ArgumentException](docs/Exceptions.md) | Thrown when an argument passed to a method is invalid. |
-| [ArgumentNullException](docs/Exceptions.md) | Thrown when a null argument is passed to a non-null parameter. |
-| [ArgumentOutOfRangeException](docs/Exceptions.md) | Thrown when an argument falls outside allowable boundary limits. |
-| [ArithmeticException](docs/Exceptions.md) | Thrown for errors in mathematical or arithmetic operations. |
-| [FormatException](docs/Exceptions.md) | Thrown when string or argument formatting is invalid. |
-| [NotImplementedException](docs/Exceptions.md) | Thrown when a requested method or feature is not implemented. |
-| [OverflowException](docs/Exceptions.md) | Thrown on arithmetic or conversion overflow. |
+| **Exception** | Root exception class for all DotNetDupe library errors. |
+| **SystemException** | Base class for system-level runtime exceptions. |
+| **ArgumentException** | Thrown when an argument passed to a method is invalid. |
+| **ArgumentNullException** | Thrown when a null argument is passed to a non-null parameter. |
+| **ArgumentOutOfRangeException** | Thrown when an argument falls outside allowable boundary limits. |
+| **ArithmeticException** | Thrown for errors in mathematical or arithmetic operations. |
+| **FormatException** | Thrown when string or argument formatting is invalid. |
+| **NotImplementedException** | Thrown when a requested method or feature is not implemented. |
+| **OverflowException** | Thrown on arithmetic or conversion overflow. |
 
 ---
 
@@ -817,16 +825,16 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [List&lt;T&gt;](docs/List.md) | Strongly-typed dynamic array list accessible by index. |
-| [Dictionary&lt;TKey, TValue&gt;](docs/Dictionary.md) | Key/value hash map collection. |
-| [HashSet&lt;T&gt;](docs/HashSet.md) | Set of unique elements backed by a hash table. |
-| [Queue&lt;T&gt;](docs/Queue.md) | First-In-First-Out (FIFO) queue collection. |
-| [Stack&lt;T&gt;](docs/Stack.md) | Last-In-First-Out (LIFO) stack collection. |
-| [PriorityQueue&lt;TElement, TPriority&gt;](docs/PriorityQueue.md) | Min-heap collection of prioritized items. |
-| [SortedDictionary&lt;TKey, TValue&gt;](docs/SortedDictionary.md) | Key/value collection sorted by key. |
-| [SortedSet&lt;T&gt;](docs/SortedSet.md) | Ordered unique collection maintained in sorted order. |
-| [LinkedList&lt;T&gt;](docs/LinkedList.md) | Doubly-linked list collection. |
-| [Generic Collections Overview](docs/GenericCollections.md) | Comprehensive guide and comparison of generic collection types. |
+| **List&lt;T&gt;** | Strongly-typed dynamic array list accessible by index. |
+| **Dictionary&lt;TKey, TValue&gt;** | Key/value hash map collection. |
+| **HashSet&lt;T&gt;** | Set of unique elements backed by a hash table. |
+| **Queue&lt;T&gt;** | First-In-First-Out (FIFO) queue collection. |
+| **Stack&lt;T&gt;** | Last-In-First-Out (LIFO) stack collection. |
+| **PriorityQueue&lt;TElement, TPriority&gt;** | Min-heap collection of prioritized items. |
+| **SortedDictionary&lt;TKey, TValue&gt;** | Key/value collection sorted by key. |
+| **SortedSet&lt;T&gt;** | Ordered unique collection maintained in sorted order. |
+| **LinkedList&lt;T&gt;** | Doubly-linked list collection. |
+| **Generic Collections Overview** | Comprehensive guide and comparison of generic collection types. |
 
 ---
 
@@ -836,12 +844,12 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [ConcurrentDictionary&lt;TKey, TValue&gt;](docs/ConcurrentDictionary.md) | Thread-safe key/value collection for concurrent multi-threaded access. |
-| [ConcurrentQueue&lt;T&gt;](docs/ConcurrentQueue.md) | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
-| [ConcurrentStack&lt;T&gt;](docs/ConcurrentStack.md) | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
-| [ConcurrentBag&lt;T&gt;](docs/ConcurrentBag.md) | Thread-safe unordered object container with thread-local storage. |
-| [BlockingCollection&lt;T&gt;](docs/BlockingCollection.md) | Thread-safe collection providing blocking producer-consumer capabilities. |
-| [Concurrent Collections Overview](docs/ConcurrentCollections.md) | Comprehensive guide and architecture of lock-free and thread-safe collections. |
+| **ConcurrentDictionary&lt;TKey, TValue&gt;** | Thread-safe key/value collection for concurrent multi-threaded access. |
+| **ConcurrentQueue&lt;T&gt;** | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
+| **ConcurrentStack&lt;T&gt;** | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |
+| **ConcurrentBag&lt;T&gt;** | Thread-safe unordered object container with thread-local storage. |
+| **BlockingCollection&lt;T&gt;** | Thread-safe collection providing blocking producer-consumer capabilities. |
+| **Concurrent Collections Overview** | Comprehensive guide and architecture of lock-free and thread-safe collections. |
 
 ---
 
@@ -851,25 +859,27 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [File](docs/File.md) | Static helper methods for file creation, reading, writing, moving, and deletion. |
-| [Directory](docs/Directory.md) | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
-| [Path](docs/Path.md) | Performs cross-platform directory and file path string operations. |
-| [Stream](docs/Stream.md) | Abstract base class for byte sequence streams. |
-| [FileStream](docs/FileStream.md) | Provides a byte stream for files supporting synchronous read/write. |
-| [MemoryStream](docs/Stream.md) | Creates a stream whose backing store is memory. |
-| [TextReader](docs/TextReader.md) | Abstract reader for sequential character input. |
-| [TextWriter](docs/TextWriter.md) | Abstract writer for sequential character output. |
-| [StringReader](docs/StringReader.md) | Implements `TextReader` reading from a `String`. |
-| [StringWriter](docs/StringWriter.md) | Implements `TextWriter` writing characters into a string buffer. |
+| **File** | Static helper methods for file creation, reading, writing, moving, and deletion. |
+| **Directory** | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
+| **Path** | Performs cross-platform directory and file path string operations. |
+| **Stream** | Abstract base class for byte sequence streams. |
+| **FileStream** | Provides a byte stream for files supporting synchronous read/write. |
+| **MemoryStream** | Creates a stream whose backing store is memory. |
+| **TextReader** | Abstract reader for sequential character input. |
+| **TextWriter** | Abstract writer for sequential character output. |
+| **StringReader** | Implements `TextReader` reading from a `String`. |
+| **StringWriter** | Implements `TextWriter` writing characters into a string buffer. |
+| **BinaryReader** | Reads primitive data types as binary values in Little-Endian or Big-Endian encoding from a stream. |
+| **BinaryWriter** | Writes primitive data types in binary format with configurable endianness to a stream. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| [IOException](docs/Exceptions.md) | Thrown when an I/O or file system error occurs. |
-| [FileNotFoundException](docs/Exceptions.md) | Thrown when an attempt to access a file that does not exist on disk fails. |
-| [DirectoryNotFoundException](docs/Exceptions.md) | Thrown when part of a file or directory path cannot be found. |
-| [EndOfStreamException](docs/Exceptions.md) | Thrown when reading is attempted past the end of a stream. |
+| **IOException** | Thrown when an I/O or file system error occurs. |
+| **FileNotFoundException** | Thrown when an attempt to access a file that does not exist on disk fails. |
+| **DirectoryNotFoundException** | Thrown when part of a file or directory path cannot be found. |
+| **EndOfStreamException** | Thrown when reading is attempted past the end of a stream. |
 
 ---
 
@@ -879,32 +889,32 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Thread](docs/Thread.md) | Creates, configures, and controls OS threads. |
-| [ThreadPool](docs/ThreadPool.md) | High-throughput worker thread pool managing parallel task execution. |
-| [Task](docs/Task.md) | Represents asynchronous operations with continuation support. |
-| [Task&lt;T&gt;](docs/Task.md) | Represents asynchronous operations returning a result value. |
-| [WaitHandle](docs/WaitHandle.md) | Abstract base class for thread synchronization handles. |
-| [EventWaitHandle](docs/EventWaitHandle.md) | Manages cross-thread and system synchronization event signals. |
-| [AutoResetEvent](docs/AutoResetEvent.md) | Notifies waiting threads and automatically resets to non-signaled state. |
-| [ManualResetEvent](docs/ManualResetEvent.md) | Notifies waiting threads and remains signaled until manually reset. |
-| [Mutex](docs/Mutex.md) | Mutual exclusion synchronization primitive (supports named inter-process mutexes). |
-| [Semaphore](docs/Semaphore.md) | Limits concurrent thread access to a bounded resource pool. |
-| [SemaphoreSlim](docs/SemaphoreSlim.md) | Lightweight alternative to `Semaphore` avoiding kernel transitions for fast locking. |
-| [CriticalSection](docs/CriticalSection.md) | Low-overhead recursive mutex primitive for intra-process synchronization. |
-| [Interlocked](docs/Interlocked.md) | Provides atomic hardware operations (`Increment`, `Decrement`, `Exchange`, `CompareExchange`). |
-| [Lock&lt;T&gt;](docs/Lock.md) | Exception-safe RAII lock wrapper for synchronization primitives. |
+| **Thread** | Creates, configures, and controls OS threads. |
+| **ThreadPool** | High-throughput worker thread pool managing parallel task execution. |
+| **Task** | Represents asynchronous operations with continuation support. |
+| **Task&lt;T&gt;** | Represents asynchronous operations returning a result value. |
+| **WaitHandle** | Abstract base class for thread synchronization handles. |
+| **EventWaitHandle** | Manages cross-thread and system synchronization event signals. |
+| **AutoResetEvent** | Notifies waiting threads and automatically resets to non-signaled state. |
+| **ManualResetEvent** | Notifies waiting threads and remains signaled until manually reset. |
+| **Mutex** | Mutual exclusion synchronization primitive (supports named inter-process mutexes). |
+| **Semaphore** | Limits concurrent thread access to a bounded resource pool. |
+| **SemaphoreSlim** | Lightweight alternative to `Semaphore` avoiding kernel transitions for fast locking. |
+| **CriticalSection** | Low-overhead recursive mutex primitive for intra-process synchronization. |
+| **Interlocked** | Provides atomic hardware operations (`Increment`, `Decrement`, `Exchange`, `CompareExchange`). |
+| **Lock&lt;T&gt;** | Exception-safe RAII lock wrapper for synchronization primitives. |
 
 **Exceptions**
 
 | Exception | Description |
 |---|---|
-| [ThreadStateException](docs/Exceptions.md) | Thrown when a thread is in an invalid state for the requested operation. |
-| [ThreadInterruptedException](docs/Exceptions.md) | Thrown when a thread is interrupted while waiting. |
-| [SynchronizationLockException](docs/Exceptions.md) | Thrown when unlocking a synchronization object not owned by the caller. |
-| [AbandonedMutexException](docs/Exceptions.md) | Thrown when a thread acquires a mutex abandoned by another terminating thread. |
-| [WaitHandleCannotBeOpenedException](docs/Exceptions.md) | Thrown when attempting to open a non-existent named system sync handle. |
-| [SemaphoreFullException](docs/Exceptions.md) | Thrown when releasing a semaphore whose count is already at maximum capacity. |
-| [TaskCanceledException](docs/Exceptions.md) | Thrown when a task execution is canceled. |
+| **ThreadStateException** | Thrown when a thread is in an invalid state for the requested operation. |
+| **ThreadInterruptedException** | Thrown when a thread is interrupted while waiting. |
+| **SynchronizationLockException** | Thrown when unlocking a synchronization object not owned by the caller. |
+| **AbandonedMutexException** | Thrown when a thread acquires a mutex abandoned by another terminating thread. |
+| **WaitHandleCannotBeOpenedException** | Thrown when attempting to open a non-existent named system sync handle. |
+| **SemaphoreFullException** | Thrown when releasing a semaphore whose count is already at maximum capacity. |
+| **TaskCanceledException** | Thrown when a task execution is canceled. |
 
 ---
 
@@ -914,15 +924,15 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Process](docs/Process.md) | Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes. |
-| [Stopwatch](docs/Stopwatch.md) | High-resolution performance timer for measuring elapsed time. |
-| [EventLog](docs/EventLog.md) | Interacts with OS diagnostic event logs and writes operational entries. |
-| [EtwLogReader](docs/EtwLogReader.md) | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
-| [SystemMetrics](docs/SystemMetrics.md) | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
-| [RealtimeTelemetry](docs/RealtimeTelemetry.md) | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
-| [ActiveUserSession](docs/ActiveUserSession.md) | Enumerates active and terminal user sessions across the system. |
-| [TerminalSession](docs/TerminalSession.md) | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
-| [ProcessStreamer](docs/ProcessStreamer.md) | Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator. |
+| **Process** | Starts, manages, monitors, and redirects stdin/stdout/stderr for child processes. |
+| **Stopwatch** | High-resolution performance timer for measuring elapsed time. |
+| **EventLog** | Interacts with OS diagnostic event logs and writes operational entries. |
+| **EtwLogReader** | Queries Event Tracing for Windows (ETW) channels and Linux syslog files with live event subscription listening. |
+| **SystemMetrics** | Queries system hardware telemetry metrics including CPU %, Memory load, Disk %, Network Mbps, and top processes. |
+| **RealtimeTelemetry** | High-frequency telemetry metrics streaming and real-time dashboard endpoint. |
+| **ActiveUserSession** | Enumerates active and terminal user sessions across the system. |
+| **TerminalSession** | Enumerates active, disconnected, and remote desktop (RDP) Terminal Services sessions. |
+| **ProcessStreamer** | Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator. |
 
 ---
 
@@ -932,13 +942,13 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [Dns](docs/HttpClient.md) | Provides domain name resolution and IP address lookup. |
-| [Socket](docs/Sockets.md) | Low-level cross-platform BSD/WinSock socket abstraction. |
-| [NetworkStream](docs/Sockets.md) | Implements `Stream` backed by a network socket. |
-| [TcpClient](docs/Sockets.md) | Client connection wrapper for TCP network services. |
-| [TcpListener](docs/Sockets.md) | TCP listener for accepting incoming network connections. |
-| [UdpClient](docs/Sockets.md) | User Datagram Protocol (UDP) client for datagram transmission. |
-| [SslStream](docs/SslStream.md) | TLS/SSL secure stream wrapper built on OpenSSL. |
+| **Dns** | Provides domain name resolution and IP address lookup. |
+| **Socket** | Low-level cross-platform BSD/WinSock socket abstraction. |
+| **NetworkStream** | Implements `Stream` backed by a network socket. |
+| **TcpClient** | Client connection wrapper for TCP network services. |
+| **TcpListener** | TCP listener for accepting incoming network connections. |
+| **UdpClient** | User Datagram Protocol (UDP) client for datagram transmission. |
+| **SslStream** | TLS/SSL secure stream wrapper built on OpenSSL. |
 
 ---
 
@@ -948,15 +958,15 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [HttpClient](docs/HttpClient.md) | Sends HTTP/HTTPS requests and receives responses from URI endpoints. |
-| [RestClient&lt;T&gt;](docs/RestClient.md) | Strongly-typed REST client with automated C++ structure JSON serialization/deserialization. |
-| [FileDownloader](docs/FileDownloader.md) | High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal. |
-| [HttpRequestMessage](docs/HttpClient.md) | Represents an outgoing HTTP request with headers, method, and payload. |
-| [HttpResponseMessage](docs/HttpClient.md) | Represents an HTTP response with status code, response headers, and content stream. |
-| [HttpContent](docs/HttpClient.md) | Base class for HTTP entity bodies and content headers. |
-| [StringContent](docs/HttpClient.md) | HTTP content wrapper for text and JSON payloads. |
-| [ByteArrayContent](docs/HttpClient.md) | HTTP content wrapper for raw byte arrays and binary payloads. |
-| [HttpMethod](docs/HttpClient.md) | Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.). |
+| **HttpClient** | Sends HTTP/HTTPS requests and receives responses from URI endpoints. |
+| **RestClient&lt;T&gt;** | Strongly-typed REST client with automated C++ structure JSON serialization/deserialization. |
+| **FileDownloader** | High-level HTTP/HTTPS file downloader with pause/resume, speed metrics, and prompt resource disposal. |
+| **HttpRequestMessage** | Represents an outgoing HTTP request with headers, method, and payload. |
+| **HttpResponseMessage** | Represents an HTTP response with status code, response headers, and content stream. |
+| **HttpContent** | Base class for HTTP entity bodies and content headers. |
+| **StringContent** | HTTP content wrapper for text and JSON payloads. |
+| **ByteArrayContent** | HTTP content wrapper for raw byte arrays and binary payloads. |
+| **HttpMethod** | Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.). |
 
 ---
 
@@ -966,9 +976,9 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [StringBuilder](docs/StringBuilder.md) | Mutable string buffer for high-performance string concatenation. |
-| [TextEncoding](docs/TextEncoding.md) | Represents character encodings (UTF-8, ASCII, UTF-16). |
-| [JsonSerializer](docs/JsonSerializer.md) | Serializes objects to JSON strings and deserializes JSON to C++ types. |
+| **StringBuilder** | Mutable string buffer for high-performance string concatenation. |
+| **TextEncoding** | Represents character encodings (UTF-8, ASCII, UTF-16). |
+| **JsonSerializer** | Serializes objects to JSON strings and deserializes JSON to C++ types. |
 
 ---
 
@@ -978,7 +988,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [StringConvert](docs/StringConvert.md) | Static helper methods for UTF-8 / UTF-16 conversions and type transformations. |
+| **StringConvert** | Static helper methods for UTF-8 / UTF-16 conversions and type transformations. |
 
 ---
 
@@ -988,10 +998,10 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [UserPrincipal](docs/UserPrincipal.md) | Cross-platform user account enumeration, group memberships, and administrative privilege inspection. |
-| [HMACSHA256](docs/JWTToken.md) | Computes SHA256 Hash-based Message Authentication Codes. |
-| [X509Certificate2](docs/X509Certificate2.md) | Loads and inspects X.509 SSL/TLS certificates and private keys. |
-| [JWTToken](docs/JWTToken.md) | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
+| **UserPrincipal** | Cross-platform user account enumeration, group memberships, and administrative privilege inspection. |
+| **HMACSHA256** | Computes SHA256 Hash-based Message Authentication Codes. |
+| **X509Certificate2** | Loads and inspects X.509 SSL/TLS certificates and private keys. |
+| **JWTToken** | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
 
 ---
 
@@ -1001,10 +1011,10 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [SqlConnection](docs/Database.md) | Represents an open connection to a database (supports In-Memory emulation and SQLite persistence). |
-| [SqlCommand](docs/Database.md) | Represents SQL statements and queries to execute against a database. |
-| [SqlDataReader](docs/Database.md) | Forward-only cursor for reading result rows from SQL queries. |
-| [SqlParameter](docs/Database.md) | Parameter for parameterized SQL commands protecting against SQL injection. |
+| **SqlConnection** | Represents an open connection to a database (supports In-Memory emulation and SQLite persistence). |
+| **SqlCommand** | Represents SQL statements and queries to execute against a database. |
+| **SqlDataReader** | Forward-only cursor for reading result rows from SQL queries. |
+| **SqlParameter** | Parameter for parameterized SQL commands protecting against SQL injection. |
 
 ---
 
@@ -1014,13 +1024,13 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Type | Description |
 |---|---|
-| [ServiceCollection](docs/DependencyInjection.md) | Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes. |
-| [ServiceProvider](docs/DependencyInjection.md) | Dependency injection container resolving registered service dependencies. |
-| [ServiceScope](docs/DependencyInjection.md) | Represents a lifetime scope for resolving scoped service instances. |
-| [ServiceScopeFactory](docs/DependencyInjection.md) | Factory for creating scoped service containers. |
-| [IServiceCollection](docs/DependencyInjection.md) | Contract for service collection builders. |
-| [IServiceScope](docs/DependencyInjection.md) | Contract for lifetime scopes. |
-| [IServiceScopeFactory](docs/DependencyInjection.md) | Contract for service scope factories. |
+| **ServiceCollection** | Accumulates service descriptors with Transient, Scoped, and Singleton lifetimes. |
+| **ServiceProvider** | Dependency injection container resolving registered service dependencies. |
+| **ServiceScope** | Represents a lifetime scope for resolving scoped service instances. |
+| **ServiceScopeFactory** | Factory for creating scoped service containers. |
+| **IServiceCollection** | Contract for service collection builders. |
+| **IServiceScope** | Contract for lifetime scopes. |
+| **IServiceScopeFactory** | Contract for service scope factories. |
 
 ---
 
@@ -1030,16 +1040,16 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Type | Description |
 |---|---|
-| [LogManager](docs/LogManager.md) | Global thread-safe static factory and cache for category loggers and file/console providers. |
-| [LoggerTextWriter](docs/LoggerTextWriter.md) | High-performance stream redirector bridging `TextWriter` output into `LogManager`. |
-| [LoggerFactory](docs/Logging.md) | Configures providers and generates category loggers. |
-| [Logger&lt;T&gt;](docs/Logging.md) | Generic category logger for class-specific logging. |
-| [ConsoleLoggerProvider](docs/Logging.md) | Renders structured console log records (Plain text and JSON format). |
-| [FileLoggerProvider](docs/Logging.md) | Thread-safe file logging provider with auto directory creation and relative path resolution. |
-| [ILogger](docs/Logging.md) | Core interface for emitting structured diagnostic log events. |
-| [ILoggerOf&lt;T&gt;](docs/Logging.md) | Generic category logger interface. |
-| [ILoggerProvider](docs/Logging.md) | Provider factory interface for creating loggers. |
-| [ILoggerFactory](docs/Logging.md) | Logging factory interface. |
+| **LogManager** | Global thread-safe static factory and cache for category loggers and file/console providers. |
+| **LoggerTextWriter** | High-performance stream redirector bridging `TextWriter` output into `LogManager`. |
+| **LoggerFactory** | Configures providers and generates category loggers. |
+| **Logger&lt;T&gt;** | Generic category logger for class-specific logging. |
+| **ConsoleLoggerProvider** | Renders structured console log records (Plain text and JSON format). |
+| **FileLoggerProvider** | Thread-safe file logging provider with auto directory creation and relative path resolution. |
+| **ILogger** | Core interface for emitting structured diagnostic log events. |
+| **ILoggerOf&lt;T&gt;** | Generic category logger interface. |
+| **ILoggerProvider** | Provider factory interface for creating loggers. |
+| **ILoggerFactory** | Logging factory interface. |
 
 ---
 
@@ -1049,15 +1059,15 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [WebApplicationBuilder](docs/WebApplication.md) | Configures services, dependency injection, and builds the `WebApplication` host. |
-| [WebApplication](docs/WebApplication.md) | Configures routing endpoints and executes the HTTP server listener. |
-| [WebAppServer](docs/WebAppServer.md) | Web server hosting static website content (`index.html`, CSS, JS) and REST APIs simultaneously. |
-| [ControllerBase](docs/ControllerBase.md) | Base class for ASP.NET MVC / Web API style controllers (`Ok`, `Created`, `NotFound`, `BadRequest`). |
-| [ControllerRouteBuilder&lt;T&gt;](docs/WebApplication.md) | Maps controller actions and automates JSON payload serialization and deserialization. |
-| [HttpContext](docs/HttpContext.md) | Encapsulates HTTP request and response context for individual HTTP transactions. |
-| [HttpRequest](docs/HttpContext.md) | Represents incoming HTTP request headers, query parameters, and body. |
-| [HttpResponse](docs/HttpContext.md) | Represents outgoing HTTP response status codes, headers, and body. |
-| [Push Notifications (SSE & WebSockets)](docs/PushNotifications.md) | Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets. |
+| **WebApplicationBuilder** | Configures services, dependency injection, and builds the `WebApplication` host. |
+| **WebApplication** | Configures routing endpoints and executes the HTTP server listener. |
+| **WebAppServer** | Web server hosting static website content (`index.html`, CSS, JS) and REST APIs simultaneously. |
+| **ControllerBase** | Base class for ASP.NET MVC / Web API style controllers (`Ok`, `Created`, `NotFound`, `BadRequest`). |
+| **ControllerRouteBuilder&lt;T&gt;** | Maps controller actions and automates JSON payload serialization and deserialization. |
+| **HttpContext** | Encapsulates HTTP request and response context for individual HTTP transactions. |
+| **HttpRequest** | Represents incoming HTTP request headers, query parameters, and body. |
+| **HttpResponse** | Represents outgoing HTTP response status codes, headers, and body. |
+| **Push Notifications (SSE & WebSockets)** | Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets. |
 
 ---
 

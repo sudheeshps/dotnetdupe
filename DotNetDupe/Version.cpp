@@ -10,10 +10,15 @@ namespace DotNetDupe {
     namespace System {
 
         static bool ParseComponent(const std::string& sPart, int& iVal) {
+            /// Guard: Check against empty component string.
             if (sPart.empty()) return false;
+
+            /// Validate all characters in component are ASCII decimal digits.
             for (char c : sPart) {
                 if (c < '0' || c > '9') return false;
             }
+
+            /// Convert component to integer and enforce non-negative range.
             try {
                 long long llVal = std::stoll(sPart);
                 if (llVal < 0 || llVal > 2147483647LL) return false;
@@ -25,21 +30,29 @@ namespace DotNetDupe {
         }
 
         static bool SplitVersionParts(const String& sInput, std::vector<std::string>& vecParts) {
+            /// Guard: Validate input is not empty and has no leading or trailing dot.
             if (sInput.IsEmpty()) return false;
             std::string s = sInput.GetRawString();
             if (s.empty() || s.front() == '.' || s.back() == '.') return false;
+
+            /// Tokenize string by dot delimiter into individual component tokens.
             std::stringstream ss(s);
             std::string item;
             while (std::getline(ss, item, '.')) {
                 if (item.empty()) return false;
                 vecParts.push_back(item);
             }
+
+            /// Verify component count is strictly between 2 and 4.
             return (vecParts.size() >= 2 && vecParts.size() <= 4);
         }
 
         static bool TryParseInternal(const String& sInput, int& iMajor, int& iMinor, int& iBuild, int& iRevision, int& iCount) {
+            /// Split and validate dot-delimited tokens.
             std::vector<std::string> vecParts;
             if (!SplitVersionParts(sInput, vecParts)) return false;
+
+            /// Parse each component integer and assign to respective positions.
             iCount = static_cast<int>(vecParts.size());
             int arrVals[4] = { 0, 0, 0, 0 };
             for (size_t i = 0; i < vecParts.size(); ++i) {

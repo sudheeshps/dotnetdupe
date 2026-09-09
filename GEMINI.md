@@ -15,7 +15,7 @@ DotNetDupe is a C++17 library designed to replicate the familiar and developer-f
 - `Include/`: Public header files (`.h`), organized by namespace.
 - `DotNetDupeTests/`: Unit tests using Google Test.
 - `DotNetDupeDemo/`: A console application demonstrating library usage.
-- `docs/`: Markdown documentation for various classes and comparisons.
+- `docs/`: Documentation portal (`index.html`) and generated Doxygen API reference (`html/`).
 - `scripts/`: Quality Gate and CI/CD validation scripts (`Check-QualityGates.ps1`, `Run-TestsElevated.ps1`).
 - `bin/`: Output directory for compiled binaries.
 - `obj/`: Intermediate directory for build artifacts.
@@ -82,9 +82,17 @@ All generated, added, or modified code must strictly adhere to the following **1
   - Ensure portability across Windows (Win32/x64) and Linux (POSIX). Use `#if defined(_WIN32)` / `#else` / `#endif` blocks for platform-specific implementations.
 - **UTF-8 Portability**: Use UTF-8 character encoding across all string operations for cross-platform portability.
 - **Precompiled Headers**: All implementation files in `DotNetDupe/` must `#include "pch.h"`.
-- **Code Readability & Grouping**: Add blank lines inside function bodies to cleanly separate logical blocks (parameter validation, initialization, main execution, and return preparation).
+- **Code Readability & Grouping**: Adhere to `.agents/rules/code_formatting.md`. Add blank lines inside function bodies to cleanly separate logical blocks (parameter validation, initialization, main execution, and return preparation).
 - **Avoid Unnecessary `String()` Wrappers**: Rely on `DotNetDupe::System::String`'s implicit converting constructor (`String(const char*)`) rather than creating redundant `String("...")` or `String(pStr)` wrappers.
 - **Error Handling**: Do not swallow exceptions or ignore system API failures. Retrieve platform error codes (e.g., `GetLastError()` or `errno`) and throw descriptive library exceptions.
+
+### Documentation Standards & Internal Logical Block Commenting (Doxygen Format)
+All C++ header (`.h`) and source (`.cpp`) files across DotNetDupe must strictly adhere to the uniform **Doxygen (`///`)** documentation standard defined in `.agents/rules/documentation_standards.md` (modeled after the SmartDicom project):
+- **Class Headers**: Architectural role, thread safety considerations, and specific standard citations (e.g., `ECMA-335`, `RFC 4122`, `RFC 4648`, `IEEE 754`, `RFC 9110`, `RFC 8259`).
+- **Function & Method Headers**: Operation summary (`\brief`), parameter constraints (`\param`), return values (`\return`), exception guarantees (`\throws`), and algorithmic explanations (`\note`).
+- **Inline Logical Blocks**: Distinct logical blocks inside function bodies must feature a `///` comment explaining what each step is performing and why (e.g. `/// Guard: Validate input.`, `/// Initialize state.`, `/// Compute transformation.`, `/// Return result.`). Do NOT use artificial numbering (e.g., `/// 1. ...`).
+- **Zero LLOC Impact**: Triple-slash (`///`) comments are recognized by `scripts/Check-QualityGates.ps1` as comments and do not count against the 15 LLOC limit.
+- **API Documentation Generation**: Automated Doxygen documentation generation is performed via `Doxyfile` and `scripts/Generate-Docs.ps1`, placing compiled HTML under `docs/html/` with the master interactive portal at `docs/index.html`.
 
 ### Testing Guidelines
 - All functionality must include corresponding unit tests in the `DotNetDupeTests/` project.
@@ -95,15 +103,17 @@ All generated, added, or modified code must strictly adhere to the following **1
 ## Class Generation & Modification Checklist
 When generating a new class or modifying existing code, you must strictly follow this checklist in sequence:
 1. **Apply Quality Gate Constraints**: Verify function LLOC $\le 15$, class LLOC $\le 500$, file LLOC $\le 600$, $\text{CCN} \le 10$, nesting depth $\le 4$, Hungarian `SmartPointer` naming, no `std::*` exceptions, no empty catches, no STL public leakage, and function-level `DOTNETDUPE_API` macros.
-2. **Add 100% Unit Test Coverage**: Add unit tests in `DotNetDupeTests/<Class>Tests.cpp` in `GivenWhenThen` format covering all execution branches, error conditions, and boundary values.
-3. **Add Comprehensive API Documentation**: Add markdown documentation in `docs/<Class>.md` with clear, compile-ready sample code showing real-world application usage.
-4. **Link Documentation in README.md**: Link the documentation in `README.md` under the appropriate namespace section.
+2. **Add Doxygen & Internal Algorithmic Documentation**: Add class and method Doxygen (`///`) comments with standard citations (`ECMA-335`, `RFC`, etc.) in headers, and internal logical block `///` comments explaining algorithmic steps in `.cpp` files per `.agents/rules/documentation_standards.md`.
+3. **Add 100% Unit Test Coverage**: Add unit tests in `DotNetDupeTests/<Class>Tests.cpp` in `GivenWhenThen` format covering all execution branches, error conditions, and boundary values.
+4. **Document Class in README.md**: Add the class and its architectural description in `README.md` under the appropriate namespace table.
 5. **Add Demo Code in DotNetDupeDemo**: Add a compile-ready demo file in `DotNetDupeDemo/` and invoke it from `DotNetDupeDemo/DotNetDupeDemo.cpp`.
 6. **No STL Threading/Timing in Demos**: Use library types (`Thread`, `ThreadPool`, `Task`, `Thread::Sleep()`) rather than STL concurrency primitives.
 7. **Update Natvis Debugger Visualizer (`DotNetDupe.natvis`)**: When adding or modifying a class (especially classes using the Pimpl pattern or encapsulating internal buffers/handles), add or update its corresponding `<Type>` visualizer in `DotNetDupe.natvis` to ensure clean, human-readable inspection during debugging.
 8. **Verify Solution Build**: Run `msbuild DotNetDupe.sln /p:Configuration=Release /p:Platform=x64` to verify 0 errors and 0 warnings.
 9. **Verify Unit Tests**: Run `.\bin\x64\Release\DotNetDupeTests.exe` to verify 100% test pass rate.
 10. **Verify Quality Gates**: Run `powershell -ExecutionPolicy Bypass -File .\scripts\Check-QualityGates.ps1 -RootDir . -OutputDir CodeCoverage` to verify 0 errors and 0 warnings.
+11. **Generate & Verify API Documentation**: Run `powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1` to compile the updated API documentation to `docs/html/index.html` and verify 0 Doxygen errors.
 
 ## Contextual Precedence
 The instructions and quality gate rules in this file are foundational and take precedence for all code generation, refactoring, and static analysis verification across the DotNetDupe codebase.
+

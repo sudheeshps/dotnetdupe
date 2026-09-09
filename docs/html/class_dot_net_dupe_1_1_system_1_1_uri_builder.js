@@ -1,0 +1,26 @@
+var class_dot_net_dupe_1_1_system_1_1_uri_builder =
+[
+    [ "UriBuilder", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#afcd991079d15b2697b5a1c33b4d63c1d", null ],
+    [ "UriBuilder", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a18e50a087cf99a696d402e0373eb9bfa", null ],
+    [ "UriBuilder", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a8258a84b8bf7c1afb9b158accb2f3484", null ],
+    [ "UriBuilder", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a7e5a407c5942df2c3f8b59cea09526a4", null ],
+    [ "UriBuilder", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a93d2f599bd0b625881a66171d08be8ed", null ],
+    [ "GetFragment", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a10f445f838a1d3f87a2a38a6f3665209", null ],
+    [ "GetHost", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a0dc82926b1c5d18918302addf4e13409", null ],
+    [ "GetPassword", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#ab8912072dea1b6fd2ae945fc612257c9", null ],
+    [ "GetPath", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a69a86383ee4eed46cb1abe1730723077", null ],
+    [ "GetPort", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a1410621cd819c1b9b47ad2484eb5508a", null ],
+    [ "GetQuery", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#ab25e5dd8e5fbdae610b9ad2b749a4406", null ],
+    [ "GetScheme", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a7ad24e016e36b47150370dc4cde0d3f9", null ],
+    [ "GetUri", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#acd4dc9d22f48dcd8f3b12eb351ccb66b", null ],
+    [ "GetUserName", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a8f9c058c83815a0b1d3e76bae20cfe13", null ],
+    [ "SetFragment", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a262a22aa0dbe99c955ad8526e1a1cb91", null ],
+    [ "SetHost", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a22324e7d7744272957001d0491896eaa", null ],
+    [ "SetPassword", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#abe232a5c4ae0508cd68a4eaadc2adf89", null ],
+    [ "SetPath", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a26f9859a6e648d203f7490b733f0c6ca", null ],
+    [ "SetPort", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a6dd34bb82799df9bcf6c72c06feaf1fb", null ],
+    [ "SetQuery", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#ac2b820fcd28118acb0e3f7f5ca12214b", null ],
+    [ "SetScheme", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a02c78bd97f43f8354cc614c589297715", null ],
+    [ "SetUserName", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#aac2c099150cba61d688e83d815c36e76", null ],
+    [ "ToString", "class_dot_net_dupe_1_1_system_1_1_uri_builder.html#a135cff1b7d9f071bff38c5c8a3fc001e", null ]
+];

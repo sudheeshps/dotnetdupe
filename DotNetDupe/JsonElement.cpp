@@ -30,6 +30,7 @@ namespace DotNetDupe {
                 };
 
                 static String EscapeString(const String& sInput) {
+                    /// Step: Escape control characters and enclose string in JSON quotes.
                     std::string sResult = "\"";
                     const char* pRaw = sInput.GetRawString();
                     while (*pRaw) {
@@ -61,6 +62,7 @@ namespace DotNetDupe {
                 class JsonParser {
                 public:
                     static JsonElement Parse(const String& sJson) {
+                        /// Step: Parse root JSON value and ensure no trailing characters.
                         std::string s = sJson.GetRawString();
                         size_t index = 0;
                         SkipWhitespace(s, index);
@@ -74,12 +76,14 @@ namespace DotNetDupe {
 
                 private:
                     static void SkipWhitespace(const std::string& s, size_t& index) {
+                        /// Step: Advance parser position past whitespace characters.
                         while (index < s.length() && (s[index] == ' ' || s[index] == '\t' || s[index] == '\n' || s[index] == '\r')) {
                             index++;
                         }
                     }
 
                     static JsonElement ParseValue(const std::string& s, size_t& index) {
+                        /// Step: Inspect next token and route to corresponding JSON type parser.
                         SkipWhitespace(s, index);
                         if (index >= s.length()) {
                             throw JsonException("Unexpected end of JSON input");
@@ -103,6 +107,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseObject(const std::string& s, size_t& index) {
+                        /// Step: Parse JSON object key-value pairs separated by commas.
                         index++; // Skip '{'
                         JsonElement obj(JsonValueKind::Object);
                         SkipWhitespace(s, index);
@@ -138,6 +143,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseArray(const std::string& s, size_t& index) {
+                        /// Step: Parse JSON array elements separated by commas.
                         index++; // Skip '['
                         JsonElement arr(JsonValueKind::Array);
                         SkipWhitespace(s, index);
@@ -162,6 +168,7 @@ namespace DotNetDupe {
                     }
 
                     static void ParseUnicodeEscape(const std::string& s, size_t& index, std::string& res) {
+                        /// Step: Decode 4-digit hex unicode escape into UTF-8 sequence.
                         if (index + 4 > s.length()) {
                             throw JsonException("Invalid unicode escape sequence");
                         }
@@ -183,6 +190,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseString(const std::string& s, size_t& index) {
+                        /// Step: Parse quoted string content and escape sequences.
                         index++; // Skip starting '\"'
                         std::string res;
 
@@ -223,6 +231,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseBool(const std::string& s, size_t& index) {
+                        /// Step: Parse boolean literal (true or false).
                         if (s.compare(index, 4, "true") == 0) {
                             index += 4;
                             return JsonElement(true);
@@ -234,6 +243,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseNull(const std::string& s, size_t& index) {
+                        /// Step: Parse literal null value.
                         if (s.compare(index, 4, "null") == 0) {
                             index += 4;
                             return JsonElement(nullptr);
@@ -242,6 +252,7 @@ namespace DotNetDupe {
                     }
 
                     static JsonElement ParseNumber(const std::string& s, size_t& index) {
+                        /// Step: Extract numeric substring and parse IEEE 754 floating point number.
                         size_t start = index;
                         if (s[index] == '-') {
                             index++;
@@ -261,13 +272,16 @@ namespace DotNetDupe {
 
                 JsonElement::JsonElement() 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Undefined)) {
+                    /// Step: Construct default undefined JsonElement.
                 }
 
                 JsonElement::~JsonElement() {
+                    /// Step: Release JsonElement internal resources.
                 }
 
                 JsonElement::JsonElement(const JsonElement& objOther) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New()) {
+                    /// Step: Deep copy state from source JsonElement.
                     if (objOther.m_pImpl) {
                         m_pImpl->eKind = objOther.m_pImpl->eKind;
                         m_pImpl->bBoolValue = objOther.m_pImpl->bBoolValue;
@@ -286,6 +300,7 @@ namespace DotNetDupe {
                 }
 
                 JsonElement& JsonElement::operator=(const JsonElement& objOther) {
+                    /// Step: Deep copy assign state from source JsonElement.
                     if (this != &objOther) {
                         m_pImpl = SmartPointer<JsonElementImpl>::New();
                         if (objOther.m_pImpl) {
@@ -309,9 +324,11 @@ namespace DotNetDupe {
 
                 JsonElement::JsonElement(JsonElement&& objOther) noexcept 
                     : m_pImpl(std::move(objOther.m_pImpl)) {
+                    /// Step: Move construct from rvalue JsonElement.
                 }
 
                 JsonElement& JsonElement::operator=(JsonElement&& objOther) noexcept {
+                    /// Step: Move assign from rvalue JsonElement.
                     if (this != &objOther) {
                         m_pImpl = std::move(objOther.m_pImpl);
                     }
@@ -320,76 +337,92 @@ namespace DotNetDupe {
 
                 JsonElement::JsonElement(JsonValueKind eKind) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(eKind)) {
+                    /// Step: Initialize with specified JsonValueKind.
                 }
 
                 JsonElement::JsonElement(bool bValue) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(bValue ? JsonValueKind::True : JsonValueKind::False)) {
+                    /// Step: Initialize with boolean value.
                     m_pImpl->bBoolValue = bValue;
                 }
 
                 JsonElement::JsonElement(double dValue) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Number)) {
+                    /// Step: Initialize with numeric value.
                     m_pImpl->dNumValue = dValue;
                 }
 
                 JsonElement::JsonElement(const String& sValue) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::String)) {
+                    /// Step: Initialize with string value.
                     m_pImpl->sStrValue = sValue;
                 }
 
                 JsonElement::JsonElement(std::nullptr_t) 
                     : m_pImpl(SmartPointer<JsonElementImpl>::New(JsonValueKind::Null)) {
+                    /// Step: Initialize with null literal.
                 }
 
                 JsonValueKind JsonElement::GetValueKind() const {
+                    /// Return: Current JSON value kind.
                     return m_pImpl ? m_pImpl->eKind : JsonValueKind::Undefined;
                 }
 
                 bool JsonElement::GetBoolean() const {
+                    /// Guard: Ensure element is True or False kind.
                     if (GetValueKind() == JsonValueKind::True) return true;
                     if (GetValueKind() == JsonValueKind::False) return false;
                     throw InvalidOperationException("JsonElement is not a boolean.");
                 }
 
                 double JsonElement::GetDouble() const {
+                    /// Guard: Ensure element is Number kind.
                     if (GetValueKind() != JsonValueKind::Number) throw InvalidOperationException("JsonElement is not a number.");
                     return m_pImpl->dNumValue;
                 }
 
                 int JsonElement::GetInt32() const {
+                    /// Return: Truncated 32-bit signed integer.
                     return static_cast<int>(GetDouble());
                 }
 
                 long long JsonElement::GetInt64() const {
+                    /// Return: Truncated 64-bit signed integer.
                     return static_cast<long long>(GetDouble());
                 }
 
                 String JsonElement::GetString() const {
+                    /// Guard: Ensure element is String kind.
                     if (GetValueKind() != JsonValueKind::String) throw InvalidOperationException("JsonElement is not a string.");
                     return m_pImpl->sStrValue;
                 }
 
                 int JsonElement::GetArrayLength() const {
+                    /// Guard: Ensure element is Array kind.
                     if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl->lstArray.GetCount();
                 }
 
                 JsonElement JsonElement::GetArrayElement(int iIndex) const {
+                    /// Guard: Ensure element is Array kind.
                     if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     return m_pImpl->lstArray[iIndex];
                 }
 
                 void JsonElement::AddArrayElement(const JsonElement& objElement) {
+                    /// Guard: Ensure element is Array kind.
                     if (GetValueKind() != JsonValueKind::Array) throw InvalidOperationException("JsonElement is not an array.");
                     m_pImpl->lstArray.Add(objElement);
                 }
 
                 bool JsonElement::TryGetProperty(const String& sPropertyName, JsonElement& objValue) const {
+                    /// Guard: Ensure element is Object kind.
                     if (GetValueKind() != JsonValueKind::Object) return false;
                     return m_pImpl->dictObject.TryGetValue(sPropertyName, objValue);
                 }
 
                 void JsonElement::SetProperty(const String& sPropertyName, const JsonElement& objValue) {
+                    /// Guard: Ensure element is Object kind.
                     if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     if (m_pImpl->dictObject.ContainsKey(sPropertyName)) {
                         m_pImpl->dictObject[sPropertyName] = objValue;
@@ -399,11 +432,13 @@ namespace DotNetDupe {
                 }
 
                 Array<String> JsonElement::GetPropertyNames() const {
+                    /// Guard: Ensure element is Object kind.
                     if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");
                     return m_pImpl->dictObject.GetKeys();
                 }
 
                 static String FormatJsonArray(const Collections::Generic::List<JsonElement>& lstArray) {
+                    /// Step: Format array elements into serialized JSON array string.
                     std::string sRes = "[";
                     for (int i = 0; i < lstArray.GetCount(); ++i) {
                         if (i > 0) sRes += ",";
@@ -413,6 +448,7 @@ namespace DotNetDupe {
                 }
 
                 static String FormatJsonObject(const Collections::Generic::Dictionary<String, JsonElement>& dictObject) {
+                    /// Step: Format key-value pairs into serialized JSON object string.
                     std::string sRes = "{";
                     auto keys = dictObject.GetKeys();
                     for (int i = 0; i < keys.GetLength(); ++i) {
@@ -425,6 +461,7 @@ namespace DotNetDupe {
                 }
 
                 static String FormatJsonNumber(double dVal) {
+                    /// Step: Format numeric value with integer truncation check.
                     if (dVal == static_cast<long long>(dVal)) return String(std::to_string(static_cast<long long>(dVal)).c_str());
                     char buf[64];
                     snprintf(buf, sizeof(buf), "%g", dVal);
@@ -432,6 +469,7 @@ namespace DotNetDupe {
                 }
 
                 String JsonElement::ToString() const {
+                    /// Step: Format JsonElement based on current kind.
                     if (!m_pImpl) return "null";
                     switch (m_pImpl->eKind) {
                         case JsonValueKind::Null: return "null";
@@ -446,6 +484,7 @@ namespace DotNetDupe {
                 }
 
                 JsonElement JsonElement::Parse(const String& sJson) {
+                    /// Forward: Delegate JSON parsing to parser engine.
                     return JsonParser::Parse(sJson);
                 }
 

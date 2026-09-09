@@ -1,3 +1,6 @@
+/// \file SmartPointer.h
+/// \brief Provides reference-counted and weak pointer memory management primitives ensuring zero raw ownership.
+
 #pragma once
 
 #include "Common.h"
@@ -42,18 +45,35 @@ namespace DotNetDupe {
         template <typename T>
         struct IsComplete<T, std::void_t<decltype(sizeof(T))>> : std::true_type {};
 
-        /**
-         * @brief A unified Smart Pointer that supports both unique and shared ownership semantics.
-         * 
-         * Improvised Interface:
-         * - SmartPointer<T> p;       -> Automatically allocates new T() (if T is not abstract). Unique ownership.
-         * - SmartPointer<T> p(true); -> Automatically allocates new T() and enables Shared ownership.
-         * - SmartPointer<T> p(ptr);  -> Takes ownership of an existing raw pointer. Unique ownership.
-         */
+        class EnableSharedFromThisBase {
+        protected:
+            constexpr EnableSharedFromThisBase() noexcept : m_pnRefCount(nullptr) {}
+            EnableSharedFromThisBase(const EnableSharedFromThisBase&) noexcept : m_pnRefCount(nullptr) {}
+            EnableSharedFromThisBase& operator=(const EnableSharedFromThisBase&) noexcept { return *this; }
+            virtual ~EnableSharedFromThisBase() = default;
+
+        public:
+            mutable volatile long* m_pnRefCount{nullptr};
+        };
+
+        template <typename T>
+        class EnableSharedFromThis;
+
+        /// \brief A unified smart pointer that supports both unique and shared ownership semantics.
+        ///
+        /// Provides high-performance automatic lifetime management without raw pointer leaks:
+        /// - Unique mode: Zero-overhead RAII ownership (default).
+        /// - Shared mode: Atomic reference counting with intrusive or external reference counter blocks.
+        /// Thread-safe for reference count increments and decrements in shared mode.
+        ///
+        /// \note Conforms to DotNetDupe RAII Memory Management Standards (Quality Gate 8 & 11).
+        /// \see Object, EnableSharedFromThis
         template <typename T>
         class SmartPointer {
             template <typename U>
             friend class SmartPointer;
+            template <typename U>
+            friend class EnableSharedFromThis;
         public:
             // --- Auto-Allocating Constructors ---
 
@@ -87,6 +107,7 @@ namespace DotNetDupe {
                     if constexpr (!std::is_abstract_v<T> && std::is_default_constructible_v<T>) {
                         m_pObject = new T();
                         m_pnRefCount = bIsShared ? new long(1) : nullptr;
+                        SetupEnableSharedFromThis(m_pObject);
                     } else {
                         m_pObject = nullptr;
                         m_pnRefCount = nullptr;
@@ -112,7 +133,9 @@ namespace DotNetDupe {
              */
             SmartPointer(T* pPtr, bool bIsShared)
                 : m_pObject(pPtr),
-                  m_pnRefCount((bIsShared && pPtr != nullptr) ? new long(1) : nullptr) {}
+                  m_pnRefCount((bIsShared && pPtr != nullptr) ? new long(1) : nullptr) {
+                SetupEnableSharedFromThis(m_pObject);
+            }
 
             /**
              * @brief Explicit null constructor.
@@ -143,7 +166,7 @@ namespace DotNetDupe {
                 }
             }
 
-            template <typename U>
+            template <typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
             SmartPointer(const SmartPointer<U>& objOther) : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {
                 if (objOther.m_pnRefCount == nullptr && objOther.m_pObject != nullptr) {
                     throw SystemException("Cannot copy a Unique SmartPointer. Use Move semantics or initialize as Shared.");
@@ -173,7 +196,7 @@ namespace DotNetDupe {
                 return *this;
             }
 
-            template <typename U>
+            template <typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
             SmartPointer& operator=(const SmartPointer<U>& objOther) {
                 if (objOther.m_pnRefCount == nullptr && objOther.m_pObject != nullptr) {
                     throw SystemException("Cannot copy a Unique SmartPointer.");
@@ -198,7 +221,7 @@ namespace DotNetDupe {
                 objOther.m_pnRefCount = nullptr;
             }
 
-            template <typename U>
+            template <typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
             SmartPointer(SmartPointer<U>&& objOther) noexcept 
                 : m_pObject(objOther.m_pObject), m_pnRefCount(objOther.m_pnRefCount) {
                 objOther.m_pObject = nullptr;
@@ -219,9 +242,9 @@ namespace DotNetDupe {
                 return *this;
             }
 
-            template <typename U>
+            template <typename U, typename = std::enable_if_t<std::is_convertible_v<U*, T*>>>
             SmartPointer& operator=(SmartPointer<U>&& objOther) noexcept {
-                if (this != reinterpret_cast<const SmartPointer<T>*>(&objOther)) {
+                if (static_cast<const void*>(this) != static_cast<const void*>(&objOther)) {
                     InternalCleanup();
                     m_pObject = objOther.m_pObject;
                     m_pnRefCount = objOther.m_pnRefCount;
@@ -344,6 +367,7 @@ namespace DotNetDupe {
                 InternalCleanup();
                 m_pObject = pPtr;
                 m_pnRefCount = (bIsShared && pPtr != nullptr) ? new long(1) : nullptr;
+                SetupEnableSharedFromThis(m_pObject);
             }
 
             /**
@@ -361,12 +385,12 @@ namespace DotNetDupe {
             /**
              * @brief Gets the raw pointer.
              */
-            T* Get() const { return m_pObject; }
+            T* Get() const noexcept { return m_pObject; }
 
             /**
              * @brief Checks if the SmartPointer is null.
              */
-            bool IsNull() const { return m_pObject == nullptr; }
+            bool IsNull() const noexcept { return m_pObject == nullptr; }
 
             /**
              * @brief Dynamically casts the managed pointer to another type U and returns a new SmartPointer<U> sharing ownership.
@@ -375,47 +399,144 @@ namespace DotNetDupe {
             SmartPointer<U> DynamicCast() const {
                 U* pCast = dynamic_cast<U*>(m_pObject);
                 if (!pCast) return SmartPointer<U>(nullptr);
-                
-                SmartPointer<U> spRet(nullptr);
-                spRet.m_pObject = pCast;
-                spRet.m_pnRefCount = m_pnRefCount;
-                if (m_pnRefCount != nullptr) {
-                    Internal::AtomicIncrement(m_pnRefCount);
-                }
-                return spRet;
+                return SmartPointer<U>(pCast, m_pnRefCount);
+            }
+
+            /**
+             * @brief Statically casts the managed pointer to another type U and returns a new SmartPointer<U> sharing ownership.
+             */
+            template <typename U>
+            SmartPointer<U> StaticCast() const {
+                U* pCast = static_cast<U*>(m_pObject);
+                if (!pCast) return SmartPointer<U>(nullptr);
+                return SmartPointer<U>(pCast, m_pnRefCount);
+            }
+
+            /**
+             * @brief Const casts the managed pointer to another type U and returns a new SmartPointer<U> sharing ownership.
+             */
+            template <typename U>
+            SmartPointer<U> ConstCast() const {
+                U* pCast = const_cast<U*>(m_pObject);
+                if (!pCast) return SmartPointer<U>(nullptr);
+                return SmartPointer<U>(pCast, m_pnRefCount);
+            }
+
+            template <typename From>
+            static SmartPointer<T> DynamicCast(const SmartPointer<From>& sp) {
+                return sp.template DynamicCast<T>();
+            }
+
+            template <typename From>
+            static SmartPointer<T> StaticCast(const SmartPointer<From>& sp) {
+                return sp.template StaticCast<T>();
+            }
+
+            template <typename From>
+            static SmartPointer<T> ConstCast(const SmartPointer<From>& sp) {
+                return sp.template ConstCast<T>();
             }
 
             /**
              * @brief Gets the current reference count. Returns 0 for Unique or Null pointers.
              */
-            int GetRefCount() const {
+            int GetRefCount() const noexcept {
                 return (m_pnRefCount != nullptr) ? static_cast<int>(*m_pnRefCount) : 0;
             }
 
             // --- Operators ---
 
             T& operator*() const { return *m_pObject; }
-            T* operator->() const { return m_pObject; }
-            explicit operator bool() const { return m_pObject != nullptr; }
+            T* operator->() const noexcept { return m_pObject; }
+            explicit operator bool() const noexcept { return m_pObject != nullptr; }
+
+            bool operator==(const SmartPointer& other) const noexcept {
+                return m_pObject == other.m_pObject;
+            }
+
+            bool operator!=(const SmartPointer& other) const noexcept {
+                return m_pObject != other.m_pObject;
+            }
 
             template <typename U>
-            bool operator==(const SmartPointer<U>& other) const {
+            bool operator==(const SmartPointer<U>& other) const noexcept {
                 return m_pObject == other.Get();
             }
 
             template <typename U>
-            bool operator!=(const SmartPointer<U>& other) const {
+            bool operator!=(const SmartPointer<U>& other) const noexcept {
                 return m_pObject != other.Get();
             }
 
+            bool operator==(std::nullptr_t) const noexcept {
+                return m_pObject == nullptr;
+            }
+
+            bool operator!=(std::nullptr_t) const noexcept {
+                return m_pObject != nullptr;
+            }
+
+            friend bool operator==(std::nullptr_t, const SmartPointer& sp) noexcept {
+                return sp.m_pObject == nullptr;
+            }
+
+            friend bool operator!=(std::nullptr_t, const SmartPointer& sp) noexcept {
+                return sp.m_pObject != nullptr;
+            }
+
+            template <typename U>
+            bool operator==(const U* pOther) const noexcept {
+                return m_pObject == pOther;
+            }
+
+            template <typename U>
+            bool operator!=(const U* pOther) const noexcept {
+                return m_pObject != pOther;
+            }
+
+            template <typename U>
+            friend bool operator==(const U* pOther, const SmartPointer& sp) noexcept {
+                return pOther == sp.m_pObject;
+            }
+
+            template <typename U>
+            friend bool operator!=(const U* pOther, const SmartPointer& sp) noexcept {
+                return pOther != sp.m_pObject;
+            }
+
         private:
+            SmartPointer(T* pPtr, volatile long* pnRefCount)
+                : m_pObject(pPtr), m_pnRefCount(pnRefCount) {
+                if (m_pnRefCount != nullptr) {
+                    Internal::AtomicIncrement(m_pnRefCount);
+                }
+                SetupEnableSharedFromThis(m_pObject);
+            }
+
+            template <typename U>
+            void SetupEnableSharedFromThis(U* pPtr) {
+                if constexpr (IsComplete<U>::value) {
+                    if (pPtr != nullptr && m_pnRefCount != nullptr) {
+                        if constexpr (std::is_base_of_v<EnableSharedFromThisBase, U>) {
+                            static_cast<EnableSharedFromThisBase*>(pPtr)->m_pnRefCount = m_pnRefCount;
+                        } else if constexpr (std::is_polymorphic_v<U>) {
+                            if (auto* pBase = dynamic_cast<EnableSharedFromThisBase*>(pPtr)) {
+                                pBase->m_pnRefCount = m_pnRefCount;
+                            }
+                        }
+                    }
+                }
+            }
+
             void InternalCleanup() {
+                /// Shared ownership mode: atomically decrement reference counter and free if zero.
                 if (m_pnRefCount != nullptr) {
                     if (Internal::AtomicDecrement(m_pnRefCount) == 0) {
                         if (m_pObject != nullptr) delete m_pObject;
                         delete const_cast<long*>(m_pnRefCount);
                     }
                 } else if (m_pObject != nullptr) {
+                    /// Unique ownership mode: directly delete managed object without atomic overhead.
                     delete m_pObject;
                 }
                 m_pObject = nullptr;
@@ -425,5 +546,54 @@ namespace DotNetDupe {
             T* m_pObject;
             volatile long* m_pnRefCount;
         };
+
+        template <typename T>
+        class EnableSharedFromThis : public EnableSharedFromThisBase {
+        public:
+            SmartPointer<T> SharedFromThis() {
+                if (m_pnRefCount == nullptr) {
+                    throw SystemException("SharedFromThis called on an object that is not managed by a shared SmartPointer.");
+                }
+                return SmartPointer<T>(static_cast<T*>(this), m_pnRefCount);
+            }
+
+            SmartPointer<const T> SharedFromThis() const {
+                if (m_pnRefCount == nullptr) {
+                    throw SystemException("SharedFromThis called on an object that is not managed by a shared SmartPointer.");
+                }
+                return SmartPointer<const T>(static_cast<const T*>(this), m_pnRefCount);
+            }
+
+        protected:
+            constexpr EnableSharedFromThis() noexcept = default;
+            EnableSharedFromThis(const EnableSharedFromThis&) noexcept : EnableSharedFromThisBase() {}
+            EnableSharedFromThis& operator=(const EnableSharedFromThis&) noexcept { return *this; }
+            virtual ~EnableSharedFromThis() = default;
+        };
+
+        template <typename To, typename From>
+        inline SmartPointer<To> DynamicPointerCast(const SmartPointer<From>& sp) {
+            return sp.template DynamicCast<To>();
+        }
+
+        template <typename To, typename From>
+        inline SmartPointer<To> StaticPointerCast(const SmartPointer<From>& sp) {
+            return sp.template StaticCast<To>();
+        }
+
+        template <typename To, typename From>
+        inline SmartPointer<To> ConstPointerCast(const SmartPointer<From>& sp) {
+            return sp.template ConstCast<To>();
+        }
+
+        template <typename To, typename From>
+        inline SmartPointer<To> DynamicCast(const SmartPointer<From>& sp) {
+            return sp.template DynamicCast<To>();
+        }
+
+        template <typename To, typename From>
+        inline SmartPointer<To> StaticCast(const SmartPointer<From>& sp) {
+            return sp.template StaticCast<To>();
+        }
     }
 }

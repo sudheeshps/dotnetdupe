@@ -51,7 +51,10 @@ namespace DotNetDupe {
             }
 
             static void SafelyJoinOrDetach(const std::unique_ptr<std::thread>& pThread) {
+                /// Guard: Verify thread exists and is joinable.
                 if (!pThread || !pThread->joinable()) return;
+
+                /// Safely detach if current thread is tearing down itself, otherwise join.
                 try {
                     if (pThread->get_id() == std::this_thread::get_id()) {
                         pThread->detach();
@@ -64,6 +67,7 @@ namespace DotNetDupe {
             }
 
             Thread::~Thread() {
+                /// Clean up internal thread and release implementation state.
                 if (m_pImpl) {
                     SafelyJoinOrDetach(m_pImpl->internalThread);
                     delete m_pImpl;
@@ -76,23 +80,31 @@ namespace DotNetDupe {
             }
 
             void Thread::Start(Object* parameter) {
+                /// Guard: Ensure thread is not already running or disposed.
                 if (!m_pImpl || m_pImpl->isAlive) return;
+
+                /// Initialize execution state and spawn native worker thread.
                 m_pImpl->isAlive = true;
                 m_pImpl->completed = false;
                 m_pImpl->internalThread = std::make_unique<std::thread>(&Thread::ThreadMain, this, parameter);
             }
 
             void Thread::Join() {
+                /// Guard: Verify thread is valid, joinable, and not the current calling thread.
                 if (!m_pImpl || !m_pImpl->internalThread || !m_pImpl->internalThread->joinable()) return;
                 if (m_pImpl->internalThread->get_id() == std::this_thread::get_id()) return;
+
+                /// Block until native worker thread finishes execution.
                 m_pImpl->internalThread->join();
             }
 
             bool Thread::Join(int millisecondsTimeout) {
+                /// Guard: Return immediately if thread is already completed or inactive.
                 if (!m_pImpl) return true;
                 if (!m_pImpl->isAlive && m_pImpl->completed) return true;
                 if (!m_pImpl->internalThread) return true;
 
+                /// Wait on condition variable until worker signals completion or timeout expires.
                 std::unique_lock<std::mutex> lock(m_pImpl->joinMutex);
                 if (m_pImpl->joinCv.wait_for(lock, std::chrono::milliseconds(millisecondsTimeout), [this]() { return m_pImpl->completed; })) {
                     if (m_pImpl->internalThread->joinable()) {
@@ -101,10 +113,12 @@ namespace DotNetDupe {
                     return true;
                 }
                 
+                /// Timeout expired without worker completion: throw descriptive exception.
                 throw TimeoutException("The thread did not terminate within the allotted time.");
             }
 
             void Thread::Sleep(int millisecondsTimeout) {
+                /// Suspend calling thread execution using std::this_thread::sleep_for.
                 std::this_thread::sleep_for(std::chrono::milliseconds(millisecondsTimeout));
             }
 
@@ -121,14 +135,18 @@ namespace DotNetDupe {
             }
 
             Thread* Thread::GetCurrentThread() {
+                /// Check thread-local cache and initialize shared wrapper instance on demand.
                 if (_currentThread == nullptr) {
                     s_pCurrentThreadStorage = CreateCurrentThreadWrapper();
                     _currentThread = s_pCurrentThreadStorage.Get();
                 }
+
+                /// Return cached thread-local instance.
                 return _currentThread;
             }
 
             int Thread::GetCurrentThreadId() {
+                /// Query operating system kernel for current native thread ID.
 #if defined(_WIN32)
                 return static_cast<int>(::GetCurrentThreadId());
 #else
@@ -141,18 +159,25 @@ namespace DotNetDupe {
             }
 
             void Thread::ThreadMain(Object* parameter) {
+                /// Register current thread instance in thread-local storage.
                 _currentThread = this;
+
+                /// Execute thread entry point delegate.
                 try {
                     if (m_pImpl->start) m_pImpl->start();
                     else if (m_pImpl->parameterizedStart) m_pImpl->parameterizedStart(parameter);
                 } catch (...) {
                     (void)0;
                 }
+
+                /// Transition thread state to completed under mutex protection.
                 {
                     std::lock_guard<std::mutex> lock(m_pImpl->joinMutex);
                     m_pImpl->completed = true;
                     m_pImpl->isAlive = false;
                 }
+
+                /// Wake all waiting join threads via condition variable broadcast.
                 m_pImpl->joinCv.notify_all();
             }
         }

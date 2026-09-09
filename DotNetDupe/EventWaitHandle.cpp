@@ -35,6 +35,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
             static HANDLE OpenOrCreateWin32Event(const std::wstring& wsName, bool manualReset, bool initialState, bool openAlways, bool& bCreatedNew) {
+                /// Attempt Win32 CreateEventW.
                 HANDLE hHandle = ::CreateEventW(NULL, manualReset ? TRUE : FALSE, initialState ? TRUE : FALSE, wsName.c_str());
                 if (hHandle != NULL) {
                     bCreatedNew = (::GetLastError() != ERROR_ALREADY_EXISTS);
@@ -43,6 +44,8 @@ namespace DotNetDupe {
                 if (::GetLastError() == ERROR_ACCESS_DENIED) {
                     throw UnauthorizedAccessException("Access denied creating EventWaitHandle synchronization object.");
                 }
+
+                /// Fallback to open existing.
                 bCreatedNew = false;
                 if (!openAlways) {
                     throw WaitHandleCannotBeOpenedException("Event creation returned null handle and openAlways is false.");
@@ -61,6 +64,7 @@ namespace DotNetDupe {
             EventWaitHandle::EventWaitHandle(bool initialState, bool manualReset, const String& sName, bool openAlways, bool& bCreatedNew)
                 : _state(initialState), _manualReset(manualReset), _name(sName), _hHandle(nullptr), _pImpl(new Impl()) {
 #if defined(_WIN32)
+                /// Named event creation on Windows.
                 if (!_name.IsEmpty()) {
                     std::wstring wsName = Utils::StringConvert::Utf8ToWChar(_name.GetRawString());
                     _hHandle = OpenOrCreateWin32Event(wsName, manualReset, initialState, openAlways, bCreatedNew);
@@ -73,6 +77,7 @@ namespace DotNetDupe {
             }
 
             EventWaitHandle::~EventWaitHandle() {
+                /// Release system handle and internal memory.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     ::CloseHandle((HANDLE)_hHandle);
@@ -86,6 +91,7 @@ namespace DotNetDupe {
             }
 
             SmartPointer<EventWaitHandle> EventWaitHandle::OpenExisting(const String& sName) {
+                /// Open named event.
                 SmartPointer<EventWaitHandle> pResult = nullptr;
                 if (TryOpenExisting(sName, pResult)) {
                     return pResult;
@@ -94,12 +100,16 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::TryOpenExisting(const String& sName, SmartPointer<EventWaitHandle>& pResult) {
+                /// Guard: Check empty name.
                 pResult = nullptr;
                 if (sName.IsEmpty()) return false;
+
 #if defined(_WIN32)
+                /// Open existing system event.
                 std::wstring wsName = Utils::StringConvert::Utf8ToWChar(sName.GetRawString());
                 HANDLE h = ::OpenEventW(EVENT_MODIFY_STATE | SYNCHRONIZE, FALSE, wsName.c_str());
                 if (!h) return false;
+
                 auto spEvt = SmartPointer<EventWaitHandle>::NewShared(false, false);
                 spEvt->_name = sName;
                 spEvt->_hHandle = h;
@@ -111,6 +121,7 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::Set() {
+                /// Signal system event or condition variable.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     return (::SetEvent((HANDLE)_hHandle) != FALSE);
@@ -128,6 +139,7 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::Reset() {
+                /// Reset system event or local state.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     return (::ResetEvent((HANDLE)_hHandle) != FALSE);
@@ -140,6 +152,7 @@ namespace DotNetDupe {
             }
 
             static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool& bState, bool bManualReset) {
+                /// Wait for condition variable signal.
                 std::unique_lock<std::mutex> lock(pImpl->mutex);
                 pImpl->cv.wait(lock, [&bState]() { return bState; });
                 if (!bManualReset) bState = false;
@@ -147,6 +160,7 @@ namespace DotNetDupe {
             }
 
             static bool WaitForEventCv(EventWaitHandle::Impl* pImpl, bool& bState, bool bManualReset, int msTimeout) {
+                /// Timed wait for condition variable signal.
                 std::unique_lock<std::mutex> lock(pImpl->mutex);
                 bool bRes = pImpl->cv.wait_for(lock, std::chrono::milliseconds(msTimeout), [&bState]() { return bState; });
                 if (bRes) {
@@ -157,6 +171,7 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::WaitOne() {
+                /// Synchronize via native handle or CV.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, INFINITE);
@@ -168,6 +183,7 @@ namespace DotNetDupe {
             }
 
             bool EventWaitHandle::WaitOne(int millisecondsTimeout) {
+                /// Timed synchronization.
 #if defined(_WIN32)
                 if (_hHandle != nullptr) {
                     DWORD dwWaitResult = ::WaitForSingleObject((HANDLE)_hHandle, (DWORD)millisecondsTimeout);

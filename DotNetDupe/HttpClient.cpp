@@ -274,52 +274,65 @@ namespace DotNetDupe {
                     }
                 };
 
-                HttpClient::HttpClient() : m_pImpl(SmartPointer<Impl>::NewShared()) {}
+                HttpClient::HttpClient() : m_pImpl(SmartPointer<Impl>::NewShared()) {
+                    /// Initialize Pimpl implementation pointer.
+                }
+
                 HttpClient::~HttpClient() = default;
 
                 HttpResponseMessagePtr HttpClient::Get(const String& requestUri) {
+                    /// Forward to Uri overload.
                     return Get(Uri(requestUri));
                 }
 
                 HttpResponseMessagePtr HttpClient::Get(const Uri& requestUri) {
+                    /// Build GET request message and dispatch.
                     auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Get, requestUri);
                     return Send(request);
                 }
 
                 HttpResponseMessagePtr HttpClient::Post(const String& requestUri, const HttpContentPtr& content) {
+                    /// Forward to Uri overload.
                     return Post(Uri(requestUri), content);
                 }
 
                 HttpResponseMessagePtr HttpClient::Post(const Uri& requestUri, const HttpContentPtr& content) {
+                    /// Build POST request message with payload and dispatch.
                     auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Post, requestUri);
                     request->SetContent(content);
                     return Send(request);
                 }
 
                 HttpResponseMessagePtr HttpClient::Put(const String& requestUri, const HttpContentPtr& content) {
+                    /// Forward to Uri overload.
                     return Put(Uri(requestUri), content);
                 }
 
                 HttpResponseMessagePtr HttpClient::Put(const Uri& requestUri, const HttpContentPtr& content) {
+                    /// Build PUT request message with payload and dispatch.
                     auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Put, requestUri);
                     request->SetContent(content);
                     return Send(request);
                 }
 
                 HttpResponseMessagePtr HttpClient::Delete(const String& requestUri) {
+                    /// Forward to Uri overload.
                     return Delete(Uri(requestUri));
                 }
 
                 HttpResponseMessagePtr HttpClient::Delete(const Uri& requestUri) {
+                    /// Build DELETE request message and dispatch.
                     auto request = HttpRequestMessagePtr::NewShared(HttpMethod::Delete, requestUri);
                     return Send(request);
                 }
 
                 String HttpClient::GetString(const String& requestUri) {
+                    /// Forward to Uri overload.
                     return GetString(Uri(requestUri));
                 }
 
                 String HttpClient::GetString(const Uri& requestUri) {
+                    /// Send GET request, ensure success, and read content as string.
                     auto response = Get(requestUri);
                     response->EnsureSuccessStatusCode();
                     auto content = response->GetContent();
@@ -328,10 +341,12 @@ namespace DotNetDupe {
                 }
 
                 Array<char> HttpClient::GetByteArray(const String& requestUri) {
+                    /// Forward to Uri overload.
                     return GetByteArray(Uri(requestUri));
                 }
 
                 Array<char> HttpClient::GetByteArray(const Uri& requestUri) {
+                    /// Send GET request, ensure success, and read content as byte array.
                     auto response = Get(requestUri);
                     response->EnsureSuccessStatusCode();
                     auto content = response->GetContent();
@@ -340,24 +355,32 @@ namespace DotNetDupe {
                 }
 
                 Collections::Generic::Dictionary<String, String>& HttpClient::GetDefaultRequestHeaders() {
+                    /// Return default request headers.
                     return m_pImpl->m_defaultRequestHeaders;
                 }
 
                 const Collections::Generic::Dictionary<String, String>& HttpClient::GetDefaultRequestHeaders() const {
+                    /// Return read-only default request headers.
                     return m_pImpl->m_defaultRequestHeaders;
                 }
 
                 HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr& request) {
+                    /// Forward to Send overload with ResponseContentRead option.
                     return Send(request, HttpCompletionOption::ResponseContentRead);
                 }
 
                 HttpResponseMessagePtr HttpClient::Send(const HttpRequestMessagePtr& request, HttpCompletionOption completionOption) {
+                    /// Guard: Ensure request instance is valid.
                     if (request.IsNull()) throw ArgumentNullException("request");
+                    /// Validate URI scheme (HTTP/HTTPS).
                     Uri uri = request->GetRequestUri();
                     String scheme = uri.GetScheme().ToLower();
                     if (scheme != "http" && scheme != "https") throw ArgumentException("Only 'http' and 'https' schemes are supported.");
+                    /// Connect transport stream (TCP/SSL).
                     auto spStream = m_pImpl->ConnectStream(uri, scheme);
+                    /// Serialize and transmit request headers and content.
                     m_pImpl->SendRequest(spStream, m_pImpl->PrepareHeaders(request, uri), request->GetContent());
+                    /// Return streaming response or buffer entire body.
                     if (completionOption == HttpCompletionOption::ResponseHeadersRead) return m_pImpl->BuildStreamResponse(spStream);
                     return m_pImpl->PrepareResponse(spStream);
                 }

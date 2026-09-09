@@ -1,0 +1,26 @@
+var class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader =
+[
+    [ "BinaryReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ac64b3029dee29f4d9b6c14c4795ebd5a", null ],
+    [ "BinaryReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ada9979ae27ebcb640d3f82330c45eebd", null ],
+    [ "~BinaryReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#afcac838982d36ae649fe91931d2523d9", null ],
+    [ "Close", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a92016c4174eae52d1c7549f61d9202ac", null ],
+    [ "Dispose", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#aa01cc946be12c14ef2837c13e5d5e5c1", null ],
+    [ "GetBaseStream", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ad7656bc0bcc49b6f25f8feb14dcf70ec", null ],
+    [ "IsLittleEndian", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a2f543ba16921e8c56a12595295023be4", null ],
+    [ "Read", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a342ed03e82c753f9abf2fbe2df331dab", null ],
+    [ "ReadBoolean", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a42f41fc526dc3ee0e36237d0c39a54c4", null ],
+    [ "ReadByte", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#abaf18341426d0db6437c9a2501e62104", null ],
+    [ "ReadBytes", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a9d3b2d958733ecb4e581a7ce2ceec7a9", null ],
+    [ "ReadChar", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ae1ea57e362db67ccec15cf53c1983e9e", null ],
+    [ "ReadDouble", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a56fc6b55c272b8eeec01e9ddea41f0b5", null ],
+    [ "ReadInt16", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a42599d8a3515dc1fe75aa8a46237b1e7", null ],
+    [ "ReadInt32", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a4e524e945722bc38c175438ff372adfa", null ],
+    [ "ReadInt64", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a9a921cbc5d07664c172225915c9de94a", null ],
+    [ "ReadSByte", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a7087afb7686a96bc3e8dd000da488aaa", null ],
+    [ "ReadSingle", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a8980a48405ce619a3cbdc27f95348f49", null ],
+    [ "ReadString", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a202bd434fb6f0b138547196ee8893fec", null ],
+    [ "ReadUInt16", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a9de4f0e9c7ba73e6f2c508c8a27a4635", null ],
+    [ "ReadUInt32", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ac559ac2b866119f517fc720df06d4d03", null ],
+    [ "ReadUInt64", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#a8a940c27548c123a8fe1c16b28b2f4f3", null ],
+    [ "SetLittleEndian", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html#ad8c2455ebba3f881967a8074591b2cfb", null ]
+];

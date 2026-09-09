@@ -16,6 +16,7 @@ namespace DotNetDupe {
         namespace ComponentModel {
 
             static String FormatErrorMessage(int nErrorCode) {
+                /// Step: Format native error code into localized message string.
 #if defined(_WIN32)
                 LPWSTR lpMsgBuf = nullptr;
                 DWORD dwLen = ::FormatMessageW(
@@ -28,6 +29,7 @@ namespace DotNetDupe {
                     nullptr
                 );
 
+                /// Step: Trim trailing whitespace and convert to UTF-8.
                 if (dwLen > 0 && lpMsgBuf != nullptr) {
                     while (dwLen > 0 && (lpMsgBuf[dwLen - 1] == L'\r' || lpMsgBuf[dwLen - 1] == L'\n')) {
                         lpMsgBuf[--dwLen] = L'\0';
@@ -50,16 +52,19 @@ namespace DotNetDupe {
                 : Win32Exception(errno)
 #endif
             {
+                /// Step: Default-initialized with last native error code.
             }
 
             Win32Exception::Win32Exception(int nNativeErrorCode)
                 : SystemException(FormatErrorMessage(nNativeErrorCode)), m_nNativeErrorCode(nNativeErrorCode)
             {
+                /// Step: Initialized with native error code.
             }
 
             Win32Exception::Win32Exception(int nNativeErrorCode, const String& sMessage)
                 : SystemException(sMessage), m_nNativeErrorCode(nNativeErrorCode)
             {
+                /// Step: Initialized with native error code and custom message.
             }
 
             Win32Exception::Win32Exception(const String& sMessage)
@@ -69,6 +74,7 @@ namespace DotNetDupe {
                 : SystemException(sMessage), m_nNativeErrorCode(errno)
 #endif
             {
+                /// Step: Initialized with custom message and last native error code.
             }
 
         }

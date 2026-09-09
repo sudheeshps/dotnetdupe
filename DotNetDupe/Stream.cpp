@@ -4,8 +4,8 @@
 namespace DotNetDupe {
     namespace System {
         namespace IO {
-            // No implementation needed for pure virtual functions in an abstract class
-            // unless there are non-pure virtual methods or static members.
+            /// Abstract Stream implementation translation unit.
+            /// Pure virtual methods do not require definitions in this translation unit.
         }
     }
 }

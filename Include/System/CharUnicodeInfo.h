@@ -1,5 +1,8 @@
 #pragma once
 
+/// \file CharUnicodeInfo.h
+/// \brief Reserved Unicode character category tables and information placeholder.
+
 /*
 class CharUnicodeInfo
 {

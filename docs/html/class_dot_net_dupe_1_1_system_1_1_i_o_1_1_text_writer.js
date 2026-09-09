@@ -1,0 +1,27 @@
+var class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer =
+[
+    [ "~TextWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a62b5ce6fb56024562fe847d60b057b0e", null ],
+    [ "TextWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ad99439b5369e7181f81cccc11693e304", null ],
+    [ "Close", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#adba23651c702abf2099d67c272bebc5f", null ],
+    [ "Dispose", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#aac6bfb5f715d34b14a992d9f7475757a", null ],
+    [ "Flush", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a2417970daf5b235aee734eb792dc3c79", null ],
+    [ "GetEncoding", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a0030c397de52f71cf9146f2bf2b7fb9b", null ],
+    [ "GetNewLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a83c0aab5b71226766324d57007164247", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a1f75d1b1431fd4bf0a1bd0e7ddfa943f", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a984a878e3b03b18ab104a2fd850be46c", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ab1d3f79ce60edf3521cb9867d7ddf256", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a1583905e30a3440aa2de2a91bf790528", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a605d3dba062f926ce5b9f53bdbb31d10", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ae78a939f9b1ace821ac0ed76d38bc9f9", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a9d8c1fc0db681fd856a3dcfd6e3973b2", null ],
+    [ "Write", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ac7050e9a5cfc4c925179b88baf4f89a8", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#af37054e8454f22fd8fb33faf054c408e", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a810674c00f69e057f203e2cbcb465fc8", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a7ae22d5fd321643bccd298ccce2d1f5f", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a7207f33fb73df7c9a2630f2d0b0c8f92", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a6987dc78ca271af9ce8e8ad8dab011a9", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a25d11b2396d2e51e028dd9e6e181e563", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a6a8d6981f440950505c04d20b60c721c", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ad19a3ef6efe77c79464427e0848f2e02", null ],
+    [ "WriteLine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#af2fcffa5883a12e19a6cfffec6165b21", null ]
+];

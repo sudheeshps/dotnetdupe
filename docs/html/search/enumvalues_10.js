@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['rantocompletion_0',['RanToCompletion',['../namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html#a3d0d702060f8a501f43e4986db96d4d1aafe3c20f08a3dd6c4cab23d979c8f1e9',1,'DotNetDupe::System::Threading::Tasks']]],
+  ['raw_1',['Raw',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#afec951c777f0ece787b8baec03e6fc73a65e65c8ab0d8609ce12fc68a03cb8e00',1,'DotNetDupe::System::Net::Sockets']]],
+  ['readonly_2',['ReadOnly',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a131fb182a881796e7606ed6da27f1197',1,'DotNetDupe::System::IO']]],
+  ['receive_3',['Receive',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a76f691f86239f2de1975e630b98d9ec5a5639d3df5aea3d9e78027b843ee3cbb2',1,'DotNetDupe::System::Net::Sockets']]],
+  ['recent_4',['Recent',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1adae52b80711ee1029c7006f95018d300',1,'DotNetDupe::System::Environment']]],
+  ['red_5',['Red',['../namespace_dot_net_dupe_1_1_system.html#a77ff9075c27f2151179d1301073e3550aee38e4d5dd68c4e440825018d549cb47',1,'DotNetDupe::System']]],
+  ['redirect_6',['Redirect',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a4202ef115ebede37eb22297113f5fb32',1,'DotNetDupe::System::Net']]],
+  ['redirectkeepverb_7',['RedirectKeepVerb',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a5642a16c0f0774fec98ad5241b68f531',1,'DotNetDupe::System::Net']]],
+  ['redirectmethod_8',['RedirectMethod',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a3d006d7cd9a99992b94bc01e54a067fc',1,'DotNetDupe::System::Net']]],
+  ['removeemptyentries_9',['RemoveEmptyEntries',['../namespace_dot_net_dupe_1_1_system.html#a1819abae29d9e44c83f2a4fccdb9896aaf848693a8ba86ca7d0888ce5a78d3966',1,'DotNetDupe::System']]],
+  ['reparsepoint_10',['ReparsePoint',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a2452ed8906b5677e159ec14af42d4464',1,'DotNetDupe::System::IO']]],
+  ['requestedrangenotsatisfiable_11',['RequestedRangeNotSatisfiable',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a7779e53fc887ac0429f4ebde5fc0b59f',1,'DotNetDupe::System::Net']]],
+  ['requestentitytoolarge_12',['RequestEntityTooLarge',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a1d2dd18ee1a925e5887cbc2f9202e779',1,'DotNetDupe::System::Net']]],
+  ['requestheaderfieldstoolarge_13',['RequestHeaderFieldsTooLarge',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a01d50823ab04e988e893bc17c2d55f24',1,'DotNetDupe::System::Net']]],
+  ['requesttimeout_14',['RequestTimeout',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a3632c2e4e6225d4d9fcd2a6fd2c65048',1,'DotNetDupe::System::Net']]],
+  ['requesturitoolong_15',['RequestUriTooLong',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a08ad854bbc441f4edb6828769f8d3399',1,'DotNetDupe::System::Net']]],
+  ['reset_16',['Reset',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2a805da56f8f3d09bfad61b11cfb69eaa526d688f37a86d3c3f27d0c5016eb71d',1,'DotNetDupe::System::Diagnostics']]],
+  ['resetcontent_17',['ResetContent',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a4e9202c31896211f63be5b7345a897ed',1,'DotNetDupe::System::Net']]],
+  ['responsecontentread_18',['ResponseContentRead',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#adf30126c8b9ac7a6bfe33e330431336fab45e7e015f0fa0bad2021745907db5e4',1,'DotNetDupe::System::Net::Http']]],
+  ['responseheadersread_19',['ResponseHeadersRead',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#adf30126c8b9ac7a6bfe33e330431336face6cf76c6d2d5bb68ae97da14cf7d480',1,'DotNetDupe::System::Net::Http']]],
+  ['running_20',['Running',['../namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html#a3d0d702060f8a501f43e4986db96d4d1a5bda814c4aedb126839228f1a3d92f09',1,'DotNetDupe::System::Threading::Tasks']]]
+];

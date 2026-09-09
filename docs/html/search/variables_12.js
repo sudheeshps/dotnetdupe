@@ -1,0 +1,12 @@
+var searchData=
+[
+  ['ticksperday_0',['TicksPerDay',['../class_dot_net_dupe_1_1_system_1_1_time_span.html#aa1c8f6b9a03a10c20897c722e40be820',1,'DotNetDupe::System::TimeSpan::TicksPerDay'],['../namespace_dot_net_dupe_1_1_system.html#a09a761f54ed0f2f5205b96189802fab6',1,'DotNetDupe::System::TicksPerDay']]],
+  ['ticksperhour_1',['TicksPerHour',['../class_dot_net_dupe_1_1_system_1_1_time_span.html#a17655ad81dd58cb824dc510c2bf6ef3e',1,'DotNetDupe::System::TimeSpan::TicksPerHour'],['../namespace_dot_net_dupe_1_1_system.html#a4ba8f0c620f6c96f8898bd0ca3207def',1,'DotNetDupe::System::TicksPerHour']]],
+  ['tickspermillisecond_2',['TicksPerMillisecond',['../class_dot_net_dupe_1_1_system_1_1_time_span.html#ab3654cb6f2c5b5b2625fd0366c3bcd42',1,'DotNetDupe::System::TimeSpan::TicksPerMillisecond'],['../namespace_dot_net_dupe_1_1_system.html#a96f458ccfb253cd9833476b8d58c9253',1,'DotNetDupe::System::TicksPerMillisecond']]],
+  ['ticksperminute_3',['TicksPerMinute',['../class_dot_net_dupe_1_1_system_1_1_time_span.html#afa8b6bb48745e1c1bb833a1a3ef164b4',1,'DotNetDupe::System::TimeSpan::TicksPerMinute'],['../namespace_dot_net_dupe_1_1_system.html#a094bc1446b690638194a74a9a5f1723f',1,'DotNetDupe::System::TicksPerMinute']]],
+  ['tickspersecond_4',['TicksPerSecond',['../class_dot_net_dupe_1_1_system_1_1_time_span.html#a4c21be61a57b4d94066693ffe6c7ee62',1,'DotNetDupe::System::TimeSpan::TicksPerSecond'],['../namespace_dot_net_dupe_1_1_system.html#aa68b3714ea95dc0888a8646c9b43f68d',1,'DotNetDupe::System::TicksPerSecond']]],
+  ['timestampformat_5',['TimestampFormat',['../struct_dot_net_dupe_1_1_extensions_1_1_logging_1_1_logger_configuration.html#a4a4795da0ff77f5885aa0199631886ac',1,'DotNetDupe::Extensions::Logging::LoggerConfiguration']]],
+  ['totalbytes_6',['TotalBytes',['../struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html#aecbdaa70bc1fc790e6edcfb8be899d3d',1,'DotNetDupe::System::Net::Http::DownloadProgress']]],
+  ['trace_7',['Trace',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_method.html#a6666381eaa24dcbf406c437530ac2bdc',1,'DotNetDupe::System::Net::Http::HttpMethod']]],
+  ['true_8',['True',['../struct_dot_net_dupe_1_1_system_1_1_bool_representation.html#abead1071682838514defca516010ea26',1,'DotNetDupe::System::BoolRepresentation::True'],['../struct_dot_net_dupe_1_1_system_1_1_bool_representation_w_char.html#af9c802ef69db649d33f3a2eb13b4023f',1,'DotNetDupe::System::BoolRepresentationWChar::True']]]
+];

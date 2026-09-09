@@ -401,10 +401,10 @@ foreach ($file in $cppFiles) {
         $trimmed = $line.Trim()
         if ($trimmed.StartsWith("//") -or $trimmed.StartsWith("/*") -or $trimmed.StartsWith("*")) { continue }
 
-        # Match SmartPointer declarations: SmartPointer<Type> varName
-        if ($trimmed -match 'SmartPointer<[A-Za-z0-9_:<>\s*]+>\s+([A-Za-z0-9_]+)\s*[;=,]') {
+        # Match SmartPointer declarations: SmartPointer<Type> varName (not inside another template like List<SmartPointer<T>>)
+        if ($trimmed -match '(?<![<A-Za-z0-9_:])SmartPointer<[A-Za-z0-9_:<>\s*]+?>\s+([A-Za-z0-9_]+)\s*[;=,]') {
             $varName = $Matches[1]
-            if ($varName -ne "sp" -and $varName -ne "p" -and -not ($varName.StartsWith("p") -or $varName.StartsWith("m_p") -or $varName.StartsWith("s_p") -or $varName.StartsWith("sp"))) {
+            if ($varName -ne "sp" -and $varName -ne "p" -and -not ($varName.StartsWith("p") -or $varName.StartsWith("m_p") -or $varName.StartsWith("m_sp") -or $varName.StartsWith("s_p") -or $varName.StartsWith("s_sp") -or $varName.StartsWith("sp"))) {
                 Write-RuleWarn "SmartPointer variable '$varName' in '$($file.Name):$lineNum' does not follow 'p'/'sp' pointer prefix convention."
                 $SmartPointerNamingViolations.Add([PSCustomObject]@{
                     FileName   = $file.Name

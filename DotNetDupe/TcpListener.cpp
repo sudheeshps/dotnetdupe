@@ -16,6 +16,7 @@ namespace DotNetDupe {
                 }
 
                 TcpListener::~TcpListener() {
+                    /// Stop listener on destruction.
                     Stop();
                 }
 
@@ -28,6 +29,7 @@ namespace DotNetDupe {
                 }
 
                 TcpListener& TcpListener::operator=(TcpListener&& other) noexcept {
+                    /// Guard: Check self-assignment.
                     if (this != &other) {
                         Stop();
                         m_sIp = std::move(other.m_sIp);
@@ -44,8 +46,10 @@ namespace DotNetDupe {
                 }
 
                 void TcpListener::Start(int backlog) {
+                    /// Guard: Check already active.
                     if (m_bActive) return;
 
+                    /// Bind and listen on local endpoint.
                     m_pListenerSocket.Attach(new Socket(AddressFamily::InterNetwork, SocketType::Stream, ProtocolType::Tcp), true);
                     m_pListenerSocket->Bind(m_sIp, m_nPort);
                     m_pListenerSocket->Listen(backlog);
@@ -53,6 +57,7 @@ namespace DotNetDupe {
                 }
 
                 void TcpListener::Stop() {
+                    /// Deactivate and close listening socket.
                     if (m_bActive) {
                         m_bActive = false;
                         if (!m_pListenerSocket.IsNull()) {
@@ -62,26 +67,35 @@ namespace DotNetDupe {
                 }
 
                 SmartPointer<TcpClient> TcpListener::AcceptTcpClient() {
+                    /// Guard: Verify listener is active.
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
                         throw SocketException(-1, String("TcpListener is not started."));
                     }
+
+                    /// Accept connection and wrap in TcpClient.
                     SmartPointer<Socket> pListenerSocket = m_pListenerSocket;
                     SmartPointer<Socket> pClientSocket = pListenerSocket->Accept();
                     return SmartPointer<TcpClient>(new TcpClient(pClientSocket));
                 }
 
                 SmartPointer<Socket> TcpListener::AcceptSocket() {
+                    /// Guard: Verify listener is active.
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
                         throw SocketException(-1, String("TcpListener is not started."));
                     }
+
+                    /// Accept raw connected socket.
                     SmartPointer<Socket> pListenerSocket = m_pListenerSocket;
                     return pListenerSocket->Accept();
                 }
 
                 bool TcpListener::Pending() {
+                    /// Guard: Check active status.
                     if (!m_bActive || m_pListenerSocket.IsNull()) {
                         return false;
                     }
+
+                    /// Poll for readability with zero timeout.
                     return m_pListenerSocket->Poll(0, SelectMode::SelectRead);
                 }
 

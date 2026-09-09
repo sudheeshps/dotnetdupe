@@ -1,3 +1,6 @@
+/// \file Console.h
+/// \brief Represents standard input, output, and error streams for console applications.
+
 #pragma once
 
 #include "Common.h"
@@ -16,6 +19,7 @@ namespace DotNetDupe {
             class TextReader;
         }
 
+        /// \brief Specifies constants that define foreground and background colors for the console.
         enum class ConsoleColor {
             Black = 0,
             DarkBlue = 1,
@@ -35,6 +39,14 @@ namespace DotNetDupe {
             White = 15
         };
 
+        /// \brief Represents the standard input, output, and error streams for console applications.
+        ///
+        /// Provides thread-safe methods to read and write characters, lines, formatted strings,
+        /// control console attributes (colors, cursor positions, title), and redirect standard streams.
+        /// All static output methods synchronize internally using recursive mutexes.
+        ///
+        /// \note Conforms to ECMA-335 Partition IV Section 5.12 (System.Console).
+        /// \see String, Environment
         class Console : public Object {
         public:
             // Write methods

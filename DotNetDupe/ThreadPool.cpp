@@ -12,26 +12,26 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
 
-            /**
-             * @brief Represents a single task in the thread pool queue.
-             */
+            /// \struct ThreadPoolTask
+            /// \brief Represents a single task in the thread pool queue.
             struct ThreadPoolTask {
                 WaitCallback Callback;
                 Object* State;
             };
 
-            /**
-             * @brief Internal implementation of the thread pool manager.
-             * Manages worker threads and task dispatching using DotNetDupe primitives.
-             */
+            /// \class ThreadPoolInternal
+            /// \brief Internal implementation of the thread pool manager.
+            /// Manages worker threads and task dispatching using DotNetDupe primitives.
             class ThreadPoolInternal {
             public:
                 static ThreadPoolInternal& GetInstance() {
+                    /// Step: Return singleton thread pool instance.
                     static ThreadPoolInternal instance;
                     return instance;
                 }
 
                 bool QueueTask(WaitCallback callback, Object* pState) {
+                    /// Guard: Check shutdown state and enqueue task under synchronization lock.
                     {
                         Lock<CriticalSection> lock(m_csSync);
                         if (m_bIsShuttingDown) return false;
@@ -41,14 +41,17 @@ namespace DotNetDupe {
                         objTask.State = pState;
                         m_qTasks.Add(objTask);
                     }
+                    /// Step: Signal waiting worker thread that work is available.
                     m_evtWorkAvailable.Set();
                     return true;
                 }
 
                 bool SetMinThreads(int iMinThreads) {
+                    /// Guard: Validate minimum thread count.
                     if (iMinThreads <= 0) return false;
                     Lock<CriticalSection> lock(m_csSync);
                     if (m_bIsShuttingDown) return false;
+                    /// Step: Spawn worker threads up to minimum threshold.
                     while (m_pvWorkerThreads.GetCount() < iMinThreads) {
                         SmartPointer<Thread> pWorker = SmartPointer<Thread>::NewShared(ThreadStart([this]() { WorkerLoop(); }));
                         pWorker->Start();
@@ -60,7 +63,7 @@ namespace DotNetDupe {
             private:
                 ThreadPoolInternal() 
                     : m_bIsShuttingDown(false), m_evtWorkAvailable(false, false) {
-                    
+                    /// Step: Query processor count and pre-allocate worker threads.
                     int iThreadCount = Environment::GetProcessorCount();
                     if (iThreadCount < 10) iThreadCount = 10;
 
@@ -72,6 +75,7 @@ namespace DotNetDupe {
                 }
 
                 ~ThreadPoolInternal() {
+                    /// Step: Signal shutdown state and wake all worker threads.
                     {
                         Lock<CriticalSection> lock(m_csSync);
                         m_bIsShuttingDown = true;
@@ -91,6 +95,7 @@ namespace DotNetDupe {
                 }
 
                 void WorkerLoop() {
+                    /// Step: Continuously retrieve and process tasks until shutdown.
                     while (true) {
                         ThreadPoolTask objTask;
                         bool bHasTask = false;
@@ -140,14 +145,17 @@ namespace DotNetDupe {
             };
 
             bool ThreadPool::QueueUserWorkItem(WaitCallback callback) {
+                /// Forward to QueueUserWorkItem with null state parameter.
                 return QueueUserWorkItem(callback, nullptr);
             }
 
             bool ThreadPool::QueueUserWorkItem(WaitCallback callback, Object* pState) {
+                /// Forward task to ThreadPoolInternal singleton instance.
                 return ThreadPoolInternal::GetInstance().QueueTask(callback, pState);
             }
 
             bool ThreadPool::SetMinThreads(int iMinThreads) {
+                /// Forward min threads configuration to ThreadPoolInternal singleton.
                 return ThreadPoolInternal::GetInstance().SetMinThreads(iMinThreads);
             }
         }

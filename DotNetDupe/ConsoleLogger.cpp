@@ -8,22 +8,28 @@ namespace DotNetDupe {
         namespace Logging {
 
             ConsoleLogger::ConsoleLogger(const DotNetDupe::System::String& categoryName, const LoggerConfiguration& config)
-                : LoggerBase(categoryName, config) {}
+                : LoggerBase(categoryName, config) {
+                /// Initialize base logger with category and configuration.
+            }
 
             void ConsoleLogger::Log(LogLevel logLevel, const DotNetDupe::System::String& message) {
+                /// Delegate simple message logging to base implementation.
                 LoggerBase::Log(logLevel, message);
             }
 
             void ConsoleLogger::Log(LogLevel logLevel, const DotNetDupe::System::String& message, 
                                      const DotNetDupe::System::Collections::Generic::Dictionary<DotNetDupe::System::String, DotNetDupe::System::String>& properties) {
+                /// Guard: Check if message severity satisfies configured minimum level.
                 if (!IsEnabled(logLevel)) return;
-                DotNetDupe::System::String formatted = BuildLogMessage(logLevel, message, properties);
+
+                /// Format the log line with timestamps, category, and properties.
+                DotNetDupe::System::String sFormatted = BuildLogMessage(logLevel, message, properties);
                 
-                // If Console::Out() has been redirected (e.g. to a LoggerTextWriter), write directly to std::cout to avoid an infinite recursion loop
+                /// Emit to standard output, bypassing redirected Console::Out to avoid recursion.
                 if (!DotNetDupe::System::Console::Out().IsNull()) {
-                    std::cout << formatted.GetRawString() << std::endl;
+                    std::cout << sFormatted.GetRawString() << std::endl;
                 } else {
-                    DotNetDupe::System::Console::WriteLine(formatted);
+                    DotNetDupe::System::Console::WriteLine(sFormatted);
                 }
             }
 
