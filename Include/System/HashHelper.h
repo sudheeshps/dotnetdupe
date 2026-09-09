@@ -1,3 +1,8 @@
+/// \file HashHelper.h
+/// \brief Provides internal hashing algorithms and type specializations for computing 32-bit integer hash codes.
+///
+/// Modeled after .NET System.Collections.Generic hashing utilities (ECMA-335).
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"
@@ -7,8 +12,16 @@
 namespace DotNetDupe {
     namespace System {
 
+        /// \struct HashHelper
+        /// \brief Primary template for generating 32-bit hash codes from arbitrary types using byte-level folding.
+        ///
+        /// \tparam T The value type to hash.
+        /// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
         template <typename T>
         struct HashHelper {
+            /// \brief Computes a 32-bit hash code for the specified value.
+            /// \param value The value to hash.
+            /// \return A 32-bit signed integer hash code.
             static int GetHashCode(const T& value) {
                 const char* p = reinterpret_cast<const char*>(&value);
                 int hash = 17;

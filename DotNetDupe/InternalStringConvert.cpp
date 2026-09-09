@@ -10,7 +10,10 @@ namespace DotNetDupe {
         namespace Internal {
 
             std::string StringConvertInternal::WCharToUtf8(const wchar_t* pWStr) {
+                /// Guard: Validate input pointer and non-empty content.
                 if (!pWStr || pWStr[0] == 0) return std::string("");
+
+                /// Step: Convert wide character string to UTF-8 encoded multi-byte string.
 #if defined(_WIN32)
                 int iSizeNeeded = ::WideCharToMultiByte(CP_UTF8, 0, pWStr, -1, NULL, 0, NULL, NULL);
                 if (iSizeNeeded <= 0) return std::string("");
@@ -28,7 +31,10 @@ namespace DotNetDupe {
             }
 
             std::wstring StringConvertInternal::Utf8ToWChar(const char* pUtf8Str) {
+                /// Guard: Validate input pointer and non-empty content.
                 if (!pUtf8Str || pUtf8Str[0] == 0) return std::wstring(L"");
+
+                /// Step: Convert UTF-8 encoded multi-byte string to wide character string.
 #if defined(_WIN32)
                 int iSizeNeeded = ::MultiByteToWideChar(CP_UTF8, 0, pUtf8Str, -1, NULL, 0);
                 if (iSizeNeeded <= 0) return std::wstring(L"");

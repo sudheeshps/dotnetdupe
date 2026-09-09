@@ -12,9 +12,14 @@ namespace DotNetDupe {
         class String;
 
         namespace Utils {
+
+            /// \class StringConvert
+            /// \brief Cross-platform string encoding conversion utility between UTF-16 (wchar_t) and UTF-8 (char).
             class StringConvert {
             public:
-                // Converts UTF-16 (wchar_t) string to std::string UTF-8
+                /// \brief Converts a null-terminated UTF-16 wchar_t string into a UTF-8 std::string.
+                /// \param pWStr Pointer to the UTF-16 wide string.
+                /// \return An std::string containing the UTF-8 encoded bytes.
                 static inline std::string WCharToUtf8(const wchar_t* pWStr) {
                     if (!pWStr || pWStr[0] == 0) return std::string("");
 #if defined(_WIN32)
@@ -33,7 +38,9 @@ namespace DotNetDupe {
 #endif
                 }
 
-                // Converts UTF-8 (char) string to std::wstring UTF-16
+                /// \brief Converts a null-terminated UTF-8 char string into a UTF-16 std::wstring.
+                /// \param pUtf8Str Pointer to the UTF-8 narrow string.
+                /// \return An std::wstring containing the UTF-16 encoded wide characters.
                 static inline std::wstring Utf8ToWChar(const char* pUtf8Str) {
                     if (!pUtf8Str || pUtf8Str[0] == 0) return std::wstring(L"");
 #if defined(_WIN32)
@@ -52,6 +59,7 @@ namespace DotNetDupe {
 #endif
                 }
             };
+
         }
     }
 }

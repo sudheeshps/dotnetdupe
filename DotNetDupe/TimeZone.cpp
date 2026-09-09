@@ -12,6 +12,7 @@ namespace DotNetDupe {
         class CurrentTimeZoneImpl : public TimeZone {
         public:
             String GetDaylightName() const override {
+                /// Step: Retrieve daylight saving zone name from platform API.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
                 if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) {
@@ -24,6 +25,7 @@ namespace DotNetDupe {
             }
 
             String GetStandardName() const override {
+                /// Step: Retrieve standard zone name from platform API.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
                 if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) {
@@ -36,6 +38,7 @@ namespace DotNetDupe {
             }
 
             DaylightTime GetDaylightChanges(int year) override {
+                /// Step: Retrieve daylight changes for the current year.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
                 if (GetTimeZoneInformation(&tzi) != TIME_ZONE_ID_INVALID) {
@@ -46,6 +49,7 @@ namespace DotNetDupe {
             }
 
             TimeSpan GetUtcOffset(const DateTimeOffset& time) override {
+                /// Step: Compute effective UTC offset including bias and daylight adjustment.
 #if defined(_WIN32)
                 TIME_ZONE_INFORMATION tzi;
                 DWORD result = GetTimeZoneInformation(&tzi);
@@ -65,11 +69,13 @@ namespace DotNetDupe {
         };
 
         TimeZone* TimeZone::GetCurrentTimeZone() {
+            /// Retrieve singleton current time zone instance.
             static CurrentTimeZoneImpl instance;
             return &instance;
         }
 
         bool TimeZone::IsDaylightSavingTime(const DateTimeOffset& time) {
+            /// Step: Check if current time falls within active daylight saving period.
 #if defined(_WIN32)
             TIME_ZONE_INFORMATION tzi;
             DWORD result = GetTimeZoneInformation(&tzi);
@@ -80,16 +86,20 @@ namespace DotNetDupe {
         }
 
         DateTimeOffset TimeZone::ToLocalTime(const DateTimeOffset& time) {
+            /// Step: Convert UTC time to local time by adding current UTC offset.
             return DateTimeOffset(time.GetTicks() + GetUtcOffset(time).GetTicks());
         }
 
         DateTimeOffset TimeZone::ToUniversalTime(const DateTimeOffset& time) {
+            /// Step: Convert local time to universal time by subtracting current UTC offset.
             return DateTimeOffset(time.GetTicks() - GetUtcOffset(time).GetTicks());
         }
 
         bool TimeZone::IsDaylightSavingTime(const DateTimeOffset& time, const DaylightTime& daylightTimes) {
+            /// Guard: If delta is zero or start equals end, daylight saving is not active.
             if (daylightTimes.GetDelta().GetTicks() == 0) return false;
             if (daylightTimes.GetStart() == daylightTimes.GetEnd()) return false;
+            /// Check if time falls between daylight transition start and end bounds.
             return time >= daylightTimes.GetStart() && time < daylightTimes.GetEnd();
         }
     }
