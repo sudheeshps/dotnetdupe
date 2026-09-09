@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['⏳_0',['11. Time Intervals (TimeSpan) ⏳',['../index.html#autotoc_md236',1,'']]]
+  ['💻_0',['Usage 💻',['../index.html#autotoc_md31',1,'']]]
 ];

@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['5_20blockingcollection_0',['5. &lt;span class=&quot;tt&quot;&gt;BlockingCollection&amp;lt;T&amp;gt;&lt;/span&gt;',['../md_docs_2_concurrent_collections.html#autotoc_md283',1,'']]],
-  ['5_20console_20colored_20output_20🖥️_1',['5. Console &amp;amp; Colored Output 🖥️',['../index.html#autotoc_md218',1,'']]],
-  ['5_20semaphores_2',['5. Semaphores',['../md_docs_2_threading_comparison.html#autotoc_md1772',1,'']]],
-  ['5_20usage_20example_3',['5. Usage Example',['../md_docs_2_process_streamer.html#autotoc_md1252',1,'']]]
+  ['b_20consuming_20nuget_20package_20in_20visual_20studio_20windows_0',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
+  ['b_3a_20strongly_20typed_20client_20restclient_20recommended_1',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md41',1,'']]],
+  ['build_20test_20in_20wsl_2',['3. Build &amp;amp; Test in WSL',['../index.html#autotoc_md15',1,'']]],
+  ['building_20a_20web_20application_20with_20static_20files_20rest_20apis_3',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
+  ['building_20and_20testing_4',['Building and Testing',['../index.html#autotoc_md8',1,'']]]
 ];
