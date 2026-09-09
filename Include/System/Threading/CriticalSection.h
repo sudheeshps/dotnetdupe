@@ -1,3 +1,8 @@
+/// \file CriticalSection.h
+/// \brief Provides a re-entrant mutual exclusion primitive for thread synchronization.
+///
+/// Standard Citation: Win32 CRITICAL_SECTION, POSIX pthread_mutex_t (PTHREAD_MUTEX_RECURSIVE).
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

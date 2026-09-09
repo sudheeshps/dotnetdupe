@@ -1,3 +1,8 @@
+/// \file Array.h
+/// \brief Provides methods for creating, manipulating, searching, and sorting arrays.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

@@ -125,8 +125,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
  <div class="center">
   <img src="class_dot_net_dupe_1_1_system_1_1_threading_1_1_mutex.png" usemap="#DotNetDupe_3A_3ASystem_3A_3AThreading_3A_3AMutex_map" alt=""/>
   <map id="DotNetDupe_3A_3ASystem_3A_3AThreading_3A_3AMutex_map" name="DotNetDupe_3A_3ASystem_3A_3AThreading_3A_3AMutex_map">
-<area href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html" alt="DotNetDupe::System::Threading::LockWaitHandle" shape="rect" coords="0,112,286,136"/>
-<area href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html" alt="DotNetDupe::System::Threading::WaitHandle" shape="rect" coords="0,56,286,80"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html" title="Abstract base class for wait handles that support releasing acquire counts." alt="DotNetDupe::System::Threading::LockWaitHandle" shape="rect" coords="0,112,286,136"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html" title="Encapsulates operating system-specific objects that wait for exclusive access to shared resources." alt="DotNetDupe::System::Threading::WaitHandle" shape="rect" coords="0,56,286,80"/>
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="0,0,286,24"/>
   </map>
 </div></div>
@@ -148,13 +148,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac5fc64d8768c14914d95d0adc02d78c8" id="r_ac5fc64d8768c14914d95d0adc02d78c8"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#ac5fc64d8768c14914d95d0adc02d78c8">Release</a> (int releaseCount=1) override</td></tr>
 <tr class="memdesc:ac5fc64d8768c14914d95d0adc02d78c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_mutex.html" title="A synchronization primitive that can also be used for interprocess synchronization.">Mutex</a> once.  <br /></td></tr>
 <tr class="memitem:ae9910f8391133817058cd8df037c49a0" id="r_ae9910f8391133817058cd8df037c49a0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ae9910f8391133817058cd8df037c49a0">WaitOne</a> () override</td></tr>
-<tr class="memdesc:ae9910f8391133817058cd8df037c49a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocks the current thread until the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html">WaitHandle</a> receives a signal.  <br /></td></tr>
+<tr class="memdesc:ae9910f8391133817058cd8df037c49a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocks the current thread until the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html" title="Encapsulates operating system-specific objects that wait for exclusive access to shared resources.">WaitHandle</a> receives a signal.  <br /></td></tr>
 <tr class="memitem:a79d2c373326e73c9d236f36a9871f70e" id="r_a79d2c373326e73c9d236f36a9871f70e"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a79d2c373326e73c9d236f36a9871f70e">WaitOne</a> (int millisecondsTimeout) override</td></tr>
 <tr class="memdesc:a79d2c373326e73c9d236f36a9871f70e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Blocks the current thread until the current instance receives a signal, using an integer to measure the time interval.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html">DotNetDupe::System::Threading::LockWaitHandle</a></td></tr>
 <tr class="memitem:abb0d4e20b8e23e73412881609869c8c8 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle" id="r_abb0d4e20b8e23e73412881609869c8c8"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html#abb0d4e20b8e23e73412881609869c8c8">~LockWaitHandle</a> ()</td></tr>
+<tr class="memdesc:abb0d4e20b8e23e73412881609869c8c8 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html" title="Abstract base class for wait handles that support releasing acquire counts.">LockWaitHandle</a>.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html">DotNetDupe::System::Threading::WaitHandle</a></td></tr>
 <tr class="memitem:afc8241002ac8adfa044b77da5043031d inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle" id="r_afc8241002ac8adfa044b77da5043031d"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html#afc8241002ac8adfa044b77da5043031d">~WaitHandle</a> ()</td></tr>
+<tr class="memdesc:afc8241002ac8adfa044b77da5043031d inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html" title="Encapsulates operating system-specific objects that wait for exclusive access to shared resources.">WaitHandle</a>.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -183,7 +185,7 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>A synchronization primitive that can also be used for interprocess synchronization. </p>
 <p>Complies with ECMA-335 Partition IV Section 5.61 and Win32 / POSIX synchronization semantics. Supports named cross-process mutexes on Windows and high-performance local timed mutexes on POSIX systems. </p>
 
-<p class="definition">Definition at line <a class="el" href="_mutex_8h_source.html#l00016">16</a> of file <a class="el" href="_mutex_8h_source.html">Mutex.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mutex_8h_source.html#l00021">21</a> of file <a class="el" href="_mutex_8h_source.html">Mutex.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa5f32788605d2dd13f2ebc2e5f347038" name="aa5f32788605d2dd13f2ebc2e5f347038"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5f32788605d2dd13f2ebc2e5f347038">&#9670;&#160;</a></span>Mutex() <span class="overload">[1/5]</span></h2>
@@ -429,7 +431,7 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>An object that represents the named system mutex. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html">WaitHandleCannotBeOpenedException</a></td><td>If the named mutex does not exist. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html" title="Exception thrown when an attempt to open a system synchronization handle that does not exist fails.">WaitHandleCannotBeOpenedException</a></td><td>If the named mutex does not exist. </td></tr>
   </table>
   </dd>
 </dl>
@@ -527,7 +529,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_mutex_8cpp_source.html#l00112">112</a> of file <a class="el" href="_mutex_8cpp_source.html">Mutex.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00071">DotNetDupe::System::SmartPointer&lt; T &gt;::SmartPointer</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, <a class="el" href="_mutex_8cpp_source.html#l00112">TryOpenExisting()</a>, and <a class="el" href="_string_convert_8h_source.html#l00044">DotNetDupe::System::Utils::StringConvert::Utf8ToWChar()</a>.</p>
+<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00074">DotNetDupe::System::SmartPointer&lt; T &gt;::SmartPointer</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00277">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, <a class="el" href="_mutex_8cpp_source.html#l00112">TryOpenExisting()</a>, and <a class="el" href="_string_convert_8h_source.html#l00047">DotNetDupe::System::Utils::StringConvert::Utf8ToWChar()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_mutex_8cpp_source.html#l00103">OpenExisting()</a>, and <a class="el" href="_mutex_8cpp_source.html#l00112">TryOpenExisting()</a>.</p>
 
@@ -556,7 +558,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Blocks the current thread until the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html">WaitHandle</a> receives a signal. </p>
+<p>Blocks the current thread until the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html" title="Encapsulates operating system-specific objects that wait for exclusive access to shared resources.">WaitHandle</a> receives a signal. </p>
 <dl class="section return"><dt>Returns</dt><dd>true if the current instance receives a signal; otherwise, false. </dd></dl>
 <p>Synchronize via native OS handle or C++ timed mutex.</p>
 
@@ -607,7 +609,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_mutex_8cpp_source.html#l00145">145</a> of file <a class="el" href="_mutex_8cpp_source.html">Mutex.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00015">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_mutex_8cpp_source.html#l00133">WaitOne()</a>.</p>
+<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00020">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_mutex_8cpp_source.html#l00133">WaitOne()</a>.</p>
 
 </div>
 </div>

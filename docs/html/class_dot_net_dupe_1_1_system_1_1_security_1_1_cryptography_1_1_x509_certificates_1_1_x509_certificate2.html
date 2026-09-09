@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Represents an X.509 v3 certificate containing public and private keys conforming to RFC 5280.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_x509_certificate2_8h_source.html">X509Certificate2.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,9 +132,13 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:ae99c6479962ca24c80abf0dfc48c754b" id="r_ae99c6479962ca24c80abf0dfc48c754b"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ae99c6479962ca24c80abf0dfc48c754b">X509Certificate2</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;certPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;keyPath)</td></tr>
+<tr class="memdesc:ae99c6479962ca24c80abf0dfc48c754b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html" title="Represents an X.509 v3 certificate containing public and private keys conforming to RFC 5280.">X509Certificate2</a> from PEM certificate and private key files.  <br /></td></tr>
 <tr class="memitem:a06d0425069a428d2f7141fb41b628d88" id="r_a06d0425069a428d2f7141fb41b628d88"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a06d0425069a428d2f7141fb41b628d88">~X509Certificate2</a> ()</td></tr>
+<tr class="memdesc:a06d0425069a428d2f7141fb41b628d88"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases OpenSSL certificate and private key resources.  <br /></td></tr>
 <tr class="memitem:a64140bfece0e828ca587004b0f07a8b7" id="r_a64140bfece0e828ca587004b0f07a8b7"><td class="memItemLeft">void *&#160;</td><td class="memItemRight"><a class="el" href="#a64140bfece0e828ca587004b0f07a8b7">GetInternalCert</a> () const</td></tr>
+<tr class="memdesc:a64140bfece0e828ca587004b0f07a8b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the internal OpenSSL X509* pointer.  <br /></td></tr>
 <tr class="memitem:aa1c3ca4efc8624cdc9e4515ceeac7020" id="r_aa1c3ca4efc8624cdc9e4515ceeac7020"><td class="memItemLeft">void *&#160;</td><td class="memItemRight"><a class="el" href="#aa1c3ca4efc8624cdc9e4515ceeac7020">GetInternalKey</a> () const</td></tr>
+<tr class="memdesc:aa1c3ca4efc8624cdc9e4515ceeac7020"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the internal OpenSSL EVP_PKEY* pointer.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -153,8 +160,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8h_source.html#l00012">12</a> of file <a class="el" href="_x509_certificate2_8h_source.html">X509Certificate2.h</a>.</p>
+<div class="textblock"><p>Represents an X.509 v3 certificate containing public and private keys conforming to RFC 5280. </p>
+<p>Encapsulates native OpenSSL X509 and EVP_PKEY pointers to provide certificate parsing, validation, and cryptographic handshake support for TLS and HTTPS services. </p>
+
+<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8h_source.html#l00021">21</a> of file <a class="el" href="_x509_certificate2_8h_source.html">X509Certificate2.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ae99c6479962ca24c80abf0dfc48c754b" name="ae99c6479962ca24c80abf0dfc48c754b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae99c6479962ca24c80abf0dfc48c754b">&#9670;&#160;</a></span>X509Certificate2()</h2>
@@ -175,9 +184,21 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00054">54</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
+<p>Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html" title="Represents an X.509 v3 certificate containing public and private keys conforming to RFC 5280.">X509Certificate2</a> from PEM certificate and private key files. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">certPath</td><td>File path to the PEM-encoded X.509 certificate. </td></tr>
+    <tr><td class="paramname">keyPath</td><td>File path to the PEM-encoded private key file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Initialize cryptographic subsystem.</p>
+<p>Step: Load certificate and key with exception cleanup.</p>
+<p>Cleanup: Free allocated certificate on private key load failure.</p>
 
-<p class="reference">References <a class="el" href="_x509_certificate2_8cpp_source.html#l00029">DotNetDupe::System::Security::Cryptography::X509Certificates::InitializeCrypto()</a>, <a class="el" href="_x509_certificate2_8cpp_source.html#l00036">DotNetDupe::System::Security::Cryptography::X509Certificates::LoadPemCert()</a>, and <a class="el" href="_x509_certificate2_8cpp_source.html#l00045">DotNetDupe::System::Security::Cryptography::X509Certificates::LoadPemKey()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00061">61</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_x509_certificate2_8cpp_source.html#l00029">DotNetDupe::System::Security::Cryptography::X509Certificates::InitializeCrypto()</a>, <a class="el" href="_x509_certificate2_8cpp_source.html#l00037">DotNetDupe::System::Security::Cryptography::X509Certificates::LoadPemCert()</a>, and <a class="el" href="_x509_certificate2_8cpp_source.html#l00049">DotNetDupe::System::Security::Cryptography::X509Certificates::LoadPemKey()</a>.</p>
 
 </div>
 </div>
@@ -196,7 +217,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00067">67</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
+<p>Releases OpenSSL certificate and private key resources. </p>
+<p>Step: Release OpenSSL X509 certificate structure.</p>
+<p>Step: Release OpenSSL EVP_PKEY private key structure.</p>
+
+<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00078">78</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
 
 </div>
 </div>
@@ -216,7 +241,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00076">76</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
+<p>Gets the internal OpenSSL X509* pointer. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to native OpenSSL X509 structure. </dd></dl>
+<p>Return: <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_internal.html">Internal</a> OpenSSL X509* pointer.</p>
+
+<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00089">89</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
 
 </div>
 </div>
@@ -235,7 +264,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00080">80</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
+<p>Gets the internal OpenSSL EVP_PKEY* pointer. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to native OpenSSL EVP_PKEY structure. </dd></dl>
+<p>Return: <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_internal.html">Internal</a> OpenSSL EVP_PKEY* pointer.</p>
+
+<p class="definition">Definition at line <a class="el" href="_x509_certificate2_8cpp_source.html#l00094">94</a> of file <a class="el" href="_x509_certificate2_8cpp_source.html">X509Certificate2.cpp</a>.</p>
 
 </div>
 </div>

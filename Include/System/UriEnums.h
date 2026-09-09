@@ -1,3 +1,8 @@
+/// \file UriEnums.h
+/// \brief Defines enumerations specifying components and formatting for Uniform Resource Identifiers (URIs).
+///
+/// Standard Citation: RFC 3986 Uniform Resource Identifier (URI): Generic Syntax.
+
 #pragma once
 
 namespace DotNetDupe {

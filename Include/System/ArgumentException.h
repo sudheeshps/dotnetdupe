@@ -1,3 +1,8 @@
+/// \file ArgumentException.h
+/// \brief Defines the exception thrown when an invalid argument is provided to a method.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

@@ -1,3 +1,8 @@
+/// \file StringBuilder.h
+/// \brief Represents a mutable string of characters for efficient dynamic text composition.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

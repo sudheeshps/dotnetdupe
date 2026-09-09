@@ -1,3 +1,8 @@
+/// \file Semaphore.h
+/// \brief Limits the number of threads that can access a resource or pool of resources concurrently.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Threading/WaitHandle.h"

@@ -1,3 +1,8 @@
+/// \file InvalidOperationException.h
+/// \brief Defines the exception thrown when a method call is invalid for the object's current state.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

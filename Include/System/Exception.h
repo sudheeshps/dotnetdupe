@@ -1,3 +1,8 @@
+/// \file Exception.h
+/// \brief Represents errors that occur during application execution and serves as the ultimate base exception.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include <stdexcept>

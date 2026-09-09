@@ -1,3 +1,8 @@
+/// \file UriBuilder.h
+/// \brief Provides a custom constructor for uniform resource identifiers (URIs) and modifies URIs for the Uri class.
+///
+/// Standard Citation: RFC 3986 Uniform Resource Identifier (URI): Generic Syntax.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

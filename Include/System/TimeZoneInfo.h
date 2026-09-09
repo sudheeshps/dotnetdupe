@@ -1,3 +1,8 @@
+/// \file TimeZoneInfo.h
+/// \brief Represents any time zone in the world.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure, IANA TZ Database.
+
 #pragma once
 
 #include "Common.h"

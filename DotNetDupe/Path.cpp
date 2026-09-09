@@ -41,6 +41,7 @@ namespace DotNetDupe {
     namespace System {
         namespace IO {
             String Path::ChangeExtension(const String& sFilePath, const String& sExtension) {
+                /// Guard: Validate input path and extension parameters.
                 if (sFilePath.GetLength() <= 0 || sExtension.GetLength() <= 0)
                     throw ArgumentException("Invalid argument");
                 if (sFilePath.GetLength() <= sExtension.GetLength())
@@ -49,6 +50,7 @@ namespace DotNetDupe {
                 if (sFilePath [0] == '.')
                     sTempFilePath = sFilePath.Remove(0);
 
+                /// Step: Replace path extension via filesystem path.
                 fs::path path = ToFsPath(sTempFilePath);
 #if defined(_WIN32)
                 path.replace_extension(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sExtension.GetRawString()));
@@ -59,10 +61,13 @@ namespace DotNetDupe {
             }
 
             String Path::Combine(const std::initializer_list<String> sPaths) {
+                /// Guard: Check root directory structure.
                 auto indexedList = _init_list_with_indexer(sPaths);
                 fs::path rootPath = ToFsPath(indexedList [0]);
                 if (!rootPath.has_root_directory())
                     return indexedList [0];
+
+                /// Step: Concatenate paths with separator.
                 String sCombinedPath("");
                 for (auto sPath : sPaths) {
                     sCombinedPath.Append(sPath);
@@ -72,54 +77,68 @@ namespace DotNetDupe {
             }
 
             bool Path::EndsInDirectorySeparator(const String& sFilePath) {
+                /// Guard: Empty path check.
                 if (sFilePath.IsEmpty()) return false;
                 char chLastChar = sFilePath[sFilePath.GetLength() - 1];
+                /// Return: True if path ends in slash or backslash.
                 return chLastChar == '\\' || chLastChar == '/';
             }
 
             bool Path::Exists(const String& sFilePath) {
+                /// Return: Filesystem path existence check.
                 return fs::exists(ToFsPath(sFilePath));
             }
 
             String Path::GetDirectoryName(const String& sFilePath) {
+                /// Guard: Check for empty path.
                 if (sFilePath.IsEmpty())
                     return "";
 
+                /// Return: Parent directory path string.
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.parent_path());
             }
 
             String Path::GetFileName(const String& sFilePath) {
+                /// Guard: Check for empty path.
                 if (sFilePath.IsEmpty())
                     return "";
+                /// Return: Path filename component.
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.filename());
             }
 
             String Path::GetExtension(const String& sFilePath) {
+                /// Guard: Check for empty path.
                 if (sFilePath.IsEmpty())
                     return "";
 
+                /// Return: Path extension component.
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.extension());
             }
 
             String Path::GetFileNameWithoutExtension(const String& sFilePath) {
+                /// Guard: Check for empty path.
                 if (sFilePath.IsEmpty())
                     return "";
 
+                /// Return: Stem filename component without extension.
                 fs::path path = ToFsPath(sFilePath);
                 return FromFsPath(path.stem());
             }
 
             String Path::GetFullPath(const String& sPath) {
+                /// Guard: Check for empty path.
                 if (sPath.IsEmpty())
                     return "";
 
+                /// Return: Absolute canonical path.
                 return FromFsPath(fs::absolute(ToFsPath(sPath)));
             }
 
             Array<char> Path::GetInvalidFileNameChars() {
+                /// Return: Array of invalid filename characters.
                 static const std::vector<char> tempInvalidChars = {
                     '"', '<', '>', '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
@@ -131,6 +150,7 @@ namespace DotNetDupe {
             }
 
             Array<char> Path::GetInvalidPathChars() {
+                /// Return: Array of invalid path characters.
                 static const std::vector<char> tempInvalidChars = {
                     '|', '\0',
                     '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x09', '\x0A', '\x0B', '\x0C', '\x0D', '\x0E', '\x0F',
@@ -142,6 +162,7 @@ namespace DotNetDupe {
 
             String Path::GetRandomFileName()
             {
+                /// Step: Generate random 8.3 formatted filename string.
                 const char chChars[] = "abcdefghijklmnopqrstuvwxyz0123456789";
                 const int nCharsLen = sizeof(chChars) / sizeof(char) - 1;
 
@@ -165,12 +186,13 @@ namespace DotNetDupe {
 
             String Path::GetPathRoot(const String& sPath)
             {
+                /// Guard: Check for empty path.
                 if (sPath.IsEmpty())
                     return "";
 
+                /// Step: Parse UNC path or root path components.
                 if (sPath.StartsWith("\\", false))
                 {
-                    // UNC path like \\server\share
                     int nLen = sPath.GetLength();
                     if (nLen > 2)
                     {
@@ -190,6 +212,7 @@ namespace DotNetDupe {
             }
 
             String Path::GetRelativePath(const String& sRelativeTo, const String& sPath) {
+                /// Step: Resolve relative filesystem path between two absolute paths.
                 const fs::path fsRelativeTo = ToFsPath(GetFullPath(sRelativeTo));
                 const fs::path fsPath = ToFsPath(GetFullPath(sPath));
 
@@ -203,6 +226,7 @@ namespace DotNetDupe {
             }
 
             static String GenerateRandomTempFileName(const String& sTempDir) {
+                /// Step: Generate and create empty unique temporary file in temp directory.
                 std::random_device rd;
                 std::mt19937 generator(rd());
                 std::uniform_int_distribution<int> dist(0, 35);
@@ -221,10 +245,12 @@ namespace DotNetDupe {
             }
 
             String Path::GetTempFileName() {
+                /// Forward: Delegate with current temp directory path.
                 return GenerateRandomTempFileName(GetTempPath());
             }
 
             String Path::GetTempPath() {
+                /// Step: Query system temporary path based on active platform.
 #if defined(_WIN32)
                 wchar_t buffer [MAX_PATH];
                 ::GetTempPathW(MAX_PATH, buffer);
@@ -240,6 +266,7 @@ namespace DotNetDupe {
             }
 
             bool Path::HasExtension(const String& sPath) {
+                /// Guard: Check for empty path or dot references.
                 if (sPath.IsEmpty()) return false;
                 String sFilenameStr = GetFileName(sPath);
                 if (sFilenameStr.IsEmpty() || sFilenameStr == "." || sFilenameStr == "..") return false;
@@ -249,13 +276,17 @@ namespace DotNetDupe {
             }
 
             bool Path::IsPathFullyQualified(const String& sPath) {
+                /// Guard: Check for empty path.
                 if (sPath.IsEmpty()) return false;
+                /// Return: True if path is absolute.
                 return ToFsPath(sPath).is_absolute();
             }
 
             bool Path::IsPathRooted(const String& sPath) {
+                /// Guard: Check for empty path.
                 if (sPath.IsEmpty()) return false;
                 int nLen = sPath.GetLength();
+                /// Step: Test slash, backslash, or drive letter root prefixes.
                 if (sPath[0] == '\\' || sPath[0] == '/') return true;
                 if (nLen >= 2 && sPath[1] == ':' && std::isalpha(static_cast<unsigned char>(sPath[0]))) {
                     return (nLen >= 3 && (sPath[2] == '\\' || sPath[2] == '/'));
@@ -264,12 +295,14 @@ namespace DotNetDupe {
             }
 
             String Path::Join(const std::initializer_list<String> sPaths) {
+                /// Step: Attempt path join or throw ArgumentException on invalid characters.
                 String sResult("");
                 if (TryJoin(sPaths, sResult)) return sResult;
                 throw ArgumentException("Invalid character in path.");
             }
 
             static bool ValidatePathChars(const std::initializer_list<String>& sPaths) {
+                /// Step: Check whether any segment contains illegal path characters.
                 auto invalidPathChars = Path::GetInvalidPathChars();
                 for (const auto& sPath : sPaths) {
                     for (auto ch : invalidPathChars) {
@@ -280,7 +313,9 @@ namespace DotNetDupe {
             }
 
             static void AppendPathSegment(String& sJoined, const String& sPath) {
+                /// Guard: Skip empty segment.
                 if (sPath.IsEmpty()) return;
+                /// Step: Append segment with separator as needed.
                 if (sJoined.IsEmpty()) {
                     sJoined = sPath;
                 } else {
@@ -295,6 +330,7 @@ namespace DotNetDupe {
             }
 
             bool Path::TryJoin(const std::initializer_list<String> sPaths, String& sResult) {
+                /// Step: Validate characters and concatenate segments.
                 if (!ValidatePathChars(sPaths)) {
                     sResult = String("");
                     return false;
@@ -306,9 +342,11 @@ namespace DotNetDupe {
             }
 
             String Path::TrimEndingDirectorySeparator(const String& sPath) {
+                /// Guard: Check for empty path or rooted drive path.
                 if (sPath.IsEmpty()) return sPath;
                 if (Path::IsPathRooted(sPath) && sPath.GetLength() <= 3) return sPath;
 
+                /// Step: Strip trailing slash or backslash.
                 char chLastChar = sPath[sPath.GetLength() - 1];
                 if (chLastChar == '\\' || chLastChar == '/') {
                     return sPath.Substring(0, sPath.GetLength() - 1);
@@ -317,18 +355,22 @@ namespace DotNetDupe {
             }
 
             char Path::GetDirectorySeparatorChar() {
+                /// Return: Preferred directory separator character.
                 return static_cast<char>(fs::path::preferred_separator);
             }
 
             char Path::GetAltDirectorySeparatorChar() {
+                /// Return: Alternate directory separator character.
                 return (fs::path::preferred_separator == '/') ? '\\' : '/';
             }
 
             char Path::GetVolumeSeparatorChar() {
+                /// Return: Volume separator character ':'.
                 return ':';
             }
 
             char Path::GetPathSeparator() {
+                /// Return: Platform search path delimiter.
 #if defined(_WIN32)
                 return ';';
 #else

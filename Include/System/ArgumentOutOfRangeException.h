@@ -1,3 +1,8 @@
+/// \file ArgumentOutOfRangeException.h
+/// \brief Defines the exception thrown when an argument value is outside the acceptable range of values.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/ArgumentException.h"
 

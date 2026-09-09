@@ -1,3 +1,8 @@
+/// \file EventHandler.h
+/// \brief Represents the method that will handle an event when the event provides data.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

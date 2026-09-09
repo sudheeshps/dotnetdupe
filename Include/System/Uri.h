@@ -1,3 +1,8 @@
+/// \file Uri.h
+/// \brief Provides an object representation of a Uniform Resource Identifier (URI) and easy access to its parts.
+///
+/// Standard Citation: RFC 3986 Uniform Resource Identifier (URI): Generic Syntax.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

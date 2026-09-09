@@ -1,3 +1,8 @@
+/// \file DateTimeOffset.h
+/// \brief Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Universal Time (UTC).
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure, ISO 8601.
+
 #pragma once
 
 #include "Common.h"

@@ -1,3 +1,8 @@
+/// \file SystemException.h
+/// \brief Serves as the base class for system exceptions across the library.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/Exception.h"
 #include "Common.h"

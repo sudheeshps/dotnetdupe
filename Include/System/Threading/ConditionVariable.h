@@ -1,3 +1,8 @@
+/// \file ConditionVariable.h
+/// \brief Provides condition variable synchronization primitive for thread coordination.
+///
+/// Standard Citation: POSIX.1-2001 pthread_cond_t, ISO/IEC 14882 C++11 std::condition_variable.
+
 #pragma once
 #include "System/Object.h"
 #include "System/SmartPointer.h"

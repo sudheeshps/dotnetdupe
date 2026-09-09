@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_dot_
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:JWTToken" id="r_JWTToken"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html">JWTToken</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a JSON Web Token (JWT) structure conforming to RFC 7519.  <a href="class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -149,12 +150,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_convert.html" title="Converts a base data type to another base data type.">Convert</a> standard Base64 characters (+, /) to URL-safe characters (-, _) and strip padding.</p>
 
 <p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">16</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00072">ComputeJwtSignature()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00065">EncodeDictToBase64Url()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00107">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::Verify()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">ComputeJwtSignature()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00073">EncodeDictToBase64Url()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00122">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::Verify()</a>.</p>
 
 </div>
 </div>
@@ -180,12 +182,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_convert.html" title="Converts a base data type to another base data type.">Convert</a> URL-safe Base64 characters back to standard Base64 with '=' padding.</p>
 
-<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00028">28</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00029">29</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00028">Base64UrlToBase64()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00029">Base64UrlToBase64()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00028">Base64UrlToBase64()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00089">DecodeBase64UrlToDict()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00029">Base64UrlToBase64()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00100">DecodeBase64UrlToDict()</a>.</p>
 
 </div>
 </div>
@@ -215,12 +218,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Compute HMAC-SHA256 signature and return Base64URL encoded hash.</p>
 
-<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00072">72</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">81</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00151">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00072">ComputeJwtSignature()</a>, <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_convert_8cpp_source.html#l00325">DotNetDupe::System::Convert::ToBase64String()</a>.</p>
+<p class="reference">References <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00159">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">ComputeJwtSignature()</a>, <a class="el" href="_array_8h_source.html#l00146">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_convert_8cpp_source.html#l00325">DotNetDupe::System::Convert::ToBase64String()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00072">ComputeJwtSignature()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::CreateToken()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">ComputeJwtSignature()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00091">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::CreateToken()</a>.</p>
 
 </div>
 </div>
@@ -246,12 +250,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Decode Base64URL segment and deserialize JSON dictionary.</p>
 
-<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00089">89</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00100">100</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00028">Base64UrlToBase64()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00089">DecodeBase64UrlToDict()</a>, <a class="el" href="_json_serializer_8h_source.html#l00043">DotNetDupe::System::Text::Json::JsonSerializer::Deserialize()</a>, <a class="el" href="_convert_8cpp_source.html#l00392">DotNetDupe::System::Convert::FromBase64String()</a>, <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_array_8h_source.html#l00137">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00029">Base64UrlToBase64()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00100">DecodeBase64UrlToDict()</a>, <a class="el" href="_json_serializer_8h_source.html#l00048">DotNetDupe::System::Text::Json::JsonSerializer::Deserialize()</a>, <a class="el" href="_convert_8cpp_source.html#l00392">DotNetDupe::System::Convert::FromBase64String()</a>, <a class="el" href="_array_8h_source.html#l00146">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_array_8h_source.html#l00142">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00089">DecodeBase64UrlToDict()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00096">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::Parse()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00100">DecodeBase64UrlToDict()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00108">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::Parse()</a>.</p>
 
 </div>
 </div>
@@ -277,12 +282,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Serialize dictionary to JSON and encode as Base64URL string.</p>
 
-<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00065">65</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_j_w_t_token_8cpp_source.html#l00073">73</a> of file <a class="el" href="_j_w_t_token_8cpp_source.html">JWTToken.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00065">EncodeDictToBase64Url()</a>, <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_json_serializer_8h_source.html#l00033">DotNetDupe::System::Text::Json::JsonSerializer::Serialize()</a>, and <a class="el" href="_convert_8cpp_source.html#l00325">DotNetDupe::System::Convert::ToBase64String()</a>.</p>
+<p class="reference">References <a class="el" href="_j_w_t_token_8cpp_source.html#l00016">Base64ToBase64Url()</a>, <a class="el" href="_j_w_t_token_8cpp_source.html#l00073">EncodeDictToBase64Url()</a>, <a class="el" href="_array_8h_source.html#l00146">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_json_serializer_8h_source.html#l00038">DotNetDupe::System::Text::Json::JsonSerializer::Serialize()</a>, and <a class="el" href="_convert_8cpp_source.html#l00325">DotNetDupe::System::Convert::ToBase64String()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00081">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::CreateToken()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00065">EncodeDictToBase64Url()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_j_w_t_token_8cpp_source.html#l00091">DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken::CreateToken()</a>, and <a class="el" href="_j_w_t_token_8cpp_source.html#l00073">EncodeDictToBase64Url()</a>.</p>
 
 </div>
 </div>

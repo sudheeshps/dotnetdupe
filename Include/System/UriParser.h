@@ -1,3 +1,8 @@
+/// \file UriParser.h
+/// \brief Parses a new URI scheme.
+///
+/// Standard Citation: RFC 3986 Uniform Resource Identifier (URI): Generic Syntax.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

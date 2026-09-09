@@ -1,3 +1,8 @@
+/// \file ManualResetEvent.h
+/// \brief Notifies one or more waiting threads that an event has occurred.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/Threading/EventWaitHandle.h"
 #include "System/SmartPointer.h"

@@ -30,13 +30,16 @@ namespace DotNetDupe {
             namespace Principal {
 
                 UserPrincipal::UserPrincipal() {
+                    /// Step: Construct UserPrincipal instance.
                 }
 
                 UserPrincipal::~UserPrincipal() {
+                    /// Step: Destroy UserPrincipal instance.
                 }
 
 #if defined(_WIN32)
                 static UserClass ClassifyWindowsUser(DWORD dwPriv, DWORD dwFlags) {
+                    /// Step: Map Win32 account flags and privileges to UserClass enum.
                     if (dwFlags & UF_ACCOUNTDISABLE) return UserClass::Guest;
                     if (dwPriv == USER_PRIV_ADMIN) return UserClass::Admin;
                     if (dwPriv == USER_PRIV_GUEST) return UserClass::Guest;
@@ -44,6 +47,7 @@ namespace DotNetDupe {
                 }
 
                 static void PopulateWin32UserGroups(LPCWSTR pwszUser, Collections::Generic::List<String>& lstGroups, Collections::Generic::List<String>& lstPermissions) {
+                    /// Step: Query group membership via NetUserGetGroups.
                     LPGROUP_USERS_INFO_0 pGroups = NULL;
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0;
 
@@ -52,6 +56,7 @@ namespace DotNetDupe {
                         throw UnauthorizedAccessException("Access denied querying user groups. Administrator privileges required.");
                     }
 
+                    /// Step: Populate group names and member permissions.
                     if (nStatus == NERR_Success) {
                         for (DWORD i = 0; i < dwEntriesRead; i++) {
                             std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
@@ -63,6 +68,7 @@ namespace DotNetDupe {
                 }
 
                 static void PopulateWin32SidAndDomain(LPCWSTR pwszUser, UserInfo& info) {
+                    /// Step: Lookup account SID and domain name via LookupAccountNameW.
                     BYTE sidBuffer[SECURITY_MAX_SID_SIZE];
                     DWORD cbSid = sizeof(sidBuffer);
                     WCHAR szDomain[256] = { 0 };
@@ -82,6 +88,7 @@ namespace DotNetDupe {
                 }
 
                 static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
+                    /// Step: Build UserInfo struct from Win32 USER_INFO_1 record.
                     UserInfo info;
                     std::string sName = StringConvertInternal::WCharToUtf8(pUi->usri1_name);
                     info.sUsername = sName.c_str();
@@ -106,6 +113,7 @@ namespace DotNetDupe {
                 }
 
                 static void EnumerateWin32Users(Collections::Generic::List<UserInfo>& lstUsers) {
+                    /// Step: Enumerate domain and local accounts via NetUserEnum.
                     LPUSER_INFO_1 pBuf = NULL;
                     DWORD dwEntriesRead = 0, dwTotalEntries = 0, dwResumeHandle = 0;
 
@@ -126,6 +134,7 @@ namespace DotNetDupe {
                 }
 #else
                 static UserInfo BuildLinuxUserInfo(const struct passwd* pw) {
+                    /// Step: Construct UserInfo from POSIX struct passwd.
                     UserInfo info;
                     info.sUsername = pw->pw_name;
                     info.sDomain = "LOCAL";
@@ -150,6 +159,7 @@ namespace DotNetDupe {
                 }
 
                 static void EnumerateLinuxUsers(Collections::Generic::List<UserInfo>& lstUsers) {
+                    /// Step: Iterate POSIX password database via setpwent / getpwent.
                     errno = 0;
                     setpwent();
                     struct passwd* pw;
@@ -165,6 +175,7 @@ namespace DotNetDupe {
 #endif
 
                 Collections::Generic::List<UserInfo> UserPrincipal::EnumerateUsers() {
+                    /// Step: Enumerate host user accounts based on active platform.
                     Collections::Generic::List<UserInfo> lstUsers;
 
 #if defined(_WIN32)
@@ -178,6 +189,7 @@ namespace DotNetDupe {
 
 #if defined(_WIN32)
                 static UserInfo QueryWin32User(const String& sUsername) {
+                    /// Step: Query account details via NetUserGetInfo.
                     std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
                     LPUSER_INFO_1 pBuf = NULL;
                     NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&pBuf);
@@ -192,6 +204,7 @@ namespace DotNetDupe {
                 }
 
                 static std::string GetCurrentWin32UserName() {
+                    /// Step: Query current thread / process security context username.
                     WCHAR szName[256] = { 0 };
                     DWORD dwSize = 256;
                     if (!::GetUserNameW(szName, &dwSize)) {
@@ -203,6 +216,7 @@ namespace DotNetDupe {
                 }
 #else
                 static UserInfo QueryLinuxUser(const String& sUsername) {
+                    /// Step: Query user information via POSIX getpwnam.
                     errno = 0;
                     struct passwd* pw = getpwnam(sUsername.GetRawString());
                     if (pw == NULL) {
@@ -213,6 +227,7 @@ namespace DotNetDupe {
                 }
 
                 static UserInfo QueryCurrentLinuxUser() {
+                    /// Step: Query current UID and look up user via getpwuid.
                     errno = 0;
                     struct passwd* pw = getpwuid(getuid());
                     if (pw == NULL) {
@@ -224,6 +239,7 @@ namespace DotNetDupe {
 #endif
 
                 UserInfo UserPrincipal::GetUser(const String& sUsername) {
+                    /// Guard: Ensure username is non-empty.
                     if (sUsername.IsEmpty()) throw ArgumentException("Username cannot be empty.");
 #if defined(_WIN32)
                     return QueryWin32User(sUsername);
@@ -233,6 +249,7 @@ namespace DotNetDupe {
                 }
 
                 UserInfo UserPrincipal::GetCurrent() {
+                    /// Return: User account details for current process context.
 #if defined(_WIN32)
                     return GetUser(GetCurrentWin32UserName().c_str());
 #else

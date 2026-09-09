@@ -1,3 +1,8 @@
+/// \file EventWaitHandle.h
+/// \brief Represents a thread synchronization event supporting automatic and manual reset modes.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Threading/WaitHandle.h"

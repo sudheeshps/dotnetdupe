@@ -1,3 +1,8 @@
+/// \file UdpClient.h
+/// \brief Provides User Datagram Protocol (UDP) network services.
+///
+/// Standard Citation: RFC 768 User Datagram Protocol.
+
 #pragma once
 
 #include "Common.h"

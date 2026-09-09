@@ -1,3 +1,8 @@
+/// \file Random.h
+/// \brief Represents a pseudo-random number generator.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

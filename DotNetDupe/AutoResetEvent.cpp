@@ -11,17 +11,25 @@ namespace DotNetDupe {
     namespace System {
         namespace Threading {
             AutoResetEvent::AutoResetEvent(bool initialState)
-                : EventWaitHandle(initialState, false) {}
+                : EventWaitHandle(initialState, false) {
+                /// Step: Initialize unnamed auto-reset event with initial signaling state.
+            }
 
             static bool s_autoDummyCreatedNew = false;
             AutoResetEvent::AutoResetEvent(const String& sName, bool initialState, bool openAlways)
-                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {}
+                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {
+                /// Step: Initialize named auto-reset event.
+            }
 
             AutoResetEvent::AutoResetEvent(bool initialState, const String& sName, bool openAlways)
-                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {}
+                : EventWaitHandle(initialState, false, sName, openAlways, s_autoDummyCreatedNew) {
+                /// Step: Initialize named auto-reset event overload.
+            }
 
             AutoResetEvent::AutoResetEvent(bool initialState, const String& sName, bool openAlways, bool& bCreatedNew)
-                : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {}
+                : EventWaitHandle(initialState, false, sName, openAlways, bCreatedNew) {
+                /// Step: Initialize named auto-reset event tracking createdNew status.
+            }
 
             SmartPointer<AutoResetEvent> AutoResetEvent::OpenExisting(const String& sName) {
                 /// Open existing system auto-reset event.

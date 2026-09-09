@@ -114,23 +114,36 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Represents platform user account information and privileges.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:af53a1ac71bc46cccfe07317e9b34d6f0" id="r_af53a1ac71bc46cccfe07317e9b34d6f0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#af53a1ac71bc46cccfe07317e9b34d6f0">bIsAccountLocked</a></td></tr>
+<tr class="memdesc:af53a1ac71bc46cccfe07317e9b34d6f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the account is currently locked out.  <br /></td></tr>
 <tr class="memitem:a57d1da0aad19c24cce75247b00b15f4a" id="r_a57d1da0aad19c24cce75247b00b15f4a"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a57d1da0aad19c24cce75247b00b15f4a">bIsDisabled</a></td></tr>
+<tr class="memdesc:a57d1da0aad19c24cce75247b00b15f4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the account is disabled.  <br /></td></tr>
 <tr class="memitem:a0c1ca3a7b5421d91d577c99ed4c6bde0" id="r_a0c1ca3a7b5421d91d577c99ed4c6bde0"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a0c1ca3a7b5421d91d577c99ed4c6bde0">bIsPasswordRequired</a></td></tr>
+<tr class="memdesc:a0c1ca3a7b5421d91d577c99ed4c6bde0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether a password is required.  <br /></td></tr>
 <tr class="memitem:a90906da8730b31e9a84e83cf053adc87" id="r_a90906da8730b31e9a84e83cf053adc87"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_security_1_1_principal.html#aaa2c27261ec7f50f0c7632d81ea0109e">UserClass</a>&#160;</td><td class="memItemRight"><a class="el" href="#a90906da8730b31e9a84e83cf053adc87">eUserClass</a></td></tr>
+<tr class="memdesc:a90906da8730b31e9a84e83cf053adc87"><td class="mdescLeft">&#160;</td><td class="mdescRight">Classification level of the user.  <br /></td></tr>
 <tr class="memitem:ad2c874ca5558c459158a4229ae57dec1" id="r_ad2c874ca5558c459158a4229ae57dec1"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ad2c874ca5558c459158a4229ae57dec1">lstGroups</a></td></tr>
+<tr class="memdesc:ad2c874ca5558c459158a4229ae57dec1"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of security groups the user belongs to.  <br /></td></tr>
 <tr class="memitem:ac420c0992993fd31dffee65993f9b0ee" id="r_ac420c0992993fd31dffee65993f9b0ee"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">Collections::Generic::List</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac420c0992993fd31dffee65993f9b0ee">lstPermissions</a></td></tr>
+<tr class="memdesc:ac420c0992993fd31dffee65993f9b0ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">List of assigned permission strings.  <br /></td></tr>
 <tr class="memitem:aa874ad30cf0b009754e883c884b0a2ee" id="r_aa874ad30cf0b009754e883c884b0a2ee"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa874ad30cf0b009754e883c884b0a2ee">sDomain</a></td></tr>
+<tr class="memdesc:aa874ad30cf0b009754e883c884b0a2ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Domain or host machine name.  <br /></td></tr>
 <tr class="memitem:aa2305b96a7238b3936ce44859ea45203" id="r_aa2305b96a7238b3936ce44859ea45203"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa2305b96a7238b3936ce44859ea45203">sSidOrUid</a></td></tr>
+<tr class="memdesc:aa2305b96a7238b3936ce44859ea45203"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_security.html">Security</a> identifier (SID on Windows, UID on POSIX).  <br /></td></tr>
 <tr class="memitem:aafa42a507d75b4535c29b561c2ea09e1" id="r_aafa42a507d75b4535c29b561c2ea09e1"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aafa42a507d75b4535c29b561c2ea09e1">sUsername</a></td></tr>
+<tr class="memdesc:aafa42a507d75b4535c29b561c2ea09e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">User login or account name.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00020">20</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<div class="textblock"><p>Represents platform user account information and privileges. </p>
+
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00027">27</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="af53a1ac71bc46cccfe07317e9b34d6f0" name="af53a1ac71bc46cccfe07317e9b34d6f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af53a1ac71bc46cccfe07317e9b34d6f0">&#9670;&#160;</a></span>bIsAccountLocked</h2>
@@ -144,9 +157,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00027">27</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>Indicates whether the account is currently locked out. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00034">34</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -162,9 +177,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00025">25</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>Indicates whether the account is disabled. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00032">32</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -180,9 +197,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00026">26</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>Indicates whether a password is required. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00033">33</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -198,9 +217,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00024">24</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>Classification level of the user. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00031">31</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -216,9 +237,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00028">28</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>List of security groups the user belongs to. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00035">35</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -234,9 +257,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00029">29</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>List of assigned permission strings. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00036">36</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>
@@ -252,9 +277,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00022">22</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>Domain or host machine name. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00065">DotNetDupe::System::Security::Principal::PopulateWin32SidAndDomain()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00029">29</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00070">DotNetDupe::System::Security::Principal::PopulateWin32SidAndDomain()</a>.</p>
 
 </div>
 </div>
@@ -270,9 +297,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00023">23</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_security.html">Security</a> identifier (SID on Windows, UID on POSIX). </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00065">DotNetDupe::System::Security::Principal::PopulateWin32SidAndDomain()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00030">30</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00070">DotNetDupe::System::Security::Principal::PopulateWin32SidAndDomain()</a>.</p>
 
 </div>
 </div>
@@ -288,9 +317,11 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00021">21</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p>User login or account name. </p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00028">28</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">DotNetDupe::System::Security::Principal::BuildWin32UserInfo()</a>.</p>
 
 </div>
 </div>

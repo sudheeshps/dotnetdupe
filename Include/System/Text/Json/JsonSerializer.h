@@ -1,3 +1,8 @@
+/// \file JsonSerializer.h
+/// \brief Provides functionality to serialize objects to JSON strings and deserialize JSON strings into objects.
+///
+/// Standard Citation: RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format.
+
 #pragma once
 
 #include "Common.h"

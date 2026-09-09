@@ -1,3 +1,8 @@
+/// \file DaylightTime.h
+/// \brief Defines the period of daylight saving time.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

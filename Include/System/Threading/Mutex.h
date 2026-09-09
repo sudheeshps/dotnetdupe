@@ -1,3 +1,8 @@
+/// \file Mutex.h
+/// \brief A synchronization primitive that can also be used for interprocess synchronization.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Threading/WaitHandle.h"

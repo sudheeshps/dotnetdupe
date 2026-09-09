@@ -1,3 +1,6 @@
+/// \file StringConvert.h
+/// \brief Utility routines for high-performance UTF-8, UTF-16, and wide-character string conversions.
+
 #pragma once
 
 #include "Common.h"

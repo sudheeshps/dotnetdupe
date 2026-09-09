@@ -1,3 +1,8 @@
+/// \file OperatingSystem.h
+/// \brief Represents information about an operating system, such as the version and platform identifier.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

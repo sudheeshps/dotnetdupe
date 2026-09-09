@@ -216,10 +216,12 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The modified path information. </dd></dl>
+<p>Guard: Validate input path and extension parameters.</p>
+<p>Step: Replace path extension via filesystem path.</p>
 
 <p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00043">43</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00519">DotNetDupe::System::String::Remove()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00033">DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_string_8cpp_source.html#l00519">DotNetDupe::System::String::Remove()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00033">DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar()</a>.</p>
 
 </div>
 </div>
@@ -254,8 +256,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The combined paths. </dd></dl>
+<p>Guard: Check root directory structure.</p>
+<p>Step: Concatenate paths with separator.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00061">61</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00063">63</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_utils_8h_source.html#l00013">_init_list_with_indexer&lt; T &gt;::_init_list_with_indexer()</a>, <a class="el" href="_string_8cpp_source.html#l00380">DotNetDupe::System::String::Append()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, and <a class="el" href="_string_8cpp_source.html#l00519">DotNetDupe::System::String::Remove()</a>.</p>
 
@@ -294,8 +298,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the path ends in a directory separator; otherwise, false. </dd></dl>
+<p>Guard: Empty path check.</p>
+<p>Return: True if path ends in slash or backslash.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00074">74</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00079">79</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
@@ -332,8 +338,9 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the path exists; otherwise, false. </dd></dl>
+<p>Return: Filesystem path existence check.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00080">80</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00087">87</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -361,8 +368,9 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Provides a platform-specific alternate character used to separate directory levels. </p>
+<p>Return: Alternate directory separator character.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00323">323</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00362">362</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -397,8 +405,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html" title="Exposes static methods for creating, moving, and enumerating through directories and subdirectories.">Directory</a> information for path, or an empty string if path denotes a root directory. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: Parent directory path string.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00084">84</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00092">92</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
@@ -430,8 +440,9 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Provides a platform-specific character used to separate directory levels in a path. </p>
+<p>Return: Preferred directory separator character.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00319">319</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00357">357</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -466,8 +477,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The extension of the specified path (including the period "."). </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a> extension component.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00099">99</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00111">111</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
@@ -506,12 +519,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The characters after the last directory character in path. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a> filename component.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00092">92</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00102">102</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00242">HasExtension()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00268">HasExtension()</a>.</p>
 
 </div>
 </div>
@@ -546,8 +561,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The string returned by GetFileName, minus the last period and all characters following it. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: Stem filename component without extension.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00107">107</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00121">121</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
@@ -584,12 +601,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The fully qualified location of path. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: Absolute canonical path.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00115">115</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00131">131</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00192">GetRelativePath()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00214">GetRelativePath()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
 
 </div>
 </div>
@@ -618,8 +637,9 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Gets an array of characters that cannot be present in file names. </p>
 <dl class="section return"><dt>Returns</dt><dd>An array of invalid file name characters. </dd></dl>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a> of invalid filename characters.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00122">122</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00140">140</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -648,10 +668,11 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Gets an array of characters that cannot be present in path names. </p>
 <dl class="section return"><dt>Returns</dt><dd>An array of invalid path characters. </dd></dl>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a> of invalid path characters.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00133">133</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00152">152</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00272">DotNetDupe::System::IO::ValidatePathChars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00304">DotNetDupe::System::IO::ValidatePathChars()</a>.</p>
 
 </div>
 </div>
@@ -686,12 +707,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The root directory of path, or an empty string if path does not contain root directory information. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Step: Parse UNC path or root path components.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00166">166</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00187">187</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00341">DotNetDupe::System::String::IndexOf()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_string_8cpp_source.html#l00610">DotNetDupe::System::String::StartsWith()</a>, and <a class="el" href="_string_8cpp_source.html#l00659">DotNetDupe::System::String::Substring()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00209">DotNetDupe::System::IO::Directory::GetDirectoryRoot()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00234">DotNetDupe::System::IO::Directory::GetDirectoryRoot()</a>.</p>
 
 </div>
 </div>
@@ -719,8 +742,9 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>A platform-specific separator character used to separate path strings in environment variables. </p>
+<p>Return: Platform search path delimiter.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00331">331</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00372">372</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -749,8 +773,9 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Returns a random folder name or file name. </p>
 <dl class="section return"><dt>Returns</dt><dd>A random folder name or file name. </dd></dl>
+<p>Step: Generate random 8.3 formatted filename string.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00143">143</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00163">163</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>.</p>
 
@@ -792,10 +817,11 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The relative path from sRelativeTo to sPath. </dd></dl>
+<p>Step: Resolve relative filesystem path between two absolute paths.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00192">192</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00214">214</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00115">GetFullPath()</a>.</p>
+<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00131">GetFullPath()</a>.</p>
 
 </div>
 </div>
@@ -824,10 +850,11 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Creates a uniquely named, zero-byte temporary file on disk and returns the full path of that file. </p>
 <dl class="section return"><dt>Returns</dt><dd>The full path of the temporary file. </dd></dl>
+<p>Forward: Delegate with current temp directory path.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00223">223</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00247">247</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00205">DotNetDupe::System::IO::GenerateRandomTempFileName()</a>, and <a class="el" href="_path_8cpp_source.html#l00227">GetTempPath()</a>.</p>
+<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00228">DotNetDupe::System::IO::GenerateRandomTempFileName()</a>, and <a class="el" href="_path_8cpp_source.html#l00252">GetTempPath()</a>.</p>
 
 </div>
 </div>
@@ -856,12 +883,13 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Returns the path of the current user's temporary folder. </p>
 <dl class="section return"><dt>Returns</dt><dd>The path to the temporary folder. </dd></dl>
+<p>Step: Query system temporary path based on active platform.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00227">227</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00252">252</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_string_8cpp_source.html#l00380">DotNetDupe::System::String::Append()</a>, <a class="el" href="_string_8cpp_source.html#l00315">DotNetDupe::System::String::EndsWith()</a>, and <a class="el" href="_internal_string_convert_8h_source.html#l00014">DotNetDupe::System::Internal::WCharToUtf8()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00223">GetTempFileName()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00247">GetTempFileName()</a>.</p>
 
 </div>
 </div>
@@ -889,8 +917,9 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Provides a platform-specific volume separator character. </p>
+<p>Return: Volume separator character ':'.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00327">327</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00367">367</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 </div>
 </div>
@@ -925,10 +954,11 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the characters that follow the last directory separator or volume separator include a period; otherwise, false. </dd></dl>
+<p>Guard: Check for empty path or dot references.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00242">242</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00268">268</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00092">GetFileName()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00102">GetFileName()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -963,8 +993,10 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the path is fully qualified; otherwise, false. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: True if path is absolute.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00251">251</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00278">278</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
@@ -1001,12 +1033,14 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if path contains a root; otherwise, false. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Step: Test slash, backslash, or drive letter root prefixes.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00256">256</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00285">285</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00308">TrimEndingDirectorySeparator()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00344">TrimEndingDirectorySeparator()</a>.</p>
 
 </div>
 </div>
@@ -1034,10 +1068,11 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Concatenates an array of paths into a single path. </p>
+<p>Step: Attempt path join or throw <a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_exception.html" title="The exception that is thrown when one of the arguments provided to a method is not valid.">ArgumentException</a> on invalid characters.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00266">266</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00297">297</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_path_8cpp_source.html#l00297">TryJoin()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_path_8cpp_source.html#l00332">TryJoin()</a>.</p>
 
 </div>
 </div>
@@ -1065,10 +1100,12 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Trims one trailing directory separator beyond the root of the specified path. </p>
+<p>Guard: Check for empty path or rooted drive path.</p>
+<p>Step: Strip trailing slash or backslash.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00308">308</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00344">344</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_path_8cpp_source.html#l00256">IsPathRooted()</a>, and <a class="el" href="_string_8cpp_source.html#l00659">DotNetDupe::System::String::Substring()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_path_8cpp_source.html#l00285">IsPathRooted()</a>, and <a class="el" href="_string_8cpp_source.html#l00659">DotNetDupe::System::String::Substring()</a>.</p>
 
 </div>
 </div>
@@ -1100,12 +1137,13 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Attempts to concatenate an array of paths into a single path. </p>
+<p>Step: Validate characters and concatenate segments.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00297">297</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00332">332</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_path_8cpp_source.html#l00282">DotNetDupe::System::IO::AppendPathSegment()</a>, and <a class="el" href="_path_8cpp_source.html#l00272">DotNetDupe::System::IO::ValidatePathChars()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_path_8cpp_source.html#l00315">DotNetDupe::System::IO::AppendPathSegment()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">DotNetDupe::System::IO::ValidatePathChars()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00266">Join()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00297">Join()</a>.</p>
 
 </div>
 </div>

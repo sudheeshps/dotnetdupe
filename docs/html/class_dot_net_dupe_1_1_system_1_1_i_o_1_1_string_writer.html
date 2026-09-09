@@ -237,6 +237,7 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html" title="Implements a TextWriter that writes information to a string.">StringWriter</a> class. </p>
+<p>Step: Construct new StringBuilder instance.</p>
 
 <p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00007">7</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
@@ -264,8 +265,9 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Step: Bind to provided StringBuilder instance.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00011">11</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00012">12</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 </div>
 </div>
@@ -294,7 +296,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Virtual destructor ensuring proper cleanup. </p>
 
-<p class="reference">References <a class="el" href="_string_writer_8cpp_source.html#l00015">Close()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00019">Dispose()</a>, <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>, <a class="el" href="_string_writer_8cpp_source.html#l00023">Flush()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00027">GetEncoding()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00031">ToString()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00035">Write()</a>, and <a class="el" href="_string_writer_8cpp_source.html#l00070">WriteLine()</a>.</p>
+<p class="reference">References <a class="el" href="_string_writer_8cpp_source.html#l00017">Close()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00022">Dispose()</a>, <a class="el" href="_common_8h_source.html#l00020">DOTNETDUPE_API</a>, <a class="el" href="_string_writer_8cpp_source.html#l00027">Flush()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00031">GetEncoding()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00036">ToString()</a>, <a class="el" href="_string_writer_8cpp_source.html#l00041">Write()</a>, and <a class="el" href="_string_writer_8cpp_source.html#l00087">WriteLine()</a>.</p>
 
 </div>
 </div>
@@ -323,10 +325,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Closes the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html" title="Implements a TextWriter that writes information to a string.">StringWriter</a>. </p>
+<p>Step: Close the string writer.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#adba23651c702abf2099d67c272bebc5f">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00015">15</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00017">17</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a0479e29ed2e92dfc784303d05af926aa">~StringWriter()</a>.</p>
 
@@ -356,10 +359,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Releases all resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html" title="Implements a TextWriter that writes information to a string.">StringWriter</a>. </p>
+<p>Step: Mark string writer as closed and disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#aac6bfb5f715d34b14a992d9f7475757a">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00019">19</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00022">22</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a0479e29ed2e92dfc784303d05af926aa">~StringWriter()</a>.</p>
 
@@ -389,10 +393,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Clears all buffers for the current writer. </p>
+<p>Note: In-memory string writer requires no flush operations.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a2417970daf5b235aee734eb792dc3c79">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00023">23</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00027">27</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a0479e29ed2e92dfc784303d05af926aa">~StringWriter()</a>.</p>
 
@@ -423,10 +428,11 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Gets the Encoding in which the output is written. </p>
 <dl class="section return"><dt>Returns</dt><dd>The Encoding in which the output is written (UTF-8). </dd></dl>
+<p>Return: UTF-8 encoding pointer.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a0030c397de52f71cf9146f2bf2b7fb9b">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00027">27</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00031">31</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_encoding_8cpp_source.html#l00044">DotNetDupe::System::Text::TextEncoding::UTF8()</a>.</p>
 
@@ -459,8 +465,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Returns a string containing the characters written to the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html" title="Implements a TextWriter that writes information to a string.">StringWriter</a> so far. </p>
 <dl class="section return"><dt>Returns</dt><dd>The string containing the characters written to the current <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_string_writer.html" title="Implements a TextWriter that writes information to a string.">StringWriter</a>. </dd></dl>
+<p>Return: Serialized string from the underlying builder.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00031">31</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00036">36</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00643">DotNetDupe::System::String::ToString()</a>.</p>
 
@@ -498,10 +505,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate boolean serialization to base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a1f75d1b1431fd4bf0a1bd0e7ddfa943f">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00035">35</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00041">41</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00021">DotNetDupe::System::IO::TextWriter::Write()</a>.</p>
 
@@ -539,10 +547,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Check if writer is open.</p>
+<p>Step: Append character to underlying builder.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a984a878e3b03b18ab104a2fd850be46c">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00039">39</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00046">46</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 </div>
 </div>
@@ -576,10 +586,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Check if writer is open.</p>
+<p>Step: Append C-string to underlying builder.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ab1d3f79ce60edf3521cb9867d7ddf256">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00049">49</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00060">60</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 </div>
 </div>
@@ -613,10 +625,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Check if writer is open.</p>
+<p>Step: Append string to underlying builder.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a1583905e30a3440aa2de2a91bf790528">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00044">44</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00053">53</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 </div>
 </div>
@@ -650,10 +664,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate double serialization to base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a605d3dba062f926ce5b9f53bdbb31d10">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00066">66</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00082">82</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00021">DotNetDupe::System::IO::TextWriter::Write()</a>.</p>
 
@@ -689,10 +704,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate float serialization to base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ae78a939f9b1ace821ac0ed76d38bc9f9">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00062">62</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00077">77</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00021">DotNetDupe::System::IO::TextWriter::Write()</a>.</p>
 
@@ -728,10 +744,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate integer serialization to base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a9d8c1fc0db681fd856a3dcfd6e3973b2">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00054">54</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00067">67</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00021">DotNetDupe::System::IO::TextWriter::Write()</a>.</p>
 
@@ -767,10 +784,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate 64-bit integer serialization to base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ac7050e9a5cfc4c925179b88baf4f89a8">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00058">58</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00072">72</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00021">DotNetDupe::System::IO::TextWriter::Write()</a>.</p>
 
@@ -800,10 +818,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Writes a line terminator to the text string. </p>
+<p>Forward: Write newline via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#af37054e8454f22fd8fb33faf054c408e">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00070">70</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00087">87</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -841,10 +860,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write boolean line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a810674c00f69e057f203e2cbcb465fc8">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00074">74</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00092">92</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -880,10 +900,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write character line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a7ae22d5fd321643bccd298ccce2d1f5f">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00078">78</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00097">97</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -919,10 +940,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write C-string line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a7207f33fb73df7c9a2630f2d0b0c8f92">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00082">82</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00102">102</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -958,10 +980,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write string line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a6987dc78ca271af9ce8e8ad8dab011a9">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00086">86</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00107">107</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -997,10 +1020,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write double line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a25d11b2396d2e51e028dd9e6e181e563">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00102">102</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00127">127</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -1036,10 +1060,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write float line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#a6a8d6981f440950505c04d20b60c721c">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00098">98</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00122">122</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -1075,10 +1100,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write integer line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#ad19a3ef6efe77c79464427e0848f2e02">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00090">90</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00112">112</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 
@@ -1114,10 +1140,11 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Write 64-bit integer line via base <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html" title="Represents a writer that can write a sequential series of characters.">TextWriter</a>.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html#af2fcffa5883a12e19a6cfffec6165b21">DotNetDupe::System::IO::TextWriter</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00094">94</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_string_writer_8cpp_source.html#l00117">117</a> of file <a class="el" href="_string_writer_8cpp_source.html">StringWriter.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_text_writer_8cpp_source.html#l00059">DotNetDupe::System::IO::TextWriter::WriteLine()</a>.</p>
 

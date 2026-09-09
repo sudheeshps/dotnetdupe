@@ -1,3 +1,8 @@
+/// \file Socket.h
+/// \brief Implements the Berkeley sockets interface for network communications.
+///
+/// Standard Citation: POSIX.1-2001, RFC 793, RFC 768.
+
 #pragma once
 
 #include "Common.h"

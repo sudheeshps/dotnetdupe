@@ -1,3 +1,8 @@
+/// \file Interlocked.h
+/// \brief Provides atomic operations for variables that are shared by multiple threads.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

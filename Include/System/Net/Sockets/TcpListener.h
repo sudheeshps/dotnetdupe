@@ -1,3 +1,8 @@
+/// \file TcpListener.h
+/// \brief Listens for connections from TCP network clients.
+///
+/// Standard Citation: RFC 793 Transmission Control Protocol.
+
 #pragma once
 
 #include "Common.h"

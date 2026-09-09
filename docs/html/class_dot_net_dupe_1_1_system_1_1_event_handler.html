@@ -176,7 +176,7 @@ class DotNetDupe::System::EventHandler&lt; TEventArgs &gt;</div><p>Represents th
 </dl>
 <dl class="section note"><dt>Note</dt><dd>Conforms to ECMA-335 Partition IV Section 5.22 (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html" title="Represents the method that will handle an event when the event provides data.">System.EventHandler&lt;TEventArgs&gt;</a>). Implements the idiomatic C# publisher-subscriber model with multicast chaining (<span class="tt">+=</span>, <span class="tt"><a class="el" href="#a805ecfb3ff24047cbca41fb05a80b528" title="Subscribes an Action delegate handler and returns a monotonic subscription token.">Add</a></span>), member method binding (<span class="tt"><a class="el" href="#a805ecfb3ff24047cbca41fb05a80b528" title="Subscribes an Action delegate handler and returns a monotonic subscription token.">Add</a>(pInstance, &amp;Class::Method)</span>), token-based unsubscription (<span class="tt">-=</span>, <span class="tt"><a class="el" href="#ad06e9f6f9d07cc7c94d3c5639e48e662" title="Unsubscribes a subscriber matching the specified subscription token.">Remove</a></span>), and sequential invocation (<span class="tt"><a class="el" href="#a8b555434bfa301cd886251d7e651a3ad" title="Sequentially invokes all registered subscriber callbacks in FIFO order.">Invoke</a></span>, <span class="tt">operator()</span>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00022">22</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00027">27</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad4cefe5312db054f2cf451e26d48ac58" name="ad4cefe5312db054f2cf451e26d48ac58"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad4cefe5312db054f2cf451e26d48ac58">&#9670;&#160;</a></span>EventHandler() <span class="overload">[1/3]</span></h2>
@@ -205,9 +205,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Initializes a new empty multicast <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html" title="Represents the method that will handle an event when the event provides data.">EventHandler</a> instance. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00042">42</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00047">47</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00045">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00049">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00116">operator+=()</a>, <a class="el" href="_event_handler_8h_source.html#l00055">operator=()</a>, and <a class="el" href="_event_handler_8h_source.html#l00064">operator=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00050">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00054">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00121">operator+=()</a>, <a class="el" href="_event_handler_8h_source.html#l00060">operator=()</a>, and <a class="el" href="_event_handler_8h_source.html#l00069">operator=()</a>.</p>
 
 </div>
 </div>
@@ -238,9 +238,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Copy constructor. Copies all subscriber callbacks. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00045">45</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00050">50</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00042">EventHandler()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00047">EventHandler()</a>.</p>
 
 </div>
 </div>
@@ -271,9 +271,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Move constructor. Transfers subscriber callbacks. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00049">49</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00054">54</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00042">EventHandler()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00047">EventHandler()</a>.</p>
 
 </div>
 </div>
@@ -343,9 +343,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 <p>Assign monotonic unique subscription token.</p>
 <p>Append subscriber to registration list.</p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00079">79</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00084">84</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00090">Add()</a>, <a class="el" href="_event_handler_8h_source.html#l00096">Add()</a>, <a class="el" href="_event_handler_8h_source.html#l00105">operator+=()</a>, <a class="el" href="_event_handler_8h_source.html#l00116">operator+=()</a>, and <a class="el" href="_event_handler_8h_source.html#l00111">operator+=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00095">Add()</a>, <a class="el" href="_event_handler_8h_source.html#l00101">Add()</a>, <a class="el" href="_event_handler_8h_source.html#l00110">operator+=()</a>, <a class="el" href="_event_handler_8h_source.html#l00121">operator+=()</a>, and <a class="el" href="_event_handler_8h_source.html#l00116">operator+=()</a>.</p>
 
 </div>
 </div>
@@ -378,9 +378,9 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 
 <p>Subscribes a generic callable object (lambda or function pointer). </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00090">90</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00095">95</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00079">Add()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00084">Add()</a>.</p>
 
 </div>
 </div>
@@ -417,9 +417,9 @@ template&lt;typename TClass&gt; </div>
 
 <p>Subscribes a member method on an instance object. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00096">96</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00101">101</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00079">Add()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00084">Add()</a>.</p>
 
 </div>
 </div>
@@ -450,7 +450,7 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Removes all registered subscribers. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00144">144</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00149">149</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +481,7 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Gets the number of currently active subscribers. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00170">170</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00175">175</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
 </div>
 </div>
@@ -524,9 +524,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 </dl>
 <p>Sequential multicast dispatch to all registered callbacks.</p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00151">151</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00156">156</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00160">operator()()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00165">operator()()</a>.</p>
 
 </div>
 </div>
@@ -557,9 +557,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Checks whether the multicast event handler has zero registered subscribers. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00165">165</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00170">170</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00175">operator bool()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00180">operator bool()</a>.</p>
 
 </div>
 </div>
@@ -590,9 +590,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Boolean conversion operator. Returns true if there are registered subscribers. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00175">175</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00180">180</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00165">IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00170">IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -627,9 +627,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Invocation call operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00160">160</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00165">165</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00151">Invoke()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00156">Invoke()</a>.</p>
 
 </div>
 </div>
@@ -660,9 +660,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Multicast addition operator. Subscribes an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html" title="Encapsulates a method that has parameters and does not return a value.">Action</a> callback. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00105">105</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00110">110</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00079">Add()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00084">Add()</a>.</p>
 
 </div>
 </div>
@@ -693,9 +693,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Multicast addition operator. Appends all subscribers from another <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html" title="Represents the method that will handle an event when the event provides data.">EventHandler</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00116">116</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00121">121</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00042">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00079">Add()</a>, and <a class="el" href="_list_8h_source.html#l00089">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::GetCount()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00047">EventHandler()</a>, <a class="el" href="_event_handler_8h_source.html#l00084">Add()</a>, and <a class="el" href="_list_8h_source.html#l00100">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::GetCount()</a>.</p>
 
 </div>
 </div>
@@ -728,9 +728,9 @@ template&lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::d
 
 <p>Multicast addition operator. Subscribes a generic callable object. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00111">111</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00116">116</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00079">Add()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00084">Add()</a>.</p>
 
 </div>
 </div>
@@ -761,9 +761,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Multicast subtraction operator. Unsubscribes using a subscription token. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00139">139</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00144">144</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00127">Remove()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00132">Remove()</a>.</p>
 
 </div>
 </div>
@@ -794,9 +794,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Copy assignment operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00055">55</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00060">60</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00042">EventHandler()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00047">EventHandler()</a>.</p>
 
 </div>
 </div>
@@ -827,9 +827,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 
 <p>Move assignment operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00064">64</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00069">69</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00042">EventHandler()</a>.</p>
+<p class="reference">References <a class="el" href="_event_handler_8h_source.html#l00047">EventHandler()</a>.</p>
 
 </div>
 </div>
@@ -868,9 +868,9 @@ template&lt;typename TEventArgs = EventArgs&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>true if a subscriber was found and removed; otherwise, false. </dd></dl>
 <p>Linearly search registry for matching subscription token.</p>
 
-<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00127">127</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_event_handler_8h_source.html#l00132">132</a> of file <a class="el" href="_event_handler_8h_source.html">EventHandler.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00139">operator-=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_event_handler_8h_source.html#l00144">operator-=()</a>.</p>
 
 </div>
 </div>

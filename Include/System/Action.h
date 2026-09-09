@@ -1,3 +1,8 @@
+/// \file Action.h
+/// \brief Encapsulates a delegate method that has parameters and returns void.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include <type_traits>
 #include <utility>

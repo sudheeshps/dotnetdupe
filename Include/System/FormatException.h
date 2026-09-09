@@ -1,3 +1,8 @@
+/// \file FormatException.h
+/// \brief Defines the exception thrown when the format of an argument is invalid or not compliant with specifications.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

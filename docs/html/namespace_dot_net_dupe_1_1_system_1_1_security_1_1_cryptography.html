@@ -121,6 +121,7 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:HMACSHA256" id="r_HMACSHA256"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html">HMACSHA256</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes a Hash-based Message Authentication Code (HMAC) using the SHA-256 hash function per RFC 2104.  <a href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -168,12 +169,13 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Perform two-pass inner and outer SHA-256 HMAC rounds.</p>
 
-<p class="definition">Definition at line <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00168">168</a> of file <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html">HMACSHA256.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00178">178</a> of file <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html">HMACSHA256.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00168">ComputeHmacDigests()</a>, <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_array_8h_source.html#l00137">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>.</p>
+<p class="reference">References <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00178">ComputeHmacDigests()</a>, <a class="el" href="_array_8h_source.html#l00146">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_array_8h_source.html#l00142">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00178">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00168">ComputeHmacDigests()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00189">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00178">ComputeHmacDigests()</a>.</p>
 
 </div>
 </div>
@@ -208,12 +210,13 @@ Variables</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Format and pad HMAC inner and outer key blocks per RFC 2104.</p>
 
-<p class="definition">Definition at line <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00155">155</a> of file <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html">HMACSHA256.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00164">164</a> of file <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html">HMACSHA256.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_array_8h_source.html#l00141">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_array_8h_source.html#l00137">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00155">PrepareHmacPads()</a>.</p>
+<p class="reference">References <a class="el" href="_array_8h_source.html#l00146">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, <a class="el" href="_array_8h_source.html#l00142">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00164">PrepareHmacPads()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00178">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00155">PrepareHmacPads()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00189">DotNetDupe::System::Security::Cryptography::HMACSHA256::ComputeHash()</a>, and <a class="el" href="_h_m_a_c_s_h_a256_8cpp_source.html#l00164">PrepareHmacPads()</a>.</p>
 
 </div>
 </div>

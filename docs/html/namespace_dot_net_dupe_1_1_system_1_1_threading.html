@@ -121,6 +121,7 @@ Namespaces</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:AbandonedMutexException" id="r_AbandonedMutexException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_abandoned_mutex_exception.html">AbandonedMutexException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when a thread acquires a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_mutex.html" title="A synchronization primitive that can also be used for interprocess synchronization.">Mutex</a> object that another thread has abandoned by exiting without releasing it.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_abandoned_mutex_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:AutoResetEvent" id="r_AutoResetEvent"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_auto_reset_event.html">AutoResetEvent</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies a waiting thread that an event has occurred.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_auto_reset_event.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ConditionVariable" id="r_ConditionVariable"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_condition_variable.html">ConditionVariable</a></td></tr>
@@ -138,6 +139,7 @@ Classes</h2></td></tr>
 <tr class="memitem:Lock_3C_20CriticalSection_20_3E" id="r_Lock_3C_20CriticalSection_20_3E"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_3_01_critical_section_01_4.html">Lock&lt; CriticalSection &gt;</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialization of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html" title="Provides an RAII-style scoped lock wrapper around synchronization primitives.">Lock</a> for <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_critical_section.html" title="Provides a re-entrant mutual exclusion primitive for thread synchronization.">CriticalSection</a> objects.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_3_01_critical_section_01_4.html#details">More...</a><br /></td></tr>
 <tr class="memitem:LockWaitHandle" id="r_LockWaitHandle"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html">LockWaitHandle</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Abstract base class for wait handles that support releasing acquire counts.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_wait_handle.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ManualResetEvent" id="r_ManualResetEvent"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_manual_reset_event.html">ManualResetEvent</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Notifies one or more waiting threads that an event has occurred.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_manual_reset_event.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Mutex" id="r_Mutex"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_mutex.html">Mutex</a></td></tr>
@@ -145,17 +147,23 @@ Classes</h2></td></tr>
 <tr class="memitem:Semaphore" id="r_Semaphore"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore.html">Semaphore</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Limits the number of threads that can access a resource or pool of resources concurrently.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore.html#details">More...</a><br /></td></tr>
 <tr class="memitem:SemaphoreFullException" id="r_SemaphoreFullException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_full_exception.html">SemaphoreFullException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore.html#a94dc610c73fb01f9ee30ac1431d40de8" title="Exits the semaphore and returns the previous count.">Semaphore::Release</a> method is called on a semaphore whose count is already at the maximum.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_full_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:SemaphoreSlim" id="r_SemaphoreSlim"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_slim.html">SemaphoreSlim</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a lightweight alternative to <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore.html" title="Limits the number of threads that can access a resource or pool of resources concurrently.">Semaphore</a> that limits the number of threads that can access a resource or pool of resources concurrently.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_semaphore_slim.html#details">More...</a><br /></td></tr>
 <tr class="memitem:SynchronizationLockException" id="r_SynchronizationLockException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_synchronization_lock_exception.html">SynchronizationLockException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when a method requires synchronization on a Monitor/lock, but the caller does not own the lock.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_synchronization_lock_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:Thread" id="r_Thread"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html">Thread</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates and controls execution of operating system threads.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ThreadInterruptedException" id="r_ThreadInterruptedException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_interrupted_exception.html">ThreadInterruptedException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when a thread is interrupted while it is in a waiting state.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_interrupted_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ThreadPool" id="r_ThreadPool"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html">ThreadPool</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a pool of threads that can be used to execute tasks, post work items, and process timers.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html#details">More...</a><br /></td></tr>
 <tr class="memitem:ThreadStateException" id="r_ThreadStateException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_state_exception.html">ThreadStateException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when a thread is in an invalid ThreadState for the requested operation.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_state_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:WaitHandle" id="r_WaitHandle"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html">WaitHandle</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates operating system-specific objects that wait for exclusive access to shared resources.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle.html#details">More...</a><br /></td></tr>
 <tr class="memitem:WaitHandleCannotBeOpenedException" id="r_WaitHandleCannotBeOpenedException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html">WaitHandleCannotBeOpenedException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown when an attempt to open a system synchronization handle that does not exist fails.  <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_wait_handle_cannot_be_opened_exception.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-typedef-members" class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
@@ -207,7 +215,7 @@ Variables</h2></td></tr>
 
 <p>Convenience alias for <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock_3_01_critical_section_01_4.html" title="Specialization of Lock for CriticalSection objects.">Lock&lt;CriticalSection&gt;</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00068">68</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00071">71</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +233,7 @@ Variables</h2></td></tr>
 
 <p>Convenience alias for <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html">Lock&lt;Mutex&gt;</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00072">72</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00075">75</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
 
 </div>
 </div>
@@ -259,7 +267,7 @@ Variables</h2></td></tr>
 
 <p>Convenience alias for <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html">Lock&lt;Semaphore&gt;</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00076">76</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00079">79</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
 
 </div>
 </div>
@@ -277,7 +285,7 @@ Variables</h2></td></tr>
 
 <p>Convenience alias for <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html">Lock&lt;SemaphoreSlim&gt;</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00080">80</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_lock_8h_source.html#l00083">83</a> of file <a class="el" href="_lock_8h_source.html">Lock.h</a>.</p>
 
 </div>
 </div>
@@ -362,7 +370,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_event_wait_handle_8cpp_source.html#l00037">37</a> of file <a class="el" href="_event_wait_handle_8cpp_source.html">EventWaitHandle.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00010">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_event_wait_handle_8cpp_source.html#l00037">OpenOrCreateWin32Event()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00021">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_event_wait_handle_8cpp_source.html#l00037">OpenOrCreateWin32Event()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_event_wait_handle_8cpp_source.html#l00037">OpenOrCreateWin32Event()</a>.</p>
 
@@ -409,7 +417,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_mutex_8cpp_source.html#l00041">41</a> of file <a class="el" href="_mutex_8cpp_source.html">Mutex.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00010">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_mutex_8cpp_source.html#l00041">OpenOrCreateWin32Mutex()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00021">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_mutex_8cpp_source.html#l00041">OpenOrCreateWin32Mutex()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_mutex_8cpp_source.html#l00041">OpenOrCreateWin32Mutex()</a>.</p>
 
@@ -461,7 +469,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_semaphore_8cpp_source.html#l00038">38</a> of file <a class="el" href="_semaphore_8cpp_source.html">Semaphore.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00010">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00038">OpenOrCreateWin32Semaphore()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_wait_handle_cannot_be_opened_exception_8h_source.html#l00021">DotNetDupe::System::Threading::WaitHandleCannotBeOpenedException::WaitHandleCannotBeOpenedException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00038">OpenOrCreateWin32Semaphore()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_semaphore_8cpp_source.html#l00038">OpenOrCreateWin32Semaphore()</a>.</p>
 
@@ -507,7 +515,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_semaphore_8cpp_source.html#l00148">148</a> of file <a class="el" href="_semaphore_8cpp_source.html">Semaphore.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_semaphore_full_exception_8h_source.html#l00009">DotNetDupe::System::Threading::SemaphoreFullException::SemaphoreFullException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00148">ReleaseSemaphoreCv()</a>.</p>
+<p class="reference">References <a class="el" href="_semaphore_full_exception_8h_source.html#l00021">DotNetDupe::System::Threading::SemaphoreFullException::SemaphoreFullException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00148">ReleaseSemaphoreCv()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_semaphore_8cpp_source.html#l00175">DotNetDupe::System::Threading::Semaphore::Release()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00148">ReleaseSemaphoreCv()</a>.</p>
 
@@ -627,7 +635,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_event_wait_handle_8cpp_source.html#l00162">162</a> of file <a class="el" href="_event_wait_handle_8cpp_source.html">EventWaitHandle.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00015">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_event_wait_handle_8cpp_source.html#l00154">WaitForEventCv()</a>.</p>
+<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00020">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_event_wait_handle_8cpp_source.html#l00154">WaitForEventCv()</a>.</p>
 
 </div>
 </div>
@@ -666,7 +674,7 @@ Variables</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_semaphore_8cpp_source.html#l00139">139</a> of file <a class="el" href="_semaphore_8cpp_source.html">Semaphore.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00015">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00139">WaitForSemaphoreCv()</a>.</p>
+<p class="reference">References <a class="el" href="_timeout_exception_8h_source.html#l00020">DotNetDupe::System::TimeoutException::TimeoutException()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00139">WaitForSemaphoreCv()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_semaphore_8cpp_source.html#l00139">WaitForSemaphoreCv()</a>, and <a class="el" href="_semaphore_8cpp_source.html#l00160">DotNetDupe::System::Threading::Semaphore::WaitOne()</a>.</p>
 
@@ -693,9 +701,9 @@ Variables</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_auto_reset_event_8cpp_source.html#l00016">16</a> of file <a class="el" href="_auto_reset_event_8cpp_source.html">AutoResetEvent.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_auto_reset_event_8cpp_source.html#l00018">18</a> of file <a class="el" href="_auto_reset_event_8cpp_source.html">AutoResetEvent.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_auto_reset_event_8cpp_source.html#l00020">DotNetDupe::System::Threading::AutoResetEvent::AutoResetEvent()</a>, and <a class="el" href="_auto_reset_event_8cpp_source.html#l00017">DotNetDupe::System::Threading::AutoResetEvent::AutoResetEvent()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_auto_reset_event_8cpp_source.html#l00024">DotNetDupe::System::Threading::AutoResetEvent::AutoResetEvent()</a>, and <a class="el" href="_auto_reset_event_8cpp_source.html#l00019">DotNetDupe::System::Threading::AutoResetEvent::AutoResetEvent()</a>.</p>
 
 </div>
 </div>

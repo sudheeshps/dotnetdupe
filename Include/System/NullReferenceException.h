@@ -1,3 +1,8 @@
+/// \file NullReferenceException.h
+/// \brief Defines the exception thrown when there is an attempt to dereference a null object reference.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

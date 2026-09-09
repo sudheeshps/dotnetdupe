@@ -1,3 +1,6 @@
+/// \file SmartPointer.h
+/// \brief Provides reference-counted and weak pointer memory management primitives ensuring zero raw ownership.
+
 #pragma once
 
 #include "Common.h"

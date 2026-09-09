@@ -1,3 +1,8 @@
+/// \file TimeProvider.h
+/// \brief Provides an abstraction for time, timestamps, and elapsed time calculation.
+///
+/// Standard Citation: .NET 8 System.TimeProvider.
+
 #pragma once
 
 #include "Common.h"

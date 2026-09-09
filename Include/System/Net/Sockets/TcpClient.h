@@ -1,3 +1,8 @@
+/// \file TcpClient.h
+/// \brief Provides client connections for TCP network services.
+///
+/// Standard Citation: RFC 793 Transmission Control Protocol.
+
 #pragma once
 
 #include "Common.h"

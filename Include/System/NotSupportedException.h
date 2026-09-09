@@ -1,3 +1,8 @@
+/// \file NotSupportedException.h
+/// \brief Defines the exception thrown when an invoked method or stream operation is not supported.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

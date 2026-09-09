@@ -137,6 +137,7 @@ Classes</h2></td></tr>
 <tr class="memitem:JsonElement" id="r_JsonElement"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html">JsonElement</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents a specific JSON value within a JsonDocument or object hierarchy.  <a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html#details">More...</a><br /></td></tr>
 <tr class="memitem:JsonException" id="r_JsonException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_exception.html">JsonException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_exception.html" title="Represents errors that occur during application execution.">Exception</a> thrown during JSON serialization or deserialization per RFC 8259.  <a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:JsonSerializer" id="r_JsonSerializer"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html">JsonSerializer</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides functionality to serialize objects to JSON strings and deserialize JSON strings to objects.  <a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
@@ -196,7 +197,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a5d60994a11a8c08ce95bb3c913a563e4abbb93ef26e3c101ff11cdd21cab08a94" name="a5d60994a11a8c08ce95bb3c913a563e4abbb93ef26e3c101ff11cdd21cab08a94"></a>Null&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8h_source.html#l00016">16</a> of file <a class="el" href="_json_element_8h_source.html">JsonElement.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8h_source.html#l00021">21</a> of file <a class="el" href="_json_element_8h_source.html">JsonElement.h</a>.</p>
 
 </div>
 </div>
@@ -223,12 +224,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Escape control characters and enclose string in JSON quotes.</p>
 
 <p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00032">32</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_json_element_8cpp_source.html#l00032">EscapeString()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00032">EscapeString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00415">FormatJsonObject()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00434">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00032">EscapeString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00450">FormatJsonObject()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00471">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
 
 </div>
 </div>
@@ -254,12 +256,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Format array elements into serialized JSON array string.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00406">406</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00440">440</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_json_element_8cpp_source.html#l00406">FormatJsonArray()</a>, and <a class="el" href="_list_8h_source.html#l00089">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::GetCount()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_json_element_8cpp_source.html#l00440">FormatJsonArray()</a>, and <a class="el" href="_list_8h_source.html#l00100">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::GetCount()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00406">FormatJsonArray()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00434">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00440">FormatJsonArray()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00471">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
 
 </div>
 </div>
@@ -285,12 +288,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Format numeric value with integer truncation check.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00427">427</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00463">463</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00427">FormatJsonNumber()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00463">FormatJsonNumber()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00427">FormatJsonNumber()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00434">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00463">FormatJsonNumber()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00471">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
 
 </div>
 </div>
@@ -316,12 +320,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Format key-value pairs into serialized JSON object string.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00415">415</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00450">450</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_json_element_8cpp_source.html#l00032">EscapeString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00415">FormatJsonObject()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_json_element_8cpp_source.html#l00032">EscapeString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00450">FormatJsonObject()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, and <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00415">FormatJsonObject()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00434">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00450">FormatJsonObject()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00471">DotNetDupe::System::Text::Json::JsonElement::ToString()</a>.</p>
 
 </div>
 </div>

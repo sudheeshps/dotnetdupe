@@ -1,3 +1,6 @@
+/// \file Lock.h
+/// \brief Provides an RAII-style scoped lock wrapper around synchronization primitives.
+
 #pragma once
 #include "Common.h"
 #include "System/Threading/CriticalSection.h"

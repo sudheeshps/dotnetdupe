@@ -1,3 +1,8 @@
+/// \file TimeZone.h
+/// \brief Represents a time zone.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

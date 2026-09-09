@@ -1,3 +1,8 @@
+/// \file OperationCanceledException.h
+/// \brief Defines the exception thrown in a thread upon cancellation of an operation that the thread was executing.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

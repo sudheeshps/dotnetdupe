@@ -1,3 +1,8 @@
+/// \file JsonElement.h
+/// \brief Represents a specific JSON value within a JsonDocument.
+///
+/// Standard Citation: RFC 8259 The JavaScript Object Notation (JSON) Data Interchange Format.
+
 #pragma once
 
 #include "Common.h"

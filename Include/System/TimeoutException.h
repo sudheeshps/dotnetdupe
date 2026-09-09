@@ -1,3 +1,8 @@
+/// \file TimeoutException.h
+/// \brief Defines the exception thrown when the time allotted for a process or operation has expired.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/SystemException.h"
 

@@ -1,3 +1,8 @@
+/// \file IServiceProvider.h
+/// \brief Defines a mechanism for retrieving a service object; that is, an object that provides custom support to other objects.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

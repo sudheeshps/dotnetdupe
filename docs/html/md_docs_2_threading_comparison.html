@@ -161,7 +161,7 @@ Example</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Feature  </th><th class="markdownTableHeadLeft">Standard C++ (STL)  </th><th class="markdownTableHeadLeft"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;mutex&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_mutex_8h.html">System/Threading/Mutex.h</a>"</span>  </td></tr>
+<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;mutex&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_mutex_8h.html" title="A synchronization primitive that can also be used for interprocess synchronization.">System/Threading/Mutex.h</a>"</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Class</b>  </td><td class="markdownTableBodyLeft"><span class="tt">std::mutex</span>  </td><td class="markdownTableBodyLeft"><span class="tt">Mutex</span>  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -198,7 +198,7 @@ Example</h2>
 <div class="line">    MutexLock lock(m);</div>
 <div class="line">    <span class="comment">// safe</span></div>
 <div class="line">}</div>
-<div class="ttc" id="a_lock_8h_html"><div class="ttname"><a href="_lock_8h.html">Lock.h</a></div></div>
+<div class="ttc" id="a_lock_8h_html"><div class="ttname"><a href="_lock_8h.html">Lock.h</a></div><div class="ttdoc">Provides an RAII-style scoped lock wrapper around synchronization primitives.</div></div>
 </div><!-- fragment --><h2 class="doxsection"><a class="anchor" id="autotoc_md1764"></a>
 Example</h2>
 <p><b>STL:</b> </p><div class="fragment"><div class="line">std::mutex m;</div>
@@ -216,7 +216,7 @@ Example</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Feature  </th><th class="markdownTableHeadLeft">Standard C++ (STL)  </th><th class="markdownTableHeadLeft"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;mutex&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_critical_section_8h.html">System/Threading/CriticalSection.h</a>"</span>  </td></tr>
+<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;mutex&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_critical_section_8h.html" title="Provides a re-entrant mutual exclusion primitive for thread synchronization.">System/Threading/CriticalSection.h</a>"</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Class</b>  </td><td class="markdownTableBodyLeft"><span class="tt">std::recursive_mutex</span>  </td><td class="markdownTableBodyLeft"><span class="tt">CriticalSection</span>  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -241,7 +241,7 @@ Example</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Feature  </th><th class="markdownTableHeadLeft">Standard C++ (STL)  </th><th class="markdownTableHeadLeft"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;condition_variable&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_manual_reset_event_8h.html">System/Threading/ManualResetEvent.h</a>"</span>  </td></tr>
+<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;condition_variable&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_manual_reset_event_8h.html" title="Notifies one or more waiting threads that an event has occurred.">System/Threading/ManualResetEvent.h</a>"</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Wait</b>  </td><td class="markdownTableBodyLeft"><span class="tt">cv.wait(lk, []{ return signaled; });</span>  </td><td class="markdownTableBodyLeft"><span class="tt">mre.WaitOne();</span>  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -281,7 +281,7 @@ Example</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Feature  </th><th class="markdownTableHeadLeft">Standard C++ (STL)  </th><th class="markdownTableHeadLeft"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;semaphore&gt;</span> (C++20)  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_semaphore_8h.html">System/Threading/Semaphore.h</a>"</span>  </td></tr>
+<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;semaphore&gt;</span> (C++20)  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_semaphore_8h.html" title="Limits the number of threads that can access a resource or pool of resources concurrently.">System/Threading/Semaphore.h</a>"</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Wait</b>  </td><td class="markdownTableBodyLeft"><span class="tt">s.acquire();</span>  </td><td class="markdownTableBodyLeft"><span class="tt">s.WaitOne();</span>  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -304,7 +304,7 @@ Example</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadLeft">Feature  </th><th class="markdownTableHeadLeft">Standard C++ (STL)  </th><th class="markdownTableHeadLeft"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;atomic&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_interlocked_8h.html">System/Threading/Interlocked.h</a>"</span>  </td></tr>
+<td class="markdownTableBodyLeft"><b>Header</b>  </td><td class="markdownTableBodyLeft"><span class="tt">#include &lt;atomic&gt;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">#include "<a class="el" href="_interlocked_8h.html" title="Provides atomic operations for variables that are shared by multiple threads.">System/Threading/Interlocked.h</a>"</span>  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyLeft"><b>Variable</b>  </td><td class="markdownTableBodyLeft"><span class="tt">std::atomic&lt;int&gt; counter;</span>  </td><td class="markdownTableBodyLeft"><span class="tt">Interlocked&lt;int&gt; counter;</span>  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -326,7 +326,7 @@ Example</h2>
 <div class="line">Interlocked&lt;int&gt; counter = 0;</div>
 <div class="line">counter++;  <span class="comment">// Atomic increment via operator++</span></div>
 <div class="line">counter += 10; <span class="comment">// Atomic add via operator+=</span></div>
-<div class="ttc" id="a_interlocked_8h_html"><div class="ttname"><a href="_interlocked_8h.html">Interlocked.h</a></div></div>
+<div class="ttc" id="a_interlocked_8h_html"><div class="ttname"><a href="_interlocked_8h.html">Interlocked.h</a></div><div class="ttdoc">Provides atomic operations for variables that are shared by multiple threads.</div></div>
 </div><!-- fragment --> </div></div><!-- contents -->
 </div><!-- PageDoc -->
 </div><!-- doc-content -->

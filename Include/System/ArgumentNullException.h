@@ -1,3 +1,8 @@
+/// \file ArgumentNullException.h
+/// \brief Defines the exception thrown when a null reference is passed to a method that does not accept it.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/ArgumentException.h"
 

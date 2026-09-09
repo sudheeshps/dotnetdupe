@@ -223,12 +223,13 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate to recursive directory creation overload.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00062">62</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00064">64</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00062">CreateDirectory()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00064">CreateDirectory()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00062">CreateDirectory()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00064">CreateDirectory()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
 
 </div>
 </div>
@@ -267,10 +268,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate path parameter.</p>
+<p>Step: Create single or recursive directories.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00066">66</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00069">69</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -304,12 +307,13 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Forward: Delegate to non-recursive delete.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00081">81</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00086">86</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00081">Delete()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00086">Delete()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00081">Delete()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00086">Delete()</a>.</p>
 
 </div>
 </div>
@@ -348,10 +352,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate directory existence.</p>
+<p>Step: Remove directory or subtree.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00085">85</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00091">91</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -386,12 +392,14 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if sPath refers to an existing directory; otherwise, false. </dd></dl>
+<p>Guard: Check for empty path.</p>
+<p>Return: Filesystem directory existence check.</p>
 
 <p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00056">56</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00145">GetDirectories()</a>, <a class="el" href="_directory_8cpp_source.html#l00120">GetFiles()</a>, <a class="el" href="_directory_8cpp_source.html#l00170">GetFileSystemEntries()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00160">GetDirectories()</a>, <a class="el" href="_directory_8cpp_source.html#l00131">GetFiles()</a>, <a class="el" href="_directory_8cpp_source.html#l00189">GetFileSystemEntries()</a>, and <a class="el" href="_file_logger_provider_8cpp_source.html#l00019">DotNetDupe::Extensions::Logging::ResolveAndPrepareLogPath()</a>.</p>
 
 </div>
 </div>
@@ -419,10 +427,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets the creation date and time of a directory. </p>
+<p>Forward: Delegate to GetLastWriteTime.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00213">213</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00239">239</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00217">GetLastWriteTime()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00244">GetLastWriteTime()</a>.</p>
 
 </div>
 </div>
@@ -451,8 +460,9 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Gets the current working directory of the application. </p>
 <dl class="section return"><dt>Returns</dt><dd>A string that contains the path of the current working directory. </dd></dl>
+<p>Step: Query current working directory from filesystem.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00189">189</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00211">211</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>.</p>
 
@@ -489,12 +499,13 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An array of the full names (including paths) for the subdirectories. </dd></dl>
+<p>Forward: Delegate with wildcard pattern "*".</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00141">141</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00155">155</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00141">GetDirectories()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00155">GetDirectories()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00141">GetDirectories()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00155">GetDirectories()</a>.</p>
 
 </div>
 </div>
@@ -526,8 +537,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the names of subdirectories (including their paths) matching pattern. </p>
+<p>Guard: Validate directory existence.</p>
+<p>Step: Iterate entries and collect matching directories.</p>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a> of matching directory paths.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00145">145</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00160">160</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_directory_8cpp_source.html#l00056">Exists()</a>.</p>
 
@@ -557,10 +571,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the volume information, root information, or both for the specified path. </p>
+<p>Forward: Delegate to <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a8e814f2cd3288ccbd70c8d4df8b66d6d" title="Gets the root directory information from the path contained in the specified string.">Path::GetPathRoot</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00209">209</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00234">234</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00166">DotNetDupe::System::IO::Path::GetPathRoot()</a>.</p>
+<p class="reference">References <a class="el" href="_path_8cpp_source.html#l00187">DotNetDupe::System::IO::Path::GetPathRoot()</a>.</p>
 
 </div>
 </div>
@@ -595,12 +610,13 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An array of the full names (including paths) for the files in the specified directory. </dd></dl>
+<p>Forward: Delegate with wildcard pattern "*".</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00116">116</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00126">126</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00116">GetFiles()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00126">GetFiles()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00116">GetFiles()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00126">GetFiles()</a>.</p>
 
 </div>
 </div>
@@ -640,8 +656,11 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An array of the full names (including paths) for the files matching pattern. </dd></dl>
+<p>Guard: Validate directory existence.</p>
+<p>Step: Iterate entries and collect matching files.</p>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a> of matching file paths.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00120">120</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00131">131</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_directory_8cpp_source.html#l00056">Exists()</a>.</p>
 
@@ -671,12 +690,13 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the names of all files and subdirectories in the specified directory. </p>
+<p>Forward: Delegate with wildcard pattern "*".</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00166">166</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00184">184</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00166">GetFileSystemEntries()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00184">GetFileSystemEntries()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00166">GetFileSystemEntries()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00184">GetFileSystemEntries()</a>.</p>
 
 </div>
 </div>
@@ -708,8 +728,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the names of all files and subdirectories matching pattern. </p>
+<p>Guard: Validate directory existence.</p>
+<p>Step: Iterate entries and collect matching items.</p>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a> of matching entry paths.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00170">170</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00189">189</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_directory_8cpp_source.html#l00056">Exists()</a>.</p>
 
@@ -739,10 +762,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the date and time the specified file or directory was last accessed. </p>
+<p>Forward: Delegate to GetLastWriteTime.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00226">226</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00254">254</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00217">GetLastWriteTime()</a>.</p>
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00244">GetLastWriteTime()</a>.</p>
 
 </div>
 </div>
@@ -770,10 +794,11 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Returns the date and time the specified file or directory was last written to. </p>
+<p>Step: Query filesystem last write time.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00217">217</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00244">244</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00213">GetCreationTime()</a>, and <a class="el" href="_directory_8cpp_source.html#l00226">GetLastAccessTime()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00239">GetCreationTime()</a>, and <a class="el" href="_directory_8cpp_source.html#l00254">GetLastAccessTime()</a>.</p>
 
 </div>
 </div>
@@ -812,10 +837,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate directory names.</p>
+<p>Step: Rename directory path.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00105">105</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00113">113</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -849,10 +876,12 @@ Additional Inherited Members</h2></td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate target path.</p>
+<p>Step: Set current working directory.</p>
 
-<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00198">198</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00221">221</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>

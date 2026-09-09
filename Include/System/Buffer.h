@@ -1,3 +1,8 @@
+/// \file Buffer.h
+/// \brief Manipulates arrays of primitive types at byte-level boundaries.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

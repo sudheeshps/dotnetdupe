@@ -1,3 +1,8 @@
+/// \file PlatformNotSupportedException.h
+/// \brief Defines the exception thrown when a feature does not run on a particular platform.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/NotSupportedException.h"
 

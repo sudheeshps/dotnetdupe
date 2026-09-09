@@ -1,3 +1,8 @@
+/// \file EventArgs.h
+/// \brief Represents the base class for classes that contain event data.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "Common.h"
 #include "System/Object.h"

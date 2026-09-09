@@ -1,3 +1,8 @@
+/// \file TextEncoding.h
+/// \brief Represents character encodings and code page conversions.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

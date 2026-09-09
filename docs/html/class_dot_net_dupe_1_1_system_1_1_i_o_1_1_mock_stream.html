@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Controllable stream implementation for unit testing <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html">IO</a> consumers.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_mock_stream_8h_source.html">MockStream.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::IO::MockStream:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -131,7 +134,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa09e95fd77af21d3b950ba13442f9d85" id="r_aa09e95fd77af21d3b950ba13442f9d85"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aa09e95fd77af21d3b950ba13442f9d85">MockStream</a> (bool bCanRead=true, bool bCanWrite=true, bool bCanSeek=true)</td></tr>
+<tr class="memdesc:aa09e95fd77af21d3b950ba13442f9d85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html" title="Controllable stream implementation for unit testing IO consumers.">MockStream</a> with configurable capabilities.  <br /></td></tr>
 <tr class="memitem:a20fe7c7881ca0d726564d732cf40d06d" id="r_a20fe7c7881ca0d726564d732cf40d06d"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a20fe7c7881ca0d726564d732cf40d06d">~MockStream</a> () override</td></tr>
+<tr class="memdesc:a20fe7c7881ca0d726564d732cf40d06d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html" title="Controllable stream implementation for unit testing IO consumers.">MockStream</a>.  <br /></td></tr>
 <tr class="memitem:ab1453c0d9ab4fb79c6c9c5332fca8022" id="r_ab1453c0d9ab4fb79c6c9c5332fca8022"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ab1453c0d9ab4fb79c6c9c5332fca8022">CanRead</a> () const override</td></tr>
 <tr class="memdesc:ab1453c0d9ab4fb79c6c9c5332fca8022"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a value indicating whether the current stream supports reading.  <br /></td></tr>
 <tr class="memitem:a23b1df60217e0c8d95eb9406cc2e4222" id="r_a23b1df60217e0c8d95eb9406cc2e4222"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a23b1df60217e0c8d95eb9406cc2e4222">CanSeek</a> () const override</td></tr>
@@ -139,29 +144,35 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a990aba6bc53611381a4d484596f9be48" id="r_a990aba6bc53611381a4d484596f9be48"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a990aba6bc53611381a4d484596f9be48">CanWrite</a> () const override</td></tr>
 <tr class="memdesc:a990aba6bc53611381a4d484596f9be48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a value indicating whether the current stream supports writing.  <br /></td></tr>
 <tr class="memitem:a2657855c2c97fe7a60579ca1dc8ce7a4" id="r_a2657855c2c97fe7a60579ca1dc8ce7a4"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2657855c2c97fe7a60579ca1dc8ce7a4">Dispose</a> () override</td></tr>
-<tr class="memdesc:a2657855c2c97fe7a60579ca1dc8ce7a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">Stream</a>.  <br /></td></tr>
+<tr class="memdesc:a2657855c2c97fe7a60579ca1dc8ce7a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Closes and releases all resources associated with the stream.  <br /></td></tr>
 <tr class="memitem:a0bebd5f88ca11e69e9bd683f664044b4" id="r_a0bebd5f88ca11e69e9bd683f664044b4"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0bebd5f88ca11e69e9bd683f664044b4">Flush</a> () override</td></tr>
-<tr class="memdesc:a0bebd5f88ca11e69e9bd683f664044b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all buffers for this stream and causes any buffered data to be written to the underlying device.  <br /></td></tr>
+<tr class="memdesc:a0bebd5f88ca11e69e9bd683f664044b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all buffers for this stream.  <br /></td></tr>
 <tr class="memitem:a694dea4304b4d577876b7171428ced7b" id="r_a694dea4304b4d577876b7171428ced7b"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a694dea4304b4d577876b7171428ced7b">GetLength</a> () const override</td></tr>
 <tr class="memdesc:a694dea4304b4d577876b7171428ced7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length in bytes of the stream.  <br /></td></tr>
 <tr class="memitem:afbfb5dfc9a7a71d6295a8992246b3f79" id="r_afbfb5dfc9a7a71d6295a8992246b3f79"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#afbfb5dfc9a7a71d6295a8992246b3f79">GetPosition</a> () const override</td></tr>
-<tr class="memdesc:afbfb5dfc9a7a71d6295a8992246b3f79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position within the current stream.  <br /></td></tr>
+<tr class="memdesc:afbfb5dfc9a7a71d6295a8992246b3f79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current position within the stream.  <br /></td></tr>
 <tr class="memitem:a8456ff32ae652099a7138d53e2ed638f" id="r_a8456ff32ae652099a7138d53e2ed638f"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a8456ff32ae652099a7138d53e2ed638f">IsDisposed</a> () const</td></tr>
+<tr class="memdesc:a8456ff32ae652099a7138d53e2ed638f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks whether the stream has been disposed.  <br /></td></tr>
 <tr class="memitem:a175c83faaf8ab551e518bf9a3a53cd90" id="r_a175c83faaf8ab551e518bf9a3a53cd90"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a175c83faaf8ab551e518bf9a3a53cd90">Read</a> (char *pBuffer, int iOffset, int iCount) override</td></tr>
-<tr class="memdesc:a175c83faaf8ab551e518bf9a3a53cd90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.  <br /></td></tr>
+<tr class="memdesc:a175c83faaf8ab551e518bf9a3a53cd90"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a sequence of bytes from the current stream.  <br /></td></tr>
 <tr class="memitem:a232050c9606361777124ab17ab134540" id="r_a232050c9606361777124ab17ab134540"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a232050c9606361777124ab17ab134540">Seek</a> (long lOffset, int iOrigin) override</td></tr>
 <tr class="memdesc:a232050c9606361777124ab17ab134540"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream.  <br /></td></tr>
 <tr class="memitem:a461d4c2ef8c54d0ee27c3f6e2c68bf4e" id="r_a461d4c2ef8c54d0ee27c3f6e2c68bf4e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a461d4c2ef8c54d0ee27c3f6e2c68bf4e">SetCanRead</a> (bool bCanRead)</td></tr>
+<tr class="memdesc:a461d4c2ef8c54d0ee27c3f6e2c68bf4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether read operations are supported.  <br /></td></tr>
 <tr class="memitem:a3e45c082c49d648b2f9f9adaf9137613" id="r_a3e45c082c49d648b2f9f9adaf9137613"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3e45c082c49d648b2f9f9adaf9137613">SetCanSeek</a> (bool bCanSeek)</td></tr>
+<tr class="memdesc:a3e45c082c49d648b2f9f9adaf9137613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether seeking is supported.  <br /></td></tr>
 <tr class="memitem:a3f23beaab66fb0af0f5f0ece5c6247bd" id="r_a3f23beaab66fb0af0f5f0ece5c6247bd"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3f23beaab66fb0af0f5f0ece5c6247bd">SetCanWrite</a> (bool bCanWrite)</td></tr>
+<tr class="memdesc:a3f23beaab66fb0af0f5f0ece5c6247bd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether write operations are supported.  <br /></td></tr>
 <tr class="memitem:acbe12d9d8e4a70d7ec7fad952e01622a" id="r_acbe12d9d8e4a70d7ec7fad952e01622a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#acbe12d9d8e4a70d7ec7fad952e01622a">SetLength</a> (long lValue) override</td></tr>
 <tr class="memdesc:acbe12d9d8e4a70d7ec7fad952e01622a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the length of the current stream.  <br /></td></tr>
 <tr class="memitem:a889d116d80d7efdb4ce132c5064bde7a" id="r_a889d116d80d7efdb4ce132c5064bde7a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a889d116d80d7efdb4ce132c5064bde7a">SetPosition</a> (long lValue) override</td></tr>
-<tr class="memdesc:a889d116d80d7efdb4ce132c5064bde7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream.  <br /></td></tr>
+<tr class="memdesc:a889d116d80d7efdb4ce132c5064bde7a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current position within the stream.  <br /></td></tr>
 <tr class="memitem:a84f755e2f78388d255a8800e72a92165" id="r_a84f755e2f78388d255a8800e72a92165"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a84f755e2f78388d255a8800e72a92165">SetThrowOnRead</a> (bool bThrow)</td></tr>
+<tr class="memdesc:a84f755e2f78388d255a8800e72a92165"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures whether future read operations throw an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a>.  <br /></td></tr>
 <tr class="memitem:a8a3e5cd70f9a7bb109838b300bb6943c" id="r_a8a3e5cd70f9a7bb109838b300bb6943c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a8a3e5cd70f9a7bb109838b300bb6943c">SetThrowOnWrite</a> (bool bThrow)</td></tr>
+<tr class="memdesc:a8a3e5cd70f9a7bb109838b300bb6943c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures whether future write operations throw an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a>.  <br /></td></tr>
 <tr class="memitem:a2f8077f44fcd70d2e687e8bb413761b0" id="r_a2f8077f44fcd70d2e687e8bb413761b0"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2f8077f44fcd70d2e687e8bb413761b0">Write</a> (const char *pBuffer, int iOffset, int iCount) override</td></tr>
-<tr class="memdesc:a2f8077f44fcd70d2e687e8bb413761b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.  <br /></td></tr>
+<tr class="memdesc:a2f8077f44fcd70d2e687e8bb413761b0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a sequence of bytes to the current stream.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html">DotNetDupe::System::IO::Stream</a></td></tr>
 <tr class="memitem:a26160e2fb22648bdbfb7255b94e11da1 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream" id="r_a26160e2fb22648bdbfb7255b94e11da1"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a26160e2fb22648bdbfb7255b94e11da1">~Stream</a> ()=default</td></tr>
 <tr class="memdesc:a26160e2fb22648bdbfb7255b94e11da1 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring proper polymorphic destruction.  <br /></td></tr>
@@ -189,8 +200,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8h_source.html#l00012">12</a> of file <a class="el" href="_mock_stream_8h_source.html">MockStream.h</a>.</p>
+<div class="textblock"><p>Controllable stream implementation for unit testing <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html">IO</a> consumers. </p>
+<p><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html" title="Controllable stream implementation for unit testing IO consumers.">MockStream</a> provides configurable capabilities (CanRead, CanWrite, CanSeek) and simulated failure modes (SetThrowOnRead, SetThrowOnWrite) to facilitate deterministic testing of stream readers, writers, and pipelines. </p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8h_source.html#l00020">20</a> of file <a class="el" href="_mock_stream_8h_source.html">MockStream.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa09e95fd77af21d3b950ba13442f9d85" name="aa09e95fd77af21d3b950ba13442f9d85"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa09e95fd77af21d3b950ba13442f9d85">&#9670;&#160;</a></span>MockStream()</h2>
@@ -215,6 +228,17 @@ Additional Inherited Members</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html" title="Controllable stream implementation for unit testing IO consumers.">MockStream</a> with configurable capabilities. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bCanRead</td><td>Whether read operations are permitted. </td></tr>
+    <tr><td class="paramname">bCanWrite</td><td>Whether write operations are permitted. </td></tr>
+    <tr><td class="paramname">bCanSeek</td><td>Whether seek operations are permitted. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Initialize mock stream state and capabilities.</p>
 
 <p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00022">22</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
@@ -243,7 +267,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00033">33</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Releases resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html" title="Controllable stream implementation for unit testing IO consumers.">MockStream</a>. </p>
+<p>Step: Release allocated implementation memory.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00034">34</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -272,11 +299,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets a value indicating whether the current stream supports reading. </p>
-<dl class="section return"><dt>Returns</dt><dd>true if the stream supports reading; otherwise, false. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if reading is supported; otherwise false. </dd></dl>
+<p>Return: True if readable and not disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a7e9b30dd6f5f2d05e93460be0be84755">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00044">44</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00069">69</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -304,11 +332,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets a value indicating whether the current stream supports seeking. </p>
-<dl class="section return"><dt>Returns</dt><dd>true if the stream supports seeking; otherwise, false. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if seeking is supported; otherwise false. </dd></dl>
+<p>Return: True if seekable and not disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#ab63295d0d4b1ad615d5b2a8467e6c554">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00045">45</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00074">74</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -336,11 +365,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets a value indicating whether the current stream supports writing. </p>
-<dl class="section return"><dt>Returns</dt><dd>true if the stream supports writing; otherwise, false. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>True if writing is supported; otherwise false. </dd></dl>
+<p>Return: True if writable and not disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a89a020a3f01d575035c355b62b5deedf">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00046">46</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00079">79</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -367,11 +397,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Releases all resources used by the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">Stream</a>. </p>
+<p>Closes and releases all resources associated with the stream. </p>
+<p>Step: Mark stream instance as disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#accbff5faa5b56481a45700892068e0ed">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00122">122</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00176">176</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -398,11 +429,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Clears all buffers for this stream and causes any buffered data to be written to the underlying device. </p>
+<p>Clears all buffers for this stream. </p>
+<p>Guard: Check if disposed.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a5c5dfb4d26fc3df43578dc9d41db23fe">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00064">64</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00106">106</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -432,17 +464,13 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Gets the length in bytes of the stream. </p>
-<dl class="section return"><dt>Returns</dt><dd>A long value representing the length of the stream in bytes. </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html">IOException</a></td><td>If seeking is not supported. </td></tr>
-  </table>
-  </dd>
-</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">Stream</a> length in bytes. </dd></dl>
+<p>Guard: Check if disposed.</p>
+<p>Return: Total buffer length.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a696b97ca1f371315afc35fd62994c1a6">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00048">48</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00084">84</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -471,18 +499,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Gets the position within the current stream. </p>
-<dl class="section return"><dt>Returns</dt><dd>The current position within the stream. </dd></dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html">IOException</a></td><td>If seeking is not supported. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Gets the current position within the stream. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current byte position. </dd></dl>
+<p>Guard: Check if disposed.</p>
+<p>Return: Current stream position.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a89419326fc850b9333ee6b6d5e3ff05d">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00053">53</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00091">91</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -503,7 +527,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00042">42</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Checks whether the stream has been disposed. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if disposed; otherwise false. </dd></dl>
+<p>Return: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">Stream</a> disposal state.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00064">64</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -519,17 +547,17 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">int DotNetDupe::System::IO::MockStream::Read </td>
           <td>(</td>
-          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+          <td class="paramtype">char *</td>          <td class="paramname"><span class="paramname"><em>pBuffer</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>offset</em></span>, </td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iOffset</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>count</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iCount</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -539,20 +567,23 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read. </p>
+<p>Reads a sequence of bytes from the current stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">buffer</td><td>An array of bytes to store the read data. </td></tr>
-    <tr><td class="paramname">offset</td><td>The zero-based byte offset in buffer at which to begin storing the data. </td></tr>
-    <tr><td class="paramname">count</td><td>The maximum number of bytes to be read from the current stream. </td></tr>
+    <tr><td class="paramname">pBuffer</td><td>Output buffer to receive bytes. </td></tr>
+    <tr><td class="paramname">iOffset</td><td>Offset within buffer. </td></tr>
+    <tr><td class="paramname">iCount</td><td>Maximum number of bytes to read. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The total number of bytes read into the buffer. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Total number of bytes read. </dd></dl>
+<p>Guard: Validate state, capabilities, and parameters.</p>
+<p>Step: Calculate available bytes.</p>
+<p>Step: Copy bytes into destination buffer.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#aa616ba9a72b6f675b9ad1cbb2e506492">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00068">68</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00111">111</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -570,12 +601,12 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">long DotNetDupe::System::IO::MockStream::Seek </td>
           <td>(</td>
-          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>offset</em></span>, </td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>lOffset</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>origin</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iOrigin</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -588,16 +619,19 @@ Additional Inherited Members</h2></td></tr>
 <p>Sets the position within the current stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">offset</td><td>A byte offset relative to the origin parameter. </td></tr>
-    <tr><td class="paramname">origin</td><td>A value of type SeekOrigin indicating the reference point used to obtain the new position. </td></tr>
+    <tr><td class="paramname">lOffset</td><td>Byte offset relative to origin. </td></tr>
+    <tr><td class="paramname">iOrigin</td><td>Seek origin (0=Begin, 1=Current, 2=End). </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>The new position within the current stream. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The new position within the stream. </dd></dl>
+<p>Guard: Validate state and seek capability.</p>
+<p>Step: Calculate target position relative to origin.</p>
+<p>Step: Clamp and assign new position.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a115f97e9d4c7a1e7d682b10cd593f4a7">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00085">85</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00131">131</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -618,7 +652,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00039">39</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Sets whether read operations are supported. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bCanRead</td><td>True if reading is supported; otherwise false. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Set read capability flag.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00049">49</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -637,7 +680,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00041">41</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Sets whether seeking is supported. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bCanSeek</td><td>True if seeking is supported; otherwise false. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Set seek capability flag.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00059">59</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -656,7 +708,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00040">40</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Sets whether write operations are supported. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bCanWrite</td><td>True if writing is supported; otherwise false. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Set write capability flag.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00054">54</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -672,7 +733,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void DotNetDupe::System::IO::MockStream::SetLength </td>
           <td>(</td>
-          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>lValue</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -686,14 +747,16 @@ Additional Inherited Members</h2></td></tr>
 <p>Sets the length of the current stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>The desired length of the current stream in bytes. </td></tr>
+    <tr><td class="paramname">lValue</td><td>Desired stream length in bytes. </td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate state and seek/write capabilities.</p>
+<p>Step: Resize underlying storage buffer.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a6a5a9084b834de206517bae322398773">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00099">99</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00148">148</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -711,7 +774,7 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void DotNetDupe::System::IO::MockStream::SetPosition </td>
           <td>(</td>
-          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>lValue</em></span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -722,23 +785,19 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Sets the position within the current stream. </p>
+<p>Sets the current position within the stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">value</td><td>The new position within the stream. </td></tr>
+    <tr><td class="paramname">lValue</td><td>Target position offset. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html">IOException</a></td><td>If seeking is not supported or value is negative. </td></tr>
-  </table>
-  </dd>
-</dl>
+<p>Guard: Check if disposed or seek not supported.</p>
+<p>Step: Update stream position.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a67c0bfb7a506be493733e6ef3841d15a">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00058">58</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00098">98</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 
@@ -759,7 +818,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00037">37</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Configures whether future read operations throw an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bThrow</td><td>True to throw <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a> on Read; false to operate normally. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Configure read fault injection.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00039">39</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -778,7 +846,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00038">38</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p>Configures whether future write operations throw an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bThrow</td><td>True to throw <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a> on Write; false to operate normally. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Step: Configure write fault injection.</p>
+
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00044">44</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 </div>
 </div>
@@ -794,17 +871,17 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">void DotNetDupe::System::IO::MockStream::Write </td>
           <td>(</td>
-          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>buffer</em></span>, </td>
+          <td class="paramtype">const char *</td>          <td class="paramname"><span class="paramname"><em>pBuffer</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>offset</em></span>, </td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iOffset</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>count</em></span>&#160;)</td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iCount</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -814,19 +891,22 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written. </p>
+<p>Writes a sequence of bytes to the current stream. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">buffer</td><td>An array of bytes containing data to write. </td></tr>
-    <tr><td class="paramname">offset</td><td>The zero-based byte offset in buffer at which to begin copying bytes. </td></tr>
-    <tr><td class="paramname">count</td><td>The number of bytes to be written. </td></tr>
+    <tr><td class="paramname">pBuffer</td><td><a class="el" href="class_dot_net_dupe_1_1_system_1_1_buffer.html" title="Manipulates arrays of primitive types efficiently at the byte level.">Buffer</a> containing bytes to write. </td></tr>
+    <tr><td class="paramname">iOffset</td><td>Offset within buffer. </td></tr>
+    <tr><td class="paramname">iCount</td><td>Number of bytes to write. </td></tr>
   </table>
   </dd>
 </dl>
+<p>Guard: Validate state, capabilities, and parameters.</p>
+<p>Step: Expand buffer if needed to accommodate data.</p>
+<p>Step: Copy bytes into internal storage buffer.</p>
 
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a2c62cb51e45b210084260a28c4b6ba2e">DotNetDupe::System::IO::Stream</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00105">105</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_mock_stream_8cpp_source.html#l00156">156</a> of file <a class="el" href="_mock_stream_8cpp_source.html">MockStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>.</p>
 

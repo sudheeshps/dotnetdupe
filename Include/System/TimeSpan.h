@@ -1,3 +1,8 @@
+/// \file TimeSpan.h
+/// \brief Represents a time interval.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

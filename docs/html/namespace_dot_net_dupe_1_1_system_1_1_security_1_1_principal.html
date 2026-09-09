@@ -117,7 +117,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_dot_
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:UserInfo" id="r_UserInfo"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html">UserInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents platform user account information and privileges.  <a href="struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html#details">More...</a><br /></td></tr>
 <tr class="memitem:UserPrincipal" id="r_UserPrincipal"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_principal.html">UserPrincipal</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides static methods for managing and enumerating user accounts and current process principal.  <a href="class_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_principal.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -126,6 +128,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#aaa2c27261ec7f50f0c7632d81ea0109eae3afed0047b08059d0fada10f400c1e5">Admin</a> = 2
 , <a class="el" href="#aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a">System</a> = 3
  }</td></tr>
+<tr class="memdesc:aaa2c27261ec7f50f0c7632d81ea0109e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines user account classification categories.  <a href="#aaa2c27261ec7f50f0c7632d81ea0109e">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -157,14 +160,20 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Defines user account classification categories. </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eaadb831a7fdd83dd1e2a309ce7591dff8" name="aaa2c27261ec7f50f0c7632d81ea0109eaadb831a7fdd83dd1e2a309ce7591dff8"></a>Guest&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109ea960b44c579bc2f6818d2daaf9e4c16f0" name="aaa2c27261ec7f50f0c7632d81ea0109ea960b44c579bc2f6818d2daaf9e4c16f0"></a>Normal&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eae3afed0047b08059d0fada10f400c1e5" name="aaa2c27261ec7f50f0c7632d81ea0109eae3afed0047b08059d0fada10f400c1e5"></a>Admin&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a" name="aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a"></a>System&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eaadb831a7fdd83dd1e2a309ce7591dff8" name="aaa2c27261ec7f50f0c7632d81ea0109eaadb831a7fdd83dd1e2a309ce7591dff8"></a>Guest&#160;</td><td class="fielddoc"><p>Guest or anonymous account. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109ea960b44c579bc2f6818d2daaf9e4c16f0" name="aaa2c27261ec7f50f0c7632d81ea0109ea960b44c579bc2f6818d2daaf9e4c16f0"></a>Normal&#160;</td><td class="fielddoc"><p>Standard authenticated user account. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eae3afed0047b08059d0fada10f400c1e5" name="aaa2c27261ec7f50f0c7632d81ea0109eae3afed0047b08059d0fada10f400c1e5"></a>Admin&#160;</td><td class="fielddoc"><p>Administrative or root user account. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a" name="aaa2c27261ec7f50f0c7632d81ea0109eaa45da96d0bf6575970f2d27af22be28a"></a>System&#160;</td><td class="fielddoc"><p><a class="el" href="namespace_dot_net_dupe_1_1_system.html">System</a> service or daemon account. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00013">13</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8h_source.html#l00018">18</a> of file <a class="el" href="_user_principal_8h_source.html">UserPrincipal.h</a>.</p>
 
 </div>
 </div>
@@ -191,12 +200,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Build <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html" title="Represents platform user account information and privileges.">UserInfo</a> struct from Win32 USER_INFO_1 record.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00084">84</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00090">90</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_user_principal_8h_source.html#l00016">Admin</a>, <a class="el" href="_user_principal_8h_source.html#l00027">DotNetDupe::System::Security::Principal::UserInfo::bIsAccountLocked</a>, <a class="el" href="_user_principal_8h_source.html#l00025">DotNetDupe::System::Security::Principal::UserInfo::bIsDisabled</a>, <a class="el" href="_user_principal_8h_source.html#l00026">DotNetDupe::System::Security::Principal::UserInfo::bIsPasswordRequired</a>, <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00039">ClassifyWindowsUser()</a>, <a class="el" href="_user_principal_8h_source.html#l00024">DotNetDupe::System::Security::Principal::UserInfo::eUserClass</a>, <a class="el" href="_user_principal_8h_source.html#l00028">DotNetDupe::System::Security::Principal::UserInfo::lstGroups</a>, <a class="el" href="_user_principal_8h_source.html#l00029">DotNetDupe::System::Security::Principal::UserInfo::lstPermissions</a>, <a class="el" href="_user_principal_8cpp_source.html#l00065">PopulateWin32SidAndDomain()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00046">PopulateWin32UserGroups()</a>, <a class="el" href="_user_principal_8h_source.html#l00022">DotNetDupe::System::Security::Principal::UserInfo::sDomain</a>, <a class="el" href="_user_principal_8h_source.html#l00023">DotNetDupe::System::Security::Principal::UserInfo::sSidOrUid</a>, <a class="el" href="_user_principal_8h_source.html#l00021">DotNetDupe::System::Security::Principal::UserInfo::sUsername</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
+<p class="reference">References <a class="el" href="_user_principal_8h_source.html#l00021">Admin</a>, <a class="el" href="_user_principal_8h_source.html#l00034">DotNetDupe::System::Security::Principal::UserInfo::bIsAccountLocked</a>, <a class="el" href="_user_principal_8h_source.html#l00032">DotNetDupe::System::Security::Principal::UserInfo::bIsDisabled</a>, <a class="el" href="_user_principal_8h_source.html#l00033">DotNetDupe::System::Security::Principal::UserInfo::bIsPasswordRequired</a>, <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00041">ClassifyWindowsUser()</a>, <a class="el" href="_user_principal_8h_source.html#l00031">DotNetDupe::System::Security::Principal::UserInfo::eUserClass</a>, <a class="el" href="_user_principal_8h_source.html#l00035">DotNetDupe::System::Security::Principal::UserInfo::lstGroups</a>, <a class="el" href="_user_principal_8h_source.html#l00036">DotNetDupe::System::Security::Principal::UserInfo::lstPermissions</a>, <a class="el" href="_user_principal_8cpp_source.html#l00070">PopulateWin32SidAndDomain()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00049">PopulateWin32UserGroups()</a>, <a class="el" href="_user_principal_8h_source.html#l00029">DotNetDupe::System::Security::Principal::UserInfo::sDomain</a>, <a class="el" href="_user_principal_8h_source.html#l00030">DotNetDupe::System::Security::Principal::UserInfo::sSidOrUid</a>, <a class="el" href="_user_principal_8h_source.html#l00028">DotNetDupe::System::Security::Principal::UserInfo::sUsername</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00108">EnumerateWin32Users()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00180">QueryWin32User()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00115">EnumerateWin32Users()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00191">QueryWin32User()</a>.</p>
 
 </div>
 </div>
@@ -226,12 +236,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Map Win32 account flags and privileges to <a class="el" href="#aaa2c27261ec7f50f0c7632d81ea0109e" title="Defines user account classification categories.">UserClass</a> enum.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00039">39</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00041">41</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_user_principal_8h_source.html#l00016">Admin</a>, <a class="el" href="_user_principal_8cpp_source.html#l00039">ClassifyWindowsUser()</a>, <a class="el" href="_user_principal_8h_source.html#l00014">Guest</a>, and <a class="el" href="_user_principal_8h_source.html#l00015">Normal</a>.</p>
+<p class="reference">References <a class="el" href="_user_principal_8h_source.html#l00021">Admin</a>, <a class="el" href="_user_principal_8cpp_source.html#l00041">ClassifyWindowsUser()</a>, <a class="el" href="_user_principal_8h_source.html#l00019">Guest</a>, and <a class="el" href="_user_principal_8h_source.html#l00020">Normal</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00039">ClassifyWindowsUser()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00041">ClassifyWindowsUser()</a>.</p>
 
 </div>
 </div>
@@ -257,12 +268,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Enumerate domain and local accounts via NetUserEnum.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00108">108</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00115">115</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00108">EnumerateWin32Users()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_list_8h_source.html#l00138">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00115">EnumerateWin32Users()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00167">DotNetDupe::System::Security::Principal::UserPrincipal::EnumerateUsers()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00108">EnumerateWin32Users()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00177">DotNetDupe::System::Security::Principal::UserPrincipal::EnumerateUsers()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00115">EnumerateWin32Users()</a>.</p>
 
 </div>
 </div>
@@ -288,12 +300,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Query current thread / process security context username.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00194">194</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00206">206</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00194">GetCurrentWin32UserName()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00206">GetCurrentWin32UserName()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00235">DotNetDupe::System::Security::Principal::UserPrincipal::GetCurrent()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00194">GetCurrentWin32UserName()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00251">DotNetDupe::System::Security::Principal::UserPrincipal::GetCurrent()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00206">GetCurrentWin32UserName()</a>.</p>
 
 </div>
 </div>
@@ -323,12 +336,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Lookup account SID and domain name via LookupAccountNameW.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00065">65</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00070">70</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_user_principal_8cpp_source.html#l00065">PopulateWin32SidAndDomain()</a>, <a class="el" href="_user_principal_8h_source.html#l00022">DotNetDupe::System::Security::Principal::UserInfo::sDomain</a>, <a class="el" href="_user_principal_8h_source.html#l00023">DotNetDupe::System::Security::Principal::UserInfo::sSidOrUid</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
+<p class="reference">References <a class="el" href="_user_principal_8cpp_source.html#l00070">PopulateWin32SidAndDomain()</a>, <a class="el" href="_user_principal_8h_source.html#l00029">DotNetDupe::System::Security::Principal::UserInfo::sDomain</a>, <a class="el" href="_user_principal_8h_source.html#l00030">DotNetDupe::System::Security::Principal::UserInfo::sSidOrUid</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00065">PopulateWin32SidAndDomain()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00070">PopulateWin32SidAndDomain()</a>.</p>
 
 </div>
 </div>
@@ -363,12 +377,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Query group membership via NetUserGetGroups.</p>
+<p>Step: Populate group names and member permissions.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00046">46</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00049">49</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00046">PopulateWin32UserGroups()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_list_8h_source.html#l00138">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00049">PopulateWin32UserGroups()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00012">DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00046">PopulateWin32UserGroups()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00049">PopulateWin32UserGroups()</a>.</p>
 
 </div>
 </div>
@@ -394,12 +410,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Step: Query account details via NetUserGetInfo.</p>
 
-<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00180">180</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_user_principal_8cpp_source.html#l00191">191</a> of file <a class="el" href="_user_principal_8cpp_source.html">UserPrincipal.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00015">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00084">BuildWin32UserInfo()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00180">QueryWin32User()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00033">DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar()</a>.</p>
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_exception_8cpp_source.html#l00052">DotNetDupe::System::UnauthorizedAccessException::UnauthorizedAccessException()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00090">BuildWin32UserInfo()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_user_principal_8cpp_source.html#l00191">QueryWin32User()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00033">DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00226">DotNetDupe::System::Security::Principal::UserPrincipal::GetUser()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00180">QueryWin32User()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_user_principal_8cpp_source.html#l00241">DotNetDupe::System::Security::Principal::UserPrincipal::GetUser()</a>, and <a class="el" href="_user_principal_8cpp_source.html#l00191">QueryWin32User()</a>.</p>
 
 </div>
 </div>

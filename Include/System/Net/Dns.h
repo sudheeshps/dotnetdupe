@@ -1,3 +1,8 @@
+/// \file Dns.h
+/// \brief Provides simple domain name resolution functionality.
+///
+/// Standard Citation: RFC 1035 Domain Names, RFC 3493 Basic Socket Interface Extensions for IPv6.
+
 #pragma once
 #include "Common.h"
 #include "System/String.h"

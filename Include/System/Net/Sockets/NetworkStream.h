@@ -1,3 +1,8 @@
+/// \file NetworkStream.h
+/// \brief Provides the underlying stream of data for network access.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 
 #include "Common.h"

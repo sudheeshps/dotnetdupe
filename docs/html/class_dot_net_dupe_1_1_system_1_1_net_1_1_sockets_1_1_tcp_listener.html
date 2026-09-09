@@ -177,7 +177,7 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>Listens for connections from TCP network clients. </p>
 <p>Implements server-side TCP listening services compliant with RFC 793. Handles port binding, connection queue management, non-blocking polling, and connection dispatch via AcceptTcpClient and AcceptSocket. </p>
 
-<p class="definition">Definition at line <a class="el" href="_tcp_listener_8h_source.html#l00021">21</a> of file <a class="el" href="_tcp_listener_8h_source.html">TcpListener.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_tcp_listener_8h_source.html#l00026">26</a> of file <a class="el" href="_tcp_listener_8h_source.html">TcpListener.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abce616b6c5249b8472f7fdf362ad6e3f" name="abce616b6c5249b8472f7fdf362ad6e3f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abce616b6c5249b8472f7fdf362ad6e3f">&#9670;&#160;</a></span>TcpListener() <span class="overload">[1/4]</span></h2>
@@ -340,7 +340,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket.html" title="Implements the Berkeley sockets interface.">Socket</a> used to send and receive data. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html">Sockets::SocketException</a></td><td>If the listener has not been started or accept fails. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html" title="Exception thrown when a socket error occurs during network communications.">Sockets::SocketException</a></td><td>If the listener has not been started or accept fails. </td></tr>
   </table>
   </dd>
 </dl>
@@ -374,7 +374,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_tcp_client.html" title="Provides client connections for TCP network services.">TcpClient</a> used to send and receive data. </dd></dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html">Sockets::SocketException</a></td><td>If the listener has not been started or accept fails. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html" title="Exception thrown when a socket error occurs during network communications.">Sockets::SocketException</a></td><td>If the listener has not been started or accept fails. </td></tr>
   </table>
   </dd>
 </dl>
@@ -383,7 +383,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_tcp_listener_8cpp_source.html#l00069">69</a> of file <a class="el" href="_tcp_listener_8cpp_source.html">TcpListener.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00071">DotNetDupe::System::SmartPointer&lt; T &gt;::SmartPointer</a>, <a class="el" href="_socket_exception_8cpp_source.html#l00008">DotNetDupe::System::Net::Sockets::SocketException::SocketException()</a>, <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_tcp_client_8cpp_source.html#l00010">DotNetDupe::System::Net::Sockets::TcpClient::TcpClient()</a>.</p>
+<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00074">DotNetDupe::System::SmartPointer&lt; T &gt;::SmartPointer</a>, <a class="el" href="_socket_exception_8cpp_source.html#l00008">DotNetDupe::System::Net::Sockets::SocketException::SocketException()</a>, <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_tcp_client_8cpp_source.html#l00010">DotNetDupe::System::Net::Sockets::TcpClient::TcpClient()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a76c39ba710351f192a3f5f74d80f5f1c">operator=()</a>.</p>
 
@@ -470,7 +470,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_tcp_listener_8cpp_source.html#l00092">92</a> of file <a class="el" href="_tcp_listener_8cpp_source.html">TcpListener.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_socket_8h_source.html#l00050">DotNetDupe::System::Net::Sockets::SelectRead</a>.</p>
+<p class="reference">References <a class="el" href="_socket_8h_source.html#l00055">DotNetDupe::System::Net::Sockets::SelectRead</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a76c39ba710351f192a3f5f74d80f5f1c">operator=()</a>.</p>
 
@@ -494,7 +494,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Starts listening for incoming connection requests with a default backlog of 100. </p>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html">Sockets::SocketException</a></td><td>If binding or listening fails. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html" title="Exception thrown when a socket error occurs during network communications.">Sockets::SocketException</a></td><td>If binding or listening fails. </td></tr>
   </table>
   </dd>
 </dl>
@@ -531,7 +531,7 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 <dl class="exception"><dt>Exceptions</dt><dd>
   <table class="exception">
-    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html">Sockets::SocketException</a></td><td>If binding or listening fails. </td></tr>
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_socket_exception.html" title="Exception thrown when a socket error occurs during network communications.">Sockets::SocketException</a></td><td>If binding or listening fails. </td></tr>
   </table>
   </dd>
 </dl>
@@ -540,7 +540,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_tcp_listener_8cpp_source.html#l00048">48</a> of file <a class="el" href="_tcp_listener_8cpp_source.html">TcpListener.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_socket_8cpp_source.html#l00113">DotNetDupe::System::Net::Sockets::Socket::Socket()</a>, <a class="el" href="_socket_8h_source.html#l00018">DotNetDupe::System::Net::Sockets::InterNetwork</a>, <a class="el" href="_socket_8h_source.html#l00026">DotNetDupe::System::Net::Sockets::Stream</a>, and <a class="el" href="_socket_8h_source.html#l00035">DotNetDupe::System::Net::Sockets::Tcp</a>.</p>
+<p class="reference">References <a class="el" href="_socket_8cpp_source.html#l00113">DotNetDupe::System::Net::Sockets::Socket::Socket()</a>, <a class="el" href="_socket_8h_source.html#l00023">DotNetDupe::System::Net::Sockets::InterNetwork</a>, <a class="el" href="_socket_8h_source.html#l00031">DotNetDupe::System::Net::Sockets::Stream</a>, and <a class="el" href="_socket_8h_source.html#l00040">DotNetDupe::System::Net::Sockets::Tcp</a>.</p>
 
 </div>
 </div>

@@ -1,3 +1,8 @@
+/// \file ObjectDisposedException.h
+/// \brief Defines the exception thrown when an operation is performed on a disposed object.
+///
+/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
+
 #pragma once
 #include "System/InvalidOperationException.h"
 
