@@ -117,8 +117,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_dot_
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:HttpContext" id="r_HttpContext"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html">HttpContext</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates all HTTP-specific information about an individual HTTP request and response pair.  <a href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html#details">More...</a><br /></td></tr>
 <tr class="memitem:HttpRequest" id="r_HttpRequest"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_request.html">HttpRequest</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates an incoming HTTP request within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline.  <a href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_request.html#details">More...</a><br /></td></tr>
 <tr class="memitem:HttpResponse" id="r_HttpResponse"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_response.html">HttpResponse</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates an outgoing HTTP response within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline.  <a href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_response.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -163,12 +166,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Prepare: Format HTTP/1.1 status line and standard headers.</p>
+<p>Iterate: Append custom header entries.</p>
+<p>Return result: Return header block ending with blank line.</p>
 
-<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00029">29</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00031">31</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00029">BuildResponseHeaderString()</a>, <a class="el" href="_http_response_8cpp_source.html#l00017">GetHttpStatusMessage()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_dictionary_8h_source.html#l00316">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetValues()</a>.</p>
+<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00031">BuildResponseHeaderString()</a>, <a class="el" href="_http_response_8cpp_source.html#l00018">GetHttpStatusMessage()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_dictionary_8h_source.html#l00316">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetValues()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00029">BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00041">DotNetDupe::WebAppCore::Http::HttpResponse::FlushHeaders()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00031">BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00046">DotNetDupe::WebAppCore::Http::HttpResponse::FlushHeaders()</a>.</p>
 
 </div>
 </div>
@@ -194,12 +200,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Lookup: Match status code to standard HTTP status phrase.</p>
 
-<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00017">17</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00018">18</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00017">GetHttpStatusMessage()</a>.</p>
+<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00018">GetHttpStatusMessage()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00029">BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00017">GetHttpStatusMessage()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00031">BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00018">GetHttpStatusMessage()</a>.</p>
 
 </div>
 </div>
@@ -229,12 +236,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Write: Transmit raw bytes to network stream if non-empty.</p>
 
 <p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00011">11</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00390">DotNetDupe::System::SmartPointer&lt; T &gt;::IsNull()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">WriteRaw()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00061">DotNetDupe::WebAppCore::Http::HttpResponse::Flush()</a>, <a class="el" href="_http_response_8cpp_source.html#l00041">DotNetDupe::WebAppCore::Http::HttpResponse::FlushHeaders()</a>, <a class="el" href="_http_response_8cpp_source.html#l00047">DotNetDupe::WebAppCore::Http::HttpResponse::WriteChunk()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">WriteRaw()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00071">DotNetDupe::WebAppCore::Http::HttpResponse::Flush()</a>, <a class="el" href="_http_response_8cpp_source.html#l00046">DotNetDupe::WebAppCore::Http::HttpResponse::FlushHeaders()</a>, <a class="el" href="_http_response_8cpp_source.html#l00054">DotNetDupe::WebAppCore::Http::HttpResponse::WriteChunk()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">WriteRaw()</a>.</p>
 
 </div>
 </div>

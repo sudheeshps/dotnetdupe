@@ -34,7 +34,7 @@
     <div class="container">
         <div class="nav"><a href="index.html">&larr; Back to Code Coverage Report</a></div>
         <h1>DotNetDupe Static Analysis & Quality Gate Dashboard</h1>
-        <div class='meta'>Generated: 2026-09-09 10:57:47 | Quality Gate Status: <strong>PASSED</strong> | Total Rules Checked: <strong>11</strong></div>
+        <div class='meta'>Generated: 2026-09-09 11:15:29 | Quality Gate Status: <strong>PASSED</strong> | Total Rules Checked: <strong>11</strong></div>
         <h2>&#128737; Phase 1: High-Priority Safety & Hygiene Gates</h2>
         <div class="grid">
             <div class="card"><h3>1. File Length (&le; 600 LLOC)</h3><div class="val">106 Files</div><div class="status-pass">&#10004; 100% Compliant</div></div>
@@ -104,9 +104,9 @@
                 <tr><td><code>DotNetDupe\Task.cpp</code></td><td>83</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Stopwatch.cpp</code></td><td>81</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TerminalSession.cpp</code></td><td>81</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DotNetDupe\WebApplicationRouting.cpp</code></td><td>78</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\Char.cpp</code></td><td>77</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\SqliteDatabaseBackend.cpp</code></td><td>76</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DotNetDupe\WebApplicationRouting.cpp</code></td><td>73</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\TimeZone.cpp</code></td><td>69</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\StringBuilder.cpp</code></td><td>67</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>DotNetDupe\SqlConnection.cpp</code></td><td>64</td><td>600</td><td><span class='badge-pass'>PASS</span></td></tr>
@@ -168,31 +168,31 @@
         <table>
             <thead><tr><th>Function</th><th>File</th><th>LLOC</th><th>CCN</th><th>Nesting Depth</th><th>Status</th></tr></thead>
             <tbody>
-                <tr><td><code>ServiceProvider::GetService</code></td><td><code>ServiceProvider.cpp:132</code></td><td>15</td><td>5</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>TerminalSession::GetSessions</code></td><td><code>TerminalSession.cpp:66</code></td><td>15</td><td>6</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>StringConvertInternal::Utf8ToWChar</code></td><td><code>InternalStringConvert.cpp:30</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>InterlockedInternal::Add64</code></td><td><code>Interlocked.cpp:94</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>EventWaitHandle::TryOpenExisting</code></td><td><code>EventWaitHandle.cpp:102</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>LoggerBase::GetFormattedTimestamp</code></td><td><code>LoggerBase.cpp:33</code></td><td>15</td><td>3</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>DateTimeOffset::ToString</code></td><td><code>DateTimeOffset.cpp:25</code></td><td>15</td><td>2</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>TerminalSession::GetSessions</code></td><td><code>TerminalSession.cpp:66</code></td><td>15</td><td>6</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>ServiceProvider::GetService</code></td><td><code>ServiceProvider.cpp:132</code></td><td>15</td><td>5</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Console::SetForegroundColor</code></td><td><code>Console.cpp:293</code></td><td>15</td><td>4</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Console::SetBackgroundColor</code></td><td><code>Console.cpp:263</code></td><td>15</td><td>4</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>String::CopyTo</code></td><td><code>String.cpp:299</code></td><td>15</td><td>6</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>Mutex::TryOpenExisting</code></td><td><code>Mutex.cpp:112</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>String::Join</code></td><td><code>String.cpp:430</code></td><td>15</td><td>7</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>DateTimeOffset::ToString</code></td><td><code>DateTimeOffset.cpp:25</code></td><td>15</td><td>2</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>EventWaitHandle::TryOpenExisting</code></td><td><code>EventWaitHandle.cpp:102</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>LoggerBase::BuildLogMessage</code></td><td><code>LoggerBase.cpp:155</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>InterlockedInternal::Decrement64</code></td><td><code>Interlocked.cpp:76</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>SystemMetrics::GetAllServices</code></td><td><code>SystemMetrics.cpp:478</code></td><td>15</td><td>5</td><td>4</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>SystemMetrics::EnrichProcessInfo</code></td><td><code>SystemMetrics.cpp:459</code></td><td>15</td><td>7</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>File::GetAttributes</code></td><td><code>File.cpp:167</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>Console::SetBackgroundColor</code></td><td><code>Console.cpp:263</code></td><td>15</td><td>4</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>Console::SetForegroundColor</code></td><td><code>Console.cpp:293</code></td><td>15</td><td>4</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>WebAppServer::GetMimeType</code></td><td><code>WebAppServer.cpp:47</code></td><td>15</td><td>3</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>SqliteDatabaseBackend::Execute</code></td><td><code>SqliteDatabaseBackend.cpp:91</code></td><td>15</td><td>1</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>InterlockedInternal::Increment64</code></td><td><code>Interlocked.cpp:58</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>Path::ChangeExtension</code></td><td><code>Path.cpp:43</code></td><td>15</td><td>5</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>Semaphore::TryOpenExisting</code></td><td><code>Semaphore.cpp:103</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>String::Join</code></td><td><code>String.cpp:430</code></td><td>15</td><td>7</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>StringConvertInternal::Utf8ToWChar</code></td><td><code>InternalStringConvert.cpp:30</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>Environment::GetOSVersion</code></td><td><code>Environment.cpp:103</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Path::ChangeExtension</code></td><td><code>Path.cpp:43</code></td><td>15</td><td>5</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>SystemMetrics::EnrichProcessInfo</code></td><td><code>SystemMetrics.cpp:459</code></td><td>15</td><td>7</td><td>3</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>WebAppServer::GetMimeType</code></td><td><code>WebAppServer.cpp:52</code></td><td>15</td><td>3</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>Semaphore::TryOpenExisting</code></td><td><code>Semaphore.cpp:103</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>SystemMetrics::GetAllServices</code></td><td><code>SystemMetrics.cpp:478</code></td><td>15</td><td>5</td><td>4</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>InterlockedInternal::Add64</code></td><td><code>Interlocked.cpp:94</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>StringConvertInternal::WCharToUtf8</code></td><td><code>InternalStringConvert.cpp:12</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>InterlockedInternal::Decrement64</code></td><td><code>Interlocked.cpp:76</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>File::GetAttributes</code></td><td><code>File.cpp:167</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>InterlockedInternal::Increment64</code></td><td><code>Interlocked.cpp:58</code></td><td>15</td><td>2</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
+                <tr><td><code>EventLog::CreateEventSource</code></td><td><code>EventLog.cpp:342</code></td><td>15</td><td>7</td><td>2</td><td><span class='badge-pass'>PASS</span></td></tr>
                 <tr><td><code>ManualResetEvent::TryOpenExisting</code></td><td><code>ManualResetEvent.cpp:35</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
-                <tr><td><code>AutoResetEvent::TryOpenExisting</code></td><td><code>AutoResetEvent.cpp:35</code></td><td>15</td><td>3</td><td>1</td><td><span class='badge-pass'>PASS</span></td></tr>
             </tbody>
         </table>
     </div>

@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Encapsulates an incoming HTTP request within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_http_context_8h_source.html">HttpContext.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::WebAppCore::Http::HttpRequest:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,19 +132,33 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:aa5f9f1094275e5e83e472e1b6ef99782" id="r_aa5f9f1094275e5e83e472e1b6ef99782"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aa5f9f1094275e5e83e472e1b6ef99782">HttpRequest</a> ()=default</td></tr>
+<tr class="memdesc:aa5f9f1094275e5e83e472e1b6ef99782"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor.  <br /></td></tr>
 <tr class="memitem:ad0d00928654859d932f7ee91239e15d3" id="r_ad0d00928654859d932f7ee91239e15d3"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad0d00928654859d932f7ee91239e15d3">~HttpRequest</a> () override=default</td></tr>
+<tr class="memdesc:ad0d00928654859d932f7ee91239e15d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor.  <br /></td></tr>
 <tr class="memitem:a09ccd8a52b906300eba830788632dcb4" id="r_a09ccd8a52b906300eba830788632dcb4"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a09ccd8a52b906300eba830788632dcb4">GetBody</a> () const</td></tr>
+<tr class="memdesc:a09ccd8a52b906300eba830788632dcb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the raw HTTP request body string.  <br /></td></tr>
 <tr class="memitem:a9241aa2cb19ce7d41833cb2bd595a453" id="r_a9241aa2cb19ce7d41833cb2bd595a453"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a9241aa2cb19ce7d41833cb2bd595a453">GetHeaders</a> ()</td></tr>
+<tr class="memdesc:a9241aa2cb19ce7d41833cb2bd595a453"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the mutable dictionary of HTTP request headers.  <br /></td></tr>
 <tr class="memitem:ab4d7479980cbeacc6d5086167c805341" id="r_ab4d7479980cbeacc6d5086167c805341"><td class="memItemLeft">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ab4d7479980cbeacc6d5086167c805341">GetHeaders</a> () const</td></tr>
+<tr class="memdesc:ab4d7479980cbeacc6d5086167c805341"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the read-only dictionary of HTTP request headers.  <br /></td></tr>
 <tr class="memitem:a591aba5a3103cb7183e6bb9cd3fcb73b" id="r_a591aba5a3103cb7183e6bb9cd3fcb73b"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a591aba5a3103cb7183e6bb9cd3fcb73b">GetMethod</a> () const</td></tr>
+<tr class="memdesc:a591aba5a3103cb7183e6bb9cd3fcb73b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the HTTP request method verb (e.g., "GET", "POST").  <br /></td></tr>
 <tr class="memitem:ac626e0bfba28907a3f4ca8cf090c4bc2" id="r_ac626e0bfba28907a3f4ca8cf090c4bc2"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac626e0bfba28907a3f4ca8cf090c4bc2">GetPath</a> () const</td></tr>
+<tr class="memdesc:ac626e0bfba28907a3f4ca8cf090c4bc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the request URI path.  <br /></td></tr>
 <tr class="memitem:a88162101d17f9d1fadadf20308ef55ad" id="r_a88162101d17f9d1fadadf20308ef55ad"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a88162101d17f9d1fadadf20308ef55ad">GetQuery</a> ()</td></tr>
+<tr class="memdesc:a88162101d17f9d1fadadf20308ef55ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the mutable dictionary of decoded URL query parameters.  <br /></td></tr>
 <tr class="memitem:a508991eb871ed9ce9af771329de81a60" id="r_a508991eb871ed9ce9af771329de81a60"><td class="memItemLeft">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a508991eb871ed9ce9af771329de81a60">GetQuery</a> () const</td></tr>
+<tr class="memdesc:a508991eb871ed9ce9af771329de81a60"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the read-only dictionary of decoded URL query parameters.  <br /></td></tr>
 <tr class="memitem:a48c5ec77f53747445bf23b8e4ddf38e9" id="r_a48c5ec77f53747445bf23b8e4ddf38e9"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a48c5ec77f53747445bf23b8e4ddf38e9">GetRouteValues</a> ()</td></tr>
+<tr class="memdesc:a48c5ec77f53747445bf23b8e4ddf38e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the mutable dictionary of matched route parameter values.  <br /></td></tr>
 <tr class="memitem:a8c1979e1daafdfe06d40ef34407979b6" id="r_a8c1979e1daafdfe06d40ef34407979b6"><td class="memItemLeft">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a8c1979e1daafdfe06d40ef34407979b6">GetRouteValues</a> () const</td></tr>
+<tr class="memdesc:a8c1979e1daafdfe06d40ef34407979b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the read-only dictionary of matched route parameter values.  <br /></td></tr>
 <tr class="memitem:add4cdca05052d7013926f1e6e52f33cf" id="r_add4cdca05052d7013926f1e6e52f33cf"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#add4cdca05052d7013926f1e6e52f33cf">SetBody</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;body)</td></tr>
+<tr class="memdesc:add4cdca05052d7013926f1e6e52f33cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the raw HTTP request body string.  <br /></td></tr>
 <tr class="memitem:a821f32f3e9c08bfd8394ecc74382b5dd" id="r_a821f32f3e9c08bfd8394ecc74382b5dd"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a821f32f3e9c08bfd8394ecc74382b5dd">SetMethod</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;method)</td></tr>
+<tr class="memdesc:a821f32f3e9c08bfd8394ecc74382b5dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the HTTP request method verb.  <br /></td></tr>
 <tr class="memitem:a001b535b8d8f8a897986fc424508ddf9" id="r_a001b535b8d8f8a897986fc424508ddf9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a001b535b8d8f8a897986fc424508ddf9">SetPath</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;path)</td></tr>
+<tr class="memdesc:a001b535b8d8f8a897986fc424508ddf9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the request URI path.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -163,8 +180,14 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00015">15</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<div class="textblock"><p>Encapsulates an incoming HTTP request within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline. </p>
+<p>Provides access to the HTTP method, URI path, headers, query parameters, route values, and body content.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Not thread-safe; processed by a single worker thread per connection. </dd>
+<dd>
+Conforms to RFC 9110 (HTTP Semantics) and RFC 9112 (HTTP/1.1). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_response.html" title="Encapsulates an outgoing HTTP response within the WebAppCore pipeline.">HttpResponse</a>, <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html" title="Encapsulates all HTTP-specific information about an individual HTTP request and response pair.">HttpContext</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00025">25</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa5f9f1094275e5e83e472e1b6ef99782" name="aa5f9f1094275e5e83e472e1b6ef99782"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa5f9f1094275e5e83e472e1b6ef99782">&#9670;&#160;</a></span>HttpRequest()</h2>
@@ -188,6 +211,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Default constructor. </p>
 
 </div>
 </div>
@@ -213,6 +238,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor. </p>
 
 </div>
 </div>
@@ -240,7 +267,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00026">26</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the raw HTTP request body string. </p>
+<dl class="section return"><dt>Returns</dt><dd>Request body payload. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00051">51</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -267,9 +297,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00029">29</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the mutable dictionary of HTTP request headers. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to headers dictionary. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00200">DotNetDupe::WebAppCore::Builder::ReadHeadersAndBody()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00302">DotNetDupe::WebAppCore::Builder::ValidateWebSocketHandshake()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00059">59</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00227">DotNetDupe::WebAppCore::Builder::ReadHeadersAndBody()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00344">DotNetDupe::WebAppCore::Builder::ValidateWebSocketHandshake()</a>.</p>
 
 </div>
 </div>
@@ -296,7 +329,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00030">30</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the read-only dictionary of HTTP request headers. </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to headers dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00063">63</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -323,7 +359,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00020">20</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the HTTP request method verb (e.g., "GET", "POST"). </p>
+<dl class="section return"><dt>Returns</dt><dd>Method verb string. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00035">35</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -350,9 +389,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00023">23</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the request URI path. </p>
+<dl class="section return"><dt>Returns</dt><dd>Request path string. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00257">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00043">43</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00293">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
 
 </div>
 </div>
@@ -379,9 +421,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00032">32</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the mutable dictionary of decoded URL query parameters. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to query parameters dictionary. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00171">DotNetDupe::WebAppCore::Builder::ParseQueryParams()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00067">67</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00195">DotNetDupe::WebAppCore::Builder::ParseQueryParams()</a>.</p>
 
 </div>
 </div>
@@ -408,7 +453,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00033">33</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the read-only dictionary of decoded URL query parameters. </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to query parameters dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00071">71</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -435,9 +483,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00035">35</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the mutable dictionary of matched route parameter values. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to route values dictionary. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00257">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00075">75</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00293">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
 
 </div>
 </div>
@@ -464,7 +515,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00036">36</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the read-only dictionary of matched route parameter values. </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to route values dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00079">79</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -491,9 +545,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00027">27</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the raw HTTP request body string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">body</td><td>Request body payload. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00200">DotNetDupe::WebAppCore::Builder::ReadHeadersAndBody()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00055">55</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00227">DotNetDupe::WebAppCore::Builder::ReadHeadersAndBody()</a>.</p>
 
 </div>
 </div>
@@ -520,9 +582,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00021">21</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the HTTP request method verb. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">method</td><td>Method verb string. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00187">DotNetDupe::WebAppCore::Builder::ParseRequestLine()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00039">39</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00212">DotNetDupe::WebAppCore::Builder::ParseRequestLine()</a>.</p>
 
 </div>
 </div>
@@ -549,9 +619,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00024">24</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the request URI path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Request path string. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00187">DotNetDupe::WebAppCore::Builder::ParseRequestLine()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00047">47</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00212">DotNetDupe::WebAppCore::Builder::ParseRequestLine()</a>.</p>
 
 </div>
 </div>

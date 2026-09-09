@@ -123,6 +123,7 @@ Classes</h2></td></tr>
 <tr class="memitem:WebApplication" id="r_WebApplication"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html">WebApplication</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures HTTP request pipelines, minimalist routing endpoints, <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html">WebSockets</a>, and hosts web servers.  <a href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html#details">More...</a><br /></td></tr>
 <tr class="memitem:WebApplicationBuilder" id="r_WebApplicationBuilder"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html">WebApplicationBuilder</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Facilitates initialization and configuration of dependency injection services, controllers, and web application hosting.  <a href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -179,12 +180,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Dispatch: Invoke matched route handler or set 404 Not Found.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00327">327</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00373">373</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00327">DispatchResponse()</a>, <a class="el" href="_http_status_code_8h_source.html#l00069">DotNetDupe::System::Net::InternalServerError</a>, <a class="el" href="_http_status_code_8h_source.html#l00046">DotNetDupe::System::Net::NotFound</a>, <a class="el" href="_http_context_8h_source.html#l00061">DotNetDupe::WebAppCore::Http::HttpResponse::SetBody()</a>, <a class="el" href="_http_context_8h_source.html#l00053">DotNetDupe::WebAppCore::Http::HttpResponse::SetStatusCode()</a>, and <a class="el" href="_exception_8h_source.html#l00041">DotNetDupe::System::Exception::What()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00373">DispatchResponse()</a>, <a class="el" href="_http_status_code_8h_source.html#l00069">DotNetDupe::System::Net::InternalServerError</a>, <a class="el" href="_http_status_code_8h_source.html#l00046">DotNetDupe::System::Net::NotFound</a>, <a class="el" href="_http_context_8h_source.html#l00135">DotNetDupe::WebAppCore::Http::HttpResponse::SetBody()</a>, <a class="el" href="_http_context_8h_source.html#l00111">DotNetDupe::WebAppCore::Http::HttpResponse::SetStatusCode()</a>, and <a class="el" href="_exception_8h_source.html#l00041">DotNetDupe::System::Exception::What()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00327">DispatchResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00338">RouteAndSendResponse()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00373">DispatchResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00385">RouteAndSendResponse()</a>.</p>
 
 </div>
 </div>
@@ -214,12 +216,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Normalize: Convert header and target to lowercase for case-insensitive token search.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00285">285</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00324">324</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_web_application_8cpp_source.html#l00285">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00272">MatchTokenString()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_web_application_8cpp_source.html#l00324">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00310">MatchTokenString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00285">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00302">ValidateWebSocketHandshake()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00324">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00344">ValidateWebSocketHandshake()</a>.</p>
 
 </div>
 </div>
@@ -254,12 +257,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Check: Check direct path exact match first.</p>
+<p>Parse: Evaluate parameterized pattern routes.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00257">257</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00293">293</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00023">DotNetDupe::WebAppCore::Http::HttpRequest::GetPath()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Builder::Internal::GetPathSegments()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_http_context_8h_source.html#l00035">DotNetDupe::WebAppCore::Http::HttpRequest::GetRouteValues()</a>, <a class="el" href="_web_application_8cpp_source.html#l00257">MatchAndFindHandler()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00082">DotNetDupe::WebAppCore::Builder::Internal::MatchRoute()</a>.</p>
+<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00043">DotNetDupe::WebAppCore::Http::HttpRequest::GetPath()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Builder::Internal::GetPathSegments()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_http_context_8h_source.html#l00075">DotNetDupe::WebAppCore::Http::HttpRequest::GetRouteValues()</a>, <a class="el" href="_web_application_8cpp_source.html#l00293">MatchAndFindHandler()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00091">DotNetDupe::WebAppCore::Builder::Internal::MatchRoute()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00257">MatchAndFindHandler()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00338">RouteAndSendResponse()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00293">MatchAndFindHandler()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00385">RouteAndSendResponse()</a>.</p>
 
 </div>
 </div>
@@ -289,12 +294,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Parse: Split comma-separated tokens and compare trimmed value.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00272">272</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00310">310</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00272">MatchTokenString()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00310">MatchTokenString()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00285">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00272">MatchTokenString()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00324">HeaderContainsToken()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00310">MatchTokenString()</a>.</p>
 
 </div>
 </div>
@@ -324,12 +330,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Parse: Tokenize query key-value pairs separated by '&amp;'.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00171">171</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00195">195</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00032">DotNetDupe::WebAppCore::Http::HttpRequest::GetQuery()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00171">ParseQueryParams()</a>.</p>
+<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00067">DotNetDupe::WebAppCore::Http::HttpRequest::GetQuery()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00195">ParseQueryParams()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00171">ParseQueryParams()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00187">ParseRequestLine()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00195">ParseQueryParams()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00212">ParseRequestLine()</a>.</p>
 
 </div>
 </div>
@@ -359,12 +366,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Parse: Extract HTTP method, full URI path, and query strings.</p>
+<p>Return result: Return parsed HTTP method verb.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00187">187</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00212">212</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00171">ParseQueryParams()</a>, <a class="el" href="_web_application_8cpp_source.html#l00187">ParseRequestLine()</a>, <a class="el" href="_http_context_8h_source.html#l00021">DotNetDupe::WebAppCore::Http::HttpRequest::SetMethod()</a>, and <a class="el" href="_http_context_8h_source.html#l00024">DotNetDupe::WebAppCore::Http::HttpRequest::SetPath()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00195">ParseQueryParams()</a>, <a class="el" href="_web_application_8cpp_source.html#l00212">ParseRequestLine()</a>, <a class="el" href="_http_context_8h_source.html#l00039">DotNetDupe::WebAppCore::Http::HttpRequest::SetMethod()</a>, and <a class="el" href="_http_context_8h_source.html#l00047">DotNetDupe::WebAppCore::Http::HttpRequest::SetPath()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00187">ParseRequestLine()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00212">ParseRequestLine()</a>.</p>
 
 </div>
 </div>
@@ -404,12 +413,16 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Handshake: Calculate RFC 6455 accept key and send 101 Switching Protocols response.</p>
+<p>Initialize: Construct WebSocket and dispatch OnConnected callback.</p>
+<p>Execute: Run blocking frame receive loop.</p>
+<p>Return result: Session completed successfully.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00231">231</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00261">261</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_socket_8cpp_source.html#l00145">DotNetDupe::System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, <a class="el" href="_web_application_8cpp_source.html#l00231">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00221">RunWsReceiveLoop()</a>.</p>
+<p class="reference">References <a class="el" href="_web_socket_8cpp_source.html#l00159">DotNetDupe::System::Net::WebSockets::WebSocket::ComputeSecWebSocketAccept()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, <a class="el" href="_web_application_8cpp_source.html#l00261">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00250">RunWsReceiveLoop()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00231">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00312">TryHandleWebSocket()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00261">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00355">TryHandleWebSocket()</a>.</p>
 
 </div>
 </div>
@@ -444,12 +457,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Parse: Read HTTP header stream byte-by-byte until double CRLF delimiter.</p>
+<p>Return result: True if at least one header line was parsed.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00156">156</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00178">178</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00156">ReadHeaderLines()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00178">ReadHeaderLines()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00156">ReadHeaderLines()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00178">ReadHeaderLines()</a>.</p>
 
 </div>
 </div>
@@ -484,12 +499,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Parse: Process HTTP header fields and extract content length.</p>
+<p>Read: Fetch request body bytes if Content-Length header is specified.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00200">200</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00227">227</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00029">DotNetDupe::WebAppCore::Http::HttpRequest::GetHeaders()</a>, <a class="el" href="_web_application_8cpp_source.html#l00200">ReadHeadersAndBody()</a>, and <a class="el" href="_http_context_8h_source.html#l00027">DotNetDupe::WebAppCore::Http::HttpRequest::SetBody()</a>.</p>
+<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00059">DotNetDupe::WebAppCore::Http::HttpRequest::GetHeaders()</a>, <a class="el" href="_web_application_8cpp_source.html#l00227">ReadHeadersAndBody()</a>, and <a class="el" href="_http_context_8h_source.html#l00055">DotNetDupe::WebAppCore::Http::HttpRequest::SetBody()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00200">ReadHeadersAndBody()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00227">ReadHeadersAndBody()</a>.</p>
 
 </div>
 </div>
@@ -544,12 +561,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Route: Look up handler delegate based on HTTP method.</p>
+<p>Execute: Dispatch handler and write output response.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00338">338</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00385">385</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00327">DispatchResponse()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00385">DotNetDupe::System::SmartPointer&lt; T &gt;::Get()</a>, <a class="el" href="_web_application_8cpp_source.html#l00257">MatchAndFindHandler()</a>, <a class="el" href="_web_application_8cpp_source.html#l00338">RouteAndSendResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00243">SendHttpResponseData()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00373">DispatchResponse()</a>, <a class="el" href="_smart_pointer_8h_source.html#l00385">DotNetDupe::System::SmartPointer&lt; T &gt;::Get()</a>, <a class="el" href="_web_application_8cpp_source.html#l00293">MatchAndFindHandler()</a>, <a class="el" href="_web_application_8cpp_source.html#l00385">RouteAndSendResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00277">SendHttpResponseData()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00338">RouteAndSendResponse()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00385">RouteAndSendResponse()</a>.</p>
 
 </div>
 </div>
@@ -584,12 +603,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Loop: Receive incoming frames and dispatch to OnMessage until close or disconnect.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00221">221</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00250">250</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00221">RunWsReceiveLoop()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00250">RunWsReceiveLoop()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00231">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00221">RunWsReceiveLoop()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00261">ProcessWsSession()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00250">RunWsReceiveLoop()</a>.</p>
 
 </div>
 </div>
@@ -624,12 +644,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Prepare: Build HTTP status line, headers, and content length.</p>
+<p>Transmit: Write response header block and optional payload body.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00243">243</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00277">277</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00060">DotNetDupe::WebAppCore::Http::HttpResponse::GetBody()</a>, <a class="el" href="_http_context_8h_source.html#l00057">DotNetDupe::WebAppCore::Http::HttpResponse::GetContentType()</a>, <a class="el" href="_http_context_8h_source.html#l00065">DotNetDupe::WebAppCore::Http::HttpResponse::GetHeaders()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_http_context_8h_source.html#l00052">DotNetDupe::WebAppCore::Http::HttpResponse::GetStatusCode()</a>, <a class="el" href="_dictionary_8h_source.html#l00316">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetValues()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00243">SendHttpResponseData()</a>.</p>
+<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00131">DotNetDupe::WebAppCore::Http::HttpResponse::GetBody()</a>, <a class="el" href="_http_context_8h_source.html#l00123">DotNetDupe::WebAppCore::Http::HttpResponse::GetContentType()</a>, <a class="el" href="_http_context_8h_source.html#l00143">DotNetDupe::WebAppCore::Http::HttpResponse::GetHeaders()</a>, <a class="el" href="_dictionary_8h_source.html#l00307">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetKeys()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_http_context_8h_source.html#l00107">DotNetDupe::WebAppCore::Http::HttpResponse::GetStatusCode()</a>, <a class="el" href="_dictionary_8h_source.html#l00316">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetValues()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00277">SendHttpResponseData()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00338">RouteAndSendResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00243">SendHttpResponseData()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00385">RouteAndSendResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00277">SendHttpResponseData()</a>.</p>
 
 </div>
 </div>
@@ -664,12 +686,14 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Prepare: Construct RFC 6455 rejection response frame.</p>
+<p>Transmit: Write rejection error to stream.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00293">293</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00333">333</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00293">SendWebSocketErrorResponse()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00333">SendWebSocketErrorResponse()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00293">SendWebSocketErrorResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00312">TryHandleWebSocket()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00333">SendWebSocketErrorResponse()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00355">TryHandleWebSocket()</a>.</p>
 
 </div>
 </div>
@@ -704,12 +728,15 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Guard: Match route path against registered WebSocket handlers.</p>
+<p>Validate: Check RFC 6455 handshake validity.</p>
+<p>Execute: Run WebSocket session loop.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00312">312</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00355">355</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00390">DotNetDupe::System::SmartPointer&lt; T &gt;::IsNull()</a>, <a class="el" href="_web_application_8cpp_source.html#l00231">ProcessWsSession()</a>, <a class="el" href="_web_application_8cpp_source.html#l00293">SendWebSocketErrorResponse()</a>, <a class="el" href="_web_application_8cpp_source.html#l00312">TryHandleWebSocket()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00302">ValidateWebSocketHandshake()</a>.</p>
+<p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00390">DotNetDupe::System::SmartPointer&lt; T &gt;::IsNull()</a>, <a class="el" href="_web_application_8cpp_source.html#l00261">ProcessWsSession()</a>, <a class="el" href="_web_application_8cpp_source.html#l00333">SendWebSocketErrorResponse()</a>, <a class="el" href="_web_application_8cpp_source.html#l00355">TryHandleWebSocket()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00344">ValidateWebSocketHandshake()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00312">TryHandleWebSocket()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00355">TryHandleWebSocket()</a>.</p>
 
 </div>
 </div>
@@ -739,12 +766,13 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Validate: Verify Upgrade header, Connection header, and Sec-WebSocket-Key presence.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00302">302</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00344">344</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00029">DotNetDupe::WebAppCore::Http::HttpRequest::GetHeaders()</a>, <a class="el" href="_web_application_8cpp_source.html#l00285">HeaderContainsToken()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_string_8cpp_source.html#l00672">DotNetDupe::System::String::ToLower()</a>, <a class="el" href="_dictionary_8h_source.html#l00285">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::TryGetValue()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00302">ValidateWebSocketHandshake()</a>.</p>
+<p class="reference">References <a class="el" href="_http_context_8h_source.html#l00059">DotNetDupe::WebAppCore::Http::HttpRequest::GetHeaders()</a>, <a class="el" href="_web_application_8cpp_source.html#l00324">HeaderContainsToken()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_string_8cpp_source.html#l00672">DotNetDupe::System::String::ToLower()</a>, <a class="el" href="_dictionary_8h_source.html#l00285">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::TryGetValue()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00344">ValidateWebSocketHandshake()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00312">TryHandleWebSocket()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00302">ValidateWebSocketHandshake()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00355">TryHandleWebSocket()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00344">ValidateWebSocketHandshake()</a>.</p>
 
 </div>
 </div>

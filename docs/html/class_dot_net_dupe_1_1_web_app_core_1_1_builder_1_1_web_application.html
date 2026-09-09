@@ -140,18 +140,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a379c22bc6df38d102510e2d5d12b004f" id="r_a379c22bc6df38d102510e2d5d12b004f"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a379c22bc6df38d102510e2d5d12b004f">WebApplication</a> (WebApplication &amp;&amp;) noexcept</td></tr>
 <tr class="memitem:aef10f7a142d421bf9f5a35982d102f64" id="r_aef10f7a142d421bf9f5a35982d102f64"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#aef10f7a142d421bf9f5a35982d102f64">~WebApplication</a> () override</td></tr>
 <tr class="memitem:ac46fe2e7433d4f5f7ee2b986f5745d9f" id="r_ac46fe2e7433d4f5f7ee2b986f5745d9f"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_service_provider.html">DotNetDupe::System::IServiceProvider</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#ac46fe2e7433d4f5f7ee2b986f5745d9f">GetServices</a> () const</td></tr>
+<tr class="memdesc:ac46fe2e7433d4f5f7ee2b986f5745d9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the service provider holding the configured application dependencies.  <br /></td></tr>
 <tr class="memitem:a426482bd0270f2a30989e1ea91ea0eec" id="r_a426482bd0270f2a30989e1ea91ea0eec"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">DotNetDupe::System::Collections::Generic::List</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a426482bd0270f2a30989e1ea91ea0eec">GetWebSocketRoutes</a> () const</td></tr>
+<tr class="memdesc:a426482bd0270f2a30989e1ea91ea0eec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the list of all currently mapped WebSocket route patterns.  <br /></td></tr>
 <tr class="memitem:a488d41d3e9d8b1bad4b3433fa54424e6" id="r_a488d41d3e9d8b1bad4b3433fa54424e6"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a488d41d3e9d8b1bad4b3433fa54424e6">HasWebSocketRoute</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;path) const</td></tr>
+<tr class="memdesc:a488d41d3e9d8b1bad4b3433fa54424e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a registered WebSocket route matches the specified path.  <br /></td></tr>
 <tr class="memitem:a623be5c90fb474f1ec385e19a6008e89" id="r_a623be5c90fb474f1ec385e19a6008e89"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a623be5c90fb474f1ec385e19a6008e89">MapControllers</a> ()</td></tr>
+<tr class="memdesc:a623be5c90fb474f1ec385e19a6008e89"><td class="mdescLeft">&#160;</td><td class="mdescRight">Dispatches and binds all registered controller routes to this application pipeline.  <br /></td></tr>
 <tr class="memitem:a044033242c0dd483663961999b0753cf" id="r_a044033242c0dd483663961999b0753cf"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a044033242c0dd483663961999b0753cf">MapDelete</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;pattern, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_func.html">DotNetDupe::System::Func</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html">Http::HttpContext</a> &gt; &gt; handler)</td></tr>
+<tr class="memdesc:a044033242c0dd483663961999b0753cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an HTTP DELETE route endpoint with a synchronous lambda or delegate handler.  <br /></td></tr>
 <tr class="memitem:afa7c0fb4f03944c9e6c821de19d73bcf" id="r_afa7c0fb4f03944c9e6c821de19d73bcf"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#afa7c0fb4f03944c9e6c821de19d73bcf">MapGet</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;pattern, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_func.html">DotNetDupe::System::Func</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html">Http::HttpContext</a> &gt; &gt; handler)</td></tr>
+<tr class="memdesc:afa7c0fb4f03944c9e6c821de19d73bcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an HTTP GET route endpoint with a synchronous lambda or delegate handler.  <br /></td></tr>
 <tr class="memitem:a2552ff057ae3ef01d7d375369c3a0a18" id="r_a2552ff057ae3ef01d7d375369c3a0a18"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2552ff057ae3ef01d7d375369c3a0a18">MapPost</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;pattern, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_func.html">DotNetDupe::System::Func</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html">Http::HttpContext</a> &gt; &gt; handler)</td></tr>
+<tr class="memdesc:a2552ff057ae3ef01d7d375369c3a0a18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an HTTP POST route endpoint with a synchronous lambda or delegate handler.  <br /></td></tr>
 <tr class="memitem:ab121c17915f9681844199a1560c49be1" id="r_ab121c17915f9681844199a1560c49be1"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ab121c17915f9681844199a1560c49be1">MapPut</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;pattern, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_func.html">DotNetDupe::System::Func</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html">Http::HttpContext</a> &gt; &gt; handler)</td></tr>
+<tr class="memdesc:ab121c17915f9681844199a1560c49be1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers an HTTP PUT route endpoint with a synchronous lambda or delegate handler.  <br /></td></tr>
 <tr class="memitem:a52cc5f7f46dfff0c73ba6f66765cb0b8" id="r_a52cc5f7f46dfff0c73ba6f66765cb0b8"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a52cc5f7f46dfff0c73ba6f66765cb0b8">MapWebSocket</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;pattern, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_web_sockets_1_1_i_web_socket_handler.html">WebSockets::IWebSocketHandler</a> &gt; handler)</td></tr>
+<tr class="memdesc:a52cc5f7f46dfff0c73ba6f66765cb0b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps an RFC 6455 WebSocket endpoint to an asynchronous lifecycle handler.  <br /></td></tr>
 <tr class="memitem:aca9a708bcba0252e4fc08fb9a8a19672" id="r_aca9a708bcba0252e4fc08fb9a8a19672"><td class="memItemLeft"><a class="el" href="#a7b819e2abd7537b45cc64972ac411d71">WebApplication</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aca9a708bcba0252e4fc08fb9a8a19672">operator=</a> (const <a class="el" href="#a7b819e2abd7537b45cc64972ac411d71">WebApplication</a> &amp;)=delete</td></tr>
 <tr class="memitem:a69ff1d8dbb2260a0767be3ee6fa1ae0c" id="r_a69ff1d8dbb2260a0767be3ee6fa1ae0c"><td class="memItemLeft"><a class="el" href="#a7b819e2abd7537b45cc64972ac411d71">WebApplication</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a69ff1d8dbb2260a0767be3ee6fa1ae0c">operator=</a> (<a class="el" href="#a7b819e2abd7537b45cc64972ac411d71">WebApplication</a> &amp;&amp;) noexcept</td></tr>
 <tr class="memitem:aee67fbebc8376dfcf6e977d8c5ce817e" id="r_aee67fbebc8376dfcf6e977d8c5ce817e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aee67fbebc8376dfcf6e977d8c5ce817e">Run</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;url=&quot;http://127.0.0.1:5000&quot;, int threadCount=10)</td></tr>
+<tr class="memdesc:aee67fbebc8376dfcf6e977d8c5ce817e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts the embedded HTTP/WebSocket server listener on the specified URL and worker thread pool.  <br /></td></tr>
 <tr class="memitem:a440d1cb3370f67f0e51c87bb2f841c1c" id="r_a440d1cb3370f67f0e51c87bb2f841c1c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a440d1cb3370f67f0e51c87bb2f841c1c">Stop</a> ()</td></tr>
+<tr class="memdesc:a440d1cb3370f67f0e51c87bb2f841c1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops the active TCP listener and releases connection worker threads.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -169,16 +180,16 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-static-methods" class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:abdaa13d29107d83e44661da72737e726" id="r_abdaa13d29107d83e44661da72737e726"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="#a88c5a9dc4a5b605b697999ef24daa8af">WebApplicationBuilder</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#abdaa13d29107d83e44661da72737e726">CreateBuilder</a> ()</td></tr>
-<tr class="memdesc:abdaa13d29107d83e44661da72737e726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html">WebApplicationBuilder</a> class with pre-configured defaults.  <br /></td></tr>
+<tr class="memdesc:abdaa13d29107d83e44661da72737e726"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html" title="Facilitates initialization and configuration of dependency injection services, controllers,...">WebApplicationBuilder</a> class with pre-configured defaults.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Configures HTTP request pipelines, minimalist routing endpoints, <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html">WebSockets</a>, and hosts web servers. </p>
-<p>Models ASP.NET Core minimal API hosting in C++ with integrated Dependency Injection, multithreaded worker pools, and controller mapping. Thread-safe for route registration prior to <a class="el" href="#aee67fbebc8376dfcf6e977d8c5ce817e">Run()</a>; immutable during execution.</p>
+<p>Models ASP.NET Core minimal API hosting in C++ with integrated Dependency Injection, multithreaded worker pools, and controller mapping. Thread-safe for route registration prior to <a class="el" href="#aee67fbebc8376dfcf6e977d8c5ce817e" title="Starts the embedded HTTP/WebSocket server listener on the specified URL and worker thread pool.">Run()</a>; immutable during execution.</p>
 <dl class="section note"><dt>Note</dt><dd>Conforms to RFC 9110 (HTTP Semantics) and ASP.NET Core Minimal API specifications. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html">WebApplicationBuilder</a>, HttpContext </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html" title="Facilitates initialization and configuration of dependency injection services, controllers,...">WebApplicationBuilder</a>, HttpContext </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="_web_application_8h_source.html#l00033">33</a> of file <a class="el" href="_web_application_8h_source.html">WebApplication.h</a>.</p>
 </div><a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Member Typedef Documentation</h2>
@@ -224,7 +235,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00028">28</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="#a59914b5278b8ab414966132ad7e84235">WebApplication()</a>, <a class="el" href="_web_application_8cpp_source.html#l00035">WebApplication()</a>, <a class="el" href="#aca9a708bcba0252e4fc08fb9a8a19672">operator=()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00047">operator=()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="#a59914b5278b8ab414966132ad7e84235">WebApplication()</a>, <a class="el" href="_web_application_8cpp_source.html#l00036">WebApplication()</a>, <a class="el" href="#aca9a708bcba0252e4fc08fb9a8a19672">operator=()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00048">operator=()</a>.</p>
 
 </div>
 </div>
@@ -250,10 +261,11 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Shutdown: Stop server listener if currently active.</p>
 
 <p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00031">31</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00144">Stop()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00164">Stop()</a>.</p>
 
 </div>
 </div>
@@ -307,7 +319,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00035">35</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00036">36</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00028">WebApplication()</a>.</p>
 
@@ -337,10 +349,11 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html">WebApplicationBuilder</a> class with pre-configured defaults. </p>
-<dl class="section return"><dt>Returns</dt><dd>A SmartPointer to the newly created <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html">WebApplicationBuilder</a>. </dd></dl>
+<p>Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html" title="Facilitates initialization and configuration of dependency injection services, controllers,...">WebApplicationBuilder</a> class with pre-configured defaults. </p>
+<dl class="section return"><dt>Returns</dt><dd>A SmartPointer to the newly created <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html" title="Facilitates initialization and configuration of dependency injection services, controllers,...">WebApplicationBuilder</a>. </dd></dl>
+<p>Return result: Construct and return fresh <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html" title="Facilitates initialization and configuration of dependency injection services, controllers,...">WebApplicationBuilder</a> instance.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00063">63</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00067">67</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>.</p>
 
@@ -371,11 +384,14 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8h_source.html#l00049">49</a> of file <a class="el" href="_web_application_8h_source.html">WebApplication.h</a>.</p>
+<p>Gets the service provider holding the configured application dependencies. </p>
+<dl class="section return"><dt>Returns</dt><dd>SmartPointer to the root IServiceProvider. </dd></dl>
 
-<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_web_application_8h_source.html#l00049">GetServices()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8h_source.html#l00051">51</a> of file <a class="el" href="_web_application_8h_source.html">WebApplication.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8h_source.html#l00049">GetServices()</a>.</p>
+<p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_web_application_8h_source.html#l00051">GetServices()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8h_source.html#l00051">GetServices()</a>.</p>
 
 </div>
 </div>
@@ -394,7 +410,12 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00087">87</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Retrieves the list of all currently mapped WebSocket route patterns. </p>
+<dl class="section return"><dt>Returns</dt><dd>List of route pattern strings. </dd></dl>
+<p>Initialize: Collect registered WebSocket routes.</p>
+<p>Return result: Return list of active route keys.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00097">97</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_list_8h_source.html#l00115">DotNetDupe::System::Collections::Generic::List&lt; T &gt;::Add()</a>.</p>
 
@@ -415,7 +436,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00096">96</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Determines whether a registered WebSocket route matches the specified path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>URI path to evaluate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if a matching WebSocket route is registered; otherwise, false. </dd></dl>
+<p>Iterate: Verify if path matches any registered WebSocket endpoints.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00108">108</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -434,7 +465,10 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00104">104</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Dispatches and binds all registered controller routes to this application pipeline. </p>
+<p>Dispatch: Invoke all queued controller registration delegates.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00117">117</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +491,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00079">79</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Registers an HTTP DELETE route endpoint with a synchronous lambda or delegate handler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pattern</td><td>URI route pattern. </td></tr>
+    <tr><td class="paramname">handler</td><td>Request handler function returning response content. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Register: Map HTTP DELETE endpoint pattern to the provided delegate.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00087">87</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -480,7 +524,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00067">67</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Registers an HTTP GET route endpoint with a synchronous lambda or delegate handler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pattern</td><td>URI route pattern (e.g., "/api/status", "/users/{id}"). </td></tr>
+    <tr><td class="paramname">handler</td><td>Request handler function returning response content. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Register: Map HTTP GET endpoint pattern to the provided delegate.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00072">72</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -503,7 +557,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00071">71</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Registers an HTTP POST route endpoint with a synchronous lambda or delegate handler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pattern</td><td>URI route pattern. </td></tr>
+    <tr><td class="paramname">handler</td><td>Request handler function returning response content. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Register: Map HTTP POST endpoint pattern to the provided delegate.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00077">77</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -526,7 +590,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00075">75</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Registers an HTTP PUT route endpoint with a synchronous lambda or delegate handler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pattern</td><td>URI route pattern. </td></tr>
+    <tr><td class="paramname">handler</td><td>Request handler function returning response content. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Register: Map HTTP PUT endpoint pattern to the provided delegate.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00082">82</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -549,7 +623,17 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00083">83</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Maps an RFC 6455 WebSocket endpoint to an asynchronous lifecycle handler. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pattern</td><td>URI route pattern (e.g., "/ws/chat"). </td></tr>
+    <tr><td class="paramname">handler</td><td>SmartPointer to the IWebSocketHandler instance. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Register: Map WebSocket endpoint pattern to the provided lifecycle handler.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00092">92</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 </div>
 </div>
@@ -576,7 +660,7 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00028">WebApplication()</a>, <a class="el" href="_web_application_8cpp_source.html#l00063">CreateBuilder()</a>, <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_web_application_8h_source.html#l00065">WebApplicationBuilder</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00028">WebApplication()</a>, <a class="el" href="_web_application_8cpp_source.html#l00067">CreateBuilder()</a>, <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_web_application_8h_source.html#l00099">WebApplicationBuilder</a>.</p>
 
 </div>
 </div>
@@ -602,8 +686,11 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Guard: Check for self-assignment.</p>
+<p>Move: Transfer state, handler dictionaries, and socket listener.</p>
+<p>Return result: Return self reference.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00047">47</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00048">48</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_web_application_8cpp_source.html#l00028">WebApplication()</a>.</p>
 
@@ -628,9 +715,21 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00115">115</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Starts the embedded HTTP/WebSocket server listener on the specified URL and worker thread pool. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">url</td><td>Listening URL containing protocol, host, and port (default "http://127.0.0.1:5000"). </td></tr>
+    <tr><td class="paramname">threadCount</td><td>Minimum worker threads in the ThreadPool for connection handling (default 10). </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Configure: Adjust thread pool concurrency limits.</p>
+<p>Parse: Extract host and port from URL string.</p>
+<p>Execute: Start main socket listener loop.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00090">DotNetDupe::WebAppCore::Builder::Internal::ParseServerUrl()</a>, and <a class="el" href="_thread_pool_8cpp_source.html#l00150">DotNetDupe::System::Threading::ThreadPool::SetMinThreads()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00129">129</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00101">DotNetDupe::WebAppCore::Builder::Internal::ParseServerUrl()</a>, and <a class="el" href="_thread_pool_8cpp_source.html#l00150">DotNetDupe::System::Threading::ThreadPool::SetMinThreads()</a>.</p>
 
 </div>
 </div>
@@ -649,7 +748,11 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00144">144</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
+<p>Stops the active TCP listener and releases connection worker threads. </p>
+<p>Guard: Check if server is currently running.</p>
+<p>Terminate: Stop listener socket.</p>
+
+<p class="definition">Definition at line <a class="el" href="_web_application_8cpp_source.html#l00164">164</a> of file <a class="el" href="_web_application_8cpp_source.html">WebApplication.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_tcp_client_8cpp_source.html#l00065">DotNetDupe::System::Net::Sockets::TcpClient::Close()</a>, and <a class="el" href="_tcp_client_8cpp_source.html#l00042">DotNetDupe::System::Net::Sockets::TcpClient::Connect()</a>.</p>
 

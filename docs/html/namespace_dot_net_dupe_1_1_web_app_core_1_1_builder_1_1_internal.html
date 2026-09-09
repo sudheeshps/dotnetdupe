@@ -137,12 +137,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Initialize: Segment token vector.</p>
+<p>Parse: Split path by '/' delimiters.</p>
+<p>Return result: Return path segments.</p>
 
 <p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00011">11</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00011">GetPathSegments()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00011">GetPathSegments()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00257">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00011">GetPathSegments()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00293">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>.</p>
 
 </div>
 </div>
@@ -169,12 +172,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Guard: Ensure path length is at least the number of fixed pattern segments.</p>
+<p>Match: Compare prefix segments prior to the catch-all parameter.</p>
+<p>Extract: Collect remaining path segments into the catch-all value.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00033">33</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00036">36</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00033">MatchCatchAllRoute()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00036">MatchCatchAllRoute()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00033">MatchCatchAllRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00082">MatchRoute()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00036">MatchCatchAllRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00091">MatchRoute()</a>.</p>
 
 </div>
 </div>
@@ -201,12 +207,14 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Check: Route has wildcard catch-all pattern suffix.</p>
+<p>Fallback: Evaluate standard exact segment matching.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00082">82</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00091">91</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00033">MatchCatchAllRoute()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00082">MatchRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00063">MatchStandardRoute()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00036">MatchCatchAllRoute()</a>, <a class="el" href="_web_application_routing_8cpp_source.html#l00091">MatchRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00069">MatchStandardRoute()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00257">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00082">MatchRoute()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00293">DotNetDupe::WebAppCore::Builder::MatchAndFindHandler()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00091">MatchRoute()</a>.</p>
 
 </div>
 </div>
@@ -233,12 +241,15 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Guard: Segment count must match exactly.</p>
+<p>Match: Compare segments or bind route placeholder parameters.</p>
+<p>Return result: Route matched successfully.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00063">63</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00069">69</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00063">MatchStandardRoute()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00069">MatchStandardRoute()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00082">MatchRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00063">MatchStandardRoute()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00091">MatchRoute()</a>, and <a class="el" href="_web_application_routing_8cpp_source.html#l00069">MatchStandardRoute()</a>.</p>
 
 </div>
 </div>
@@ -265,12 +276,16 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+<p>Initialize: Default host and port.</p>
+<p>Parse: Strip protocol prefix if present.</p>
+<p>Parse: Extract host and optional port.</p>
+<p>Normalize: Translate localhost to loopback IP.</p>
 
-<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00090">90</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_application_routing_8cpp_source.html#l00101">101</a> of file <a class="el" href="_web_application_routing_8cpp_source.html">WebApplicationRouting.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00090">ParseServerUrl()</a>.</p>
+<p class="reference">References <a class="el" href="_web_application_routing_8cpp_source.html#l00101">ParseServerUrl()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00090">ParseServerUrl()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00115">DotNetDupe::WebAppCore::Builder::WebApplication::Run()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_web_application_routing_8cpp_source.html#l00101">ParseServerUrl()</a>, and <a class="el" href="_web_application_8cpp_source.html#l00129">DotNetDupe::WebAppCore::Builder::WebApplication::Run()</a>.</p>
 
 </div>
 </div>

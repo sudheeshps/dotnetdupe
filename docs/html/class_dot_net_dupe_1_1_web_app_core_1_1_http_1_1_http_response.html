@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Encapsulates an outgoing HTTP response within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_http_context_8h_source.html">HttpContext.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::WebAppCore::Http::HttpResponse:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,25 +132,45 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a0eb7177a78b20f5d79066f9279aabcbb" id="r_a0eb7177a78b20f5d79066f9279aabcbb"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a0eb7177a78b20f5d79066f9279aabcbb">HttpResponse</a> ()</td></tr>
+<tr class="memdesc:a0eb7177a78b20f5d79066f9279aabcbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default constructor initializing status code 200 OK and text/plain content type.  <br /></td></tr>
 <tr class="memitem:ad7cf6f129bd6d3e79e5b96fb0a062b93" id="r_ad7cf6f129bd6d3e79e5b96fb0a062b93"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ad7cf6f129bd6d3e79e5b96fb0a062b93">~HttpResponse</a> () override=default</td></tr>
+<tr class="memdesc:ad7cf6f129bd6d3e79e5b96fb0a062b93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor.  <br /></td></tr>
 <tr class="memitem:a0d6225bef0726ae5c8920cfd586e4f0c" id="r_a0d6225bef0726ae5c8920cfd586e4f0c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a0d6225bef0726ae5c8920cfd586e4f0c">BindStream</a> (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html">DotNetDupe::System::Net::Sockets::NetworkStream</a> &gt; pStream)</td></tr>
+<tr class="memdesc:a0d6225bef0726ae5c8920cfd586e4f0c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the underlying network stream to this response for direct writing or streaming.  <br /></td></tr>
 <tr class="memitem:adab2a57e23fddb4621896b8d9cffc5e0" id="r_adab2a57e23fddb4621896b8d9cffc5e0"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#adab2a57e23fddb4621896b8d9cffc5e0">Flush</a> ()</td></tr>
+<tr class="memdesc:adab2a57e23fddb4621896b8d9cffc5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Flushes any remaining response body or terminal chunk marker to the client stream.  <br /></td></tr>
 <tr class="memitem:a92fb03c1216903a1b5aefb318aedfa2b" id="r_a92fb03c1216903a1b5aefb318aedfa2b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a92fb03c1216903a1b5aefb318aedfa2b">FlushHeaders</a> ()</td></tr>
+<tr class="memdesc:a92fb03c1216903a1b5aefb318aedfa2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes and transmits the HTTP status line and response headers to the network stream.  <br /></td></tr>
 <tr class="memitem:a988cd796fca69bdf547287ca33e3fb8e" id="r_a988cd796fca69bdf547287ca33e3fb8e"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a988cd796fca69bdf547287ca33e3fb8e">GetBody</a> () const</td></tr>
+<tr class="memdesc:a988cd796fca69bdf547287ca33e3fb8e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the accumulated response body string.  <br /></td></tr>
 <tr class="memitem:a66724900da520e9f9070a3a7594c78d0" id="r_a66724900da520e9f9070a3a7594c78d0"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a66724900da520e9f9070a3a7594c78d0">GetContentType</a> () const</td></tr>
+<tr class="memdesc:a66724900da520e9f9070a3a7594c78d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the Content-Type header string.  <br /></td></tr>
 <tr class="memitem:ac740aff2fa26ec51705aba5e4961b53c" id="r_ac740aff2fa26ec51705aba5e4961b53c"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ac740aff2fa26ec51705aba5e4961b53c">GetHeaders</a> ()</td></tr>
+<tr class="memdesc:ac740aff2fa26ec51705aba5e4961b53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the mutable dictionary of HTTP response headers.  <br /></td></tr>
 <tr class="memitem:aa76a50354beeeedb09c2b9503740a629" id="r_aa76a50354beeeedb09c2b9503740a629"><td class="memItemLeft">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aa76a50354beeeedb09c2b9503740a629">GetHeaders</a> () const</td></tr>
+<tr class="memdesc:aa76a50354beeeedb09c2b9503740a629"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the read-only dictionary of HTTP response headers.  <br /></td></tr>
 <tr class="memitem:a7c8747af15b2eda3985695e1c5eda206" id="r_a7c8747af15b2eda3985695e1c5eda206"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a7c8747af15b2eda3985695e1c5eda206">GetStatusCode</a> () const</td></tr>
+<tr class="memdesc:a7c8747af15b2eda3985695e1c5eda206"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the integer HTTP response status code.  <br /></td></tr>
 <tr class="memitem:aebf3b3cb8fa46f83bae5e2fe5f3776a5" id="r_aebf3b3cb8fa46f83bae5e2fe5f3776a5"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982">DotNetDupe::System::Net::HttpStatusCode</a>&#160;</td><td class="memItemRight"><a class="el" href="#aebf3b3cb8fa46f83bae5e2fe5f3776a5">GetStatusCodeEnum</a> () const</td></tr>
+<tr class="memdesc:aebf3b3cb8fa46f83bae5e2fe5f3776a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the HTTP response status code as a strongly-typed HttpStatusCode enum.  <br /></td></tr>
 <tr class="memitem:ace746b199136f9bb6433de368561b497" id="r_ace746b199136f9bb6433de368561b497"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ace746b199136f9bb6433de368561b497">IsChunked</a> () const</td></tr>
+<tr class="memdesc:ace746b199136f9bb6433de368561b497"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether chunked transfer-encoding is enabled for this response.  <br /></td></tr>
 <tr class="memitem:a99468a697a124c02e8e58ee3a2798015" id="r_a99468a697a124c02e8e58ee3a2798015"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a99468a697a124c02e8e58ee3a2798015">IsHeadersSent</a> () const</td></tr>
+<tr class="memdesc:a99468a697a124c02e8e58ee3a2798015"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the HTTP response status line and headers have already been transmitted.  <br /></td></tr>
 <tr class="memitem:acdd99eb2079902e3b8d9c8ffac6faa5c" id="r_acdd99eb2079902e3b8d9c8ffac6faa5c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#acdd99eb2079902e3b8d9c8ffac6faa5c">SetBody</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;body)</td></tr>
+<tr class="memdesc:acdd99eb2079902e3b8d9c8ffac6faa5c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the response body content.  <br /></td></tr>
 <tr class="memitem:a7c1ade085b0724b48cdb3c3fe44bf483" id="r_a7c1ade085b0724b48cdb3c3fe44bf483"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a7c1ade085b0724b48cdb3c3fe44bf483">SetChunked</a> (bool bChunked)</td></tr>
+<tr class="memdesc:a7c1ade085b0724b48cdb3c3fe44bf483"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets whether chunked transfer-encoding should be used.  <br /></td></tr>
 <tr class="memitem:a90b79775c071502f2eb806079532ae0e" id="r_a90b79775c071502f2eb806079532ae0e"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a90b79775c071502f2eb806079532ae0e">SetContentType</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;type)</td></tr>
+<tr class="memdesc:a90b79775c071502f2eb806079532ae0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the Content-Type header string.  <br /></td></tr>
 <tr class="memitem:a31f8b0da20b2792da2cdaa175053920c" id="r_a31f8b0da20b2792da2cdaa175053920c"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a31f8b0da20b2792da2cdaa175053920c">SetStatusCode</a> (<a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982">DotNetDupe::System::Net::HttpStatusCode</a> code)</td></tr>
+<tr class="memdesc:a31f8b0da20b2792da2cdaa175053920c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the HTTP response status code via HttpStatusCode enum.  <br /></td></tr>
 <tr class="memitem:a08baa26672b57af4f055d01c9c40b88a" id="r_a08baa26672b57af4f055d01c9c40b88a"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a08baa26672b57af4f055d01c9c40b88a">SetStatusCode</a> (int code)</td></tr>
+<tr class="memdesc:a08baa26672b57af4f055d01c9c40b88a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the integer HTTP response status code.  <br /></td></tr>
 <tr class="memitem:a475325d5695a7f002bbe260815715a16" id="r_a475325d5695a7f002bbe260815715a16"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a475325d5695a7f002bbe260815715a16">Write</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;text)</td></tr>
+<tr class="memdesc:a475325d5695a7f002bbe260815715a16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends text to the response body buffer.  <br /></td></tr>
 <tr class="memitem:ad63cc5ff0ab595444375806bc397065b" id="r_ad63cc5ff0ab595444375806bc397065b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ad63cc5ff0ab595444375806bc397065b">WriteChunk</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a> &amp;data)</td></tr>
+<tr class="memdesc:ad63cc5ff0ab595444375806bc397065b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a chunk of data using HTTP/1.1 chunked transfer encoding.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -169,8 +192,14 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00047">47</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<div class="textblock"><p>Encapsulates an outgoing HTTP response within the <a class="el" href="namespace_dot_net_dupe_1_1_web_app_core.html">WebAppCore</a> pipeline. </p>
+<p>Provides status code, content-type, header collection, chunked transfer encoding, and body manipulation.</p>
+<dl class="section note"><dt>Note</dt><dd>Thread Safety: Not thread-safe; written sequentially by connection handlers. </dd>
+<dd>
+Conforms to RFC 9110 (HTTP Semantics) and RFC 9112 (HTTP/1.1 chunked transfer-encoding). </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_request.html" title="Encapsulates an incoming HTTP request within the WebAppCore pipeline.">HttpRequest</a>, <a class="el" href="class_dot_net_dupe_1_1_web_app_core_1_1_http_1_1_http_context.html" title="Encapsulates all HTTP-specific information about an individual HTTP request and response pair.">HttpContext</a> </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00097">97</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a0eb7177a78b20f5d79066f9279aabcbb" name="a0eb7177a78b20f5d79066f9279aabcbb"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0eb7177a78b20f5d79066f9279aabcbb">&#9670;&#160;</a></span>HttpResponse()</h2>
@@ -195,7 +224,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00049">49</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Default constructor initializing status code 200 OK and text/plain content type. </p>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00100">100</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -221,6 +252,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor. </p>
 
 </div>
 </div>
@@ -248,7 +281,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00068">68</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Binds the underlying network stream to this response for direct writing or streaming. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pStream</td><td>SmartPointer to the active NetworkStream. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00151">151</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -267,9 +308,13 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00061">61</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+<p>Flushes any remaining response body or terminal chunk marker to the client stream. </p>
+<p>Guard: Flush headers if not yet transmitted.</p>
+<p>Finalize: Write terminal chunk marker or raw buffered body payload.</p>
 
-<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00041">FlushHeaders()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00071">71</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00046">FlushHeaders()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
 
 </div>
 </div>
@@ -288,11 +333,15 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00041">41</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+<p>Serializes and transmits the HTTP status line and response headers to the network stream. </p>
+<p>Guard: Transmit headers only once per response.</p>
+<p>Write: Send formatted response status and header block.</p>
 
-<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00029">DotNetDupe::WebAppCore::Http::BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00046">46</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00061">Flush()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00047">WriteChunk()</a>.</p>
+<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00031">DotNetDupe::WebAppCore::Http::BuildResponseHeaderString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_http_response_8cpp_source.html#l00071">Flush()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00054">WriteChunk()</a>.</p>
 
 </div>
 </div>
@@ -319,9 +368,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00060">60</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the accumulated response body string. </p>
+<dl class="section return"><dt>Returns</dt><dd>Response body content. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00243">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00131">131</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00277">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
 
 </div>
 </div>
@@ -348,9 +400,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00057">57</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the Content-Type header string. </p>
+<dl class="section return"><dt>Returns</dt><dd>MIME content type string. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00243">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00123">123</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00277">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
 
 </div>
 </div>
@@ -377,9 +432,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00065">65</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the mutable dictionary of HTTP response headers. </p>
+<dl class="section return"><dt>Returns</dt><dd>Reference to response headers dictionary. </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00243">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00143">143</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00277">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
 
 </div>
 </div>
@@ -406,7 +464,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00066">66</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the read-only dictionary of HTTP response headers. </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to response headers dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00147">147</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -433,9 +494,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00052">52</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the integer HTTP response status code. </p>
+<dl class="section return"><dt>Returns</dt><dd>Status code (e.g., 200, 404). </dd></dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00243">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00107">107</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00277">DotNetDupe::WebAppCore::Builder::SendHttpResponseData()</a>.</p>
 
 </div>
 </div>
@@ -462,7 +526,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00055">55</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Gets the HTTP response status code as a strongly-typed HttpStatusCode enum. </p>
+<dl class="section return"><dt>Returns</dt><dd>Strongly-typed HttpStatusCode value. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00119">119</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -489,7 +556,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00070">70</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Indicates whether chunked transfer-encoding is enabled for this response. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if chunked encoding is active; otherwise, false. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00159">159</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -516,7 +586,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00069">69</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Indicates whether the HTTP response status line and headers have already been transmitted. </p>
+<dl class="section return"><dt>Returns</dt><dd>True if headers have been written to the network stream; otherwise, false. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00155">155</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -543,9 +616,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00061">61</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the response body content. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">body</td><td>Response body content. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00327">DotNetDupe::WebAppCore::Builder::DispatchResponse()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00135">135</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00373">DotNetDupe::WebAppCore::Builder::DispatchResponse()</a>.</p>
 
 </div>
 </div>
@@ -572,7 +653,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00071">71</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets whether chunked transfer-encoding should be used. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bChunked</td><td>True to enable chunked transfer encoding; otherwise, false. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00163">163</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -599,7 +688,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00058">58</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the Content-Type header string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">type</td><td>MIME content type string (e.g., "application/json"). </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00127">127</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -626,7 +723,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00054">54</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the HTTP response status code via HttpStatusCode enum. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">code</td><td>Standard HttpStatusCode value. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00115">115</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -653,9 +758,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00053">53</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Sets the integer HTTP response status code. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">code</td><td>Status code integer. </td></tr>
+  </table>
+  </dd>
+</dl>
 
-<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00327">DotNetDupe::WebAppCore::Builder::DispatchResponse()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00111">111</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_web_application_8cpp_source.html#l00373">DotNetDupe::WebAppCore::Builder::DispatchResponse()</a>.</p>
 
 </div>
 </div>
@@ -682,7 +795,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00063">63</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
+<p>Appends text to the response body buffer. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">text</td><td>Text string to append. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_context_8h_source.html#l00139">139</a> of file <a class="el" href="_http_context_8h_source.html">HttpContext.h</a>.</p>
 
 </div>
 </div>
@@ -701,9 +822,20 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00047">47</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+<p>Writes a chunk of data using HTTP/1.1 chunked transfer encoding. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>Data chunk to transmit. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Guard: Check for empty chunk payload.</p>
+<p>Initialize: Ensure headers are flushed before first data chunk.</p>
+<p>Format: Construct hex-length framed chunk per RFC 9112.</p>
 
-<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00041">FlushHeaders()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_response_8cpp_source.html#l00054">54</a> of file <a class="el" href="_http_response_8cpp_source.html">HttpResponse.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_http_response_8cpp_source.html#l00046">FlushHeaders()</a>, <a class="el" href="_string_8cpp_source.html#l00230">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_http_response_8cpp_source.html#l00011">DotNetDupe::WebAppCore::Http::WriteRaw()</a>.</p>
 
 </div>
 </div>

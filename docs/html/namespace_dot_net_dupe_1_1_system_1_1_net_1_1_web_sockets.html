@@ -117,7 +117,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('namespace_dot_
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:WebSocket" id="r_WebSocket"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html">WebSocket</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Manages full-duplex message framing and communication over an established <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> connection.  <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html#details">More...</a><br /></td></tr>
 <tr class="memitem:WebSocketException" id="r_WebSocketException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket_exception.html">WebSocketException</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Represents errors that occur during <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> connection operations and message framing.  <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket_exception.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -136,6 +138,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120">InvalidState</a> = 9
 <br />
  }</td></tr>
+<tr class="memdesc:ad7fc4faab09a617139de632659119190"><td class="mdescLeft">&#160;</td><td class="mdescRight">Categorizes errors that occur during <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> protocol handshakes, framing, or socket I/O.  <a href="#ad7fc4faab09a617139de632659119190">More...</a><br /></td></tr>
 <tr class="memitem:a98cdea9038b8e64023365cb933e8ba44" id="r_a98cdea9038b8e64023365cb933e8ba44"><td class="memItemLeft">enum class &#160;</td><td class="memItemRight"><a class="el" href="#a98cdea9038b8e64023365cb933e8ba44">WebSocketState</a> { <br />
 &#160;&#160;<a class="el" href="#a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754">None</a> = 0
 , <a class="el" href="#a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458">Connecting</a> = 1
@@ -147,6 +150,7 @@ Enumerations</h2></td></tr>
 , <a class="el" href="#a98cdea9038b8e64023365cb933e8ba44a721c28f4c74928cc9e0bb3fef345e408">Aborted</a> = 6
 <br />
  }</td></tr>
+<tr class="memdesc:a98cdea9038b8e64023365cb933e8ba44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines the operational states that a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> connection can be in.  <a href="#a98cdea9038b8e64023365cb933e8ba44">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -172,20 +176,33 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Categorizes errors that occur during <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> protocol handshakes, framing, or socket I/O. </p>
+<dl class="section note"><dt>Note</dt><dd>Conforms to RFC 6455 error definitions. </dd></dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a505a83f220c02df2f85c3810cd9ceb38" name="ad7fc4faab09a617139de632659119190a505a83f220c02df2f85c3810cd9ceb38"></a>Success&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a0982718e714712dc7fcabf9ce0fd191e" name="ad7fc4faab09a617139de632659119190a0982718e714712dc7fcabf9ce0fd191e"></a>InvalidMessageType&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a2b310d05c23325e2935ec87b25a60b8f" name="ad7fc4faab09a617139de632659119190a2b310d05c23325e2935ec87b25a60b8f"></a>Faulted&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4" name="ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4"></a>NativeError&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a" name="ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a"></a>NotAWebSocket&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a0f89bc98e9b12bdeda0604e57bdc0518" name="ad7fc4faab09a617139de632659119190a0f89bc98e9b12bdeda0604e57bdc0518"></a>UnsupportedVersion&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a2e7288adea1c7bc1364ebaa65d71f177" name="ad7fc4faab09a617139de632659119190a2e7288adea1c7bc1364ebaa65d71f177"></a>UnsupportedProtocol&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ab3f0664b975ac2b2fb105180f14735a9" name="ad7fc4faab09a617139de632659119190ab3f0664b975ac2b2fb105180f14735a9"></a>HeaderError&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b" name="ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b"></a>ConnectionClosedPrematurely&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120" name="ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120"></a>InvalidState&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a505a83f220c02df2f85c3810cd9ceb38" name="ad7fc4faab09a617139de632659119190a505a83f220c02df2f85c3810cd9ceb38"></a>Success&#160;</td><td class="fielddoc"><p>No error occurred. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a0982718e714712dc7fcabf9ce0fd191e" name="ad7fc4faab09a617139de632659119190a0982718e714712dc7fcabf9ce0fd191e"></a>InvalidMessageType&#160;</td><td class="fielddoc"><p>Received frame has an unknown or unexpected opcode. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a2b310d05c23325e2935ec87b25a60b8f" name="ad7fc4faab09a617139de632659119190a2b310d05c23325e2935ec87b25a60b8f"></a>Faulted&#160;</td><td class="fielddoc"><p>General fault occurred during processing. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4" name="ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4"></a>NativeError&#160;</td><td class="fielddoc"><p>Underlying socket or OS network error. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a" name="ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a"></a>NotAWebSocket&#160;</td><td class="fielddoc"><p>The connection or payload does not conform to RFC 6455. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a0f89bc98e9b12bdeda0604e57bdc0518" name="ad7fc4faab09a617139de632659119190a0f89bc98e9b12bdeda0604e57bdc0518"></a>UnsupportedVersion&#160;</td><td class="fielddoc"><p>Requested Sec-WebSocket-Version is not supported. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190a2e7288adea1c7bc1364ebaa65d71f177" name="ad7fc4faab09a617139de632659119190a2e7288adea1c7bc1364ebaa65d71f177"></a>UnsupportedProtocol&#160;</td><td class="fielddoc"><p>Requested subprotocol is not supported. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ab3f0664b975ac2b2fb105180f14735a9" name="ad7fc4faab09a617139de632659119190ab3f0664b975ac2b2fb105180f14735a9"></a>HeaderError&#160;</td><td class="fielddoc"><p>Malformed <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> frame header or HTTP upgrade header. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b" name="ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b"></a>ConnectionClosedPrematurely&#160;</td><td class="fielddoc"><p>Connection closed before frame payload was completely read. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120" name="ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120"></a>InvalidState&#160;</td><td class="fielddoc"><p>Attempted operation on an inactive, closed, or aborted socket. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_web_socket_exception_8h_source.html#l00011">11</a> of file <a class="el" href="_web_socket_exception_8h_source.html">WebSocketException.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_socket_exception_8h_source.html#l00017">17</a> of file <a class="el" href="_web_socket_exception_8h_source.html">WebSocketException.h</a>.</p>
 
 </div>
 </div>
@@ -208,17 +225,27 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Defines the operational states that a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets_1_1_web_socket.html" title="Manages full-duplex message framing and communication over an established WebSocket connection.">WebSocket</a> connection can be in. </p>
+<dl class="section note"><dt>Note</dt><dd>Conforms to RFC 6455 Section 4.1 connection states. </dd></dl>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754" name="a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754"></a>None&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458" name="a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458"></a>Connecting&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44ac3bf447eabe632720a3aa1a7ce401274" name="a98cdea9038b8e64023365cb933e8ba44ac3bf447eabe632720a3aa1a7ce401274"></a>Open&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a0d17a38aefd18ec520fb9b20378916b0" name="a98cdea9038b8e64023365cb933e8ba44a0d17a38aefd18ec520fb9b20378916b0"></a>CloseSent&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44afc641c864377e360da58341c83c17d98" name="a98cdea9038b8e64023365cb933e8ba44afc641c864377e360da58341c83c17d98"></a>CloseReceived&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a03f4a47830f97377a35321051685071e" name="a98cdea9038b8e64023365cb933e8ba44a03f4a47830f97377a35321051685071e"></a>Closed&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a721c28f4c74928cc9e0bb3fef345e408" name="a98cdea9038b8e64023365cb933e8ba44a721c28f4c74928cc9e0bb3fef345e408"></a>Aborted&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754" name="a98cdea9038b8e64023365cb933e8ba44a6adf97f83acf6453d4a6a4b1070f3754"></a>None&#160;</td><td class="fielddoc"><p>Initial state before connection setup. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458" name="a98cdea9038b8e64023365cb933e8ba44ae321c53b354930ba96f0243e652df458"></a>Connecting&#160;</td><td class="fielddoc"><p>The connection is negotiating the handshake. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44ac3bf447eabe632720a3aa1a7ce401274" name="a98cdea9038b8e64023365cb933e8ba44ac3bf447eabe632720a3aa1a7ce401274"></a>Open&#160;</td><td class="fielddoc"><p>The connection is open and ready for sending/receiving frames. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a0d17a38aefd18ec520fb9b20378916b0" name="a98cdea9038b8e64023365cb933e8ba44a0d17a38aefd18ec520fb9b20378916b0"></a>CloseSent&#160;</td><td class="fielddoc"><p>A close control frame was transmitted. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44afc641c864377e360da58341c83c17d98" name="a98cdea9038b8e64023365cb933e8ba44afc641c864377e360da58341c83c17d98"></a>CloseReceived&#160;</td><td class="fielddoc"><p>A close control frame was received from the remote peer. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a03f4a47830f97377a35321051685071e" name="a98cdea9038b8e64023365cb933e8ba44a03f4a47830f97377a35321051685071e"></a>Closed&#160;</td><td class="fielddoc"><p>The connection has cleanly closed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a98cdea9038b8e64023365cb933e8ba44a721c28f4c74928cc9e0bb3fef345e408" name="a98cdea9038b8e64023365cb933e8ba44a721c28f4c74928cc9e0bb3fef345e408"></a>Aborted&#160;</td><td class="fielddoc"><p>The connection was aborted or closed abruptly. </p>
+</td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_web_socket_8h_source.html#l00017">17</a> of file <a class="el" href="_web_socket_8h_source.html">WebSocket.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_web_socket_8h_source.html#l00023">23</a> of file <a class="el" href="_web_socket_8h_source.html">WebSocket.h</a>.</p>
 
 </div>
 </div>
@@ -254,6 +281,8 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+<p>Frame: Add FIN bit and opcode.</p>
+<p>Encode: Determine 7-bit, 16-bit, or 64-bit payload length field per RFC 6455.</p>
 
 <p class="definition">Definition at line <a class="el" href="_web_socket_8cpp_source.html#l00017">17</a> of file <a class="el" href="_web_socket_8cpp_source.html">WebSocket.cpp</a>.</p>
 
