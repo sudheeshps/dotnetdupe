@@ -113,6 +113,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_file_download
   <div class="headertitle"><div class="title">FileDownloader.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Resumable, multi-threaded HTTP file downloader with progress tracking and event notifications.  
+<a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="_common_8h_source.html">Common.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_object_8h_source.html">System/Object.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="_string_8h_source.html">System/String.h</a>&quot;</code><br />
@@ -129,9 +132,13 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_file_download
 <tr class="heading"><td colspan="2"><h2 id="header-nested-classes" class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Classes</h2></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadCompletedEventArgs" id="r_DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadCompletedEventArgs"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html">DotNetDupe::System::Net::Http::DownloadCompletedEventArgs</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments emitted when transfer finishes or fails.  <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html#details">More...</a><br /></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadProgress" id="r_DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadProgress"><td class="memItemLeft">struct &#160;</td><td class="memItemRight"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html">DotNetDupe::System::Net::Http::DownloadProgress</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Snapshot of download telemetry metrics including transferred bytes and bandwidth speed.  <a href="struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html#details">More...</a><br /></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadProgressChangedEventArgs" id="r_DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3ADownloadProgressChangedEventArgs"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html">DotNetDupe::System::Net::Http::DownloadProgressChangedEventArgs</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Event arguments emitted periodically during byte transfer.  <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html#details">More...</a><br /></td></tr>
 <tr class="memitem:DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3AFileDownloader" id="r_DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3AFileDownloader"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html">DotNetDupe::System::Net::Http::FileDownloader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Coordinates asynchronous, chunked, and resumable file downloads with pause/resume support.  <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#details">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-namespaces" class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
@@ -152,8 +159,13 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181ad7c8c85bf79bbe1b7188497c32c3b0ca">DotNetDupe::System::Net::Http::Failed</a>
 <br />
  }</td></tr>
+<tr class="memdesc:a8f01ceb9998a577152ae8126068f9181"><td class="mdescLeft">&#160;</td><td class="mdescRight">State machine values representing the lifecycle of an ongoing file download.  <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181">More...</a><br /></td></tr>
 </table>
-</div><!-- contents -->
+<a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>Resumable, multi-threaded HTTP file downloader with progress tracking and event notifications. </p>
+
+<p class="definition">Definition in file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <div id="page-nav" class="page-nav-panel">
 <div id="page-nav-resize-handle"></div>

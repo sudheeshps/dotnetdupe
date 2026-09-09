@@ -23,6 +23,7 @@ namespace DotNetDupe {
                 static std::once_flag s_sslInitOnce;
 
                 void SslStream::InitializeOpenSSL() {
+                    /// Thread-safe one-time initialization of OpenSSL library algorithms.
                     std::call_once(s_sslInitOnce, []() {
                         SSL_library_init();
                         SSL_load_error_strings();
@@ -38,6 +39,7 @@ namespace DotNetDupe {
                       m_pSsl(nullptr),
                       m_pBioIn(nullptr),
                       m_pBioOut(nullptr) {
+                    /// Guard: Inner stream must be non-null.
                     if (innerStream.IsNull()) {
                         throw ArgumentNullException("innerStream cannot be null.");
                     }
@@ -52,6 +54,7 @@ namespace DotNetDupe {
                       m_pSsl(nullptr),
                       m_pBioIn(nullptr),
                       m_pBioOut(nullptr) {
+                    /// Guard: Inner stream must be non-null.
                     if (innerStream.IsNull()) {
                         throw ArgumentNullException("innerStream cannot be null.");
                     }
@@ -59,10 +62,12 @@ namespace DotNetDupe {
                 }
 
                 SslStream::~SslStream() {
+                    /// Clean up OpenSSL context and BIO buffers.
                     Dispose();
                 }
 
                 void* SslStream::CreateSslContext(bool isServer) {
+                    /// Create OpenSSL SSL_CTX with minimum TLS 1.2 protocol.
                     SSL_CTX* ctx = SSL_CTX_new(isServer ? TLS_server_method() : TLS_client_method());
                     if (!ctx) {
                         throw IO::IOException("Failed to create SSL context.");
@@ -73,6 +78,7 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::ConfigureServerCert(void* rawCtx, const SmartPointer<::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2>& certificate) {
+                    /// Extract raw OpenSSL cert and private key handles.
                     SSL_CTX* ctx = static_cast<SSL_CTX*>(rawCtx);
                     X509* cert = static_cast<X509*>(certificate->GetInternalCert());
                     EVP_PKEY* pkey = static_cast<EVP_PKEY*>(certificate->GetInternalKey());
@@ -91,6 +97,7 @@ namespace DotNetDupe {
                 }
 
                 static SSL* CreateAndBindSsl(SSL_CTX* ctx, void*& pBioIn, void*& pBioOut) {
+                    /// Create SSL handle and memory BIO buffers.
                     SSL* ssl = SSL_new(ctx);
                     if (!ssl) {
                         SSL_CTX_free(ctx);
@@ -105,9 +112,11 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::AuthenticateAsClient(const String& targetHost) {
+                    /// Guard: Verify stream state.
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");
 
+                    /// Configure client SSL context and SNI host name.
                     SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(false));
                     m_pSslCtx = ctx;
                     SSL* ssl = CreateAndBindSsl(ctx, m_pBioIn, m_pBioOut);
@@ -118,10 +127,12 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::AuthenticateAsServer(const SmartPointer<::DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2>& certificate) {
+                    /// Guard: Verify stream and certificate state.
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (m_pSsl) throw IO::IOException("Already authenticated.");
                     if (certificate.IsNull()) throw ArgumentNullException("certificate cannot be null.");
 
+                    /// Configure server context with TLS certificate and private key.
                     SSL_CTX* ctx = static_cast<SSL_CTX*>(CreateSslContext(true));
                     m_pSslCtx = ctx;
                     ConfigureServerCert(ctx, certificate);
@@ -160,6 +171,7 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::ProcessHandshake() {
+                    /// Step through TLS handshake until completion.
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
                     while (!SSL_is_init_finished(ssl)) {
                         int ret = SSL_do_handshake(ssl);
@@ -170,6 +182,7 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::FlushOutboundBio() {
+                    /// Flush outbound BIO memory buffer to network transport.
                     FlushBioOutbound(m_pBioOut, m_spInnerStream);
                 }
 
@@ -181,6 +194,7 @@ namespace DotNetDupe {
                 void SslStream::SetPosition(long value) { throw IO::IOException("SslStream does not support seeking."); }
 
                 void SslStream::Flush() {
+                    /// Guard: Verify stream is active and flush underlying transport.
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     m_spInnerStream->Flush();
                 }
@@ -208,9 +222,11 @@ namespace DotNetDupe {
                 }
 
                 int SslStream::Read(char* buffer, int offset, int count) {
+                    /// Guard: Verify stream and handshake state.
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
+                    /// Decrypt available bytes from SSL session.
                     while (true) {
                         int ret = SSL_read(ssl, buffer + offset, count);
                         if (ret > 0) return ret;
@@ -233,9 +249,11 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::Write(const char* buffer, int offset, int count) {
+                    /// Guard: Verify stream and handshake state.
                     if (m_bDisposed) throw IO::IOException("Stream is disposed.");
                     if (!m_pSsl) throw IO::IOException("SslStream is not authenticated.");
                     SSL* ssl = static_cast<SSL*>(m_pSsl);
+                    /// Encrypt buffer and flush via outbound memory BIO.
                     int written = 0;
                     while (written < count) {
                         int ret = SSL_write(ssl, buffer + offset + written, count - written);
@@ -249,14 +267,17 @@ namespace DotNetDupe {
                 }
 
                 void SslStream::Dispose() {
+                    /// Guard: Idempotent disposal of SSL resources.
                     if (!m_bDisposed) {
                         m_bDisposed = true;
                         
+                        /// Release OpenSSL session handle.
                         if (m_pSsl) {
                             SSL_free(static_cast<SSL*>(m_pSsl));
                             m_pSsl = nullptr;
                         }
                         
+                        /// Release OpenSSL context handle.
                         if (m_pSslCtx) {
                             SSL_CTX_free(static_cast<SSL_CTX*>(m_pSslCtx));
                             m_pSslCtx = nullptr;
@@ -265,6 +286,7 @@ namespace DotNetDupe {
                         m_pBioIn = nullptr;
                         m_pBioOut = nullptr;
                         
+                        /// Optionally close underlying transport stream.
                         if (!m_bLeaveInnerStreamOpen && !m_spInnerStream.IsNull()) {
                             m_spInnerStream->Dispose();
                         }

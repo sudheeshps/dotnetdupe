@@ -1,13 +1,25 @@
+/// \file HttpStatusCode.h
+/// \brief Defines HTTP status codes defined for HTTP/1.1 and HTTP/2.
+
 #pragma once
 
 namespace DotNetDupe {
     namespace System {
         namespace Net {
+            /// \enum HttpStatusCode
+            /// \brief Contains the values of status codes defined for HTTP in RFC 9110 and RFC 7231.
+            ///
+            /// Standards Conformance: RFC 9110 (HTTP Semantics), RFC 7231, RFC 6585, RFC 7540 (HTTP/2).
             enum class HttpStatusCode {
+                /// \brief Equivalent to HTTP status 100. Indicates that the client can continue with its request.
                 Continue = 100,
+                /// \brief Equivalent to HTTP status 101. Indicates that the protocol version is being changed.
                 SwitchingProtocols = 101,
+                /// \brief Equivalent to HTTP status 200. Indicates that the request succeeded.
                 OK = 200,
+                /// \brief Equivalent to HTTP status 201. Indicates that the request resulted in a new resource created.
                 Created = 201,
+                /// \brief Equivalent to HTTP status 202. Indicates that the request has been accepted for further processing.
                 Accepted = 202,
                 NonAuthoritativeInformation = 203,
                 NoContent = 204,

@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>A base class representing an HTTP entity body and content headers.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_http_content_8h_source.html">HttpContent.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Net::Http::HttpContent:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -123,22 +126,30 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
   <img src="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_content.png" usemap="#DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3AHttpContent_map" alt=""/>
   <map id="DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3AHttpContent_map" name="DotNetDupe_3A_3ASystem_3A_3ANet_3A_3AHttp_3A_3AHttpContent_map">
 <area href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy." alt="DotNetDupe::System::Object" shape="rect" coords="296,0,582,24"/>
-<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html" alt="DotNetDupe::System::Net::Http::ByteArrayContent" shape="rect" coords="0,112,286,136"/>
-<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html" alt="DotNetDupe::System::Net::Http::StreamContent" shape="rect" coords="296,112,582,136"/>
-<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html" alt="DotNetDupe::System::Net::Http::StringContent" shape="rect" coords="592,112,878,136"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html" title="Provides HTTP content based on a byte array buffer." alt="DotNetDupe::System::Net::Http::ByteArrayContent" shape="rect" coords="0,112,286,136"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html" title="Provides HTTP content based on an underlying stream." alt="DotNetDupe::System::Net::Http::StreamContent" shape="rect" coords="296,112,582,136"/>
+<area href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html" title="Provides HTTP content based on a string with charset and media type." alt="DotNetDupe::System::Net::Http::StringContent" shape="rect" coords="592,112,878,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a02c289215cd5599b7d74e02a4787b031" id="r_a02c289215cd5599b7d74e02a4787b031"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="#a02c289215cd5599b7d74e02a4787b031">~HttpContent</a> ()=default</td></tr>
+<tr class="memdesc:a02c289215cd5599b7d74e02a4787b031"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor for polymorphic cleanup.  <br /></td></tr>
 <tr class="memitem:a36cbbdc127adb1667d39f58f550ecf82" id="r_a36cbbdc127adb1667d39f58f550ecf82"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#a36cbbdc127adb1667d39f58f550ecf82">CopyTo</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html">IO::Stream</a> &gt; &amp;stream)</td></tr>
+<tr class="memdesc:a36cbbdc127adb1667d39f58f550ecf82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the HTTP content to a stream.  <br /></td></tr>
 <tr class="memitem:ab5d1fa3dbb70911f7ff858d007d13de0" id="r_ab5d1fa3dbb70911f7ff858d007d13de0"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ab5d1fa3dbb70911f7ff858d007d13de0">GetHeaders</a> ()</td></tr>
+<tr class="memdesc:ab5d1fa3dbb70911f7ff858d007d13de0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the HTTP content headers defined in RFC 9110.  <br /></td></tr>
 <tr class="memitem:aadf20a5d3c605e5e4423f50b38be7787" id="r_aadf20a5d3c605e5e4423f50b38be7787"><td class="memItemLeft">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aadf20a5d3c605e5e4423f50b38be7787">GetHeaders</a> () const</td></tr>
+<tr class="memdesc:aadf20a5d3c605e5e4423f50b38be7787"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the HTTP content headers as read-only.  <br /></td></tr>
 <tr class="memitem:a531185f5af2f2051194887ec7edd651c" id="r_a531185f5af2f2051194887ec7edd651c"><td class="memItemLeft">virtual long&#160;</td><td class="memItemRight"><a class="el" href="#a531185f5af2f2051194887ec7edd651c">GetLength</a> () const</td></tr>
+<tr class="memdesc:a531185f5af2f2051194887ec7edd651c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length in bytes of the HHTP content, or -1 if indeterminate.  <br /></td></tr>
 <tr class="memitem:a8922a26813249c50ace2b21796345d18" id="r_a8922a26813249c50ace2b21796345d18"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; char &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a8922a26813249c50ace2b21796345d18">ReadAsByteArray</a> ()=0</td></tr>
+<tr class="memdesc:a8922a26813249c50ace2b21796345d18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the HTTP content to a byte array.  <br /></td></tr>
 <tr class="memitem:a2b386eb71cf0638cb522ce79334c1c59" id="r_a2b386eb71cf0638cb522ce79334c1c59"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html">IO::Stream</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2b386eb71cf0638cb522ce79334c1c59">ReadAsStream</a> ()=0</td></tr>
+<tr class="memdesc:a2b386eb71cf0638cb522ce79334c1c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the HTTP content and returns a stream that represents the content.  <br /></td></tr>
 <tr class="memitem:aca5c9e73f9e6fc09630495458520a46b" id="r_aca5c9e73f9e6fc09630495458520a46b"><td class="memItemLeft">virtual <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aca5c9e73f9e6fc09630495458520a46b">ReadAsString</a> ()=0</td></tr>
+<tr class="memdesc:aca5c9e73f9e6fc09630495458520a46b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the HTTP content to a string as an operation.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -156,6 +167,7 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pro-methods" class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
 <tr class="memitem:a883a8992614313733fe8a8548ab35ade" id="r_a883a8992614313733fe8a8548ab35ade"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a883a8992614313733fe8a8548ab35ade">HttpContent</a> ()=default</td></tr>
+<tr class="memdesc:a883a8992614313733fe8a8548ab35ade"><td class="mdescLeft">&#160;</td><td class="mdescRight">Protected default constructor for derived content types.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-inherited" class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -164,8 +176,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00015">15</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
+<div class="textblock"><p>A base class representing an HTTP entity body and content headers. </p>
+<p>Provides polymorphic stream, byte array, and string reading abstractions. Standards Conformance: RFC 9110 (HTTP Semantics), RFC 9112. </p>
+
+<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00023">23</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a02c289215cd5599b7d74e02a4787b031" name="a02c289215cd5599b7d74e02a4787b031"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a02c289215cd5599b7d74e02a4787b031">&#9670;&#160;</a></span>~HttpContent()</h2>
@@ -189,6 +203,8 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Virtual destructor for polymorphic cleanup. </p>
 
 <p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
 
@@ -217,6 +233,8 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Protected default constructor for derived content types. </p>
+
 <p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
 
 </div>
@@ -244,6 +262,22 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Serializes the HTTP content to a stream. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stream</td><td>The target stream to copy the content to. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_argument_null_exception.html" title="The exception that is thrown when a null reference is passed to a method that does not accept it as a...">ArgumentNullException</a></td><td>When stream is null. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Guard: Ensure target destination stream is valid.</p>
+<p>Read entity body as byte array and copy to output stream.</p>
 
 <p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html#a057736fe217d22f019ad82e6f185a703">DotNetDupe::System::Net::Http::ByteArrayContent</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html#ac62accc98aa9388ebbe733e8c42b00e4">DotNetDupe::System::Net::Http::StreamContent</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html#ace7348b1c20f369473bd022f08f0f02a">DotNetDupe::System::Net::Http::StringContent</a>.</p>
 
@@ -278,11 +312,14 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00026">26</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
+<p>Gets the HTTP content headers defined in RFC 9110. </p>
+<dl class="section return"><dt>Returns</dt><dd>Mutable reference to headers Dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00051">51</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_http_content_8cpp_source.html#l00074">DotNetDupe::System::Net::Http::ByteArrayContent::ByteArrayContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00079">DotNetDupe::System::Net::Http::ByteArrayContent::ByteArrayContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00126">DotNetDupe::System::Net::Http::StreamContent::StreamContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00030">DotNetDupe::System::Net::Http::StringContent::StringContent()</a>, and <a class="el" href="_http_content_8cpp_source.html#l00035">DotNetDupe::System::Net::Http::StringContent::StringContent()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_http_content_8cpp_source.html#l00085">DotNetDupe::System::Net::Http::ByteArrayContent::ByteArrayContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00091">DotNetDupe::System::Net::Http::ByteArrayContent::ByteArrayContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00145">DotNetDupe::System::Net::Http::StreamContent::StreamContent()</a>, <a class="el" href="_http_content_8cpp_source.html#l00033">DotNetDupe::System::Net::Http::StringContent::StringContent()</a>, and <a class="el" href="_http_content_8cpp_source.html#l00039">DotNetDupe::System::Net::Http::StringContent::StringContent()</a>.</p>
 
 </div>
 </div>
@@ -309,7 +346,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00027">27</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
+<p>Gets the HTTP content headers as read-only. </p>
+<dl class="section return"><dt>Returns</dt><dd>Const reference to headers Dictionary. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_http_content_8h_source.html#l00055">55</a> of file <a class="el" href="_http_content_8h_source.html">HttpContent.h</a>.</p>
 
 <p class="reference">References <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>.</p>
 
@@ -338,9 +378,13 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Gets the length in bytes of the HHTP content, or -1 if indeterminate. </p>
+<dl class="section return"><dt>Returns</dt><dd>The byte length or -1. </dd></dl>
+<p>Default length is indeterminate (-1).</p>
+
 <p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html#a5f7dba00b40ae6f74b49c162203a7ab1">DotNetDupe::System::Net::Http::ByteArrayContent</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html#ab66a756bfc46ea6c16c4e934854a91e4">DotNetDupe::System::Net::Http::StreamContent</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html#ae6e79f8abf33b27339971808ecb0fd25">DotNetDupe::System::Net::Http::StringContent</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="_http_content_8cpp_source.html#l00024">24</a> of file <a class="el" href="_http_content_8cpp_source.html">HttpContent.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_content_8cpp_source.html#l00026">26</a> of file <a class="el" href="_http_content_8cpp_source.html">HttpContent.cpp</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="#a2b386eb71cf0638cb522ce79334c1c59">ReadAsStream()</a>.</p>
 
@@ -368,6 +412,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Serializes the HTTP content to a byte array. </p>
+<dl class="section return"><dt>Returns</dt><dd>The content as an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array&lt;char&gt;</a>. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html#ad8363244d750f883a23aaf38a5017713">DotNetDupe::System::Net::Http::ByteArrayContent</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html#a4fb64ae1de2ae89f68ab48a1a52d6071">DotNetDupe::System::Net::Http::StreamContent</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html#a20d9e114ab59077a9dcf3ef92472439d">DotNetDupe::System::Net::Http::StringContent</a>.</p>
 
@@ -400,9 +447,12 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Serializes the HTTP content and returns a stream that represents the content. </p>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" title="A unified smart pointer that supports both unique and shared ownership semantics.">SmartPointer</a> to an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">IO::Stream</a> reading the content. </dd></dl>
+
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html#a89d4ea25f8cee409d50241fb27403fbb">DotNetDupe::System::Net::Http::ByteArrayContent</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html#a3bebd5cd4ef4f720865520a46f255b04">DotNetDupe::System::Net::Http::StreamContent</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html#a219209f12f2ded9244f9c7957581aa56">DotNetDupe::System::Net::Http::StringContent</a>.</p>
 
-<p class="reference">References <a class="el" href="_http_content_8cpp_source.html#l00014">CopyTo()</a>, <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_http_content_8cpp_source.html#l00024">GetLength()</a>.</p>
+<p class="reference">References <a class="el" href="_http_content_8cpp_source.html#l00014">CopyTo()</a>, <a class="el" href="_common_8h_source.html#l00011">DOTNETDUPE_API</a>, and <a class="el" href="_http_content_8cpp_source.html#l00026">GetLength()</a>.</p>
 
 </div>
 </div>
@@ -428,6 +478,9 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Serializes the HTTP content to a string as an operation. </p>
+<dl class="section return"><dt>Returns</dt><dd>The content string representation. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_byte_array_content.html#a6a0b4fdacceecc3fa4b220a859ab4914">DotNetDupe::System::Net::Http::ByteArrayContent</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_stream_content.html#acf1d5f1f71eee04263746b9cf87afa24">DotNetDupe::System::Net::Http::StreamContent</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_string_content.html#a4d5aa9fe3e320484bf435d8536ce89bc">DotNetDupe::System::Net::Http::StringContent</a>.</p>
 

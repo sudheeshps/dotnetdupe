@@ -114,19 +114,28 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 </div><!--header-->
 <div class="contents">
 
+<p>Snapshot of download telemetry metrics including transferred bytes and bandwidth speed.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:a1ae47d81a723a45dcfc8250a80c6b338" id="r_a1ae47d81a723a45dcfc8250a80c6b338"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a1ae47d81a723a45dcfc8250a80c6b338">DownloadedBytes</a> { 0 }</td></tr>
+<tr class="memdesc:a1ae47d81a723a45dcfc8250a80c6b338"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of bytes written to local destination file.  <br /></td></tr>
 <tr class="memitem:a5c42e94591c019495d2b4ba8bdc77ee8" id="r_a5c42e94591c019495d2b4ba8bdc77ee8"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a5c42e94591c019495d2b4ba8bdc77ee8">DownloadRateBytesPerSec</a> { 0.0 }</td></tr>
+<tr class="memdesc:a5c42e94591c019495d2b4ba8bdc77ee8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Instantaneous transfer speed in bytes per second.  <br /></td></tr>
 <tr class="memitem:afe2213e0d04ae6d71e22f4be403e7927" id="r_afe2213e0d04ae6d71e22f4be403e7927"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#afe2213e0d04ae6d71e22f4be403e7927">RemainingBytes</a> { 0 }</td></tr>
+<tr class="memdesc:afe2213e0d04ae6d71e22f4be403e7927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Estimated remaining bytes.  <br /></td></tr>
 <tr class="memitem:a78f4c850fefb0a82dc1f964b11f5c673" id="r_a78f4c850fefb0a82dc1f964b11f5c673"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181">DownloadStatus</a>&#160;</td><td class="memItemRight"><a class="el" href="#a78f4c850fefb0a82dc1f964b11f5c673">Status</a> { <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181afa7be7845bc42b3491d9d0377958be94">DownloadStatus::NotStarted</a> }</td></tr>
+<tr class="memdesc:a78f4c850fefb0a82dc1f964b11f5c673"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current lifecycle state of the download task.  <br /></td></tr>
 <tr class="memitem:aecbdaa70bc1fc790e6edcfb8be899d3d" id="r_aecbdaa70bc1fc790e6edcfb8be899d3d"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#aecbdaa70bc1fc790e6edcfb8be899d3d">TotalBytes</a> { 0 }</td></tr>
+<tr class="memdesc:aecbdaa70bc1fc790e6edcfb8be899d3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total expected length in bytes from HTTP Content-Length header, or 0 if chunked.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00029">29</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<div class="textblock"><p>Snapshot of download telemetry metrics including transferred bytes and bandwidth speed. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00041">41</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 </div><a name="doc-variable-members" id="doc-variable-members"></a><h2 id="header-doc-variable-members" class="groupheader">Member Data Documentation</h2>
 <a id="a1ae47d81a723a45dcfc8250a80c6b338" name="a1ae47d81a723a45dcfc8250a80c6b338"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1ae47d81a723a45dcfc8250a80c6b338">&#9670;&#160;</a></span>DownloadedBytes</h2>
@@ -140,7 +149,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00031">31</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Number of bytes written to local destination file. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00045">45</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -156,7 +167,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00033">33</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Instantaneous transfer speed in bytes per second. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00049">49</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -172,7 +185,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00032">32</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Estimated remaining bytes. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00047">47</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -188,7 +203,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00034">34</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Current lifecycle state of the download task. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00051">51</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -204,7 +221,9 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00030">30</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Total expected length in bytes from HTTP Content-Length header, or 0 if chunked. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00043">43</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>

@@ -207,6 +207,7 @@ Enumerations</h2></td></tr>
 &#160;&#160;<a class="el" href="#a4b626774352891a310251a1ed7ee7982a52066ff32b30f46d30b87007cacf8f79">NetworkAuthenticationRequired</a> = 511
 <br />
  }</td></tr>
+<tr class="memdesc:a4b626774352891a310251a1ed7ee7982"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains the values of status codes defined for HTTP in RFC 9110 and RFC 7231.  <a href="#a4b626774352891a310251a1ed7ee7982">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -235,12 +236,20 @@ Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Contains the values of status codes defined for HTTP in RFC 9110 and RFC 7231. </p>
+<p>Standards Conformance: RFC 9110 (HTTP Semantics), RFC 7231, RFC 6585, RFC 7540 (HTTP/2). </p>
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982aa0bfb8e59e6c13fc8d990781f77694fe" name="a4b626774352891a310251a1ed7ee7982aa0bfb8e59e6c13fc8d990781f77694fe"></a>Continue&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a548c5a637eddf65132b21411aeafc6a1" name="a4b626774352891a310251a1ed7ee7982a548c5a637eddf65132b21411aeafc6a1"></a>SwitchingProtocols&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982ae0aa021e21dddbd6d8cecec71e9cf564" name="a4b626774352891a310251a1ed7ee7982ae0aa021e21dddbd6d8cecec71e9cf564"></a>OK&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6" name="a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6"></a>Created&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a382ab522931673c11e398ead1b7b1678" name="a4b626774352891a310251a1ed7ee7982a382ab522931673c11e398ead1b7b1678"></a>Accepted&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982aa0bfb8e59e6c13fc8d990781f77694fe" name="a4b626774352891a310251a1ed7ee7982aa0bfb8e59e6c13fc8d990781f77694fe"></a>Continue&#160;</td><td class="fielddoc"><p>Equivalent to HTTP status 100. Indicates that the client can continue with its request. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a548c5a637eddf65132b21411aeafc6a1" name="a4b626774352891a310251a1ed7ee7982a548c5a637eddf65132b21411aeafc6a1"></a>SwitchingProtocols&#160;</td><td class="fielddoc"><p>Equivalent to HTTP status 101. Indicates that the protocol version is being changed. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982ae0aa021e21dddbd6d8cecec71e9cf564" name="a4b626774352891a310251a1ed7ee7982ae0aa021e21dddbd6d8cecec71e9cf564"></a>OK&#160;</td><td class="fielddoc"><p>Equivalent to HTTP status 200. Indicates that the request succeeded. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6" name="a4b626774352891a310251a1ed7ee7982a0eceeb45861f9585dd7a97a3e36f85c6"></a>Created&#160;</td><td class="fielddoc"><p>Equivalent to HTTP status 201. Indicates that the request resulted in a new resource created. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a382ab522931673c11e398ead1b7b1678" name="a4b626774352891a310251a1ed7ee7982a382ab522931673c11e398ead1b7b1678"></a>Accepted&#160;</td><td class="fielddoc"><p>Equivalent to HTTP status 202. Indicates that the request has been accepted for further processing. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a2d0ea43e788b779c0aec92366b711c2f" name="a4b626774352891a310251a1ed7ee7982a2d0ea43e788b779c0aec92366b711c2f"></a>NonAuthoritativeInformation&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982acd447f1ec89f564ebac583d60087df12" name="a4b626774352891a310251a1ed7ee7982acd447f1ec89f564ebac583d60087df12"></a>NoContent&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a4e9202c31896211f63be5b7345a897ed" name="a4b626774352891a310251a1ed7ee7982a4e9202c31896211f63be5b7345a897ed"></a>ResetContent&#160;</td><td class="fielddoc"></td></tr>
@@ -299,7 +308,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="a4b626774352891a310251a1ed7ee7982a52066ff32b30f46d30b87007cacf8f79" name="a4b626774352891a310251a1ed7ee7982a52066ff32b30f46d30b87007cacf8f79"></a>NetworkAuthenticationRequired&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_http_status_code_8h_source.html#l00006">6</a> of file <a class="el" href="_http_status_code_8h_source.html">HttpStatusCode.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_http_status_code_8h_source.html#l00013">13</a> of file <a class="el" href="_http_status_code_8h_source.html">HttpStatusCode.h</a>.</p>
 
 </div>
 </div>

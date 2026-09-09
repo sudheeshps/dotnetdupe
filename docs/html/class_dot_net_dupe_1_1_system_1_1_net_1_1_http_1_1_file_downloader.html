@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Coordinates asynchronous, chunked, and resumable file downloads with pause/resume support.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Net::Http::FileDownloader:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -129,14 +132,23 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a28b59b5522d5a4255427d25f7601c7a1" id="r_a28b59b5522d5a4255427d25f7601c7a1"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a28b59b5522d5a4255427d25f7601c7a1">FileDownloader</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sUrl, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDestinationPath)</td></tr>
+<tr class="memdesc:a28b59b5522d5a4255427d25f7601c7a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html" title="Coordinates asynchronous, chunked, and resumable file downloads with pause/resume support.">FileDownloader</a> with source URL and destination path.  <br /></td></tr>
 <tr class="memitem:ac945eb80e13e3a468c9e9025d57688e7" id="r_ac945eb80e13e3a468c9e9025d57688e7"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#ac945eb80e13e3a468c9e9025d57688e7">~FileDownloader</a> () override</td></tr>
+<tr class="memdesc:ac945eb80e13e3a468c9e9025d57688e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cancels active downloads and releases resources.  <br /></td></tr>
 <tr class="memitem:af3456d28c7ee6ecb61a73b9a1d32393f" id="r_af3456d28c7ee6ecb61a73b9a1d32393f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#af3456d28c7ee6ecb61a73b9a1d32393f">AddHeaders</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">Collections::Generic::Dictionary</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;headers)</td></tr>
+<tr class="memdesc:af3456d28c7ee6ecb61a73b9a1d32393f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Appends custom HTTP request headers to outgoing requests.  <br /></td></tr>
 <tr class="memitem:a4605f4a3761f5062e58f012003d687c7" id="r_a4605f4a3761f5062e58f012003d687c7"><td class="memItemLeft"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html">DownloadProgress</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4605f4a3761f5062e58f012003d687c7">GetProgress</a> () const</td></tr>
+<tr class="memdesc:a4605f4a3761f5062e58f012003d687c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queries instantaneous download telemetry metrics.  <br /></td></tr>
 <tr class="memitem:ad19ab7ffd6daaa58c32251f6590ade7c" id="r_ad19ab7ffd6daaa58c32251f6590ade7c"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181">DownloadStatus</a>&#160;</td><td class="memItemRight"><a class="el" href="#ad19ab7ffd6daaa58c32251f6590ade7c">GetStatus</a> () const</td></tr>
+<tr class="memdesc:ad19ab7ffd6daaa58c32251f6590ade7c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queries current operational status.  <br /></td></tr>
 <tr class="memitem:aa66c159acb7b5911ee3daa7e541c7498" id="r_aa66c159acb7b5911ee3daa7e541c7498"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#aa66c159acb7b5911ee3daa7e541c7498">Pause</a> ()</td></tr>
+<tr class="memdesc:aa66c159acb7b5911ee3daa7e541c7498"><td class="mdescLeft">&#160;</td><td class="mdescRight">Suspends byte streaming without deleting partially received data.  <br /></td></tr>
 <tr class="memitem:a0f062e61a232e18a6c7ad5c20ecc5d8f" id="r_a0f062e61a232e18a6c7ad5c20ecc5d8f"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a0f062e61a232e18a6c7ad5c20ecc5d8f">Resume</a> ()</td></tr>
+<tr class="memdesc:a0f062e61a232e18a6c7ad5c20ecc5d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resumes a paused download using HTTP Range headers if supported.  <br /></td></tr>
 <tr class="memitem:a2203ca78a38e976e74ed78eb8f1ac0bf" id="r_a2203ca78a38e976e74ed78eb8f1ac0bf"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a2203ca78a38e976e74ed78eb8f1ac0bf">SetUserAgent</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sUserAgent)</td></tr>
+<tr class="memdesc:a2203ca78a38e976e74ed78eb8f1ac0bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Overrides the default User-Agent request header string.  <br /></td></tr>
 <tr class="memitem:af57cd1f6b86bf7990211b5cb46fd32a4" id="r_af57cd1f6b86bf7990211b5cb46fd32a4"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#af57cd1f6b86bf7990211b5cb46fd32a4">Start</a> ()</td></tr>
+<tr class="memdesc:af57cd1f6b86bf7990211b5cb46fd32a4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Begins the asynchronous download on a background worker thread.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -154,7 +166,9 @@ Public Member Functions</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:aad8edb156957a3b13d6b7436299bd086" id="r_aad8edb156957a3b13d6b7436299bd086"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html">EventHandler</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html">DownloadCompletedEventArgs</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#aad8edb156957a3b13d6b7436299bd086">DownloadCompleted</a></td></tr>
+<tr class="memdesc:aad8edb156957a3b13d6b7436299bd086"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multicast event triggered when transfer completes or terminates.  <br /></td></tr>
 <tr class="memitem:ae4c155c0bc8dde65939632b2fa4f4251" id="r_ae4c155c0bc8dde65939632b2fa4f4251"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_handler.html">EventHandler</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html">DownloadProgressChangedEventArgs</a> &gt; &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ae4c155c0bc8dde65939632b2fa4f4251">DownloadProgressChanged</a></td></tr>
+<tr class="memdesc:ae4c155c0bc8dde65939632b2fa4f4251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multicast event triggered when chunk progress occurs.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-inherited" class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -163,8 +177,10 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00079">79</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<div class="textblock"><p>Coordinates asynchronous, chunked, and resumable file downloads with pause/resume support. </p>
+<p>Conforms to RFC 9110 (HTTP Range Requests). </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00122">122</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a28b59b5522d5a4255427d25f7601c7a1" name="a28b59b5522d5a4255427d25f7601c7a1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a28b59b5522d5a4255427d25f7601c7a1">&#9670;&#160;</a></span>FileDownloader()</h2>
@@ -185,9 +201,19 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Initializes a new instance of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html" title="Coordinates asynchronous, chunked, and resumable file downloads with pause/resume support.">FileDownloader</a> with source URL and destination path. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sUrl</td><td>Remote HTTP/HTTPS download source. </td></tr>
+    <tr><td class="paramname">sDestinationPath</td><td>Local filesystem destination file path. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Validate parameters and store endpoint state.</p>
+
 <p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00257">257</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_file_downloader_8h_source.html#l00086">DownloadCompleted</a>, <a class="el" href="_file_downloader_8h_source.html#l00085">DownloadProgressChanged</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_string_8cpp_source.html#l00610">DotNetDupe::System::String::StartsWith()</a>, and <a class="el" href="_string_8cpp_source.html#l00672">DotNetDupe::System::String::ToLower()</a>.</p>
+<p class="reference">References <a class="el" href="_file_downloader_8h_source.html#l00131">DownloadCompleted</a>, <a class="el" href="_file_downloader_8h_source.html#l00129">DownloadProgressChanged</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, <a class="el" href="_string_8cpp_source.html#l00610">DotNetDupe::System::String::StartsWith()</a>, and <a class="el" href="_string_8cpp_source.html#l00672">DotNetDupe::System::String::ToLower()</a>.</p>
 
 </div>
 </div>
@@ -214,7 +240,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00271">271</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Cancels active downloads and releases resources. </p>
+<p>Signal pause to terminate active download worker thread.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00272">272</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
 </div>
 </div>
@@ -234,7 +263,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00320">320</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Appends custom HTTP request headers to outgoing requests. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">headers</td><td>Dictionary containing header key-value pairs. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Copy user-specified headers into dictionary.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00331">331</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +291,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00275">275</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Queries instantaneous download telemetry metrics. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html" title="Snapshot of download telemetry metrics including transferred bytes and bandwidth speed.">DownloadProgress</a> snapshot. </dd></dl>
+<p>Query telemetry progress snapshot.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00277">277</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
 </div>
 </div>
@@ -272,7 +314,11 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00279">279</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Queries current operational status. </p>
+<dl class="section return"><dt>Returns</dt><dd>Current <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181" title="State machine values representing the lifecycle of an ongoing file download.">DownloadStatus</a> value. </dd></dl>
+<p>Return atomic status value.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00282">282</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
 </div>
 </div>
@@ -291,9 +337,12 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00283">283</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Suspends byte streaming without deleting partially received data. </p>
+<p>Guard: Signal pause only if currently downloading.</p>
 
-<p class="reference">References <a class="el" href="_file_downloader_8h_source.html#l00023">DotNetDupe::System::Net::Http::Downloading</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00287">287</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_file_downloader_8h_source.html#l00030">DotNetDupe::System::Net::Http::Downloading</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
 
 </div>
 </div>
@@ -312,9 +361,15 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00306">306</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Resumes a paused download using HTTP Range headers if supported. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if resumed; false otherwise. </dd></dl>
+<p>Guard: Can only resume if currently suspended or failed.</p>
+<p>Mark status as downloading.</p>
+<p>Launch background worker for remaining chunks.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_file_downloader_8h_source.html#l00025">DotNetDupe::System::Net::Http::Completed</a>, <a class="el" href="_file_downloader_8h_source.html#l00023">DotNetDupe::System::Net::Http::Downloading</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00314">314</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_file_downloader_8h_source.html#l00034">DotNetDupe::System::Net::Http::Completed</a>, <a class="el" href="_file_downloader_8h_source.html#l00030">DotNetDupe::System::Net::Http::Downloading</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
 
 </div>
 </div>
@@ -333,7 +388,16 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00326">326</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Overrides the default User-Agent request header string. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sUserAgent</td><td>Custom User-Agent string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Update custom User-Agent header.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00338">338</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
 
 </div>
 </div>
@@ -352,9 +416,15 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00290">290</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+<p>Begins the asynchronous download on a background worker thread. </p>
+<dl class="section return"><dt>Returns</dt><dd>true if started successfully; false if already running. </dd></dl>
+<p>Guard: Prevent concurrent duplicate starts.</p>
+<p>Reset transfer telemetry counters.</p>
+<p>Spawn background download worker thread.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_file_downloader_8h_source.html#l00023">DotNetDupe::System::Net::Http::Downloading</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8cpp_source.html#l00295">295</a> of file <a class="el" href="_file_downloader_8cpp_source.html">FileDownloader.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, <a class="el" href="_file_downloader_8h_source.html#l00030">DotNetDupe::System::Net::Http::Downloading</a>, <a class="el" href="_smart_pointer_8h_source.html#l00274">DotNetDupe::System::SmartPointer&lt; T &gt;::NewShared()</a>, and <a class="el" href="_console_8cpp_source.html#l00097">DotNetDupe::System::Console::WriteLine()</a>.</p>
 
 </div>
 </div>
@@ -371,7 +441,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00086">86</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Multicast event triggered when transfer completes or terminates. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00131">131</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_file_downloader_8cpp_source.html#l00257">FileDownloader()</a>.</p>
 
@@ -389,7 +461,9 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00085">85</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Multicast event triggered when chunk progress occurs. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00129">129</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_file_downloader_8cpp_source.html#l00257">FileDownloader()</a>.</p>
 

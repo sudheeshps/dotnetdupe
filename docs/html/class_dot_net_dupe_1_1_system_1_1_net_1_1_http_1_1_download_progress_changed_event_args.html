@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Event arguments emitted periodically during byte transfer.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Net::Http::DownloadProgressChangedEventArgs:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -130,11 +133,17 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a9a1ca0c4ce1abe2b13acb17e96d88666" id="r_a9a1ca0c4ce1abe2b13acb17e96d88666"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9a1ca0c4ce1abe2b13acb17e96d88666">DownloadProgressChangedEventArgs</a> (long long llBytesReceived, long long llTotalBytesToReceive, double dProgressPercentage, double dDownloadRateBytesPerSec, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181">DownloadStatus</a> status)</td></tr>
+<tr class="memdesc:a9a1ca0c4ce1abe2b13acb17e96d88666"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance with current metrics snapshot.  <br /></td></tr>
 <tr class="memitem:ad27167e5e3a6825c7e95cba5231ae80e" id="r_ad27167e5e3a6825c7e95cba5231ae80e"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#ad27167e5e3a6825c7e95cba5231ae80e">GetBytesReceived</a> () const</td></tr>
+<tr class="memdesc:ad27167e5e3a6825c7e95cba5231ae80e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the total bytes received so far.  <br /></td></tr>
 <tr class="memitem:a92d52abab470013ca5c4adadaad314cb" id="r_a92d52abab470013ca5c4adadaad314cb"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a92d52abab470013ca5c4adadaad314cb">GetDownloadRateBytesPerSec</a> () const</td></tr>
+<tr class="memdesc:a92d52abab470013ca5c4adadaad314cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current download rate in bytes per second.  <br /></td></tr>
 <tr class="memitem:a0129216e7688e1097773a274a75a38ce" id="r_a0129216e7688e1097773a274a75a38ce"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a0129216e7688e1097773a274a75a38ce">GetProgressPercentage</a> () const</td></tr>
+<tr class="memdesc:a0129216e7688e1097773a274a75a38ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets progress percentage between 0.0 and 100.0.  <br /></td></tr>
 <tr class="memitem:af5258082a14850c44fb0750ce80ad55e" id="r_af5258082a14850c44fb0750ce80ad55e"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html#a8f01ceb9998a577152ae8126068f9181">DownloadStatus</a>&#160;</td><td class="memItemRight"><a class="el" href="#af5258082a14850c44fb0750ce80ad55e">GetStatus</a> () const</td></tr>
+<tr class="memdesc:af5258082a14850c44fb0750ce80ad55e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current download status.  <br /></td></tr>
 <tr class="memitem:a86ce78143e04410becae0540453f0437" id="r_a86ce78143e04410becae0540453f0437"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a86ce78143e04410becae0540453f0437">GetTotalBytesToReceive</a> () const</td></tr>
+<tr class="memdesc:a86ce78143e04410becae0540453f0437"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the total size in bytes expected to receive.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html">DotNetDupe::System::EventArgs</a></td></tr>
 <tr class="memitem:a99caf0f0b8ab17ea4beeee3bf1008029 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args" id="r_a99caf0f0b8ab17ea4beeee3bf1008029"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html#a99caf0f0b8ab17ea4beeee3bf1008029">EventArgs</a> ()</td></tr>
 <tr class="memdesc:a99caf0f0b8ab17ea4beeee3bf1008029 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html" title="Represents the base class for classes that contain event data, and provides a value to use for events...">EventArgs</a> class.  <br /></td></tr>
@@ -164,8 +173,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00037">37</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<div class="textblock"><p>Event arguments emitted periodically during byte transfer. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00056">56</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a9a1ca0c4ce1abe2b13acb17e96d88666" name="a9a1ca0c4ce1abe2b13acb17e96d88666"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9a1ca0c4ce1abe2b13acb17e96d88666">&#9670;&#160;</a></span>DownloadProgressChangedEventArgs()</h2>
@@ -209,7 +219,19 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00039">39</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Initializes a new instance with current metrics snapshot. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">llBytesReceived</td><td>Cumulative bytes written so far. </td></tr>
+    <tr><td class="paramname">llTotalBytesToReceive</td><td>Expected total file size. </td></tr>
+    <tr><td class="paramname">dProgressPercentage</td><td>Percentage completion (0.0 to 100.0). </td></tr>
+    <tr><td class="paramname">dDownloadRateBytesPerSec</td><td>Current transfer rate in bytes/sec. </td></tr>
+    <tr><td class="paramname">status</td><td>Current download status. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00064">64</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -237,7 +259,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00048">48</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets the total bytes received so far. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00074">74</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -264,7 +288,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00051">51</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets the current download rate in bytes per second. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00080">80</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -291,7 +317,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00050">50</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets progress percentage between 0.0 and 100.0. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00078">78</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -318,7 +346,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00052">52</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets the current download status. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00082">82</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -345,7 +375,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00049">49</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets the total size in bytes expected to receive. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00076">76</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>

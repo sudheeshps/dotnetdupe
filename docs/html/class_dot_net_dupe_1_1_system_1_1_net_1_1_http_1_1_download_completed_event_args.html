@@ -114,6 +114,9 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 </div><!--header-->
 <div class="contents">
 
+<p>Event arguments emitted when transfer finishes or fails.  
+ <a href="#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>&gt;</code></p>
 <div id="dynsection-0" class="dynheader closed"><span class="dynarrow"><span class="arrowhead closed"></span></span>Inheritance diagram for DotNetDupe::System::Net::Http::DownloadCompletedEventArgs:</div>
 <div id="dynsection-0-summary" class="dynsummary">
@@ -130,9 +133,13 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:abe048e775f9090d5e37c2bcc911ec0f0" id="r_abe048e775f9090d5e37c2bcc911ec0f0"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#abe048e775f9090d5e37c2bcc911ec0f0">DownloadCompletedEventArgs</a> (bool bSuccess, bool bCancelled, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sError)</td></tr>
+<tr class="memdesc:abe048e775f9090d5e37c2bcc911ec0f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes completion event arguments.  <br /></td></tr>
 <tr class="memitem:a92affdeb81671b5606f9313074e73de3" id="r_a92affdeb81671b5606f9313074e73de3"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a92affdeb81671b5606f9313074e73de3">GetError</a> () const</td></tr>
+<tr class="memdesc:a92affdeb81671b5606f9313074e73de3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets error information if an exception occurred during transfer.  <br /></td></tr>
 <tr class="memitem:a5798c25262f0acf8e7aafdc511561a2e" id="r_a5798c25262f0acf8e7aafdc511561a2e"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a5798c25262f0acf8e7aafdc511561a2e">IsCancelled</a> () const</td></tr>
+<tr class="memdesc:a5798c25262f0acf8e7aafdc511561a2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the download was intentionally cancelled.  <br /></td></tr>
 <tr class="memitem:a7b9b164ffe5a9b18ffecf521eebde6bc" id="r_a7b9b164ffe5a9b18ffecf521eebde6bc"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a7b9b164ffe5a9b18ffecf521eebde6bc">IsSuccess</a> () const</td></tr>
+<tr class="memdesc:a7b9b164ffe5a9b18ffecf521eebde6bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicates whether the file was successfully downloaded.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html">DotNetDupe::System::EventArgs</a></td></tr>
 <tr class="memitem:a99caf0f0b8ab17ea4beeee3bf1008029 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args" id="r_a99caf0f0b8ab17ea4beeee3bf1008029"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html#a99caf0f0b8ab17ea4beeee3bf1008029">EventArgs</a> ()</td></tr>
 <tr class="memdesc:a99caf0f0b8ab17ea4beeee3bf1008029 inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_event_args"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_event_args.html" title="Represents the base class for classes that contain event data, and provides a value to use for events...">EventArgs</a> class.  <br /></td></tr>
@@ -162,8 +169,9 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
-<div class="textblock">
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00062">62</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<div class="textblock"><p>Event arguments emitted when transfer finishes or fails. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00094">94</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="abe048e775f9090d5e37c2bcc911ec0f0" name="abe048e775f9090d5e37c2bcc911ec0f0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abe048e775f9090d5e37c2bcc911ec0f0">&#9670;&#160;</a></span>DownloadCompletedEventArgs()</h2>
@@ -197,7 +205,17 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00064">64</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Initializes completion event arguments. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bSuccess</td><td>true if download fully succeeded. </td></tr>
+    <tr><td class="paramname">bCancelled</td><td>true if cancelled by user request. </td></tr>
+    <tr><td class="paramname">sError</td><td>Error description string if failed. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00100">100</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -225,7 +243,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00071">71</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Gets error information if an exception occurred during transfer. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00110">110</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -252,7 +272,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00070">70</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Indicates whether the download was intentionally cancelled. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00108">108</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
@@ -279,7 +301,9 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00069">69</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
+<p>Indicates whether the file was successfully downloaded. </p>
+
+<p class="definition">Definition at line <a class="el" href="_file_downloader_8h_source.html#l00106">106</a> of file <a class="el" href="_file_downloader_8h_source.html">FileDownloader.h</a>.</p>
 
 </div>
 </div>
