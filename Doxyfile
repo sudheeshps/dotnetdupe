@@ -1,4 +1,4 @@
-﻿# Doxyfile for DotNetDupe
+# Doxyfile for DotNetDupe
 # Comprehensive C++17/20 .NET Base Class Library API Reference
 
 DOXYFILE_ENCODING      = UTF-8
@@ -31,12 +31,11 @@ SORT_GROUP_NAMES       = YES
 SORT_BY_SCOPE_NAME     = YES
 
 # Input options
-INPUT                  = Include DotNetDupe docs
+INPUT                  = Include DotNetDupe
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
                          *.hpp \
-                         *.cpp \
-                         *.md
+                         *.cpp
 RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_PATTERNS       = */.git/* \

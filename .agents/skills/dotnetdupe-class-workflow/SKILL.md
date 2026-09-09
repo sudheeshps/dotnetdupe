@@ -38,12 +38,8 @@ This skill provides the mandatory 10-step sequence for creating new classes or m
   ```
 - Cover positive paths, negative paths, null/empty parameters, boundary conditions, custom exceptions, and stream/interface interactions.
 
-### Step 3: Add Comprehensive API Documentation
-- Add markdown documentation in `docs/<Class>.md`.
-- Include class overview, member tables, and complete, compile-ready sample code demonstrating real-world usage.
-
-### Step 4: Link Documentation in README.md
-- Add a direct link to `docs/<Class>.md` in `README.md` under the appropriate namespace table/section.
+### Step 3: Document Class in README.md
+- Add the class and its architectural description in `README.md` under the appropriate namespace table.
 
 ### Step 5: Add Demo Code in DotNetDupeDemo
 - Add a compile-ready demo file in `DotNetDupeDemo/` (e.g., `Demo<Class>.cpp`).
