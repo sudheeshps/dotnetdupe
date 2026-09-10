@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.18.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -18,6 +19,34 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<!-- Dynamic NuGet Version Updater across all documentation pages -->
+<script type="text/javascript">
+(function() {
+  function updateNuGetVersion() {
+    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && data.versions && data.versions.length > 0) {
+          var latestVersion = data.versions[data.versions.length - 1];
+          var elem = document.getElementById('projectnumber');
+          if (elem) {
+            elem.innerHTML = '&#160;' + latestVersion;
+          }
+          var badges = document.querySelectorAll('.nuget-version-badge');
+          badges.forEach(function(badge) {
+            badge.textContent = latestVersion;
+          });
+        }
+      })
+      .catch(function() {});
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
+  } else {
+    updateNuGetVersion();
+  }
+})();
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DotNetDupe<span id="projectnumber">&#160;4.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;4.0.6</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -117,13 +146,13 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_version_8h_so
 <div class="line"><a id="l00003" name="l00003"></a><span class="lineno">    3</span> </div>
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="preprocessor">#pragma once</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="_version_8h.html#ae6ef9058da3d1f2efdc365d6643d1de3">    8</a></span><span class="preprocessor">#define VER_FILEVERSION             4,0,4,0</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno"><a class="line" href="_version_8h.html#ae6ef9058da3d1f2efdc365d6643d1de3">    8</a></span><span class="preprocessor">#define VER_FILEVERSION             4,0,6,0</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span></div>
-<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="_version_8h.html#a9ab9575a5fdacc8d78fb6a6a982bb060">   12</a></span><span class="preprocessor">#define VER_FILEVERSION_STR         &quot;4.0.4.0\0&quot;</span></div>
+<div class="line"><a id="l00012" name="l00012"></a><span class="lineno"><a class="line" href="_version_8h.html#a9ab9575a5fdacc8d78fb6a6a982bb060">   12</a></span><span class="preprocessor">#define VER_FILEVERSION_STR         &quot;4.0.6.0\0&quot;</span></div>
 <div class="line"><a id="l00013" name="l00013"></a><span class="lineno">   13</span></div>
-<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="_version_8h.html#a1f0c72807dfc9de46855bff55bae541c">   16</a></span><span class="preprocessor">#define VER_PRODUCTVERSION          4,0,4,0</span></div>
+<div class="line"><a id="l00016" name="l00016"></a><span class="lineno"><a class="line" href="_version_8h.html#a1f0c72807dfc9de46855bff55bae541c">   16</a></span><span class="preprocessor">#define VER_PRODUCTVERSION          4,0,6,0</span></div>
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span></div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="_version_8h.html#a5084df706ac15e76da275c143313f3d9">   20</a></span><span class="preprocessor">#define VER_PRODUCTVERSION_STR      &quot;4.0.4.0\0&quot;</span></div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="_version_8h.html#a5084df706ac15e76da275c143313f3d9">   20</a></span><span class="preprocessor">#define VER_PRODUCTVERSION_STR      &quot;4.0.6.0\0&quot;</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 </div><!-- container -->
@@ -131,7 +160,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_version_8h_so
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_856524284ebe840938865dc061f982fb.html">Include</a></li><li class="navelem"><a href="_version_8h.html">Version.h</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for DotNetDupe by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
   </ul>
 </div>
 </body>

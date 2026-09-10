@@ -3,7 +3,7 @@
 
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "DotNetDupe"
-PROJECT_NUMBER         = "4.0.5"
+PROJECT_NUMBER         = "4.0.6"
 PROJECT_BRIEF          = "C++17/20 Implementation of the .NET Base Class Library (BCL)"
 OUTPUT_DIRECTORY       = docs
 CREATE_SUBDIRS         = NO
@@ -70,7 +70,7 @@ REFERENCES_LINK_SOURCE = YES
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
-HTML_HEADER            =
+HTML_HEADER            = docs/header.html
 HTML_FOOTER            =
 HTML_STYLESHEET        =
 HTML_EXTRA_STYLESHEET  =
@@ -79,7 +79,6 @@ HTML_COLORSTYLE        = LIGHT
 HTML_COLORSTYLE_HUE    = 220
 HTML_COLORSTYLE_SAT    = 100
 HTML_COLORSTYLE_GAMMA  = 80
-HTML_TIMESTAMP         = YES
 HTML_DYNAMIC_MENUS     = YES
 HTML_DYNAMIC_SECTIONS  = YES
 GENERATE_TREEVIEW      = YES
@@ -108,7 +107,6 @@ PREDEFINED             = DOTNETDUPE_API= \
 
 # Diagram options (Graphviz not installed)
 HAVE_DOT               = NO
-CLASS_DIAGRAMS         = YES
 COLLABORATION_GRAPH    = NO
 GROUP_GRAPHS           = NO
 UML_LOOK               = NO

@@ -24,34 +24,20 @@ Write-Host "==================================================" -ForegroundColor
 
 # Resolve dynamic package version if not explicitly passed
 if ([string]::IsNullOrWhitespace($Version)) {
-    # 1. Primary: Query the published version from nuget.org
-    try {
-        Write-Host "[INFO] Checking published version from nuget.org..." -ForegroundColor Gray
-        $nugetMeta = Invoke-RestMethod -Uri "https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json" -TimeoutSec 5 -ErrorAction Stop
-        if ($nugetMeta -and $nugetMeta.versions -and $nugetMeta.versions.Count -gt 0) {
-            $Version = $nugetMeta.versions[-1].Trim()
-            Write-Host "[INFO] Detected published NuGet version from nuget.org: $Version" -ForegroundColor Green
-        }
-    } catch {
-        Write-Warning "Could not retrieve version from nuget.org: $_"
-    }
-
-    # 2. Fallback to DotNetDupe.nuspec if offline / nuget.org unreachable
-    if ([string]::IsNullOrWhitespace($Version)) {
-        $nuspecPath = Join-Path $rootDir "DotNetDupe.nuspec"
-        if (Test-Path $nuspecPath) {
-            try {
-                [xml]$nuspec = Get-Content $nuspecPath
-                if ($nuspec.package.metadata.version) {
-                    $Version = $nuspec.package.metadata.version.Trim()
-                }
-            } catch {
-                Write-Warning "Could not parse '$nuspecPath': $_"
+    # 1. Primary: Check DotNetDupe.nuspec (local project definition)
+    $nuspecPath = Join-Path $rootDir "DotNetDupe.nuspec"
+    if (Test-Path $nuspecPath) {
+        try {
+            [xml]$nuspec = Get-Content $nuspecPath
+            if ($nuspec.package.metadata.version) {
+                $Version = $nuspec.package.metadata.version.Trim()
             }
+        } catch {
+            Write-Warning "Could not parse '$nuspecPath': $_"
         }
     }
 
-    # 3. Fallback to Include/Version.h
+    # 2. Check Include/Version.h
     if ([string]::IsNullOrWhitespace($Version)) {
         $versionHeader = Join-Path $rootDir "Include\Version.h"
         if (Test-Path $versionHeader) {
@@ -63,9 +49,32 @@ if ([string]::IsNullOrWhitespace($Version)) {
         }
     }
 
+    # 3. Query published version from nuget.org if higher or if not yet resolved
+    try {
+        Write-Host "[INFO] Checking published version from nuget.org..." -ForegroundColor Gray
+        $nugetMeta = Invoke-RestMethod -Uri "https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json" -TimeoutSec 5 -ErrorAction Stop
+        if ($nugetMeta -and $nugetMeta.versions -and $nugetMeta.versions.Count -gt 0) {
+            $nugetVer = $nugetMeta.versions[-1].Trim()
+            if ([string]::IsNullOrWhitespace($Version)) {
+                $Version = $nugetVer
+            } else {
+                try {
+                    if ([System.Version]$nugetVer -gt [System.Version]$Version) {
+                        $Version = $nugetVer
+                        Write-Host "[INFO] Detected newer published NuGet version from nuget.org: $Version" -ForegroundColor Green
+                    }
+                } catch {
+                    # In case of non-standard semver strings, keep local version
+                }
+            }
+        }
+    } catch {
+        Write-Warning "Could not retrieve version from nuget.org: $_"
+    }
+
     # 4. Default fallback
     if ([string]::IsNullOrWhitespace($Version)) {
-        $Version = "4.0.5"
+        $Version = "4.0.6"
     }
 }
 
@@ -92,6 +101,23 @@ if (Test-Path $portalHtml) {
     if ($updatedPortal -ne $portalContent) {
         Set-Content -Path $portalHtml -Value $updatedPortal -Encoding UTF8
         Write-Host "[INFO] Synchronized docs/index.html version badge to '$Version'." -ForegroundColor Gray
+    }
+}
+
+# Ensure GitHub Pages .nojekyll files exist to allow files starting with '_' (e.g., _action_8h_source.html)
+$noJekyllPaths = @(
+    (Join-Path $rootDir ".nojekyll"),
+    (Join-Path $rootDir "docs\.nojekyll"),
+    (Join-Path $rootDir "docs\html\.nojekyll")
+)
+foreach ($njPath in $noJekyllPaths) {
+    $njDir = Split-Path -Parent $njPath
+    if (-not (Test-Path $njDir)) {
+        New-Item -ItemType Directory -Path $njDir -Force | Out-Null
+    }
+    if (-not (Test-Path $njPath)) {
+        Set-Content -Path $njPath -Value "# Disable Jekyll for GitHub Pages" -Encoding UTF8
+        Write-Host "[INFO] Created .nojekyll at $njPath" -ForegroundColor Gray
     }
 }
 
@@ -137,41 +163,11 @@ if (Test-Path $outputHtml) {
     [System.IO.File]::WriteAllText($outputHtml, $doxyIndexContent, [System.Text.Encoding]::UTF8)
     Write-Host "[INFO] Relinked docs/index.html, CodeCoverage, and Include in generated Doxygen index." -ForegroundColor Gray
 
-    # Inject dynamic NuGet version updater script into docs/html/index.html and docs/html/namespaces.html
-    $pagesToUpdate = @($outputHtml, (Join-Path $rootDir "docs\html\namespaces.html"))
-    foreach ($pagePath in $pagesToUpdate) {
-        if (Test-Path $pagePath) {
-            $pageContent = [System.IO.File]::ReadAllText($pagePath, [System.Text.Encoding]::UTF8)
-            if (-not $pageContent.Contains('api.nuget.org/v3-flatcontainer/dotnetdupe')) {
-                $dynamicScript = @"
-<!-- Dynamic NuGet Version Updater -->
-<script type="text/javascript">
-(function() {
-  function updateNuGetVersion() {
-    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
-      .then(function(res) { return res.ok ? res.json() : null; })
-      .then(function(data) {
-        if (data && data.versions && data.versions.length > 0) {
-          var latestVersion = data.versions[data.versions.length - 1];
-          var elem = document.getElementById('projectnumber');
-          if (elem) { elem.innerHTML = '&#160;' + latestVersion; }
-        }
-      })
-      .catch(function() {});
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
-  } else {
-    updateNuGetVersion();
-  }
-})();
-</script>
-"@
-                $pageContent = $pageContent.Replace('</body>', "$dynamicScript`n</body>")
-                [System.IO.File]::WriteAllText($pagePath, $pageContent, [System.Text.Encoding]::UTF8)
-                Write-Host "[INFO] Injected dynamic NuGet version script into $pagePath." -ForegroundColor Gray
-            }
-        }
+    # Re-verify .nojekyll in docs/html/ post-generation (Doxygen may wipe output directory)
+    $docsHtmlNoJekyll = Join-Path $rootDir "docs\html\.nojekyll"
+    if (-not (Test-Path $docsHtmlNoJekyll)) {
+        Set-Content -Path $docsHtmlNoJekyll -Value "# Disable Jekyll for GitHub Pages" -Encoding UTF8
+        Write-Host "[INFO] Preserved .nojekyll in $docsHtmlNoJekyll." -ForegroundColor Gray
     }
 
     Write-Host "`n[SUCCESS] API Documentation generated in $elapsed seconds!" -ForegroundColor Green
