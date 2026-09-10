@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SqlDataReader.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Data/SqlClient/SqlDataReader.h"
+#include "System/Convert.h"
+#include "System/ArgumentException.h"
+#include "System/Data/Internal/IDatabaseBackend.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Data {
+            namespace SqlClient {
+
+                struct SqlDataReader::Impl : public Object {
+                    Collections::Generic::List&lt;DotNetDupe::System::Data::Internal::Row&gt; m_rows;
+                    Collections::Generic::List&lt;String&gt; m_columns;
+                    int m_nCurrentIndex = -1;
+                };
+
+                SqlDataReader::SqlDataReader(Collections::Generic::List&lt;DotNetDupe::System::Data::Internal::Row&gt;&amp;&amp; rows, Collections::Generic::List&lt;String&gt;&amp;&amp; columns) 
+<span style = "background-color:#dfd">                    : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                    m_pImpl-&gt;m_rows = std::move(rows);
+                    m_pImpl-&gt;m_columns = std::move(columns);
+                }</span>
+
+<span style = "background-color:#fdd">                SqlDataReader::~SqlDataReader() = default;</span>
+
+<span style = "background-color:#dfd">                bool SqlDataReader::Read() {
+                    if (m_pImpl-&gt;m_nCurrentIndex + 1 &lt; m_pImpl-&gt;m_rows.GetCount()) {
+                        m_pImpl-&gt;m_nCurrentIndex++;
+                        return true;</span>
+                    }
+<span style = "background-color:#dfd">                    return false;
+                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::GetString(int iOrdinal) {
+                    if (m_pImpl-&gt;m_nCurrentIndex &lt; 0 || m_pImpl-&gt;m_nCurrentIndex &gt;= m_pImpl-&gt;m_rows.GetCount()) {</span>
+                        return "";
+                    }
+<span style = "background-color:#dfd">                    if (iOrdinal &lt; 0 || iOrdinal &gt;= m_pImpl-&gt;m_columns.GetCount()) {</span>
+                        return "";
+                    }
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_rows[m_pImpl-&gt;m_nCurrentIndex].Values[iOrdinal];
+                }</span>
+
+<span style = "background-color:#dfd">                int SqlDataReader::GetInt32(int iOrdinal) {
+                    return DotNetDupe::System::Convert::ToInt32(GetString(iOrdinal));
+                }</span>
+
+<span style = "background-color:#dfd">                double SqlDataReader::GetDouble(int iOrdinal) {
+                    return std::stod(GetString(iOrdinal).GetRawString());
+                }</span>
+
+<span style = "background-color:#dfd">                bool SqlDataReader::IsDBNull(int iOrdinal) {
+                    DotNetDupe::System::String sVal = GetString(iOrdinal);
+                    return sVal.IsEmpty() || sVal == "NULL" || sVal == "null";
+                }</span>
+
+<span style = "background-color:#dfd">                int SqlDataReader::GetFieldCount() const {
+                    return m_pImpl-&gt;m_columns.GetCount();
+                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::GetName(int iOrdinal) {
+                    if (iOrdinal &lt; 0 || iOrdinal &gt;= m_pImpl-&gt;m_columns.GetCount()) {</span>
+<span style = "background-color:#fdd">                        return "";</span>
+                    }
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_columns[iOrdinal];
+                }</span>
+
+<span style = "background-color:#dfd">                int SqlDataReader::GetOrdinal(const DotNetDupe::System::String&amp; sName) {
+                    for (int i = 0; i &lt; m_pImpl-&gt;m_columns.GetCount(); ++i) {
+                        if (m_pImpl-&gt;m_columns[i] == sName) {</span>
+                            return i;
+                        }
+                    }
+<span style = "background-color:#fdd">                    return -1;
+                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::operator[](const DotNetDupe::System::String&amp; sName) {
+                    int ord = GetOrdinal(sName);
+                    if (ord == -1) {</span>
+<span style = "background-color:#fdd">                        throw DotNetDupe::System::ArgumentException(DotNetDupe::System::String("Column not found: ") + sName);</span>
+                    }
+<span style = "background-color:#dfd">                    return GetString(ord);
+                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::operator[](int iOrdinal) {
+                    return GetString(iOrdinal);
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

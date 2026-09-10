@@ -58,6 +58,16 @@ Write-Host "[3/3] Generating Static Analysis Report..." -ForegroundColor Yellow
 $qualityGateScript = Join-Path $PSScriptRoot "Check-QualityGates.ps1"
 & $qualityGateScript -RootDir $RootDir -OutputDir $targetOutDir
 
+# 6. Mirror to docs/CodeCoverage for GitHub Pages publishing
+$docsCoverageDir = Join-Path $RootDir "docs\CodeCoverage"
+if (Test-Path (Join-Path $RootDir "docs")) {
+    if (-not (Test-Path $docsCoverageDir)) {
+        New-Item -ItemType Directory -Path $docsCoverageDir -Force | Out-Null
+    }
+    Copy-Item -Path "$targetOutDir\*" -Destination $docsCoverageDir -Recurse -Force
+    Write-Host " Mirrored to GitHub Pages folder: $docsCoverageDir" -ForegroundColor Green
+}
+
 Write-Host "==========================================================" -ForegroundColor Green
 Write-Host " Code Coverage & Static Analysis Reports Generated in '$OutputDir'!" -ForegroundColor Green
 Write-Host " Index: $(Join-Path $targetOutDir 'index.html')" -ForegroundColor Green

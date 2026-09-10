@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>LogManager.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/LogManager.h"
+#include "Extensions/Logging/LoggerFactory.h"
+#include "Extensions/Logging/ConsoleLoggerProvider.h"
+#include "Extensions/Logging/FileLoggerProvider.h"
+#include "Extensions/Logging/ConsoleLogger.h"
+#include "Extensions/Logging/FileLogger.h"
+#include &lt;mutex&gt;
+#include &lt;unordered_map&gt;
+#include &lt;string&gt;
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+            namespace {
+                static std::mutex s_mutex;
+<span style = "background-color:#dfd">                static LoggerConfiguration s_globalConfig;
+                static DotNetDupe::System::SmartPointer&lt;LoggerFactory&gt; s_pFactory = nullptr;
+                static DotNetDupe::System::SmartPointer&lt;ConsoleLoggerProvider&gt; s_pConsoleProvider = nullptr;
+                static DotNetDupe::System::SmartPointer&lt;FileLoggerProvider&gt; s_pFileProvider = nullptr;
+                static std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; s_pLoggerCache;
+                static std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; s_pConsoleLoggerCache;
+                static std::unordered_map&lt;std::string, DotNetDupe::System::SmartPointer&lt;ILogger&gt;&gt; s_pFileLoggerCache;</span>
+
+<span style = "background-color:#dfd">                void EnsureFactoryInitializedLocked() {
+                    if (!s_pFactory) {
+                        s_pFactory = DotNetDupe::System::SmartPointer&lt;LoggerFactory&gt;::NewShared();
+                        s_pConsoleProvider = DotNetDupe::System::SmartPointer&lt;ConsoleLoggerProvider&gt;::NewShared(s_globalConfig);
+                        s_pFileProvider = DotNetDupe::System::SmartPointer&lt;FileLoggerProvider&gt;::NewShared(s_globalConfig);
+                        s_pFactory-&gt;AddProvider(s_pConsoleProvider);
+                        s_pFactory-&gt;AddProvider(s_pFileProvider);</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+            }
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetLogger(const DotNetDupe::System::String&amp; sCategoryName) {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string key = sCategoryName.GetRawString();</span>
+
+<span style = "background-color:#dfd">                auto it = s_pLoggerCache.find(key);
+                if (it != s_pLoggerCache.end()) {
+                    return it-&gt;second;</span>
+                }
+
+<span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
+                auto pLogger = s_pFactory-&gt;CreateLogger(sCategoryName);
+                s_pLoggerCache[key] = pLogger;
+                return pLogger;
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetConsoleLogger(const DotNetDupe::System::String&amp; sCategoryName) {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string key = sCategoryName.GetRawString();</span>
+
+<span style = "background-color:#dfd">                auto it = s_pConsoleLoggerCache.find(key);
+                if (it != s_pConsoleLoggerCache.end()) {</span>
+<span style = "background-color:#fdd">                    return it-&gt;second;</span>
+                }
+
+<span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
+                auto pLogger = s_pConsoleProvider-&gt;CreateLogger(sCategoryName);
+                s_pConsoleLoggerCache[key] = pLogger;
+                return pLogger;
+            }</span>
+
+<span style = "background-color:#dfd">            DotNetDupe::System::SmartPointer&lt;ILogger&gt; LogManager::GetFileLogger(const DotNetDupe::System::String&amp; sCategoryName) {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                std::string key = sCategoryName.GetRawString();</span>
+
+<span style = "background-color:#dfd">                auto it = s_pFileLoggerCache.find(key);
+                if (it != s_pFileLoggerCache.end()) {</span>
+<span style = "background-color:#fdd">                    return it-&gt;second;</span>
+                }
+
+<span style = "background-color:#dfd">                EnsureFactoryInitializedLocked();
+                auto pLogger = s_pFileProvider-&gt;CreateLogger(sCategoryName);
+                s_pFileLoggerCache[key] = pLogger;
+                return pLogger;
+            }</span>
+
+<span style = "background-color:#dfd">            void LogManager::Configure(const LoggerConfiguration&amp; config) {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                s_globalConfig = config;
+                s_pLoggerCache.clear();
+                s_pConsoleLoggerCache.clear();
+                s_pFileLoggerCache.clear();</span>
+                
+<span style = "background-color:#dfd">                s_pFactory = DotNetDupe::System::SmartPointer&lt;LoggerFactory&gt;::NewShared();
+                s_pConsoleProvider = DotNetDupe::System::SmartPointer&lt;ConsoleLoggerProvider&gt;::NewShared(s_globalConfig);
+                s_pFileProvider = DotNetDupe::System::SmartPointer&lt;FileLoggerProvider&gt;::NewShared(s_globalConfig);
+                s_pFactory-&gt;AddProvider(s_pConsoleProvider);
+                s_pFactory-&gt;AddProvider(s_pFileProvider);
+            }</span>
+
+<span style = "background-color:#fdd">            const LoggerConfiguration&amp; LogManager::GetConfiguration() {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                return s_globalConfig;
+            }</span>
+
+<span style = "background-color:#fdd">            void LogManager::AddProvider(const DotNetDupe::System::SmartPointer&lt;ILoggerProvider&gt;&amp; pProvider) {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                EnsureFactoryInitializedLocked();
+                s_pFactory-&gt;AddProvider(pProvider);
+                s_pLoggerCache.clear();
+            }</span>
+
+<span style = "background-color:#dfd">            void LogManager::Reset() {
+                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+                s_globalConfig = LoggerConfiguration();
+                s_pLoggerCache.clear();
+                s_pConsoleLoggerCache.clear();
+                s_pFileLoggerCache.clear();
+                s_pConsoleProvider = nullptr;
+                s_pFileProvider = nullptr;
+                s_pFactory = nullptr;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>StringBuilder.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Text/StringBuilder.h"
+#include &lt;algorithm&gt;
+#include &lt;string&gt;
+
+#ifdef UNICODE
+#define TO_TSTRING std::to_wstring
+#else
+#define TO_TSTRING std::to_string
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+
+            struct StringBuilder::Impl {
+                std::string buffer;
+            };
+
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder() : m_pImpl(new Impl()) {}</span>
+
+<span style = "background-color:#fdd">            StringBuilder::StringBuilder(int nCapacity) : m_pImpl(new Impl()) {
+                if (nCapacity &gt; 0) {
+                    m_pImpl-&gt;buffer.reserve(nCapacity);</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder::StringBuilder(const String&amp; sValue) : m_pImpl(new Impl()) {
+                m_pImpl-&gt;buffer = (const char*)sValue;
+            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder::~StringBuilder() {
+                if (m_pImpl) {
+                    delete m_pImpl;
+                    m_pImpl = nullptr;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            int StringBuilder::GetLength() const {
+                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length()) : 0;
+            }</span>
+
+<span style = "background-color:#fdd">            void StringBuilder::SetLength(int nLength) {
+                if (nLength &lt; 0 || !m_pImpl) return;
+                m_pImpl-&gt;buffer.resize(nLength);
+            }</span>
+
+<span style = "background-color:#dfd">            int StringBuilder::GetCapacity() const {
+                return m_pImpl ? static_cast&lt;int&gt;(m_pImpl-&gt;buffer.capacity()) : 0;
+            }</span>
+
+<span style = "background-color:#dfd">            void StringBuilder::SetCapacity(int nCapacity) {
+                if (!m_pImpl || nCapacity &lt; static_cast&lt;int&gt;(m_pImpl-&gt;buffer.length())) return;
+                m_pImpl-&gt;buffer.reserve(nCapacity);</span>
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(const String&amp; sValue) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append((const char*)sValue);</span>
+                return *this;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(const char* pValue) {
+                if (m_pImpl &amp;&amp; pValue) m_pImpl-&gt;buffer.append(pValue);</span>
+                return *this;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(char chValue) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append(1, chValue);</span>
+                return *this;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(int iValue) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(iValue));</span>
+                return *this;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::Append(long long llValue) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(llValue));</span>
+                return *this;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(double value) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append(std::to_string(value));</span>
+                return *this;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Append(bool bValue) {
+                if (m_pImpl) m_pImpl-&gt;buffer.append(bValue ? "True" : "False");</span>
+                return *this;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            StringBuilder&amp; StringBuilder::AppendLine() {
+                if (m_pImpl) m_pImpl-&gt;buffer.append("\r\n");</span>
+                return *this;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::AppendLine(const String&amp; sValue) {
+                Append(sValue);
+                return AppendLine();
+            }</span>
+
+<span style = "background-color:#dfd">            StringBuilder&amp; StringBuilder::Clear() {
+                if (m_pImpl) m_pImpl-&gt;buffer.clear();</span>
+                return *this;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            String StringBuilder::ToString() const {
+                return m_pImpl ? String(m_pImpl-&gt;buffer.c_str()) : String("");
+            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -74,6 +74,11 @@ jobs:
         # Generate Static Analysis Report inside CodeCoverage/
         .\scripts\Check-QualityGates.ps1 -OutputDir CodeCoverage
         
+        # Mirror reports to docs/CodeCoverage for GitHub Pages
+        if (Test-Path "docs") {
+            Copy-Item -Path "CodeCoverage" -Destination "docs\CodeCoverage" -Recurse -Force
+        }
+        
         # Quality Gate Enforcement: Require >= 70% coverage on Windows runner
         $htmlContent = Get-Content -Path "CodeCoverage\index.html" -Raw
         if ($htmlContent -match 'cover (\d+) lines \((\d+)%\)') {

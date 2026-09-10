@@ -1,0 +1,718 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>String.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/String.h"
+#include "System/Array.h"
+#include "System/Utils/StringConvert.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/NotImplementedException.h"
+#include "System/OverflowException.h"
+#include "System/FormatException.h"
+#include &lt;set&gt;
+#include &lt;vector&gt;
+#include &lt;initializer_list&gt;
+#include &lt;sstream&gt;
+#include &lt;type_traits&gt;
+#include &lt;algorithm&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+
+namespace DotNetDupe {
+	namespace System {
+
+		struct String::StringImpl {
+			std::string s;
+			StringImpl() = default;
+			StringImpl(const char* str) : s(str) {}
+			StringImpl(const std::string&amp; str) : s(str) {}
+			StringImpl(std::string&amp;&amp; str) : s(std::move(str)) {}
+
+		};
+
+
+		namespace {
+			template &lt;typename T&gt;
+<span style = "background-color:#dfd">			inline String ToStringHelper(const T&amp; val) {</span>
+				using DecayedT = std::decay_t&lt;T&gt;;
+				if constexpr (std::is_same_v&lt;DecayedT, String&gt;) {
+					return val;
+				}
+				else if constexpr (std::is_same_v&lt;DecayedT, std::string&gt;) {
+					return String(val.c_str());
+				}
+				else if constexpr (std::is_same_v&lt;DecayedT, std::nullptr_t&gt;) {
+					return String("");
+				}
+				else if constexpr (std::is_same_v&lt;DecayedT, bool&gt;) {
+					return val ? "True" : "False";
+				}
+				else {
+<span style = "background-color:#dfd">					std::ostringstream ss;
+					ss &lt;&lt; val;
+					return String(ss.str().c_str());</span>
+				}
+<span style = "background-color:#dfd">			}</span>
+		}
+
+		void ThrowArgumentException(const char* msg) {
+			throw ArgumentException(msg);
+		}
+
+		void ThrowFormatException(const char* msg) {
+			throw FormatException(msg);
+		}
+<span style = "background-color:#dfd">		String::String() { m_pImpl = new StringImpl("");  }
+		String::~String() { delete m_pImpl; }</span>
+		static void AppendExplicitArg(const std::string&amp; sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+			std::string num = sFmt.substr(i + 1, end - i - 1);
+			size_t idx = 0;
+			int argIdx = std::stoi(num, &amp;idx);
+			if (idx != num.length() || argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");
+			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+		}
+
+<span style = "background-color:#dfd">		static void FormatOpenBrace(const std::string&amp; sFmt, size_t&amp; i, int&amp; iAutoIndex, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '{') {
+				sRes += '{'; i++;
+			} else if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {</span>
+<span style = "background-color:#fdd">				if (iAutoIndex &gt;= iArgCount) throw FormatException("Index out of bounds");
+				sRes += pArgs[iAutoIndex].GetRawString() ? pArgs[iAutoIndex].GetRawString() : "";
+				iAutoIndex++; i++;
+			} else {</span>
+<span style = "background-color:#dfd">				size_t end = sFmt.find('}', i + 1);
+				if (end == std::string::npos) throw FormatException("Unclosed brace");
+				AppendExplicitArg(sFmt, i, end, pArgs, iArgCount, sRes);
+				i = end;</span>
+			}
+<span style = "background-color:#dfd">		}</span>
+
+		static void FormatClosingBrace(const std::string&amp; sFmt, size_t&amp; i, std::string&amp; sRes) {
+			if (i + 1 &lt; sFmt.length() &amp;&amp; sFmt[i+1] == '}') {
+				sRes += '}'; i++;
+			} else {
+				throw FormatException("Unescaped closing brace");
+			}
+		}
+
+<span style = "background-color:#dfd">		String String::InternalFormat(const char* pFormat, const String* pArgs, int iArgCount) {
+			if (!pFormat) throw ArgumentException("Format string cannot be null.");
+			if (iArgCount == 0 || !pArgs) return String(pFormat);</span>
+
+<span style = "background-color:#dfd">			std::string sFmt = pFormat;
+			std::string sRes;
+			int iAutoIndex = 0;
+			for (size_t i = 0; i &lt; sFmt.length(); ++i) {
+				if (sFmt[i] == '{') {
+					FormatOpenBrace(sFmt, i, iAutoIndex, pArgs, iArgCount, sRes);
+				} else if (sFmt[i] == '}') {
+					FormatClosingBrace(sFmt, i, sRes);
+				} else {
+					sRes += sFmt[i];</span>
+				}
+			}
+<span style = "background-color:#dfd">			return String(sRes.c_str());
+		}</span>
+
+<span style = "background-color:#dfd">		void* String::operator new(size_t size) {
+			return ::operator new(size);</span>
+		}
+
+<span style = "background-color:#dfd">		void String::operator delete(void* p) {
+			::operator delete(p);</span>
+		}
+
+<span style = "background-color:#fdd">		void* String::operator new[](size_t size) {
+			return ::operator new[](size);</span>
+		}
+
+<span style = "background-color:#fdd">		void String::operator delete[](void* p) {
+			::operator delete[](p);</span>
+		}
+
+<span style = "background-color:#dfd">		String String::operator+(const char* pStr) const {
+			String sNewStr = *this;
+			if (pStr) {
+				sNewStr.m_pImpl-&gt;s.append(pStr);</span>
+			}
+			return sNewStr;
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#fdd">		String String::operator+(char ch) const {
+			String sNewStr = *this;
+			sNewStr.m_pImpl-&gt;s.push_back(ch);
+			return sNewStr;
+		}</span>
+
+<span style = "background-color:#fdd">		String&amp; String::operator+=(const String&amp; sStr) {
+			m_pImpl-&gt;s.append(sStr.GetRawString());
+			return *this;
+		}</span>
+
+<span style = "background-color:#fdd">		String&amp; String::operator+=(const char* pStr) {
+			if (pStr) {
+				m_pImpl-&gt;s.append(pStr);</span>
+			}
+			return *this;
+<span style = "background-color:#fdd">		}</span>
+
+<span style = "background-color:#dfd">		String&amp; String::operator+=(char ch) {
+			m_pImpl-&gt;s.push_back(ch);
+			return *this;
+		}</span>
+
+<span style = "background-color:#dfd">		String operator+(const char* pStr, const String&amp; sStr) {
+			String newStr(pStr ? pStr : "");
+			return newStr + sStr;
+		}</span>
+
+<span style = "background-color:#fdd">		String operator+(char ch, const String&amp; sStr) {
+			char buf[2] = { ch, 0 };
+			String newStr(buf);
+			return newStr + sStr;
+		}</span>
+
+
+<span style = "background-color:#dfd">		String::String(const char* pStr) {
+			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+			m_pImpl = new StringImpl();
+			m_pImpl-&gt;s = pStr;
+		}</span>
+
+<span style = "background-color:#dfd">		String::String(const String&amp; sStr) { m_pImpl = new StringImpl(sStr.m_pImpl-&gt;s);  }</span>
+
+<span style = "background-color:#dfd">		String&amp; String::operator=(const String&amp; sStr) {
+			if (this != &amp;sStr) {
+				m_pImpl-&gt;s = sStr.m_pImpl-&gt;s;</span>
+			}
+			return *this;
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#dfd">		String::String(String&amp;&amp; sStr) noexcept { m_pImpl = new StringImpl(std::move(sStr.m_pImpl-&gt;s));  }
+		String&amp; String::operator=(String&amp;&amp; sStr) noexcept {
+			if (this != &amp;sStr) {
+				m_pImpl-&gt;s = std::move(sStr.m_pImpl-&gt;s);</span>
+			}
+			return *this;
+<span style = "background-color:#dfd">		}
+		String::String(const wchar_t* pStr) {
+			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+			m_pImpl = new StringImpl();</span>
+
+<span style = "background-color:#dfd">			m_pImpl-&gt;s = Utils::StringConvert::WCharToUtf8(pStr);
+		}</span>
+
+<span style = "background-color:#dfd">		String&amp; String::operator=(const wchar_t* pStr) {
+			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");</span>
+
+<span style = "background-color:#dfd">			m_pImpl-&gt;s = Utils::StringConvert::WCharToUtf8(pStr);</span>
+
+<span style = "background-color:#dfd">			return *this;
+		}</span>
+
+<span style = "background-color:#dfd">		String&amp; String::operator=(const char* pStr) {
+			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+			m_pImpl-&gt;s = pStr;
+			return *this;
+		}
+		const char* String::GetRawString() const {
+			return m_pImpl-&gt;s.c_str();
+		}
+		int String::GetHashCode() const {
+			const char* p = GetRawString();
+			if (!p) return 0;</span>
+			unsigned int hash = 2166136261u;
+<span style = "background-color:#dfd">			while (*p) {
+				hash ^= (unsigned char)(*p);</span>
+				hash *= 16777619u;
+<span style = "background-color:#dfd">				++p;</span>
+			}
+<span style = "background-color:#dfd">			return (int)hash;
+		}
+		int String::GetLength() const {
+			return static_cast&lt;int&gt;(m_pImpl-&gt;s.length());
+		}</span>
+
+<span style = "background-color:#dfd">		String String::Clone() const {
+			return String(GetRawString());
+		}</span>
+
+
+<span style = "background-color:#dfd">		char String::operator[](int iIndex) const {
+			if (iIndex &gt;= (int)m_pImpl-&gt;s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
+			return GetRawString() [iIndex];
+		}</span>
+		static std::string ToLowerString(const std::string&amp; s) {
+			std::string res = s;
+			std::transform(res.begin(), res.end(), res.begin(), [](char ch) {
+				return static_cast&lt;char&gt;(std::tolower(static_cast&lt;unsigned char&gt;(ch)));
+			});
+			return res;
+		}
+
+<span style = "background-color:#dfd">		int String::Compare(const String&amp; sStr1, int iIndex1, const String&amp; sStr2, int iIndex2, int iLength, bool bIgnoreCase) {
+			if (!bIgnoreCase) {
+				return sStr1.m_pImpl-&gt;s.compare(iIndex1, iLength, sStr2.m_pImpl-&gt;s, iIndex2, iLength);</span>
+			}
+<span style = "background-color:#dfd">			auto s1 = ToLowerString(sStr1.m_pImpl-&gt;s.substr(iIndex1, iLength));
+			auto s2 = ToLowerString(sStr2.m_pImpl-&gt;s.substr(iIndex2, iLength));
+			return s1.compare(s2);
+		}</span>
+
+<span style = "background-color:#dfd">		int String::CompareTo(const String&amp; sStr) const {
+			return m_pImpl-&gt;s.compare(sStr.GetRawString());
+		}</span>
+		String String::Concat(
+<span style = "background-color:#dfd">			const std::initializer_list&lt;String&gt; sStrs) const {
+			String sNewStr = *this;
+			for (auto sStr : sStrs) {
+				sNewStr.m_pImpl-&gt;s.append(sStr.GetRawString());
+			}</span>
+			return sNewStr;
+<span style = "background-color:#dfd">		}</span>
+		String String::operator+(
+<span style = "background-color:#dfd">			const String&amp; sStr) const {
+			return Concat({ sStr });
+		}
+		bool String::Contains(char ch) const {
+			return m_pImpl-&gt;s.find(ch) != std::string::npos;
+		}
+		bool String::Contains(const String&amp; sStr) const {
+			return m_pImpl-&gt;s.find(sStr.m_pImpl-&gt;s) != std::string::npos;
+		}</span>
+
+		void String::CopyTo(int iSourceIndex, char* pDestination,
+							int iDestinationIndex, int iDestArraySize,
+<span style = "background-color:#dfd">							int iCount) const {
+			if (nullptr == pDestination)
+				throw ArgumentException("Invalid destination buffer");
+			int iLen = GetLength();
+			if (iSourceIndex &lt; 0 || iSourceIndex &gt;= iLen)
+				throw ArgumentOutOfRangeException("Invalid iSourceIndex");
+			if (iCount &gt; iLen)
+				throw ArgumentOutOfRangeException(</span>
+					"Source array size is smaller than iCount");
+<span style = "background-color:#dfd">			if (iCount &gt; iDestArraySize)</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException(</span>
+					"Destination array is smaller than iCount");
+<span style = "background-color:#dfd">			m_pImpl-&gt;s.copy(pDestination + iDestinationIndex, iCount, iSourceIndex);
+		}
+		bool String::EndsWith(char ch, bool bIgnoreCase) const {
+			auto iLen = m_pImpl-&gt;s.length();
+			if (iLen == 0) return false;
+			if (bIgnoreCase) {
+				return std::tolower(static_cast&lt;unsigned char&gt;(m_pImpl-&gt;s [iLen - 1])) == std::tolower(static_cast&lt;unsigned char&gt;(ch));</span>
+			}
+<span style = "background-color:#dfd">			return m_pImpl-&gt;s [iLen - 1] == ch;
+		}</span>
+		bool String::EndsWith(const String&amp; sSuffix,
+<span style = "background-color:#dfd">							  bool bIgnoreCase) const {
+			int iLen = GetLength();
+			int iSuffixLen = sSuffix.GetLength();
+			if (iSuffixLen &gt; iLen) return false;</span>
+
+<span style = "background-color:#dfd">			if (bIgnoreCase) {
+				return Compare(*this, iLen - iSuffixLen, sSuffix, 0, iSuffixLen, true) == 0;</span>
+			}
+<span style = "background-color:#dfd">			return m_pImpl-&gt;s.compare(static_cast&lt;size_t&gt;(iLen - iSuffixLen), static_cast&lt;size_t&gt;(iSuffixLen), sSuffix.m_pImpl-&gt;s) == 0;
+		}</span>
+		bool String::Equals(const String&amp; sStr1,
+<span style = "background-color:#dfd">							const String&amp; sStr2) {
+			return sStr1 == sStr2;
+		}
+		bool String::Equals(const String&amp; sStr) const {
+			return *this == sStr;
+		}
+		int String::IndexOf(const String&amp; sSubstring) const {
+			return IndexOf(sSubstring, 0, false);</span>
+		}
+		int String::IndexOf(const String&amp; sSubstring,
+<span style = "background-color:#fdd">							bool bIgnoreCase) const {
+			return IndexOf(sSubstring, 0, bIgnoreCase);</span>
+		}
+		int String::IndexOf(const String&amp; sSubstring,
+<span style = "background-color:#dfd">							int iStartIndex, bool bIgnoreCase) const {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; GetLength())
+				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
+
+<span style = "background-color:#dfd">			if (sSubstring.IsEmpty()) return iStartIndex;</span>
+
+<span style = "background-color:#dfd">			if (!bIgnoreCase) {
+				auto pos = m_pImpl-&gt;s.find(sSubstring.m_pImpl-&gt;s, iStartIndex);
+				return (pos == std::string::npos) ? -1 : (int)pos;</span>
+			}
+
+			// Case-insensitive search
+<span style = "background-color:#dfd">			auto it = std::search(</span>
+				m_pImpl-&gt;s.begin() + iStartIndex, m_pImpl-&gt;s.end(),
+				sSubstring.m_pImpl-&gt;s.begin(), sSubstring.m_pImpl-&gt;s.end(),
+				[](char c1, char c2) { return std::tolower(static_cast&lt;unsigned char&gt;(c1)) == std::tolower(static_cast&lt;unsigned char&gt;(c2)); }
+			);
+
+<span style = "background-color:#dfd">			return (it == m_pImpl-&gt;s.end()) ? -1 : (int)std::distance(m_pImpl-&gt;s.begin(), it);
+		}</span>
+		int String::IndexOfAny(int iStartIndex,
+<span style = "background-color:#dfd">							   std::initializer_list&lt;char&gt; chChars) {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; GetLength())
+				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
+
+<span style = "background-color:#dfd">			auto pos = m_pImpl-&gt;s.find_first_of(std::string(chChars.begin(), chChars.end()), iStartIndex);
+			return (pos == std::string::npos) ? -1 : (int)pos;
+		}</span>
+
+
+
+<span style = "background-color:#dfd">		String&amp; String::Append(const char ch) {
+			m_pImpl-&gt;s += ch;
+			return *this;
+		}</span>
+		String&amp; String::Append(
+<span style = "background-color:#fdd">			const String&amp; sStr) {
+			m_pImpl-&gt;s.append(sStr.GetRawString());
+			return *this;
+		}</span>
+		String&amp; String::Insert(
+<span style = "background-color:#dfd">			int iIndex, const String&amp; sStr) {
+			int iLen = GetLength();
+			if (iIndex &lt; 0 || iIndex &gt; iLen)
+				throw ArgumentOutOfRangeException("Invalid iIndex");</span>
+
+<span style = "background-color:#dfd">			m_pImpl-&gt;s.insert(iIndex, sStr.GetRawString(), sStr.GetLength());
+			return *this;
+		}
+		bool String::IsEmpty() const {
+			return m_pImpl-&gt;s.empty();
+		}</span>
+
+		String String::Join(
+<span style = "background-color:#dfd">			char chSeparator, std::initializer_list&lt;String&gt; sStrings) {
+			return Join(chSeparator, sStrings, 0, (int)sStrings.size());
+		}</span>
+		String String::Join(
+			char chSeparator, std::initializer_list&lt;String&gt; sStrings,
+<span style = "background-color:#dfd">			int iStartIndex, int iCount) {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; (int)sStrings.size())</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
+<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt; (int)sStrings.size())</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iCount");</span>
+
+			const String* pStrs = sStrings.begin();
+<span style = "background-color:#dfd">			String sJoinStr("");</span>
+
+<span style = "background-color:#dfd">			for (int i = iStartIndex; i &lt; iStartIndex + iCount; i++) {
+				sJoinStr.Append(pStrs[i]);
+				if (i != iStartIndex + iCount - 1) {
+					sJoinStr.Append(chSeparator);</span>
+				}
+			}
+<span style = "background-color:#dfd">			return sJoinStr;
+		}</span>
+		String String::Join(
+			const String&amp; sSeparator,
+<span style = "background-color:#dfd">			std::initializer_list&lt;String&gt; sStrings) {
+			return Join(sSeparator, sStrings, 0, (int)sStrings.size());
+		}</span>
+		String String::Join(
+			const String&amp; sSeparator,
+			std::initializer_list&lt;String&gt; sStrings, int iStartIndex,
+<span style = "background-color:#dfd">			int iCount) {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; (int)sStrings.size())</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iStartIndex");</span>
+<span style = "background-color:#dfd">			if (iCount &lt; 0 || (iStartIndex + iCount) &gt; (int)sStrings.size())</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iCount");</span>
+
+			const String* pStrs = sStrings.begin();
+<span style = "background-color:#dfd">			String sJoinStr("");</span>
+
+<span style = "background-color:#dfd">			for (int i = iStartIndex; i &lt; iStartIndex + iCount; i++) {
+				sJoinStr.Append(pStrs[i]);
+				if (i != iStartIndex + iCount - 1) {
+					sJoinStr.Append(sSeparator);</span>
+				}
+			}
+<span style = "background-color:#dfd">			return sJoinStr;
+		}</span>
+		int String::LastIndexOf(const String&amp; sStr,
+<span style = "background-color:#dfd">								bool bIgnoreCase) {
+			if (sStr.IsEmpty()) return GetLength();</span>
+
+<span style = "background-color:#dfd">			if (!bIgnoreCase) {
+				auto pos = m_pImpl-&gt;s.rfind(sStr.m_pImpl-&gt;s);
+				return (pos == std::string::npos) ? -1 : (int)pos;</span>
+			}
+
+<span style = "background-color:#dfd">			auto it = std::find_end(</span>
+				m_pImpl-&gt;s.begin(), m_pImpl-&gt;s.end(),
+				sStr.m_pImpl-&gt;s.begin(), sStr.m_pImpl-&gt;s.end(),
+				[](char c1, char c2) { return std::tolower(static_cast&lt;unsigned char&gt;(c1)) == std::tolower(static_cast&lt;unsigned char&gt;(c2)); }
+			);
+
+<span style = "background-color:#dfd">			return (it == m_pImpl-&gt;s.end()) ? -1 : (int)std::distance(m_pImpl-&gt;s.begin(), it);
+		}</span>
+
+		static int FindLastCharIndex(const std::string&amp; s, int iStartIndex, char ch, bool bIgnoreCase) {
+			for (int i = static_cast&lt;int&gt;(s.length()) - 1; i &gt;= iStartIndex; --i) {
+				bool match = bIgnoreCase 
+					? std::tolower(static_cast&lt;unsigned char&gt;(s[i])) == std::tolower(static_cast&lt;unsigned char&gt;(ch))
+					: (s[i] == ch);
+				if (match) return i;
+			}
+			return -1;
+		}
+
+<span style = "background-color:#dfd">		int String::LastIndexOfAny(int iStartIndex, std::initializer_list&lt;char&gt; chChars, bool bIgnoreCase) {
+			if (iStartIndex &lt; 0 || iStartIndex &gt; GetLength()) throw ArgumentOutOfRangeException("Invalid iStartIndex");
+			if (IsEmpty()) return -1;</span>
+
+<span style = "background-color:#dfd">			for (auto ch : chChars) {
+				int idx = FindLastCharIndex(m_pImpl-&gt;s, iStartIndex, ch, bIgnoreCase);
+				if (idx != -1) return idx;</span>
+			}
+			return -1;
+<span style = "background-color:#dfd">		}
+		String String::PadLeft(int iTotalWidth) {
+			return PadLeft(iTotalWidth, (char)' ');
+		}</span>
+		String String::PadLeft(int iTotalWidth,
+<span style = "background-color:#dfd">							   char ch) {
+			if (iTotalWidth &lt; 0) {
+				throw ArgumentException("Invalid iTotalWidth");</span>
+			}
+<span style = "background-color:#dfd">			int iLen = GetLength();
+			if (iTotalWidth &lt;= iLen) {
+				return *this;</span>
+			}
+<span style = "background-color:#dfd">			std::string sPadding(iTotalWidth - iLen, ch);
+			m_pImpl-&gt;s.insert(0, sPadding);
+			return *this;
+		}
+		String String::PadRight(int iTotalWidth) {
+			return PadRight(iTotalWidth, (char)' ');
+		}</span>
+		String String::PadRight(int iTotalWidth,
+<span style = "background-color:#dfd">								char ch) {
+			if (iTotalWidth &lt; 0) {
+				throw ArgumentException("Invalid iTotalWidth");</span>
+			}
+<span style = "background-color:#dfd">			int iLen = GetLength();
+			if (iTotalWidth &lt;= iLen) {
+				return *this;</span>
+			}
+<span style = "background-color:#dfd">			m_pImpl-&gt;s.append(iTotalWidth - iLen, ch);
+			return *this;
+		}
+		String String::Remove(int iStartIndex) const {
+			return Remove(iStartIndex, GetLength() - iStartIndex);
+		}</span>
+		String String::Remove(int iStartIndex,
+<span style = "background-color:#dfd">							  int iCount) const {
+			int iLen = GetLength();
+			if (iStartIndex &lt; 0 || iStartIndex &gt; iLen || iCount &lt; 0 || (iStartIndex + iCount) &gt; iLen) {
+				throw ArgumentOutOfRangeException("Invalid iStartIndex or iCount");</span>
+			}
+
+<span style = "background-color:#dfd">			std::string sRet = m_pImpl-&gt;s;
+			sRet.erase(iStartIndex, iCount);
+			return String(sRet.c_str());
+		}</span>
+		String String::Replace(char chOriginalChar,
+<span style = "background-color:#dfd">							   char chReplaceChar) const {
+			std::string sRet = m_pImpl-&gt;s;
+			std::replace(sRet.begin(), sRet.end(), chOriginalChar, chReplaceChar);
+			return String(sRet.c_str());
+		}</span>
+		String String::Replace(
+			const String&amp; sOriginalStr,
+<span style = "background-color:#dfd">			const String&amp; sReplaceStr) const {
+			if (sOriginalStr.IsEmpty()) return *this;</span>
+
+<span style = "background-color:#dfd">			std::string sRet = m_pImpl-&gt;s;
+			size_t pos = 0;
+			while ((pos = sRet.find(sOriginalStr.m_pImpl-&gt;s, pos)) != std::string::npos) {
+				sRet.replace(pos, sOriginalStr.GetLength(), sReplaceStr.m_pImpl-&gt;s);
+				pos += sReplaceStr.GetLength();
+			}
+			return String(sRet.c_str());
+		}
+		Array&lt;String&gt; String::Split(char chSeparator) const {
+			std::vector&lt;String&gt; vTempResult;
+			std::stringstream ss(m_pImpl-&gt;s);
+			std::string sToken;
+			while (std::getline(ss, sToken, chSeparator)) {
+				vTempResult.push_back(String(sToken.c_str()));</span>
+			}
+
+<span style = "background-color:#dfd">			Array&lt;String&gt; result((int)vTempResult.size());
+			for (int i = 0; i &lt; (int)vTempResult.size(); i++) result [i] = vTempResult [i];
+			return result;
+		}</span>
+
+<span style = "background-color:#dfd">		static void AddSplitToken(const std::string&amp; sCurrent, StringSplitOptions eOptions, std::vector&lt;String&gt;&amp; vResult) {
+			String s(sCurrent.c_str());
+			if (eOptions == StringSplitOptions::TrimEntries) s = s.Trim();
+			if (eOptions != StringSplitOptions::RemoveEmptyEntries || !s.IsEmpty()) {
+				vResult.push_back(s);</span>
+			}
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#dfd">		static std::set&lt;char&gt; PopulateSplitCharSet(const String* pSeparator, int iCount) {
+			std::set&lt;char&gt; charSet;
+			if (!pSeparator || iCount &lt;= 0) return charSet;
+			for (int i = 0; i &lt; iCount; ++i) {
+				const char* raw = pSeparator[i].GetRawString();
+				if (raw) { while (*raw) charSet.insert(*raw++); }</span>
+			}
+			return charSet;
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#dfd">		static std::vector&lt;String&gt; SplitByCharSet(const std::string&amp; sText, const std::set&lt;char&gt;&amp; charSet, StringSplitOptions eOptions) {
+			std::vector&lt;String&gt; vResult;
+			std::string sCurrent;
+			for (char c : sText) {
+				if (charSet.find(c) == charSet.end()) {
+					sCurrent += c;</span>
+				} else {
+<span style = "background-color:#dfd">					AddSplitToken(sCurrent, eOptions, vResult);
+					sCurrent.clear();</span>
+				}
+			}
+<span style = "background-color:#dfd">			AddSplitToken(sCurrent, eOptions, vResult);
+			return vResult;
+		}</span>
+
+<span style = "background-color:#fdd">		Array&lt;String&gt; String::Split(const Array&lt;String&gt;&amp; arrSeparators, StringSplitOptions eOptions) const {
+			return Split(arrSeparators.GetData(), arrSeparators.GetLength(), eOptions);
+		}</span>
+
+<span style = "background-color:#dfd">		Array&lt;String&gt; String::Split(const String* pSeparator, int iCount, StringSplitOptions eOptions) const {
+			std::set&lt;char&gt; charSet = PopulateSplitCharSet(pSeparator, iCount);
+			std::vector&lt;String&gt; vTempResult = SplitByCharSet(m_pImpl-&gt;s, charSet, eOptions);
+			Array&lt;String&gt; result(static_cast&lt;int&gt;(vTempResult.size()));
+			for (int i = 0; i &lt; result.GetLength(); i++) result[i] = vTempResult[i];
+			return result;
+		}</span>
+
+<span style = "background-color:#dfd">		bool String::StartsWith(const String&amp; sPrefix) const {
+			return StartsWith(sPrefix, false);
+		}</span>
+
+<span style = "background-color:#dfd">		bool String::StartsWith(const String&amp; sPrefix, bool bIgnoreCase) const {
+			if (sPrefix.GetLength() &gt; GetLength()) return false;</span>
+
+<span style = "background-color:#dfd">			if (!bIgnoreCase) {
+				return m_pImpl-&gt;s.compare(0, sPrefix.GetLength(), sPrefix.m_pImpl-&gt;s) == 0;</span>
+			}
+
+<span style = "background-color:#fdd">			return Compare(*this, 0, sPrefix, 0, sPrefix.GetLength(), true) == 0;</span>
+<span style = "background-color:#dfd">		}</span>
+
+<span style = "background-color:#dfd">		String String::FromInt(int iValue) {
+			return ValueOf(iValue);
+		}</span>
+
+<span style = "background-color:#dfd">		String String::ValueOf(int iValue) {
+			return ToStringHelper(iValue);
+		}</span>
+
+
+<span style = "background-color:#fdd">		String String::ValueOf(long long llValue) {
+			return ToStringHelper(llValue);
+		}</span>
+
+<span style = "background-color:#dfd">		String String::ValueOf(double dValue) {
+			std::ostringstream ss;
+			ss &lt;&lt; dValue;
+			return String(ss.str().c_str());
+		}</span>
+
+<span style = "background-color:#dfd">		String String::ToString(int iValue) {
+			return ToStringHelper(iValue);
+		}</span>
+
+<span style = "background-color:#fdd">		String String::ToString(long long llValue) {
+			return ToStringHelper(llValue);
+		}</span>
+
+<span style = "background-color:#fdd">		String String::ToString(double dValue) {
+			return ToStringHelper(dValue);
+		}</span>
+
+<span style = "background-color:#dfd">		String String::ToString(bool bValue) {
+			return ToStringHelper(bValue);
+		}</span>
+
+<span style = "background-color:#dfd">		String String::Substring(int iStartIndex) const {
+			return Substring(iStartIndex, GetLength() - iStartIndex);
+		}</span>
+
+<span style = "background-color:#dfd">		String String::Substring(int iStartIndex, int iLength) const {
+			int iLen = GetLength();
+			if (iStartIndex &lt; 0 || iStartIndex &gt; iLen || iLength &lt; 0 || (iStartIndex + iLength) &gt; iLen) {</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Invalid iStartIndex or iLength");</span>
+			}
+<span style = "background-color:#dfd">			return String(m_pImpl-&gt;s.substr(iStartIndex, iLength).c_str());
+		}</span>
+
+
+<span style = "background-color:#dfd">		String String::ToLower() const {
+			std::string sRet = m_pImpl-&gt;s;
+			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -&gt; char {</span>
+				return static_cast&lt;char&gt;(std::tolower(static_cast&lt;unsigned char&gt;(ch)));
+						   });
+<span style = "background-color:#dfd">			return String(sRet.c_str());
+		}</span>
+
+<span style = "background-color:#dfd">		String String::ToUpper() const {
+			std::string sRet = m_pImpl-&gt;s;
+			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -&gt; char {</span>
+				return static_cast&lt;char&gt;(std::toupper(static_cast&lt;unsigned char&gt;(ch)));
+						   });
+<span style = "background-color:#dfd">			return String(sRet.c_str());
+		}</span>
+
+<span style = "background-color:#dfd">		String String::Trim() const {
+			return TrimStart().TrimEnd();
+		}</span>
+
+<span style = "background-color:#dfd">		String String::TrimStart() const {
+			auto it = std::find_if(m_pImpl-&gt;s.begin(), m_pImpl-&gt;s.end(), [](char ch) {</span>
+				return !std::isspace(static_cast&lt;unsigned char&gt;(ch));
+								   });
+<span style = "background-color:#dfd">			if (it == m_pImpl-&gt;s.end()) return "";
+			return String(m_pImpl-&gt;s.substr(std::distance(m_pImpl-&gt;s.begin(), it)).c_str());
+		}</span>
+
+<span style = "background-color:#dfd">		String String::TrimEnd() const {
+			auto it = std::find_if(m_pImpl-&gt;s.rbegin(), m_pImpl-&gt;s.rend(), [](char ch) {</span>
+				return !std::isspace(static_cast&lt;unsigned char&gt;(ch));
+								   });
+<span style = "background-color:#dfd">			if (it == m_pImpl-&gt;s.rend()) return "";
+			return String(m_pImpl-&gt;s.substr(0, m_pImpl-&gt;s.length() - std::distance(m_pImpl-&gt;s.rbegin(), it)).c_str());
+		}</span>
+	}  // namespace System
+}  // namespace DotNetDupe</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
