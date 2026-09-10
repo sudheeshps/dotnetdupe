@@ -95,6 +95,23 @@ if (Test-Path $portalHtml) {
     }
 }
 
+# Ensure GitHub Pages .nojekyll files exist to allow files starting with '_' (e.g., _action_8h_source.html)
+$noJekyllPaths = @(
+    (Join-Path $rootDir ".nojekyll"),
+    (Join-Path $rootDir "docs\.nojekyll"),
+    (Join-Path $rootDir "docs\html\.nojekyll")
+)
+foreach ($njPath in $noJekyllPaths) {
+    $njDir = Split-Path -Parent $njPath
+    if (-not (Test-Path $njDir)) {
+        New-Item -ItemType Directory -Path $njDir -Force | Out-Null
+    }
+    if (-not (Test-Path $njPath)) {
+        Set-Content -Path $njPath -Value "# Disable Jekyll for GitHub Pages" -Encoding UTF8
+        Write-Host "[INFO] Created .nojekyll at $njPath" -ForegroundColor Gray
+    }
+}
+
 # Locate doxygen
 $doxygenCmd = Get-Command doxygen -ErrorAction SilentlyContinue
 $doxygenPath = ""
@@ -137,41 +154,11 @@ if (Test-Path $outputHtml) {
     [System.IO.File]::WriteAllText($outputHtml, $doxyIndexContent, [System.Text.Encoding]::UTF8)
     Write-Host "[INFO] Relinked docs/index.html, CodeCoverage, and Include in generated Doxygen index." -ForegroundColor Gray
 
-    # Inject dynamic NuGet version updater script into docs/html/index.html and docs/html/namespaces.html
-    $pagesToUpdate = @($outputHtml, (Join-Path $rootDir "docs\html\namespaces.html"))
-    foreach ($pagePath in $pagesToUpdate) {
-        if (Test-Path $pagePath) {
-            $pageContent = [System.IO.File]::ReadAllText($pagePath, [System.Text.Encoding]::UTF8)
-            if (-not $pageContent.Contains('api.nuget.org/v3-flatcontainer/dotnetdupe')) {
-                $dynamicScript = @"
-<!-- Dynamic NuGet Version Updater -->
-<script type="text/javascript">
-(function() {
-  function updateNuGetVersion() {
-    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
-      .then(function(res) { return res.ok ? res.json() : null; })
-      .then(function(data) {
-        if (data && data.versions && data.versions.length > 0) {
-          var latestVersion = data.versions[data.versions.length - 1];
-          var elem = document.getElementById('projectnumber');
-          if (elem) { elem.innerHTML = '&#160;' + latestVersion; }
-        }
-      })
-      .catch(function() {});
-  }
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
-  } else {
-    updateNuGetVersion();
-  }
-})();
-</script>
-"@
-                $pageContent = $pageContent.Replace('</body>', "$dynamicScript`n</body>")
-                [System.IO.File]::WriteAllText($pagePath, $pageContent, [System.Text.Encoding]::UTF8)
-                Write-Host "[INFO] Injected dynamic NuGet version script into $pagePath." -ForegroundColor Gray
-            }
-        }
+    # Re-verify .nojekyll in docs/html/ post-generation (Doxygen may wipe output directory)
+    $docsHtmlNoJekyll = Join-Path $rootDir "docs\html\.nojekyll"
+    if (-not (Test-Path $docsHtmlNoJekyll)) {
+        Set-Content -Path $docsHtmlNoJekyll -Value "# Disable Jekyll for GitHub Pages" -Encoding UTF8
+        Write-Host "[INFO] Preserved .nojekyll in $docsHtmlNoJekyll." -ForegroundColor Gray
     }
 
     Write-Host "`n[SUCCESS] API Documentation generated in $elapsed seconds!" -ForegroundColor Green

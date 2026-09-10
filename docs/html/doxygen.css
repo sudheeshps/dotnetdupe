@@ -2192,13 +2192,6 @@ details[open]>summary::before {
 .hidden {
   display: none;
 }
-
-html {
---timestamp: 'Wed Sep 9 2026 18:30:47';
-}
-span.timestamp { content: ' '; }
-span.timestamp:before { content: var(--timestamp); }
-
 :root {
     scrollbar-width: thin;
     scrollbar-color: #C4CFE5 #F9FAFC;

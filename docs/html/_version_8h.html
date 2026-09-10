@@ -1,3 +1,4 @@
+<!-- HTML header for doxygen 1.18.0-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
@@ -18,6 +19,34 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<!-- Dynamic NuGet Version Updater across all documentation pages -->
+<script type="text/javascript">
+(function() {
+  function updateNuGetVersion() {
+    fetch('https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json')
+      .then(function(res) { return res.ok ? res.json() : null; })
+      .then(function(data) {
+        if (data && data.versions && data.versions.length > 0) {
+          var latestVersion = data.versions[data.versions.length - 1];
+          var elem = document.getElementById('projectnumber');
+          if (elem) {
+            elem.innerHTML = '&#160;' + latestVersion;
+          }
+          var badges = document.querySelectorAll('.nuget-version-badge');
+          badges.forEach(function(badge) {
+            badge.textContent = latestVersion;
+          });
+        }
+      })
+      .catch(function() {});
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateNuGetVersion);
+  } else {
+    updateNuGetVersion();
+  }
+})();
+</script>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -26,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">DotNetDupe<span id="projectnumber">&#160;4.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;4.0.5</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -121,13 +150,13 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('_version_8h.ht
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-define-members" class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:ae6ef9058da3d1f2efdc365d6643d1de3" id="r_ae6ef9058da3d1f2efdc365d6643d1de3"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ae6ef9058da3d1f2efdc365d6643d1de3">VER_FILEVERSION</a>&#160;&#160;&#160;4,0,4,0</td></tr>
+<tr class="memitem:ae6ef9058da3d1f2efdc365d6643d1de3" id="r_ae6ef9058da3d1f2efdc365d6643d1de3"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#ae6ef9058da3d1f2efdc365d6643d1de3">VER_FILEVERSION</a>&#160;&#160;&#160;4,0,5,0</td></tr>
 <tr class="memdesc:ae6ef9058da3d1f2efdc365d6643d1de3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numeric 4-part file version tuple.  <br /></td></tr>
-<tr class="memitem:a9ab9575a5fdacc8d78fb6a6a982bb060" id="r_a9ab9575a5fdacc8d78fb6a6a982bb060"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a9ab9575a5fdacc8d78fb6a6a982bb060">VER_FILEVERSION_STR</a>&#160;&#160;&#160;&quot;4.0.4.0\0&quot;</td></tr>
+<tr class="memitem:a9ab9575a5fdacc8d78fb6a6a982bb060" id="r_a9ab9575a5fdacc8d78fb6a6a982bb060"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a9ab9575a5fdacc8d78fb6a6a982bb060">VER_FILEVERSION_STR</a>&#160;&#160;&#160;&quot;4.0.5.0\0&quot;</td></tr>
 <tr class="memdesc:a9ab9575a5fdacc8d78fb6a6a982bb060"><td class="mdescLeft">&#160;</td><td class="mdescRight">Null-terminated string representation of the file version.  <br /></td></tr>
-<tr class="memitem:a1f0c72807dfc9de46855bff55bae541c" id="r_a1f0c72807dfc9de46855bff55bae541c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1f0c72807dfc9de46855bff55bae541c">VER_PRODUCTVERSION</a>&#160;&#160;&#160;4,0,4,0</td></tr>
+<tr class="memitem:a1f0c72807dfc9de46855bff55bae541c" id="r_a1f0c72807dfc9de46855bff55bae541c"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a1f0c72807dfc9de46855bff55bae541c">VER_PRODUCTVERSION</a>&#160;&#160;&#160;4,0,5,0</td></tr>
 <tr class="memdesc:a1f0c72807dfc9de46855bff55bae541c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Numeric 4-part product version tuple.  <br /></td></tr>
-<tr class="memitem:a5084df706ac15e76da275c143313f3d9" id="r_a5084df706ac15e76da275c143313f3d9"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a5084df706ac15e76da275c143313f3d9">VER_PRODUCTVERSION_STR</a>&#160;&#160;&#160;&quot;4.0.4.0\0&quot;</td></tr>
+<tr class="memitem:a5084df706ac15e76da275c143313f3d9" id="r_a5084df706ac15e76da275c143313f3d9"><td class="memItemLeft">#define&#160;</td><td class="memItemRight"><a class="el" href="#a5084df706ac15e76da275c143313f3d9">VER_PRODUCTVERSION_STR</a>&#160;&#160;&#160;&quot;4.0.5.0\0&quot;</td></tr>
 <tr class="memdesc:a5084df706ac15e76da275c143313f3d9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Null-terminated string representation of the product version.  <br /></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
@@ -142,7 +171,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define VER_FILEVERSION&#160;&#160;&#160;4,0,4,0</td>
+          <td class="memname">#define VER_FILEVERSION&#160;&#160;&#160;4,0,5,0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -160,7 +189,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define VER_FILEVERSION_STR&#160;&#160;&#160;&quot;4.0.4.0\0&quot;</td>
+          <td class="memname">#define VER_FILEVERSION_STR&#160;&#160;&#160;&quot;4.0.5.0\0&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -178,7 +207,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define VER_PRODUCTVERSION&#160;&#160;&#160;4,0,4,0</td>
+          <td class="memname">#define VER_PRODUCTVERSION&#160;&#160;&#160;4,0,5,0</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -196,7 +225,7 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define VER_PRODUCTVERSION_STR&#160;&#160;&#160;&quot;4.0.4.0\0&quot;</td>
+          <td class="memname">#define VER_PRODUCTVERSION_STR&#160;&#160;&#160;&quot;4.0.5.0\0&quot;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -221,7 +250,7 @@ Macros</h2></td></tr>
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
     <li class="navelem"><a href="dir_856524284ebe840938865dc061f982fb.html">Include</a></li><li class="navelem"><a href="_version_8h.html">Version.h</a></li>
-    <li class="footer">Generated on <span class="timestamp"></span> for DotNetDupe by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
+    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.18.0 </li>
   </ul>
 </div>
 </body>
