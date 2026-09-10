@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;4.0.5</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;4.0.6</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -319,7 +319,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.4.0.5.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.4.0.6.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -420,7 +420,7 @@ Developing Cross-Platform Applications 🌐💻</h1>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 A. Generating the NuGet Package</h3>
 <p>Run the automated build script from PowerShell: </p><div class="fragment"><div class="line">.\BuildAndPack.ps1</div>
-</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.4.0.5.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
+</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.4.0.6.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <ol type="1">
@@ -431,7 +431,7 @@ B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 C. Consuming NuGet Package on Linux / CMake (WSL)</h3>
 <ol type="1">
-<li>Extract <span class="tt">DotNetDupe.4.0.5.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.4.0.5.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
+<li>Extract <span class="tt">DotNetDupe.4.0.6.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.4.0.6.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
 </div><!-- fragment --></li>
 <li>Configure CMake pointing <span class="tt">NUGET_PATH</span> to the extracted package folder: <div class="fragment"><div class="line">cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH=&quot;./DotNetDupe_NuGet&quot;</div>
 <div class="line">cmake --build build</div>

@@ -24,34 +24,20 @@ Write-Host "==================================================" -ForegroundColor
 
 # Resolve dynamic package version if not explicitly passed
 if ([string]::IsNullOrWhitespace($Version)) {
-    # 1. Primary: Query the published version from nuget.org
-    try {
-        Write-Host "[INFO] Checking published version from nuget.org..." -ForegroundColor Gray
-        $nugetMeta = Invoke-RestMethod -Uri "https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json" -TimeoutSec 5 -ErrorAction Stop
-        if ($nugetMeta -and $nugetMeta.versions -and $nugetMeta.versions.Count -gt 0) {
-            $Version = $nugetMeta.versions[-1].Trim()
-            Write-Host "[INFO] Detected published NuGet version from nuget.org: $Version" -ForegroundColor Green
-        }
-    } catch {
-        Write-Warning "Could not retrieve version from nuget.org: $_"
-    }
-
-    # 2. Fallback to DotNetDupe.nuspec if offline / nuget.org unreachable
-    if ([string]::IsNullOrWhitespace($Version)) {
-        $nuspecPath = Join-Path $rootDir "DotNetDupe.nuspec"
-        if (Test-Path $nuspecPath) {
-            try {
-                [xml]$nuspec = Get-Content $nuspecPath
-                if ($nuspec.package.metadata.version) {
-                    $Version = $nuspec.package.metadata.version.Trim()
-                }
-            } catch {
-                Write-Warning "Could not parse '$nuspecPath': $_"
+    # 1. Primary: Check DotNetDupe.nuspec (local project definition)
+    $nuspecPath = Join-Path $rootDir "DotNetDupe.nuspec"
+    if (Test-Path $nuspecPath) {
+        try {
+            [xml]$nuspec = Get-Content $nuspecPath
+            if ($nuspec.package.metadata.version) {
+                $Version = $nuspec.package.metadata.version.Trim()
             }
+        } catch {
+            Write-Warning "Could not parse '$nuspecPath': $_"
         }
     }
 
-    # 3. Fallback to Include/Version.h
+    # 2. Check Include/Version.h
     if ([string]::IsNullOrWhitespace($Version)) {
         $versionHeader = Join-Path $rootDir "Include\Version.h"
         if (Test-Path $versionHeader) {
@@ -63,9 +49,32 @@ if ([string]::IsNullOrWhitespace($Version)) {
         }
     }
 
+    # 3. Query published version from nuget.org if higher or if not yet resolved
+    try {
+        Write-Host "[INFO] Checking published version from nuget.org..." -ForegroundColor Gray
+        $nugetMeta = Invoke-RestMethod -Uri "https://api.nuget.org/v3-flatcontainer/dotnetdupe/index.json" -TimeoutSec 5 -ErrorAction Stop
+        if ($nugetMeta -and $nugetMeta.versions -and $nugetMeta.versions.Count -gt 0) {
+            $nugetVer = $nugetMeta.versions[-1].Trim()
+            if ([string]::IsNullOrWhitespace($Version)) {
+                $Version = $nugetVer
+            } else {
+                try {
+                    if ([System.Version]$nugetVer -gt [System.Version]$Version) {
+                        $Version = $nugetVer
+                        Write-Host "[INFO] Detected newer published NuGet version from nuget.org: $Version" -ForegroundColor Green
+                    }
+                } catch {
+                    # In case of non-standard semver strings, keep local version
+                }
+            }
+        }
+    } catch {
+        Write-Warning "Could not retrieve version from nuget.org: $_"
+    }
+
     # 4. Default fallback
     if ([string]::IsNullOrWhitespace($Version)) {
-        $Version = "4.0.5"
+        $Version = "4.0.6"
     }
 }
 
