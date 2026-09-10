@@ -551,9 +551,10 @@ if (Test-Path $readmeSource) {
     # Transform relative docs/*.md links to official online documentation pages
     $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($readmeContent, '\(docs/([a-zA-Z0-9_]+)\.md\)', '(https://sudheeshps.github.io/dotnetdupe/docs/$1.html)')
     # Transform relative docs/*.html (e.g., docs/index.html) to official online documentation portal
-    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/([a-zA-Z0-9_]+)\.html\)', '(https://sudheeshps.github.io/dotnetdupe/docs/$1.html)')
-    # Transform relative docs/html/ links to official online documentation pages for NuGet.org (preserving docs/)
-    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/html/([^)]+)\)', '(https://sudheeshps.github.io/dotnetdupe/docs/html/$1)')
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/index\.html\)', '(https://sudheeshps.github.io/dotnetdupe/)')
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/([a-zA-Z0-9_]+)\.html\)', '(https://sudheeshps.github.io/dotnetdupe/$1.html)')
+    # Transform relative docs/html/ links to official online documentation pages for NuGet.org (hosted at /html/)
+    $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\(docs/html/([^)]+)\)', '(https://sudheeshps.github.io/dotnetdupe/html/$1)')
     # Transform relative Include/ links to official GitHub repository URLs for NuGet.org
     $transformedReadme = [System.Text.RegularExpressions.Regex]::Replace($transformedReadme, '\((Include/[^)]+)\)', '(https://github.com/sudheeshps/DotNetDupe/blob/main/$1)')
     # Transform relative CodeCoverage/ links to official online coverage pages for NuGet.org

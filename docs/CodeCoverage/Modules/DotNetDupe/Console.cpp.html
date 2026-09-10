@@ -1,0 +1,445 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Console.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Console.h"
+#include "System/IO/TextWriter.h"
+#include "System/IO/TextReader.h"
+#include &lt;mutex&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#else
+#include &lt;unistd.h&gt;
+#endif
+
+using namespace DotNetDupe::System;
+
+namespace {
+<span style = "background-color:#dfd">    static std::vector&lt;String&gt; s_outputs;
+    static std::vector&lt;String&gt; s_inputs;
+    static String s_accumulator = String("");</span>
+    static std::recursive_mutex s_mutex;
+    static ConsoleColor s_defaultFore = ConsoleColor::Gray;
+    static ConsoleColor s_defaultBack = ConsoleColor::Black;
+    static ConsoleColor s_currentFore = ConsoleColor::Gray;
+    static ConsoleColor s_currentBack = ConsoleColor::Black;
+<span style = "background-color:#dfd">    static String s_consoleTitle = String("");</span>
+    static bool s_colorsInitialized = false;
+
+<span style = "background-color:#dfd">    void EnsureColorsInitialized() {
+        if (!s_colorsInitialized) {</span>
+#if defined(_WIN32)
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">            if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+                s_defaultFore = (ConsoleColor)(csbi.wAttributes &amp; 0x0F);
+                s_defaultBack = (ConsoleColor)((csbi.wAttributes &amp; 0xF0) &gt;&gt; 4);</span>
+                s_currentFore = s_defaultFore;
+<span style = "background-color:#dfd">                s_currentBack = s_defaultBack;</span>
+            }
+#endif
+<span style = "background-color:#dfd">            s_colorsInitialized = true;</span>
+        }
+<span style = "background-color:#dfd">    }
+    static SmartPointer&lt;IO::TextWriter&gt; s_pOutWriter = nullptr;
+    static SmartPointer&lt;IO::TextWriter&gt; s_pErrorWriter = nullptr;
+    static SmartPointer&lt;IO::TextReader&gt; s_pInReader = nullptr;</span>
+}
+
+<span style = "background-color:#dfd">void InternalWrite(const String&amp; sValue) {
+    SmartPointer&lt;IO::TextWriter&gt; pWriter = nullptr;</span>
+    {
+<span style = "background-color:#dfd">        std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout &lt;&lt; sValue.GetRawString() &lt;&lt; std::flush;
+            return;</span>
+        }
+<span style = "background-color:#fdd">    }
+    pWriter-&gt;Write(sValue);</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void InternalWriteLine(const String&amp; sValue) {
+    SmartPointer&lt;IO::TextWriter&gt; pWriter = nullptr;</span>
+    {
+<span style = "background-color:#dfd">        std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+        s_accumulator = s_accumulator + sValue;
+        s_outputs.push_back(s_accumulator);
+        pWriter = s_pOutWriter;
+        if (!pWriter) {
+            std::cout &lt;&lt; sValue.GetRawString() &lt;&lt; std::endl;
+            s_accumulator = "";
+            return;</span>
+        }
+<span style = "background-color:#dfd">        s_accumulator = "";
+    }
+    pWriter-&gt;WriteLine(sValue);
+}</span>
+
+<span style = "background-color:#dfd">void Console::Write(bool value) { InternalWrite(value ? "True" : "False"); }
+void Console::Write(Char value) { char buf[2] = { static_cast&lt;char&gt;(value.GetChar()), 0 }; InternalWrite(buf); }
+void Console::Write(double value) { InternalWrite(String(std::to_string(value).c_str())); }
+void Console::Write(int value) { InternalWrite(String(std::to_string(value).c_str())); }
+void Console::Write(long value) { InternalWrite(String(std::to_string(value).c_str())); }
+void Console::Write(long long value) { InternalWrite(String(std::to_string(value).c_str())); }
+void Console::Write(float value) { InternalWrite(String(std::to_string(value).c_str())); }
+void Console::Write(const String&amp; value) { InternalWrite(value); }
+void Console::Write(const char* value) { InternalWrite(value); }</span>
+
+<span style = "background-color:#dfd">void Console::WriteLine() { InternalWriteLine(""); }</span>
+<span style = "background-color:#fdd">void Console::WriteLine(bool value) { InternalWriteLine(value ? "True" : "False"); }</span>
+<span style = "background-color:#dfd">void Console::WriteLine(Char value) { char buf[2] = { static_cast&lt;char&gt;(value.GetChar()), 0 }; InternalWriteLine(String(buf)); }
+void Console::WriteLine(double value) { InternalWriteLine(String(std::to_string(value).c_str())); }
+void Console::WriteLine(int value) { InternalWriteLine(String(std::to_string(value).c_str())); }
+void Console::WriteLine(long value) { InternalWriteLine(String(std::to_string(value).c_str())); }
+void Console::WriteLine(long long value) { InternalWriteLine(String(std::to_string(value).c_str())); }
+void Console::WriteLine(float value) { InternalWriteLine(String(std::to_string(value).c_str())); }
+void Console::WriteLine(const String&amp; value) { InternalWriteLine(value); }
+void Console::WriteLine(const char* value) { InternalWriteLine(String(value)); }</span>
+
+<span style = "background-color:#fdd">int Console::Read() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader-&gt;Read();</span>
+    }
+<span style = "background-color:#fdd">    return std::cin.get();
+}</span>
+
+<span style = "background-color:#dfd">String Console::ReadLine() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    if (s_pInReader) {
+        return s_pInReader-&gt;ReadLine();</span>
+    }
+<span style = "background-color:#dfd">    if (!s_inputs.empty()) {
+        String v = s_inputs.front();
+        s_inputs.erase(s_inputs.begin());
+        return v;</span>
+    }
+    
+<span style = "background-color:#fdd">    std::string line;
+    std::getline(std::cin, line);
+    return String(line.c_str());</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">int Console::GetCursorLeft() {</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return csbi.dwCursorPosition.X;</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return 0;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#fdd">void Console::SetCursorLeft(int left) {
+    SetCursorPosition(left, GetCursorTop());
+}</span>
+
+<span style = "background-color:#dfd">int Console::GetCursorTop() {</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return csbi.dwCursorPosition.Y;</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return 0;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#fdd">void Console::SetCursorTop(int top) {
+    SetCursorPosition(GetCursorLeft(), top);
+}</span>
+
+<span style = "background-color:#dfd">void Console::SetCursorPosition(int left, int top) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    COORD coord = { (SHORT)left, (SHORT)top };
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);</span>
+#else
+    // ANSI escape: \033[{row};{col}H (1-indexed)
+    std::cout &lt;&lt; "\033[" &lt;&lt; (top + 1) &lt;&lt; ";" &lt;&lt; (left + 1) &lt;&lt; "H" &lt;&lt; std::flush;
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">bool Console::GetCursorVisible() {</span>
+#if defined(_WIN32)
+    CONSOLE_CURSOR_INFO cci;
+<span style = "background-color:#dfd">    if (GetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;cci)) {
+        return cci.bVisible != FALSE;</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return true;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::SetCursorVisible(bool visible) {</span>
+#if defined(_WIN32)
+    CONSOLE_CURSOR_INFO cci;
+<span style = "background-color:#dfd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+    if (GetConsoleCursorInfo(hConsole, &amp;cci)) {</span>
+        cci.bVisible = visible;
+<span style = "background-color:#dfd">        SetConsoleCursorInfo(hConsole, &amp;cci);</span>
+    }
+#else
+    if (visible) std::cout &lt;&lt; "\033[?25h" &lt;&lt; std::flush;
+    else std::cout &lt;&lt; "\033[?25l" &lt;&lt; std::flush;
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#fdd">int Console::GetWindowHeight() {</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#fdd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return csbi.srWindow.Bottom - csbi.srWindow.Top + 1;</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return 25; // Standard fallback
+}</span>
+
+<span style = "background-color:#fdd">void Console::SetWindowHeight(int height) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);</span>
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#fdd">    if (GetConsoleScreenBufferInfo(hConsole, &amp;csbi)) {
+        SMALL_RECT rect = csbi.srWindow;</span>
+        rect.Bottom = rect.Top + (SHORT)height - 1;
+<span style = "background-color:#fdd">        SetConsoleWindowInfo(hConsole, TRUE, &amp;rect);</span>
+    }
+#endif
+<span style = "background-color:#fdd">}</span>
+
+<span style = "background-color:#dfd">int Console::GetWindowWidth() {</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return csbi.srWindow.Right - csbi.srWindow.Left + 1;</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return 80; // Standard fallback</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::SetWindowWidth(int width) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);</span>
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(hConsole, &amp;csbi)) {
+        SMALL_RECT rect = csbi.srWindow;</span>
+        rect.Right = rect.Left + (SHORT)width - 1;
+<span style = "background-color:#dfd">        SetConsoleWindowInfo(hConsole, TRUE, &amp;rect);</span>
+    }
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">bool Console::GetCapsLock() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    return (GetKeyState(VK_CAPITAL) &amp; 0x0001) != 0;</span>
+#endif
+    return false;
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">bool Console::GetNumberLock() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    return (GetKeyState(VK_NUMLOCK) &amp; 0x0001) != 0;</span>
+#endif
+    return false;
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">ConsoleColor Console::GetBackgroundColor() {
+    EnsureColorsInitialized();</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return (ConsoleColor)((csbi.wAttributes &amp; 0xF0) &gt;&gt; 4);</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return s_currentBack;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::SetBackgroundColor(ConsoleColor color) {
+    EnsureColorsInitialized();</span>
+    s_currentBack = color;
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);</span>
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(hConsole, &amp;csbi)) {
+        WORD attributes = (csbi.wAttributes &amp; 0xFF0F) | (((WORD)color &lt;&lt; 4) &amp; 0x00F0);
+        SetConsoleTextAttribute(hConsole, attributes);</span>
+    }
+#else
+    static const int ansiBack[] = { 40, 44, 42, 46, 41, 45, 43, 47, 100, 104, 102, 106, 101, 105, 103, 107 };
+    int idx = static_cast&lt;int&gt;(color);
+    if (idx &gt;= 0 &amp;&amp; idx &lt; 16) {
+        std::cout &lt;&lt; "\033[" &lt;&lt; ansiBack[idx] &lt;&lt; "m" &lt;&lt; std::flush;
+    }
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">ConsoleColor Console::GetForegroundColor() {
+    EnsureColorsInitialized();</span>
+#if defined(_WIN32)
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &amp;csbi)) {
+        return (ConsoleColor)(csbi.wAttributes &amp; 0x0F);</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return s_currentFore;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::SetForegroundColor(ConsoleColor color) {
+    EnsureColorsInitialized();</span>
+    s_currentFore = color;
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);</span>
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+<span style = "background-color:#dfd">    if (GetConsoleScreenBufferInfo(hConsole, &amp;csbi)) {
+        WORD attributes = (csbi.wAttributes &amp; 0xFFF0) | ((WORD)color &amp; 0x000F);
+        SetConsoleTextAttribute(hConsole, attributes);</span>
+    }
+#else
+    static const int ansiFore[] = { 30, 34, 32, 36, 31, 35, 33, 37, 90, 94, 92, 96, 91, 95, 93, 97 };
+    int idx = static_cast&lt;int&gt;(color);
+    if (idx &gt;= 0 &amp;&amp; idx &lt; 16) {
+        std::cout &lt;&lt; "\033[" &lt;&lt; ansiFore[idx] &lt;&lt; "m" &lt;&lt; std::flush;
+    }
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::ResetColor() {
+    EnsureColorsInitialized();
+    SetForegroundColor(s_defaultFore);
+    SetBackgroundColor(s_defaultBack);</span>
+#if !defined(_WIN32)
+    std::cout &lt;&lt; "\033[0m" &lt;&lt; std::flush;
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">String Console::GetTitle() {</span>
+#if defined(_WIN32)
+    wchar_t title[MAX_PATH];
+<span style = "background-color:#dfd">    if (GetConsoleTitleW(title, MAX_PATH)) {
+        return String(WCharToUtf8(title).c_str());</span>
+    }
+#endif
+<span style = "background-color:#fdd">    return s_consoleTitle;</span>
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#dfd">void Console::SetTitle(const String&amp; title) {
+    s_consoleTitle = title;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">    ::SetConsoleTitleW(Utf8ToWChar(title.GetRawString()).c_str());</span>
+#else
+    std::cout &lt;&lt; "\033]0;" &lt;&lt; title.GetRawString() &lt;&lt; "\007" &lt;&lt; std::flush;
+#endif
+<span style = "background-color:#dfd">}</span>
+
+<span style = "background-color:#fdd">void Console::Beep() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">    ::Beep(800, 200);</span>
+#else
+    std::cout &lt;&lt; "\a" &lt;&lt; std::flush;
+#endif
+}
+
+static void ClearConsoleScreenNative() {
+#if defined(_WIN32)
+    HANDLE h = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFO csbi;
+    DWORD count, cellCount;
+    COORD home = { 0, 0 };
+    if (GetConsoleScreenBufferInfo(h, &amp;csbi)) {
+        cellCount = csbi.dwSize.X * csbi.dwSize.Y;
+        FillConsoleOutputCharacterW(h, (wchar_t)' ', cellCount, home, &amp;count);
+        FillConsoleOutputAttribute(h, csbi.wAttributes, cellCount, home, &amp;count);
+        SetConsoleCursorPosition(h, home);
+    }
+#else
+    std::cout &lt;&lt; "\033[2J\033[1;1H" &lt;&lt; std::flush;
+#endif
+}
+
+<span style = "background-color:#dfd">void Console::Clear() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_outputs.clear();
+    s_inputs.clear();
+    s_accumulator = String("");
+    s_pOutWriter = nullptr;
+    s_pErrorWriter = nullptr;
+    s_pInReader = nullptr;
+    ClearConsoleScreenNative();
+}</span>
+
+<span style = "background-color:#dfd">void Console::SetOut(const SmartPointer&lt;IO::TextWriter&gt;&amp; pOutWriter) {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_pOutWriter = pOutWriter;
+}</span>
+
+<span style = "background-color:#dfd">void Console::SetError(const SmartPointer&lt;IO::TextWriter&gt;&amp; pErrorWriter) {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_pErrorWriter = pErrorWriter;
+}</span>
+
+<span style = "background-color:#dfd">void Console::SetIn(const SmartPointer&lt;IO::TextReader&gt;&amp; pInReader) {
+    if (!pInReader) {</span>
+<span style = "background-color:#fdd">        throw ArgumentException("pInReader cannot be null.");</span>
+    }
+<span style = "background-color:#dfd">    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_pInReader = pInReader;
+}</span>
+
+<span style = "background-color:#dfd">SmartPointer&lt;IO::TextWriter&gt; Console::Out() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    return s_pOutWriter;
+}</span>
+
+<span style = "background-color:#dfd">SmartPointer&lt;IO::TextWriter&gt; Console::Error() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    return s_pErrorWriter;
+}</span>
+
+<span style = "background-color:#dfd">SmartPointer&lt;IO::TextReader&gt; Console::In() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    return s_pInReader;
+}</span>
+
+<span style = "background-color:#dfd">void Console::SetIn(const String&amp; value) {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_inputs.push_back(value);
+}</span>
+
+<span style = "background-color:#fdd">void Console::ClearInputs() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lk(s_mutex);
+    s_inputs.clear();
+}</span>
+
+<span style = "background-color:#dfd">Array&lt;String&gt; Console::GetOutputs() {
+    std::lock_guard&lt;std::recursive_mutex&gt; lock(s_mutex);
+    Array&lt;String&gt; result((int)s_outputs.size());
+    for (int i = 0; i &lt; (int)s_outputs.size(); i++) result[i] = s_outputs[i];
+    return result;
+}</span></pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

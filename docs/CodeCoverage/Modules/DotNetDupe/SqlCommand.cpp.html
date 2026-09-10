@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>SqlCommand.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Data/SqlClient/SqlCommand.h"
+#include "System/Data/SqlClient/SqlConnection.h"
+#include "System/Data/SqlClient/SqlDataReader.h"
+#include "System/Data/Internal/DatabaseEngine.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Data {
+            namespace SqlClient {
+
+                struct SqlCommand::Impl {
+                    DotNetDupe::System::String m_sCommandText;
+                    DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt; m_parameters;
+                    SqlConnection* m_connection = nullptr;
+                };
+
+<span style = "background-color:#fdd">                SqlCommand::SqlCommand() : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                    m_pImpl-&gt;m_parameters = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt;::NewShared();
+                }</span>
+
+                SqlCommand::SqlCommand(const DotNetDupe::System::String&amp; sText, SqlConnection* connection)
+<span style = "background-color:#dfd">                    : m_pImpl(DotNetDupe::System::SmartPointer&lt;Impl&gt;::NewShared()) {
+                    m_pImpl-&gt;m_sCommandText = sText;
+                    m_pImpl-&gt;m_connection = connection;
+                    m_pImpl-&gt;m_parameters = DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt;::NewShared();
+                }</span>
+
+<span style = "background-color:#fdd">                SqlCommand::~SqlCommand() = default;</span>
+
+<span style = "background-color:#fdd">                DotNetDupe::System::String SqlCommand::GetCommandText() const {
+                    return m_pImpl-&gt;m_sCommandText;
+                }</span>
+
+<span style = "background-color:#dfd">                void SqlCommand::SetCommandText(const DotNetDupe::System::String&amp; sText) {
+                    m_pImpl-&gt;m_sCommandText = sText;</span>
+<span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt; SqlCommand::GetParameters() const {
+                    return m_pImpl-&gt;m_parameters;
+                }</span>
+
+<span style = "background-color:#dfd">                static Collections::Generic::Dictionary&lt;String, String&gt; ExtractDbParameters(const DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbParameterCollection&gt;&amp; pParams) {
+                    Collections::Generic::Dictionary&lt;String, String&gt; dict;
+                    for (int i = 0; i &lt; pParams-&gt;GetCount(); ++i) {
+                        auto p = pParams-&gt;GetAt(i);
+                        dict.Add(p-&gt;GetParameterName(), p-&gt;GetValue());
+                    }
+                    return dict;
+                }</span>
+
+<span style = "background-color:#dfd">                DotNetDupe::System::SmartPointer&lt;DotNetDupe::System::Data::Common::DbDataReader&gt; SqlCommand::ExecuteReader() {
+                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();
+                    auto params = ExtractDbParameters(m_pImpl-&gt;m_parameters);
+                    Collections::Generic::List&lt;String&gt; columns;
+                    int rowsAffected = 0;
+                    auto resultRows = DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl-&gt;m_sCommandText, params, columns, rowsAffected);
+                    return DotNetDupe::System::SmartPointer&lt;SqlDataReader&gt;::NewShared(std::move(resultRows), std::move(columns));
+                }</span>
+
+<span style = "background-color:#dfd">                int SqlCommand::ExecuteNonQuery() {
+                    DotNetDupe::System::String dbName = (m_pImpl-&gt;m_connection == nullptr) ? DotNetDupe::System::String("DefaultDb") : m_pImpl-&gt;m_connection-&gt;GetDatabaseName();
+                    auto params = ExtractDbParameters(m_pImpl-&gt;m_parameters);
+                    Collections::Generic::List&lt;String&gt; columns;
+                    int rowsAffected = 0;
+                    DotNetDupe::System::Data::Internal::DatabaseEngine::Instance().Execute(dbName, m_pImpl-&gt;m_sCommandText, params, columns, rowsAffected);
+                    return rowsAffected;
+                }</span>
+
+<span style = "background-color:#fdd">                DotNetDupe::System::String SqlCommand::ExecuteScalar() {
+                    auto reader = ExecuteReader();
+                    if (reader-&gt;Read()) {
+                        return reader-&gt;GetString(0);</span>
+                    }
+<span style = "background-color:#fdd">                    return "";
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

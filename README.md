@@ -3,8 +3,8 @@
 <!-- Dynamic Repository Badges -->
 [![Build Status](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&style=flat-square&logo=github)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml)
 [![CodeQL Security](https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&style=flat-square&logo=github&label=CodeQL)](https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml)
-[![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](CodeCoverage/index.html)
-[![API Docs](https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&logo=doxygen)](docs/index.html)
+[![Coverage](https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&logo=googlechrome)](https://sudheeshps.github.io/dotnetdupe/CodeCoverage/index.html)
+[![API Docs](https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&logo=doxygen)](https://sudheeshps.github.io/dotnetdupe/)
 [![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue)](https://www.nuget.org/packages/DotNetDupe)
 [![Language](https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&logo=cplusplus)](https://en.cppreference.com/w/cpp/20)
 [![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&logo=linux)](https://github.com/sudheeshps/DotNetDupe#cross-platform-support-)
@@ -163,7 +163,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.6.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.7.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -295,7 +295,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.6.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.7.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -305,9 +305,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.6.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.4.0.7.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.6.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.7.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -734,7 +734,7 @@ void AccessDatabase() {
 
 ## STL vs DotNetDupe Comparison ⚖️
 
-DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the [Interactive Documentation Portal](docs/index.html).
+DotNetDupe is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the [Interactive Documentation Portal](https://sudheeshps.github.io/dotnetdupe/).
 
 ### Sample Client and Test Code 🧪
 
@@ -744,7 +744,7 @@ The repository includes `DotNetDupeDemo` (a sample console application) and `Dot
 
 DotNetDupe provides comprehensive documentation through an interactive portal:
 
-* 🌐 **[Interactive Documentation Portal](docs/index.html)**: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.
+* 🌐 **[Interactive Documentation Portal](https://sudheeshps.github.io/dotnetdupe/)**: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.
 
 > [!TIP]
 > **Generating API Documentation Locally**:
@@ -753,7 +753,7 @@ DotNetDupe provides comprehensive documentation through an interactive portal:
 > powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1 -OpenBrowser
 > ```
 
-For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:
+For detailed information on the available classes, methods, and their usage, please refer to the comprehensive [API documentation](https://sudheeshps.github.io/dotnetdupe/) for each class:
 
 > [!TIP]
 > **Navigation**: Click any **Class Name** to inspect its C++ header interface, or click **📖** to open its generated Doxygen API reference.

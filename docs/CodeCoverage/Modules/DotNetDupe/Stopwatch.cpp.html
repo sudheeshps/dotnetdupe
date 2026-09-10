@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Stopwatch.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Diagnostics/Stopwatch.h"
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#else
+#include &lt;chrono&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Diagnostics {
+
+<span style = "background-color:#dfd">            const long long Stopwatch::Frequency = []() {</span>
+#if defined(_WIN32)
+                LARGE_INTEGER li;
+                QueryPerformanceFrequency(&amp;li);
+                return li.QuadPart;
+#else
+                return 1000000000LL; // Nanoseconds
+#endif
+<span style = "background-color:#dfd">            }();</span>
+
+            const bool Stopwatch::IsHighResolution = true;
+
+            struct Stopwatch::Impl {
+                TimeProviderPtr timeProvider;
+                long long elapsedTicks;
+                long long startTimeStamp;
+                bool isRunning;
+            };
+
+<span style = "background-color:#fdd">            Stopwatch::Stopwatch() : Stopwatch(TimeProvider::GetSystem()) {}</span>
+
+            Stopwatch::Stopwatch(const TimeProviderPtr&amp; timeProvider)
+<span style = "background-color:#dfd">                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared()) {
+                m_pImpl-&gt;timeProvider = timeProvider;
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;startTimeStamp = 0;
+                m_pImpl-&gt;isRunning = false;
+            }</span>
+
+<span style = "background-color:#dfd">            Stopwatch::~Stopwatch() = default;</span>
+
+<span style = "background-color:#dfd">            void Stopwatch::Start() {
+                if (!m_pImpl-&gt;isRunning) {
+                    m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                    m_pImpl-&gt;isRunning = true;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void Stopwatch::Stop() {
+                if (m_pImpl-&gt;isRunning) {
+                    long long endTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                    m_pImpl-&gt;elapsedTicks += (endTimeStamp - m_pImpl-&gt;startTimeStamp);
+                    m_pImpl-&gt;isRunning = false;</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            void Stopwatch::Reset() {
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;isRunning = false;
+                m_pImpl-&gt;startTimeStamp = 0;
+            }</span>
+
+<span style = "background-color:#dfd">            void Stopwatch::Restart() {
+                m_pImpl-&gt;elapsedTicks = 0;
+                m_pImpl-&gt;startTimeStamp = m_pImpl-&gt;timeProvider-&gt;GetTimestamp();
+                m_pImpl-&gt;isRunning = true;
+            }</span>
+
+<span style = "background-color:#dfd">            bool Stopwatch::IsRunning() const {
+                return m_pImpl-&gt;isRunning;
+            }</span>
+
+<span style = "background-color:#dfd">            TimeSpan Stopwatch::Elapsed() const {
+                return m_pImpl-&gt;timeProvider-&gt;GetElapsedTime(0, GetRawElapsedTicks());
+            }</span>
+
+<span style = "background-color:#fdd">            long long Stopwatch::ElapsedMilliseconds() const {
+                return (long long)Elapsed().GetTotalMilliseconds();
+            }</span>
+
+<span style = "background-color:#dfd">            long long Stopwatch::ElapsedTicks() const {
+                return (long long)Elapsed().GetTicks();
+            }</span>
+
+            long long Stopwatch::GetRawElapsedTicks() const {
+                long long elapsed = m_pImpl-&gt;elapsedTicks;
+                if (m_pImpl-&gt;isRunning) {
+                    elapsed += (m_pImpl-&gt;timeProvider-&gt;GetTimestamp() - m_pImpl-&gt;startTimeStamp);
+                }
+                return elapsed;
+            }
+
+<span style = "background-color:#dfd">            Stopwatch Stopwatch::StartNew() {
+                Stopwatch sw;
+                sw.Start();</span>
+                return sw;
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            Stopwatch Stopwatch::StartNew(const TimeProviderPtr&amp; timeProvider) {
+                Stopwatch sw(timeProvider);
+                sw.Start();</span>
+                return sw;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            long long Stopwatch::GetTimestamp() {</span>
+#if defined(_WIN32)
+                LARGE_INTEGER li;
+<span style = "background-color:#dfd">                QueryPerformanceCounter(&amp;li);
+                return li.QuadPart;</span>
+#else
+                auto now = std::chrono::steady_clock::now();
+                return std::chrono::duration_cast&lt;std::chrono::nanoseconds&gt;(now.time_since_epoch()).count();
+#endif
+<span style = "background-color:#dfd">            }</span>
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

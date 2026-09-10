@@ -1,0 +1,207 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>LoggerConfiguration.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/LoggerConfiguration.h"
+#include "System/IO/File.h"
+#include "System/IOException.h"
+#include "System/ArgumentException.h"
+#include "System/Text/Json/JsonSerializer.h"
+#include "System/Text/Json/JsonException.h"
+
+namespace {
+    using namespace DotNetDupe::System;
+    using namespace DotNetDupe::System::Text::Json;
+
+<span style = "background-color:#dfd">    bool TryGetPropertyCaseInsensitive(const JsonElement&amp; element, const String&amp; targetName, JsonElement&amp; outProp) {
+        if (element.TryGetProperty(targetName, outProp)) {
+            return true;</span>
+        }
+
+<span style = "background-color:#dfd">        auto normalize = [](const String&amp; s) {
+            String lower = s.ToLower();
+            const char* raw = lower.GetRawString();
+            std::string cleaned;
+            if (raw) {
+                for (int i = 0; raw[i] != '\0'; ++i) {
+                    if (raw[i] != '_') {
+                        cleaned += raw[i];</span>
+                    }
+                }
+            }
+<span style = "background-color:#dfd">            return String(cleaned.c_str());
+        };</span>
+
+<span style = "background-color:#dfd">        String targetNormalized = normalize(targetName);</span>
+
+<span style = "background-color:#dfd">        auto propNames = element.GetPropertyNames();
+        for (int i = 0; i &lt; propNames.GetLength(); ++i) {
+            if (normalize(propNames[i]) == targetNormalized) {
+                return element.TryGetProperty(propNames[i], outProp);</span>
+            }
+        }
+<span style = "background-color:#dfd">        return false;
+    }</span>
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Text {
+            namespace Json {
+
+                template &lt;&gt;
+                struct JsonConverter&lt;DotNetDupe::Extensions::Logging::FileRolloverConfig&gt; {
+                    static JsonElement Write(const DotNetDupe::Extensions::Logging::FileRolloverConfig&amp; value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        obj.SetProperty("EnableRollover", JsonConverter&lt;bool&gt;::Write(value.EnableRollover));
+                        obj.SetProperty("MaxFileSizeInBytes", JsonConverter&lt;long long&gt;::Write(value.MaxFileSizeInBytes));
+                        obj.SetProperty("MaxBackupFiles", JsonConverter&lt;int&gt;::Write(value.MaxBackupFiles));
+                        return obj;
+                    }
+
+<span style = "background-color:#dfd">                    static DotNetDupe::Extensions::Logging::FileRolloverConfig Read(const JsonElement&amp; element) {
+                        if (element.GetValueKind() != JsonValueKind::Object) {</span>
+<span style = "background-color:#fdd">                            throw JsonException("Expected a JSON object for FileRolloverConfig");</span>
+                        }
+                        DotNetDupe::Extensions::Logging::FileRolloverConfig config;
+<span style = "background-color:#dfd">                        JsonElement prop;
+                        if (TryGetPropertyCaseInsensitive(element, "EnableRollover", prop)) {
+                            config.EnableRollover = JsonConverter&lt;bool&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "MaxFileSizeInBytes", prop)) {
+                            config.MaxFileSizeInBytes = JsonConverter&lt;long long&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "MaxBackupFiles", prop)) {
+                            config.MaxBackupFiles = JsonConverter&lt;int&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        return config;
+                    }</span>
+                };
+
+                template &lt;&gt;
+                struct JsonConverter&lt;DotNetDupe::Extensions::Logging::LoggerConfiguration&gt; {
+                    static JsonElement Write(const DotNetDupe::Extensions::Logging::LoggerConfiguration&amp; value) {
+                        JsonElement obj(JsonValueKind::Object);
+                        String minLevelStr;
+                        switch (value.MinLevel) {
+                            case DotNetDupe::Extensions::Logging::LogLevel::Trace: minLevelStr = "Trace"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::Debug: minLevelStr = "Debug"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::Information: minLevelStr = "Information"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::Warning: minLevelStr = "Warning"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::Error: minLevelStr = "Error"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::Critical: minLevelStr = "Critical"; break;
+                            case DotNetDupe::Extensions::Logging::LogLevel::None: minLevelStr = "None"; break;
+                            default: minLevelStr = "Information"; break;
+                        }
+                        obj.SetProperty("MinLevel", JsonConverter&lt;String&gt;::Write(minLevelStr));
+                        obj.SetProperty("IsJsonFormat", JsonConverter&lt;bool&gt;::Write(value.IsJsonFormat));
+                        obj.SetProperty("PlainTextFormat", JsonConverter&lt;String&gt;::Write(value.PlainTextFormat));
+                        obj.SetProperty("TimestampFormat", JsonConverter&lt;String&gt;::Write(value.TimestampFormat));
+                        obj.SetProperty("FilePath", JsonConverter&lt;String&gt;::Write(value.FilePath));
+                        obj.SetProperty("Rollover", JsonConverter&lt;DotNetDupe::Extensions::Logging::FileRolloverConfig&gt;::Write(value.Rollover));
+                        return obj;
+                    }
+
+<span style = "background-color:#dfd">                    static DotNetDupe::Extensions::Logging::LoggerConfiguration Read(const JsonElement&amp; element) {
+                        if (element.GetValueKind() != JsonValueKind::Object) {</span>
+<span style = "background-color:#fdd">                            throw JsonException("Expected a JSON object for LoggerConfiguration");</span>
+                        }
+<span style = "background-color:#dfd">                        DotNetDupe::Extensions::Logging::LoggerConfiguration config;
+                        JsonElement prop;
+                        if (TryGetPropertyCaseInsensitive(element, "MinLevel", prop)) {
+                            if (prop.GetValueKind() == JsonValueKind::Number) {
+                                int val = JsonConverter&lt;int&gt;::Read(prop);
+                                config.MinLevel = static_cast&lt;DotNetDupe::Extensions::Logging::LogLevel&gt;(val);
+                            } else if (prop.GetValueKind() == JsonValueKind::String) {
+                                config.MinLevel = DotNetDupe::Extensions::Logging::ParseLogLevel(JsonConverter&lt;String&gt;::Read(prop));
+                            } else {</span>
+<span style = "background-color:#fdd">                                throw JsonException("Invalid type for MinLevel in LoggerConfiguration");</span>
+                            }
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "IsJsonFormat", prop)) {
+                            config.IsJsonFormat = JsonConverter&lt;bool&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "PlainTextFormat", prop)) {
+                            config.PlainTextFormat = JsonConverter&lt;String&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "TimestampFormat", prop)) {
+                            config.TimestampFormat = JsonConverter&lt;String&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "FilePath", prop)) {
+                            config.FilePath = JsonConverter&lt;String&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        if (TryGetPropertyCaseInsensitive(element, "Rollover", prop)) {
+                            config.Rollover = JsonConverter&lt;DotNetDupe::Extensions::Logging::FileRolloverConfig&gt;::Read(prop);</span>
+                        }
+<span style = "background-color:#dfd">                        return config;
+                    }</span>
+                };
+
+            }
+        }
+    }
+}
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+<span style = "background-color:#dfd">            LogLevel ParseLogLevel(const DotNetDupe::System::String&amp; str) {
+                DotNetDupe::System::String lower = str.ToLower();
+                if (lower == "trace") return LogLevel::Trace;
+                if (lower == "debug") return LogLevel::Debug;
+                if (lower == "information" || lower == "info") return LogLevel::Information;
+                if (lower == "warning" || lower == "warn") return LogLevel::Warning;
+                if (lower == "error") return LogLevel::Error;
+                if (lower == "critical") return LogLevel::Critical;
+                if (lower == "none") return LogLevel::None;</span>
+
+<span style = "background-color:#dfd">                if (lower == "0") return LogLevel::Trace;
+                if (lower == "1") return LogLevel::Debug;
+                if (lower == "2") return LogLevel::Information;
+                if (lower == "3") return LogLevel::Warning;
+                if (lower == "4") return LogLevel::Error;
+                if (lower == "5") return LogLevel::Critical;
+                if (lower == "6") return LogLevel::None;</span>
+
+<span style = "background-color:#dfd">                throw DotNetDupe::System::ArgumentException("Invalid LogLevel value");
+            }</span>
+
+<span style = "background-color:#dfd">            LoggerConfiguration LoggerConfiguration::LoadFromFile(const DotNetDupe::System::String&amp; filePath) {
+                if (!DotNetDupe::System::IO::File::Exists(filePath)) {
+                    throw DotNetDupe::System::IO::IOException("File does not exist");</span>
+                }
+<span style = "background-color:#dfd">                DotNetDupe::System::String jsonContent = DotNetDupe::System::IO::File::ReadAllText(filePath);
+                return LoadFromJson(jsonContent);
+            }</span>
+
+<span style = "background-color:#dfd">            LoggerConfiguration LoggerConfiguration::LoadFromJson(const DotNetDupe::System::String&amp; jsonContent) {
+                return DotNetDupe::System::Text::Json::JsonSerializer::Deserialize&lt;LoggerConfiguration&gt;(jsonContent);
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

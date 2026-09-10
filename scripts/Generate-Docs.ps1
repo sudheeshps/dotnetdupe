@@ -74,7 +74,7 @@ if ([string]::IsNullOrWhitespace($Version)) {
 
     # 4. Default fallback
     if ([string]::IsNullOrWhitespace($Version)) {
-        $Version = "4.0.6"
+        $Version = "4.0.7"
     }
 }
 

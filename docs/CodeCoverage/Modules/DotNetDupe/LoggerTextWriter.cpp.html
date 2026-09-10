@@ -1,0 +1,131 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>LoggerTextWriter.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "Extensions/Logging/LoggerTextWriter.h"
+#include "Extensions/Logging/LogManager.h"
+#include "System/Text/TextEncoding.h"
+
+namespace DotNetDupe {
+    namespace Extensions {
+        namespace Logging {
+
+            LoggerTextWriter::LoggerTextWriter(const DotNetDupe::System::String&amp; sCategoryName, LogLevel logLevel)
+<span style = "background-color:#dfd">                : m_pLogger(LogManager::GetLogger(sCategoryName)), m_logLevel(logLevel) {
+            }</span>
+
+            LoggerTextWriter::LoggerTextWriter(const DotNetDupe::System::SmartPointer&lt;ILogger&gt;&amp; pLogger, LogLevel logLevel)
+<span style = "background-color:#fdd">                : m_pLogger(pLogger), m_logLevel(logLevel) {
+            }</span>
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::Close() {
+            }</span>
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::Dispose() {
+            }</span>
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::Flush() {
+            }</span>
+
+<span style = "background-color:#fdd">            System::Text::EncodingPtr LoggerTextWriter::GetEncoding() const {
+                return DotNetDupe::System::Text::TextEncoding::UTF8();
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(bool bValue) {
+                Write(DotNetDupe::System::String::Format("{0}", bValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(char chValue) {
+                Write(DotNetDupe::System::String::Format("{0}", chValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(const char* pValue) {
+                if (pValue) {
+                    Write(DotNetDupe::System::String(pValue));</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::Write(const DotNetDupe::System::String&amp; sValue) {
+                if (!sValue.IsEmpty() &amp;&amp; !m_pLogger.IsNull()) {
+                    m_pLogger-&gt;Log(m_logLevel, sValue);</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(int iValue) {
+                Write(DotNetDupe::System::String::Format("{0}", iValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(long long llValue) {
+                Write(DotNetDupe::System::String::Format("{0}", llValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(float fValue) {
+                Write(DotNetDupe::System::String::Format("{0}", fValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::Write(double dValue) {
+                Write(DotNetDupe::System::String::Format("{0}", dValue));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine() {
+                Write(DotNetDupe::System::String(""));
+            }</span>
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(bool bValue) {
+                Write(bValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(char chValue) {
+                Write(chValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(const char* pValue) {
+                Write(pValue);</span>
+            }
+
+<span style = "background-color:#dfd">            void LoggerTextWriter::WriteLine(const DotNetDupe::System::String&amp; sValue) {
+                Write(sValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(int iValue) {
+                Write(iValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(long long llValue) {
+                Write(llValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(float fValue) {
+                Write(fValue);</span>
+            }
+
+<span style = "background-color:#fdd">            void LoggerTextWriter::WriteLine(double dValue) {
+                Write(dValue);</span>
+            }
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

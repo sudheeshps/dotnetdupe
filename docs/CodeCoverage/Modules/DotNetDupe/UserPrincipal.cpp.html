@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>UserPrincipal.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Security/Principal/UserPrincipal.h"
+#include "System/ArgumentException.h"
+#include "System/UnauthorizedAccessException.h"
+
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#include &lt;lm.h&gt;
+#include &lt;sddl.h&gt;
+#include "Win32Internal.h"
+#include "System/ComponentModel/Win32Exception.h"
+#pragma comment(lib, "netapi32.lib")
+#pragma comment(lib, "advapi32.lib")
+using namespace DotNetDupe::System::Internal;
+#else
+#include &lt;pwd.h&gt;
+#include &lt;grp.h&gt;
+#include &lt;sys/types.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;cerrno&gt;
+#include "System/SystemException.h"
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Security {
+            namespace Principal {
+
+<span style = "background-color:#fdd">                UserPrincipal::UserPrincipal() {
+                }</span>
+
+<span style = "background-color:#fdd">                UserPrincipal::~UserPrincipal() {
+                }</span>
+
+#if defined(_WIN32)
+                static UserClass ClassifyWindowsUser(DWORD dwPriv, DWORD dwFlags) {
+                    if (dwFlags &amp; UF_ACCOUNTDISABLE) return UserClass::Guest;
+                    if (dwPriv == USER_PRIV_ADMIN) return UserClass::Admin;
+                    if (dwPriv == USER_PRIV_GUEST) return UserClass::Guest;
+                    return UserClass::Normal;
+                }
+
+<span style = "background-color:#dfd">                static void PopulateWin32UserGroups(LPCWSTR pwszUser, Collections::Generic::List&lt;String&gt;&amp; lstGroups, Collections::Generic::List&lt;String&gt;&amp; lstPermissions) {
+                    LPGROUP_USERS_INFO_0 pGroups = NULL;
+                    DWORD dwEntriesRead = 0, dwTotalEntries = 0;</span>
+
+<span style = "background-color:#dfd">                    NET_API_STATUS nStatus = ::NetUserGetGroups(NULL, pwszUser, 0, (LPBYTE*)&amp;pGroups, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries);
+                    if (nStatus == ERROR_ACCESS_DENIED) {</span>
+<span style = "background-color:#fdd">                        throw UnauthorizedAccessException("Access denied querying user groups. Administrator privileges required.");</span>
+                    }
+
+<span style = "background-color:#dfd">                    if (nStatus == NERR_Success) {
+                        for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
+                            std::string sGroup = StringConvertInternal::WCharToUtf8(pGroups[i].grui0_name);
+                            lstPermissions.Add(String("GroupMember:") + sGroup.c_str());
+                            lstGroups.Add(sGroup.c_str());
+                        }
+                        ::NetApiBufferFree(pGroups);</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                static void PopulateWin32SidAndDomain(LPCWSTR pwszUser, UserInfo&amp; info) {</span>
+                    BYTE sidBuffer[SECURITY_MAX_SID_SIZE];
+<span style = "background-color:#dfd">                    DWORD cbSid = sizeof(sidBuffer);
+                    WCHAR szDomain[256] = { 0 };
+                    DWORD cchDomain = 256;</span>
+                    SID_NAME_USE peUse;
+
+<span style = "background-color:#dfd">                    if (::LookupAccountNameW(NULL, pwszUser, (PSID)sidBuffer, &amp;cbSid, szDomain, &amp;cchDomain, &amp;peUse)) {
+                        LPWSTR pszStringSid = NULL;
+                        if (::ConvertSidToStringSidW((PSID)sidBuffer, &amp;pszStringSid)) {
+                            info.sSidOrUid = StringConvertInternal::WCharToUtf8(pszStringSid).c_str();
+                            ::LocalFree(pszStringSid);</span>
+                        }
+<span style = "background-color:#dfd">                        if (cchDomain &gt; 0) {
+                            info.sDomain = StringConvertInternal::WCharToUtf8(szDomain).c_str();</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                static UserInfo BuildWin32UserInfo(const USER_INFO_1* pUi) {
+                    UserInfo info;
+                    std::string sName = StringConvertInternal::WCharToUtf8(pUi-&gt;usri1_name);
+                    info.sUsername = sName.c_str();</span>
+
+<span style = "background-color:#dfd">                    info.sDomain = "LOCAL";
+                    info.sSidOrUid = "S-1-5-21-USER";
+                    info.eUserClass = ClassifyWindowsUser(pUi-&gt;usri1_priv, pUi-&gt;usri1_flags);
+                    info.bIsDisabled = (pUi-&gt;usri1_flags &amp; UF_ACCOUNTDISABLE) != 0;
+                    info.bIsPasswordRequired = (pUi-&gt;usri1_flags &amp; UF_PASSWD_NOTREQD) == 0;
+                    info.bIsAccountLocked = (pUi-&gt;usri1_flags &amp; UF_LOCKOUT) != 0;</span>
+
+<span style = "background-color:#dfd">                    if (info.eUserClass == UserClass::Admin) {
+                        info.lstPermissions.Add("AdministratorRights");
+                        info.lstPermissions.Add("FullControl");
+                    } else {
+                        info.lstPermissions.Add("StandardUserRights");</span>
+                    }
+
+<span style = "background-color:#dfd">                    PopulateWin32SidAndDomain(pUi-&gt;usri1_name, info);
+                    PopulateWin32UserGroups(pUi-&gt;usri1_name, info.lstGroups, info.lstPermissions);
+                    return info;
+                }</span>
+
+                static void EnumerateWin32Users(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    LPUSER_INFO_1 pBuf = NULL;
+                    DWORD dwEntriesRead = 0, dwTotalEntries = 0, dwResumeHandle = 0;
+
+                    NET_API_STATUS nStatus = ::NetUserEnum(NULL, 1, FILTER_NORMAL_ACCOUNT, (LPBYTE*)&amp;pBuf, MAX_PREFERRED_LENGTH, &amp;dwEntriesRead, &amp;dwTotalEntries, &amp;dwResumeHandle);
+                    if (nStatus == ERROR_ACCESS_DENIED) {
+                        throw UnauthorizedAccessException("Access denied enumerating user accounts. Administrator privileges required.");
+                    }
+
+                    if (nStatus == NERR_Success || nStatus == ERROR_MORE_DATA) {
+                        for (DWORD i = 0; i &lt; dwEntriesRead; i++) {
+                            lstUsers.Add(BuildWin32UserInfo(&amp;pBuf[i]));
+                        }
+                    }
+
+                    if (pBuf != NULL) {
+                        ::NetApiBufferFree(pBuf);
+                    }
+                }
+#else
+                static UserInfo BuildLinuxUserInfo(const struct passwd* pw) {
+                    UserInfo info;
+                    info.sUsername = pw-&gt;pw_name;
+                    info.sDomain = "LOCAL";
+                    info.sSidOrUid = std::to_string(pw-&gt;pw_uid).c_str();
+                    info.bIsDisabled = false;
+                    info.bIsPasswordRequired = true;
+                    info.bIsAccountLocked = false;
+
+                    if (pw-&gt;pw_uid == 0) {
+                        info.eUserClass = UserClass::Admin;
+                        info.lstPermissions.Add("RootPrivileges");
+                        info.lstPermissions.Add("FullControl");
+                    } else if (pw-&gt;pw_uid &lt; 1000) {
+                        info.eUserClass = UserClass::System;
+                        info.lstPermissions.Add("SystemDaemonRights");
+                    } else {
+                        info.eUserClass = UserClass::Normal;
+                        info.lstPermissions.Add("StandardUserRights");
+                    }
+
+                    return info;
+                }
+
+                static void EnumerateLinuxUsers(Collections::Generic::List&lt;UserInfo&gt;&amp; lstUsers) {
+                    errno = 0;
+                    setpwent();
+                    struct passwd* pw;
+                    while ((pw = getpwent()) != NULL) {
+                        lstUsers.Add(BuildLinuxUserInfo(pw));
+                    }
+                    if (errno == EACCES || errno == EPERM) {
+                        endpwent();
+                        throw UnauthorizedAccessException("Access denied enumerating user accounts. Root privileges required.");
+                    }
+                    endpwent();
+                }
+#endif
+
+<span style = "background-color:#dfd">                Collections::Generic::List&lt;UserInfo&gt; UserPrincipal::EnumerateUsers() {
+                    Collections::Generic::List&lt;UserInfo&gt; lstUsers;</span>
+
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                    EnumerateWin32Users(lstUsers);</span>
+#else
+                    EnumerateLinuxUsers(lstUsers);
+#endif
+
+<span style = "background-color:#dfd">                    return lstUsers;
+                }</span>
+
+#if defined(_WIN32)
+                static UserInfo QueryWin32User(const String&amp; sUsername) {
+                    std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
+                    LPUSER_INFO_1 pBuf = NULL;
+                    NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&amp;pBuf);
+                    if (nStatus == NERR_Success &amp;&amp; pBuf != NULL) {
+                        UserInfo info = BuildWin32UserInfo(pBuf);
+                        ::NetApiBufferFree(pBuf);
+                        return info;
+                    }
+                    if (nStatus == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) throw ArgumentException("User not found: " + sUsername);
+                    throw ComponentModel::Win32Exception(nStatus, "Failed to query user information for: " + sUsername);
+                }
+
+                static std::string GetCurrentWin32UserName() {
+                    WCHAR szName[256] = { 0 };
+                    DWORD dwSize = 256;
+                    if (!::GetUserNameW(szName, &amp;dwSize)) {
+                        DWORD dwErr = ::GetLastError();
+                        if (dwErr == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying current user name.");
+                        throw ComponentModel::Win32Exception(dwErr, "Failed to get current user name.");
+                    }
+                    return StringConvertInternal::WCharToUtf8(szName);
+                }
+#else
+                static UserInfo QueryLinuxUser(const String&amp; sUsername) {
+                    errno = 0;
+                    struct passwd* pw = getpwnam(sUsername.GetRawString());
+                    if (pw == NULL) {
+                        if (errno == EACCES || errno == EPERM) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                        throw ArgumentException("User not found: " + sUsername);
+                    }
+                    return BuildLinuxUserInfo(pw);
+                }
+
+                static UserInfo QueryCurrentLinuxUser() {
+                    errno = 0;
+                    struct passwd* pw = getpwuid(getuid());
+                    if (pw == NULL) {
+                        if (errno == EACCES || errno == EPERM) throw UnauthorizedAccessException("Access denied querying current user information.");
+                        throw SystemException("Failed to query current user information.");
+                    }
+                    return BuildLinuxUserInfo(pw);
+                }
+#endif
+
+<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetUser(const String&amp; sUsername) {
+                    if (sUsername.IsEmpty()) throw ArgumentException("Username cannot be empty.");</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                    return QueryWin32User(sUsername);</span>
+#else
+                    return QueryLinuxUser(sUsername);
+#endif
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                UserInfo UserPrincipal::GetCurrent() {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                    return GetUser(GetCurrentWin32UserName().c_str());</span>
+#else
+                    return QueryCurrentLinuxUser();
+#endif
+<span style = "background-color:#dfd">                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>WebApplicationRouting.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;utility&gt;
+
+namespace DotNetDupe {
+    namespace WebAppCore {
+        namespace Builder {
+            namespace Internal {
+
+<span style = "background-color:#dfd">                std::vector&lt;std::string&gt; GetPathSegments(const std::string&amp; path) {
+                    std::vector&lt;std::string&gt; segments;
+                    std::string segment;</span>
+
+<span style = "background-color:#dfd">                    for (char c : path) {
+                        if (c == '/') {
+                            if (!segment.empty()) {
+                                segments.push_back(segment);
+                                segment.clear();</span>
+                            }
+<span style = "background-color:#dfd">                        } else {
+                            segment += c;</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    if (!segment.empty()) {
+                        segments.push_back(segment);</span>
+                    }
+
+<span style = "background-color:#dfd">                    return segments;
+                }</span>
+
+<span style = "background-color:#dfd">                bool MatchCatchAllRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
+                    size_t fixedCount = patternSegs.size() - 1;
+                    if (pathSegs.size() &lt; fixedCount) {</span>
+                        return false;
+                    }
+
+<span style = "background-color:#dfd">                    for (size_t i = 0; i &lt; fixedCount; ++i) {</span>
+<span style = "background-color:#fdd">                        const std::string&amp; patternSeg = patternSegs[i];
+                        const std::string&amp; pathSeg = pathSegs[i];
+                        if (patternSeg.length() &gt;= 2 &amp;&amp; patternSeg.front() == '{' &amp;&amp; patternSeg.back() == '}') {
+                            std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
+                            extractedParams.push_back({paramName, pathSeg});
+                        } else if (patternSeg != pathSeg) {
+                            return false;</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    std::string catchAllName = patternSegs.back().substr(2, patternSegs.back().length() - 3);
+                    std::string restPath;
+                    for (size_t i = fixedCount; i &lt; pathSegs.size(); ++i) {
+                        if (!restPath.empty()) {</span>
+<span style = "background-color:#fdd">                            restPath += "/";</span>
+                        }
+<span style = "background-color:#dfd">                        restPath += pathSegs[i];</span>
+                    }
+
+<span style = "background-color:#dfd">                    extractedParams.push_back({catchAllName, restPath});
+                    return true;
+                }</span>
+
+<span style = "background-color:#dfd">                bool MatchStandardRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
+                    if (patternSegs.size() != pathSegs.size()) {</span>
+                        return false;
+                    }
+
+<span style = "background-color:#dfd">                    for (size_t i = 0; i &lt; patternSegs.size(); ++i) {
+                        const std::string&amp; patternSeg = patternSegs[i];
+                        const std::string&amp; pathSeg = pathSegs[i];
+                        if (patternSeg.length() &gt;= 2 &amp;&amp; patternSeg.front() == '{' &amp;&amp; patternSeg.back() == '}') {
+                            std::string paramName = patternSeg.substr(1, patternSeg.length() - 2);
+                            extractedParams.push_back({paramName, pathSeg});
+                        } else if (patternSeg != pathSeg) {
+                            return false;</span>
+                        }
+                    }
+
+<span style = "background-color:#dfd">                    return true;
+                }</span>
+
+                bool MatchRoute(const std::vector&lt;std::string&gt;&amp; patternSegs, const std::vector&lt;std::string&gt;&amp; pathSegs, std::vector&lt;std::pair&lt;std::string, std::string&gt;&gt;&amp; extractedParams) {
+                    if (!patternSegs.empty() &amp;&amp; patternSegs.back().length() &gt;= 3 &amp;&amp; patternSegs.back().front() == '{' &amp;&amp; patternSegs.back()[1] == '*' &amp;&amp; patternSegs.back().back() == '}') {
+                        return MatchCatchAllRoute(patternSegs, pathSegs, extractedParams);
+                    }
+
+                    return MatchStandardRoute(patternSegs, pathSegs, extractedParams);
+                }
+
+<span style = "background-color:#dfd">                void ParseServerUrl(const std::string&amp; sUrl, std::string&amp; host, int&amp; port) {
+                    host = "127.0.0.1";
+                    port = 5000;</span>
+
+<span style = "background-color:#dfd">                    size_t protocolPos = sUrl.find("://");
+                    std::string hostPort = (protocolPos != std::string::npos) ? sUrl.substr(protocolPos + 3) : sUrl;</span>
+
+<span style = "background-color:#dfd">                    size_t colonPos = hostPort.find(':');</span>
+<span style = "background-color:#fdd">                    if (colonPos != std::string::npos) {</span>
+<span style = "background-color:#dfd">                        host = hostPort.substr(0, colonPos);
+                        std::string sPort = hostPort.substr(colonPos + 1);
+                        size_t slashPos = sPort.find('/');</span>
+<span style = "background-color:#fdd">                        if (slashPos != std::string::npos) {
+                            sPort = sPort.substr(0, slashPos);</span>
+                        }
+                        try {
+<span style = "background-color:#dfd">                            port = std::stoi(sPort);</span>
+<span style = "background-color:#fdd">                        } catch (const std::exception&amp;) {
+                            port = 5000;
+                        }</span>
+<span style = "background-color:#dfd">                    } else {</span>
+<span style = "background-color:#fdd">                        size_t slashPos = hostPort.find('/');
+                        host = (slashPos != std::string::npos) ? hostPort.substr(0, slashPos) : hostPort;</span>
+                    }
+
+<span style = "background-color:#fdd">                    if (host == "localhost") {
+                        host = "127.0.0.1";</span>
+                    }
+<span style = "background-color:#dfd">                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
