@@ -93,6 +93,24 @@ namespace DotNetDupe {
                 /// \brief Gets the number of elements contained in the sequence.
                 int GetCount() const { return m_items.GetCount(); }
 
+                /// \brief Gets the element at the specified index.
+                const T& operator[](int index) const { return m_items[index]; }
+
+                /// \brief Gets the element at the specified index.
+                T& operator[](int index) { return m_items[index]; }
+
+                /// \brief Returns a pointer to the beginning of the elements buffer.
+                const T* begin() const { return m_items.GetCount() > 0 ? &m_items[0] : nullptr; }
+
+                /// \brief Returns a pointer to the end of the elements buffer.
+                const T* end() const { return m_items.GetCount() > 0 ? &m_items[0] + m_items.GetCount() : nullptr; }
+
+                /// \brief Returns a pointer to the beginning of the elements buffer.
+                T* begin() { return m_items.GetCount() > 0 ? &m_items[0] : nullptr; }
+
+                /// \brief Returns a pointer to the end of the elements buffer.
+                T* end() { return m_items.GetCount() > 0 ? &m_items[0] + m_items.GetCount() : nullptr; }
+
                 /// \brief Returns the count of elements satisfying a predicate.
                 template <typename F>
                 int Count(F&& predicate) const {
@@ -662,18 +680,6 @@ namespace DotNetDupe {
                 static Enumerable<T> Empty() {
                     return Enumerable<T>();
                 }
-
-                /// \brief Accesses element at specified index.
-                const T& operator[](int index) const { return m_items[index]; }
-
-                /// \brief Accesses element at specified index.
-                T& operator[](int index) { return m_items[index]; }
-
-                /// \brief Returns pointer to beginning of elements buffer.
-                const T* begin() const { return m_items.GetCount() > 0 ? &m_items[0] : nullptr; }
-
-                /// \brief Returns pointer to one past end of elements buffer.
-                const T* end() const { return m_items.GetCount() > 0 ? &m_items[0] + m_items.GetCount() : nullptr; }
             };
 
         } // namespace Linq

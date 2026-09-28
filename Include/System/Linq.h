@@ -49,6 +49,26 @@ namespace DotNetDupe {
                 return Enumerable<T>(items);
             }
 
+            /// \brief Extension helper converting an IGrouping to an Enumerable.
+            /// \tparam TKey Group key type.
+            /// \tparam TElement Group element type.
+            /// \param group Const reference to input grouping.
+            /// \return Enumerable wrapping the group elements.
+            template <typename TKey, typename TElement>
+            inline Enumerable<TElement> AsEnumerable(const IGrouping<TKey, TElement>& group) {
+                return Enumerable<TElement>(group.Elements());
+            }
+
+            /// \brief Extension helper moving an IGrouping into an Enumerable.
+            /// \tparam TKey Group key type.
+            /// \tparam TElement Group element type.
+            /// \param group Rvalue reference to input grouping.
+            /// \return Enumerable wrapping the moved group elements.
+            template <typename TKey, typename TElement>
+            inline Enumerable<TElement> AsEnumerable(IGrouping<TKey, TElement>&& group) {
+                return Enumerable<TElement>(group.ToList());
+            }
+
         } // namespace Linq
     } // namespace System
 } // namespace DotNetDupe

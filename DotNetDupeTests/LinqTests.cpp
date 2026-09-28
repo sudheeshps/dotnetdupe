@@ -458,4 +458,36 @@ namespace DotNetDupeTests {
         EXPECT_TRUE(topVideos[1] == "video2.mp4"); // 500 MB
     }
 
+    // 29. Subscript and Range-based for loop
+    TEST(EnumerableTest, GivenEnumerable_WhenSubscriptOrRangeForUsed_ThenAccessesElements) {
+        List<int> list = { 10, 20, 30 };
+        auto seq = AsEnumerable(list);
+
+        // Verify operator[]
+        EXPECT_EQ(seq[0], 10);
+        EXPECT_EQ(seq[1], 20);
+        EXPECT_EQ(seq[2], 30);
+
+        // Verify begin()/end() range-based for loop
+        int sum = 0;
+        for (int val : seq) {
+            sum += val;
+        }
+        EXPECT_EQ(sum, 60);
+    }
+
+    // 30. GroupBy + SelectMany + AsEnumerable(IGrouping)
+    TEST(EnumerableTest, GivenGroupBySequence_WhenSelectManyAndAsEnumerableUsed_ThenFlattensCorrectly) {
+        List<int> numbers = { 1, 2, 2, 3, 3, 3 };
+
+        // Verifies GroupBy, IGrouping::operator[], and SelectMany taking Enumerable<T>
+        auto flattened = AsEnumerable(numbers)
+            .GroupBy([](int n) { return n; })
+            .Where([](const auto& g) { return g.Count() > 1; })
+            .SelectMany([](const auto& g) { return AsEnumerable(g); })
+            .ToList();
+
+        EXPECT_EQ(flattened.GetCount(), 5); // 2, 2, 3, 3, 3
+    }
+
 } // namespace DotNetDupeTests

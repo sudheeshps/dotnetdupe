@@ -1,5 +1,9 @@
 var NAVTREEINDEX15 =
 {
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#ae4c155c0bc8dde65939632b2fa4f4251":[2,0,0,1,8,0,4,10],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#af3456d28c7ee6ecb61a73b9a1d32393f":[1,0,0,1,8,0,4,2],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#af3456d28c7ee6ecb61a73b9a1d32393f":[2,0,0,1,8,0,4,2],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#af57cd1f6b86bf7990211b5cb46fd32a4":[1,0,0,1,8,0,4,8],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html#af57cd1f6b86bf7990211b5cb46fd32a4":[2,0,0,1,8,0,4,8],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html":[1,0,0,1,8,0,5],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html":[2,0,0,1,8,0,5],
@@ -245,9 +249,5 @@ var NAVTREEINDEX15 =
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a2d0c532b52b98ee1e55f535c4ae439e8":[2,0,0,1,8,2,0,2],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a43273d9c7eba283be7764e5a288a417d":[1,0,0,1,8,2,0,15],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a43273d9c7eba283be7764e5a288a417d":[2,0,0,1,8,2,0,15],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a522313a3a781c3fe3644aae0c2c8e8b9":[1,0,0,1,8,2,0,14],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a522313a3a781c3fe3644aae0c2c8e8b9":[2,0,0,1,8,2,0,14],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a7d5b8fbe79f6ddaa0cc4c9135355aebf":[1,0,0,1,8,2,0,4],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a7d5b8fbe79f6ddaa0cc4c9135355aebf":[2,0,0,1,8,2,0,4],
-"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a907fedaf28494f75d429008cc7c3913e":[1,0,0,1,8,2,0,11]
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a522313a3a781c3fe3644aae0c2c8e8b9":[1,0,0,1,8,2,0,14]
 };

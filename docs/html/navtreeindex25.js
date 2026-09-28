@@ -1,5 +1,11 @@
 var NAVTREEINDEX25 =
 {
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html":[1,0,0,1,9,0],
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html#a2b8618c6ce8405b6f489d4fb2d660fb8":[1,0,0,1,9,0,4],
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html#a84670b9a5a3569069b6f6fa47541518b":[1,0,0,1,9,0,3],
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html#abdda9bc7c3d470c27b26adfcd1db9e8a":[1,0,0,1,9,0,2],
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html":[1,0,0,1,9,0,0],
+"namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html#a116b66303d21006249f0d4ba4c9865a8":[1,0,0,1,9,0,0,3],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html#a873cc07b3d1f9c1b12330b67b6821706":[1,0,0,1,9,0,0,1],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html#ac5c0a0226f604b2c388f8fe515cc21d9":[1,0,0,1,9,0,0,2],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html#ad692ccd5ca91db7bec50388583ecee6f":[1,0,0,1,9,0,0,4],
@@ -243,11 +249,5 @@ var NAVTREEINDEX25 =
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[1,0,0,1,3,2,1],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[2,0,0,1,3,2,1],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[1,0,0,1,3,2,0],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[2,0,0,1,3,2,0],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[1,0,0,1,3,2,3],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[2,0,0,1,3,2,3],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ae6c51a393ecd687552c4d1e2084344be":[1,0,0,1,3,2,5],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ae6c51a393ecd687552c4d1e2084344be":[2,0,0,1,3,2,5],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html":[1,0,0,1,3,3],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html":[2,0,0,1,3,3]
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[2,0,0,1,3,2,0]
 };

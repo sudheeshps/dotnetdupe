@@ -1,5 +1,9 @@
 var NAVTREEINDEX16 =
 {
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a522313a3a781c3fe3644aae0c2c8e8b9":[2,0,0,1,8,2,0,14],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a7d5b8fbe79f6ddaa0cc4c9135355aebf":[1,0,0,1,8,2,0,4],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a7d5b8fbe79f6ddaa0cc4c9135355aebf":[2,0,0,1,8,2,0,4],
+"class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a907fedaf28494f75d429008cc7c3913e":[1,0,0,1,8,2,0,11],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a907fedaf28494f75d429008cc7c3913e":[2,0,0,1,8,2,0,11],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a9710d01b89a2086b6affd360853d6c35":[1,0,0,1,8,2,0,7],
 "class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a9710d01b89a2086b6affd360853d6c35":[2,0,0,1,8,2,0,7],
@@ -245,9 +249,5 @@ var NAVTREEINDEX16 =
 "class_dot_net_dupe_1_1_system_1_1_operation_canceled_exception.html":[2,0,0,1,75],
 "class_dot_net_dupe_1_1_system_1_1_operation_canceled_exception.html#a6a3a8d71f1c47263e96e141d22f897ee":[1,0,0,1,75,0],
 "class_dot_net_dupe_1_1_system_1_1_operation_canceled_exception.html#a6a3a8d71f1c47263e96e141d22f897ee":[2,0,0,1,75,0],
-"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html":[1,0,0,1,76],
-"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html":[2,0,0,1,76],
-"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html#a9688c9b121d16d0115e9bf35abee11e3":[1,0,0,1,76,1],
-"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html#a9688c9b121d16d0115e9bf35abee11e3":[2,0,0,1,76,1],
-"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html#aa3b6941fb9f41023be7b66ff26fc8929":[1,0,0,1,76,2]
+"class_dot_net_dupe_1_1_system_1_1_out_of_memory_exception.html":[1,0,0,1,76]
 };

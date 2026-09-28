@@ -1,5 +1,11 @@
 var NAVTREEINDEX26 =
 {
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[1,0,0,1,3,2,3],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[2,0,0,1,3,2,3],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ae6c51a393ecd687552c4d1e2084344be":[1,0,0,1,3,2,5],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ae6c51a393ecd687552c4d1e2084344be":[2,0,0,1,3,2,5],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html":[1,0,0,1,3,3],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html":[2,0,0,1,3,3],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html#a5d6d1b158794db51852d317c5b09de5f":[1,0,0,1,3,3,3],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html#a5d6d1b158794db51852d317c5b09de5f":[2,0,0,1,3,3,3],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event_level_counts.html#a67bb239343827cfcf8ed744433593b9d":[1,0,0,1,3,3,0],
@@ -243,11 +249,5 @@ var NAVTREEINDEX26 =
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#ade05473820c38ebfb316458da94b3ce1":[1,0,0,1,5,2,1],
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#ade05473820c38ebfb316458da94b3ce1":[2,0,0,1,5,2,1],
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html":[1,0,0,1,5,3],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html":[2,0,0,1,5,3],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#a67a70916b38abb36654fced884b5ed09":[1,0,0,1,5,3,2],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#a67a70916b38abb36654fced884b5ed09":[2,0,0,1,5,3,2],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#ab1c7e71148993fdc5778eba12f2dd680":[1,0,0,1,5,3,0],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#ab1c7e71148993fdc5778eba12f2dd680":[2,0,0,1,5,3,0],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#adc78da7d36e14e4cf93f8bde7ae58d3a":[1,0,0,1,5,3,1],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html#adc78da7d36e14e4cf93f8bde7ae58d3a":[2,0,0,1,5,3,1]
+"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html":[2,0,0,1,5,3]
 };
