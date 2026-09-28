@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;4.0.6</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.0</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p><a class="anchor" id="md__r_e_a_d_m_e"></a></p>
-<p><a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&amp;style=flat-square&amp;logo=github" alt="Build Status" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&amp;style=flat-square&amp;logo=github&amp;label=CodeQL" alt="CodeQL Security" class="inline"/></a> <a href="../../CodeCoverage/index.html"><img src="https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&amp;logo=googlechrome" alt="Coverage" class="inline"/></a> <a href="../index.html"><img src="https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&amp;logo=doxygen" alt="API Docs" class="inline"/></a> <a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue" alt="NuGet Version" class="inline"/></a> <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&amp;logo=cplusplus" alt="Language" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe#cross-platform-support-"><img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&amp;logo=linux" alt="Platforms" class="inline"/></a> [<img src="https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&amp;color=orange" alt="License" class="inline"/>](LICENSE)</p>
+<p><a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/build-and-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/build-and-release.yml?branch=main&amp;style=flat-square&amp;logo=github" alt="Build Status" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe/actions/workflows/codeql.yml"><img src="https://img.shields.io/github/actions/workflow/status/sudheeshps/DotNetDupe/codeql.yml?branch=main&amp;style=flat-square&amp;logo=github&amp;label=CodeQL" alt="CodeQL Security" class="inline"/></a> <a href="https://sudheeshps.github.io/dotnetdupe/CodeCoverage/index.html"><img src="https://img.shields.io/badge/Coverage-Report-brightgreen?style=flat-square&amp;logo=googlechrome" alt="Coverage" class="inline"/></a> <a href="https://sudheeshps.github.io/dotnetdupe/"><img src="https://img.shields.io/badge/API-Documentation%20Portal-blueviolet?style=flat-square&amp;logo=doxygen" alt="API Docs" class="inline"/></a> <a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue" alt="NuGet Version" class="inline"/></a> <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/Language-C%2B%2B17%2F20-blue?style=flat-square&amp;logo=cplusplus" alt="Language" class="inline"/></a> <a href="https://github.com/sudheeshps/DotNetDupe#cross-platform-support-"><img src="https://img.shields.io/badge/Platforms-Windows%20%7C%20Linux-lightgrey?style=flat-square&amp;logo=linux" alt="Platforms" class="inline"/></a> [<img src="https://img.shields.io/github/license/sudheeshps/DotNetDupe?style=flat-square&amp;color=orange" alt="License" class="inline"/>](LICENSE)</p>
 <p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
 <p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
 <dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
@@ -319,7 +319,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.4.0.6.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.0.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -420,7 +420,7 @@ Developing Cross-Platform Applications 🌐💻</h1>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 A. Generating the NuGet Package</h3>
 <p>Run the automated build script from PowerShell: </p><div class="fragment"><div class="line">.\BuildAndPack.ps1</div>
-</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.4.0.6.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
+</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.5.0.0.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <ol type="1">
@@ -431,7 +431,7 @@ B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 C. Consuming NuGet Package on Linux / CMake (WSL)</h3>
 <ol type="1">
-<li>Extract <span class="tt">DotNetDupe.4.0.6.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.4.0.6.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
+<li>Extract <span class="tt">DotNetDupe.5.0.0.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.5.0.0.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
 </div><!-- fragment --></li>
 <li>Configure CMake pointing <span class="tt">NUGET_PATH</span> to the extracted package folder: <div class="fragment"><div class="line">cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH=&quot;./DotNetDupe_NuGet&quot;</div>
 <div class="line">cmake --build build</div>
@@ -896,7 +896,7 @@ Recommended Usage Patterns</h3>
 <div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">DotNetDupe::System::Data::SqlClient</a></div><div class="ttdef"><b>Definition</b> <a href="_sql_command_8h_source.html#l00008">SqlCommand.h:8</a></div></div>
 </div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md45"></a>
 STL vs DotNetDupe Comparison ⚖️</h1>
-<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the <a href="../index.html">Interactive Documentation Portal</a>.</p>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the <a href="https://sudheeshps.github.io/dotnetdupe/">Interactive Documentation Portal</a>.</p>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md46"></a>
 Sample Client and Test Code 🧪</h2>
 <p>The repository includes <span class="tt">DotNetDupeDemo</span> (a sample console application) and <span class="tt">DotNetDupeTests</span> (unit tests) projects. These projects demonstrate how to integrate and use the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> library. You can refer to their <span class="tt">.vcxproj</span> files for examples of how to configure your own projects to consume the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> NuGet package.</p>
@@ -904,11 +904,11 @@ Sample Client and Test Code 🧪</h2>
 API Reference 📖</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides comprehensive documentation through an interactive portal:</p>
 <ul>
-<li>🌐 <b><a href="../index.html">Interactive Documentation Portal</a></b>: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.</li>
+<li>🌐 <b><a href="https://sudheeshps.github.io/dotnetdupe/">Interactive Documentation Portal</a></b>: Modern web interface with real-time class search, namespace categorization, section-wise API browsing, and C# vs C++ code comparisons.</li>
 </ul>
 <dl class="section remark"><dt>Remarks</dt><dd><b>Generating API Documentation Locally</b>: You can rebuild the entire documentation suite locally at any time using PowerShell: <div class="fragment"><div class="line">powershell -ExecutionPolicy Bypass -File .\scripts\Generate-Docs.ps1 -OpenBrowser</div>
 </div><!-- fragment --></dd></dl>
-<p>For detailed information on the available classes, methods, and their usage, please refer to the comprehensive API documentation for each class:</p>
+<p>For detailed information on the available classes, methods, and their usage, please refer to the comprehensive <a href="https://sudheeshps.github.io/dotnetdupe/">API documentation</a> for each class:</p>
 <dl class="section remark"><dt>Remarks</dt><dd><b>Navigation</b>: Click any <b>Class Name</b> to inspect its C++ header interface, or click <b>📖</b> to open its generated Doxygen API reference.</dd></dl>
 <h2 class="doxsection"><a class="anchor" id="autotoc_md48"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system.html"><span class="tt">DotNetDupe::System</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system.html">📖</a></h2>
@@ -1065,6 +1065,22 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concur
 </table>
 <hr  />
 <h2 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
+Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html"><span class="tt">DotNetDupe::System::Linq</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">📖</a></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Linq/Enumerable.h">Enumerable&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html">📖</a>  </td><td class="markdownTableBodyNone">Fluent query operators providing declarative transformations, filtering, projections, partitioning, aggregations, and generators.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Linq/OrderedEnumerable.h">OrderedEnumerable&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html">📖</a>  </td><td class="markdownTableBodyNone">Sorted sequence supporting custom stable multi-key ordering (<span class="tt">OrderBy</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, <span class="tt">ThenByDescending</span>) with zero STL algorithm dependencies.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Linq/IGrouping.h">IGrouping&lt;TKey, TElement&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a collection of objects that share a common key produced by <span class="tt">GroupBy</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Linq.h">Linq</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">📖</a>  </td><td class="markdownTableBodyNone">Master umbrella include and <span class="tt">AsEnumerable(...)</span> bridge extension functions for <span class="tt">List&lt;T&gt;</span>, <span class="tt">Array&lt;T&gt;</span>, and initializer lists.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html"><span class="tt">DotNetDupe::System::IO</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1109,7 +1125,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html"><span class=
 <td class="markdownTableBodyNone"><a href="../../Include/System/IO/EndOfStreamException.h">EndOfStreamException</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html">📖</a>  </td><td class="markdownTableBodyNone">Thrown when reading is attempted past the end of a stream.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html"><span class="tt">DotNetDupe::System::Threading</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html"><span class="tt">System::Threading::Tasks</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1164,7 +1180,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html"><span 
 <td class="markdownTableBodyNone"><a href="../../Include/System/Threading/Tasks/TaskCanceledException.h">TaskCanceledException</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task_canceled_exception.html">📖</a>  </td><td class="markdownTableBodyNone">Thrown when a task execution is canceled.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html"><span class="tt">DotNetDupe::System::Diagnostics</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1190,7 +1206,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html"><spa
 <td class="markdownTableBodyNone"><a href="../../Include/System/Diagnostics/ProcessStreamer.h">ProcessStreamer</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_streamer.html">📖</a>  </td><td class="markdownTableBodyNone">Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html"><span class="tt">DotNetDupe::System::Net</span></a>, <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html"><span class="tt">Sockets</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html"><span class="tt">Security</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1212,7 +1228,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html"><span class=
 <td class="markdownTableBodyNone"><a href="../../Include/System/Net/Security/SslStream.h">SslStream</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html">📖</a>  </td><td class="markdownTableBodyNone">TLS/SSL secure stream wrapper built on OpenSSL.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html"><span class="tt">DotNetDupe::System::Net::Http</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1238,7 +1254,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html"><sp
 <td class="markdownTableBodyNone"><a href="../../Include/System/Net/Http/HttpMethod.h">HttpMethod</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_method.html">📖</a>  </td><td class="markdownTableBodyNone">Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.).  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html"><span class="tt">DotNetDupe::System::Text</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html"><span class="tt">System::Text::Json</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1252,7 +1268,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html"><span class
 <td class="markdownTableBodyNone"><a href="../../Include/System/Text/Json/JsonSerializer.h">JsonSerializer</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html">📖</a>  </td><td class="markdownTableBodyNone">Serializes objects to JSON strings and deserializes JSON to C++ types.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html"><span class="tt">DotNetDupe::System::Utils</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1262,7 +1278,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html"><span clas
 <td class="markdownTableBodyNone"><a href="../../Include/System/Utils/StringConvert.h">StringConvert</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_utils_1_1_string_convert.html">📖</a>  </td><td class="markdownTableBodyNone">Static helper methods for UTF-8 / UTF-16 conversions and type transformations.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html"><span class="tt">DotNetDupe::System::Security</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1278,7 +1294,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html"><span c
 <td class="markdownTableBodyNone"><a href="../../Include/System/IdentityModel/Tokens/Jwt/JWTToken.h">JWTToken</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html">📖</a>  </td><td class="markdownTableBodyNone">Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html"><span class="tt">DotNetDupe::System::Data::SqlClient</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1294,7 +1310,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.ht
 <td class="markdownTableBodyNone"><a href="../../Include/System/Data/SqlClient/SqlParameter.h">SqlParameter</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_parameter.html">📖</a>  </td><td class="markdownTableBodyNone">Parameter for parameterized SQL commands protecting against SQL injection.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html"><span class="tt">DotNetDupe::Extensions::DependencyInjection</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -1316,7 +1332,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injecti
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/DependencyInjection/IServiceScopeFactory.h">IServiceScopeFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Contract for service scope factories.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><span class="tt">DotNetDupe::Extensions::Logging</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -1344,7 +1360,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><spa
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/Logging/ILogger.h">ILoggerFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Logging factory interface.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="tt">DotNetDupe::WebAppCore</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core.html">📖</a></h2>
 <p><b>Builder, Controllers &amp; Server</b></p>
 <table class="markdownTable">
@@ -1370,16 +1386,16 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="t
 <td class="markdownTableBodyNone"><a href="../../Include/WebAppCore/WebSockets/">Push Notifications (SSE &amp; WebSockets)</a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html">📖</a>  </td><td class="markdownTableBodyNone">Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets.  </td></tr>
 </table>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
 Project Status 🚧</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is currently <b>under active development</b>. I am continuously working on expanding the API coverage and improving stability.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md81"></a>
 Contributions 👋</h1>
 <p>Contributions to the <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project">GitHub's general contributing guidelines</a> for more information on how to get started.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
 CI/CD Pipeline 🚀</h1>
 <p>This repository uses GitHub Actions to automate the build, test, and release process.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md81"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md83"></a>
 Workflow Details</h2>
 <ul>
 <li><b>Build &amp; Test Matrix</b>: Every push to <span class="tt">main</span> and all pull requests trigger a full build (Debug &amp; Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.</li>
@@ -1388,7 +1404,7 @@ Workflow Details</h2>
 <li><b>Code Coverage</b>: Automated code coverage measurement via OpenCppCoverage (&gt; 80% line coverage required) and static analysis HTML report generation.</li>
 <li><b>NuGet Release</b>: Pushing a tag (e.g., <span class="tt">v1.0.0</span>) triggers the creation and publishing of the NuGet package to <a href="https://www.nuget.org/">nuget.org</a>.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
 Code Coverage &amp; Static Analysis 📊</h2>
 <ul>
 <li><b>Online Reports:</b><ul>
@@ -1399,7 +1415,7 @@ Code Coverage &amp; Static Analysis 📊</h2>
 <li><b>Live Documentation Portal:</b> <a href="https://sudheeshps.github.io/dotnetdupe/">https://sudheeshps.github.io/dotnetdupe/</a></li>
 <li><b>Local Generation:</b> Run <span class="tt">powershell .\scripts\Generate-CoverageReport.ps1</span> to execute tests under OpenCppCoverage and refresh the <span class="tt">CodeCoverage/</span> folder.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md83"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md85"></a>
 How to Release</h2>
 <ol type="1">
 <li>Update the version in <span class="tt">DotNetDupe.nuspec</span>.</li>
@@ -1408,13 +1424,13 @@ How to Release</h2>
 <div class="line">git push origin v1.0.0</div>
 </div><!-- fragment --> <em>Note: Requires <span class="tt">NUGET_API_KEY</span> to be set in GitHub repository secrets.</em></li>
 </ol>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
 License 📄</h1>
 <p>This project is licensed under the <b>MIT License</b>. See the [LICENSE](LICENSE) file for details.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md85"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md87"></a>
 Generated Content 🤖</h1>
 <p>This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md88"></a>
 Contact 📧</h1>
 <p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>. </p>
 </div></div><!-- PageDoc -->

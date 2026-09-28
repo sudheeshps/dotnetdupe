@@ -90,6 +90,12 @@ var hierarchy =
       ] ]
     ] ],
     [ "DotNetDupe::System::IO::Path", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html", null ],
+    [ "DotNetDupe::System::Linq::IGrouping&lt; TKey, TElement &gt;", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html", null ],
+    [ "DotNetDupe::System::Linq::Internal::IElementComparer&lt; T &gt;", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_i_element_comparer.html", [
+      [ "DotNetDupe::System::Linq::Internal::ChainedComparer< T, FKey >", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_chained_comparer.html", null ],
+      [ "DotNetDupe::System::Linq::Internal::KeyComparer< T, FKey >", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_key_comparer.html", null ]
+    ] ],
+    [ "DotNetDupe::System::Linq::Internal::LinqSortHelper&lt; T &gt;", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_linq_sort_helper.html", null ],
     [ "DotNetDupe::System::Net::Dns", "class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html", null ],
     [ "DotNetDupe::System::Net::Http::DownloadProgress", "struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html", null ],
     [ "DotNetDupe::System::Object", "class_dot_net_dupe_1_1_system_1_1_object.html", [
@@ -114,6 +120,7 @@ var hierarchy =
       [ "DotNetDupe::System::Collections::Generic::List< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::List< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
+      [ "DotNetDupe::System::Collections::Generic::List< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::List< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
@@ -210,6 +217,9 @@ var hierarchy =
         [ "DotNetDupe::Extensions::DependencyInjection::ServiceProvider", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html", null ]
       ] ],
       [ "DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken", "class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html", null ],
+      [ "DotNetDupe::System::Linq::Enumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html", [
+        [ "DotNetDupe::System::Linq::OrderedEnumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html", null ]
+      ] ],
       [ "DotNetDupe::System::Net::Http::FileDownloader", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html", null ],
       [ "DotNetDupe::System::Net::Http::HttpClient", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html", null ],
       [ "DotNetDupe::System::Net::Http::HttpContent", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_content.html", [

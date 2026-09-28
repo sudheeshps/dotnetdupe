@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 void DemonstrateConsole();
 void DemonstrateString();
@@ -42,4 +42,5 @@ void DemonstrateDirectory();
 void DemonstrateFileDownloader();
 void DemonstrateProcessStreamer();
 void DemonstrateEventHandler();
+void DemonstrateLinq();
 
