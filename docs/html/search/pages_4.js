@@ -4,7 +4,7 @@ var searchData=
   ['a_20generating_20the_20nuget_20package_1',['A. Generating the NuGet Package',['../index.html#autotoc_md22',1,'']]],
   ['a_20web_20application_20with_20static_20files_20rest_20apis_2',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
   ['a_3a_20low_20level_20http_20client_20httpclient_3',['Option A: Low-level HTTP Client (&lt;span class=&quot;tt&quot;&gt;HttpClient&lt;/span&gt;)',['../index.html#autotoc_md40',1,'']]],
-  ['analysis_20📊_4',['Code Coverage &amp;amp; Static Analysis 📊',['../index.html#autotoc_md82',1,'']]],
+  ['analysis_20📊_4',['Code Coverage &amp;amp; Static Analysis 📊',['../index.html#autotoc_md84',1,'']]],
   ['and_20hosting_20a_20controller_5',['Defining and Hosting a Controller',['../index.html#autotoc_md37',1,'']]],
   ['and_20test_20code_20🧪_6',['Sample Client and Test Code 🧪',['../index.html#autotoc_md46',1,'']]],
   ['and_20testing_7',['Building and Testing',['../index.html#autotoc_md8',1,'']]],

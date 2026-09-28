@@ -686,7 +686,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-badge">
-      <span id="hero-version-badge">🚀 Version 4.0.7 &bull; 100% Quality Gates Compliant</span>
+      <span id="hero-version-badge">🚀 Version 5.0.0 &bull; 100% Quality Gates Compliant</span>
     </div>
     <h1 class="hero-title">
       .NET Base Class Library<br>
@@ -1262,15 +1262,27 @@ if (scores.TryGetValue("Alice", val)) {
           .then(data => {
             if (data && Array.isArray(data.versions) && data.versions.length > 0) {
               const publishedVersion = data.versions[data.versions.length - 1];
-              const badge = document.getElementById('hero-version-badge');
-              if (badge) {
-                badge.innerHTML = '&#128640; Version ' + publishedVersion + ' &bull; 100% Quality Gates Compliant';
-              }
-              const nugetBtn = document.getElementById('hero-btn-nuget');
-              if (nugetBtn) {
-                nugetBtn.href = 'https://www.nuget.org/packages/DotNetDupe/' + publishedVersion;
-                nugetBtn.title = 'Install DotNetDupe v' + publishedVersion + ' from NuGet';
-                nugetBtn.innerHTML = '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Install v' + publishedVersion + ' from NuGet';
+              const isHigherOrEqual = (pub, cur) => {
+                const p = pub.split('.').map(Number);
+                const c = cur.split('.').map(Number);
+                for (let i = 0; i < Math.max(p.length, c.length); i++) {
+                  const pi = p[i] || 0, ci = c[i] || 0;
+                  if (pi > ci) return true;
+                  if (pi < ci) return false;
+                }
+                return true;
+              };
+              if (isHigherOrEqual(publishedVersion, '5.0.0')) {
+                const badge = document.getElementById('hero-version-badge');
+                if (badge) {
+                  badge.innerHTML = '&#128640; Version ' + publishedVersion + ' &bull; 100% Quality Gates Compliant';
+                }
+                const nugetBtn = document.getElementById('hero-btn-nuget');
+                if (nugetBtn) {
+                  nugetBtn.href = 'https://www.nuget.org/packages/DotNetDupe/' + publishedVersion;
+                  nugetBtn.title = 'Install DotNetDupe v' + publishedVersion + ' from NuGet';
+                  nugetBtn.innerHTML = '<svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> Install v' + publishedVersion + ' from NuGet';
+                }
               }
             }
           })

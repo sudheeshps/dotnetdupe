@@ -37,7 +37,7 @@ var searchData=
   ['hostandport_34',['HostAndPort',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a5518dcdf898b72b153f016e7393d462d',1,'DotNetDupe::System']]],
   ['hosting_20a_20controller_35',['Defining and Hosting a Controller',['../index.html#autotoc_md37',1,'']]],
   ['hosting_20rest_20api_20controllers_36',['1. Hosting REST API Controllers',['../index.html#autotoc_md36',1,'']]],
-  ['how_20to_20release_37',['How to Release',['../index.html#autotoc_md83',1,'']]],
+  ['how_20to_20release_37',['How to Release',['../index.html#autotoc_md85',1,'']]],
   ['html_38',['Step 1: Create &lt;span class=&quot;tt&quot;&gt;wwwroot/index.html&lt;/span&gt;',['../index.html#autotoc_md28',1,'']]],
   ['http_20client_20httpclient_39',['Option A: Low-level HTTP Client (&lt;span class=&quot;tt&quot;&gt;HttpClient&lt;/span&gt;)',['../index.html#autotoc_md40',1,'']]],
   ['httpclient_40',['HttpClient',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html',1,'DotNetDupe::System::Net::Http::HttpClient'],['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#a49b3e0503c1b65f17f396c2379c549a0',1,'DotNetDupe::System::Net::Http::HttpClient::HttpClient()'],['../index.html#autotoc_md40',1,'Option A: Low-level HTTP Client (&lt;span class=&quot;tt&quot;&gt;HttpClient&lt;/span&gt;)']]],

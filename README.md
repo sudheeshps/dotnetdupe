@@ -163,7 +163,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.4.0.7.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.0.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -295,7 +295,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.4.0.7.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.5.0.0.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -305,9 +305,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.4.0.7.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.5.0.0.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.4.0.7.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.5.0.0.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash
@@ -852,6 +852,19 @@ For detailed information on the available classes, methods, and their usage, ple
 | [ConcurrentBag&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentBag.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html) | Thread-safe unordered object container with thread-local storage. |
 | [BlockingCollection&lt;T&gt;](Include/System/Collections/Concurrent/BlockingCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html) | Thread-safe collection providing blocking producer-consumer capabilities. |
 | [Concurrent Collections Overview](Include/System/Collections/Concurrent/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html) | Comprehensive guide and architecture of lock-free and thread-safe collections. |
+
+---
+
+### Namespace: [`DotNetDupe::System::Linq`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_linq.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_linq.html)
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Enumerable&lt;T&gt;](Include/System/Linq/Enumerable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html) | Fluent query operators providing declarative transformations, filtering, projections, partitioning, aggregations, and generators. |
+| [OrderedEnumerable&lt;T&gt;](Include/System/Linq/OrderedEnumerable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html) | Sorted sequence supporting custom stable multi-key ordering (`OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`) with zero STL algorithm dependencies. |
+| [IGrouping&lt;TKey, TElement&gt;](Include/System/Linq/IGrouping.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html) | Represents a collection of objects that share a common key produced by `GroupBy`. |
+| [Linq](Include/System/Linq.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_linq.html) | Master umbrella include and `AsEnumerable(...)` bridge extension functions for `List<T>`, `Array<T>`, and initializer lists. |
 
 ---
 

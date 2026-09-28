@@ -1,4 +1,4 @@
-﻿#include "System/Console.h"
+#include "System/Console.h"
 #include <iostream>
 #include <iomanip>
 #include <vector>
@@ -51,6 +51,7 @@ int main() {
     DemonstrateFileDownloader();
     DemonstrateProcessStreamer();
     DemonstrateEventHandler();
+    DemonstrateLinq();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

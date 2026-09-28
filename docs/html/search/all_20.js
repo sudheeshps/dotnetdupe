@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['✨_0',['Features &amp;amp; Library Capabilities ✨',['../index.html#autotoc_md3',1,'']]]
+  ['⚖️_0',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md45',1,'']]]
 ];

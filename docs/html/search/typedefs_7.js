@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rtlgetversion_5ffunc_0',['RtlGetVersion_FUNC',['../_operating_system_8cpp.html#ae02bf612de581ca59e57aaec95227a70',1,'OperatingSystem.cpp']]]
+  ['parameterizedthreadstart_0',['ParameterizedThreadStart',['../namespace_dot_net_dupe_1_1_system_1_1_threading.html#aecc660fa4ae1e31e6a6343f34f2fa7b4',1,'DotNetDupe::System::Threading']]]
 ];

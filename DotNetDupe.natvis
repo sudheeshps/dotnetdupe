@@ -199,6 +199,40 @@
       <Item Name="Cancelled">m_pImpl-&gt;m_bCancelled</Item>
       <Item Name="BatchSize">m_pImpl-&gt;m_options.iBatchSize</Item>
       <Item Name="DetailLevel">m_pImpl-&gt;m_options.eDetailLevel</Item>
+  <!-- DotNetDupe::System::Linq::Enumerable<T> -->
+  <Type Name="DotNetDupe::System::Linq::Enumerable&lt;*&gt;">
+    <DisplayString>{{ size={m_items.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_items.m_iCount</Item>
+      <ArrayItems>
+        <Size>m_items.m_iCount</Size>
+        <ValuePointer>m_items.m_pData</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Linq::OrderedEnumerable<T> -->
+  <Type Name="DotNetDupe::System::Linq::OrderedEnumerable&lt;*&gt;">
+    <DisplayString>{{ sorted_size={m_items.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_items.m_iCount</Item>
+      <ArrayItems>
+        <Size>m_items.m_iCount</Size>
+        <ValuePointer>m_items.m_pData</ValuePointer>
+      </ArrayItems>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Linq::IGrouping<TKey, TElement> -->
+  <Type Name="DotNetDupe::System::Linq::IGrouping&lt;*,*&gt;">
+    <DisplayString>{{ Key={m_key}, Count={m_elements.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Key]">m_key</Item>
+      <Item Name="[Count]">m_elements.m_iCount</Item>
+      <ArrayItems>
+        <Size>m_elements.m_iCount</Size>
+        <ValuePointer>m_elements.m_pData</ValuePointer>
+      </ArrayItems>
     </Expand>
   </Type>
 

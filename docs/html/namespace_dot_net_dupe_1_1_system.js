@@ -7,6 +7,7 @@ var namespace_dot_net_dupe_1_1_system =
     [ "IdentityModel", "namespace_dot_net_dupe_1_1_system_1_1_identity_model.html", "namespace_dot_net_dupe_1_1_system_1_1_identity_model" ],
     [ "Internal", "namespace_dot_net_dupe_1_1_system_1_1_internal.html", "namespace_dot_net_dupe_1_1_system_1_1_internal" ],
     [ "IO", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html", "namespace_dot_net_dupe_1_1_system_1_1_i_o" ],
+    [ "Linq", "namespace_dot_net_dupe_1_1_system_1_1_linq.html", "namespace_dot_net_dupe_1_1_system_1_1_linq" ],
     [ "Net", "namespace_dot_net_dupe_1_1_system_1_1_net.html", "namespace_dot_net_dupe_1_1_system_1_1_net" ],
     [ "Security", "namespace_dot_net_dupe_1_1_system_1_1_security.html", "namespace_dot_net_dupe_1_1_system_1_1_security" ],
     [ "Text", "namespace_dot_net_dupe_1_1_system_1_1_text.html", "namespace_dot_net_dupe_1_1_system_1_1_text" ],
