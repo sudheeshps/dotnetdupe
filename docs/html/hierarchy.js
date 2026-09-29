@@ -120,11 +120,13 @@ var hierarchy =
         [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
           [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
             [ "DotNetDupe::System::Collections::Generic::IDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
               [ "DotNetDupe::System::Collections::Generic::Dictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
               [ "DotNetDupe::System::Collections::Generic::SortedDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", null ]
             ] ]
           ] ],
           [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
             [ "DotNetDupe::System::Collections::Generic::Dictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
             [ "DotNetDupe::System::Collections::Generic::IDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ],
             [ "DotNetDupe::System::Collections::Generic::SortedDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", null ]
@@ -418,11 +420,6 @@ var hierarchy =
       [ "DotNetDupe::System::BitConverter", "class_dot_net_dupe_1_1_system_1_1_bit_converter.html", null ],
       [ "DotNetDupe::System::Buffer", "class_dot_net_dupe_1_1_system_1_1_buffer.html", null ],
       [ "DotNetDupe::System::Char", "class_dot_net_dupe_1_1_system_1_1_char.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::BlockingCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentBag< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentQueue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentStack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", null ],
       [ "DotNetDupe::System::Collections::Generic::IEnumerable< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
         [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< T, bool > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
           [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
@@ -435,6 +432,12 @@ var hierarchy =
         [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
           [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< T, bool > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
             [ "DotNetDupe::System::Collections::Generic::IDictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Concurrent::BlockingCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", null ],
+          [ "DotNetDupe::System::Collections::Concurrent::IProducerConsumerCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html", [
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentBag< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", null ],
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentQueue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", null ],
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentStack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", null ]
           ] ],
           [ "DotNetDupe::System::Collections::Generic::HashSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html", null ],
           [ "DotNetDupe::System::Collections::Generic::ICollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
@@ -462,6 +465,7 @@ var hierarchy =
       ] ],
       [ "DotNetDupe::System::Collections::Generic::IEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html", [
         [ "DotNetDupe::System::Array< T >::ArrayEnumerator", "class_dot_net_dupe_1_1_system_1_1_array_1_1_array_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Concurrent::ConcurrentEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator.html", null ],
         [ "DotNetDupe::System::Collections::Generic::HashSetEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_enumerator.html", null ],
         [ "DotNetDupe::System::Collections::Generic::LinkedListEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_enumerator.html", null ],
         [ "DotNetDupe::System::Collections::Generic::List< T >::ListEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_1_1_list_enumerator.html", null ],

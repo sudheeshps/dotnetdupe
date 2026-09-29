@@ -38,8 +38,10 @@ var annotated_dup =
             [ "BlockingCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection" ],
             [ "ConcurrentBag", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag" ],
             [ "ConcurrentDictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary" ],
+            [ "ConcurrentEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator" ],
             [ "ConcurrentQueue", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue" ],
-            [ "ConcurrentStack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack" ]
+            [ "ConcurrentStack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack" ],
+            [ "IProducerConsumerCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection" ]
           ] ],
           [ "Generic", "namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html", [
             [ "Dictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary" ],

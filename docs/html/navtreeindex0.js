@@ -64,10 +64,12 @@ var NAVTREEINDEX0 =
 "_concurrent_bag_8h_source.html":[3,0,1,1,0,0,1],
 "_concurrent_dictionary_8h.html":[3,0,1,1,0,0,2],
 "_concurrent_dictionary_8h_source.html":[3,0,1,1,0,0,2],
-"_concurrent_queue_8h.html":[3,0,1,1,0,0,3],
-"_concurrent_queue_8h_source.html":[3,0,1,1,0,0,3],
-"_concurrent_stack_8h.html":[3,0,1,1,0,0,4],
-"_concurrent_stack_8h_source.html":[3,0,1,1,0,0,4],
+"_concurrent_enumerator_8h.html":[3,0,1,1,0,0,3],
+"_concurrent_enumerator_8h_source.html":[3,0,1,1,0,0,3],
+"_concurrent_queue_8h.html":[3,0,1,1,0,0,4],
+"_concurrent_queue_8h_source.html":[3,0,1,1,0,0,4],
+"_concurrent_stack_8h.html":[3,0,1,1,0,0,5],
+"_concurrent_stack_8h_source.html":[3,0,1,1,0,0,5],
 "_condition_variable_8cpp.html":[3,0,0,7],
 "_condition_variable_8cpp_source.html":[3,0,0,7],
 "_condition_variable_8h.html":[3,0,1,1,10,3],
@@ -247,7 +249,5 @@ var NAVTREEINDEX0 =
 "_http_response_message_8cpp_source.html":[3,0,0,41],
 "_http_response_message_8h.html":[3,0,1,1,7,0,6],
 "_http_response_message_8h_source.html":[3,0,1,1,7,0,6],
-"_http_status_code_8h.html":[3,0,1,1,7,5],
-"_http_status_code_8h_source.html":[3,0,1,1,7,5],
-"_i_collection_8h.html":[3,0,1,1,0,1,2]
+"_http_status_code_8h.html":[3,0,1,1,7,5]
 };

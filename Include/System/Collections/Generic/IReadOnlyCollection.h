@@ -28,6 +28,8 @@ namespace DotNetDupe {
                     /// \return The number of elements in the collection.
                     virtual int GetCount() const = 0;
 
+                    using IEnumerable<T>::Count;
+
                     /// \brief Gets the number of elements in the collection (alias for GetCount).
                     /// \return The number of elements in the collection.
                     int Count() const { return GetCount(); }

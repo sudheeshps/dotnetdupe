@@ -17,12 +17,13 @@ var searchData=
   ['internalstringconvert_2eh_14',['InternalStringConvert.h',['../_internal_string_convert_8h.html',1,'']]],
   ['invalidoperationexception_2eh_15',['InvalidOperationException.h',['../_invalid_operation_exception_8h.html',1,'']]],
   ['ioexception_2eh_16',['IOException.h',['../_i_o_2_i_o_exception_8h.html',1,'(Global Namespace)'],['../_i_o_exception_8h.html',1,'(Global Namespace)']]],
-  ['ireadonlycollection_2eh_17',['IReadOnlyCollection.h',['../_i_read_only_collection_8h.html',1,'']]],
-  ['ireadonlydictionary_2eh_18',['IReadOnlyDictionary.h',['../_i_read_only_dictionary_8h.html',1,'']]],
-  ['ireadonlylist_2eh_19',['IReadOnlyList.h',['../_i_read_only_list_8h.html',1,'']]],
-  ['iservicecollection_2eh_20',['IServiceCollection.h',['../_i_service_collection_8h.html',1,'']]],
-  ['iserviceprovider_2eh_21',['IServiceProvider.h',['../_i_service_provider_8h.html',1,'']]],
-  ['iservicescope_2eh_22',['IServiceScope.h',['../_i_service_scope_8h.html',1,'']]],
-  ['iservicescopefactory_2eh_23',['IServiceScopeFactory.h',['../_i_service_scope_factory_8h.html',1,'']]],
-  ['iset_2eh_24',['ISet.h',['../_i_set_8h.html',1,'']]]
+  ['iproducerconsumercollection_2eh_17',['IProducerConsumerCollection.h',['../_i_producer_consumer_collection_8h.html',1,'']]],
+  ['ireadonlycollection_2eh_18',['IReadOnlyCollection.h',['../_i_read_only_collection_8h.html',1,'']]],
+  ['ireadonlydictionary_2eh_19',['IReadOnlyDictionary.h',['../_i_read_only_dictionary_8h.html',1,'']]],
+  ['ireadonlylist_2eh_20',['IReadOnlyList.h',['../_i_read_only_list_8h.html',1,'']]],
+  ['iservicecollection_2eh_21',['IServiceCollection.h',['../_i_service_collection_8h.html',1,'']]],
+  ['iserviceprovider_2eh_22',['IServiceProvider.h',['../_i_service_provider_8h.html',1,'']]],
+  ['iservicescope_2eh_23',['IServiceScope.h',['../_i_service_scope_8h.html',1,'']]],
+  ['iservicescopefactory_2eh_24',['IServiceScopeFactory.h',['../_i_service_scope_factory_8h.html',1,'']]],
+  ['iset_2eh_25',['ISet.h',['../_i_set_8h.html',1,'']]]
 ];

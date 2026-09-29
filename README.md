@@ -1076,6 +1076,7 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
+| [IProducerConsumerCollection&lt;T&gt;](Include/System/Collections/Concurrent/IProducerConsumerCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html) | Defines methods to manipulate thread-safe collections intended for producer/consumer usage. |
 | [ConcurrentDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Concurrent/ConcurrentDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html) | Thread-safe key/value collection for concurrent multi-threaded access. |
 | [ConcurrentQueue&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentQueue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html) | Lock-free thread-safe First-In-First-Out (FIFO) queue. |
 | [ConcurrentStack&lt;T&gt;](Include/System/Collections/Concurrent/ConcurrentStack.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html) | Lock-free thread-safe Last-In-First-Out (LIFO) stack. |

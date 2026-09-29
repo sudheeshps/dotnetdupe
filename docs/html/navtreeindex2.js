@@ -1,5 +1,9 @@
 var NAVTREEINDEX2 =
 {
+"_string_8cpp.html":[3,0,0,79],
+"_string_8cpp_source.html":[3,0,0,79],
+"_string_8h.html":[3,0,1,1,58],
+"_string_8h_source.html":[3,0,1,1,58],
 "_string_builder_8cpp.html":[3,0,0,80],
 "_string_builder_8cpp.html#a913be409c7290a32091a35061043a59c":[3,0,0,80,0],
 "_string_builder_8cpp_source.html":[3,0,0,80],
@@ -245,9 +249,5 @@ var NAVTREEINDEX2 =
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ab6a0d4dd6d8a71987854cfc66fc2a519":[2,0,0,0,0,4,5],
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ac32f6c44c40a9519684a9185f41dc040":[1,0,0,0,0,4,9],
 "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ac32f6c44c40a9519684a9185f41dc040":[2,0,0,0,0,4,9],
-"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ad79849ce96c9da2dc63f779374701513":[1,0,0,0,0,4,11],
-"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ad79849ce96c9da2dc63f779374701513":[2,0,0,0,0,4,11],
-"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html":[1,0,0,0,0,5],
-"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html":[2,0,0,0,0,5],
-"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html#a50627c5ff494d0b764182bfad4ce0e65":[1,0,0,0,0,5,3]
+"class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_descriptor.html#ad79849ce96c9da2dc63f779374701513":[1,0,0,0,0,4,11]
 };
