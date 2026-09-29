@@ -6,6 +6,7 @@
 #pragma once
 
 #include "System/Collections/Generic/List.h"
+#include "System/Collections/Generic/IEnumerable.h"
 #include <utility>
 
 namespace DotNetDupe {
@@ -20,7 +21,7 @@ namespace DotNetDupe {
             /// \note Conforms to ECMA-335 Partition IV Section 5 (System.Linq.IGrouping<TKey, TElement>).
             /// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
             template <typename TKey, typename TElement>
-            class IGrouping {
+            class IGrouping : public virtual Collections::Generic::IEnumerable<TElement> {
             private:
                 TKey m_key;
                 Collections::Generic::List<TElement> m_elements;
@@ -80,6 +81,11 @@ namespace DotNetDupe {
                 /// \return Const pointer to the one-past-the-end element.
                 const TElement* end() const {
                     return m_elements.GetCount() > 0 ? &m_elements[0] + m_elements.GetCount() : nullptr;
+                }
+
+                /// \brief Returns an enumerator that iterates through the group elements.
+                Collections::Generic::IEnumeratorPtr<TElement> GetEnumerator() const override {
+                    return m_elements.GetEnumerator();
                 }
 
                 using ElementType = TElement;

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📧_0',['Contact 📧',['../index.html#autotoc_md100',1,'']]]
+  ['📦_0',['Collections &amp;amp; Data Structures 📦',['../index.html#autotoc_md45',1,'']]]
 ];

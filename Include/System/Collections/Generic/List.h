@@ -8,6 +8,8 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
+#include "System/Collections/Generic/IList.h"
+#include "System/EqualityHelper.h"
 #include <new>
 #include <utility>
 #include <initializer_list>
@@ -22,12 +24,41 @@ namespace DotNetDupe {
 				/// \tparam T The type of elements in the list.
 				/// 
 				/// Implements dynamic array resizing with amortized O(1) additions, binary search,
-				/// sorting, and placement new allocation without STL container leakage.
+				/// sorting, placement new allocation, and full .NET IList<T> interface compliance.
 				/// \note Thread Safety: Public static members of this type are thread safe. Instance members are not guaranteed to be thread safe.
 				/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
 				template <typename T>
-				class List : public Object {
+				class List : public virtual IList<T> {
 				public:
+					/// \class ListEnumerator
+					/// \brief Enumerates the elements of a List<T>.
+					class ListEnumerator : public virtual IEnumerator<T> {
+					private:
+						const List<T>* m_pList;
+						int m_iIndex;
+					public:
+						ListEnumerator(const List<T>* pList) : m_pList(pList), m_iIndex(-1) {}
+						bool MoveNext() override {
+							if (!m_pList) return false;
+							m_iIndex++;
+							return m_iIndex < m_pList->GetCount();
+						}
+						const T& Current() const override {
+							return (*m_pList)[m_iIndex];
+						}
+						const T& GetCurrent() const override {
+							return Current();
+						}
+						void Reset() override {
+							m_iIndex = -1;
+						}
+					};
+
+					/// \brief Returns an enumerator that iterates through the List<T>.
+					/// \return A SmartPointer to an IEnumerator<T> for the List<T>.
+					SmartPointer<IEnumerator<T>> GetEnumerator() const override {
+						return SmartPointer<IEnumerator<T>>(new ListEnumerator(this), true);
+					}
 					/// \brief Initializes a new instance of the List class that is empty.
 					List() { }
 
@@ -97,7 +128,11 @@ namespace DotNetDupe {
 
 					/// \brief Gets the number of elements contained in the List.
 					/// \return The number of elements contained in the List.
-					int GetCount() const { return m_iCount; }
+					int GetCount() const override { return m_iCount; }
+
+					/// \brief Gets a value indicating whether the List is read-only.
+					/// \return Always false for List<T>.
+					bool IsReadOnly() const override { return false; }
 
 					/// \brief Gets the total number of elements the internal data structure can hold without resizing.
 					/// \return The capacity of the List.
@@ -121,21 +156,21 @@ namespace DotNetDupe {
 					/// \brief Gets a reference to the element at the specified index.
 					/// \param iIndex The zero-based index of the element to get.
 					/// \return Reference to the element at index.
-					T& operator[](int iIndex) {
+					T& operator[](int iIndex) override {
 						return m_pData[iIndex];
 					}
 
 					/// \brief Gets a const reference to the element at the specified index.
 					/// \param iIndex The zero-based index of the element to get.
 					/// \return Const reference to the element at index.
-					const T& operator[](int iIndex) const {
+					const T& operator[](int iIndex) const override {
 						return m_pData[iIndex];
 					}
 
 					/// \brief Adds an object to the end of the List.
 					/// \param item The object to be added to the end of the List.
 					/// \note Amortized O(1) insertion: doubles capacity when current storage is exhausted.
-					void Add(const T& item) {
+					void Add(const T& item) override {
                         if (m_iCount == m_iCapacity) {
                             SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);
                         }
@@ -157,7 +192,7 @@ namespace DotNetDupe {
 					}
 
 					/// \brief Removes all elements from the List.
-					void Clear() {
+					void Clear() override {
                         for (int i = 0; i < m_iCount; ++i) {
                             m_pData[i].~T();
                         }
@@ -167,16 +202,16 @@ namespace DotNetDupe {
 					/// \brief Determines whether an element is in the List.
 					/// \param item The object to locate in the List.
 					/// \return True if item is found; otherwise, false.
-					bool Contains(const T& item) const {
+					bool Contains(const T& item) const override {
 						return IndexOf(item) != -1;
 					}
 
 					/// \brief Searches for the specified object and returns the zero-based index of the first occurrence within the entire List.
 					/// \param item The object to locate in the List.
 					/// \return The zero-based index of the first occurrence if found; otherwise, -1.
-					int IndexOf(const T& item) const {
+					int IndexOf(const T& item) const override {
                         for (int i = 0; i < m_iCount; ++i) {
-                            if (m_pData[i] == item) return i;
+                            if (EqualityHelper<T>::Equals(m_pData[i], item)) return i;
                         }
                         return -1;
 					}
@@ -203,7 +238,7 @@ namespace DotNetDupe {
 					/// \brief Inserts an element into the List at the specified index.
 					/// \param iIndex The zero-based index at which item should be inserted.
 					/// \param item The object to insert.
-					void Insert(int iIndex, const T& item) {
+					void Insert(int iIndex, const T& item) override {
                         if (m_iCount == m_iCapacity) {
                             SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);
                         }
@@ -222,7 +257,7 @@ namespace DotNetDupe {
 					/// \brief Removes the first occurrence of a specific object from the List.
 					/// \param item The object to remove from the List.
 					/// \return True if item is successfully removed; otherwise, false.
-					bool Remove(const T& item) {
+					bool Remove(const T& item) override {
                         int idx = IndexOf(item);
                         if (idx != -1) {
                             RemoveAt(idx);
@@ -233,7 +268,7 @@ namespace DotNetDupe {
 
 					/// \brief Removes the element at the specified index of the List.
 					/// \param iIndex The zero-based index of the element to remove.
-					void RemoveAt(int iIndex) {
+					void RemoveAt(int iIndex) override {
                         if (iIndex >= 0 && iIndex < m_iCount) {
                             for (int i = iIndex; i < m_iCount - 1; ++i) {
                                 m_pData[i] = std::move(m_pData[i + 1]);
@@ -241,6 +276,15 @@ namespace DotNetDupe {
                             m_pData[m_iCount - 1].~T();
                             m_iCount--;
                         }
+					}
+
+					/// \brief Copies the elements of the List to an Array starting at a specified index.
+					/// \param array The destination Array.
+					/// \param arrayIndex The zero-based starting index.
+					void CopyTo(Array<T>& array, int arrayIndex) const override {
+						for (int i = 0; i < m_iCount; ++i) {
+							array[arrayIndex + i] = m_pData[i];
+						}
 					}
 
                     void SwapElements(T& a, T& b) {

@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.1</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.2</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -147,6 +147,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 <p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
 <p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
 <dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
+<li>⚡ <b>Concurrent Collections &amp; Producer-Consumer Hierarchy (<span class="tt">System::Collections::Concurrent</span>):</b> Full interface hierarchy retrofit across <span class="tt">ConcurrentQueue&lt;T&gt;</span>, <span class="tt">ConcurrentStack&lt;T&gt;</span>, <span class="tt">ConcurrentBag&lt;T&gt;</span>, <span class="tt">BlockingCollection&lt;T&gt;</span>, and <span class="tt">ConcurrentDictionary&lt;TKey, TValue&gt;</span> inheriting generic collection base interfaces (<span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>, <span class="tt">IDictionary&lt;TKey, TValue&gt;</span>) and introducing <span class="tt">IProducerConsumerCollection&lt;T&gt;</span> with lock-free snapshot enumeration and direct LINQ method chaining.</li>
+<li>🧠 <b>Dedicated Smart Pointers &amp; Collections Documentation:</b> Comprehensive architectural guides, comparison tables, and compile-ready code snippets showcasing unique/shared ownership, polymorphic abstractions, fast dictionaries/hash sets, bounded blocking pipelines, and snapshot iteration.</li>
 <li>⚡ <b>First-Class C# <span class="tt">EventHandler&lt;TEventArgs&gt;</span> &amp; <span class="tt">EventArgs</span> Model:</b> Idiomatic C# .NET event-driven delegate system with multicast subscription (<span class="tt">+=</span>, <span class="tt">-=</span>), member method binding (<span class="tt">Add(pInstance, &amp;Class::Method)</span>), token-based unsubscription, and thread-safe dispatch.</li>
 <li>📥 <b>Modernized <span class="tt">FileDownloader</span>:</b> Upgraded download callbacks to typed multicast <span class="tt">EventHandler&lt;DownloadProgressChangedEventArgs&gt;</span> and <span class="tt">EventHandler&lt;DownloadCompletedEventArgs&gt;</span> with reliable <span class="tt">FileMode</span> creation and resumption.</li>
 <li>🔄 <b>Observable <span class="tt">ProcessStreamer</span> Modernization:</b> Multicast event streams (<span class="tt">ProcessDiscovered</span>, <span class="tt">BatchReady</span>, <span class="tt">ProcessUpdated</span>, <span class="tt">Completed</span>, <span class="tt">Error</span>) with two-tier progressive telemetry streaming and thread-safe cancellation.</li>
@@ -155,7 +157,7 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 <li>🛡️ <b>Zero Header STL Dependencies:</b> Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across <span class="tt">String</span>, <span class="tt">Collections</span>, <span class="tt">IO</span>, <span class="tt">Net</span>, <span class="tt">Logging</span>, and <span class="tt">Data</span>.</li>
 <li>📦 <b>Core Data Structures &amp; Collections Overhaul:</b> Pure library implementations for <span class="tt">List&lt;T&gt;</span>, <span class="tt">Dictionary&lt;K, V&gt;</span>, <span class="tt">HashSet&lt;T&gt;</span>, <span class="tt">Queue&lt;T&gt;</span>, <span class="tt">Stack&lt;T&gt;</span>, <span class="tt">PriorityQueue&lt;T&gt;</span>, <span class="tt">SortedDictionary&lt;K, V&gt;</span>, <span class="tt">SortedSet&lt;T&gt;</span>, and <span class="tt">LinkedList&lt;T&gt;</span>.</li>
 <li>⚡ <b>Thread-Safe Concurrent Collections (<span class="tt">System::Collections::Concurrent</span>):</b> Lock-free/fine-grained thread-safe data structures including <span class="tt">ConcurrentDictionary</span>, <span class="tt">ConcurrentQueue</span>, <span class="tt">ConcurrentStack</span>, <span class="tt">ConcurrentBag</span>, and <span class="tt">BlockingCollection</span>.</li>
-<li>🔍 <b>Language Integrated Query (<span class="tt">System::Linq</span>):</b> Expressive, declarative query pipeline (<span class="tt">Where</span>, <span class="tt">Select</span>, <span class="tt">SelectMany</span>, <span class="tt">OrderBy</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, <span class="tt">GroupBy</span>, <span class="tt">Distinct</span>, <span class="tt">Take</span>, <span class="tt">Skip</span>, <span class="tt">Zip</span>, <span class="tt">Reverse</span>) with numeric aggregations (<span class="tt">Sum</span>, <span class="tt">Average</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Aggregate</span>), quantifiers (<span class="tt">Any</span>, <span class="tt">All</span>, <span class="tt">Contains</span>), sequence generators (<span class="tt">Range</span>, <span class="tt">Repeat</span>), and seamless materialization (<span class="tt">ToList</span>, <span class="tt">ToArray</span>, <span class="tt">ToDictionary</span>, <span class="tt">ToHashSet</span>, <span class="tt">AsEnumerable</span>).</li>
+<li>🔍 <b>Language Integrated Query (<span class="tt">System::Linq</span>):</b> Expressive, declarative query pipeline (<span class="tt">Where</span>, <span class="tt">Select</span>, <span class="tt">SelectMany</span>, <span class="tt">OrderBy</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, <span class="tt">GroupBy</span>, <span class="tt">Distinct</span>, <span class="tt">Take</span>, <span class="tt">Skip</span>, <span class="tt">Zip</span>, <span class="tt">Reverse</span>) with numeric aggregations (<span class="tt">Sum</span>, <span class="tt">Average</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Aggregate</span>), quantifiers (<span class="tt">Any</span>, <span class="tt">All</span>, <span class="tt">Contains</span>), sequence generators (<span class="tt">Range</span>, <span class="tt">Repeat</span>), and seamless materialization (<span class="tt">ToList</span>, <span class="tt">ToArray</span>, <span class="tt">ToDictionary</span>, <span class="tt">ToHashSet</span>) with direct collection interface support.</li>
 <li>📊 <b>Real-Time Telemetry &amp; System Metrics (<span class="tt">System::Diagnostics::SystemMetrics</span>):</b> Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk throughput, network bandwidth, and active processes).</li>
 <li>📜 <b>ETW &amp; Enterprise Event Logging (<span class="tt">System::Diagnostics::EtwLogReader</span> &amp; <span class="tt">EventLog</span>):</b> High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.</li>
 <li>🖥️ <b>Terminal &amp; User Sessions (<span class="tt">System::Diagnostics::TerminalSession</span> &amp; <span class="tt">ActiveUserSession</span>):</b> Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.</li>
@@ -200,6 +202,19 @@ Table of Contents 📚</h1>
 </ul>
 </li>
 <li>Usage 💻</li>
+<li>Smart Pointers &amp; Memory Management 🧠<ul>
+<li>1. Unique vs. Shared Ownership</li>
+<li>2. Polymorphic Abstractions &amp; Interfaces</li>
+<li>3. Lifetime Controls &amp; Safety Guarantees</li>
+</ul>
+</li>
+<li>Collections &amp; Data Structures 📦<ul>
+<li>1. Generic Collections &amp; Interface Hierarchy</li>
+<li>2. Key/Value Dictionaries &amp; Hash Sets</li>
+<li>3. Thread-Safe Concurrent Collections</li>
+<li>4. Snapshot Iteration &amp; Direct LINQ Integration</li>
+</ul>
+</li>
 <li>Language Integrated Query (LINQ) ⚡<ul>
 <li>1. Filtering, Sorting &amp; Projections</li>
 <li>2. Grouping &amp; Bucket Aggregations</li>
@@ -261,7 +276,7 @@ Features &amp; Library Capabilities ✨</h1>
 <li>⚡ <b>Language Integrated Query (<span class="tt">System::Linq</span>)</b>:<ul>
 <li>Declarative fluent query pipeline: <span class="tt">Where</span>, <span class="tt">Select</span>, <span class="tt">SelectMany</span>, <span class="tt">OrderBy</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, <span class="tt">ThenByDescending</span>, <span class="tt">GroupBy</span>, <span class="tt">Distinct</span>, <span class="tt">Take</span>, <span class="tt">Skip</span>, <span class="tt">Zip</span>, <span class="tt">Reverse</span>.</li>
 <li>Numeric aggregations &amp; quantifiers: <span class="tt">Count</span>, <span class="tt">Sum</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Average</span>, <span class="tt">Aggregate</span>, <span class="tt">Any</span>, <span class="tt">All</span>, <span class="tt">Contains</span>.</li>
-<li>Sequence generators &amp; materialization: <span class="tt">Range()</span>, <span class="tt">Repeat()</span>, <span class="tt">Empty()</span>, <span class="tt">ToList()</span>, <span class="tt">ToArray()</span>, <span class="tt">ToDictionary()</span>, <span class="tt">ToHashSet()</span>, and <span class="tt">AsEnumerable()</span>.</li>
+<li>Sequence generators &amp; materialization: <span class="tt">Range()</span>, <span class="tt">Repeat()</span>, <span class="tt">Empty()</span>, <span class="tt">ToList()</span>, <span class="tt">ToArray()</span>, <span class="tt">ToDictionary()</span>, and <span class="tt">ToHashSet()</span>.</li>
 </ul>
 </li>
 <li>📁 <b>File I/O &amp; System Services (<span class="tt">System::IO</span>)</b>:<ul>
@@ -333,7 +348,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.1.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.2.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -434,7 +449,7 @@ Developing Cross-Platform Applications 🌐💻</h1>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 A. Generating the NuGet Package</h3>
 <p>Run the automated build script from PowerShell: </p><div class="fragment"><div class="line">.\BuildAndPack.ps1</div>
-</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.5.0.1.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
+</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.5.0.2.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <ol type="1">
@@ -445,7 +460,7 @@ B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 C. Consuming NuGet Package on Linux / CMake (WSL)</h3>
 <ol type="1">
-<li>Extract <span class="tt">DotNetDupe.5.0.1.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.5.0.1.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
+<li>Extract <span class="tt">DotNetDupe.5.0.2.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.5.0.2.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
 </div><!-- fragment --></li>
 <li>Configure CMake pointing <span class="tt">NUGET_PATH</span> to the extracted package folder: <div class="fragment"><div class="line">cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH=&quot;./DotNetDupe_NuGet&quot;</div>
 <div class="line">cmake --build build</div>
@@ -667,7 +682,7 @@ Usage 💻</h1>
 <div class="line">    dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">GetOrAdd</a>(<span class="stringliteral">&quot;Disk&quot;</span>, 40);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordtype">int</span> iUsage = 0;</div>
-<div class="line">    <span class="keywordflow">if</span> (dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a2766be9ee319ec041ebe43e2ecd32b86">TryGetValue</a>(<span class="stringliteral">&quot;CPU&quot;</span>, iUsage)) {</div>
+<div class="line">    <span class="keywordflow">if</span> (dict.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#afd5b4dee9d98f834e41ec1e4a0c4feef">TryGetValue</a>(<span class="stringliteral">&quot;CPU&quot;</span>, iUsage)) {</div>
 <div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;CPU Usage: {0}%&quot;</span>, iUsage);</div>
 <div class="line">    }</div>
 <div class="line"> </div>
@@ -681,21 +696,407 @@ Usage 💻</h1>
 <div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Processed item from pipeline: {0}&quot;</span>, sItem);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="a_blocking_collection_8h_html"><div class="ttname"><a href="_blocking_collection_8h.html">BlockingCollection.h</a></div></div>
-<div class="ttc" id="a_concurrent_dictionary_8h_html"><div class="ttname"><a href="_concurrent_dictionary_8h.html">ConcurrentDictionary.h</a></div></div>
+<div class="ttc" id="a_blocking_collection_8h_html"><div class="ttname"><a href="_blocking_collection_8h.html">BlockingCollection.h</a></div><div class="ttdoc">Thread-safe blocking collection mirroring .NET System.Collections.Concurrent.BlockingCollection&lt;T&gt;.</div></div>
+<div class="ttc" id="a_concurrent_dictionary_8h_html"><div class="ttname"><a href="_concurrent_dictionary_8h.html">ConcurrentDictionary.h</a></div><div class="ttdoc">Thread-safe dictionary mirroring .NET System.Collections.Concurrent.ConcurrentDictionary&lt;TKey,...</div></div>
 <div class="ttc" id="a_concurrent_queue_8h_html"><div class="ttname"><a href="_concurrent_queue_8h.html">ConcurrentQueue.h</a></div><div class="ttdoc">Thread-safe FIFO queue mirroring .NET System.Collections.Concurrent.ConcurrentQueue&lt;T&gt;.</div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">DotNetDupe::System::Collections::Concurrent::BlockingCollection</a></div><div class="ttdoc">Provides blocking and bounding capabilities for thread-safe collections implementing the Producer-Con...</div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00025">BlockingCollection.h:25</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary</a></div><div class="ttdoc">Represents a thread-safe collection of key/value pairs that can be accessed by multiple threads concu...</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00024">ConcurrentDictionary.h:24</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_a194b3b32db4404b08a7e98386b6c8103"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryAdd</a></div><div class="ttdeci">bool TryAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdoc">Attempts to add the specified key and value to the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00042">ConcurrentDictionary.h:42</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_a2766be9ee319ec041ebe43e2ecd32b86"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a2766be9ee319ec041ebe43e2ecd32b86">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryGetValue</a></div><div class="ttdeci">bool TryGetValue(const TKey &amp;key, TValue &amp;value) const</div><div class="ttdoc">Attempts to get the value associated with the specified key from the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00055">ConcurrentDictionary.h:55</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_aaedac5d0dc67712892f4392d7b8b8777"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::GetOrAdd</a></div><div class="ttdeci">TValue GetOrAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00089">ConcurrentDictionary.h:89</a></div></div>
-<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a></div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00016">BlockingCollection.h:16</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">DotNetDupe::System::Collections::Concurrent::BlockingCollection</a></div><div class="ttdoc">Provides blocking and bounding capabilities for thread-safe collections implementing the Producer-Con...</div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00030">BlockingCollection.h:30</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary</a></div><div class="ttdoc">Represents a thread-safe collection of key/value pairs that can be accessed by multiple threads concu...</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00031">ConcurrentDictionary.h:32</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_a194b3b32db4404b08a7e98386b6c8103"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryAdd</a></div><div class="ttdeci">bool TryAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdoc">Attempts to add the specified key and value to the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00054">ConcurrentDictionary.h:54</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_aaedac5d0dc67712892f4392d7b8b8777"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::GetOrAdd</a></div><div class="ttdeci">TValue GetOrAdd(const TKey &amp;key, const TValue &amp;value)</div><div class="ttdoc">Adds a key/value pair to the dictionary if the key does not already exist.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00123">ConcurrentDictionary.h:123</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_afd5b4dee9d98f834e41ec1e4a0c4feef"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#afd5b4dee9d98f834e41ec1e4a0c4feef">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::TryGetValue</a></div><div class="ttdeci">bool TryGetValue(const TKey &amp;key, TValue &amp;value) const override</div><div class="ttdoc">Attempts to get the value associated with the specified key from the ConcurrentDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00067">ConcurrentDictionary.h:67</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a></div><div class="ttdef"><b>Definition</b> <a href="_blocking_collection_8h_source.html#l00021">BlockingCollection.h:21</a></div></div>
 </div><!-- fragment --><hr  />
 <h1 class="doxsection"><a class="anchor" id="autotoc_md36"></a>
+Smart Pointers &amp; Memory Management 🧠</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> eliminates manual memory leaks and raw pointer ownership bugs through its unified <span class="tt">SmartPointer&lt;T&gt;</span> abstraction (<span class="tt">System::SmartPointer</span>, Quality Gate 8 &amp; 11). Modeled after modern RAII and C# object references, <span class="tt">SmartPointer&lt;T&gt;</span> provides high performance, zero raw ownership, and dual-mode ownership semantics:</p>
+<ol type="1">
+<li><b>Unique Mode (Default)</b>: Zero-overhead, move-only RAII ownership equivalent to <span class="tt">std::unique_ptr</span>.</li>
+<li><b>Shared Mode</b>: Thread-safe atomic reference-counted ownership equivalent to <span class="tt">std::shared_ptr</span>.</li>
+<li><b>Hungarian Naming Standard</b>: Per Quality Gate 11, all <span class="tt">SmartPointer</span> variables and parameters strictly adhere to the <span class="tt">p</span> / <span class="tt">sp</span> / <span class="tt">m_p</span> / <span class="tt">s_p</span> Hungarian prefix.</li>
+</ol>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md37"></a>
+Key Capabilities</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Feature  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Zero-Overhead Unique Mode</b>  </td><td class="markdownTableBodyNone">Move-only semantics with zero heap metadata overhead. Prevents accidental copying via compiler enforcement.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Atomic Shared Mode</b>  </td><td class="markdownTableBodyNone">Lock-free, thread-safe reference counting via atomic interlocked increments and decrements.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Factory Methods</b>  </td><td class="markdownTableBodyNone"><span class="tt">SmartPointer&lt;T&gt;::NewUnique(args...)</span> and <span class="tt">SmartPointer&lt;T&gt;::NewShared(args...)</span> for concise, type-safe allocation.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Polymorphic Upcasting</b>  </td><td class="markdownTableBodyNone">Implicit, type-safe conversion from <span class="tt">SmartPointer&lt;Derived&gt;</span> to <span class="tt">SmartPointer&lt;Base&gt;</span> or abstract interface types.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b>Safe Boolean Checks</b>  </td><td class="markdownTableBodyNone">Explicit <span class="tt">operator bool()</span> allowing safe null checks (<span class="tt">if (spResource) { ... }</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b>Intrusive <span class="tt">EnableSharedFromThis</span></b>  </td><td class="markdownTableBodyNone">Allows classes inheriting <span class="tt">EnableSharedFromThis&lt;T&gt;</span> to generate shared handles to themselves.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md39"></a>
+1. Unique vs. Shared Ownership</h2>
+<p>Use <span class="tt">NewUnique()</span> when an object is exclusively owned by a single component or function scope. Use <span class="tt">NewShared()</span> when an object must be referenced across multiple components or worker threads.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_smart_pointer_8h.html">System/SmartPointer.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">class </span>DatabaseConnection {</div>
+<div class="line"><span class="keyword">private</span>:</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> m_sHost;</div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    DatabaseConnection(<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; sHost) : m_sHost(sHost) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Connected to database: {0}&quot;</span>, m_sHost);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    ~DatabaseConnection() {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Closed connection: {0}&quot;</span>, m_sHost);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="keywordtype">void</span> ExecuteQuery(<span class="keyword">const</span> String&amp; sSql)<span class="keyword"> const </span>{</div>
+<div class="line">        Console::WriteLine(<span class="stringliteral">&quot;[{0}] Executing: {1}&quot;</span>, m_sHost, sSql);</div>
+<div class="line">    }</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateOwnership() {</div>
+<div class="line">    <span class="comment">// 1. Unique Ownership (Move-only RAII, zero overhead)</span></div>
+<div class="line">    <span class="keyword">auto</span> pPrimary = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a238444715201ff78075ebc8563e92b8a">SmartPointer&lt;DatabaseConnection&gt;::NewUnique</a>(<span class="stringliteral">&quot;cluster-primary.local&quot;</span>);</div>
+<div class="line">    pPrimary-&gt;ExecuteQuery(<span class="stringliteral">&quot;SELECT * FROM users&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Move ownership to another pointer (copying a unique pointer throws SystemException)</span></div>
+<div class="line">    <span class="keyword">auto</span> pTransferred = std::move(pPrimary);</div>
+<div class="line">    <span class="keywordflow">if</span> (!pPrimary) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;pPrimary is now null after ownership transfer.&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line">    pTransferred-&gt;ExecuteQuery(<span class="stringliteral">&quot;UPDATE users SET active = 1&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. Shared Ownership (Thread-safe atomic reference counting)</span></div>
+<div class="line">    <span class="keyword">auto</span> spReplica1 = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a01117844a0216d20fc99e0953cad5e1c">SmartPointer&lt;DatabaseConnection&gt;::NewShared</a>(<span class="stringliteral">&quot;cluster-replica.local&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Initial ref count: {0}&quot;</span>, spReplica1.GetRefCount()); <span class="comment">// 1</span></div>
+<div class="line"> </div>
+<div class="line">    {</div>
+<div class="line">        <span class="comment">// Copying is permitted in Shared mode and atomically increments the reference count</span></div>
+<div class="line">        <span class="keyword">auto</span> spReplica2 = spReplica1;</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Ref count in inner scope: {0}&quot;</span>, spReplica1.GetRefCount()); <span class="comment">// 2</span></div>
+<div class="line">        spReplica2-&gt;ExecuteQuery(<span class="stringliteral">&quot;SELECT COUNT(*) FROM telemetry&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Inner scope exited: spReplica2 destructed, reference count decremented back to 1</span></div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Ref count after inner scope: {0}&quot;</span>, spReplica1.GetRefCount()); <span class="comment">// 1</span></div>
+<div class="line">}</div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_smart_pointer_html_a01117844a0216d20fc99e0953cad5e1c"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a01117844a0216d20fc99e0953cad5e1c">DotNetDupe::System::SmartPointer::NewShared</a></div><div class="ttdeci">static SmartPointer&lt; T &gt; NewShared()</div><div class="ttdoc">Creates a Shared SmartPointer, default constructing T.</div><div class="ttdef"><b>Definition</b> <a href="_smart_pointer_8h_source.html#l00277">SmartPointer.h:277</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_smart_pointer_html_a238444715201ff78075ebc8563e92b8a"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a238444715201ff78075ebc8563e92b8a">DotNetDupe::System::SmartPointer::NewUnique</a></div><div class="ttdeci">static SmartPointer&lt; T &gt; NewUnique()</div><div class="ttdoc">Creates a Unique SmartPointer, default constructing T.</div><div class="ttdef"><b>Definition</b> <a href="_smart_pointer_8h_source.html#l00262">SmartPointer.h:262</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md41"></a>
+2. Polymorphic Abstractions &amp; Interfaces</h2>
+<p><span class="tt">SmartPointer</span> seamlessly supports polymorphic base classes and interface contracts. Destructors are called virtually and cleanly without memory leaks.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_smart_pointer_8h.html">System/SmartPointer.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Abstract interface contract</span></div>
+<div class="line"><span class="keyword">class </span>IDataProcessor {</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    <span class="keyword">virtual</span> ~IDataProcessor() = <span class="keywordflow">default</span>;</div>
+<div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">void</span> ProcessData(<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; sPayload) = 0;</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Concrete implementation</span></div>
+<div class="line"><span class="keyword">class </span>JsonDataProcessor : <span class="keyword">public</span> IDataProcessor {</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    <span class="keywordtype">void</span> ProcessData(<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; sPayload)<span class="keyword"> override </span>{</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Processing JSON payload: {0}&quot;</span>, sPayload);</div>
+<div class="line">    }</div>
+<div class="line">};</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstratePolymorphism() {</div>
+<div class="line">    <span class="comment">// Upcast from concrete implementation to abstract interface</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer&lt;IDataProcessor&gt;</a> spProcessor = </div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a01117844a0216d20fc99e0953cad5e1c">SmartPointer&lt;JsonDataProcessor&gt;::NewShared</a>();</div>
+<div class="line"> </div>
+<div class="line">    spProcessor-&gt;ProcessData(<span class="stringliteral">&quot;{\&quot;status\&quot;:\&quot;ok\&quot;,\&quot;code\&quot;:200}&quot;</span>);</div>
+<div class="line">}</div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md43"></a>
+3. Lifetime Controls &amp; Safety Guarantees</h2>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides fine-grained methods to inspect, reset, and reassign managed objects safely.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_smart_pointer_8h.html">System/SmartPointer.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateLifetimeControls() {</div>
+<div class="line">    <span class="keyword">auto</span> spBuffer = <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html#a01117844a0216d20fc99e0953cad5e1c">SmartPointer&lt;String&gt;::NewShared</a>(<span class="stringliteral">&quot;Initial Data&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Inspection</span></div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Buffer content: {0}&quot;</span>, *spBuffer);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Is Shared: {0}&quot;</span>, spBuffer.IsShared() ? <span class="stringliteral">&quot;True&quot;</span> : <span class="stringliteral">&quot;False&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Reset with a new value</span></div>
+<div class="line">    spBuffer.Reset(<span class="keyword">new</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>(<span class="stringliteral">&quot;Updated Content&quot;</span>), <span class="keyword">true</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;After Reset: {0}&quot;</span>, *spBuffer);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Explicit disposal</span></div>
+<div class="line">    spBuffer.Reset();</div>
+<div class="line">    <span class="keywordflow">if</span> (!spBuffer) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Buffer safely disposed.&quot;</span>);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+</div><!-- fragment --><hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md45"></a>
+Collections &amp; Data Structures 📦</h1>
+<p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides an extensive suite of type-safe, developer-friendly collections in <span class="tt"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">DotNetDupe::System::Collections::Generic</a></span> and <span class="tt"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a></span>. All collections conform to ECMA-335 standards, implement the standard interface hierarchy (<span class="tt">IEnumerable&lt;T&gt;</span>, <span class="tt">ICollection&lt;T&gt;</span>, <span class="tt">IList&lt;T&gt;</span>, <span class="tt">IDictionary&lt;K,V&gt;</span>, <span class="tt">ISet&lt;T&gt;</span>), provide native C++ range-based <span class="tt">for</span> iteration (<span class="tt">begin()</span> / <span class="tt">end()</span>), and integrate directly with LINQ without intermediate adapters.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md46"></a>
+Collection Hierarchy Overview</h2>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Collection  </th><th class="markdownTableHeadNone">Namespace  </th><th class="markdownTableHeadNone">Key Interfaces  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">List&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">IList&lt;T&gt;</span>, <span class="tt">IReadOnlyList&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Fast, dynamically-resizable sequential array list.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">Dictionary&lt;K, V&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">IDictionary&lt;K, V&gt;</span>, <span class="tt">IReadOnlyDictionary&lt;K, V&gt;</span>  </td><td class="markdownTableBodyNone">High-performance O(1) hash map indexed by unique keys.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">HashSet&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">ISet&lt;T&gt;</span>, <span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">High-performance O(1) hash set of unique elements.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">Queue&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">First-in, first-out (FIFO) sequential queue.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">Stack&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Last-in, first-out (LIFO) sequential stack.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">SortedDictionary&lt;K, V&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">IDictionary&lt;K, V&gt;</span>, <span class="tt">IReadOnlyDictionary&lt;K, V&gt;</span>  </td><td class="markdownTableBodyNone">Key/value collection sorted by key (Red-Black tree).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">SortedSet&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">ISet&lt;T&gt;</span>, <span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Self-balancing binary search tree maintaining unique elements in sorted order.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">LinkedList&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Generic</span>  </td><td class="markdownTableBodyNone"><span class="tt">ICollection&lt;T&gt;</span>, <span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Doubly-linked list providing O(1) insertion/removal at both ends.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">Array&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">System</span>  </td><td class="markdownTableBodyNone"><span class="tt">IList&lt;T&gt;</span>, <span class="tt">IReadOnlyList&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Fixed-size contiguous array buffer matching .NET <span class="tt">System.Array</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">ConcurrentDictionary&lt;K, V&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Concurrent</span>  </td><td class="markdownTableBodyNone"><span class="tt">IDictionary&lt;K, V&gt;</span>, <span class="tt">IReadOnlyDictionary&lt;K, V&gt;</span>  </td><td class="markdownTableBodyNone">Thread-safe key/value hash map with fine-grained synchronization.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">ConcurrentQueue&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Concurrent</span>  </td><td class="markdownTableBodyNone"><span class="tt">IProducerConsumerCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Thread-safe FIFO queue for multi-threaded worker pipelines.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">ConcurrentStack&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Concurrent</span>  </td><td class="markdownTableBodyNone"><span class="tt">IProducerConsumerCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Thread-safe LIFO stack for lock-free push/pop operations.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><b><span class="tt">ConcurrentBag&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Concurrent</span>  </td><td class="markdownTableBodyNone"><span class="tt">IProducerConsumerCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Thread-safe unordered container optimized for producer-consumer workflows.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><b><span class="tt">BlockingCollection&lt;T&gt;</span></b>  </td><td class="markdownTableBodyNone"><span class="tt">Concurrent</span>  </td><td class="markdownTableBodyNone"><span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>  </td><td class="markdownTableBodyNone">Bounded, blocking coordination collection implementing the Producer-Consumer pattern.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md48"></a>
+1. Generic Collections &amp; Interface Hierarchy</h2>
+<p>Every <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> generic collection implements standard interfaces such as <span class="tt">IEnumerable&lt;T&gt;</span>, <span class="tt">IReadOnlyCollection&lt;T&gt;</span>, and <span class="tt">IList&lt;T&gt;</span>. This allows writing generic routines that operate polymorphically across any collection type.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_list_8h.html">System/Collections/Generic/List.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_queue_8h.html">System/Collections/Generic/Queue.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_stack_8h.html">System/Collections/Generic/Stack.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_i_read_only_collection_8h.html">System/Collections/Generic/IReadOnlyCollection.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">DotNetDupe::System::Collections::Generic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Polymorphic helper accepting any read-only collection interface</span></div>
+<div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><span class="keywordtype">void</span> PrintCollectionSummary(<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html">IReadOnlyCollection&lt;T&gt;</a>&amp; collection, <span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; sTitle) {</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;--- {0} (Count: {1}) ---&quot;</span>, sTitle, collection.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html#a8b144105224f0b1f20fcc76873eb8093">GetCount</a>());</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; item : collection) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot; - {0}&quot;</span>, item);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateGenericCollections() {</div>
+<div class="line">    <span class="comment">// 1. Dynamic List&lt;T&gt;</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;String&gt;</a> fruits;</div>
+<div class="line">    fruits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>(<span class="stringliteral">&quot;Apple&quot;</span>);</div>
+<div class="line">    fruits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>(<span class="stringliteral">&quot;Banana&quot;</span>);</div>
+<div class="line">    fruits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>(<span class="stringliteral">&quot;Cherry&quot;</span>);</div>
+<div class="line">    fruits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a20604cb817495ce5c30c27fbf713cd90">Insert</a>(1, <span class="stringliteral">&quot;Blueberry&quot;</span>);</div>
+<div class="line">    PrintCollectionSummary(fruits, <span class="stringliteral">&quot;Fruit Basket&quot;</span>);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. FIFO Queue&lt;T&gt;</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html">Queue&lt;String&gt;</a> printQueue;</div>
+<div class="line">    printQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a8119d9d0f644ebb1ce1e976af76f92b4">Enqueue</a>(<span class="stringliteral">&quot;Invoice_101.pdf&quot;</span>);</div>
+<div class="line">    printQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a8119d9d0f644ebb1ce1e976af76f92b4">Enqueue</a>(<span class="stringliteral">&quot;Contract_202.pdf&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Next print job: {0}&quot;</span>, printQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a55b04a52625ec9b78dc792a4d4cad2ba">Peek</a>());</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Processed job: {0}&quot;</span>, printQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a6c00950c3e359f1e12ea00991e7a5d7a">Dequeue</a>());</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 3. LIFO Stack&lt;T&gt;</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html">Stack&lt;String&gt;</a> browserHistory;</div>
+<div class="line">    browserHistory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#a927e3a33cedc65d7f19ac26298351ffc">Push</a>(<span class="stringliteral">&quot;https://github.com&quot;</span>);</div>
+<div class="line">    browserHistory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#a927e3a33cedc65d7f19ac26298351ffc">Push</a>(<span class="stringliteral">&quot;https://dotnetdupe.org&quot;</span>);</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Current page: {0}&quot;</span>, browserHistory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#ad7bdf23f5a5f410f4b6e696508286799">Peek</a>());</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Navigated back from: {0}&quot;</span>, browserHistory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#af38703607dfce8ef9a37cd0392a9438e">Pop</a>());</div>
+<div class="line">}</div>
+<div class="ttc" id="a_i_read_only_collection_8h_html"><div class="ttname"><a href="_i_read_only_collection_8h.html">IReadOnlyCollection.h</a></div><div class="ttdoc">Represents a strongly-typed, read-only collection of elements.</div></div>
+<div class="ttc" id="a_list_8h_html"><div class="ttname"><a href="_list_8h.html">List.h</a></div><div class="ttdoc">Represents a strongly typed list of objects that can be accessed by index mirroring ....</div></div>
+<div class="ttc" id="a_queue_8h_html"><div class="ttname"><a href="_queue_8h.html">Queue.h</a></div></div>
+<div class="ttc" id="a_stack_8h_html"><div class="ttname"><a href="_stack_8h.html">Stack.h</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html">DotNetDupe::System::Collections::Generic::IReadOnlyCollection</a></div><div class="ttdoc">Represents a strongly-typed, read-only collection of elements.</div><div class="ttdef"><b>Definition</b> <a href="_i_read_only_collection_8h_source.html#l00022">IReadOnlyCollection.h:22</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection_html_a8b144105224f0b1f20fcc76873eb8093"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html#a8b144105224f0b1f20fcc76873eb8093">DotNetDupe::System::Collections::Generic::IReadOnlyCollection::GetCount</a></div><div class="ttdeci">virtual int GetCount() const =0</div><div class="ttdoc">Gets the number of elements in the collection.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">DotNetDupe::System::Collections::Generic::List</a></div><div class="ttdoc">Represents a strongly typed list of objects accessible by index.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00031">List.h:31</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html_a20604cb817495ce5c30c27fbf713cd90"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a20604cb817495ce5c30c27fbf713cd90">DotNetDupe::System::Collections::Generic::List::Insert</a></div><div class="ttdeci">void Insert(int iIndex, const T &amp;item) override</div><div class="ttdoc">Inserts an element into the List at the specified index.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00241">List.h:241</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html_a2f82251341d99f242c6ba1044edc56a1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">DotNetDupe::System::Collections::Generic::List::Add</a></div><div class="ttdeci">void Add(const T &amp;item) override</div><div class="ttdoc">Adds an object to the end of the List.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00173">List.h:173</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html">DotNetDupe::System::Collections::Generic::Queue</a></div><div class="ttdoc">Represents a first-in, first-out collection of objects.</div><div class="ttdef"><b>Definition</b> <a href="_queue_8h_source.html#l00023">Queue.h:23</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue_html_a55b04a52625ec9b78dc792a4d4cad2ba"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a55b04a52625ec9b78dc792a4d4cad2ba">DotNetDupe::System::Collections::Generic::Queue::Peek</a></div><div class="ttdeci">T Peek() const</div><div class="ttdoc">Returns the object at the beginning of the Queue without removing it.</div><div class="ttdef"><b>Definition</b> <a href="_queue_8h_source.html#l00060">Queue.h:60</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue_html_a6c00950c3e359f1e12ea00991e7a5d7a"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a6c00950c3e359f1e12ea00991e7a5d7a">DotNetDupe::System::Collections::Generic::Queue::Dequeue</a></div><div class="ttdeci">T Dequeue()</div><div class="ttdoc">Removes and returns the object at the beginning of the Queue.</div><div class="ttdef"><b>Definition</b> <a href="_queue_8h_source.html#l00048">Queue.h:48</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue_html_a8119d9d0f644ebb1ce1e976af76f92b4"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html#a8119d9d0f644ebb1ce1e976af76f92b4">DotNetDupe::System::Collections::Generic::Queue::Enqueue</a></div><div class="ttdeci">void Enqueue(const T &amp;item)</div><div class="ttdoc">Adds an object to the end of the Queue.</div><div class="ttdef"><b>Definition</b> <a href="_queue_8h_source.html#l00041">Queue.h:41</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html">DotNetDupe::System::Collections::Generic::Stack</a></div><div class="ttdoc">Represents a variable size last-in-first-out (LIFO) collection of instances of the same specified typ...</div><div class="ttdef"><b>Definition</b> <a href="_stack_8h_source.html#l00071">Stack.h:71</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_html_a927e3a33cedc65d7f19ac26298351ffc"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#a927e3a33cedc65d7f19ac26298351ffc">DotNetDupe::System::Collections::Generic::Stack::Push</a></div><div class="ttdeci">void Push(const T &amp;item)</div><div class="ttdoc">Inserts an object at the top of the Stack.</div><div class="ttdef"><b>Definition</b> <a href="_stack_8h_source.html#l00092">Stack.h:92</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_html_ad7bdf23f5a5f410f4b6e696508286799"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#ad7bdf23f5a5f410f4b6e696508286799">DotNetDupe::System::Collections::Generic::Stack::Peek</a></div><div class="ttdeci">T Peek() const</div><div class="ttdoc">Returns the object at the top of the Stack without removing it.</div><div class="ttdef"><b>Definition</b> <a href="_stack_8h_source.html#l00112">Stack.h:112</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_html_af38703607dfce8ef9a37cd0392a9438e"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html#af38703607dfce8ef9a37cd0392a9438e">DotNetDupe::System::Collections::Generic::Stack::Pop</a></div><div class="ttdeci">T Pop()</div><div class="ttdoc">Removes and returns the object at the top of the Stack.</div><div class="ttdef"><b>Definition</b> <a href="_stack_8h_source.html#l00099">Stack.h:99</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">DotNetDupe::System::Collections::Generic</a></div><div class="ttdef"><b>Definition</b> <a href="_dictionary_8h_source.html#l00020">Dictionary.h:20</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md50"></a>
+2. Key/Value Dictionaries &amp; Hash Sets</h2>
+<p><span class="tt">Dictionary&lt;TKey, TValue&gt;</span> and <span class="tt">HashSet&lt;T&gt;</span> provide average O(1) amortized lookup, insertion, and deletion using internal hash tables and collision chaining.</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_dictionary_8h.html">System/Collections/Generic/Dictionary.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_hash_set_8h.html">System/Collections/Generic/HashSet.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">DotNetDupe::System::Collections::Generic</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateDictionariesAndSets() {</div>
+<div class="line">    <span class="comment">// 1. Dictionary&lt;TKey, TValue&gt;</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">Dictionary&lt;String, int&gt;</a> inventory;</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html#a4c07b0d1dbca8a640af7245bc61599a7">Add</a>(<span class="stringliteral">&quot;Widget&quot;</span>, 150);</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html#a4c07b0d1dbca8a640af7245bc61599a7">Add</a>(<span class="stringliteral">&quot;Gadget&quot;</span>, 75);</div>
+<div class="line">    inventory[<span class="stringliteral">&quot;Doohickey&quot;</span>] = 42; <span class="comment">// Indexer assignment</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Safe retrieval with TryGetValue</span></div>
+<div class="line">    <span class="keywordtype">int</span> iStock = 0;</div>
+<div class="line">    <span class="keywordflow">if</span> (inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html#a9e0e30f96f5434f0f41275dbe0049d60">TryGetValue</a>(<span class="stringliteral">&quot;Widget&quot;</span>, iStock)) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Widget stock: {0} units&quot;</span>, iStock);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Iterate key-value pairs with range-for</span></div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Full Inventory:&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; kvp : inventory) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot; - {0}: {1}&quot;</span>, kvp.Key, kvp.Value);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. HashSet&lt;T&gt; (Uniqueness Guarantee)</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html">HashSet&lt;String&gt;</a> allowedRoles;</div>
+<div class="line">    allowedRoles.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a1de1c5b40eea78a20339e32b8fa3db69">Add</a>(<span class="stringliteral">&quot;Administrator&quot;</span>);</div>
+<div class="line">    allowedRoles.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a1de1c5b40eea78a20339e32b8fa3db69">Add</a>(<span class="stringliteral">&quot;Editor&quot;</span>);</div>
+<div class="line">    allowedRoles.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a1de1c5b40eea78a20339e32b8fa3db69">Add</a>(<span class="stringliteral">&quot;Administrator&quot;</span>); <span class="comment">// Duplicate silently ignored</span></div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Allowed roles count: {0}&quot;</span>, allowedRoles.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a2cf6f8a6f4306e80587c9b17a3fb67b3">GetCount</a>()); <span class="comment">// 2</span></div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Is Viewer allowed: {0}&quot;</span>, </div>
+<div class="line">        allowedRoles.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a08a71b633f5acfedc4483c1e92f51972">Contains</a>(<span class="stringliteral">&quot;Viewer&quot;</span>) ? <span class="stringliteral">&quot;Yes&quot;</span> : <span class="stringliteral">&quot;No&quot;</span>);</div>
+<div class="line">}</div>
+<div class="ttc" id="a_dictionary_8h_html"><div class="ttname"><a href="_dictionary_8h.html">Dictionary.h</a></div></div>
+<div class="ttc" id="a_hash_set_8h_html"><div class="ttname"><a href="_hash_set_8h.html">HashSet.h</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">DotNetDupe::System::Collections::Generic::Dictionary</a></div><div class="ttdoc">Represents a collection of keys and values.</div><div class="ttdef"><b>Definition</b> <a href="_dictionary_8h_source.html#l00103">Dictionary.h:104</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_html_a4c07b0d1dbca8a640af7245bc61599a7"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html#a4c07b0d1dbca8a640af7245bc61599a7">DotNetDupe::System::Collections::Generic::Dictionary::Add</a></div><div class="ttdeci">void Add(const TKey &amp;key, const TValue &amp;value) override</div><div class="ttdoc">Adds an element with the provided key and value to the IDictionary.</div><div class="ttdef"><b>Definition</b> <a href="_dictionary_8h_source.html#l00294">Dictionary.h:294</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_html_a9e0e30f96f5434f0f41275dbe0049d60"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html#a9e0e30f96f5434f0f41275dbe0049d60">DotNetDupe::System::Collections::Generic::Dictionary::TryGetValue</a></div><div class="ttdeci">bool TryGetValue(const TKey &amp;key, TValue &amp;value) const override</div><div class="ttdoc">Gets the value associated with the specified key.</div><div class="ttdef"><b>Definition</b> <a href="_dictionary_8h_source.html#l00352">Dictionary.h:352</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html">DotNetDupe::System::Collections::Generic::HashSet</a></div><div class="ttdoc">Represents a set of unique values.</div><div class="ttdef"><b>Definition</b> <a href="_hash_set_8h_source.html#l00060">HashSet.h:61</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_html_a08a71b633f5acfedc4483c1e92f51972"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a08a71b633f5acfedc4483c1e92f51972">DotNetDupe::System::Collections::Generic::HashSet::Contains</a></div><div class="ttdeci">bool Contains(const T &amp;item) const override</div><div class="ttdoc">Determines whether the set contains the specified element.</div><div class="ttdef"><b>Definition</b> <a href="_hash_set_8h_source.html#l00114">HashSet.h:114</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_html_a1de1c5b40eea78a20339e32b8fa3db69"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a1de1c5b40eea78a20339e32b8fa3db69">DotNetDupe::System::Collections::Generic::HashSet::Add</a></div><div class="ttdeci">bool Add(const T &amp;item) override</div><div class="ttdoc">Adds the specified element to the set.</div><div class="ttdef"><b>Definition</b> <a href="_hash_set_8h_source.html#l00102">HashSet.h:102</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_html_a2cf6f8a6f4306e80587c9b17a3fb67b3"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html#a2cf6f8a6f4306e80587c9b17a3fb67b3">DotNetDupe::System::Collections::Generic::HashSet::GetCount</a></div><div class="ttdeci">int GetCount() const override</div><div class="ttdoc">Gets the number of elements in the set.</div><div class="ttdef"><b>Definition</b> <a href="_hash_set_8h_source.html#l00099">HashSet.h:99</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md52"></a>
+3. Thread-Safe Concurrent Collections</h2>
+<p>The <span class="tt"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a></span> namespace provides thread-safe data structures designed for highly concurrent multi-threaded applications:</p>
+<ul>
+<li><b><span class="tt">ConcurrentDictionary&lt;TKey, TValue&gt;</span></b>: Supports atomic <span class="tt">TryAdd()</span>, <span class="tt">GetOrAdd()</span>, and <span class="tt">AddOrUpdate()</span>.</li>
+<li><b><span class="tt">BlockingCollection&lt;T&gt;</span></b>: Provides bounded capacity and blocking <span class="tt">Take()</span> / <span class="tt">Add()</span> across worker threads.</li>
+<li><b><span class="tt">ConcurrentQueue&lt;T&gt;</span></b>, <b><span class="tt">ConcurrentStack&lt;T&gt;</span></b>, <b><span class="tt">ConcurrentBag&lt;T&gt;</span></b>: Thread-safe producer/consumer collections implementing <span class="tt">IProducerConsumerCollection&lt;T&gt;</span>.</li>
+</ul>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_concurrent_dictionary_8h.html">System/Collections/Concurrent/ConcurrentDictionary.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_blocking_collection_8h.html">System/Collections/Concurrent/BlockingCollection.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_thread_8h.html">System/Threading/Thread.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_threading.html">DotNetDupe::System::Threading</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateConcurrentCollections() {</div>
+<div class="line">    <span class="comment">// 1. ConcurrentDictionary with atomic operations</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">ConcurrentDictionary&lt;String, int&gt;</a> sessionHits;</div>
+<div class="line">    sessionHits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#a194b3b32db4404b08a7e98386b6c8103">TryAdd</a>(<span class="stringliteral">&quot;user_101&quot;</span>, 1);</div>
+<div class="line">    </div>
+<div class="line">    <span class="comment">// Atomically increment or initialize hits</span></div>
+<div class="line">    sessionHits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aa3b62343c06aa7fa6c95b85a10c57930">AddOrUpdate</a>(<span class="stringliteral">&quot;user_101&quot;</span>, 1, sessionHits[<span class="stringliteral">&quot;user_101&quot;</span>] + 1);</div>
+<div class="line">    sessionHits.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aaedac5d0dc67712892f4392d7b8b8777">GetOrAdd</a>(<span class="stringliteral">&quot;user_202&quot;</span>, 1);</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;User 101 hits: {0}&quot;</span>, sessionHits[<span class="stringliteral">&quot;user_101&quot;</span>]); <span class="comment">// 2</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// 2. Bounded BlockingCollection (Producer-Consumer pipeline)</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">BlockingCollection&lt;int&gt;</a> workQueue(5); <span class="comment">// Upper bound of 5 items</span></div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Producer Thread</span></div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html">Thread</a> producerThread([&amp;workQueue]() {</div>
+<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">int</span> i = 1; i &lt;= 5; ++i) {</div>
+<div class="line">            workQueue.Add(i * 100);</div>
+<div class="line">            <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#aca1ab2925f7e162281459b8758903661">Thread::Sleep</a>(10);</div>
+<div class="line">        }</div>
+<div class="line">        workQueue.CompleteAdding(); <span class="comment">// Signal no more items will be added</span></div>
+<div class="line">    });</div>
+<div class="line"> </div>
+<div class="line">    producerThread.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread.html#ac9873ca850ec902a1c64e6477f4b12e1">Start</a>();</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Consumer (main thread)</span></div>
+<div class="line">    <span class="keywordtype">int</span> iWorkItem = 0;</div>
+<div class="line">    <span class="keywordflow">while</span> (workQueue.TryTake(iWorkItem, -1)) { <span class="comment">// -1 waits until item is available</span></div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Processed work item: {0}&quot;</span>, iWorkItem);</div>
+<div class="line">    }</div>
+<div class="line"> </div>
+<div class="line">    producerThread.Join();</div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Pipeline complete: {0}&quot;</span>, workQueue.IsCompleted() ? <span class="stringliteral">&quot;True&quot;</span> : <span class="stringliteral">&quot;False&quot;</span>);</div>
+<div class="line">}</div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary_html_aa3b62343c06aa7fa6c95b85a10c57930"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html#aa3b62343c06aa7fa6c95b85a10c57930">DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary::AddOrUpdate</a></div><div class="ttdeci">TValue AddOrUpdate(const TKey &amp;key, const TValue &amp;addValue, const TValue &amp;updateValue)</div><div class="ttdoc">Adds a key/value pair if the key does not exist, or updates a key/value pair if it does.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_dictionary_8h_source.html#l00155">ConcurrentDictionary.h:155</a></div></div>
+</div><!-- fragment --><hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md54"></a>
+4. Snapshot Iteration &amp; Direct LINQ Integration</h2>
+<p>Unlike traditional C++ containers where concurrent iteration during modification causes data corruption, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>'s concurrent collections provide <b>lock-free snapshot iteration</b>. Calling <span class="tt">GetEnumerator()</span>, using range-based <span class="tt">for</span>, or invoking LINQ queries captures a thread-safe snapshot under mutual exclusion and iterates lock-free.</p>
+<p>All collections can be queried with LINQ directly without any wrapper calls:</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_string_8h.html">System/String.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_linq_8h.html">System/Linq.h</a>&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_concurrent_queue_8h.html">System/Collections/Concurrent/ConcurrentQueue.h</a>&quot;</span></div>
+<div class="line"> </div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system.html">DotNetDupe::System</a>;</div>
+<div class="line"><span class="keyword">using namespace </span><a class="code hl_namespace" href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">DotNetDupe::System::Collections::Concurrent</a>;</div>
+<div class="line"> </div>
+<div class="line"><span class="keywordtype">void</span> DemonstrateSnapshotAndLinq() {</div>
+<div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html">ConcurrentQueue&lt;int&gt;</a> scoreQueue;</div>
+<div class="line">    scoreQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">Enqueue</a>(45);</div>
+<div class="line">    scoreQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">Enqueue</a>(92);</div>
+<div class="line">    scoreQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">Enqueue</a>(78);</div>
+<div class="line">    scoreQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">Enqueue</a>(88);</div>
+<div class="line">    scoreQueue.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">Enqueue</a>(63);</div>
+<div class="line"> </div>
+<div class="line">    <span class="comment">// Direct LINQ method chaining directly on ConcurrentQueue:</span></div>
+<div class="line">    <span class="comment">// Filter passing scores (&gt;= 70), sort descending, and materialize to List&lt;int&gt;</span></div>
+<div class="line">    <span class="keyword">auto</span> topScores = scoreQueue</div>
+<div class="line">        .<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a0d13bc4f02127739f4bdd2b55792d1aa">Where</a>([](<span class="keywordtype">int</span> score) { <span class="keywordflow">return</span> score &gt;= 70; })</div>
+<div class="line">        .OrderByDescending([](<span class="keywordtype">int</span> score) { <span class="keywordflow">return</span> score; })</div>
+<div class="line">        .ToList();</div>
+<div class="line"> </div>
+<div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Passing Scores (Descending):&quot;</span>);</div>
+<div class="line">    <span class="keywordflow">for</span> (<span class="keywordtype">int</span> score : topScores) {</div>
+<div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot; - {0}&quot;</span>, score);</div>
+<div class="line">    }</div>
+<div class="line">}</div>
+<div class="ttc" id="a_linq_8h_html"><div class="ttname"><a href="_linq_8h.html">Linq.h</a></div><div class="ttdoc">Master umbrella include file for DotNetDupe LINQ.</div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html">DotNetDupe::System::Collections::Concurrent::ConcurrentQueue</a></div><div class="ttdoc">Represents a thread-safe first-in, first-out (FIFO) collection.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_queue_8h_source.html#l00028">ConcurrentQueue.h:28</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue_html_a66f2084ed3e4ec74af0cf6135c828c4e"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html#a66f2084ed3e4ec74af0cf6135c828c4e">DotNetDupe::System::Collections::Concurrent::ConcurrentQueue::Enqueue</a></div><div class="ttdeci">void Enqueue(const T &amp;item)</div><div class="ttdoc">Adds an object to the end of the ConcurrentQueue.</div><div class="ttdef"><b>Definition</b> <a href="_concurrent_queue_8h_source.html#l00043">ConcurrentQueue.h:43</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a0d13bc4f02127739f4bdd2b55792d1aa"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a0d13bc4f02127739f4bdd2b55792d1aa">DotNetDupe::System::Collections::Generic::IEnumerable::Where</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Where(F &amp;&amp;predicate) const</div><div class="ttdoc">Filters a sequence of values based on a predicate.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00737">Enumerable.h:737</a></div></div>
+</div><!-- fragment --><hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
 Language Integrated Query (LINQ) ⚡</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> brings the expressive, declarative power of C# .NET's Language Integrated Query (<span class="tt">System.Linq</span>, ECMA-335) directly to modern C++. Through fluent operator chaining and type-safe lambdas, you can filter, sort, transform, group, and aggregate collections without verbose imperative loops, temporary vectors, or STL algorithm boilerplate.</p>
-<p>All LINQ operators work seamlessly with <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> <span class="tt">List&lt;T&gt;</span>, <span class="tt">Array&lt;T&gt;</span>, and <span class="tt">std::initializer_list&lt;T&gt;</span> via the <span class="tt">AsEnumerable()</span> extension helper, offering pure library types, value semantics, and exception-safe RAII memory management.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md37"></a>
+<p>All LINQ operators work natively and directly on any <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> collection (<span class="tt">List&lt;T&gt;</span>, <span class="tt">Array&lt;T&gt;</span>, <span class="tt">LinkedList&lt;T&gt;</span>, <span class="tt">HashSet&lt;T&gt;</span>, <span class="tt">Dictionary&lt;K, V&gt;</span>, <span class="tt">Queue&lt;T&gt;</span>, <span class="tt">Stack&lt;T&gt;</span>, <span class="tt">SortedSet&lt;T&gt;</span>, <span class="tt">SortedDictionary&lt;K, V&gt;</span>) through the standard <span class="tt">IEnumerable&lt;T&gt;</span> interface hierarchy, offering pure library types, value semantics, and exception-safe RAII memory management.</p>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md57"></a>
 Key Capabilities</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -718,7 +1119,7 @@ Key Capabilities</h2>
 <td class="markdownTableBodyNone"><b>Generators &amp; Materialization</b>  </td><td class="markdownTableBodyNone"><span class="tt">Enumerable&lt;T&gt;::Range()</span>, <span class="tt">Repeat()</span>, <span class="tt">Empty()</span>, <span class="tt">ToList()</span>, <span class="tt">ToArray()</span>, <span class="tt">ToDictionary()</span>, <span class="tt">ToHashSet()</span>  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md39"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md59"></a>
 1. Filtering, Sorting &amp; Projections</h2>
 <p>Chain <span class="tt">Where</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, and <span class="tt">Select</span> into a clean query pipeline. Results can be materialized into a <span class="tt">List&lt;T&gt;</span> using <span class="tt">ToList()</span> or an <span class="tt">Array&lt;T&gt;</span> using <span class="tt">ToArray()</span>.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
@@ -739,15 +1140,15 @@ Key Capabilities</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> DemonstrateFilteringAndSorting() {</div>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;ProductItem&gt;</a> inventory;</div>
-<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Espresso Machine&quot;</span>, <span class="stringliteral">&quot;Appliances&quot;</span>, 299, 12});</div>
-<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Coffee Grinder&quot;</span>,   <span class="stringliteral">&quot;Appliances&quot;</span>,  89,  0});</div>
-<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Dark Roast Beans&quot;</span>, <span class="stringliteral">&quot;Coffee&quot;</span>,      15, 50});</div>
-<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;French Press&quot;</span>,     <span class="stringliteral">&quot;Appliances&quot;</span>,  35,  8});</div>
-<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Colombian Roast&quot;</span>,  <span class="stringliteral">&quot;Coffee&quot;</span>,      18, 25});</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Espresso Machine&quot;</span>, <span class="stringliteral">&quot;Appliances&quot;</span>, 299, 12});</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Coffee Grinder&quot;</span>,   <span class="stringliteral">&quot;Appliances&quot;</span>,  89,  0});</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Dark Roast Beans&quot;</span>, <span class="stringliteral">&quot;Coffee&quot;</span>,      15, 50});</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;French Press&quot;</span>,     <span class="stringliteral">&quot;Appliances&quot;</span>,  35,  8});</div>
+<div class="line">    inventory.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Colombian Roast&quot;</span>,  <span class="stringliteral">&quot;Coffee&quot;</span>,      18, 25});</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Fluent LINQ Pipeline: Filter in-stock appliances, sort by price descending, project formatted summary</span></div>
-<div class="line">    <span class="keyword">auto</span> popularItems = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(inventory)</div>
-<div class="line">        .Where([](<span class="keyword">const</span> ProductItem&amp; p) { <span class="keywordflow">return</span> p.InStock &gt; 0 &amp;&amp; p.Category == <span class="stringliteral">&quot;Appliances&quot;</span>; })</div>
+<div class="line">    <span class="keyword">auto</span> popularItems = inventory</div>
+<div class="line">        .<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a0d13bc4f02127739f4bdd2b55792d1aa">Where</a>([](<span class="keyword">const</span> ProductItem&amp; p) { <span class="keywordflow">return</span> p.InStock &gt; 0 &amp;&amp; p.Category == <span class="stringliteral">&quot;Appliances&quot;</span>; })</div>
 <div class="line">        .OrderByDescending([](<span class="keyword">const</span> ProductItem&amp; p) { <span class="keywordflow">return</span> p.Price; })</div>
 <div class="line">        .Select([](<span class="keyword">const</span> ProductItem&amp; p) {</div>
 <div class="line">            <span class="keywordflow">return</span> <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_string.html#aa2996c3f645a32e13cf4350fef2b1240">String::Format</a>(<span class="stringliteral">&quot;{0} - ${1} ({2} available)&quot;</span>, p.Name, p.Price, p.InStock);</div>
@@ -759,15 +1160,9 @@ Key Capabilities</h2>
 <div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;  • {0}&quot;</span>, popularItems[i]);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="a_linq_8h_html"><div class="ttname"><a href="_linq_8h.html">Linq.h</a></div><div class="ttdoc">Master umbrella include file and extension helpers for DotNetDupe LINQ.</div></div>
-<div class="ttc" id="a_list_8h_html"><div class="ttname"><a href="_list_8h.html">List.h</a></div><div class="ttdoc">Represents a strongly typed list of objects that can be accessed by index mirroring ....</div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">DotNetDupe::System::Collections::Generic::List</a></div><div class="ttdoc">Represents a strongly typed list of objects accessible by index.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00029">List.h:29</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html_aa210514ce0dfddc981d7ce13a2d17e12"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">DotNetDupe::System::Collections::Generic::List::Add</a></div><div class="ttdeci">void Add(const T &amp;item)</div><div class="ttdoc">Adds an object to the end of the List.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00138">List.h:138</a></div></div>
-<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">DotNetDupe::System::Collections::Generic</a></div><div class="ttdef"><b>Definition</b> <a href="_dictionary_8h_source.html#l00015">Dictionary.h:15</a></div></div>
-<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_linq_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">DotNetDupe::System::Linq</a></div><div class="ttdef"><b>Definition</b> <a href="_linq_8h_source.html#l00014">Linq.h:14</a></div></div>
-<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_linq_html_a61013126d92bafa271c4942121655508"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">DotNetDupe::System::Linq::AsEnumerable</a></div><div class="ttdeci">Enumerable&lt; T &gt; AsEnumerable(const Collections::Generic::List&lt; T &gt; &amp;list)</div><div class="ttdoc">Extension helper converting a List to an Enumerable.</div><div class="ttdef"><b>Definition</b> <a href="_linq_8h_source.html#l00021">Linq.h:21</a></div></div>
+<div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_linq_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">DotNetDupe::System::Linq</a></div><div class="ttdef"><b>Definition</b> <a href="_i_enumerable_8h_source.html#l00019">IEnumerable.h:19</a></div></div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md41"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md61"></a>
 2. Grouping &amp; Bucket Aggregations</h2>
 <p>Use <span class="tt">GroupBy</span> to partition collections by key into groups implementing <span class="tt">IGrouping&lt;TKey, TElement&gt;</span>. Each group exposes <span class="tt">Key()</span>, <span class="tt">Count()</span>, and indexer access (<span class="tt">group[i]</span>) or <span class="tt">Elements()</span>.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
@@ -787,16 +1182,16 @@ Key Capabilities</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> DemonstrateGrouping() {</div>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;Employee&gt;</a> staff;</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Alice&quot;</span>,   <span class="stringliteral">&quot;Engineering&quot;</span>, 125000});</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Bob&quot;</span>,     <span class="stringliteral">&quot;Marketing&quot;</span>,    85000});</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Charlie&quot;</span>, <span class="stringliteral">&quot;Engineering&quot;</span>, 140000});</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Diana&quot;</span>,   <span class="stringliteral">&quot;Finance&quot;</span>,     110000});</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Evan&quot;</span>,    <span class="stringliteral">&quot;Engineering&quot;</span>,  95000});</div>
-<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>({<span class="stringliteral">&quot;Fiona&quot;</span>,   <span class="stringliteral">&quot;Marketing&quot;</span>,    92000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Alice&quot;</span>,   <span class="stringliteral">&quot;Engineering&quot;</span>, 125000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Bob&quot;</span>,     <span class="stringliteral">&quot;Marketing&quot;</span>,    85000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Charlie&quot;</span>, <span class="stringliteral">&quot;Engineering&quot;</span>, 140000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Diana&quot;</span>,   <span class="stringliteral">&quot;Finance&quot;</span>,     110000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Evan&quot;</span>,    <span class="stringliteral">&quot;Engineering&quot;</span>,  95000});</div>
+<div class="line">    staff.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>({<span class="stringliteral">&quot;Fiona&quot;</span>,   <span class="stringliteral">&quot;Marketing&quot;</span>,    92000});</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Group employees by Department and sort buckets by member count descending</span></div>
-<div class="line">    <span class="keyword">auto</span> deptGroups = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(staff)</div>
-<div class="line">        .GroupBy([](<span class="keyword">const</span> Employee&amp; e) { <span class="keywordflow">return</span> e.Department; })</div>
+<div class="line">    <span class="keyword">auto</span> deptGroups = staff</div>
+<div class="line">        .<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a15d4cb3d0e5ca7ba531fa553b75ff0f7">GroupBy</a>([](<span class="keyword">const</span> Employee&amp; e) { <span class="keywordflow">return</span> e.Department; })</div>
 <div class="line">        .OrderByDescending([](<span class="keyword">const</span> <span class="keyword">auto</span>&amp; g) { <span class="keywordflow">return</span> g.Count(); })</div>
 <div class="line">        .ToList();</div>
 <div class="line"> </div>
@@ -809,8 +1204,9 @@ Key Capabilities</h2>
 <div class="line">        }</div>
 <div class="line">    }</div>
 <div class="line">}</div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a15d4cb3d0e5ca7ba531fa553b75ff0f7"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a15d4cb3d0e5ca7ba531fa553b75ff0f7">DotNetDupe::System::Collections::Generic::IEnumerable::GroupBy</a></div><div class="ttdeci">auto GroupBy(FKey &amp;&amp;keySelector) const</div><div class="ttdoc">Groups the elements of a sequence according to a specified key selector function.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00761">Enumerable.h:761</a></div></div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md43"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md63"></a>
 3. Aggregations &amp; Quantifiers</h2>
 <p>Perform reductions, scalar metrics, and boolean sequence assertions across strongly typed datasets with ease.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
@@ -826,27 +1222,35 @@ Key Capabilities</h2>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;int&gt;</a> readings = { 42, 18, 95, 73, 60, 84, 51 };</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Numeric Aggregations</span></div>
-<div class="line">    <span class="keywordtype">int</span> sum = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Sum();</div>
-<div class="line">    <span class="keywordtype">int</span> min = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Min();</div>
-<div class="line">    <span class="keywordtype">int</span> max = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Max();</div>
-<div class="line">    <span class="keywordtype">double</span> avg = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Average();</div>
-<div class="line">    <span class="keywordtype">int</span> highCount = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Count([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt;= 70; });</div>
+<div class="line">    <span class="keywordtype">int</span> sum = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#adc26bdea723bdfccdc732f13fe76a3ae">Sum</a>();</div>
+<div class="line">    <span class="keywordtype">int</span> min = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a3cec5dd59e6f5bf502e4439e54788476">Min</a>();</div>
+<div class="line">    <span class="keywordtype">int</span> max = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a6bff3f47b47bb5bdc4dc611b41f9b2c8">Max</a>();</div>
+<div class="line">    <span class="keywordtype">double</span> avg = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a21b62a93fcf6fccd4a65db524abf0f2f">Average</a>();</div>
+<div class="line">    <span class="keywordtype">int</span> highCount = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html#a9b7cb9e9eb9476c5ce53e2bfd4f387dd">Count</a>([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt;= 70; });</div>
 <div class="line"> </div>
 <div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Readings Stats -&gt; Sum: {0}, Min: {1}, Max: {2}, Avg: {3}, High (&gt;=70): {4}&quot;</span>,</div>
 <div class="line">                       sum, min, max, avg, highCount);</div>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// Quantifiers &amp; Predicate Matching</span></div>
-<div class="line">    <span class="keywordtype">bool</span> hasOver90   = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Any([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt; 90; });</div>
-<div class="line">    <span class="keywordtype">bool</span> allPositive = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).All([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt; 0; });</div>
-<div class="line">    <span class="keywordtype">bool</span> contains51  = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(readings).Contains(51);</div>
+<div class="line">    <span class="keywordtype">bool</span> hasOver90   = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a8b4df74554d399b01d597c47da477abd">Any</a>([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt; 90; });</div>
+<div class="line">    <span class="keywordtype">bool</span> allPositive = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a26f5e645f099b5f8c406ffb5ec9cdba1">All</a>([](<span class="keywordtype">int</span> n) { <span class="keywordflow">return</span> n &gt; 0; });</div>
+<div class="line">    <span class="keywordtype">bool</span> contains51  = readings.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a3b527704d4486b16dd75f6698f1de37c">Contains</a>(51);</div>
 <div class="line"> </div>
 <div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Any &gt; 90? {0} | All &gt; 0? {1} | Contains 51? {2}&quot;</span>,</div>
 <div class="line">                       hasOver90 ? <span class="stringliteral">&quot;Yes&quot;</span> : <span class="stringliteral">&quot;No&quot;</span>,</div>
 <div class="line">                       allPositive ? <span class="stringliteral">&quot;Yes&quot;</span> : <span class="stringliteral">&quot;No&quot;</span>,</div>
 <div class="line">                       contains51 ? <span class="stringliteral">&quot;Yes&quot;</span> : <span class="stringliteral">&quot;No&quot;</span>);</div>
 <div class="line">}</div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a21b62a93fcf6fccd4a65db524abf0f2f"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a21b62a93fcf6fccd4a65db524abf0f2f">DotNetDupe::System::Collections::Generic::IEnumerable::Average</a></div><div class="ttdeci">double Average() const</div><div class="ttdoc">Computes the average of a sequence of numeric values.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00850">Enumerable.h:850</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a26f5e645f099b5f8c406ffb5ec9cdba1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a26f5e645f099b5f8c406ffb5ec9cdba1">DotNetDupe::System::Collections::Generic::IEnumerable::All</a></div><div class="ttdeci">bool All(F &amp;&amp;predicate) const</div><div class="ttdoc">Determines whether all elements of a sequence satisfy a condition.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00829">Enumerable.h:829</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a3cec5dd59e6f5bf502e4439e54788476"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a3cec5dd59e6f5bf502e4439e54788476">DotNetDupe::System::Collections::Generic::IEnumerable::Min</a></div><div class="ttdeci">T Min() const</div><div class="ttdoc">Returns the minimum value in a generic sequence.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00855">Enumerable.h:855</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a6bff3f47b47bb5bdc4dc611b41f9b2c8"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a6bff3f47b47bb5bdc4dc611b41f9b2c8">DotNetDupe::System::Collections::Generic::IEnumerable::Max</a></div><div class="ttdeci">T Max() const</div><div class="ttdoc">Returns the maximum value in a generic sequence.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00860">Enumerable.h:860</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a8b4df74554d399b01d597c47da477abd"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a8b4df74554d399b01d597c47da477abd">DotNetDupe::System::Collections::Generic::IEnumerable::Any</a></div><div class="ttdeci">bool Any() const</div><div class="ttdoc">Determines whether a sequence contains any elements.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00817">Enumerable.h:817</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_adc26bdea723bdfccdc732f13fe76a3ae"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#adc26bdea723bdfccdc732f13fe76a3ae">DotNetDupe::System::Collections::Generic::IEnumerable::Sum</a></div><div class="ttdeci">T Sum() const</div><div class="ttdoc">Computes the sum of a sequence of numeric values.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00845">Enumerable.h:845</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection_html_a9b7cb9e9eb9476c5ce53e2bfd4f387dd"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html#a9b7cb9e9eb9476c5ce53e2bfd4f387dd">DotNetDupe::System::Collections::Generic::IReadOnlyCollection::Count</a></div><div class="ttdeci">int Count() const</div><div class="ttdoc">Gets the number of elements in the collection (alias for GetCount).</div><div class="ttdef"><b>Definition</b> <a href="_i_read_only_collection_8h_source.html#l00035">IReadOnlyCollection.h:35</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_html_a3b527704d4486b16dd75f6698f1de37c"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a3b527704d4486b16dd75f6698f1de37c">DotNetDupe::System::Collections::Generic::List::Contains</a></div><div class="ttdeci">bool Contains(const T &amp;item) const override</div><div class="ttdoc">Determines whether an element is in the List.</div><div class="ttdef"><b>Definition</b> <a href="_list_8h_source.html#l00205">List.h:205</a></div></div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md45"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md65"></a>
 4. Set Operations, Generators &amp; Materialization</h2>
 <p>Combine sequences with set theory operators (<span class="tt">Union</span>, <span class="tt">Intersect</span>, <span class="tt">Except</span>), generate data streams on the fly with <span class="tt">Range()</span> and <span class="tt">Repeat()</span>, and materialize query pipelines directly into targeted collection structures.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_console_8h.html">System/Console.h</a>&quot;</span></div>
@@ -871,9 +1275,9 @@ Key Capabilities</h2>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;int&gt;</a> setA = { 1, 2, 3, 4, 5 };</div>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;int&gt;</a> setB = { 4, 5, 6, 7, 8 };</div>
 <div class="line"> </div>
-<div class="line">    <span class="keyword">auto</span> common = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setA).Intersect(<a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setB)).ToList(); <span class="comment">// [4, 5]</span></div>
-<div class="line">    <span class="keyword">auto</span> uniqueToA = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setA).Except(<a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setB)).ToList();  <span class="comment">// [1, 2, 3]</span></div>
-<div class="line">    <span class="keyword">auto</span> combined = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setA).Union(<a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(setB)).ToList();   <span class="comment">// [1, 2, 3, 4, 5, 6, 7, 8]</span></div>
+<div class="line">    <span class="keyword">auto</span> common = setA.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a3e9846daefb92582ea28d63ee904db1d">Intersect</a>(setB).ToList(); <span class="comment">// [4, 5]</span></div>
+<div class="line">    <span class="keyword">auto</span> uniqueToA = setA.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a9ca11c3d98c02f9c3a5672652a3cbd9f">Except</a>(setB).ToList();  <span class="comment">// [1, 2, 3]</span></div>
+<div class="line">    <span class="keyword">auto</span> combined = setA.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#acc6af114b49edb03bd434a22d97c1892">Union</a>(setB).ToList();   <span class="comment">// [1, 2, 3, 4, 5, 6, 7, 8]</span></div>
 <div class="line"> </div>
 <div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Common (Intersect): Count = {0}&quot;</span>, common.GetCount());</div>
 <div class="line">    <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Unique to A (Except): Count = {0}&quot;</span>, uniqueToA.GetCount());</div>
@@ -881,8 +1285,8 @@ Key Capabilities</h2>
 <div class="line"> </div>
 <div class="line">    <span class="comment">// 3. Fast Lookup Dictionary Materialization</span></div>
 <div class="line">    <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">List&lt;String&gt;</a> words = { <span class="stringliteral">&quot;Apple&quot;</span>, <span class="stringliteral">&quot;Banana&quot;</span>, <span class="stringliteral">&quot;Cherry&quot;</span> };</div>
-<div class="line">    <span class="keyword">auto</span> wordMap = <a class="code hl_function" href="namespace_dot_net_dupe_1_1_system_1_1_linq.html#a61013126d92bafa271c4942121655508">AsEnumerable</a>(words)</div>
-<div class="line">        .ToDictionary([](<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; s) { <span class="keywordflow">return</span> s; },</div>
+<div class="line">    <span class="keyword">auto</span> wordMap = words</div>
+<div class="line">        .<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a93cf39e3312c98c270725d0dee7b6901">ToDictionary</a>([](<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; s) { <span class="keywordflow">return</span> s; },</div>
 <div class="line">                      [](<span class="keyword">const</span> <a class="code hl_class" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&amp; s) { <span class="keywordflow">return</span> s.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_string.html#a60521ef141e31fe99185d0817de53198">GetLength</a>(); });</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordtype">int</span> len = 0;</div>
@@ -890,16 +1294,20 @@ Key Capabilities</h2>
 <div class="line">        <a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">Console::WriteLine</a>(<span class="stringliteral">&quot;Lookup &#39;Banana&#39; length in Dictionary: {0}&quot;</span>, len);</div>
 <div class="line">    }</div>
 <div class="line">}</div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable_html_a65c275bb49a546554d7142271e79efb1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html#a65c275bb49a546554d7142271e79efb1">DotNetDupe::System::Linq::Enumerable::Range</a></div><div class="ttdeci">static Enumerable&lt; int &gt; Range(int start, int count)</div><div class="ttdoc">Generates a sequence of integral numbers within a specified range.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00664">Enumerable.h:664</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a3e9846daefb92582ea28d63ee904db1d"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a3e9846daefb92582ea28d63ee904db1d">DotNetDupe::System::Collections::Generic::IEnumerable::Intersect</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Intersect(const IEnumerable&lt; T &gt; &amp;other) const</div><div class="ttdoc">Produces the set intersection of two sequences.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00893">Enumerable.h:893</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a93cf39e3312c98c270725d0dee7b6901"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a93cf39e3312c98c270725d0dee7b6901">DotNetDupe::System::Collections::Generic::IEnumerable::ToDictionary</a></div><div class="ttdeci">auto ToDictionary(FKey &amp;&amp;keySelector, FValue &amp;&amp;valueSelector) const</div><div class="ttdoc">Creates a Dictionary from an IEnumerable&lt;T&gt;.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00953">Enumerable.h:953</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a9ca11c3d98c02f9c3a5672652a3cbd9f"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a9ca11c3d98c02f9c3a5672652a3cbd9f">DotNetDupe::System::Collections::Generic::IEnumerable::Except</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Except(const IEnumerable&lt; T &gt; &amp;other) const</div><div class="ttdoc">Produces the set difference of two sequences.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00898">Enumerable.h:898</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_acc6af114b49edb03bd434a22d97c1892"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#acc6af114b49edb03bd434a22d97c1892">DotNetDupe::System::Collections::Generic::IEnumerable::Union</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Union(const IEnumerable&lt; T &gt; &amp;other) const</div><div class="ttdoc">Produces the set union of two sequences.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00888">Enumerable.h:888</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable_html_a65c275bb49a546554d7142271e79efb1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html#a65c275bb49a546554d7142271e79efb1">DotNetDupe::System::Linq::Enumerable::Range</a></div><div class="ttdeci">static Enumerable&lt; int &gt; Range(int start, int count)</div><div class="ttdoc">Generates a sequence of integral numbers within a specified range.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00685">Enumerable.h:685</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html_a60521ef141e31fe99185d0817de53198"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html#a60521ef141e31fe99185d0817de53198">DotNetDupe::System::String::GetLength</a></div><div class="ttdeci">int GetLength() const</div><div class="ttdef"><b>Definition</b> <a href="_string_8cpp_source.html#l00247">String.cpp:247</a></div></div>
 </div><!-- fragment --><hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md47"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md67"></a>
 Web API &amp; Database Integration Guide 🌐🗄️</h1>
 <p>This section provides comprehensive examples and recommended practices for hosting web services, consuming them, and using the database storage layer.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md48"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
 1. Hosting REST API Controllers</h2>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides an ASP.NET-like hosting model with dependency injection and controller-based routing in the <span class="tt">WebAppCore</span> namespaces.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md49"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md69"></a>
 Defining and Hosting a Controller</h3>
 <ol type="1">
 <li>Declare your data structure.</li>
@@ -954,8 +1362,8 @@ Defining and Hosting a Controller</h3>
 <div class="line">    <span class="comment">// GET /api/products</span></div>
 <div class="line">    Collections::Generic::List&lt;ProductItem&gt; GetProducts() {</div>
 <div class="line">        Collections::Generic::List&lt;ProductItem&gt; list;</div>
-<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>(ProductItem{<span class="stringliteral">&quot;Espresso Machine&quot;</span>, 299});</div>
-<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#aa210514ce0dfddc981d7ce13a2d17e12">Add</a>(ProductItem{<span class="stringliteral">&quot;Coffee Grinder&quot;</span>, 89});</div>
+<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>(ProductItem{<span class="stringliteral">&quot;Espresso Machine&quot;</span>, 299});</div>
+<div class="line">        list.<a class="code hl_function" href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a2f82251341d99f242c6ba1044edc56a1">Add</a>(ProductItem{<span class="stringliteral">&quot;Coffee Grinder&quot;</span>, 89});</div>
 <div class="line">        <span class="keywordflow">return</span> list;</div>
 <div class="line">    }</div>
 <div class="line"> </div>
@@ -988,10 +1396,10 @@ Defining and Hosting a Controller</h3>
 <div class="ttc" id="anamespace_dot_net_dupe_1_1_web_app_core_1_1_controllers_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_controllers.html">DotNetDupe::WebAppCore::Controllers</a></div><div class="ttdef"><b>Definition</b> <a href="_controller_base_8h_source.html#l00017">ControllerBase.h:17</a></div></div>
 <div class="ttc" id="anamespace_dot_net_dupe_html"><div class="ttname"><a href="namespace_dot_net_dupe.html">DotNetDupe</a></div><div class="ttdef"><b>Definition</b> <a href="_i_service_collection_8h_source.html#l00007">IServiceCollection.h:7</a></div></div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md51"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md71"></a>
 2. Consuming REST APIs</h2>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> makes client-side web requests simple. You can query endpoints using a low-level HTTP client or a strongly-typed REST resource client.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md52"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
 Option A: Low-level HTTP Client (<span class="tt">HttpClient</span>)</h3>
 <p>Best for general, raw request handling, sending custom headers, or performing authentication (like setting Bearer tokens).</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_http_client_8h.html">System/Net/Http/HttpClient.h</a>&quot;</span></div>
@@ -1016,7 +1424,7 @@ Option A: Low-level HTTP Client (<span class="tt">HttpClient</span>)</h3>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_abcd8a4d7d9d88641c5e7ed02b1dd0f92"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#abcd8a4d7d9d88641c5e7ed02b1dd0f92">DotNetDupe::System::Net::Http::HttpClient::Get</a></div><div class="ttdeci">HttpResponseMessagePtr Get(const String &amp;requestUri)</div><div class="ttdoc">Sends a GET request to the specified string Uri.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00283">HttpClient.cpp:283</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_ad95af88106b60653a5ae93d7520e0dba"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#ad95af88106b60653a5ae93d7520e0dba">DotNetDupe::System::Net::Http::HttpClient::GetDefaultRequestHeaders</a></div><div class="ttdeci">Collections::Generic::Dictionary&lt; String, String &gt; &amp; GetDefaultRequestHeaders()</div><div class="ttdoc">Gets the headers which should be sent with each request.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00357">HttpClient.cpp:357</a></div></div>
 <div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_net_1_1_http_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">DotNetDupe::System::Net::Http</a></div><div class="ttdef"><b>Definition</b> <a href="_file_downloader_8h_source.html#l00022">FileDownloader.h:22</a></div></div>
-</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md53"></a>
+</div><!-- fragment --><h3 class="doxsection"><a class="anchor" id="autotoc_md73"></a>
 Option B: Strongly-Typed Client (<span class="tt">RestClient&lt;T&gt;</span>) - <em>Recommended</em></h3>
 <p>Best for standard RESTful resources. It handles payload serialization/deserialization to your model structures automatically.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="_rest_client_8h.html">System/Net/Http/RestClient.h</a>&quot;</span></div>
@@ -1039,10 +1447,10 @@ Option B: Strongly-Typed Client (<span class="tt">RestClient&lt;T&gt;</span>) - 
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client_html_a0181c787346856e96bd927ead8de012a"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html#a0181c787346856e96bd927ead8de012a">DotNetDupe::System::Net::Http::HttpClient::Post</a></div><div class="ttdeci">HttpResponseMessagePtr Post(const String &amp;requestUri, const HttpContentPtr &amp;content)</div><div class="ttdoc">Sends a POST request with content to the specified string Uri.</div><div class="ttdef"><b>Definition</b> <a href="_http_client_8cpp_source.html#l00294">HttpClient.cpp:294</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_rest_client.html">DotNetDupe::System::Net::Http::RestClient</a></div><div class="ttdoc">Strongly-typed REST client template with automated C++ structure JSON serialization/deserialization.</div><div class="ttdef"><b>Definition</b> <a href="_rest_client_8h_source.html#l00027">RestClient.h:27</a></div></div>
 </div><!-- fragment --><hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md55"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md75"></a>
 3. Using the Database Layer</h2>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> emulates C# ADO.NET (<span class="tt">SqlConnection</span>, <span class="tt">SqlCommand</span>, <span class="tt">SqlDataReader</span>) for SQL execution.</p>
-<h3 class="doxsection"><a class="anchor" id="autotoc_md56"></a>
+<h3 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
 Recommended Usage Patterns</h3>
 <ol type="1">
 <li><b>Routing and Engine Fallback via Connection String</b>:<ul>
@@ -1109,13 +1517,13 @@ Recommended Usage Patterns</h3>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_exception_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_exception.html">DotNetDupe::System::Exception</a></div><div class="ttdoc">Represents errors that occur during application execution.</div><div class="ttdef"><b>Definition</b> <a href="_exception_8h_source.html#l00019">Exception.h:19</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_exception_html_a5a18322eb5117aaffd20a63b0d7cc341"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_exception.html#a5a18322eb5117aaffd20a63b0d7cc341">DotNetDupe::System::Exception::What</a></div><div class="ttdeci">const char * What() const</div><div class="ttdoc">Gets a message that describes the current exception.</div><div class="ttdef"><b>Definition</b> <a href="_exception_8h_source.html#l00046">Exception.h:46</a></div></div>
 <div class="ttc" id="anamespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_html"><div class="ttname"><a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">DotNetDupe::System::Data::SqlClient</a></div><div class="ttdef"><b>Definition</b> <a href="_sql_command_8h_source.html#l00008">SqlCommand.h:8</a></div></div>
-</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md57"></a>
+</div><!-- fragment --><h1 class="doxsection"><a class="anchor" id="autotoc_md77"></a>
 STL vs DotNetDupe Comparison ⚖️</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is designed to be more intuitive and less verbose than the standard C++ STL. Architectural comparisons, usage patterns, and class-by-class overviews are available in the <a href="https://sudheeshps.github.io/dotnetdupe/">Interactive Documentation Portal</a>.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md58"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
 Sample Client and Test Code 🧪</h2>
 <p>The repository includes <span class="tt">DotNetDupeDemo</span> (a sample console application) and <span class="tt">DotNetDupeTests</span> (unit tests) projects. These projects demonstrate how to integrate and use the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> library. You can refer to their <span class="tt">.vcxproj</span> files for examples of how to configure your own projects to consume the <span class="tt"><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> NuGet package.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md59"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md79"></a>
 API Reference 📖</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> provides comprehensive documentation through an interactive portal:</p>
 <ul>
@@ -1125,7 +1533,7 @@ API Reference 📖</h1>
 </div><!-- fragment --></dd></dl>
 <p>For detailed information on the available classes, methods, and their usage, please refer to the comprehensive <a href="https://sudheeshps.github.io/dotnetdupe/">API documentation</a> for each class:</p>
 <dl class="section remark"><dt>Remarks</dt><dd><b>Navigation</b>: Click any <b>Class Name</b> to inspect its C++ header interface, or click <b>📖</b> to open its generated Doxygen API reference.</dd></dl>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md60"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system.html"><span class="tt">DotNetDupe::System</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system.html">📖</a></h2>
 <p><b>Core Primitives &amp; Base Classes</b></p>
 <table class="markdownTable">
@@ -1231,55 +1639,77 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system.html"><span class="tt">Dot
 <td class="markdownTableBodyNone"><a href="../../Include/System/OverflowException.h">OverflowException</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_overflow_exception.html">📖</a>  </td><td class="markdownTableBodyNone">Thrown on arithmetic or conversion overflow.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md62"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html"><span class="tt">DotNetDupe::System::Collections::Generic</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/List.h">List&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">📖</a>  </td><td class="markdownTableBodyNone">Strongly-typed dynamic array list accessible by index.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IEnumerable.h">IEnumerable&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html">📖</a>  </td><td class="markdownTableBodyNone">Base interface exposing an enumerator and native LINQ operators over generic collections.  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Dictionary.h">Dictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Key/value hash map collection.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IEnumerator.h">IEnumerator&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html">📖</a>  </td><td class="markdownTableBodyNone">Supports simple iteration over a generic collection.  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/HashSet.h">HashSet&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html">📖</a>  </td><td class="markdownTableBodyNone">Set of unique elements backed by a hash table.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/ICollection.h">ICollection&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html">📖</a>  </td><td class="markdownTableBodyNone">Defines size, enumerators, and mutation methods for generic collections.  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Queue.h">Queue&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html">📖</a>  </td><td class="markdownTableBodyNone">First-In-First-Out (FIFO) queue collection.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IReadOnlyCollection.h">IReadOnlyCollection&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a strongly-typed, read-only collection of elements.  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Stack.h">Stack&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html">📖</a>  </td><td class="markdownTableBodyNone">Last-In-First-Out (LIFO) stack collection.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IList.h">IList&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a collection of objects that can be individually accessed by index.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IReadOnlyList.h">IReadOnlyList&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a read-only collection of elements accessible by index.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/ISet.h">ISet&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_set.html">📖</a>  </td><td class="markdownTableBodyNone">Base interface for the abstraction of sets and mathematical set operations.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IDictionary.h">IDictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Generic collection of key/value pairs accessible by key.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/IReadOnlyDictionary.h">IReadOnlyDictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a read-only collection of key/value pairs.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/KeyValuePair.h">KeyValuePair&lt;TKey, TValue&gt;</a> &#160; <a href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html">📖</a>  </td><td class="markdownTableBodyNone">Defines a key/value pair that can be set or retrieved.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/List.h">List&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html">📖</a>  </td><td class="markdownTableBodyNone">Strongly-typed dynamic array list implementing <span class="tt">IList&lt;T&gt;</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Dictionary.h">Dictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Key/value hash map collection implementing <span class="tt">IDictionary&lt;TKey, TValue&gt;</span>.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/HashSet.h">HashSet&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html">📖</a>  </td><td class="markdownTableBodyNone">Set of unique elements backed by a hash table implementing <span class="tt">ISet&lt;T&gt;</span>.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Queue.h">Queue&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html">📖</a>  </td><td class="markdownTableBodyNone">First-In-First-Out (FIFO) queue collection implementing <span class="tt">IReadOnlyCollection&lt;T&gt;</span>.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/Stack.h">Stack&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html">📖</a>  </td><td class="markdownTableBodyNone">Last-In-First-Out (LIFO) stack collection implementing <span class="tt">IReadOnlyCollection&lt;T&gt;</span>.  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/PriorityQueue.h">PriorityQueue&lt;TElement, TPriority&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue.html">📖</a>  </td><td class="markdownTableBodyNone">Min-heap collection of prioritized items.  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/SortedDictionary.h">SortedDictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Key/value collection sorted by key.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/SortedDictionary.h">SortedDictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Key/value collection sorted by key implementing <span class="tt">IDictionary&lt;TKey, TValue&gt;</span>.  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/SortedSet.h">SortedSet&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html">📖</a>  </td><td class="markdownTableBodyNone">Ordered unique collection maintained in sorted order.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/SortedSet.h">SortedSet&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html">📖</a>  </td><td class="markdownTableBodyNone">Ordered unique collection maintained in sorted order implementing <span class="tt">ISet&lt;T&gt;</span>.  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/LinkedList.h">LinkedList&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html">📖</a>  </td><td class="markdownTableBodyNone">Doubly-linked list collection.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/LinkedList.h">LinkedList&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html">📖</a>  </td><td class="markdownTableBodyNone">Doubly-linked list collection implementing <span class="tt">ICollection&lt;T&gt;</span>.  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Generic/">Generic Collections Overview</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html">📖</a>  </td><td class="markdownTableBodyNone">Comprehensive guide and comparison of generic collection types.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md64"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html"><span class="tt">DotNetDupe::System::Collections::Concurrent</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
 <tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/IProducerConsumerCollection.h">IProducerConsumerCollection&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html">📖</a>  </td><td class="markdownTableBodyNone">Defines methods to manipulate thread-safe collections intended for producer/consumer usage.  </td></tr>
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/ConcurrentDictionary.h">ConcurrentDictionary&lt;TKey, TValue&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html">📖</a>  </td><td class="markdownTableBodyNone">Thread-safe key/value collection for concurrent multi-threaded access.  </td></tr>
-<tr class="markdownTableRowEven">
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/ConcurrentQueue.h">ConcurrentQueue&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html">📖</a>  </td><td class="markdownTableBodyNone">Lock-free thread-safe First-In-First-Out (FIFO) queue.  </td></tr>
-<tr class="markdownTableRowOdd">
+<tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/ConcurrentStack.h">ConcurrentStack&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html">📖</a>  </td><td class="markdownTableBodyNone">Lock-free thread-safe Last-In-First-Out (LIFO) stack.  </td></tr>
-<tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/ConcurrentBag.h">ConcurrentBag&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html">📖</a>  </td><td class="markdownTableBodyNone">Thread-safe unordered object container with thread-local storage.  </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/BlockingCollection.h">BlockingCollection&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">📖</a>  </td><td class="markdownTableBodyNone">Thread-safe collection providing blocking producer-consumer capabilities.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/ConcurrentBag.h">ConcurrentBag&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html">📖</a>  </td><td class="markdownTableBodyNone">Thread-safe unordered object container with thread-local storage.  </td></tr>
 <tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/BlockingCollection.h">BlockingCollection&lt;T&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html">📖</a>  </td><td class="markdownTableBodyNone">Thread-safe collection providing blocking producer-consumer capabilities.  </td></tr>
+<tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Collections/Concurrent/">Concurrent Collections Overview</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html">📖</a>  </td><td class="markdownTableBodyNone">Comprehensive guide and architecture of lock-free and thread-safe collections.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md66"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html"><span class="tt">DotNetDupe::System::Linq</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1292,10 +1722,10 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html"><span class
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><a href="../../Include/System/Linq/IGrouping.h">IGrouping&lt;TKey, TElement&gt;</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html">📖</a>  </td><td class="markdownTableBodyNone">Represents a collection of objects that share a common key produced by <span class="tt">GroupBy</span>.  </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><a href="../../Include/System/Linq.h">Linq</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">📖</a>  </td><td class="markdownTableBodyNone">Master umbrella include and <span class="tt">AsEnumerable(...)</span> bridge extension functions for <span class="tt">List&lt;T&gt;</span>, <span class="tt">Array&lt;T&gt;</span>, and initializer lists.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/Linq.h">Linq</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_linq.html">📖</a>  </td><td class="markdownTableBodyNone">Master umbrella include file for <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> LINQ queries and operators.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md68"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md88"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html"><span class="tt">DotNetDupe::System::IO</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1340,7 +1770,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html"><span class=
 <td class="markdownTableBodyNone"><a href="../../Include/System/IO/EndOfStreamException.h">EndOfStreamException</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html">📖</a>  </td><td class="markdownTableBodyNone">Thrown when reading is attempted past the end of a stream.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md70"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md90"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html"><span class="tt">DotNetDupe::System::Threading</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html"><span class="tt">System::Threading::Tasks</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1395,7 +1825,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_threading.html"><span 
 <td class="markdownTableBodyNone"><a href="../../Include/System/Threading/Tasks/TaskCanceledException.h">TaskCanceledException</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task_canceled_exception.html">📖</a>  </td><td class="markdownTableBodyNone">Thrown when a task execution is canceled.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md72"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md92"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html"><span class="tt">DotNetDupe::System::Diagnostics</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1421,7 +1851,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html"><spa
 <td class="markdownTableBodyNone"><a href="../../Include/System/Diagnostics/ProcessStreamer.h">ProcessStreamer</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_streamer.html">📖</a>  </td><td class="markdownTableBodyNone">Progressive, non-blocking two-tier telemetry streaming and event-driven observable process enumerator.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md74"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md94"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html"><span class="tt">DotNetDupe::System::Net</span></a>, <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html"><span class="tt">Sockets</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html"><span class="tt">Security</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1443,7 +1873,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net.html"><span class=
 <td class="markdownTableBodyNone"><a href="../../Include/System/Net/Security/SslStream.h">SslStream</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html">📖</a>  </td><td class="markdownTableBodyNone">TLS/SSL secure stream wrapper built on OpenSSL.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md76"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md96"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html"><span class="tt">DotNetDupe::System::Net::Http</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1469,7 +1899,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html"><sp
 <td class="markdownTableBodyNone"><a href="../../Include/System/Net/Http/HttpMethod.h">HttpMethod</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_method.html">📖</a>  </td><td class="markdownTableBodyNone">Represents standard HTTP request methods (GET, POST, PUT, DELETE, etc.).  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md78"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md98"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html"><span class="tt">DotNetDupe::System::Text</span></a> &amp; <a href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html"><span class="tt">System::Text::Json</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1483,7 +1913,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_text.html"><span class
 <td class="markdownTableBodyNone"><a href="../../Include/System/Text/Json/JsonSerializer.h">JsonSerializer</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html">📖</a>  </td><td class="markdownTableBodyNone">Serializes objects to JSON strings and deserializes JSON to C++ types.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md80"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md100"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html"><span class="tt">DotNetDupe::System::Utils</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1493,7 +1923,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_utils.html"><span clas
 <td class="markdownTableBodyNone"><a href="../../Include/System/Utils/StringConvert.h">StringConvert</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_utils_1_1_string_convert.html">📖</a>  </td><td class="markdownTableBodyNone">Static helper methods for UTF-8 / UTF-16 conversions and type transformations.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md82"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md102"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html"><span class="tt">DotNetDupe::System::Security</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1509,7 +1939,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html"><span c
 <td class="markdownTableBodyNone"><a href="../../Include/System/IdentityModel/Tokens/Jwt/JWTToken.h">JWTToken</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html">📖</a>  </td><td class="markdownTableBodyNone">Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md84"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md104"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html"><span class="tt">DotNetDupe::System::Data::SqlClient</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1525,7 +1955,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.ht
 <td class="markdownTableBodyNone"><a href="../../Include/System/Data/SqlClient/SqlParameter.h">SqlParameter</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_parameter.html">📖</a>  </td><td class="markdownTableBodyNone">Parameter for parameterized SQL commands protecting against SQL injection.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md86"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md106"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html"><span class="tt">DotNetDupe::Extensions::DependencyInjection</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -1547,7 +1977,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injecti
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/DependencyInjection/IServiceScopeFactory.h">IServiceScopeFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Contract for service scope factories.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md88"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md108"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><span class="tt">DotNetDupe::Extensions::Logging</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -1575,7 +2005,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><spa
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/Logging/ILogger.h">ILoggerFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Logging factory interface.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md90"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md110"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="tt">DotNetDupe::WebAppCore</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core.html">📖</a></h2>
 <p><b>Builder, Controllers &amp; Server</b></p>
 <table class="markdownTable">
@@ -1601,16 +2031,16 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="t
 <td class="markdownTableBodyNone"><a href="../../Include/WebAppCore/WebSockets/">Push Notifications (SSE &amp; WebSockets)</a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html">📖</a>  </td><td class="markdownTableBodyNone">Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets.  </td></tr>
 </table>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md92"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md112"></a>
 Project Status 🚧</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is currently <b>under active development</b>. I am continuously working on expanding the API coverage and improving stability.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md93"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md113"></a>
 Contributions 👋</h1>
 <p>Contributions to the <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project">GitHub's general contributing guidelines</a> for more information on how to get started.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md94"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md114"></a>
 CI/CD Pipeline 🚀</h1>
 <p>This repository uses GitHub Actions to automate the build, test, and release process.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md95"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md115"></a>
 Workflow Details</h2>
 <ul>
 <li><b>Build &amp; Test Matrix</b>: Every push to <span class="tt">main</span> and all pull requests trigger a full build (Debug &amp; Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.</li>
@@ -1619,7 +2049,7 @@ Workflow Details</h2>
 <li><b>Code Coverage</b>: Automated code coverage measurement via OpenCppCoverage (&gt; 80% line coverage required) and static analysis HTML report generation.</li>
 <li><b>NuGet Release</b>: Pushing a tag (e.g., <span class="tt">v1.0.0</span>) triggers the creation and publishing of the NuGet package to <a href="https://www.nuget.org/">nuget.org</a>.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md96"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md116"></a>
 Code Coverage &amp; Static Analysis 📊</h2>
 <ul>
 <li><b>Online Reports:</b><ul>
@@ -1630,7 +2060,7 @@ Code Coverage &amp; Static Analysis 📊</h2>
 <li><b>Live Documentation Portal:</b> <a href="https://sudheeshps.github.io/dotnetdupe/">https://sudheeshps.github.io/dotnetdupe/</a></li>
 <li><b>Local Generation:</b> Run <span class="tt">powershell .\scripts\Generate-CoverageReport.ps1</span> to execute tests under OpenCppCoverage and refresh the <span class="tt">CodeCoverage/</span> folder.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md97"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md117"></a>
 How to Release</h2>
 <ol type="1">
 <li>Update the version in <span class="tt">DotNetDupe.nuspec</span>.</li>
@@ -1639,13 +2069,13 @@ How to Release</h2>
 <div class="line">git push origin v1.0.0</div>
 </div><!-- fragment --> <em>Note: Requires <span class="tt">NUGET_API_KEY</span> to be set in GitHub repository secrets.</em></li>
 </ol>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md98"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md118"></a>
 License 📄</h1>
 <p>This project is licensed under the <b>MIT License</b>. See the [LICENSE](LICENSE) file for details.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md99"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md119"></a>
 Generated Content 🤖</h1>
 <p>This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md100"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md120"></a>
 Contact 📧</h1>
 <p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>. </p>
 </div></div><!-- PageDoc -->

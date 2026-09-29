@@ -13,6 +13,7 @@ var hierarchy =
     [ "DotNetDupe::System::CaseInsensitiveCompareWChar", "struct_dot_net_dupe_1_1_system_1_1_case_insensitive_compare_w_char.html", null ],
     [ "DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Iterator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_1_1_iterator.html", null ],
     [ "DotNetDupe::System::Collections::Generic::HashHelpers", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_helpers.html", null ],
+    [ "DotNetDupe::System::Collections::Generic::IEnumerable&lt; T &gt;::Iterator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_1_1_iterator.html", null ],
     [ "DotNetDupe::System::Collections::Generic::KeyValuePair&lt; TKey, TValue &gt;", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html", null ],
     [ "DotNetDupe::System::Data::Internal::DatabaseEngine", "class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_database_engine.html", null ],
     [ "DotNetDupe::System::Data::Internal::IDatabaseBackend", "class_dot_net_dupe_1_1_system_1_1_data_1_1_internal_1_1_i_database_backend.html", [
@@ -35,6 +36,7 @@ var hierarchy =
     [ "DotNetDupe::System::EnableSharedFromThisBase", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this_base.html", [
       [ "DotNetDupe::System::EnableSharedFromThis< T >", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this.html", null ]
     ] ],
+    [ "DotNetDupe::System::EqualityHelper&lt; T &gt;", "struct_dot_net_dupe_1_1_system_1_1_equality_helper.html", null ],
     [ "DotNetDupe::System::EventHandler&lt; TEventArgs &gt;", "class_dot_net_dupe_1_1_system_1_1_event_handler.html", null ],
     [ "DotNetDupe::System::FormatExceptionMessage", "struct_dot_net_dupe_1_1_system_1_1_format_exception_message.html", null ],
     [ "DotNetDupe::System::FormatExceptionMessageWChar", "struct_dot_net_dupe_1_1_system_1_1_format_exception_message_w_char.html", null ],
@@ -90,7 +92,6 @@ var hierarchy =
       ] ]
     ] ],
     [ "DotNetDupe::System::IO::Path", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html", null ],
-    [ "DotNetDupe::System::Linq::IGrouping&lt; TKey, TElement &gt;", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html", null ],
     [ "DotNetDupe::System::Linq::Internal::IElementComparer&lt; T &gt;", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_i_element_comparer.html", [
       [ "DotNetDupe::System::Linq::Internal::ChainedComparer< T, FKey >", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_chained_comparer.html", null ],
       [ "DotNetDupe::System::Linq::Internal::KeyComparer< T, FKey >", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_key_comparer.html", null ]
@@ -99,33 +100,299 @@ var hierarchy =
     [ "DotNetDupe::System::Net::Dns", "class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html", null ],
     [ "DotNetDupe::System::Net::Http::DownloadProgress", "struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html", null ],
     [ "DotNetDupe::System::Object", "class_dot_net_dupe_1_1_system_1_1_object.html", [
-      [ "DotNetDupe::System::Array< char >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", [
-        [ "DotNetDupe::Extensions::DependencyInjection::IServiceCollection", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html", [
-          [ "DotNetDupe::Extensions::DependencyInjection::ServiceCollection", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html", null ]
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", [
+                [ "DotNetDupe::Extensions::DependencyInjection::IServiceCollection", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_collection.html", [
+                  [ "DotNetDupe::Extensions::DependencyInjection::ServiceCollection", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_collection.html", null ]
+                ] ]
+              ] ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
         ] ]
       ] ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< KeyValuePair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+              [ "DotNetDupe::System::Collections::Generic::SortedDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::SortedDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< TElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ],
+        [ "DotNetDupe::System::Linq::IGrouping< TKey, TElement >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html", null ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::Extensions::Logging::ILogger > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Collections::Generic::KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Data::Common::DbParameter > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Data::Internal::Row >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Diagnostics::ProcessInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< int >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Diagnostics::NetworkConnectionInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::String > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::String > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::String > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::String >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Array< char >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< char >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::Text::Json::JsonElement >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::SmartPointer< DotNetDupe::System::Threading::Thread > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< ThreadPoolTask >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::Func< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::Http::HttpContext > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< DotNetDupe::System::String, DotNetDupe::System::SmartPointer< DotNetDupe::WebAppCore::WebSockets::IWebSocketHandler > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< DotNetDupe::System::Action< const DotNetDupe::System::SmartPointer< WebApplication > & > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Collections::Generic::List< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< RouteInfo >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerator< KeyValuePair< TKey, TValue > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html", [
+        [ "DotNetDupe::System::Collections::Generic::DictionaryEnumerator< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_enumerator.html", null ]
+      ] ],
       [ "DotNetDupe::Extensions::DependencyInjection::IServiceScope", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope.html", null ],
       [ "DotNetDupe::Extensions::DependencyInjection::IServiceScopeFactory", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope_factory.html", [
         [ "DotNetDupe::Extensions::DependencyInjection::ServiceScopeFactory", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_scope_factory.html", null ]
@@ -150,25 +417,62 @@ var hierarchy =
         [ "DotNetDupe::Extensions::Logging::FileLoggerProvider", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html", null ]
       ] ],
       [ "DotNetDupe::Extensions::Logging::LogManager", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager.html", null ],
-      [ "DotNetDupe::System::Array< T >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ],
       [ "DotNetDupe::System::BitConverter", "class_dot_net_dupe_1_1_system_1_1_bit_converter.html", null ],
       [ "DotNetDupe::System::Buffer", "class_dot_net_dupe_1_1_system_1_1_buffer.html", null ],
       [ "DotNetDupe::System::Char", "class_dot_net_dupe_1_1_system_1_1_char.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::BlockingCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentBag< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentQueue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", null ],
-      [ "DotNetDupe::System::Collections::Concurrent::ConcurrentStack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Dictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::HashSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::LinkedList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html", null ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< KeyValuePair< T, bool > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyDictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", [
+            [ "DotNetDupe::System::Collections::Generic::Dictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", [
+              [ "DotNetDupe::System::Collections::Generic::Dictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", null ]
+            ] ]
+          ] ]
+        ] ],
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< KeyValuePair< T, bool > >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IDictionary< T, bool >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Concurrent::BlockingCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", null ],
+          [ "DotNetDupe::System::Collections::Concurrent::IProducerConsumerCollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html", [
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentBag< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", null ],
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentQueue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", null ],
+            [ "DotNetDupe::System::Collections::Concurrent::ConcurrentStack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::HashSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html", null ],
+          [ "DotNetDupe::System::Collections::Generic::ICollection< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Array< T >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ],
+              [ "DotNetDupe::System::Collections::Generic::List< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ]
+            ] ],
+            [ "DotNetDupe::System::Collections::Generic::LinkedList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::ISet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_set.html", [
+            [ "DotNetDupe::System::Collections::Generic::HashSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html", null ],
+            [ "DotNetDupe::System::Collections::Generic::SortedSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html", null ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::LinkedList< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html", null ],
+          [ "DotNetDupe::System::Collections::Generic::Queue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html", null ],
+          [ "DotNetDupe::System::Collections::Generic::SortedSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html", null ],
+          [ "DotNetDupe::System::Collections::Generic::Stack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html", null ]
+        ] ],
+        [ "DotNetDupe::System::Linq::Enumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html", [
+          [ "DotNetDupe::System::Linq::OrderedEnumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html", null ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html", [
+        [ "DotNetDupe::System::Array< T >::ArrayEnumerator", "class_dot_net_dupe_1_1_system_1_1_array_1_1_array_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Concurrent::ConcurrentEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Generic::HashSetEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Generic::LinkedListEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Generic::List< T >::ListEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list_1_1_list_enumerator.html", null ],
+        [ "DotNetDupe::System::Collections::Generic::StackEnumerator< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_enumerator.html", null ]
+      ] ],
       [ "DotNetDupe::System::Collections::Generic::LinkedListNode< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_node.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::List< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", null ],
       [ "DotNetDupe::System::Collections::Generic::PriorityQueue< TElement, TPriority >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Queue< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::SortedDictionary< TKey, TValue >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::SortedSet< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html", null ],
-      [ "DotNetDupe::System::Collections::Generic::Stack< T >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html", null ],
       [ "DotNetDupe::System::Console", "class_dot_net_dupe_1_1_system_1_1_console.html", null ],
       [ "DotNetDupe::System::Convert", "class_dot_net_dupe_1_1_system_1_1_convert.html", null ],
       [ "DotNetDupe::System::Data::Common::DbCommand", "class_dot_net_dupe_1_1_system_1_1_data_1_1_common_1_1_db_command.html", [
@@ -217,9 +521,6 @@ var hierarchy =
         [ "DotNetDupe::Extensions::DependencyInjection::ServiceProvider", "class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_service_provider.html", null ]
       ] ],
       [ "DotNetDupe::System::IdentityModel::Tokens::Jwt::JWTToken", "class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html", null ],
-      [ "DotNetDupe::System::Linq::Enumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html", [
-        [ "DotNetDupe::System::Linq::OrderedEnumerable< T >", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html", null ]
-      ] ],
       [ "DotNetDupe::System::Net::Http::FileDownloader", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_file_downloader.html", null ],
       [ "DotNetDupe::System::Net::Http::HttpClient", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_client.html", null ],
       [ "DotNetDupe::System::Net::Http::HttpContent", "class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_http_content.html", [
@@ -355,10 +656,13 @@ var hierarchy =
       ] ]
     ] ],
     [ "std::false_type", null, [
+      [ "DotNetDupe::System::Internal::HasEqualityOperator< T, std::void_t< decltype(std::declval< const T & >()==std::declval< const T & >())> >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator_3_01_t_00_01std_1_1void__t51657a7b966636b1e5b61159bfc8a6ae.html", null ],
       [ "DotNetDupe::System::IsComplete< T, std::void_t< decltype(sizeof(T))> >", "struct_dot_net_dupe_1_1_system_1_1_is_complete_3_01_t_00_01std_1_1void__t_3_01decltype_07sizeof_07_t_08_08_4_01_4.html", null ],
+      [ "DotNetDupe::System::Internal::HasEqualityOperator< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator.html", null ],
       [ "DotNetDupe::System::IsComplete< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_is_complete.html", null ]
     ] ],
     [ "std::true_type", null, [
+      [ "DotNetDupe::System::Internal::HasEqualityOperator< T, std::void_t< decltype(std::declval< const T & >()==std::declval< const T & >())> >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator_3_01_t_00_01std_1_1void__t51657a7b966636b1e5b61159bfc8a6ae.html", null ],
       [ "DotNetDupe::System::IsComplete< T, std::void_t< decltype(sizeof(T))> >", "struct_dot_net_dupe_1_1_system_1_1_is_complete_3_01_t_00_01std_1_1void__t_3_01decltype_07sizeof_07_t_08_08_4_01_4.html", null ]
     ] ]
 ];

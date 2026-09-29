@@ -10,6 +10,7 @@ var class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping =
     [ "Elements", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a0b9be12025101103fa3731f19b3cffdd", null ],
     [ "end", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a5190a044145dae7913d8e54cb197fa3f", null ],
     [ "GetCount", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a3dec46490a9979df5c3f1bc8e7d5bda5", null ],
+    [ "GetEnumerator", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#ae19a2a87ccd78ab32d1d21cd7296d13b", null ],
     [ "GetKey", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a28b5038b32c0150a71364959a344715e", null ],
     [ "Key", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a56cb1801b83024b67581a34e1fae9e62", null ],
     [ "operator[]", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a3a8309abe579070eea7dd03d0e9b5e50", null ],

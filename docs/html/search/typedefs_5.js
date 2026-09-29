@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['keytype_0',['KeyType',['../class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html#a67caa92c2984d720b93fdfd8228fb621',1,'DotNetDupe::System::Linq::IGrouping']]]
+  ['ienumeratorptr_0',['IEnumeratorPtr',['../namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html#ac1269504400e26ef8cc4abe74f6cc262',1,'DotNetDupe::System::Collections::Generic']]]
 ];

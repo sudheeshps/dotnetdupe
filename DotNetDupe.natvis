@@ -73,6 +73,53 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::Collections::Concurrent::ConcurrentQueue<T> -->
+  <Type Name="DotNetDupe::System::Collections::Concurrent::ConcurrentQueue&lt;*&gt;">
+    <DisplayString>{{ size={m_list.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_list.m_iCount</Item>
+      <ExpandedItem>m_list</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Concurrent::ConcurrentStack<T> -->
+  <Type Name="DotNetDupe::System::Collections::Concurrent::ConcurrentStack&lt;*&gt;">
+    <DisplayString>{{ size={m_list.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_list.m_iCount</Item>
+      <ExpandedItem>m_list</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Concurrent::ConcurrentBag<T> -->
+  <Type Name="DotNetDupe::System::Collections::Concurrent::ConcurrentBag&lt;*&gt;">
+    <DisplayString>{{ size={m_list.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_list.m_iCount</Item>
+      <ExpandedItem>m_list</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Concurrent::BlockingCollection<T> -->
+  <Type Name="DotNetDupe::System::Collections::Concurrent::BlockingCollection&lt;*&gt;">
+    <DisplayString>{{ size={m_list.m_iCount}, boundedCapacity={m_iBoundedCapacity}, completed={m_bIsAddingCompleted} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_list.m_iCount</Item>
+      <Item Name="[BoundedCapacity]">m_iBoundedCapacity</Item>
+      <Item Name="[IsAddingCompleted]">m_bIsAddingCompleted</Item>
+      <ExpandedItem>m_list</ExpandedItem>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary<TKey, TValue> -->
+  <Type Name="DotNetDupe::System::Collections::Concurrent::ConcurrentDictionary&lt;*,*&gt;">
+    <DisplayString>{{ size={m_dict.m_iCount} }}</DisplayString>
+    <Expand>
+      <Item Name="[Count]">m_dict.m_iCount</Item>
+      <ExpandedItem>m_dict</ExpandedItem>
+    </Expand>
+  </Type>
+
   <!-- DotNetDupe::System::Text::StringBuilder (Pimpl casting to known std::string) -->
   <Type Name="DotNetDupe::System::Text::StringBuilder">
     <DisplayString Condition="m_pImpl == 0">&lt;null&gt;</DisplayString>

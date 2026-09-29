@@ -1,12 +1,8 @@
 var searchData=
 [
-  ['object_2ecpp_0',['Object.cpp',['../_object_8cpp.html',1,'']]],
-  ['object_2eh_1',['Object.h',['../_object_8h.html',1,'']]],
-  ['objectdisposedexception_2eh_2',['ObjectDisposedException.h',['../_object_disposed_exception_8h.html',1,'']]],
-  ['operatingsystem_2ecpp_3',['OperatingSystem.cpp',['../_operating_system_8cpp.html',1,'']]],
-  ['operatingsystem_2eh_4',['OperatingSystem.h',['../_operating_system_8h.html',1,'']]],
-  ['operationcanceledexception_2eh_5',['OperationCanceledException.h',['../_operation_canceled_exception_8h.html',1,'']]],
-  ['orderedenumerable_2eh_6',['OrderedEnumerable.h',['../_ordered_enumerable_8h.html',1,'']]],
-  ['outofmemoryexception_2eh_7',['OutOfMemoryException.h',['../_out_of_memory_exception_8h.html',1,'']]],
-  ['overflowexception_2eh_8',['OverflowException.h',['../_overflow_exception_8h.html',1,'']]]
+  ['networkstream_2ecpp_0',['NetworkStream.cpp',['../_network_stream_8cpp.html',1,'']]],
+  ['networkstream_2eh_1',['NetworkStream.h',['../_network_stream_8h.html',1,'']]],
+  ['notimplementedexception_2eh_2',['NotImplementedException.h',['../_not_implemented_exception_8h.html',1,'']]],
+  ['notsupportedexception_2eh_3',['NotSupportedException.h',['../_not_supported_exception_8h.html',1,'']]],
+  ['nullreferenceexception_2eh_4',['NullReferenceException.h',['../_null_reference_exception_8h.html',1,'']]]
 ];

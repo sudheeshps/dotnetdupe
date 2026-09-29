@@ -37,6 +37,7 @@ var namespace_dot_net_dupe_1_1_system =
     [ "EnableSharedFromThis", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this.html", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this" ],
     [ "EnableSharedFromThisBase", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this_base.html", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this_base" ],
     [ "Environment", "class_dot_net_dupe_1_1_system_1_1_environment.html", "class_dot_net_dupe_1_1_system_1_1_environment" ],
+    [ "EqualityHelper", "struct_dot_net_dupe_1_1_system_1_1_equality_helper.html", "struct_dot_net_dupe_1_1_system_1_1_equality_helper" ],
     [ "EventArgs", "class_dot_net_dupe_1_1_system_1_1_event_args.html", "class_dot_net_dupe_1_1_system_1_1_event_args" ],
     [ "EventHandler", "class_dot_net_dupe_1_1_system_1_1_event_handler.html", "class_dot_net_dupe_1_1_system_1_1_event_handler" ],
     [ "Exception", "class_dot_net_dupe_1_1_system_1_1_exception.html", "class_dot_net_dupe_1_1_system_1_1_exception" ],

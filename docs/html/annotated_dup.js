@@ -38,22 +38,37 @@ var annotated_dup =
             [ "BlockingCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection" ],
             [ "ConcurrentBag", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_bag" ],
             [ "ConcurrentDictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_dictionary" ],
+            [ "ConcurrentEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_enumerator" ],
             [ "ConcurrentQueue", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_queue" ],
-            [ "ConcurrentStack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack" ]
+            [ "ConcurrentStack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_concurrent_stack" ],
+            [ "IProducerConsumerCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_i_producer_consumer_collection" ]
           ] ],
           [ "Generic", "namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html", [
             [ "Dictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary" ],
+            [ "DictionaryEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary_enumerator" ],
             [ "HashHelpers", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_helpers.html", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_helpers" ],
             [ "HashSet", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set" ],
+            [ "HashSetEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set_enumerator" ],
+            [ "ICollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection" ],
+            [ "IDictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary" ],
+            [ "IEnumerable", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable" ],
+            [ "IEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator" ],
+            [ "IList", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list" ],
+            [ "IReadOnlyCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection" ],
+            [ "IReadOnlyDictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary" ],
+            [ "IReadOnlyList", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list" ],
+            [ "ISet", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_set.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_set" ],
             [ "KeyValuePair", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html", "struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair" ],
             [ "LinkedList", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list" ],
+            [ "LinkedListEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_enumerator" ],
             [ "LinkedListNode", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_node.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list_node" ],
             [ "List", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list" ],
             [ "PriorityQueue", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue" ],
             [ "Queue", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue" ],
             [ "SortedDictionary", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary" ],
             [ "SortedSet", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set" ],
-            [ "Stack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack" ]
+            [ "Stack", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack" ],
+            [ "StackEnumerator", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_enumerator.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack_enumerator" ]
           ] ]
         ] ],
         [ "ComponentModel", "namespace_dot_net_dupe_1_1_system_1_1_component_model.html", [
@@ -118,6 +133,8 @@ var annotated_dup =
         [ "Internal", "namespace_dot_net_dupe_1_1_system_1_1_internal.html", [
           [ "ActionHolder", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_action_holder.html", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_action_holder" ],
           [ "FunctorHolder", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_functor_holder.html", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_functor_holder" ],
+          [ "HasEqualityOperator", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator.html", null ],
+          [ "HasEqualityOperator&lt; T, std::void_t&lt; decltype(std::declval&lt; const T &amp; &gt;()==std::declval&lt; const T &amp; &gt;())&gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator_3_01_t_00_01std_1_1void__t51657a7b966636b1e5b61159bfc8a6ae.html", null ],
           [ "IActionHolder", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder" ],
           [ "IFunctorHolder", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder" ],
           [ "StringConvertInternal", "class_dot_net_dupe_1_1_system_1_1_internal_1_1_string_convert_internal.html", "class_dot_net_dupe_1_1_system_1_1_internal_1_1_string_convert_internal" ]
@@ -275,6 +292,7 @@ var annotated_dup =
         [ "EnableSharedFromThis", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this.html", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this" ],
         [ "EnableSharedFromThisBase", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this_base.html", "class_dot_net_dupe_1_1_system_1_1_enable_shared_from_this_base" ],
         [ "Environment", "class_dot_net_dupe_1_1_system_1_1_environment.html", "class_dot_net_dupe_1_1_system_1_1_environment" ],
+        [ "EqualityHelper", "struct_dot_net_dupe_1_1_system_1_1_equality_helper.html", "struct_dot_net_dupe_1_1_system_1_1_equality_helper" ],
         [ "EventArgs", "class_dot_net_dupe_1_1_system_1_1_event_args.html", "class_dot_net_dupe_1_1_system_1_1_event_args" ],
         [ "EventHandler", "class_dot_net_dupe_1_1_system_1_1_event_handler.html", "class_dot_net_dupe_1_1_system_1_1_event_handler" ],
         [ "Exception", "class_dot_net_dupe_1_1_system_1_1_exception.html", "class_dot_net_dupe_1_1_system_1_1_exception" ],

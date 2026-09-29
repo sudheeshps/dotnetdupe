@@ -19,5 +19,6 @@ var searchData=
   ['arithmeticexception_16',['ArithmeticException',['../class_dot_net_dupe_1_1_system_1_1_arithmetic_exception.html',1,'DotNetDupe::System']]],
   ['array_17',['Array',['../class_dot_net_dupe_1_1_system_1_1_array.html',1,'DotNetDupe::System']]],
   ['array_3c_20char_20_3e_18',['Array&lt; char &gt;',['../class_dot_net_dupe_1_1_system_1_1_array.html',1,'DotNetDupe::System']]],
-  ['autoresetevent_19',['AutoResetEvent',['../class_dot_net_dupe_1_1_system_1_1_threading_1_1_auto_reset_event.html',1,'DotNetDupe::System::Threading']]]
+  ['arrayenumerator_19',['ArrayEnumerator',['../class_dot_net_dupe_1_1_system_1_1_array_1_1_array_enumerator.html',1,'DotNetDupe::System::Array']]],
+  ['autoresetevent_20',['AutoResetEvent',['../class_dot_net_dupe_1_1_system_1_1_threading_1_1_auto_reset_event.html',1,'DotNetDupe::System::Threading']]]
 ];

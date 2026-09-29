@@ -6,6 +6,11 @@
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
 #include "System/HashHelper.h"
+#include "System/Collections/Generic/KeyValuePair.h"
+#include "System/Collections/Generic/IDictionary.h"
+#include "System/Collections/Generic/IReadOnlyDictionary.h"
+#include "System/Collections/Generic/IEnumerator.h"
+#include "System/EqualityHelper.h"
 #include <new>
 #include <utility>
 
@@ -14,23 +19,8 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
-                /// \struct KeyValuePair
-                /// \brief Defines a key/value pair that can be set or retrieved.
-                /// \tparam TKey The type of the key.
-                /// \tparam TValue The type of the value.
                 template <typename TKey, typename TValue>
-                struct KeyValuePair {
-                    TKey Key;     ///< Gets or sets the key in the key/value pair.
-                    TValue Value; ///< Gets or sets the value in the key/value pair.
-
-                    /// \brief Initializes a new instance of the KeyValuePair structure with default values.
-                    KeyValuePair() {}
-
-                    /// \brief Initializes a new instance of the KeyValuePair structure with the specified key and value.
-                    /// \param k The object defined in each key/value pair.
-                    /// \param v The definition associated with key.
-                    KeyValuePair(TKey k, TValue v) : Key(k), Value(v) {}
-                };
+                class Dictionary;
 
                 /// \struct HashHelpers
                 /// \brief Provides prime modulus capacity calculation for hash-based collections.
@@ -55,15 +45,63 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \class DictionaryEnumerator
+                /// \brief Enumerates key/value pairs in a Dictionary.
+                /// \tparam TKey The key type.
+                /// \tparam TValue The value type.
+                template <typename TKey, typename TValue>
+                class DictionaryEnumerator : public virtual IEnumerator<KeyValuePair<TKey, TValue>> {
+                private:
+                    const Dictionary<TKey, TValue>* m_pDict;
+                    int m_iIndex;
+                    KeyValuePair<TKey, TValue> m_current;
+                    bool m_bStarted;
+
+                public:
+                    /// \brief Constructs an enumerator for the given dictionary.
+                    explicit DictionaryEnumerator(const Dictionary<TKey, TValue>* pDict)
+                        : m_pDict(pDict), m_iIndex(-1), m_current(), m_bStarted(false) {}
+
+                    /// \brief Gets current key/value pair.
+                    const KeyValuePair<TKey, TValue>& Current() const override { return GetCurrent(); }
+
+                    /// \brief Gets current key/value pair.
+                    const KeyValuePair<TKey, TValue>& GetCurrent() const override {
+                        if (!m_bStarted || m_iIndex < 0 || m_iIndex >= m_pDict->GetInternalCount()) {
+                            throw InvalidOperationException("Enumeration has either not started or has already finished.");
+                        }
+                        return m_current;
+                    }
+
+                    /// \brief Advances to next valid key/value pair.
+                    bool MoveNext() override {
+                        m_bStarted = true;
+                        m_iIndex++;
+                        while (m_pDict && m_iIndex < m_pDict->GetInternalCount()) {
+                            if (m_pDict->IsEntryValid(m_iIndex)) {
+                                m_current = m_pDict->GetEntryPair(m_iIndex);
+                                return true;
+                            }
+                            m_iIndex++;
+                        }
+                        return false;
+                    }
+
+                    /// \brief Resets enumerator.
+                    void Reset() override {
+                        m_iIndex = -1;
+                        m_bStarted = false;
+                    }
+                };
+
                 /// \class Dictionary
                 /// \brief Represents a collection of keys and values.
-                ///
                 /// \tparam TKey The type of the keys in the dictionary.
                 /// \tparam TValue The type of the values in the dictionary.
                 /// \note Conforms to ECMA-335 Partition IV Section 5.38 (System.Collections.Generic.Dictionary<TKey, TValue>).
-                ///       Implements a closed-addressing hash table with prime modulus bucket indexing and collision resolution through singly-linked entry chains.
                 template <typename TKey, typename TValue>
-                class Dictionary : public Object {
+                class Dictionary : public virtual IDictionary<TKey, TValue>,
+                                   public virtual IReadOnlyDictionary<TKey, TValue> {
                 private:
                     struct Entry {
                         int hashCode;
@@ -239,13 +277,29 @@ namespace DotNetDupe {
                         return *this;
                     }
 
-                    int GetCount() const { return m_iCount - m_iFreeCount; }
+                    int GetCount() const override { return m_iCount - m_iFreeCount; }
 
-                    void Add(const TKey& key, const TValue& value) {
+                    bool IsReadOnly() const override { return false; }
+
+                    int GetInternalCount() const { return m_iCount; }
+
+                    bool IsEntryValid(int index) const {
+                        return index >= 0 && index < m_iCount && m_pEntries[index].hashCode >= 0;
+                    }
+
+                    KeyValuePair<TKey, TValue> GetEntryPair(int index) const {
+                        return KeyValuePair<TKey, TValue>(m_pEntries[index].key, m_pEntries[index].value);
+                    }
+
+                    void Add(const TKey& key, const TValue& value) override {
                         Insert(key, value, true);
                     }
 
-                    bool Remove(const TKey& key) {
+                    void Add(const KeyValuePair<TKey, TValue>& item) override {
+                        Insert(item.Key, item.Value, true);
+                    }
+
+                    bool Remove(const TKey& key) override {
                         if (m_pBuckets != nullptr) {
                             int hashCode = HashHelper<TKey>::GetHashCode(key) & 0x7FFFFFFF;
                             int bucket = hashCode % m_iCapacity;
@@ -266,7 +320,15 @@ namespace DotNetDupe {
                         return false;
                     }
 
-                    void Clear() {
+                    bool Remove(const KeyValuePair<TKey, TValue>& item) override {
+                        int i = FindEntry(item.Key);
+                        if (i >= 0 && EqualityHelper<TValue>::Equals(m_pEntries[i].value, item.Value)) {
+                            return Remove(item.Key);
+                        }
+                        return false;
+                    }
+
+                    void Clear() override {
                         if (m_iCount > 0) {
                             for (int i = 0; i < m_iCapacity; i++) m_pBuckets[i] = -1;
                             for (int i = 0; i < m_iCount; i++) {
@@ -278,11 +340,16 @@ namespace DotNetDupe {
                         }
                     }
 
-                    bool ContainsKey(const TKey& key) const {
+                    bool ContainsKey(const TKey& key) const override {
                         return FindEntry(key) >= 0;
                     }
 
-                    bool TryGetValue(const TKey& key, TValue& value) const {
+                    bool Contains(const KeyValuePair<TKey, TValue>& item) const override {
+                        int i = FindEntry(item.Key);
+                        return (i >= 0 && EqualityHelper<TValue>::Equals(m_pEntries[i].value, item.Value));
+                    }
+
+                    bool TryGetValue(const TKey& key, TValue& value) const override {
                         int i = FindEntry(key);
                         if (i >= 0) {
                             value = m_pEntries[i].value;
@@ -291,20 +358,20 @@ namespace DotNetDupe {
                         return false;
                     }
 
-                    TValue& operator[](const TKey& key) {
+                    TValue& operator[](const TKey& key) override {
                         int i = FindEntry(key);
                         if (i >= 0) return m_pEntries[i].value;
                         Insert(key, TValue(), false);
                         return m_pEntries[FindEntry(key)].value;
                     }
 
-                    const TValue& operator[](const TKey& key) const {
+                    const TValue& operator[](const TKey& key) const override {
                         int i = FindEntry(key);
                         if (i >= 0) return m_pEntries[i].value;
                         throw System::ArgumentException("Key not found.");
                     }
 
-                    Array<TKey> GetKeys() const {
+                    Array<TKey> GetKeys() const override {
                         Array<TKey> arrKeys(GetCount());
                         int index = 0;
                         for (int i = 0; i < m_iCount; ++i) {
@@ -313,13 +380,29 @@ namespace DotNetDupe {
                         return arrKeys;
                     }
 
-                    Array<TValue> GetValues() const {
+                    Array<TValue> GetValues() const override {
                         Array<TValue> arrValues(GetCount());
                         int index = 0;
                         for (int i = 0; i < m_iCount; ++i) {
                             if (m_pEntries[i].hashCode >= 0) arrValues[index++] = m_pEntries[i].value;
                         }
                         return arrValues;
+                    }
+
+                    void CopyTo(Array<KeyValuePair<TKey, TValue>>& array, int arrayIndex) const override {
+                        if (arrayIndex < 0 || arrayIndex + GetCount() > array.GetLength()) {
+                            throw ArgumentException("Target array is too small or index is invalid.");
+                        }
+                        int idx = arrayIndex;
+                        for (int i = 0; i < m_iCount; ++i) {
+                            if (m_pEntries[i].hashCode >= 0) {
+                                array[idx++] = KeyValuePair<TKey, TValue>(m_pEntries[i].key, m_pEntries[i].value);
+                            }
+                        }
+                    }
+
+                    IEnumeratorPtr<KeyValuePair<TKey, TValue>> GetEnumerator() const override {
+                        return IEnumeratorPtr<KeyValuePair<TKey, TValue>>(new DictionaryEnumerator<TKey, TValue>(this), true);
                     }
 
                     class Iterator {
