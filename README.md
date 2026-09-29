@@ -16,6 +16,8 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Latest Published Version ([![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue&label=version)](https://www.nuget.org/packages/DotNetDupe)):** Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:
+> - ⚡ **Concurrent Collections & Producer-Consumer Hierarchy (`System::Collections::Concurrent`):** Full interface hierarchy retrofit across `ConcurrentQueue<T>`, `ConcurrentStack<T>`, `ConcurrentBag<T>`, `BlockingCollection<T>`, and `ConcurrentDictionary<TKey, TValue>` inheriting generic collection base interfaces (`IReadOnlyCollection<T>`, `IEnumerable<T>`, `IDictionary<TKey, TValue>`) and introducing `IProducerConsumerCollection<T>` with lock-free snapshot enumeration and direct LINQ method chaining.
+> - 🧠 **Dedicated Smart Pointers & Collections Documentation:** Comprehensive architectural guides, comparison tables, and compile-ready code snippets showcasing unique/shared ownership, polymorphic abstractions, fast dictionaries/hash sets, bounded blocking pipelines, and snapshot iteration.
 > - ⚡ **First-Class C# `EventHandler<TEventArgs>` & `EventArgs` Model:** Idiomatic C# .NET event-driven delegate system with multicast subscription (`+=`, `-=`), member method binding (`Add(pInstance, &Class::Method)`), token-based unsubscription, and thread-safe dispatch.
 > - 📥 **Modernized `FileDownloader`:** Upgraded download callbacks to typed multicast `EventHandler<DownloadProgressChangedEventArgs>` and `EventHandler<DownloadCompletedEventArgs>` with reliable `FileMode` creation and resumption.
 > - 🔄 **Observable `ProcessStreamer` Modernization:** Multicast event streams (`ProcessDiscovered`, `BatchReady`, `ProcessUpdated`, `Completed`, `Error`) with two-tier progressive telemetry streaming and thread-safe cancellation.
@@ -183,7 +185,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.1.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.2.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -315,7 +317,7 @@ Run the automated build script from PowerShell:
 ```powershell
 .\BuildAndPack.ps1
 ```
-This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.5.0.1.nupkg` inside the `nuget_packages/` directory.
+This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs `DotNetDupe.5.0.2.nupkg` inside the `nuget_packages/` directory.
 
 #### B. Consuming NuGet Package in Visual Studio (Windows)
 1. Add the local `nuget_packages` folder as a NuGet Package Source:
@@ -325,9 +327,9 @@ This updates the build timestamp, compiles both x64 and x86 Release binaries, an
 2. In Visual Studio, right-click your project -> **Manage NuGet Packages** -> Select `DotNetDupeLocal` -> Install `DotNetDupe`.
 
 #### C. Consuming NuGet Package on Linux / CMake (WSL)
-1. Extract `DotNetDupe.5.0.1.nupkg` (ZIP format) to a local directory:
+1. Extract `DotNetDupe.5.0.2.nupkg` (ZIP format) to a local directory:
    ```powershell
-   Expand-Archive -Path "nuget_packages\DotNetDupe.5.0.1.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
+   Expand-Archive -Path "nuget_packages\DotNetDupe.5.0.2.nupkg" -DestinationPath "DotNetDupe_NuGet" -Force
    ```
 2. Configure CMake pointing `NUGET_PATH` to the extracted package folder:
    ```bash

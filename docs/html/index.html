@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.1</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.2</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -147,6 +147,8 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 <p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
 <p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
 <dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
+<li>⚡ <b>Concurrent Collections &amp; Producer-Consumer Hierarchy (<span class="tt">System::Collections::Concurrent</span>):</b> Full interface hierarchy retrofit across <span class="tt">ConcurrentQueue&lt;T&gt;</span>, <span class="tt">ConcurrentStack&lt;T&gt;</span>, <span class="tt">ConcurrentBag&lt;T&gt;</span>, <span class="tt">BlockingCollection&lt;T&gt;</span>, and <span class="tt">ConcurrentDictionary&lt;TKey, TValue&gt;</span> inheriting generic collection base interfaces (<span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>, <span class="tt">IDictionary&lt;TKey, TValue&gt;</span>) and introducing <span class="tt">IProducerConsumerCollection&lt;T&gt;</span> with lock-free snapshot enumeration and direct LINQ method chaining.</li>
+<li>🧠 <b>Dedicated Smart Pointers &amp; Collections Documentation:</b> Comprehensive architectural guides, comparison tables, and compile-ready code snippets showcasing unique/shared ownership, polymorphic abstractions, fast dictionaries/hash sets, bounded blocking pipelines, and snapshot iteration.</li>
 <li>⚡ <b>First-Class C# <span class="tt">EventHandler&lt;TEventArgs&gt;</span> &amp; <span class="tt">EventArgs</span> Model:</b> Idiomatic C# .NET event-driven delegate system with multicast subscription (<span class="tt">+=</span>, <span class="tt">-=</span>), member method binding (<span class="tt">Add(pInstance, &amp;Class::Method)</span>), token-based unsubscription, and thread-safe dispatch.</li>
 <li>📥 <b>Modernized <span class="tt">FileDownloader</span>:</b> Upgraded download callbacks to typed multicast <span class="tt">EventHandler&lt;DownloadProgressChangedEventArgs&gt;</span> and <span class="tt">EventHandler&lt;DownloadCompletedEventArgs&gt;</span> with reliable <span class="tt">FileMode</span> creation and resumption.</li>
 <li>🔄 <b>Observable <span class="tt">ProcessStreamer</span> Modernization:</b> Multicast event streams (<span class="tt">ProcessDiscovered</span>, <span class="tt">BatchReady</span>, <span class="tt">ProcessUpdated</span>, <span class="tt">Completed</span>, <span class="tt">Error</span>) with two-tier progressive telemetry streaming and thread-safe cancellation.</li>
@@ -346,7 +348,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.1.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.2.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -447,7 +449,7 @@ Developing Cross-Platform Applications 🌐💻</h1>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md22"></a>
 A. Generating the NuGet Package</h3>
 <p>Run the automated build script from PowerShell: </p><div class="fragment"><div class="line">.\BuildAndPack.ps1</div>
-</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.5.0.1.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
+</div><!-- fragment --><p> This updates the build timestamp, compiles both x64 and x86 Release binaries, and outputs <span class="tt">DotNetDupe.5.0.2.nupkg</span> inside the <span class="tt">nuget_packages/</span> directory.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md23"></a>
 B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <ol type="1">
@@ -458,7 +460,7 @@ B. Consuming NuGet Package in Visual Studio (Windows)</h3>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md24"></a>
 C. Consuming NuGet Package on Linux / CMake (WSL)</h3>
 <ol type="1">
-<li>Extract <span class="tt">DotNetDupe.5.0.1.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.5.0.1.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
+<li>Extract <span class="tt">DotNetDupe.5.0.2.nupkg</span> (ZIP format) to a local directory: <div class="fragment"><div class="line">Expand-Archive -Path &quot;nuget_packages\DotNetDupe.5.0.2.nupkg&quot; -DestinationPath &quot;DotNetDupe_NuGet&quot; -Force</div>
 </div><!-- fragment --></li>
 <li>Configure CMake pointing <span class="tt">NUGET_PATH</span> to the extracted package folder: <div class="fragment"><div class="line">cmake -S . -B build -DUSE_NUGET=ON -DNUGET_PATH=&quot;./DotNetDupe_NuGet&quot;</div>
 <div class="line">cmake --build build</div>
