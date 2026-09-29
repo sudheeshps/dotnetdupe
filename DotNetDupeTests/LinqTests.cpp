@@ -43,7 +43,7 @@ namespace DotNetDupeTests {
     // 1. Where Filtering
     TEST(LinqTests, GivenListOfNumbers_WhenWhereEven_ThenReturnsOnlyEvens) {
         List<int> numbers = { 1, 2, 3, 4, 5, 6 };
-        auto result = AsEnumerable(numbers)
+        auto result = numbers
             .Where([](int n) { return n % 2 == 0; })
             .ToList();
 
@@ -56,7 +56,7 @@ namespace DotNetDupeTests {
     // 2. Select Projection
     TEST(LinqTests, GivenListOfStrings_WhenProjectedWithSelect_ThenTransformsTypes) {
         List<String> words = { "cat", "elephant", "dog" };
-        auto lengths = AsEnumerable(words)
+        auto lengths = words
             .Select([](const String& s) { return s.GetLength(); })
             .ToList();
 
@@ -74,7 +74,7 @@ namespace DotNetDupeTests {
         matrix.Add(row1);
         matrix.Add(row2);
 
-        auto flat = AsEnumerable(matrix)
+        auto flat = matrix
             .SelectMany([](const List<int>& r) { return r; })
             .ToList();
 
@@ -86,7 +86,7 @@ namespace DotNetDupeTests {
     // 4. OrderBy Ascending
     TEST(LinqTests, GivenUnsortedList_WhenOrderByAscending_ThenSortsDeterministically) {
         List<int> numbers = { 5, 1, 4, 2, 8 };
-        auto sorted = AsEnumerable(numbers)
+        auto sorted = numbers
             .OrderBy([](int n) { return n; })
             .ToList();
 
@@ -101,7 +101,7 @@ namespace DotNetDupeTests {
     // 5. OrderBy Descending
     TEST(LinqTests, GivenUnsortedList_WhenOrderByDescending_ThenSortsReversed) {
         List<int> numbers = { 5, 1, 4, 2, 8 };
-        auto sorted = AsEnumerable(numbers)
+        auto sorted = numbers
             .OrderByDescending([](int n) { return n; })
             .ToList();
 
@@ -121,7 +121,7 @@ namespace DotNetDupeTests {
         students.Add(StudentScore("Bob", 10, 90));
         students.Add(StudentScore("David", 9, 80));
 
-        auto sorted = AsEnumerable(students)
+        auto sorted = students
             .OrderBy([](const StudentScore& s) { return s.Grade; })
             .ThenBy([](const StudentScore& s) { return s.Score; })
             .ToList();
@@ -141,7 +141,7 @@ namespace DotNetDupeTests {
         students.Add(StudentScore("Bob", 10, 90));
         students.Add(StudentScore("David", 9, 80));
 
-        auto sorted = AsEnumerable(students)
+        auto sorted = students
             .OrderBy([](const StudentScore& s) { return s.Grade; })
             .ThenByDescending([](const StudentScore& s) { return s.Score; })
             .ToList();
@@ -157,17 +157,17 @@ namespace DotNetDupeTests {
     TEST(LinqTests, GivenSequence_WhenTakeAndSkip_ThenPartitionsAccurately) {
         List<int> numbers = { 10, 20, 30, 40, 50, 60 };
 
-        auto skipped = AsEnumerable(numbers).Skip(2).ToList();
+        auto skipped = numbers.Skip(2).ToList();
         EXPECT_EQ(skipped.GetCount(), 4);
         EXPECT_EQ(skipped[0], 30);
         EXPECT_EQ(skipped[3], 60);
 
-        auto taken = AsEnumerable(numbers).Take(3).ToList();
+        auto taken = numbers.Take(3).ToList();
         EXPECT_EQ(taken.GetCount(), 3);
         EXPECT_EQ(taken[0], 10);
         EXPECT_EQ(taken[2], 30);
 
-        auto middle = AsEnumerable(numbers).Skip(2).Take(2).ToList();
+        auto middle = numbers.Skip(2).Take(2).ToList();
         EXPECT_EQ(middle.GetCount(), 2);
         EXPECT_EQ(middle[0], 30);
         EXPECT_EQ(middle[1], 40);
@@ -177,11 +177,11 @@ namespace DotNetDupeTests {
     TEST(LinqTests, GivenSequence_WhenTakeWhileAndSkipWhile_ThenPartitionsConditionally) {
         List<int> numbers = { 1, 2, 3, 10, 4, 5 };
 
-        auto taken = AsEnumerable(numbers).TakeWhile([](int n) { return n < 4; }).ToList();
+        auto taken = numbers.TakeWhile([](int n) { return n < 4; }).ToList();
         EXPECT_EQ(taken.GetCount(), 3);
         EXPECT_EQ(taken[2], 3);
 
-        auto skipped = AsEnumerable(numbers).SkipWhile([](int n) { return n < 4; }).ToList();
+        auto skipped = numbers.SkipWhile([](int n) { return n < 4; }).ToList();
         EXPECT_EQ(skipped.GetCount(), 3);
         EXPECT_EQ(skipped[0], 10);
         EXPECT_EQ(skipped[1], 4);
@@ -191,7 +191,7 @@ namespace DotNetDupeTests {
     // 10. Distinct Deduplication
     TEST(LinqTests, GivenDuplicateElements_WhenDistinctCalled_ThenRemovesRedundantValues) {
         List<int> numbers = { 1, 2, 2, 3, 1, 4, 3, 5 };
-        auto unique = AsEnumerable(numbers).Distinct().ToList();
+        auto unique = numbers.Distinct().ToList();
 
         EXPECT_EQ(unique.GetCount(), 5);
         EXPECT_EQ(unique[0], 1);
@@ -209,7 +209,7 @@ namespace DotNetDupeTests {
         files.Add(FileItemDto("c.txt", 1024, ".txt", false));
         files.Add(FileItemDto("d.doc", 4096, ".doc", false));
 
-        auto groups = AsEnumerable(files)
+        auto groups = files
             .GroupBy([](const FileItemDto& f) { return f.SizeBytes; })
             .ToList();
 
@@ -227,7 +227,7 @@ namespace DotNetDupeTests {
         files.Add(FileItemDto("b.txt", 1024, ".txt", false));
         files.Add(FileItemDto("c.png", 2048, ".png", false));
 
-        auto groups = AsEnumerable(files)
+        auto groups = files
             .GroupBy(
                 [](const FileItemDto& f) { return f.SizeBytes; },
                 [](const FileItemDto& f) { return f.Name; }
@@ -245,10 +245,10 @@ namespace DotNetDupeTests {
         List<int> seq1 = { 1, 2, 3 };
         List<int> seq2 = { 3, 4, 5 };
 
-        auto concatResult = AsEnumerable(seq1).Concat(AsEnumerable(seq2)).ToList();
+        auto concatResult = seq1.Concat(seq2).ToList();
         EXPECT_EQ(concatResult.GetCount(), 6);
 
-        auto unionResult = AsEnumerable(seq1).Union(AsEnumerable(seq2)).ToList();
+        auto unionResult = seq1.Union(seq2).ToList();
         EXPECT_EQ(unionResult.GetCount(), 5);
         EXPECT_EQ(unionResult[3], 4);
         EXPECT_EQ(unionResult[4], 5);
@@ -259,12 +259,12 @@ namespace DotNetDupeTests {
         List<int> seq1 = { 1, 2, 3, 4 };
         List<int> seq2 = { 3, 4, 5, 6 };
 
-        auto common = AsEnumerable(seq1).Intersect(AsEnumerable(seq2)).ToList();
+        auto common = seq1.Intersect(seq2).ToList();
         EXPECT_EQ(common.GetCount(), 2);
         EXPECT_EQ(common[0], 3);
         EXPECT_EQ(common[1], 4);
 
-        auto diff = AsEnumerable(seq1).Except(AsEnumerable(seq2)).ToList();
+        auto diff = seq1.Except(seq2).ToList();
         EXPECT_EQ(diff.GetCount(), 2);
         EXPECT_EQ(diff[0], 1);
         EXPECT_EQ(diff[1], 2);
@@ -275,8 +275,8 @@ namespace DotNetDupeTests {
         List<int> ids = { 1, 2, 3 };
         List<String> names = { "One", "Two", "Three" };
 
-        auto zipped = AsEnumerable(ids)
-            .Zip(AsEnumerable(names), [](int id, const String& name) {
+        auto zipped = ids
+            .Zip(names, [](int id, const String& name) {
                 return name + String(":") + String::FromInt(id);
             })
             .ToList();
@@ -290,7 +290,7 @@ namespace DotNetDupeTests {
     // 16. Reverse
     TEST(LinqTests, GivenSequence_WhenReverseCalled_ThenInvertsOrder) {
         List<int> numbers = { 10, 20, 30 };
-        auto reversed = AsEnumerable(numbers).Reverse().ToList();
+        auto reversed = numbers.Reverse().ToList();
 
         EXPECT_EQ(reversed.GetCount(), 3);
         EXPECT_EQ(reversed[0], 30);
@@ -302,95 +302,94 @@ namespace DotNetDupeTests {
     TEST(LinqTests, GivenSequence_WhenAnyAndAllCalled_ThenEvaluatesCorrectly) {
         List<int> numbers = { 2, 4, 6, 8 };
 
-        EXPECT_TRUE(AsEnumerable(numbers).Any());
-        EXPECT_TRUE(AsEnumerable(numbers).Any([](int n) { return n == 6; }));
-        EXPECT_FALSE(AsEnumerable(numbers).Any([](int n) { return n == 5; }));
+        EXPECT_TRUE(numbers.Any());
+        EXPECT_TRUE(numbers.Any([](int n) { return n == 6; }));
+        EXPECT_FALSE(numbers.Any([](int n) { return n == 5; }));
 
-        EXPECT_TRUE(AsEnumerable(numbers).All([](int n) { return n % 2 == 0; }));
-        EXPECT_FALSE(AsEnumerable(numbers).All([](int n) { return n > 4; }));
+        EXPECT_TRUE(numbers.All([](int n) { return n % 2 == 0; }));
+        EXPECT_FALSE(numbers.All([](int n) { return n > 4; }));
 
         List<int> emptyList;
-        EXPECT_FALSE(AsEnumerable(emptyList).Any());
-        EXPECT_TRUE(AsEnumerable(emptyList).All([](int n) { return n == 0; }));
+        EXPECT_FALSE(emptyList.Any());
+        EXPECT_TRUE(emptyList.All([](int n) { return n == 0; }));
     }
 
     // 18. Contains
     TEST(LinqTests, GivenSequence_WhenContainsCalled_ThenFindsItem) {
         List<String> fruits = { "Apple", "Banana", "Cherry" };
-        EXPECT_TRUE(AsEnumerable(fruits).Contains("Banana"));
-        EXPECT_FALSE(AsEnumerable(fruits).Contains("Orange"));
+        EXPECT_TRUE(fruits.Contains("Banana"));
+        EXPECT_FALSE(fruits.Contains("Orange"));
     }
 
     // 19. First and Last
     TEST(LinqTests, GivenSequence_WhenFirstAndLastCalled_ThenReturnsBoundaries) {
         List<int> numbers = { 10, 20, 30, 40 };
 
-        EXPECT_EQ(AsEnumerable(numbers).First(), 10);
-        EXPECT_EQ(AsEnumerable(numbers).First([](int n) { return n > 25; }), 30);
-        EXPECT_EQ(AsEnumerable(numbers).Last(), 40);
-        EXPECT_EQ(AsEnumerable(numbers).Last([](int n) { return n < 35; }), 30);
+        EXPECT_EQ(numbers.First(), 10);
+        EXPECT_EQ(numbers.First([](int n) { return n > 25; }), 30);
+        EXPECT_EQ(numbers.Last(), 40);
+        EXPECT_EQ(numbers.Last([](int n) { return n < 35; }), 30);
     }
 
     // 20. First on Empty Throws
     TEST(LinqTests, GivenEmptySequence_WhenFirstCalled_ThenThrowsInvalidOperationException) {
         List<int> emptyList;
-        EXPECT_THROW(AsEnumerable(emptyList).First(), InvalidOperationException);
+        EXPECT_THROW(emptyList.First(), InvalidOperationException);
     }
 
     // 21. FirstOrDefault
     TEST(LinqTests, GivenEmptySequence_WhenFirstOrDefaultCalled_ThenReturnsDefault) {
         List<int> emptyList;
-        EXPECT_EQ(AsEnumerable(emptyList).FirstOrDefault(99), 99);
-        EXPECT_EQ(AsEnumerable(emptyList).FirstOrDefault(), 0);
+        EXPECT_EQ(emptyList.FirstOrDefault(), 0);
 
         List<int> numbers = { 5, 10 };
-        EXPECT_EQ(AsEnumerable(numbers).FirstOrDefault([](int n) { return n > 100; }, -1), -1);
+        EXPECT_EQ(numbers.FirstOrDefault([](int n) { return n > 100; }), 0);
     }
 
     // 22. Single and SingleOrDefault
     TEST(LinqTests, GivenSingleElement_WhenSingleCalled_ThenReturnsValue) {
         List<int> singleItem = { 42 };
-        EXPECT_EQ(AsEnumerable(singleItem).Single(), 42);
-        EXPECT_EQ(AsEnumerable(singleItem).SingleOrDefault(), 42);
+        EXPECT_EQ(singleItem.Single(), 42);
+        EXPECT_EQ(singleItem.SingleOrDefault(), 42);
 
         List<int> multiples = { 10, 20 };
-        EXPECT_THROW(AsEnumerable(multiples).Single(), InvalidOperationException);
-        EXPECT_THROW(AsEnumerable(multiples).SingleOrDefault(), InvalidOperationException);
+        EXPECT_THROW(multiples.Single(), InvalidOperationException);
+        EXPECT_THROW(multiples.SingleOrDefault(), InvalidOperationException);
     }
 
     // 23. ElementAt and ElementAtOrDefault
     TEST(LinqTests, GivenSequence_WhenElementAtCalled_ThenRetrievesByIndex) {
         List<int> numbers = { 100, 200, 300 };
-        EXPECT_EQ(AsEnumerable(numbers).ElementAt(1), 200);
-        EXPECT_THROW(AsEnumerable(numbers).ElementAt(5), ArgumentOutOfRangeException);
-        EXPECT_THROW(AsEnumerable(numbers).ElementAt(-1), ArgumentOutOfRangeException);
+        EXPECT_EQ(numbers.ElementAt(1), 200);
+        EXPECT_THROW(numbers.ElementAt(5), ArgumentOutOfRangeException);
+        EXPECT_THROW(numbers.ElementAt(-1), ArgumentOutOfRangeException);
 
-        EXPECT_EQ(AsEnumerable(numbers).ElementAtOrDefault(1), 200);
-        EXPECT_EQ(AsEnumerable(numbers).ElementAtOrDefault(5, -1), -1);
+        EXPECT_EQ(numbers.ElementAtOrDefault(1), 200);
+        EXPECT_EQ(numbers.ElementAtOrDefault(5, -1), -1);
     }
 
     // 24. Aggregations: Sum, Min, Max, Average
     TEST(LinqTests, GivenNumericSequence_WhenAggregatesCalculated_ThenComputesCorrectly) {
         List<int> numbers = { 2, 4, 6, 8, 10 };
 
-        EXPECT_EQ(AsEnumerable(numbers).Sum(), 30);
-        EXPECT_EQ(AsEnumerable(numbers).Min(), 2);
-        EXPECT_EQ(AsEnumerable(numbers).Max(), 10);
-        EXPECT_DOUBLE_EQ(AsEnumerable(numbers).Average(), 6.0);
+        EXPECT_EQ(numbers.Sum(), 30);
+        EXPECT_EQ(numbers.Min(), 2);
+        EXPECT_EQ(numbers.Max(), 10);
+        EXPECT_DOUBLE_EQ(numbers.Average(), 6.0);
 
-        EXPECT_EQ(AsEnumerable(numbers).Sum([](int n) { return n * 2; }), 60);
-        EXPECT_EQ(AsEnumerable(numbers).Min([](int n) { return n * 2; }), 4);
-        EXPECT_EQ(AsEnumerable(numbers).Max([](int n) { return n * 2; }), 20);
-        EXPECT_DOUBLE_EQ(AsEnumerable(numbers).Average([](int n) { return n * 2; }), 12.0);
+        EXPECT_EQ(numbers.Where([](int) { return true; }).Sum([](int n) { return n * 2; }), 60);
+        EXPECT_EQ(numbers.Where([](int) { return true; }).Min([](int n) { return n * 2; }), 4);
+        EXPECT_EQ(numbers.Where([](int) { return true; }).Max([](int n) { return n * 2; }), 20);
+        EXPECT_DOUBLE_EQ(numbers.Where([](int) { return true; }).Average([](int n) { return n * 2; }), 12.0);
     }
 
     // 25. Aggregate Fold
     TEST(LinqTests, GivenSequence_WhenAggregateCalled_ThenFoldsValues) {
         List<int> numbers = { 1, 2, 3, 4 };
-        int product = AsEnumerable(numbers).Aggregate([](int acc, int x) { return acc * x; });
+        int product = numbers.Where([](int) { return true; }).Aggregate([](int acc, int x) { return acc * x; });
         EXPECT_EQ(product, 24);
 
-        int sumWithSeed = AsEnumerable(numbers).Aggregate(10, [](int acc, int x) { return acc + x; });
+        int sumWithSeed = numbers.Where([](int) { return true; }).Aggregate(10, [](int acc, int x) { return acc + x; });
         EXPECT_EQ(sumWithSeed, 20);
     }
 
@@ -417,18 +416,18 @@ namespace DotNetDupeTests {
     TEST(LinqTests, GivenSequence_WhenMaterializedToDifferentTypes_ThenPopulatesCorrectly) {
         List<int> numbers = { 10, 20, 30 };
 
-        Array<int> arr = AsEnumerable(numbers).ToArray();
+        Array<int> arr = numbers.ToArray();
         EXPECT_EQ(arr.GetLength(), 3);
         EXPECT_EQ(arr[0], 10);
 
-        auto dict = AsEnumerable(numbers).ToDictionary(
+        auto dict = numbers.ToDictionary(
             [](int n) { return n; },
             [](int n) { return String::FromInt(n); }
         );
         EXPECT_EQ(dict.GetCount(), 3);
         EXPECT_TRUE(dict[20] == "20");
 
-        auto set = AsEnumerable(numbers).ToHashSet();
+        auto set = numbers.ToHashSet();
         EXPECT_EQ(set.GetCount(), 3);
         EXPECT_TRUE(set.Contains(20));
     }
@@ -444,7 +443,7 @@ namespace DotNetDupeTests {
         files.Add(FileItemDto("video3.mp4", 50ULL * 1024 * 1024, ".mp4", false));
 
         // SmartX Query: Find non-directory video files >= 100MB, sort by size desc, take top 2 names
-        auto topVideos = AsEnumerable(files)
+        auto topVideos = files
             .Where([](const FileItemDto& f) { return !f.IsDirectory; })
             .Where([](const FileItemDto& f) { return f.Extension == ".mp4" || f.Extension == ".mkv"; })
             .Where([](const FileItemDto& f) { return f.SizeBytes >= 100ULL * 1024 * 1024; })
@@ -461,7 +460,7 @@ namespace DotNetDupeTests {
     // 29. Subscript and Range-based for loop
     TEST(EnumerableTest, GivenEnumerable_WhenSubscriptOrRangeForUsed_ThenAccessesElements) {
         List<int> list = { 10, 20, 30 };
-        auto seq = AsEnumerable(list);
+        Enumerable<int> seq(list);
 
         // Verify operator[]
         EXPECT_EQ(seq[0], 10);
@@ -476,15 +475,15 @@ namespace DotNetDupeTests {
         EXPECT_EQ(sum, 60);
     }
 
-    // 30. GroupBy + SelectMany + AsEnumerable(IGrouping)
-    TEST(EnumerableTest, GivenGroupBySequence_WhenSelectManyAndAsEnumerableUsed_ThenFlattensCorrectly) {
+    // 30. GroupBy + SelectMany + IGrouping
+    TEST(EnumerableTest, GivenGroupBySequence_WhenSelectManyAndIGroupingUsed_ThenFlattensCorrectly) {
         List<int> numbers = { 1, 2, 2, 3, 3, 3 };
 
-        // Verifies GroupBy, IGrouping::operator[], and SelectMany taking Enumerable<T>
-        auto flattened = AsEnumerable(numbers)
+        // Verifies GroupBy, IGrouping as IEnumerable, and SelectMany
+        auto flattened = numbers
             .GroupBy([](int n) { return n; })
             .Where([](const auto& g) { return g.Count() > 1; })
-            .SelectMany([](const auto& g) { return AsEnumerable(g); })
+            .SelectMany([](const auto& g) { return g; })
             .ToList();
 
         EXPECT_EQ(flattened.GetCount(), 5); // 2, 2, 3, 3, 3

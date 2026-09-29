@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['threadstart_0',['ThreadStart',['../namespace_dot_net_dupe_1_1_system_1_1_threading.html#ac1e97570f7f4a334593a2a80ecf7479d',1,'DotNetDupe::System::Threading']]],
-  ['timeproviderptr_1',['TimeProviderPtr',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a1e687aead5fdcec3f13b7215121ce358',1,'DotNetDupe::System::Diagnostics::TimeProviderPtr'],['../namespace_dot_net_dupe_1_1_system.html#a107b70077a0c58eb6a35aa41f2e5fadb',1,'DotNetDupe::System::TimeProviderPtr']]]
+  ['semaphorelock_0',['SemaphoreLock',['../namespace_dot_net_dupe_1_1_system_1_1_threading.html#a30d66118686dc022b25e8d97aa1a9fa1',1,'DotNetDupe::System::Threading']]],
+  ['semaphoreslimlock_1',['SemaphoreSlimLock',['../namespace_dot_net_dupe_1_1_system_1_1_threading.html#a7c8cff654e533f09ac8e9ae5bbd9e89a',1,'DotNetDupe::System::Threading']]],
+  ['socklen_2',['SockLen',['../_socket_8cpp.html#ad34edc110da2f277e7e80496442fb31e',1,'Socket.cpp']]]
 ];

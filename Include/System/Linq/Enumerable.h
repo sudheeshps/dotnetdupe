@@ -11,6 +11,7 @@
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
 #include "System/Collections/Generic/HashSet.h"
+#include "System/Collections/Generic/IEnumerable.h"
 #include "System/InvalidOperationException.h"
 #include "System/ArgumentNullException.h"
 #include "System/ArgumentOutOfRangeException.h"
@@ -33,7 +34,7 @@ namespace DotNetDupe {
             ///
             /// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
             template <typename T>
-            class Enumerable : public Object {
+            class Enumerable : public virtual Collections::Generic::IEnumerable<T> {
             protected:
                 Collections::Generic::List<T> m_items;
 
@@ -42,6 +43,14 @@ namespace DotNetDupe {
 
                 /// \brief Default constructor.
                 Enumerable() = default;
+
+                /// \brief Constructs an Enumerable from any IEnumerable sequence.
+                explicit Enumerable(const Collections::Generic::IEnumerable<T>& seq) {
+                    auto spEnum = seq.GetEnumerator();
+                    while (spEnum && spEnum->MoveNext()) {
+                        m_items.Add(spEnum->GetCurrent());
+                    }
+                }
 
                 /// \brief Constructs an Enumerable copying from a List.
                 explicit Enumerable(const Collections::Generic::List<T>& items) : m_items(items) {}
@@ -92,6 +101,11 @@ namespace DotNetDupe {
 
                 /// \brief Gets the number of elements contained in the sequence.
                 int GetCount() const { return m_items.GetCount(); }
+
+                /// \brief Returns an enumerator that iterates through the sequence.
+                Collections::Generic::IEnumeratorPtr<T> GetEnumerator() const override {
+                    return m_items.GetEnumerator();
+                }
 
                 /// \brief Gets the element at the specified index.
                 const T& operator[](int index) const { return m_items[index]; }
@@ -329,27 +343,29 @@ namespace DotNetDupe {
                 }
 
                 /// \brief Concatenates two sequences.
-                Enumerable<T> Concat(const Enumerable<T>& other) const {
+                Enumerable<T> Concat(const Collections::Generic::IEnumerable<T>& other) const {
                     /// Append elements of other sequence.
                     Collections::Generic::List<T> result = m_items;
-                    int otherCount = other.GetCount();
-                    for (int i = 0; i < otherCount; ++i) {
-                        result.Add(other[i]);
+                    auto spEnum = other.GetEnumerator();
+                    while (spEnum && spEnum->MoveNext()) {
+                        result.Add(spEnum->GetCurrent());
                     }
                     return Enumerable<T>(std::move(result));
                 }
 
                 /// \brief Produces the set union of two sequences.
-                Enumerable<T> Union(const Enumerable<T>& other) const {
+                Enumerable<T> Union(const Collections::Generic::IEnumerable<T>& other) const {
                     return Concat(other).Distinct();
                 }
 
                 /// \brief Produces the set intersection of two sequences.
-                Enumerable<T> Intersect(const Enumerable<T>& other) const {
+                Enumerable<T> Intersect(const Collections::Generic::IEnumerable<T>& other) const {
                     /// Intersect elements between two sequences.
                     Collections::Generic::HashSet<T> otherSet;
-                    int otherCount = other.GetCount();
-                    for (int i = 0; i < otherCount; ++i) { otherSet.Add(other[i]); }
+                    auto spEnum = other.GetEnumerator();
+                    while (spEnum && spEnum->MoveNext()) {
+                        otherSet.Add(spEnum->GetCurrent());
+                    }
                     Collections::Generic::HashSet<T> added;
                     Collections::Generic::List<T> result;
                     int count = m_items.GetCount();
@@ -363,11 +379,13 @@ namespace DotNetDupe {
                 }
 
                 /// \brief Produces the set difference of two sequences.
-                Enumerable<T> Except(const Enumerable<T>& other) const {
+                Enumerable<T> Except(const Collections::Generic::IEnumerable<T>& other) const {
                     /// Exclude elements present in other sequence.
                     Collections::Generic::HashSet<T> otherSet;
-                    int otherCount = other.GetCount();
-                    for (int i = 0; i < otherCount; ++i) { otherSet.Add(other[i]); }
+                    auto spEnum = other.GetEnumerator();
+                    while (spEnum && spEnum->MoveNext()) {
+                        otherSet.Add(spEnum->GetCurrent());
+                    }
                     Collections::Generic::HashSet<T> added;
                     Collections::Generic::List<T> result;
                     int count = m_items.GetCount();
@@ -382,13 +400,16 @@ namespace DotNetDupe {
 
                 /// \brief Merges two sequences by using the specified predicate function.
                 template <typename TOther, typename FResult>
-                auto Zip(const Enumerable<TOther>& other, FResult&& resultSelector) const {
+                auto Zip(const Collections::Generic::IEnumerable<TOther>& other, FResult&& resultSelector) const {
                     /// Pairwise zip two sequences.
                     using TResult = decltype(resultSelector(std::declval<T>(), std::declval<TOther>()));
                     Collections::Generic::List<TResult> result;
-                    int count = (m_items.GetCount() < other.GetCount()) ? m_items.GetCount() : other.GetCount();
-                    for (int i = 0; i < count; ++i) {
-                        result.Add(resultSelector(m_items[i], other[i]));
+                    auto spEnum = other.GetEnumerator();
+                    int i = 0;
+                    int count = m_items.GetCount();
+                    while (i < count && spEnum && spEnum->MoveNext()) {
+                        result.Add(resultSelector(m_items[i], spEnum->GetCurrent()));
+                        i++;
                     }
                     return Enumerable<TResult>(std::move(result));
                 }
@@ -707,5 +728,233 @@ namespace DotNetDupe {
             }
 
         } // namespace Linq
+
+        namespace Collections {
+            namespace Generic {
+
+                template <typename T>
+                template <typename F>
+                Linq::Enumerable<T> IEnumerable<T>::Where(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).Where(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                template <typename F>
+                auto IEnumerable<T>::Select(F&& selector) const {
+                    return Linq::Enumerable<T>(*this).Select(std::forward<F>(selector));
+                }
+
+                template <typename T>
+                template <typename FKey>
+                Linq::OrderedEnumerable<T> IEnumerable<T>::OrderBy(FKey&& keySelector) const {
+                    return Linq::Enumerable<T>(*this).OrderBy(std::forward<FKey>(keySelector));
+                }
+
+                template <typename T>
+                template <typename FKey>
+                Linq::OrderedEnumerable<T> IEnumerable<T>::OrderByDescending(FKey&& keySelector) const {
+                    return Linq::Enumerable<T>(*this).OrderByDescending(std::forward<FKey>(keySelector));
+                }
+
+                template <typename T>
+                template <typename FKey>
+                auto IEnumerable<T>::GroupBy(FKey&& keySelector) const {
+                    return Linq::Enumerable<T>(*this).GroupBy(std::forward<FKey>(keySelector));
+                }
+
+                template <typename T>
+                template <typename FKey, typename FElement>
+                auto IEnumerable<T>::GroupBy(FKey&& keySelector, FElement&& elementSelector) const {
+                    return Linq::Enumerable<T>(*this).GroupBy(std::forward<FKey>(keySelector), std::forward<FElement>(elementSelector));
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Take(int count) const {
+                    return Linq::Enumerable<T>(*this).Take(count);
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Skip(int count) const {
+                    return Linq::Enumerable<T>(*this).Skip(count);
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Distinct() const {
+                    return Linq::Enumerable<T>(*this).Distinct();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::First() const {
+                    return Linq::Enumerable<T>(*this).First();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::FirstOrDefault() const {
+                    return Linq::Enumerable<T>(*this).FirstOrDefault();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::Single() const {
+                    return Linq::Enumerable<T>(*this).Single();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::SingleOrDefault() const {
+                    return Linq::Enumerable<T>(*this).SingleOrDefault();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::ElementAt(int index) const {
+                    return Linq::Enumerable<T>(*this).ElementAt(index);
+                }
+
+                template <typename T>
+                T IEnumerable<T>::ElementAtOrDefault(int index, const T& defaultValue) const {
+                    return Linq::Enumerable<T>(*this).ElementAtOrDefault(index, defaultValue);
+                }
+
+                template <typename T>
+                bool IEnumerable<T>::Any() const {
+                    return Linq::Enumerable<T>(*this).Any();
+                }
+
+                template <typename T>
+                template <typename F>
+                bool IEnumerable<T>::Any(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).Any(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                template <typename F>
+                bool IEnumerable<T>::All(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).All(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                int IEnumerable<T>::Count() const {
+                    return Linq::Enumerable<T>(*this).Count();
+                }
+
+                template <typename T>
+                template <typename F>
+                int IEnumerable<T>::Count(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).Count(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                T IEnumerable<T>::Sum() const {
+                    return Linq::Enumerable<T>(*this).Sum();
+                }
+
+                template <typename T>
+                double IEnumerable<T>::Average() const {
+                    return Linq::Enumerable<T>(*this).Average();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::Min() const {
+                    return Linq::Enumerable<T>(*this).Min();
+                }
+
+                template <typename T>
+                T IEnumerable<T>::Max() const {
+                    return Linq::Enumerable<T>(*this).Max();
+                }
+
+                template <typename T>
+                template <typename F>
+                auto IEnumerable<T>::SelectMany(F&& selector) const {
+                    return Linq::Enumerable<T>(*this).SelectMany(std::forward<F>(selector));
+                }
+
+                template <typename T>
+                template <typename F>
+                Linq::Enumerable<T> IEnumerable<T>::TakeWhile(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).TakeWhile(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                template <typename F>
+                Linq::Enumerable<T> IEnumerable<T>::SkipWhile(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).SkipWhile(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Concat(const IEnumerable<T>& other) const {
+                    return Linq::Enumerable<T>(*this).Concat(other);
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Union(const IEnumerable<T>& other) const {
+                    return Linq::Enumerable<T>(*this).Union(other);
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Intersect(const IEnumerable<T>& other) const {
+                    return Linq::Enumerable<T>(*this).Intersect(other);
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Except(const IEnumerable<T>& other) const {
+                    return Linq::Enumerable<T>(*this).Except(other);
+                }
+
+                template <typename T>
+                template <typename TOther, typename FResult>
+                auto IEnumerable<T>::Zip(const IEnumerable<TOther>& other, FResult&& resultSelector) const {
+                    return Linq::Enumerable<T>(*this).Zip(other, std::forward<FResult>(resultSelector));
+                }
+
+                template <typename T>
+                Linq::Enumerable<T> IEnumerable<T>::Reverse() const {
+                    return Linq::Enumerable<T>(*this).Reverse();
+                }
+
+                template <typename T>
+                template <typename F>
+                T IEnumerable<T>::First(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).First(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                template <typename F>
+                T IEnumerable<T>::FirstOrDefault(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).FirstOrDefault(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                T IEnumerable<T>::Last() const {
+                    return Linq::Enumerable<T>(*this).Last();
+                }
+
+                template <typename T>
+                template <typename F>
+                T IEnumerable<T>::Last(F&& predicate) const {
+                    return Linq::Enumerable<T>(*this).Last(std::forward<F>(predicate));
+                }
+
+                template <typename T>
+                List<T> IEnumerable<T>::ToList() const {
+                    return Linq::Enumerable<T>(*this).ToList();
+                }
+
+                template <typename T>
+                Array<T> IEnumerable<T>::ToArray() const {
+                    return Linq::Enumerable<T>(*this).ToArray();
+                }
+
+                template <typename T>
+                HashSet<T> IEnumerable<T>::ToHashSet() const {
+                    return Linq::Enumerable<T>(*this).ToHashSet();
+                }
+
+                template <typename T>
+                template <typename FKey, typename FValue>
+                auto IEnumerable<T>::ToDictionary(FKey&& keySelector, FValue&& valueSelector) const {
+                    return Linq::Enumerable<T>(*this).ToDictionary(std::forward<FKey>(keySelector), std::forward<FValue>(valueSelector));
+                }
+
+            } // namespace Generic
+        } // namespace Collections
     } // namespace System
 } // namespace DotNetDupe

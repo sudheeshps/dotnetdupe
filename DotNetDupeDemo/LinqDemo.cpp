@@ -1,8 +1,10 @@
 #include "System/Console.h"
 #include "System/String.h"
-#include "System/Linq.h"
 #include "System/Collections/Generic/List.h"
-#include <cstdint>
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/Collections/Generic/HashSet.h"
+#include "System/Linq.h"
+#include "Demos.h"
 
 using namespace DotNetDupe::System;
 using namespace DotNetDupe::System::Collections::Generic;
@@ -21,11 +23,6 @@ struct DemoFileItem {
     bool operator==(const DemoFileItem& other) const {
         return Name == other.Name && SizeBytes == other.SizeBytes;
     }
-
-    bool operator<(const DemoFileItem& other) const {
-        if (SizeBytes != other.SizeBytes) return SizeBytes < other.SizeBytes;
-        return Name < other.Name;
-    }
 };
 
 void DemonstrateLinq() {
@@ -43,7 +40,7 @@ void DemonstrateLinq() {
 
     // 2. Query 1: Filter non-directory files >= 10MB
     Console::WriteLine("\n--- Large Files (>= 10 MB) ---");
-    auto largeFiles = AsEnumerable(files)
+    auto largeFiles = files
         .Where([](const DemoFileItem& f) { return !f.IsDirectory && f.SizeBytes >= 10000000ULL; })
         .OrderByDescending([](const DemoFileItem& f) { return f.SizeBytes; })
         .Select([](const DemoFileItem& f) { return f.Name + " (" + String::FromInt((int)(f.SizeBytes / 1000000ULL)) + " MB)"; })
@@ -55,7 +52,7 @@ void DemonstrateLinq() {
 
     // 3. Query 2: Duplicate file size detection using GroupBy
     Console::WriteLine("\n--- Potential Duplicate Files by Size (GroupBy) ---");
-    auto duplicateGroups = AsEnumerable(files)
+    auto duplicateGroups = files
         .Where([](const DemoFileItem& f) { return !f.IsDirectory; })
         .GroupBy([](const DemoFileItem& f) { return f.SizeBytes; })
         .Where([](const auto& g) { return g.Count() > 1; })
@@ -71,10 +68,10 @@ void DemonstrateLinq() {
     // 4. Query 3: Numeric Aggregations
     List<int> numbers = { 10, 25, 40, 15, 60, 30 };
     Console::WriteLine("\n--- Numeric Aggregations ---");
-    int sum = AsEnumerable(numbers).Sum();
-    int min = AsEnumerable(numbers).Min();
-    int max = AsEnumerable(numbers).Max();
-    double avg = AsEnumerable(numbers).Average();
+    int sum = numbers.Sum();
+    int min = numbers.Min();
+    int max = numbers.Max();
+    double avg = numbers.Average();
     Console::WriteLine("  Sum: {0}, Min: {1}, Max: {2}, Average: {3}", sum, min, max, avg);
 
     // 5. Query 4: Generators

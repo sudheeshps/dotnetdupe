@@ -9,9 +9,12 @@
 #include "System/Object.h"
 #include "System/ArgumentException.h"
 #include "System/ArgumentOutOfRangeException.h"
+#include "System/InvalidOperationException.h"
 #include "System/Predicate.h"
 #include "System/Action.h"
 #include "System/String.h"
+#include "System/Collections/Generic/IList.h"
+#include "System/EqualityHelper.h"
 #include <new>
 #include <initializer_list>
 #include <utility>
@@ -26,7 +29,7 @@ namespace DotNetDupe {
 		/// \tparam T The element type contained in the array.
 		/// \note Conforms to ECMA-335 Partition IV Section 5.20 (System.Array).
 		template <class T>
-		class Array : public Object {
+		class Array : public virtual Collections::Generic::IList<T> {
 		private:
 			T* m_pData = nullptr;
 			int m_iLength = 0;
@@ -56,6 +59,84 @@ namespace DotNetDupe {
 			}
 
 		public:
+			/// \class ArrayEnumerator
+			/// \brief Enumerates elements of an Array<T>.
+			class ArrayEnumerator : public virtual Collections::Generic::IEnumerator<T> {
+			private:
+				const Array<T>* m_pArray;
+				int m_iIndex;
+			public:
+				ArrayEnumerator(const Array<T>* pArray) : m_pArray(pArray), m_iIndex(-1) {}
+				bool MoveNext() override {
+					if (!m_pArray) return false;
+					m_iIndex++;
+					return m_iIndex < m_pArray->GetLength();
+				}
+				const T& Current() const override {
+					return (*m_pArray)[m_iIndex];
+				}
+				const T& GetCurrent() const override {
+					return Current();
+				}
+				void Reset() override {
+					m_iIndex = -1;
+				}
+			};
+
+			/// \brief Returns an enumerator that iterates through the Array<T>.
+			/// \return A SmartPointer to an IEnumerator<T> for the Array<T>.
+			SmartPointer<Collections::Generic::IEnumerator<T>> GetEnumerator() const override {
+				return SmartPointer<Collections::Generic::IEnumerator<T>>(new ArrayEnumerator(this), true);
+			}
+
+			/// \brief Gets the number of elements in the Array.
+			int GetCount() const override { return m_iLength; }
+
+			/// \brief Gets a value indicating whether the Array is read-only.
+			bool IsReadOnly() const override { return false; }
+
+			/// \brief Adds an item (throws InvalidOperationException for fixed-size arrays).
+			void Add(const T& item) override {
+				(void)item;
+				throw InvalidOperationException("Collection was of a fixed size.");
+			}
+
+			/// \brief Clears all elements by resetting to default values.
+			void Clear() override {
+				for (int i = 0; i < m_iLength; ++i) m_pData[i] = T();
+			}
+
+			/// \brief Determines whether an element is in the Array.
+			bool Contains(const T& item) const override {
+				return IndexOf(item) != -1;
+			}
+
+			/// \brief Copies elements to another Array starting at arrayIndex.
+			void CopyTo(Array<T>& array, int arrayIndex) const override {
+				for (int i = 0; i < m_iLength; ++i) {
+					array[arrayIndex + i] = m_pData[i];
+				}
+			}
+
+			/// \brief Removes an item (throws InvalidOperationException for fixed-size arrays).
+			bool Remove(const T& item) override {
+				(void)item;
+				throw InvalidOperationException("Collection was of a fixed size.");
+			}
+
+			/// \brief Inserts an item (throws InvalidOperationException for fixed-size arrays).
+			void Insert(int index, const T& item) override {
+				(void)index;
+				(void)item;
+				throw InvalidOperationException("Collection was of a fixed size.");
+			}
+
+			/// \brief Removes at index (throws InvalidOperationException for fixed-size arrays).
+			void RemoveAt(int index) override {
+				(void)index;
+				throw InvalidOperationException("Collection was of a fixed size.");
+			}
+
 			/// \brief Initializes an empty Array instance.
 			Array() = default;
 
@@ -176,7 +257,7 @@ namespace DotNetDupe {
 			/// \return The zero-based index of the first occurrence of value, if found; otherwise, -1.
 			int IndexOf(const T& value) const {
 				for (int iIdx = 0; iIdx < m_iLength; ++iIdx) {
-					if (m_pData[iIdx] == value) return iIdx;
+					if (EqualityHelper<T>::Equals(m_pData[iIdx], value)) return iIdx;
 				}
 				return -1;
 			}
@@ -186,7 +267,7 @@ namespace DotNetDupe {
 			/// \return The zero-based index of the last occurrence of value, if found; otherwise, -1.
 			int LastIndexOf(const T& value) const {
 				for (int iIdx = m_iLength - 1; iIdx >= 0; --iIdx) {
-					if (m_pData[iIdx] == value) return iIdx;
+					if (EqualityHelper<T>::Equals(m_pData[iIdx], value)) return iIdx;
 				}
 				return -1;
 			}
@@ -213,12 +294,6 @@ namespace DotNetDupe {
 				}
 			}
 
-			/// \brief Sets a range of elements in the Array to the default value of each element type.
-			void Clear() {
-				for (int i = 0; i < m_iLength; ++i) {
-					m_pData[i] = T();
-				}
-			}
 
 			/// \brief Copies all elements of the current Array to the specified destination Array starting at the specified destination index.
 			void CopyTo(Array<T>& arrTarget, int iIndex);

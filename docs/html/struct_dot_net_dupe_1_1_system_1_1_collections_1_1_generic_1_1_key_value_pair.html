@@ -146,14 +146,18 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('struct_dot_net
 <p>Defines a key/value pair that can be set or retrieved.  
  <a href="#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>&gt;</code></p>
+<p><code>#include &lt;<a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-methods" class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a6c134f730fb2e1aed88e2b597fcea82c" id="r_a6c134f730fb2e1aed88e2b597fcea82c"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a6c134f730fb2e1aed88e2b597fcea82c">KeyValuePair</a> ()</td></tr>
-<tr class="memdesc:a6c134f730fb2e1aed88e2b597fcea82c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with default values.  <br /></td></tr>
-<tr class="memitem:af46aa63fb2ea418a8e51cc261b5425c5" id="r_af46aa63fb2ea418a8e51cc261b5425c5"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#af46aa63fb2ea418a8e51cc261b5425c5">KeyValuePair</a> (TKey k, TValue v)</td></tr>
-<tr class="memdesc:af46aa63fb2ea418a8e51cc261b5425c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with the specified key and value.  <br /></td></tr>
+<tr class="memitem:a637fdde6c8d0160c1c57a14f343d67f8" id="r_a637fdde6c8d0160c1c57a14f343d67f8"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair</a> ()=default</td></tr>
+<tr class="memdesc:a637fdde6c8d0160c1c57a14f343d67f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with default values.  <br /></td></tr>
+<tr class="memitem:a9f80a727f54139a225ae36b2746b9cab" id="r_a9f80a727f54139a225ae36b2746b9cab"><td class="memItemLeft">&#160;</td><td class="memItemRight"><a class="el" href="#a9f80a727f54139a225ae36b2746b9cab">KeyValuePair</a> (const TKey &amp;k, const TValue &amp;v)</td></tr>
+<tr class="memdesc:a9f80a727f54139a225ae36b2746b9cab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with the specified key and value.  <br /></td></tr>
+<tr class="memitem:ab85c69a5c9061ef457900b3a7bb1e2d1" id="r_ab85c69a5c9061ef457900b3a7bb1e2d1"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#ab85c69a5c9061ef457900b3a7bb1e2d1">operator!=</a> (const <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair</a> &amp;other) const</td></tr>
+<tr class="memdesc:ab85c69a5c9061ef457900b3a7bb1e2d1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inequality comparison operator.  <br /></td></tr>
+<tr class="memitem:a3c089d12ee41af7e53eaabd71ebab6a9" id="r_a3c089d12ee41af7e53eaabd71ebab6a9"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a3c089d12ee41af7e53eaabd71ebab6a9">operator==</a> (const <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair</a> &amp;other) const</td></tr>
+<tr class="memdesc:a3c089d12ee41af7e53eaabd71ebab6a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality comparison operator.  <br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-pub-attribs" class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -168,15 +172,16 @@ struct DotNetDupe::System::Collections::Generic::KeyValuePair&lt; TKey, TValue &
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
     <tr><td class="paramname">TKey</td><td>The type of the key. </td></tr>
-    <tr><td class="paramname">TValue</td><td>The type of the value. </td></tr>
+    <tr><td class="paramname">TValue</td><td>The type of the value.</td></tr>
   </table>
   </dd>
 </dl>
+<p>Standard Citation: ECMA-335 CLI Common Language Infrastructure. </p>
 
-<p class="definition">Definition at line <a class="el" href="_dictionary_8h_source.html#l00022">22</a> of file <a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00023">23</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
 </div><a name="doc-constructors" id="doc-constructors"></a><h2 id="header-doc-constructors" class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a6c134f730fb2e1aed88e2b597fcea82c" name="a6c134f730fb2e1aed88e2b597fcea82c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c134f730fb2e1aed88e2b597fcea82c">&#9670;&#160;</a></span>KeyValuePair() <span class="overload">[1/2]</span></h2>
+<a id="a637fdde6c8d0160c1c57a14f343d67f8" name="a637fdde6c8d0160c1c57a14f343d67f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a637fdde6c8d0160c1c57a14f343d67f8">&#9670;&#160;</a></span>KeyValuePair() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -195,19 +200,19 @@ template&lt;typename TKey, typename TValue&gt; </div>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel default">default</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
 
 <p>Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with default values. </p>
 
-<p class="definition">Definition at line <a class="el" href="_dictionary_8h_source.html#l00027">27</a> of file <a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_dictionary_8h_source.html#l00392">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::CopyTo()</a>, <a class="el" href="_dictionary_8h_source.html#l00290">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::GetEntryPair()</a>, <a class="el" href="_key_value_pair_8h_source.html#l00042">operator!=()</a>, and <a class="el" href="_key_value_pair_8h_source.html#l00036">operator==()</a>.</p>
 
 </div>
 </div>
-<a id="af46aa63fb2ea418a8e51cc261b5425c5" name="af46aa63fb2ea418a8e51cc261b5425c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af46aa63fb2ea418a8e51cc261b5425c5">&#9670;&#160;</a></span>KeyValuePair() <span class="overload">[2/2]</span></h2>
+<a id="a9f80a727f54139a225ae36b2746b9cab" name="a9f80a727f54139a225ae36b2746b9cab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f80a727f54139a225ae36b2746b9cab">&#9670;&#160;</a></span>KeyValuePair() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,12 +225,12 @@ template&lt;typename TKey, typename TValue&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html">DotNetDupe::System::Collections::Generic::KeyValuePair</a>&lt; TKey, TValue &gt;::KeyValuePair </td>
           <td>(</td>
-          <td class="paramtype">TKey</td>          <td class="paramname"><span class="paramname"><em>k</em></span>, </td>
+          <td class="paramtype">const TKey &amp;</td>          <td class="paramname"><span class="paramname"><em>k</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">TValue</td>          <td class="paramname"><span class="paramname"><em>v</em></span>&#160;)</td>
+          <td class="paramtype">const TValue &amp;</td>          <td class="paramname"><span class="paramname"><em>v</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
@@ -238,15 +243,82 @@ template&lt;typename TKey, typename TValue&gt; </div>
 <p>Initializes a new instance of the <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html" title="Defines a key/value pair that can be set or retrieved.">KeyValuePair</a> structure with the specified key and value. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">k</td><td>The object defined in each key/value pair. </td></tr>
-    <tr><td class="paramname">v</td><td>The definition associated with key. </td></tr>
+    <tr><td class="paramname">k</td><td>The key defined in the key/value pair. </td></tr>
+    <tr><td class="paramname">v</td><td>The value associated with key. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="_dictionary_8h_source.html#l00032">32</a> of file <a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00033">33</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
 
-<p class="reference">References <a class="el" href="_dictionary_8h_source.html#l00023">Key</a>, and <a class="el" href="_dictionary_8h_source.html#l00024">Value</a>.</p>
+<p class="reference">References <a class="el" href="_key_value_pair_8h_source.html#l00024">Key</a>, and <a class="el" href="_key_value_pair_8h_source.html#l00025">Value</a>.</p>
+
+</div>
+</div>
+<a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
+<a id="ab85c69a5c9061ef457900b3a7bb1e2d1" name="ab85c69a5c9061ef457900b3a7bb1e2d1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab85c69a5c9061ef457900b3a7bb1e2d1">&#9670;&#160;</a></span>operator!=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TKey, typename TValue&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html">DotNetDupe::System::Collections::Generic::KeyValuePair</a>&lt; TKey, TValue &gt;::operator!= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair</a>&lt; TKey, TValue &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Inequality comparison operator. </p>
+
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00042">42</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair()</a>.</p>
+
+</div>
+</div>
+<a id="a3c089d12ee41af7e53eaabd71ebab6a9" name="a3c089d12ee41af7e53eaabd71ebab6a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3c089d12ee41af7e53eaabd71ebab6a9">&#9670;&#160;</a></span>operator==()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename TKey, typename TValue&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool <a class="el" href="struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html">DotNetDupe::System::Collections::Generic::KeyValuePair</a>&lt; TKey, TValue &gt;::operator== </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair</a>&lt; TKey, TValue &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>other</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Equality comparison operator. </p>
+
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00036">36</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a637fdde6c8d0160c1c57a14f343d67f8">KeyValuePair()</a>, <a class="el" href="_equality_helper_8h_source.html#l00033">DotNetDupe::System::EqualityHelper&lt; T &gt;::Equals()</a>, <a class="el" href="_key_value_pair_8h_source.html#l00024">Key</a>, and <a class="el" href="_key_value_pair_8h_source.html#l00025">Value</a>.</p>
 
 </div>
 </div>
@@ -267,9 +339,9 @@ template&lt;typename TKey, typename TValue&gt; </div>
 
 <p>Gets or sets the key in the key/value pair. </p>
 
-<p class="definition">Definition at line <a class="el" href="_dictionary_8h_source.html#l00023">23</a> of file <a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00024">24</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_dictionary_8h_source.html#l00032">KeyValuePair()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_key_value_pair_8h_source.html#l00033">KeyValuePair()</a>, <a class="el" href="_dictionary_8h_source.html#l00298">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Add()</a>, <a class="el" href="_sorted_dictionary_8h_source.html#l00093">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Add()</a>, <a class="el" href="_dictionary_8h_source.html#l00347">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Contains()</a>, <a class="el" href="_sorted_dictionary_8h_source.html#l00108">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Contains()</a>, <a class="el" href="_key_value_pair_8h_source.html#l00036">operator==()</a>, <a class="el" href="_dictionary_8h_source.html#l00323">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Remove()</a>, and <a class="el" href="_sorted_dictionary_8h_source.html#l00123">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Remove()</a>.</p>
 
 </div>
 </div>
@@ -289,14 +361,14 @@ template&lt;typename TKey, typename TValue&gt; </div>
 
 <p>Gets or sets the value in the key/value pair. </p>
 
-<p class="definition">Definition at line <a class="el" href="_dictionary_8h_source.html#l00024">24</a> of file <a class="el" href="_dictionary_8h_source.html">Dictionary.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_key_value_pair_8h_source.html#l00025">25</a> of file <a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_dictionary_8h_source.html#l00032">KeyValuePair()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_key_value_pair_8h_source.html#l00033">KeyValuePair()</a>, <a class="el" href="_dictionary_8h_source.html#l00298">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Add()</a>, <a class="el" href="_sorted_dictionary_8h_source.html#l00093">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Add()</a>, <a class="el" href="_dictionary_8h_source.html#l00347">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Contains()</a>, <a class="el" href="_sorted_dictionary_8h_source.html#l00108">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Contains()</a>, <a class="el" href="_key_value_pair_8h_source.html#l00036">operator==()</a>, <a class="el" href="_dictionary_8h_source.html#l00323">DotNetDupe::System::Collections::Generic::Dictionary&lt; TKey, TValue &gt;::Remove()</a>, and <a class="el" href="_sorted_dictionary_8h_source.html#l00123">DotNetDupe::System::Collections::Generic::SortedDictionary&lt; TKey, TValue &gt;::Remove()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>Include/System/Collections/Generic/<a class="el" href="_dictionary_8h_source.html">Dictionary.h</a></li>
+<li>Include/System/Collections/Generic/<a class="el" href="_key_value_pair_8h_source.html">KeyValuePair.h</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

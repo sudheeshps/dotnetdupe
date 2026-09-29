@@ -24,7 +24,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 > - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
 > - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
 > - ⚡ **Thread-Safe Concurrent Collections (`System::Collections::Concurrent`):** Lock-free/fine-grained thread-safe data structures including `ConcurrentDictionary`, `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag`, and `BlockingCollection`.
-> - 🔍 **Language Integrated Query (`System::Linq`):** Expressive, declarative query pipeline (`Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Zip`, `Reverse`) with numeric aggregations (`Sum`, `Average`, `Min`, `Max`, `Aggregate`), quantifiers (`Any`, `All`, `Contains`), sequence generators (`Range`, `Repeat`), and seamless materialization (`ToList`, `ToArray`, `ToDictionary`, `ToHashSet`, `AsEnumerable`).
+> - 🔍 **Language Integrated Query (`System::Linq`):** Expressive, declarative query pipeline (`Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Zip`, `Reverse`) with numeric aggregations (`Sum`, `Average`, `Min`, `Max`, `Aggregate`), quantifiers (`Any`, `All`, `Contains`), sequence generators (`Range`, `Repeat`), and seamless materialization (`ToList`, `ToArray`, `ToDictionary`, `ToHashSet`) with direct collection interface support.
 > - 📊 **Real-Time Telemetry & System Metrics (`System::Diagnostics::SystemMetrics`):** Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk throughput, network bandwidth, and active processes).
 > - 📜 **ETW & Enterprise Event Logging (`System::Diagnostics::EtwLogReader` & `EventLog`):** High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.
 > - 🖥️ **Terminal & User Sessions (`System::Diagnostics::TerminalSession` & `ActiveUserSession`):** Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.
@@ -112,7 +112,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 - ⚡ **Language Integrated Query (`System::Linq`)**:
   - Declarative fluent query pipeline: `Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Zip`, `Reverse`.
   - Numeric aggregations & quantifiers: `Count`, `Sum`, `Min`, `Max`, `Average`, `Aggregate`, `Any`, `All`, `Contains`.
-  - Sequence generators & materialization: `Range()`, `Repeat()`, `Empty()`, `ToList()`, `ToArray()`, `ToDictionary()`, `ToHashSet()`, and `AsEnumerable()`.
+  - Sequence generators & materialization: `Range()`, `Repeat()`, `Empty()`, `ToList()`, `ToArray()`, `ToDictionary()`, and `ToHashSet()`.
 
 - 📁 **File I/O & System Services (`System::IO`)**:
   - High-level static primitives: `File` (`ReadAllText`, `WriteAllText`, `AppendAllText`, `Exists`, `Delete`) and `Directory` (`CreateDirectory(path, recursive)`, `Exists`, `EnumerateFiles`).
@@ -541,7 +541,7 @@ void DemonstrateConcurrentCollections() {
 
 DotNetDupe brings the expressive, declarative power of C# .NET's Language Integrated Query (`System.Linq`, ECMA-335) directly to modern C++. Through fluent operator chaining and type-safe lambdas, you can filter, sort, transform, group, and aggregate collections without verbose imperative loops, temporary vectors, or STL algorithm boilerplate.
 
-All LINQ operators work seamlessly with DotNetDupe `List<T>`, `Array<T>`, and `std::initializer_list<T>` via the `AsEnumerable()` extension helper, offering pure library types, value semantics, and exception-safe RAII memory management.
+All LINQ operators work natively and directly on any DotNetDupe collection (`List<T>`, `Array<T>`, `LinkedList<T>`, `HashSet<T>`, `Dictionary<K, V>`, `Queue<T>`, `Stack<T>`, `SortedSet<T>`, `SortedDictionary<K, V>`) through the standard `IEnumerable<T>` interface hierarchy, offering pure library types, value semantics, and exception-safe RAII memory management.
 
 ### Key Capabilities
 
@@ -588,7 +588,7 @@ void DemonstrateFilteringAndSorting() {
     inventory.Add({"Colombian Roast",  "Coffee",      18, 25});
 
     // Fluent LINQ Pipeline: Filter in-stock appliances, sort by price descending, project formatted summary
-    auto popularItems = AsEnumerable(inventory)
+    auto popularItems = inventory
         .Where([](const ProductItem& p) { return p.InStock > 0 && p.Category == "Appliances"; })
         .OrderByDescending([](const ProductItem& p) { return p.Price; })
         .Select([](const ProductItem& p) {
@@ -635,7 +635,7 @@ void DemonstrateGrouping() {
     staff.Add({"Fiona",   "Marketing",    92000});
 
     // Group employees by Department and sort buckets by member count descending
-    auto deptGroups = AsEnumerable(staff)
+    auto deptGroups = staff
         .GroupBy([](const Employee& e) { return e.Department; })
         .OrderByDescending([](const auto& g) { return g.Count(); })
         .ToList();
@@ -671,19 +671,19 @@ void DemonstrateAggregations() {
     List<int> readings = { 42, 18, 95, 73, 60, 84, 51 };
 
     // Numeric Aggregations
-    int sum = AsEnumerable(readings).Sum();
-    int min = AsEnumerable(readings).Min();
-    int max = AsEnumerable(readings).Max();
-    double avg = AsEnumerable(readings).Average();
-    int highCount = AsEnumerable(readings).Count([](int n) { return n >= 70; });
+    int sum = readings.Sum();
+    int min = readings.Min();
+    int max = readings.Max();
+    double avg = readings.Average();
+    int highCount = readings.Count([](int n) { return n >= 70; });
 
     Console::WriteLine("Readings Stats -> Sum: {0}, Min: {1}, Max: {2}, Avg: {3}, High (>=70): {4}",
                        sum, min, max, avg, highCount);
 
     // Quantifiers & Predicate Matching
-    bool hasOver90   = AsEnumerable(readings).Any([](int n) { return n > 90; });
-    bool allPositive = AsEnumerable(readings).All([](int n) { return n > 0; });
-    bool contains51  = AsEnumerable(readings).Contains(51);
+    bool hasOver90   = readings.Any([](int n) { return n > 90; });
+    bool allPositive = readings.All([](int n) { return n > 0; });
+    bool contains51  = readings.Contains(51);
 
     Console::WriteLine("Any > 90? {0} | All > 0? {1} | Contains 51? {2}",
                        hasOver90 ? "Yes" : "No",
@@ -721,9 +721,9 @@ void DemonstrateGeneratorsAndSetOps() {
     List<int> setA = { 1, 2, 3, 4, 5 };
     List<int> setB = { 4, 5, 6, 7, 8 };
 
-    auto common = AsEnumerable(setA).Intersect(AsEnumerable(setB)).ToList(); // [4, 5]
-    auto uniqueToA = AsEnumerable(setA).Except(AsEnumerable(setB)).ToList();  // [1, 2, 3]
-    auto combined = AsEnumerable(setA).Union(AsEnumerable(setB)).ToList();   // [1, 2, 3, 4, 5, 6, 7, 8]
+    auto common = setA.Intersect(setB).ToList(); // [4, 5]
+    auto uniqueToA = setA.Except(setB).ToList();  // [1, 2, 3]
+    auto combined = setA.Union(setB).ToList();   // [1, 2, 3, 4, 5, 6, 7, 8]
 
     Console::WriteLine("Common (Intersect): Count = {0}", common.GetCount());
     Console::WriteLine("Unique to A (Except): Count = {0}", uniqueToA.GetCount());
@@ -731,7 +731,7 @@ void DemonstrateGeneratorsAndSetOps() {
 
     // 3. Fast Lookup Dictionary Materialization
     List<String> words = { "Apple", "Banana", "Cherry" };
-    auto wordMap = AsEnumerable(words)
+    auto wordMap = words
         .ToDictionary([](const String& s) { return s; },
                       [](const String& s) { return s.GetLength(); });
 
@@ -1047,15 +1047,25 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [List&lt;T&gt;](Include/System/Collections/Generic/List.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html) | Strongly-typed dynamic array list accessible by index. |
-| [Dictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/Dictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html) | Key/value hash map collection. |
-| [HashSet&lt;T&gt;](Include/System/Collections/Generic/HashSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html) | Set of unique elements backed by a hash table. |
-| [Queue&lt;T&gt;](Include/System/Collections/Generic/Queue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html) | First-In-First-Out (FIFO) queue collection. |
-| [Stack&lt;T&gt;](Include/System/Collections/Generic/Stack.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html) | Last-In-First-Out (LIFO) stack collection. |
+| [IEnumerable&lt;T&gt;](Include/System/Collections/Generic/IEnumerable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html) | Base interface exposing an enumerator and native LINQ operators over generic collections. |
+| [IEnumerator&lt;T&gt;](Include/System/Collections/Generic/IEnumerator.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerator.html) | Supports simple iteration over a generic collection. |
+| [ICollection&lt;T&gt;](Include/System/Collections/Generic/ICollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html) | Defines size, enumerators, and mutation methods for generic collections. |
+| [IReadOnlyCollection&lt;T&gt;](Include/System/Collections/Generic/IReadOnlyCollection.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html) | Represents a strongly-typed, read-only collection of elements. |
+| [IList&lt;T&gt;](Include/System/Collections/Generic/IList.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html) | Represents a collection of objects that can be individually accessed by index. |
+| [IReadOnlyList&lt;T&gt;](Include/System/Collections/Generic/IReadOnlyList.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html) | Represents a read-only collection of elements accessible by index. |
+| [ISet&lt;T&gt;](Include/System/Collections/Generic/ISet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_set.html) | Base interface for the abstraction of sets and mathematical set operations. |
+| [IDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/IDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_dictionary.html) | Generic collection of key/value pairs accessible by key. |
+| [IReadOnlyDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/IReadOnlyDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_dictionary.html) | Represents a read-only collection of key/value pairs. |
+| [KeyValuePair&lt;TKey, TValue&gt;](Include/System/Collections/Generic/KeyValuePair.h) &nbsp; [📖](docs/html/struct_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_key_value_pair.html) | Defines a key/value pair that can be set or retrieved. |
+| [List&lt;T&gt;](Include/System/Collections/Generic/List.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html) | Strongly-typed dynamic array list implementing `IList<T>`. |
+| [Dictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/Dictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_dictionary.html) | Key/value hash map collection implementing `IDictionary<TKey, TValue>`. |
+| [HashSet&lt;T&gt;](Include/System/Collections/Generic/HashSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_hash_set.html) | Set of unique elements backed by a hash table implementing `ISet<T>`. |
+| [Queue&lt;T&gt;](Include/System/Collections/Generic/Queue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_queue.html) | First-In-First-Out (FIFO) queue collection implementing `IReadOnlyCollection<T>`. |
+| [Stack&lt;T&gt;](Include/System/Collections/Generic/Stack.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_stack.html) | Last-In-First-Out (LIFO) stack collection implementing `IReadOnlyCollection<T>`. |
 | [PriorityQueue&lt;TElement, TPriority&gt;](Include/System/Collections/Generic/PriorityQueue.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_priority_queue.html) | Min-heap collection of prioritized items. |
-| [SortedDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/SortedDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html) | Key/value collection sorted by key. |
-| [SortedSet&lt;T&gt;](Include/System/Collections/Generic/SortedSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html) | Ordered unique collection maintained in sorted order. |
-| [LinkedList&lt;T&gt;](Include/System/Collections/Generic/LinkedList.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html) | Doubly-linked list collection. |
+| [SortedDictionary&lt;TKey, TValue&gt;](Include/System/Collections/Generic/SortedDictionary.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_dictionary.html) | Key/value collection sorted by key implementing `IDictionary<TKey, TValue>`. |
+| [SortedSet&lt;T&gt;](Include/System/Collections/Generic/SortedSet.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_sorted_set.html) | Ordered unique collection maintained in sorted order implementing `ISet<T>`. |
+| [LinkedList&lt;T&gt;](Include/System/Collections/Generic/LinkedList.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_linked_list.html) | Doubly-linked list collection implementing `ICollection<T>`. |
 | [Generic Collections Overview](Include/System/Collections/Generic/) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_generic.html) | Comprehensive guide and comparison of generic collection types. |
 
 ---
@@ -1084,7 +1094,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [Enumerable&lt;T&gt;](Include/System/Linq/Enumerable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html) | Fluent query operators providing declarative transformations, filtering, projections, partitioning, aggregations, and generators. |
 | [OrderedEnumerable&lt;T&gt;](Include/System/Linq/OrderedEnumerable.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_ordered_enumerable.html) | Sorted sequence supporting custom stable multi-key ordering (`OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`) with zero STL algorithm dependencies. |
 | [IGrouping&lt;TKey, TElement&gt;](Include/System/Linq/IGrouping.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_linq_1_1_i_grouping.html) | Represents a collection of objects that share a common key produced by `GroupBy`. |
-| [Linq](Include/System/Linq.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_linq.html) | Master umbrella include and `AsEnumerable(...)` bridge extension functions for `List<T>`, `Array<T>`, and initializer lists. |
+| [Linq](Include/System/Linq.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_linq.html) | Master umbrella include file for DotNetDupe LINQ queries and operators. |
 
 ---
 

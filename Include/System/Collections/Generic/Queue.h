@@ -4,6 +4,8 @@
 #include "System/Object.h"
 #include "System/Array.h"
 #include "System/InvalidOperationException.h"
+#include "System/Collections/Generic/IReadOnlyCollection.h"
+#include "System/Collections/Generic/IEnumerator.h"
 #include "System/Collections/Generic/List.h"
 
 namespace DotNetDupe {
@@ -18,17 +20,21 @@ namespace DotNetDupe {
                 /// \note Conforms to ECMA-335 Partition IV Section 5.40 (System.Collections.Generic.Queue<T>).
                 ///       Implements FIFO collection semantics with Enqueue, Dequeue, Peek, and non-throwing Try* variants.
                 template <typename T>
-                class Queue : public Object {
+                class Queue : public virtual IReadOnlyCollection<T> {
                 private:
                     List<T> m_lstItems;
 
                 public:
+                    using typename IEnumerable<T>::Iterator;
+                    using IEnumerable<T>::begin;
+                    using IEnumerable<T>::end;
+
                     /// \brief Initializes a new instance of the Queue class that is empty.
                     Queue() = default;
 
                     /// \brief Gets the number of elements contained in the Queue.
                     /// \return The number of elements contained in the Queue.
-                    int GetCount() const { return m_lstItems.GetCount(); }
+                    int GetCount() const override { return m_lstItems.GetCount(); }
 
                     /// \brief Adds an object to the end of the Queue.
                     /// \param item The object to add to the Queue.
@@ -70,7 +76,7 @@ namespace DotNetDupe {
                         return true;
                     }
 
-                    /// \brief Returns a value that indicates whether there is an object at the beginning of the Queue, and if one is present, copies it to the result parameter.
+                    /// \brief Returns a value that indicates whether there is an object at the beginning of the Queue.
                     /// \param result Output parameter receiving the peeked object.
                     /// \return true if there is an object at the beginning of the Queue; false if the Queue is empty.
                     bool TryPeek(T& result) const {
@@ -93,10 +99,23 @@ namespace DotNetDupe {
                         return m_lstItems.Contains(item);
                     }
 
+                    /// \brief Copies elements to an array.
+                    /// \param array Destination array.
+                    /// \param arrayIndex Starting index.
+                    void CopyTo(Array<T>& array, int arrayIndex) const {
+                        m_lstItems.CopyTo(array, arrayIndex);
+                    }
+
                     /// \brief Copies the Queue elements to a new array.
                     /// \return A new array containing elements copied from the Queue.
                     Array<T> ToArray() const {
                         return m_lstItems.ToArray();
+                    }
+
+                    /// \brief Returns an enumerator that iterates through the Queue.
+                    /// \return An enumerator for the Queue.
+                    IEnumeratorPtr<T> GetEnumerator() const override {
+                        return m_lstItems.GetEnumerator();
                     }
                 };
 
