@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🚧_0',['Project Status 🚧',['../index.html#autotoc_md92',1,'']]]
+  ['🚀_0',['🚀',['../index.html#autotoc_md114',1,'CI/CD Pipeline 🚀'],['../index.html',1,'DotNetDupe 🚀'],['../index.html#autotoc_md4',1,'Getting Started 🚀']]]
 ];

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['b_20consuming_20nuget_20package_20in_20visual_20studio_20windows_0',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
-  ['b_3a_20strongly_20typed_20client_20restclient_20recommended_1',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md53',1,'']]],
+  ['b_3a_20strongly_20typed_20client_20restclient_20recommended_1',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
   ['badgateway_2',['BadGateway',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a0e7c9ad08be0653518bf456c9994ace5',1,'DotNetDupe::System::Net']]],
   ['badrequest_3',['BadRequest',['../class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html#a42af8f8599b929eab65bc5c23d863091',1,'DotNetDupe::WebAppCore::Controllers::ControllerBase::BadRequest()'],['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a9edf8fbf00a57d95a0af4923c9a1ec6f',1,'DotNetDupe::System::Net::BadRequest']]],
   ['base64_5fchars_4',['base64_chars',['../namespace_dot_net_dupe_1_1_system.html#ab306d8e1cd81a147442c72d7179967d4',1,'DotNetDupe::System']]],
@@ -40,7 +40,7 @@ var searchData=
   ['boolrepresentation_37',['BoolRepresentation',['../struct_dot_net_dupe_1_1_system_1_1_bool_representation.html',1,'DotNetDupe::System']]],
   ['boolrepresentationwchar_38',['BoolRepresentationWChar',['../struct_dot_net_dupe_1_1_system_1_1_bool_representation_w_char.html',1,'DotNetDupe::System']]],
   ['both_39',['Both',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html#a76f691f86239f2de1975e630b98d9ec5a130c5b3473c57faa76e2a1c54e26f88e',1,'DotNetDupe::System::Net::Sockets']]],
-  ['bucket_20aggregations_40',['2. Grouping &amp;amp; Bucket Aggregations',['../index.html#autotoc_md41',1,'']]],
+  ['bucket_20aggregations_40',['2. Grouping &amp;amp; Bucket Aggregations',['../index.html#autotoc_md61',1,'']]],
   ['buffer_41',['Buffer',['../class_dot_net_dupe_1_1_system_1_1_buffer.html',1,'DotNetDupe::System']]],
   ['buffer_2eh_42',['Buffer.h',['../_buffer_8h.html',1,'']]],
   ['build_43',['Build',['../class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_builder.html#a949e61349ff4c6ecf7228381baceca30',1,'DotNetDupe::WebAppCore::Builder::WebApplicationBuilder']]],

@@ -63,6 +63,15 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [2. Integrating via NuGet Package](#2-integrating-via-nuget-package)
     - [3. Building a Web Application with Static Files & REST APIs](#3-building-a-web-application-with-static-files--rest-apis)
   - [Usage 💻](#usage-)
+  - [Smart Pointers & Memory Management 🧠](#smart-pointers--memory-management-)
+    - [1. Unique vs. Shared Ownership](#1-unique-vs-shared-ownership)
+    - [2. Polymorphic Abstractions & Interfaces](#2-polymorphic-abstractions--interfaces)
+    - [3. Lifetime Controls & Safety Guarantees](#3-lifetime-controls--safety-guarantees)
+  - [Collections & Data Structures 📦](#collections--data-structures-)
+    - [1. Generic Collections & Interface Hierarchy](#1-generic-collections--interface-hierarchy)
+    - [2. Key/Value Dictionaries & Hash Sets](#2-keyvalue-dictionaries--hash-sets)
+    - [3. Thread-Safe Concurrent Collections](#3-thread-safe-concurrent-collections)
+    - [4. Snapshot Iteration & Direct LINQ Integration](#4-snapshot-iteration--direct-linq-integration)
   - [Language Integrated Query (LINQ) ⚡](#language-integrated-query-linq-)
     - [1. Filtering, Sorting & Projections](#1-filtering-sorting--projections)
     - [2. Grouping & Bucket Aggregations](#2-grouping--bucket-aggregations)
@@ -531,6 +540,374 @@ void DemonstrateConcurrentCollections() {
     String sItem;
     if (pipeline.TryTake(sItem)) {
         Console::WriteLine("Processed item from pipeline: {0}", sItem);
+    }
+}
+```
+
+---
+
+## Smart Pointers & Memory Management 🧠
+
+DotNetDupe eliminates manual memory leaks and raw pointer ownership bugs through its unified `SmartPointer<T>` abstraction (`System::SmartPointer`, Quality Gate 8 & 11). Modeled after modern RAII and C# object references, `SmartPointer<T>` provides high performance, zero raw ownership, and dual-mode ownership semantics:
+
+1. **Unique Mode (Default)**: Zero-overhead, move-only RAII ownership equivalent to `std::unique_ptr`.
+2. **Shared Mode**: Thread-safe atomic reference-counted ownership equivalent to `std::shared_ptr`.
+3. **Hungarian Naming Standard**: Per Quality Gate 11, all `SmartPointer` variables and parameters strictly adhere to the `p` / `sp` / `m_p` / `s_p` Hungarian prefix.
+
+### Key Capabilities
+
+| Feature | Description |
+|---|---|
+| **Zero-Overhead Unique Mode** | Move-only semantics with zero heap metadata overhead. Prevents accidental copying via compiler enforcement. |
+| **Atomic Shared Mode** | Lock-free, thread-safe reference counting via atomic interlocked increments and decrements. |
+| **Factory Methods** | `SmartPointer<T>::NewUnique(args...)` and `SmartPointer<T>::NewShared(args...)` for concise, type-safe allocation. |
+| **Polymorphic Upcasting** | Implicit, type-safe conversion from `SmartPointer<Derived>` to `SmartPointer<Base>` or abstract interface types. |
+| **Safe Boolean Checks** | Explicit `operator bool()` allowing safe null checks (`if (spResource) { ... }`). |
+| **Intrusive `EnableSharedFromThis`** | Allows classes inheriting `EnableSharedFromThis<T>` to generate shared handles to themselves. |
+
+---
+
+### 1. Unique vs. Shared Ownership
+
+Use `NewUnique()` when an object is exclusively owned by a single component or function scope. Use `NewShared()` when an object must be referenced across multiple components or worker threads.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/SmartPointer.h"
+#include <utility>
+
+using namespace DotNetDupe::System;
+
+class DatabaseConnection {
+private:
+    String m_sHost;
+
+public:
+    DatabaseConnection(const String& sHost) : m_sHost(sHost) {
+        Console::WriteLine("Connected to database: {0}", m_sHost);
+    }
+
+    ~DatabaseConnection() {
+        Console::WriteLine("Closed connection: {0}", m_sHost);
+    }
+
+    void ExecuteQuery(const String& sSql) const {
+        Console::WriteLine("[{0}] Executing: {1}", m_sHost, sSql);
+    }
+};
+
+void DemonstrateOwnership() {
+    // 1. Unique Ownership (Move-only RAII, zero overhead)
+    auto pPrimary = SmartPointer<DatabaseConnection>::NewUnique("cluster-primary.local");
+    pPrimary->ExecuteQuery("SELECT * FROM users");
+
+    // Move ownership to another pointer (copying a unique pointer throws SystemException)
+    auto pTransferred = std::move(pPrimary);
+    if (!pPrimary) {
+        Console::WriteLine("pPrimary is now null after ownership transfer.");
+    }
+    pTransferred->ExecuteQuery("UPDATE users SET active = 1");
+
+    // 2. Shared Ownership (Thread-safe atomic reference counting)
+    auto spReplica1 = SmartPointer<DatabaseConnection>::NewShared("cluster-replica.local");
+    Console::WriteLine("Initial ref count: {0}", spReplica1.GetRefCount()); // 1
+
+    {
+        // Copying is permitted in Shared mode and atomically increments the reference count
+        auto spReplica2 = spReplica1;
+        Console::WriteLine("Ref count in inner scope: {0}", spReplica1.GetRefCount()); // 2
+        spReplica2->ExecuteQuery("SELECT COUNT(*) FROM telemetry");
+    }
+
+    // Inner scope exited: spReplica2 destructed, reference count decremented back to 1
+    Console::WriteLine("Ref count after inner scope: {0}", spReplica1.GetRefCount()); // 1
+}
+```
+
+---
+
+### 2. Polymorphic Abstractions & Interfaces
+
+`SmartPointer` seamlessly supports polymorphic base classes and interface contracts. Destructors are called virtually and cleanly without memory leaks.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+// Abstract interface contract
+class IDataProcessor {
+public:
+    virtual ~IDataProcessor() = default;
+    virtual void ProcessData(const String& sPayload) = 0;
+};
+
+// Concrete implementation
+class JsonDataProcessor : public IDataProcessor {
+public:
+    void ProcessData(const String& sPayload) override {
+        Console::WriteLine("Processing JSON payload: {0}", sPayload);
+    }
+};
+
+void DemonstratePolymorphism() {
+    // Upcast from concrete implementation to abstract interface
+    SmartPointer<IDataProcessor> spProcessor = 
+        SmartPointer<JsonDataProcessor>::NewShared();
+
+    spProcessor->ProcessData("{\"status\":\"ok\",\"code\":200}");
+}
+```
+
+---
+
+### 3. Lifetime Controls & Safety Guarantees
+
+DotNetDupe provides fine-grained methods to inspect, reset, and reassign managed objects safely.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/SmartPointer.h"
+
+using namespace DotNetDupe::System;
+
+void DemonstrateLifetimeControls() {
+    auto spBuffer = SmartPointer<String>::NewShared("Initial Data");
+
+    // Inspection
+    Console::WriteLine("Buffer content: {0}", *spBuffer);
+    Console::WriteLine("Is Shared: {0}", spBuffer.IsShared() ? "True" : "False");
+
+    // Reset with a new value
+    spBuffer.Reset(new String("Updated Content"), true);
+    Console::WriteLine("After Reset: {0}", *spBuffer);
+
+    // Explicit disposal
+    spBuffer.Reset();
+    if (!spBuffer) {
+        Console::WriteLine("Buffer safely disposed.");
+    }
+}
+```
+
+---
+
+## Collections & Data Structures 📦
+
+DotNetDupe provides an extensive suite of type-safe, developer-friendly collections in `DotNetDupe::System::Collections::Generic` and `DotNetDupe::System::Collections::Concurrent`. All collections conform to ECMA-335 standards, implement the standard interface hierarchy (`IEnumerable<T>`, `ICollection<T>`, `IList<T>`, `IDictionary<K,V>`, `ISet<T>`), provide native C++ range-based `for` iteration (`begin()` / `end()`), and integrate directly with LINQ without intermediate adapters.
+
+### Collection Hierarchy Overview
+
+| Collection | Namespace | Key Interfaces | Description |
+|---|---|---|---|
+| **`List<T>`** | `Generic` | `IList<T>`, `IReadOnlyList<T>`, `IEnumerable<T>` | Fast, dynamically-resizable sequential array list. |
+| **`Dictionary<K, V>`** | `Generic` | `IDictionary<K, V>`, `IReadOnlyDictionary<K, V>` | High-performance O(1) hash map indexed by unique keys. |
+| **`HashSet<T>`** | `Generic` | `ISet<T>`, `IReadOnlyCollection<T>`, `IEnumerable<T>` | High-performance O(1) hash set of unique elements. |
+| **`Queue<T>`** | `Generic` | `IReadOnlyCollection<T>`, `IEnumerable<T>` | First-in, first-out (FIFO) sequential queue. |
+| **`Stack<T>`** | `Generic` | `IReadOnlyCollection<T>`, `IEnumerable<T>` | Last-in, first-out (LIFO) sequential stack. |
+| **`SortedDictionary<K, V>`** | `Generic` | `IDictionary<K, V>`, `IReadOnlyDictionary<K, V>` | Key/value collection sorted by key (Red-Black tree). |
+| **`SortedSet<T>`** | `Generic` | `ISet<T>`, `IReadOnlyCollection<T>`, `IEnumerable<T>` | Self-balancing binary search tree maintaining unique elements in sorted order. |
+| **`LinkedList<T>`** | `Generic` | `ICollection<T>`, `IReadOnlyCollection<T>`, `IEnumerable<T>` | Doubly-linked list providing O(1) insertion/removal at both ends. |
+| **`Array<T>`** | `System` | `IList<T>`, `IReadOnlyList<T>`, `IEnumerable<T>` | Fixed-size contiguous array buffer matching .NET `System.Array`. |
+| **`ConcurrentDictionary<K, V>`** | `Concurrent` | `IDictionary<K, V>`, `IReadOnlyDictionary<K, V>` | Thread-safe key/value hash map with fine-grained synchronization. |
+| **`ConcurrentQueue<T>`** | `Concurrent` | `IProducerConsumerCollection<T>`, `IEnumerable<T>` | Thread-safe FIFO queue for multi-threaded worker pipelines. |
+| **`ConcurrentStack<T>`** | `Concurrent` | `IProducerConsumerCollection<T>`, `IEnumerable<T>` | Thread-safe LIFO stack for lock-free push/pop operations. |
+| **`ConcurrentBag<T>`** | `Concurrent` | `IProducerConsumerCollection<T>`, `IEnumerable<T>` | Thread-safe unordered container optimized for producer-consumer workflows. |
+| **`BlockingCollection<T>`** | `Concurrent` | `IReadOnlyCollection<T>`, `IEnumerable<T>` | Bounded, blocking coordination collection implementing the Producer-Consumer pattern. |
+
+---
+
+### 1. Generic Collections & Interface Hierarchy
+
+Every DotNetDupe generic collection implements standard interfaces such as `IEnumerable<T>`, `IReadOnlyCollection<T>`, and `IList<T>`. This allows writing generic routines that operate polymorphically across any collection type.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Collections/Generic/List.h"
+#include "System/Collections/Generic/Queue.h"
+#include "System/Collections/Generic/Stack.h"
+#include "System/Collections/Generic/IReadOnlyCollection.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+
+// Polymorphic helper accepting any read-only collection interface
+template <typename T>
+void PrintCollectionSummary(const IReadOnlyCollection<T>& collection, const String& sTitle) {
+    Console::WriteLine("--- {0} (Count: {1}) ---", sTitle, collection.GetCount());
+    for (const auto& item : collection) {
+        Console::WriteLine(" - {0}", item);
+    }
+}
+
+void DemonstrateGenericCollections() {
+    // 1. Dynamic List<T>
+    List<String> fruits;
+    fruits.Add("Apple");
+    fruits.Add("Banana");
+    fruits.Add("Cherry");
+    fruits.Insert(1, "Blueberry");
+    PrintCollectionSummary(fruits, "Fruit Basket");
+
+    // 2. FIFO Queue<T>
+    Queue<String> printQueue;
+    printQueue.Enqueue("Invoice_101.pdf");
+    printQueue.Enqueue("Contract_202.pdf");
+    Console::WriteLine("Next print job: {0}", printQueue.Peek());
+    Console::WriteLine("Processed job: {0}", printQueue.Dequeue());
+
+    // 3. LIFO Stack<T>
+    Stack<String> browserHistory;
+    browserHistory.Push("https://github.com");
+    browserHistory.Push("https://dotnetdupe.org");
+    Console::WriteLine("Current page: {0}", browserHistory.Peek());
+    Console::WriteLine("Navigated back from: {0}", browserHistory.Pop());
+}
+```
+
+---
+
+### 2. Key/Value Dictionaries & Hash Sets
+
+`Dictionary<TKey, TValue>` and `HashSet<T>` provide average O(1) amortized lookup, insertion, and deletion using internal hash tables and collision chaining.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Collections/Generic/Dictionary.h"
+#include "System/Collections/Generic/HashSet.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+
+void DemonstrateDictionariesAndSets() {
+    // 1. Dictionary<TKey, TValue>
+    Dictionary<String, int> inventory;
+    inventory.Add("Widget", 150);
+    inventory.Add("Gadget", 75);
+    inventory["Doohickey"] = 42; // Indexer assignment
+
+    // Safe retrieval with TryGetValue
+    int iStock = 0;
+    if (inventory.TryGetValue("Widget", iStock)) {
+        Console::WriteLine("Widget stock: {0} units", iStock);
+    }
+
+    // Iterate key-value pairs with range-for
+    Console::WriteLine("Full Inventory:");
+    for (const auto& kvp : inventory) {
+        Console::WriteLine(" - {0}: {1}", kvp.Key, kvp.Value);
+    }
+
+    // 2. HashSet<T> (Uniqueness Guarantee)
+    HashSet<String> allowedRoles;
+    allowedRoles.Add("Administrator");
+    allowedRoles.Add("Editor");
+    allowedRoles.Add("Administrator"); // Duplicate silently ignored
+
+    Console::WriteLine("Allowed roles count: {0}", allowedRoles.GetCount()); // 2
+    Console::WriteLine("Is Viewer allowed: {0}", 
+        allowedRoles.Contains("Viewer") ? "Yes" : "No");
+}
+```
+
+---
+
+### 3. Thread-Safe Concurrent Collections
+
+The `DotNetDupe::System::Collections::Concurrent` namespace provides thread-safe data structures designed for highly concurrent multi-threaded applications:
+
+- **`ConcurrentDictionary<TKey, TValue>`**: Supports atomic `TryAdd()`, `GetOrAdd()`, and `AddOrUpdate()`.
+- **`BlockingCollection<T>`**: Provides bounded capacity and blocking `Take()` / `Add()` across worker threads.
+- **`ConcurrentQueue<T>`**, **`ConcurrentStack<T>`**, **`ConcurrentBag<T>`**: Thread-safe producer/consumer collections implementing `IProducerConsumerCollection<T>`.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Collections/Concurrent/ConcurrentDictionary.h"
+#include "System/Collections/Concurrent/BlockingCollection.h"
+#include "System/Threading/Thread.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Concurrent;
+using namespace DotNetDupe::System::Threading;
+
+void DemonstrateConcurrentCollections() {
+    // 1. ConcurrentDictionary with atomic operations
+    ConcurrentDictionary<String, int> sessionHits;
+    sessionHits.TryAdd("user_101", 1);
+    
+    // Atomically increment or initialize hits
+    sessionHits.AddOrUpdate("user_101", 1, sessionHits["user_101"] + 1);
+    sessionHits.GetOrAdd("user_202", 1);
+
+    Console::WriteLine("User 101 hits: {0}", sessionHits["user_101"]); // 2
+
+    // 2. Bounded BlockingCollection (Producer-Consumer pipeline)
+    BlockingCollection<int> workQueue(5); // Upper bound of 5 items
+
+    // Producer Thread
+    Thread producerThread([&workQueue]() {
+        for (int i = 1; i <= 5; ++i) {
+            workQueue.Add(i * 100);
+            Thread::Sleep(10);
+        }
+        workQueue.CompleteAdding(); // Signal no more items will be added
+    });
+
+    producerThread.Start();
+
+    // Consumer (main thread)
+    int iWorkItem = 0;
+    while (workQueue.TryTake(iWorkItem, -1)) { // -1 waits until item is available
+        Console::WriteLine("Processed work item: {0}", iWorkItem);
+    }
+
+    producerThread.Join();
+    Console::WriteLine("Pipeline complete: {0}", workQueue.IsCompleted() ? "True" : "False");
+}
+```
+
+---
+
+### 4. Snapshot Iteration & Direct LINQ Integration
+
+Unlike traditional C++ containers where concurrent iteration during modification causes data corruption, DotNetDupe's concurrent collections provide **lock-free snapshot iteration**. Calling `GetEnumerator()`, using range-based `for`, or invoking LINQ queries captures a thread-safe snapshot under mutual exclusion and iterates lock-free.
+
+All collections can be queried with LINQ directly without any wrapper calls:
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Linq.h"
+#include "System/Collections/Concurrent/ConcurrentQueue.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Concurrent;
+
+void DemonstrateSnapshotAndLinq() {
+    ConcurrentQueue<int> scoreQueue;
+    scoreQueue.Enqueue(45);
+    scoreQueue.Enqueue(92);
+    scoreQueue.Enqueue(78);
+    scoreQueue.Enqueue(88);
+    scoreQueue.Enqueue(63);
+
+    // Direct LINQ method chaining directly on ConcurrentQueue:
+    // Filter passing scores (>= 70), sort descending, and materialize to List<int>
+    auto topScores = scoreQueue
+        .Where([](int score) { return score >= 70; })
+        .OrderByDescending([](int score) { return score; })
+        .ToList();
+
+    Console::WriteLine("Passing Scores (Descending):");
+    for (int score : topScores) {
+        Console::WriteLine(" - {0}", score);
     }
 }
 ```

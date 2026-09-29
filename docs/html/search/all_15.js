@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['quantifiers_0',['3. Aggregations &amp;amp; Quantifiers',['../index.html#autotoc_md43',1,'']]],
+  ['quantifiers_0',['3. Aggregations &amp;amp; Quantifiers',['../index.html#autotoc_md63',1,'']]],
   ['query_1',['Query',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a66c1b4c7f3dc385b68a9fa903ccd016d',1,'DotNetDupe::System']]],
-  ['query_20linq_20⚡_2',['Language Integrated Query (LINQ) ⚡',['../index.html#autotoc_md36',1,'']]],
+  ['query_20linq_20⚡_2',['Language Integrated Query (LINQ) ⚡',['../index.html#autotoc_md56',1,'']]],
   ['queryprocessnamebyid_3',['QueryProcessNameById',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#ace941110972f5e21f956b97f77897beb',1,'DotNetDupe::System::Diagnostics']]],
   ['querywin32logrecordcount_4',['QueryWin32LogRecordCount',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#af1b5343879961ec098323ae095ae6ba0',1,'DotNetDupe::System::Diagnostics']]],
   ['querywin32user_5',['QueryWin32User',['../namespace_dot_net_dupe_1_1_system_1_1_security_1_1_principal.html#ae7d730b19884fc3a00a77347b168e0f0',1,'DotNetDupe::System::Security::Principal']]],

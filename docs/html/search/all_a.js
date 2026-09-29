@@ -37,7 +37,7 @@ var searchData=
   ['filestream_2ecpp_34',['FileStream.cpp',['../_file_stream_8cpp.html',1,'']]],
   ['filestream_2eh_35',['FileStream.h',['../_file_stream_8h.html',1,'']]],
   ['filterchannelevents_36',['FilterChannelEvents',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a76740c347163321185a1cad52739e476',1,'DotNetDupe::System::Diagnostics']]],
-  ['filtering_20sorting_20projections_37',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md39',1,'']]],
+  ['filtering_20sorting_20projections_37',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md59',1,'']]],
   ['find_38',['Find',['../class_dot_net_dupe_1_1_system_1_1_array.html#a4a2da09ac0d1a6f6889259503039252b',1,'DotNetDupe::System::Array::Find()'],['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#a9c5636fe978c6966e203a5a0acd575eb',1,'DotNetDupe::System::Collections::Generic::List::Find()']]],
   ['findall_39',['FindAll',['../class_dot_net_dupe_1_1_system_1_1_array.html#a35e592902d8899cb105001395bc7fa0c',1,'DotNetDupe::System::Array::FindAll()'],['../class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_list.html#ae5f25bf0385ae5f6b369d58eca817fdf',1,'DotNetDupe::System::Collections::Generic::List::FindAll()']]],
   ['findindex_40',['FindIndex',['../class_dot_net_dupe_1_1_system_1_1_array.html#a1fb4b81a7aa32eaa997168a6c4f24ab4',1,'DotNetDupe::System::Array']]],

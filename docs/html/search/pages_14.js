@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['recommended_0',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md53',1,'']]],
-  ['recommended_20usage_20patterns_1',['Recommended Usage Patterns',['../index.html#autotoc_md56',1,'']]],
-  ['reference_20📖_2',['API Reference 📖',['../index.html#autotoc_md59',1,'']]],
-  ['release_3',['How to Release',['../index.html#autotoc_md97',1,'']]],
-  ['rest_20api_20controllers_4',['1. Hosting REST API Controllers',['../index.html#autotoc_md48',1,'']]],
-  ['rest_20apis_5',['REST APIs',['../index.html#autotoc_md51',1,'2. Consuming REST APIs'],['../index.html#autotoc_md26',1,'3. Building a Web Application with Static Files &amp;amp; REST APIs']]],
-  ['restclient_20recommended_6',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md53',1,'']]],
+  ['recommended_0',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
+  ['recommended_20usage_20patterns_1',['Recommended Usage Patterns',['../index.html#autotoc_md76',1,'']]],
+  ['reference_20📖_2',['API Reference 📖',['../index.html#autotoc_md79',1,'']]],
+  ['release_3',['How to Release',['../index.html#autotoc_md117',1,'']]],
+  ['rest_20api_20controllers_4',['1. Hosting REST API Controllers',['../index.html#autotoc_md68',1,'']]],
+  ['rest_20apis_5',['REST APIs',['../index.html#autotoc_md71',1,'2. Consuming REST APIs'],['../index.html#autotoc_md26',1,'3. Building a Web Application with Static Files &amp;amp; REST APIs']]],
+  ['restclient_20recommended_6',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
   ['running_20wsl_20commands_20from_20powershell_7',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]],
   ['runtime_20dependencies_8',['SSL Runtime Dependencies',['../index.html#autotoc_md10',1,'']]]
 ];
