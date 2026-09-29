@@ -24,6 +24,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 > - 🛡️ **Zero Header STL Dependencies:** Completely refactored public headers to eliminate STL dependencies from public interfaces, ensuring clean ABI boundaries and library-centric types across `String`, `Collections`, `IO`, `Net`, `Logging`, and `Data`.
 > - 📦 **Core Data Structures & Collections Overhaul:** Pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
 > - ⚡ **Thread-Safe Concurrent Collections (`System::Collections::Concurrent`):** Lock-free/fine-grained thread-safe data structures including `ConcurrentDictionary`, `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag`, and `BlockingCollection`.
+> - 🔍 **Language Integrated Query (`System::Linq`):** Expressive, declarative query pipeline (`Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Zip`, `Reverse`) with numeric aggregations (`Sum`, `Average`, `Min`, `Max`, `Aggregate`), quantifiers (`Any`, `All`, `Contains`), sequence generators (`Range`, `Repeat`), and seamless materialization (`ToList`, `ToArray`, `ToDictionary`, `ToHashSet`, `AsEnumerable`).
 > - 📊 **Real-Time Telemetry & System Metrics (`System::Diagnostics::SystemMetrics`):** Real-time monitoring of system hardware metrics (CPU load %, memory usage, disk throughput, network bandwidth, and active processes).
 > - 📜 **ETW & Enterprise Event Logging (`System::Diagnostics::EtwLogReader` & `EventLog`):** High-performance Event Tracing for Windows (ETW) and Linux Syslog channel enumeration, querying, and live subscription listening.
 > - 🖥️ **Terminal & User Sessions (`System::Diagnostics::TerminalSession` & `ActiveUserSession`):** Enumerate local, disconnected, and remote desktop (RDP) Terminal Services user sessions.
@@ -62,6 +63,11 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
     - [2. Integrating via NuGet Package](#2-integrating-via-nuget-package)
     - [3. Building a Web Application with Static Files & REST APIs](#3-building-a-web-application-with-static-files--rest-apis)
   - [Usage 💻](#usage-)
+  - [Language Integrated Query (LINQ) ⚡](#language-integrated-query-linq-)
+    - [1. Filtering, Sorting & Projections](#1-filtering-sorting--projections)
+    - [2. Grouping & Bucket Aggregations](#2-grouping--bucket-aggregations)
+    - [3. Aggregations & Quantifiers](#3-aggregations--quantifiers)
+    - [4. Set Operations, Generators & Materialization](#4-set-operations-generators--materialization)
   - [Web API & Database Integration Guide 🌐🗄️](#web-api--database-integration-guide-️)
     - [1. Hosting REST API Controllers](#1-hosting-rest-api-controllers)
     - [2. Consuming REST APIs](#2-consuming-rest-apis)
@@ -102,6 +108,11 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 
 - 📦 **Generic Collections (`System::Collections::Generic`)**:
   - Type-safe container wrappers: `List<T>`, `Dictionary<K, V>`, `Queue<T>`, `Stack<T>`, `HashSet<T>`, and `KeyValuePair<K, V>`.
+
+- ⚡ **Language Integrated Query (`System::Linq`)**:
+  - Declarative fluent query pipeline: `Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Zip`, `Reverse`.
+  - Numeric aggregations & quantifiers: `Count`, `Sum`, `Min`, `Max`, `Average`, `Aggregate`, `Any`, `All`, `Contains`.
+  - Sequence generators & materialization: `Range()`, `Repeat()`, `Empty()`, `ToList()`, `ToArray()`, `ToDictionary()`, `ToHashSet()`, and `AsEnumerable()`.
 
 - 📁 **File I/O & System Services (`System::IO`)**:
   - High-level static primitives: `File` (`ReadAllText`, `WriteAllText`, `AppendAllText`, `Exists`, `Delete`) and `Directory` (`CreateDirectory(path, recursive)`, `Exists`, `EnumerateFiles`).
@@ -523,6 +534,215 @@ void DemonstrateConcurrentCollections() {
     }
 }
 ```
+
+---
+
+## Language Integrated Query (LINQ) ⚡
+
+DotNetDupe brings the expressive, declarative power of C# .NET's Language Integrated Query (`System.Linq`, ECMA-335) directly to modern C++. Through fluent operator chaining and type-safe lambdas, you can filter, sort, transform, group, and aggregate collections without verbose imperative loops, temporary vectors, or STL algorithm boilerplate.
+
+All LINQ operators work seamlessly with DotNetDupe `List<T>`, `Array<T>`, and `std::initializer_list<T>` via the `AsEnumerable()` extension helper, offering pure library types, value semantics, and exception-safe RAII memory management.
+
+### Key Capabilities
+
+| Category | Operators & Methods |
+|---|---|
+| **Filtering & Partitioning** | `Where`, `Take`, `TakeWhile`, `Skip`, `SkipWhile`, `Distinct` |
+| **Transformations & Projections** | `Select`, `SelectMany`, `Zip` |
+| **Ordering & Sorting** | `OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`, `Reverse` |
+| **Grouping & Bucketing** | `GroupBy` (`IGrouping<TKey, TElement>`), `Key`, `Count`, `Elements` |
+| **Aggregations & Reductions** | `Sum`, `Min`, `Max`, `Average`, `Aggregate`, `Count` |
+| **Quantifiers & Search** | `Any`, `All`, `Contains`, `First`, `FirstOrDefault`, `Last`, `LastOrDefault`, `Single`, `SingleOrDefault` |
+| **Set Operations** | `Union`, `Intersect`, `Except`, `Concat` |
+| **Generators & Materialization** | `Enumerable<T>::Range()`, `Repeat()`, `Empty()`, `ToList()`, `ToArray()`, `ToDictionary()`, `ToHashSet()` |
+
+---
+
+### 1. Filtering, Sorting & Projections
+
+Chain `Where`, `OrderByDescending`, `ThenBy`, and `Select` into a clean query pipeline. Results can be materialized into a `List<T>` using `ToList()` or an `Array<T>` using `ToArray()`.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Linq.h"
+#include "System/Collections/Generic/List.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::Linq;
+
+struct ProductItem {
+    String Name;
+    String Category;
+    int Price;
+    int InStock;
+};
+
+void DemonstrateFilteringAndSorting() {
+    List<ProductItem> inventory;
+    inventory.Add({"Espresso Machine", "Appliances", 299, 12});
+    inventory.Add({"Coffee Grinder",   "Appliances",  89,  0});
+    inventory.Add({"Dark Roast Beans", "Coffee",      15, 50});
+    inventory.Add({"French Press",     "Appliances",  35,  8});
+    inventory.Add({"Colombian Roast",  "Coffee",      18, 25});
+
+    // Fluent LINQ Pipeline: Filter in-stock appliances, sort by price descending, project formatted summary
+    auto popularItems = AsEnumerable(inventory)
+        .Where([](const ProductItem& p) { return p.InStock > 0 && p.Category == "Appliances"; })
+        .OrderByDescending([](const ProductItem& p) { return p.Price; })
+        .Select([](const ProductItem& p) {
+            return String::Format("{0} - ${1} ({2} available)", p.Name, p.Price, p.InStock);
+        })
+        .ToList();
+
+    Console::WriteLine("Available Appliances (Sorted by Price):");
+    for (int i = 0; i < popularItems.GetCount(); ++i) {
+        Console::WriteLine("  • {0}", popularItems[i]);
+    }
+}
+```
+
+---
+
+### 2. Grouping & Bucket Aggregations
+
+Use `GroupBy` to partition collections by key into groups implementing `IGrouping<TKey, TElement>`. Each group exposes `Key()`, `Count()`, and indexer access (`group[i]`) or `Elements()`.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Linq.h"
+#include "System/Collections/Generic/List.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::Linq;
+
+struct Employee {
+    String Name;
+    String Department;
+    int Salary;
+};
+
+void DemonstrateGrouping() {
+    List<Employee> staff;
+    staff.Add({"Alice",   "Engineering", 125000});
+    staff.Add({"Bob",     "Marketing",    85000});
+    staff.Add({"Charlie", "Engineering", 140000});
+    staff.Add({"Diana",   "Finance",     110000});
+    staff.Add({"Evan",    "Engineering",  95000});
+    staff.Add({"Fiona",   "Marketing",    92000});
+
+    // Group employees by Department and sort buckets by member count descending
+    auto deptGroups = AsEnumerable(staff)
+        .GroupBy([](const Employee& e) { return e.Department; })
+        .OrderByDescending([](const auto& g) { return g.Count(); })
+        .ToList();
+
+    for (int i = 0; i < deptGroups.GetCount(); ++i) {
+        const auto& group = deptGroups[i];
+        Console::WriteLine("\nDepartment: {0} ({1} members)", group.Key(), group.Count());
+
+        for (int j = 0; j < group.Count(); ++j) {
+            Console::WriteLine("  - {0} (${1})", group[j].Name, group[j].Salary);
+        }
+    }
+}
+```
+
+---
+
+### 3. Aggregations & Quantifiers
+
+Perform reductions, scalar metrics, and boolean sequence assertions across strongly typed datasets with ease.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Linq.h"
+#include "System/Collections/Generic/List.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::Linq;
+
+void DemonstrateAggregations() {
+    List<int> readings = { 42, 18, 95, 73, 60, 84, 51 };
+
+    // Numeric Aggregations
+    int sum = AsEnumerable(readings).Sum();
+    int min = AsEnumerable(readings).Min();
+    int max = AsEnumerable(readings).Max();
+    double avg = AsEnumerable(readings).Average();
+    int highCount = AsEnumerable(readings).Count([](int n) { return n >= 70; });
+
+    Console::WriteLine("Readings Stats -> Sum: {0}, Min: {1}, Max: {2}, Avg: {3}, High (>=70): {4}",
+                       sum, min, max, avg, highCount);
+
+    // Quantifiers & Predicate Matching
+    bool hasOver90   = AsEnumerable(readings).Any([](int n) { return n > 90; });
+    bool allPositive = AsEnumerable(readings).All([](int n) { return n > 0; });
+    bool contains51  = AsEnumerable(readings).Contains(51);
+
+    Console::WriteLine("Any > 90? {0} | All > 0? {1} | Contains 51? {2}",
+                       hasOver90 ? "Yes" : "No",
+                       allPositive ? "Yes" : "No",
+                       contains51 ? "Yes" : "No");
+}
+```
+
+---
+
+### 4. Set Operations, Generators & Materialization
+
+Combine sequences with set theory operators (`Union`, `Intersect`, `Except`), generate data streams on the fly with `Range()` and `Repeat()`, and materialize query pipelines directly into targeted collection structures.
+
+```cpp
+#include "System/Console.h"
+#include "System/String.h"
+#include "System/Linq.h"
+#include "System/Collections/Generic/List.h"
+
+using namespace DotNetDupe::System;
+using namespace DotNetDupe::System::Collections::Generic;
+using namespace DotNetDupe::System::Linq;
+
+void DemonstrateGeneratorsAndSetOps() {
+    // 1. Sequence Generation via Range
+    auto squares = Enumerable<int>::Range(1, 5)
+        .Select([](int n) { return n * n; })
+        .ToList(); // [1, 4, 9, 16, 25]
+
+    Console::WriteLine("Generated Squares: [{0}, {1}, {2}, {3}, {4}]",
+                       squares[0], squares[1], squares[2], squares[3], squares[4]);
+
+    // 2. Set Operations
+    List<int> setA = { 1, 2, 3, 4, 5 };
+    List<int> setB = { 4, 5, 6, 7, 8 };
+
+    auto common = AsEnumerable(setA).Intersect(AsEnumerable(setB)).ToList(); // [4, 5]
+    auto uniqueToA = AsEnumerable(setA).Except(AsEnumerable(setB)).ToList();  // [1, 2, 3]
+    auto combined = AsEnumerable(setA).Union(AsEnumerable(setB)).ToList();   // [1, 2, 3, 4, 5, 6, 7, 8]
+
+    Console::WriteLine("Common (Intersect): Count = {0}", common.GetCount());
+    Console::WriteLine("Unique to A (Except): Count = {0}", uniqueToA.GetCount());
+    Console::WriteLine("Combined (Union): Count = {0}", combined.GetCount());
+
+    // 3. Fast Lookup Dictionary Materialization
+    List<String> words = { "Apple", "Banana", "Cherry" };
+    auto wordMap = AsEnumerable(words)
+        .ToDictionary([](const String& s) { return s; },
+                      [](const String& s) { return s.GetLength(); });
+
+    int len = 0;
+    if (wordMap.TryGetValue("Banana", len)) {
+        Console::WriteLine("Lookup 'Banana' length in Dictionary: {0}", len);
+    }
+}
+```
+
+---
 
 ## Web API & Database Integration Guide 🌐🗄️
 
