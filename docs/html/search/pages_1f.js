@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['💻_0',['Usage 💻',['../index.html#autotoc_md31',1,'']]]
+  ['🐧_0',['WSL Setup Guide (Windows) 🐧',['../index.html#autotoc_md12',1,'']]]
 ];

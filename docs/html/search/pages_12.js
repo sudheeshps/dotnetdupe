@@ -1,12 +1,19 @@
 var searchData=
 [
-  ['recommended_0',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md41',1,'']]],
-  ['recommended_20usage_20patterns_1',['Recommended Usage Patterns',['../index.html#autotoc_md44',1,'']]],
-  ['reference_20📖_2',['API Reference 📖',['../index.html#autotoc_md47',1,'']]],
-  ['release_3',['How to Release',['../index.html#autotoc_md85',1,'']]],
-  ['rest_20api_20controllers_4',['1. Hosting REST API Controllers',['../index.html#autotoc_md36',1,'']]],
-  ['rest_20apis_5',['REST APIs',['../index.html#autotoc_md39',1,'2. Consuming REST APIs'],['../index.html#autotoc_md26',1,'3. Building a Web Application with Static Files &amp;amp; REST APIs']]],
-  ['restclient_20recommended_6',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md41',1,'']]],
-  ['running_20wsl_20commands_20from_20powershell_7',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]],
-  ['runtime_20dependencies_8',['SSL Runtime Dependencies',['../index.html#autotoc_md10',1,'']]]
+  ['package_0',['Package',['../index.html#autotoc_md21',1,'2. Integrating via NuGet Package'],['../index.html#autotoc_md22',1,'A. Generating the NuGet Package']]],
+  ['package_20in_20visual_20studio_20windows_1',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
+  ['package_20on_20linux_20cmake_20wsl_2',['C. Consuming NuGet Package on Linux / CMake (WSL)',['../index.html#autotoc_md24',1,'']]],
+  ['patterns_3',['Recommended Usage Patterns',['../index.html#autotoc_md56',1,'']]],
+  ['pipeline_20🚀_4',['CI/CD Pipeline 🚀',['../index.html#autotoc_md94',1,'']]],
+  ['platform_20applications_20🌐💻_5',['Developing Cross-Platform Applications 🌐💻',['../index.html#autotoc_md17',1,'']]],
+  ['platform_20project_20architecture_6',['1. Cross-Platform Project Architecture',['../index.html#autotoc_md19',1,'']]],
+  ['platform_20support_20🌐_7',['Cross-Platform Support 🌐',['../index.html#autotoc_md7',1,'']]],
+  ['powershell_8',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]],
+  ['prerequisites_20📋_9',['Prerequisites 📋',['../index.html#autotoc_md5',1,'']]],
+  ['project_20architecture_10',['1. Cross-Platform Project Architecture',['../index.html#autotoc_md19',1,'']]],
+  ['project_20directory_20layout_11',['Project Directory Layout',['../index.html#autotoc_md27',1,'']]],
+  ['project_20overview_20💡_12',['Project Overview 💡',['../index.html#autotoc_md2',1,'']]],
+  ['project_20status_20🚧_13',['Project Status 🚧',['../index.html#autotoc_md92',1,'']]],
+  ['projections_14',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md39',1,'']]],
+  ['provisioning_15',['2. Environment Provisioning',['../index.html#autotoc_md14',1,'']]]
 ];

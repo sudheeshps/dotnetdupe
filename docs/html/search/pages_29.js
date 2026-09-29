@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🧪_0',['Sample Client and Test Code 🧪',['../index.html#autotoc_md46',1,'']]]
+  ['🚀_0',['🚀',['../index.html#autotoc_md94',1,'CI/CD Pipeline 🚀'],['../index.html',1,'DotNetDupe 🚀'],['../index.html#autotoc_md4',1,'Getting Started 🚀']]]
 ];

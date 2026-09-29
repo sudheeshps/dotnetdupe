@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🤖_0',['Generated Content 🤖',['../index.html#autotoc_md87',1,'']]]
+  ['📧_0',['Contact 📧',['../index.html#autotoc_md100',1,'']]]
 ];

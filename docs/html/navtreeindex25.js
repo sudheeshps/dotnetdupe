@@ -1,5 +1,11 @@
 var NAVTREEINDEX25 =
 {
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190a77819972eb2e1baea30b145da87d5db4":[1,0,0,1,8,3,2,3],
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190ab3f0664b975ac2b2fb105180f14735a9":[1,0,0,1,8,3,2,7],
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190ac00ca141a6df310a1bae7d4a445a6c6a":[1,0,0,1,8,3,2,4],
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190ac2023094ea189384f1472643d0d7411b":[1,0,0,1,8,3,2,8],
+"namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190aedf260198e4d75d1cb3c7588f7380120":[1,0,0,1,8,3,2,9],
+"namespace_dot_net_dupe_1_1_system_1_1_security.html":[1,0,0,1,9],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html":[1,0,0,1,9,0],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html#a2b8618c6ce8405b6f489d4fb2d660fb8":[1,0,0,1,9,0,4],
 "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography.html#a84670b9a5a3569069b6f6fa47541518b":[1,0,0,1,9,0,3],
@@ -243,11 +249,5 @@ var NAVTREEINDEX25 =
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a30ec61178b291236c2167e751a1a5cb4":[1,0,0,1,3,2,2],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a30ec61178b291236c2167e751a1a5cb4":[2,0,0,1,3,2,2],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a72ceb74dee2c2ab2f0e83e18bf6abb09":[1,0,0,1,3,2,4],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a72ceb74dee2c2ab2f0e83e18bf6abb09":[2,0,0,1,3,2,4],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a752c91c2343019e1e46ef8b0bc433583":[1,0,0,1,3,2,6],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a752c91c2343019e1e46ef8b0bc433583":[2,0,0,1,3,2,6],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[1,0,0,1,3,2,1],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[2,0,0,1,3,2,1],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[1,0,0,1,3,2,0],
-"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[2,0,0,1,3,2,0]
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a72ceb74dee2c2ab2f0e83e18bf6abb09":[2,0,0,1,3,2,4]
 };

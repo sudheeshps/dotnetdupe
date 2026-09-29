@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['📦_0',['6. Buffer Operations 📦',['../index.html#autotoc_md221',1,'']]]
+  ['🤖_0',['Generated Content 🤖',['../index.html#autotoc_md99',1,'']]]
 ];
