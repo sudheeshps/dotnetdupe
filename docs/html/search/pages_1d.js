@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['👋_0',['Contributions 👋',['../index.html#autotoc_md81',1,'']]]
+  ['⬇️_0',['Installation ⬇️',['../index.html#autotoc_md6',1,'']]]
 ];

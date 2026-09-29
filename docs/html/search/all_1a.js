@@ -19,5 +19,5 @@ var searchData=
   ['via_20nuget_16',['Integration via NuGet',['../index.html#autotoc_md9',1,'']]],
   ['via_20nuget_20package_17',['2. Integrating via NuGet Package',['../index.html#autotoc_md21',1,'']]],
   ['visual_20studio_20windows_18',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
-  ['vs_20dotnetdupe_20comparison_20⚖️_19',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md45',1,'']]]
+  ['vs_20dotnetdupe_20comparison_20⚖️_19',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md57',1,'']]]
 ];

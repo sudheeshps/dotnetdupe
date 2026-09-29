@@ -1,22 +1,5 @@
 var searchData=
 [
-  ['safe_20concurrent_20collections_0',['3. Thread-Safe Concurrent Collections',['../index.html#autotoc_md34',1,'']]],
-  ['sample_20client_20and_20test_20code_20🧪_1',['Sample Client and Test Code 🧪',['../index.html#autotoc_md46',1,'']]],
-  ['security_20nbsp_20📖_2',['Namespace: &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Net&lt;/span&gt;&lt;/a&gt;, &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;Sockets&lt;/span&gt;&lt;/a&gt; &amp;amp; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;Security&lt;/span&gt;&lt;/a&gt; &amp;#160; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html&quot;&gt;📖&lt;/a&gt;',['../index.html#autotoc_md62',1,'']]],
-  ['setup_20guide_20windows_20🐧_3',['WSL Setup Guide (Windows) 🐧',['../index.html#autotoc_md12',1,'']]],
-  ['sockets_20security_20nbsp_20📖_4',['Namespace: &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Net&lt;/span&gt;&lt;/a&gt;, &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;Sockets&lt;/span&gt;&lt;/a&gt; &amp;amp; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;Security&lt;/span&gt;&lt;/a&gt; &amp;#160; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html&quot;&gt;📖&lt;/a&gt;',['../index.html#autotoc_md62',1,'']]],
-  ['ssl_20runtime_20dependencies_5',['SSL Runtime Dependencies',['../index.html#autotoc_md10',1,'']]],
-  ['started_20🚀_6',['Getting Started 🚀',['../index.html#autotoc_md4',1,'']]],
-  ['static_20analysis_20📊_7',['Code Coverage &amp;amp; Static Analysis 📊',['../index.html#autotoc_md84',1,'']]],
-  ['static_20files_20rest_20apis_8',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
-  ['status_20🚧_9',['Project Status 🚧',['../index.html#autotoc_md80',1,'']]],
-  ['step_201_3a_20create_20wwwroot_20index_20html_10',['Step 1: Create &lt;span class=&quot;tt&quot;&gt;wwwroot/index.html&lt;/span&gt;',['../index.html#autotoc_md28',1,'']]],
-  ['step_202_3a_20c_20application_20main_20cpp_11',['Step 2: C++ Application (&lt;span class=&quot;tt&quot;&gt;main.cpp&lt;/span&gt;)',['../index.html#autotoc_md29',1,'']]],
-  ['stl_20vs_20dotnetdupe_20comparison_20⚖️_12',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md45',1,'']]],
-  ['strings_20dates_20console_13',['1. Strings, Dates &amp;amp; Console',['../index.html#autotoc_md32',1,'']]],
-  ['strongly_20typed_20client_20restclient_20recommended_14',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md41',1,'']]],
-  ['studio_20windows_15',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
-  ['support_20🌐_16',['Cross-Platform Support 🌐',['../index.html#autotoc_md7',1,'']]],
-  ['system_3a_3atext_3a_3ajson_20nbsp_20📖_17',['Namespace: &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Text&lt;/span&gt;&lt;/a&gt; &amp;amp; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;System::Text::Json&lt;/span&gt;&lt;/a&gt; &amp;#160; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html&quot;&gt;📖&lt;/a&gt;',['../index.html#autotoc_md66',1,'']]],
-  ['system_3a_3athreading_3a_3atasks_20nbsp_20📖_18',['Namespace: &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;DotNetDupe::System::Threading&lt;/span&gt;&lt;/a&gt; &amp;amp; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html&quot;&gt;&lt;span class=&quot;tt&quot;&gt;System::Threading::Tasks&lt;/span&gt;&lt;/a&gt; &amp;#160; &lt;a href=&quot;docs/html/namespace_dot_net_dupe_1_1_system_1_1_threading.html&quot;&gt;📖&lt;/a&gt;',['../index.html#autotoc_md58',1,'']]]
+  ['quantifiers_0',['3. Aggregations &amp;amp; Quantifiers',['../index.html#autotoc_md43',1,'']]],
+  ['query_20linq_20⚡_1',['Language Integrated Query (LINQ) ⚡',['../index.html#autotoc_md36',1,'']]]
 ];

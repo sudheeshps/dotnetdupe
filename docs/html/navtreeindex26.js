@@ -1,5 +1,11 @@
 var NAVTREEINDEX26 =
 {
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a752c91c2343019e1e46ef8b0bc433583":[1,0,0,1,3,2,6],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a752c91c2343019e1e46ef8b0bc433583":[2,0,0,1,3,2,6],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[1,0,0,1,3,2,1],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#a99ca1bb1127197e8766fa02129bb00e1":[2,0,0,1,3,2,1],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[1,0,0,1,3,2,0],
+"struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#aa75adb00468b1e054db465f28effcea8":[2,0,0,1,3,2,0],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[1,0,0,1,3,2,3],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ac3e57aac060b8d57045d502453b57db2":[2,0,0,1,3,2,3],
 "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_etw_event.html#ae6c51a393ecd687552c4d1e2084344be":[1,0,0,1,3,2,5],
@@ -243,11 +249,5 @@ var NAVTREEINDEX26 =
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html":[1,0,0,1,5,2],
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html":[2,0,0,1,5,2],
 "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#a4847dc39092cafd8f6e4cfbe83df087b":[1,0,0,1,5,2,2],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#a4847dc39092cafd8f6e4cfbe83df087b":[2,0,0,1,5,2,2],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#aa6e42ab9d8af5931654313b24765bf67":[1,0,0,1,5,2,0],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#aa6e42ab9d8af5931654313b24765bf67":[2,0,0,1,5,2,0],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#ade05473820c38ebfb316458da94b3ce1":[1,0,0,1,5,2,1],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#ade05473820c38ebfb316458da94b3ce1":[2,0,0,1,5,2,1],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html":[1,0,0,1,5,3],
-"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_functor_holder.html":[2,0,0,1,5,3]
+"struct_dot_net_dupe_1_1_system_1_1_internal_1_1_i_action_holder.html#a4847dc39092cafd8f6e4cfbe83df087b":[2,0,0,1,5,2,2]
 };
