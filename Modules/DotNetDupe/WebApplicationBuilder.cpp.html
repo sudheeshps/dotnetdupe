@@ -23,8 +23,8 @@ namespace DotNetDupe {
 
             /// \brief Move constructor.
             WebApplicationBuilder::WebApplicationBuilder(WebApplicationBuilder&amp;&amp; other) noexcept
-<span style = "background-color:#fdd">                : m_services(std::move(other.m_services)),
-                  m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
+                : m_services(std::move(other.m_services)),
+<span style = "background-color:#fdd">                  m_controllerRegistrars(std::move(other.m_controllerRegistrars)) {}</span>
 
             /// \brief Move assignment operator.
 <span style = "background-color:#fdd">            WebApplicationBuilder&amp; WebApplicationBuilder::operator=(WebApplicationBuilder&amp;&amp; other) noexcept {</span>

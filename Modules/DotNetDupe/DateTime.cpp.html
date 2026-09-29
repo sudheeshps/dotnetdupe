@@ -58,16 +58,16 @@ namespace DotNetDupe {
 		}</span>
 
 		/// \brief Converts hour, minute, and second into total 100-nanosecond ticks.
-		static int64_t TimeToTicks(int hour, int minute, int second) {
+<span style = "background-color:#fdd">		static int64_t TimeToTicks(int hour, int minute, int second) {</span>
 			/// Guard: Validate 24-hour time boundaries.
-			if (hour &lt; 0 || hour &gt;= 24 || minute &lt; 0 || minute &gt;= 60 || second &lt; 0 || second &gt;= 60) {
-				throw ArgumentOutOfRangeException("Hour, Minute, and Second parameters describe an un-representable DateTime.");
+<span style = "background-color:#fdd">			if (hour &lt; 0 || hour &gt;= 24 || minute &lt; 0 || minute &gt;= 60 || second &lt; 0 || second &gt;= 60) {
+				throw ArgumentOutOfRangeException("Hour, Minute, and Second parameters describe an un-representable DateTime.");</span>
 			}
 
 			/// Calculate total seconds and scale to ticks.
-			int64_t totalSeconds = (int64_t)hour * 3600 + (int64_t)minute * 60 + (int64_t)second;
+<span style = "background-color:#fdd">			int64_t totalSeconds = (int64_t)hour * 3600 + (int64_t)minute * 60 + (int64_t)second;
 			return totalSeconds * TicksPerSecond;
-		}
+		}</span>
 
 		/// \brief Decomposes total ticks into Gregorian calendar date components (year, month, day).
 		static void GetDatePart(int64_t ticks, int&amp; year, int&amp; month, int&amp; day) {
@@ -218,8 +218,8 @@ namespace DotNetDupe {
 
 			/// Validate year range and clamp day of month.
 <span style = "background-color:#fdd">			if (y &lt; 1 || y &gt; 9999) throw ArgumentOutOfRangeException("DateTime result is out of range.");
-			int days = DaysInMonth(y, m);</span>
-			if (d &gt; days) d = days;
+			int days = DaysInMonth(y, m);
+			if (d &gt; days) d = days;</span>
 
 			/// Reconstruct DateTime preserving time of day.
 <span style = "background-color:#fdd">			return DateTime((int64_t)(DateToTicks(y, m, d) + m_nTicks % TicksPerDay), m_kind);
@@ -272,14 +272,14 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">			return Now().GetDate();
 		}</span>
 
-<span style = "background-color:#fdd">		static int64_t TmToTicks(const struct tm&amp; t, int64_t remainderTicks) {</span>
+		static int64_t TmToTicks(const struct tm&amp; t, int64_t remainderTicks) {
 			/// Extract calendar components from tm structure.
-<span style = "background-color:#fdd">			int year = t.tm_year + 1900, month = t.tm_mon + 1, day = t.tm_mday;
-			int hour = t.tm_hour, minute = t.tm_min, second = t.tm_sec;</span>
+			int year = t.tm_year + 1900, month = t.tm_mon + 1, day = t.tm_mday;
+			int hour = t.tm_hour, minute = t.tm_min, second = t.tm_sec;
 
 			/// Combine date, time, and sub-second remainder ticks.
-<span style = "background-color:#fdd">			return DateToTicks(year, month, day) + TimeToTicks(hour, minute, second) + remainderTicks;
-		}</span>
+			return DateToTicks(year, month, day) + TimeToTicks(hour, minute, second) + remainderTicks;
+		}
 
 		static struct tm ConvertToLocalTm(int64_t time) {
 			/// Convert POSIX timestamp to thread-safe local calendar struct.

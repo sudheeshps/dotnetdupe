@@ -228,12 +228,12 @@ namespace DotNetDupe {
 #endif
 <span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        static void ParseAndAddEnvEntry(const String&amp; sLine, Collections::Generic::Dictionary&lt;String, String&gt;&amp; result) {
+        static void ParseAndAddEnvEntry(const String&amp; sLine, Collections::Generic::Dictionary&lt;String, String&gt;&amp; result) {
             int iEqIdx = sLine.IndexOf("=");
             if (iEqIdx != -1) {
-                result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));</span>
+                result.Add(sLine.Substring(0, iEqIdx), sLine.Substring(iEqIdx + 1, sLine.GetLength() - iEqIdx - 1));
             }
-<span style = "background-color:#dfd">        }</span>
+        }
 
 <span style = "background-color:#dfd">        Collections::Generic::Dictionary&lt;String, String&gt; Environment::GetEnvironmentVariables() {
             Collections::Generic::Dictionary&lt;String, String&gt; result;</span>

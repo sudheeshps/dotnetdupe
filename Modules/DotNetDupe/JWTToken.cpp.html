@@ -89,15 +89,15 @@ namespace DotNetDupe {
                         return Base64ToBase64Url(Convert::ToBase64String(bytes));
                     }</span>
 
-<span style = "background-color:#dfd">                    static String ComputeJwtSignature(const String&amp; rawToken, const String&amp; secretKey) {</span>
+                    static String ComputeJwtSignature(const String&amp; rawToken, const String&amp; secretKey) {
                         /// Step: Compute HMAC-SHA256 signature and return Base64URL encoded hash.
-<span style = "background-color:#dfd">                        Array&lt;char&gt; tokenBytes(rawToken.GetLength());
+                        Array&lt;char&gt; tokenBytes(rawToken.GetLength());
                         std::memcpy(tokenBytes.GetData(), rawToken.GetRawString(), rawToken.GetLength());
                         Array&lt;char&gt; keyBytes(secretKey.GetLength());
                         std::memcpy(keyBytes.GetData(), secretKey.GetRawString(), secretKey.GetLength());
                         Array&lt;char&gt; sigHash = Security::Cryptography::HMACSHA256::ComputeHash(tokenBytes, keyBytes);
                         return Base64ToBase64Url(Convert::ToBase64String(sigHash));
-                    }</span>
+                    }
 
 <span style = "background-color:#dfd">                    String JWTToken::CreateToken(const String&amp; secretKey) {</span>
                         /// Step: Encode header, payload, and compute cryptographic signature.

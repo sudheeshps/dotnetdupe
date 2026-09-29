@@ -45,13 +45,13 @@ namespace DotNetDupe {
                     return m_pImpl-&gt;m_sConnectionString;
                 }</span>
 
-                static std::string ExtractConnectionStringValue(const std::string&amp; raw, const std::string&amp; key, const std::string&amp; defaultVal) {
+<span style = "background-color:#dfd">                static std::string ExtractConnectionStringValue(const std::string&amp; raw, const std::string&amp; key, const std::string&amp; defaultVal) {
                     size_t idx = raw.find(key);
                     if (idx == std::string::npos) return defaultVal;
                     idx += key.length();
                     size_t endIdx = raw.find(";", idx);
                     return (endIdx != std::string::npos) ? raw.substr(idx, endIdx - idx) : raw.substr(idx);
-                }
+                }</span>
 
 <span style = "background-color:#dfd">                static std::string ExtractDatabaseName(const std::string&amp; raw) {
                     if (raw.find("Database=") != std::string::npos) return ExtractConnectionStringValue(raw, "Database=", "DefaultDb");

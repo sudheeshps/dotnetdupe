@@ -17,6 +17,11 @@
 #include "System/ArgumentException.h"
 #include "System/InvalidOperationException.h"
 #include "System/HashHelper.h"
+#include "System/Collections/Generic/KeyValuePair.h"
+#include "System/Collections/Generic/IDictionary.h"
+#include "System/Collections/Generic/IReadOnlyDictionary.h"
+#include "System/Collections/Generic/IEnumerator.h"
+#include "System/EqualityHelper.h"
 #include &lt;new&gt;
 #include &lt;utility&gt;
 
@@ -25,23 +30,8 @@ namespace DotNetDupe {
         namespace Collections {
             namespace Generic {
 
-                /// \struct KeyValuePair
-                /// \brief Defines a key/value pair that can be set or retrieved.
-                /// \tparam TKey The type of the key.
-                /// \tparam TValue The type of the value.
                 template &lt;typename TKey, typename TValue&gt;
-                struct KeyValuePair {
-                    TKey Key;     ///&lt; Gets or sets the key in the key/value pair.
-                    TValue Value; ///&lt; Gets or sets the value in the key/value pair.
-
-                    /// \brief Initializes a new instance of the KeyValuePair structure with default values.
-                    KeyValuePair() {}
-
-                    /// \brief Initializes a new instance of the KeyValuePair structure with the specified key and value.
-                    /// \param k The object defined in each key/value pair.
-                    /// \param v The definition associated with key.
-                    KeyValuePair(TKey k, TValue v) : Key(k), Value(v) {}
-                };
+                class Dictionary;
 
                 /// \struct HashHelpers
                 /// \brief Provides prime modulus capacity calculation for hash-based collections.
@@ -66,15 +56,63 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \class DictionaryEnumerator
+                /// \brief Enumerates key/value pairs in a Dictionary.
+                /// \tparam TKey The key type.
+                /// \tparam TValue The value type.
+                template &lt;typename TKey, typename TValue&gt;
+                class DictionaryEnumerator : public virtual IEnumerator&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; {
+                private:
+                    const Dictionary&lt;TKey, TValue&gt;* m_pDict;
+                    int m_iIndex;
+                    KeyValuePair&lt;TKey, TValue&gt; m_current;
+                    bool m_bStarted;
+
+                public:
+                    /// \brief Constructs an enumerator for the given dictionary.
+                    explicit DictionaryEnumerator(const Dictionary&lt;TKey, TValue&gt;* pDict)
+                        : m_pDict(pDict), m_iIndex(-1), m_current(), m_bStarted(false) {}
+
+                    /// \brief Gets current key/value pair.
+<span style = "background-color:#fdd">                    const KeyValuePair&lt;TKey, TValue&gt;&amp; Current() const override { return GetCurrent(); }</span>
+
+                    /// \brief Gets current key/value pair.
+<span style = "background-color:#fdd">                    const KeyValuePair&lt;TKey, TValue&gt;&amp; GetCurrent() const override {
+                        if (!m_bStarted || m_iIndex &lt; 0 || m_iIndex &gt;= m_pDict-&gt;GetInternalCount()) {
+                            throw InvalidOperationException("Enumeration has either not started or has already finished.");</span>
+                        }
+<span style = "background-color:#fdd">                        return m_current;
+                    }</span>
+
+                    /// \brief Advances to next valid key/value pair.
+<span style = "background-color:#fdd">                    bool MoveNext() override {
+                        m_bStarted = true;
+                        m_iIndex++;
+                        while (m_pDict &amp;&amp; m_iIndex &lt; m_pDict-&gt;GetInternalCount()) {
+                            if (m_pDict-&gt;IsEntryValid(m_iIndex)) {
+                                m_current = m_pDict-&gt;GetEntryPair(m_iIndex);
+                                return true;</span>
+                            }
+<span style = "background-color:#fdd">                            m_iIndex++;</span>
+                        }
+<span style = "background-color:#fdd">                        return false;
+                    }</span>
+
+                    /// \brief Resets enumerator.
+<span style = "background-color:#fdd">                    void Reset() override {
+                        m_iIndex = -1;
+                        m_bStarted = false;
+                    }</span>
+                };
+
                 /// \class Dictionary
                 /// \brief Represents a collection of keys and values.
-                ///
                 /// \tparam TKey The type of the keys in the dictionary.
                 /// \tparam TValue The type of the values in the dictionary.
                 /// \note Conforms to ECMA-335 Partition IV Section 5.38 (System.Collections.Generic.Dictionary&lt;TKey, TValue&gt;).
-                ///       Implements a closed-addressing hash table with prime modulus bucket indexing and collision resolution through singly-linked entry chains.
                 template &lt;typename TKey, typename TValue&gt;
-                class Dictionary : public Object {
+                class Dictionary : public virtual IDictionary&lt;TKey, TValue&gt;,
+                                   public virtual IReadOnlyDictionary&lt;TKey, TValue&gt; {
                 private:
                     struct Entry {
                         int hashCode;
@@ -172,12 +210,12 @@ namespace DotNetDupe {
                         }
 
                         int index;
-<span style = "background-color:#dfd">                        if (m_iFreeCount &gt; 0) {</span>
-<span style = "background-color:#fdd">                            index = m_iFreeList;
+<span style = "background-color:#dfd">                        if (m_iFreeCount &gt; 0) {
+                            index = m_iFreeList;
                             m_iFreeList = m_pEntries[index].next;
                             m_iFreeCount--;
-                        } else {</span>
-<span style = "background-color:#dfd">                            if (m_iCount == m_iCapacity) {
+                        } else {
+                            if (m_iCount == m_iCapacity) {
                                 Resize();
                                 targetBucket = hashCode % m_iCapacity;</span>
                             }
@@ -190,11 +228,11 @@ namespace DotNetDupe {
                     }</span>
 
                 public:
-                    Dictionary() : m_pBuckets(nullptr), m_pEntries(nullptr), m_iCount(0), m_iFreeList(-1), m_iFreeCount(0), m_iCapacity(0) {}
+<span style = "background-color:#dfd">                    Dictionary() : m_pBuckets(nullptr), m_pEntries(nullptr), m_iCount(0), m_iFreeList(-1), m_iFreeCount(0), m_iCapacity(0) {}</span>
                     
-<span style = "background-color:#dfd">                    ~Dictionary() override {
+                    ~Dictionary() override {
                         FreeBuffer();
-                    }</span>
+                    }
 
                     Dictionary(const Dictionary&amp; other) : Dictionary() {
                         if (other.m_iCount &gt; 0) {
@@ -222,16 +260,16 @@ namespace DotNetDupe {
                         return *this;
                     }
 
-                    Dictionary(Dictionary&amp;&amp; other) noexcept : m_pBuckets(other.m_pBuckets), m_pEntries(other.m_pEntries), m_iCount(other.m_iCount), m_iFreeList(other.m_iFreeList), m_iFreeCount(other.m_iFreeCount), m_iCapacity(other.m_iCapacity) {
+<span style = "background-color:#fdd">                    Dictionary(Dictionary&amp;&amp; other) noexcept : m_pBuckets(other.m_pBuckets), m_pEntries(other.m_pEntries), m_iCount(other.m_iCount), m_iFreeList(other.m_iFreeList), m_iFreeCount(other.m_iFreeCount), m_iCapacity(other.m_iCapacity) {</span>
                         other.m_pBuckets = nullptr;
                         other.m_pEntries = nullptr;
                         other.m_iCount = 0;
                         other.m_iFreeList = -1;
                         other.m_iFreeCount = 0;
                         other.m_iCapacity = 0;
-                    }
+<span style = "background-color:#fdd">                    }</span>
 
-                    Dictionary&amp; operator=(Dictionary&amp;&amp; other) noexcept {
+<span style = "background-color:#dfd">                    Dictionary&amp; operator=(Dictionary&amp;&amp; other) noexcept {
                         if (this != &amp;other) {
                             FreeBuffer();
                             m_pBuckets = other.m_pBuckets;
@@ -242,80 +280,109 @@ namespace DotNetDupe {
                             m_iCapacity = other.m_iCapacity;
                             other.m_pBuckets = nullptr;
                             other.m_pEntries = nullptr;
-                            other.m_iCount = 0;
+                            other.m_iCount = 0;</span>
                             other.m_iFreeList = -1;
-                            other.m_iFreeCount = 0;
+<span style = "background-color:#dfd">                            other.m_iFreeCount = 0;</span>
                             other.m_iCapacity = 0;
                         }
                         return *this;
+<span style = "background-color:#dfd">                    }</span>
+
+<span style = "background-color:#dfd">                    int GetCount() const override { return m_iCount - m_iFreeCount; }</span>
+
+<span style = "background-color:#dfd">                    bool IsReadOnly() const override { return false; }</span>
+
+                    int GetInternalCount() const { return m_iCount; }
+
+                    bool IsEntryValid(int index) const {
+                        return index &gt;= 0 &amp;&amp; index &lt; m_iCount &amp;&amp; m_pEntries[index].hashCode &gt;= 0;
                     }
 
-                    int GetCount() const { return m_iCount - m_iFreeCount; }
-
-                    void Add(const TKey&amp; key, const TValue&amp; value) {
-                        Insert(key, value, true);
+                    KeyValuePair&lt;TKey, TValue&gt; GetEntryPair(int index) const {
+                        return KeyValuePair&lt;TKey, TValue&gt;(m_pEntries[index].key, m_pEntries[index].value);
                     }
 
-                    bool Remove(const TKey&amp; key) {
+<span style = "background-color:#dfd">                    void Add(const TKey&amp; key, const TValue&amp; value) override {
+                        Insert(key, value, true);</span>
+                    }
+
+<span style = "background-color:#fdd">                    void Add(const KeyValuePair&lt;TKey, TValue&gt;&amp; item) override {
+                        Insert(item.Key, item.Value, true);</span>
+                    }
+
+<span style = "background-color:#dfd">                    bool Remove(const TKey&amp; key) override {
                         if (m_pBuckets != nullptr) {
-                            int hashCode = HashHelper&lt;TKey&gt;::GetHashCode(key) &amp; 0x7FFFFFFF;
+                            int hashCode = HashHelper&lt;TKey&gt;::GetHashCode(key) &amp; 0x7FFFFFFF;</span>
                             int bucket = hashCode % m_iCapacity;
-                            int last = -1;
+<span style = "background-color:#dfd">                            int last = -1;
                             for (int i = m_pBuckets[bucket]; i &gt;= 0; last = i, i = m_pEntries[i].next) {
                                 if (m_pEntries[i].hashCode == hashCode &amp;&amp; m_pEntries[i].key == key) {
-                                    if (last &lt; 0) m_pBuckets[bucket] = m_pEntries[i].next;
-                                    else m_pEntries[last].next = m_pEntries[i].next;
-                                    m_pEntries[i].~Entry();
+                                    if (last &lt; 0) m_pBuckets[bucket] = m_pEntries[i].next;</span>
+<span style = "background-color:#fdd">                                    else m_pEntries[last].next = m_pEntries[i].next;</span>
+<span style = "background-color:#dfd">                                    m_pEntries[i].~Entry();
                                     m_pEntries[i].hashCode = -1;
-                                    m_pEntries[i].next = m_iFreeList;
+                                    m_pEntries[i].next = m_iFreeList;</span>
                                     m_iFreeList = i;
                                     m_iFreeCount++;
-                                    return true;
+<span style = "background-color:#dfd">                                    return true;</span>
                                 }
                             }
                         }
-                        return false;
-                    }
+<span style = "background-color:#dfd">                        return false;
+                    }</span>
 
-                    void Clear() {
+<span style = "background-color:#dfd">                    bool Remove(const KeyValuePair&lt;TKey, TValue&gt;&amp; item) override {</span>
+<span style = "background-color:#fdd">                        int i = FindEntry(item.Key);
+                        if (i &gt;= 0 &amp;&amp; EqualityHelper&lt;TValue&gt;::Equals(m_pEntries[i].value, item.Value)) {
+                            return Remove(item.Key);</span>
+                        }
+<span style = "background-color:#dfd">                        return false;
+                    }</span>
+
+<span style = "background-color:#fdd">                    void Clear() override {
                         if (m_iCount &gt; 0) {
                             for (int i = 0; i &lt; m_iCapacity; i++) m_pBuckets[i] = -1;
                             for (int i = 0; i &lt; m_iCount; i++) {
-                                if (m_pEntries[i].hashCode &gt;= 0) m_pEntries[i].~Entry();
+                                if (m_pEntries[i].hashCode &gt;= 0) m_pEntries[i].~Entry();</span>
                             }
                             m_iFreeList = -1;
                             m_iCount = 0;
-                            m_iFreeCount = 0;
+<span style = "background-color:#fdd">                            m_iFreeCount = 0;</span>
                         }
-                    }
+<span style = "background-color:#fdd">                    }</span>
 
-                    bool ContainsKey(const TKey&amp; key) const {
+<span style = "background-color:#dfd">                    bool ContainsKey(const TKey&amp; key) const override {
                         return FindEntry(key) &gt;= 0;
-                    }
+                    }</span>
 
-<span style = "background-color:#dfd">                    bool TryGetValue(const TKey&amp; key, TValue&amp; value) const {
-                        int i = FindEntry(key);</span>
+<span style = "background-color:#dfd">                    bool Contains(const KeyValuePair&lt;TKey, TValue&gt;&amp; item) const override {</span>
+<span style = "background-color:#fdd">                        int i = FindEntry(item.Key);</span>
+<span style = "background-color:#dfd">                        return (i &gt;= 0 &amp;&amp; EqualityHelper&lt;TValue&gt;::Equals(m_pEntries[i].value, item.Value));
+                    }</span>
+
+<span style = "background-color:#dfd">                    bool TryGetValue(const TKey&amp; key, TValue&amp; value) const override {
+                        int i = FindEntry(key);
                         if (i &gt;= 0) {
-<span style = "background-color:#dfd">                            value = m_pEntries[i].value;
+                            value = m_pEntries[i].value;
                             return true;</span>
                         }
 <span style = "background-color:#dfd">                        return false;
                     }</span>
 
-<span style = "background-color:#dfd">                    TValue&amp; operator[](const TKey&amp; key) {
+<span style = "background-color:#dfd">                    TValue&amp; operator[](const TKey&amp; key) override {
                         int i = FindEntry(key);
                         if (i &gt;= 0) return m_pEntries[i].value;
                         Insert(key, TValue(), false);
                         return m_pEntries[FindEntry(key)].value;
                     }</span>
 
-                    const TValue&amp; operator[](const TKey&amp; key) const {
+<span style = "background-color:#dfd">                    const TValue&amp; operator[](const TKey&amp; key) const override {
                         int i = FindEntry(key);
-                        if (i &gt;= 0) return m_pEntries[i].value;
-                        throw System::ArgumentException("Key not found.");
-                    }
+                        if (i &gt;= 0) return m_pEntries[i].value;</span>
+<span style = "background-color:#fdd">                        throw System::ArgumentException("Key not found.");</span>
+<span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#dfd">                    Array&lt;TKey&gt; GetKeys() const {
+<span style = "background-color:#dfd">                    Array&lt;TKey&gt; GetKeys() const override {
                         Array&lt;TKey&gt; arrKeys(GetCount());</span>
                         int index = 0;
 <span style = "background-color:#dfd">                        for (int i = 0; i &lt; m_iCount; ++i) {
@@ -324,14 +391,30 @@ namespace DotNetDupe {
                         return arrKeys;
 <span style = "background-color:#dfd">                    }</span>
 
-<span style = "background-color:#dfd">                    Array&lt;TValue&gt; GetValues() const {
+<span style = "background-color:#dfd">                    Array&lt;TValue&gt; GetValues() const override {
                         Array&lt;TValue&gt; arrValues(GetCount());</span>
-                        int index = 0;
+<span style = "background-color:#fdd">                        int index = 0;</span>
 <span style = "background-color:#dfd">                        for (int i = 0; i &lt; m_iCount; ++i) {
                             if (m_pEntries[i].hashCode &gt;= 0) arrValues[index++] = m_pEntries[i].value;</span>
                         }
-                        return arrValues;
+<span style = "background-color:#fdd">                        return arrValues;</span>
 <span style = "background-color:#dfd">                    }</span>
+
+<span style = "background-color:#fdd">                    void CopyTo(Array&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;&amp; array, int arrayIndex) const override {
+                        if (arrayIndex &lt; 0 || arrayIndex + GetCount() &gt; array.GetLength()) {
+                            throw ArgumentException("Target array is too small or index is invalid.");</span>
+                        }
+                        int idx = arrayIndex;
+<span style = "background-color:#fdd">                        for (int i = 0; i &lt; m_iCount; ++i) {
+                            if (m_pEntries[i].hashCode &gt;= 0) {
+                                array[idx++] = KeyValuePair&lt;TKey, TValue&gt;(m_pEntries[i].key, m_pEntries[i].value);</span>
+                            }
+                        }
+<span style = "background-color:#fdd">                    }</span>
+
+<span style = "background-color:#fdd">                    IEnumeratorPtr&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; GetEnumerator() const override {
+                        return IEnumeratorPtr&lt;KeyValuePair&lt;TKey, TValue&gt;&gt;(new DictionaryEnumerator&lt;TKey, TValue&gt;(this), true);
+                    }</span>
 
                     class Iterator {
                     private:
@@ -352,9 +435,9 @@ namespace DotNetDupe {
                             AdvanceToValid();
                             return *this;
                         }
-<span style = "background-color:#dfd">                        KeyValuePair&lt;TKey, TValue&gt; operator*() const {
+                        KeyValuePair&lt;TKey, TValue&gt; operator*() const {
                             return KeyValuePair&lt;TKey, TValue&gt;(m_pDict-&gt;m_pEntries[m_iIndex].key, m_pDict-&gt;m_pEntries[m_iIndex].value);
-                        }</span>
+                        }
                     };
 
                     Iterator begin() const { return Iterator(this, 0); }

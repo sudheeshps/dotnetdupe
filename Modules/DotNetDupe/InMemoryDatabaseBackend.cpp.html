@@ -38,9 +38,9 @@ namespace DotNetDupe {
                         /// Step: Parse CREATE TABLE statement.
 <span style = "background-color:#dfd">                        if (tokens.size() &gt; 2 &amp;&amp; ToUpper(tokens[1]) == "TABLE") {
                             std::string tableName = tokens[2];
-                            StdTable t;</span>
+                            StdTable t;
                             size_t idx = 3;
-<span style = "background-color:#dfd">                            while (idx &lt; tokens.size()) {
+                            while (idx &lt; tokens.size()) {
                                 if (tokens[idx] == "(" || tokens[idx] == ")") {
                                     idx++;</span>
                                     continue;
@@ -101,7 +101,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                                for (size_t i = 0; i &lt; t.Columns.size() &amp;&amp; i &lt; vals.size(); ++i) {
                                     r.Values[i] = vals[i];</span>
                                 }
-                            } else {
+<span style = "background-color:#fdd">                            } else {</span>
 <span style = "background-color:#dfd">                                for (size_t i = 0; i &lt; cols.size() &amp;&amp; i &lt; vals.size(); ++i) {
                                     auto colName = cols[i];
                                     auto cIt = std::find(t.Columns.begin(), t.Columns.end(), colName);
@@ -336,11 +336,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                        return tokens;
                     }</span>
 
-                    std::string ToUpper(std::string s) const {
+<span style = "background-color:#dfd">                    std::string ToUpper(std::string s) const {</span>
                         /// Step: Convert string to uppercase for case-insensitive keywords.
-                        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
+<span style = "background-color:#dfd">                        std::transform(s.begin(), s.end(), s.begin(), ::toupper);
                         return s;
-                    }
+                    }</span>
 
 <span style = "background-color:#dfd">                    std::string ResolveValue(const std::string&amp; val, const std::unordered_map&lt;std::string, std::string&gt;&amp; parameters) const {</span>
                         /// Step: Resolve @param references or unquote literals.
@@ -394,9 +394,9 @@ namespace DotNetDupe {
 
                     /// Step: Convert STL row vectors to library Row structures.
 <span style = "background-color:#dfd">                    Collections::Generic::List&lt;Row&gt; resultRows;
-                    for (const auto&amp; sr : stdResRows) {
+                    for (const auto&amp; sr : stdResRows) {</span>
                         Row r;
-                        for (const auto&amp; v : sr.Values) r.Values.Add(String(v.c_str()));
+<span style = "background-color:#dfd">                        for (const auto&amp; v : sr.Values) r.Values.Add(String(v.c_str()));
                         resultRows.Add(r);</span>
                     }
 <span style = "background-color:#dfd">                    return resultRows;

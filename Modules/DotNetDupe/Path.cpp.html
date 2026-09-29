@@ -333,8 +333,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    char chLast = sJoined[sJoined.GetLength() - 1];
                     if (chLast != '\\' &amp;&amp; chLast != '/') sJoined.Append(static_cast&lt;char&gt;(fs::path::preferred_separator));
                     if (sPath[0] == '\\' || sPath[0] == '/') {</span>
-<span style = "background-color:#fdd">                        sJoined.Append(sPath.Substring(1, sPath.GetLength() - 1));
-                    } else {</span>
+<span style = "background-color:#fdd">                        sJoined.Append(sPath.Substring(1, sPath.GetLength() - 1));</span>
+                    } else {
 <span style = "background-color:#dfd">                        sJoined.Append(sPath);</span>
                     }
                 }

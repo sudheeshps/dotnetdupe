@@ -207,9 +207,9 @@ namespace DotNetDupe {
             /// \param arg1 First argument.
             /// \param args Additional arguments.
             /// \return Result of the method execution.
-<span style = "background-color:#dfd">            TResult operator()(Arg1 arg1, Args... args) const {
+            TResult operator()(Arg1 arg1, Args... args) const {
                 return Invoke(arg1, args...);
-            }</span>
+            }
             
             /// \brief Checks if the delegate encapsulates a non-null target.
             /// \return True if non-null, false otherwise.

@@ -119,9 +119,9 @@ namespace DotNetDupe {
                     std::string hostPort = (protocolPos != std::string::npos) ? sUrl.substr(protocolPos + 3) : sUrl;</span>
 
                     /// Parse: Extract host and optional port.
-<span style = "background-color:#dfd">                    size_t colonPos = hostPort.find(':');</span>
-<span style = "background-color:#fdd">                    if (colonPos != std::string::npos) {</span>
-<span style = "background-color:#dfd">                        host = hostPort.substr(0, colonPos);
+<span style = "background-color:#dfd">                    size_t colonPos = hostPort.find(':');
+                    if (colonPos != std::string::npos) {
+                        host = hostPort.substr(0, colonPos);
                         std::string sPort = hostPort.substr(colonPos + 1);
                         size_t slashPos = sPort.find('/');</span>
 <span style = "background-color:#fdd">                        if (slashPos != std::string::npos) sPort = sPort.substr(0, slashPos);</span>

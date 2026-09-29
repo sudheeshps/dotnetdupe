@@ -30,9 +30,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">        }</span>
 
 <span style = "background-color:#fdd">        Guid::Guid(const Array&lt;uint8_t&gt;&amp; b) {
-            if (b.GetLength() != 16) throw ArgumentException("Guid should be 16 bytes.");</span>
+            if (b.GetLength() != 16) throw ArgumentException("Guid should be 16 bytes.");
             for (size_t i = 0; i &lt; 16; ++i) {
-<span style = "background-color:#fdd">                _data[i] = b[static_cast&lt;int&gt;(i)];</span>
+                _data[i] = b[static_cast&lt;int&gt;(i)];</span>
             }
 <span style = "background-color:#fdd">        }</span>
 
@@ -73,12 +73,12 @@ namespace DotNetDupe {
         }</span>
 
 <span style = "background-color:#fdd">        Array&lt;uint8_t&gt; Guid::ToByteArray() const {
-            Array&lt;uint8_t&gt; result(16);</span>
+            Array&lt;uint8_t&gt; result(16);
             for (size_t i = 0; i &lt; 16; ++i) {
-<span style = "background-color:#fdd">                result[static_cast&lt;int&gt;(i)] = _data[i];</span>
+                result[static_cast&lt;int&gt;(i)] = _data[i];</span>
             }
-            return result;
-<span style = "background-color:#fdd">        }</span>
+<span style = "background-color:#fdd">            return result;
+        }</span>
 
 <span style = "background-color:#dfd">        String Guid::ToString() const {</span>
             char buf[37];

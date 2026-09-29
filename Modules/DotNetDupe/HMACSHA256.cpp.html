@@ -203,9 +203,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    PrepareHmacPads(key, k_ipad, k_opad);
                     ComputeHmacDigests(k_ipad, k_opad, buffer, outer_digest);
                     Array&lt;char&gt; result(32);
-                    for (int i = 0; i &lt; 32; i++) result[i] = static_cast&lt;char&gt;(outer_digest[i]);</span>
+                    for (int i = 0; i &lt; 32; i++) result[i] = static_cast&lt;char&gt;(outer_digest[i]);
                     return result;
-<span style = "background-color:#dfd">                }</span>
+                }</span>
 
             }
         }

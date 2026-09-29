@@ -232,12 +232,12 @@ namespace DotNetDupe {
             };
 
             ProcessStreamer::ProcessStreamer(const ProcessStreamOptions&amp; options)
-                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)),
-<span style = "background-color:#dfd">                  ProcessDiscovered(m_pImpl-&gt;ProcessDiscovered),</span>
+<span style = "background-color:#dfd">                : m_pImpl(SmartPointer&lt;Impl&gt;::NewShared(options)),
+                  ProcessDiscovered(m_pImpl-&gt;ProcessDiscovered),
                   BatchReady(m_pImpl-&gt;BatchReady),
                   ProcessUpdated(m_pImpl-&gt;ProcessUpdated),
                   Completed(m_pImpl-&gt;Completed),
-<span style = "background-color:#dfd">                  Error(m_pImpl-&gt;Error) {}</span>
+                  Error(m_pImpl-&gt;Error) {}</span>
 
 <span style = "background-color:#fdd">            ProcessStreamer::~ProcessStreamer() {}</span>
 

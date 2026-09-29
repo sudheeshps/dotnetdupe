@@ -37,9 +37,9 @@ namespace DotNetDupe {
             public:
 <span style = "background-color:#dfd">                static ThreadPoolInternal&amp; GetInstance() {</span>
                     /// Step: Return singleton thread pool instance.
-<span style = "background-color:#dfd">                    static ThreadPoolInternal instance;</span>
+<span style = "background-color:#dfd">                    static ThreadPoolInternal instance;
                     return instance;
-<span style = "background-color:#dfd">                }</span>
+                }</span>
 
 <span style = "background-color:#dfd">                bool QueueTask(WaitCallback callback, Object* pState) {</span>
                     /// Guard: Check shutdown state and enqueue task under synchronization lock.

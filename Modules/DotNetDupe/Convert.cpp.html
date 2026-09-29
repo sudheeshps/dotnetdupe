@@ -348,53 +348,53 @@ namespace DotNetDupe {
             return String(ret.c_str());
         }</span>
 
-        static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector&lt;char&gt;&amp; decoded) {
+<span style = "background-color:#dfd">        static void DecodeBase64Chunk4(unsigned char* char_array_4, std::vector&lt;char&gt;&amp; decoded) {
             for (int k = 0; k &lt; 4; k++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[k]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
-                char_array_4[k] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);
+                char_array_4[k] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);</span>
             }
-            decoded.push_back((char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4));
+<span style = "background-color:#dfd">            decoded.push_back((char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4));
             decoded.push_back(((char_array_4[1] &amp; 0xf) &lt;&lt; 4) + ((char_array_4[2] &amp; 0x3c) &gt;&gt; 2));
             decoded.push_back(((char_array_4[2] &amp; 0x3) &lt;&lt; 6) + char_array_4[3]);
-        }
+        }</span>
 
-        static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector&lt;char&gt;&amp; decoded) {
+<span style = "background-color:#dfd">        static void DecodeBase64Remainder(unsigned char* char_array_4, int i, std::vector&lt;char&gt;&amp; decoded) {</span>
             /// Map remainder Base64 characters to 6-bit numerical values.
-            for (int j = 0; j &lt; i; j++) {
+<span style = "background-color:#dfd">            for (int j = 0; j &lt; i; j++) {
                 const char* ptr = std::strchr(base64_chars, char_array_4[j]);
                 if (ptr == nullptr) throw ArgumentException("Invalid base64 character");
-                char_array_4[j] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);
+                char_array_4[j] = static_cast&lt;unsigned char&gt;(ptr - base64_chars);</span>
             }
 
             /// Unpack 6-bit values into 1 or 2 trailing raw bytes.
             unsigned char char_array_3[2];
-            char_array_3[0] = (char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4);
+<span style = "background-color:#dfd">            char_array_3[0] = (char_array_4[0] &lt;&lt; 2) + ((char_array_4[1] &amp; 0x30) &gt;&gt; 4);
             if (i &gt; 2) {
                 char_array_3[1] = ((char_array_4[1] &amp; 0xf) &lt;&lt; 4) + ((char_array_4[2] &amp; 0x3c) &gt;&gt; 2);
                 decoded.push_back(char_array_3[0]);
-                decoded.push_back(char_array_3[1]);
-            } else if (i &gt; 1) {
-                decoded.push_back(char_array_3[0]);
+                decoded.push_back(char_array_3[1]);</span>
+<span style = "background-color:#fdd">            } else if (i &gt; 1) {
+                decoded.push_back(char_array_3[0]);</span>
             }
-        }
+<span style = "background-color:#dfd">        }</span>
 
-<span style = "background-color:#dfd">        static void DecodeBase64Loop(const std::string&amp; sInput, std::vector&lt;char&gt;&amp; decoded) {</span>
+        static void DecodeBase64Loop(const std::string&amp; sInput, std::vector&lt;char&gt;&amp; decoded) {
             /// Stream 4-character 6-bit Base64 blocks and decode into 3-byte groups.
-<span style = "background-color:#dfd">            size_t in_len = sInput.size();
-            int i = 0, in_ = 0;</span>
+            size_t in_len = sInput.size();
+            int i = 0, in_ = 0;
             unsigned char char_array_4[4];
-<span style = "background-color:#dfd">            while (in_len-- &amp;&amp; (sInput[in_] != '=') &amp;&amp; IsBase64(sInput[in_])) {
+            while (in_len-- &amp;&amp; (sInput[in_] != '=') &amp;&amp; IsBase64(sInput[in_])) {
                 char_array_4[i++] = sInput[in_++];
                 if (i == 4) {
                     DecodeBase64Chunk4(char_array_4, decoded);
-                    i = 0;</span>
+                    i = 0;
                 }
             }
 
             /// Process any trailing non-padded remainder characters.
-<span style = "background-color:#dfd">            if (i) DecodeBase64Remainder(char_array_4, i, decoded);
-        }</span>
+            if (i) DecodeBase64Remainder(char_array_4, i, decoded);
+        }
 
 <span style = "background-color:#fdd">        Array&lt;char&gt; Convert::FromBase64String(const char* s) {
             return FromBase64String(String(s));

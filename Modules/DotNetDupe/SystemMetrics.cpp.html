@@ -52,9 +52,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            SystemMetrics::SystemMetrics() {}
             SystemMetrics::~SystemMetrics() {}</span>
 
-<span style = "background-color:#dfd">            SmartPointer&lt;ProcessStreamer&gt; SystemMetrics::CreateProcessStreamer(const ProcessStreamOptions&amp; options) {</span>
+<span style = "background-color:#fdd">            SmartPointer&lt;ProcessStreamer&gt; SystemMetrics::CreateProcessStreamer(const ProcessStreamOptions&amp; options) {</span>
                 /// Step: Construct streamer instance with requested options.
-<span style = "background-color:#dfd">                return SmartPointer&lt;ProcessStreamer&gt;::NewShared(options);
+<span style = "background-color:#fdd">                return SmartPointer&lt;ProcessStreamer&gt;::NewShared(options);
             }</span>
 
 <span style = "background-color:#dfd">            void SystemMetrics::EnumerateProcessesAsync(const Action&lt;const ProcessInfo&amp;&gt;&amp; fnOnProcess, const Action&lt;&gt;&amp; fnOnComplete) {</span>
@@ -267,21 +267,21 @@ namespace DotNetDupe {
                     return info;
                 }</span>
 
-<span style = "background-color:#dfd">                static void ReadUdpPorts(int iPid, Collections::Generic::List&lt;int&gt;&amp; lst) {</span>
+                static void ReadUdpPorts(int iPid, Collections::Generic::List&lt;int&gt;&amp; lst) {
                     /// Step: Query UDP table for process bound ports.
-<span style = "background-color:#dfd">                    if (iPid &lt;= 0) return;
+                    if (iPid &lt;= 0) return;
                     DWORD dwSize = 0;
                     if (::GetExtendedUdpTable(NULL, &amp;dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) return;
                     std::vector&lt;uint8_t&gt; buf(dwSize, 0);
                     MIB_UDPTABLE_OWNER_PID* pTable = reinterpret_cast&lt;MIB_UDPTABLE_OWNER_PID*&gt;(buf.data());
                     if (::GetExtendedUdpTable(pTable, &amp;dwSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != NO_ERROR) return;
                     for (DWORD i = 0; i &lt; pTable-&gt;dwNumEntries; ++i) {
-                        if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid)) {</span>
-<span style = "background-color:#fdd">                            int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
-                            if (!lst.Contains(p)) lst.Add(p);</span>
+                        if (pTable-&gt;table[i].dwOwningPid == static_cast&lt;DWORD&gt;(iPid)) {
+                            int p = ntohs(static_cast&lt;u_short&gt;(pTable-&gt;table[i].dwLocalPort));
+                            if (!lst.Contains(p)) lst.Add(p);
                         }
                     }
-<span style = "background-color:#dfd">                }</span>
+                }
 
 <span style = "background-color:#dfd">                static Collections::Generic::List&lt;int&gt; ReadProcPorts(int iPid) {</span>
                     /// Step: Query TCP listen ports and append UDP ports.
@@ -430,9 +430,9 @@ namespace DotNetDupe {
             DiskInfo SystemMetrics::GetSystemDiskUsage() { return SystemMetricsWin32Helper::GetSystemDisk(); }
             double SystemMetrics::GetSystemNetworkUsage() { return SystemMetricsWin32Helper::GetSystemNetwork(); }</span>
 
-            void* SystemMetrics::OpenProcessByName(const String&amp; sProcessName, unsigned long dwDesiredAccess, int&amp; iOutProcessId) {
+<span style = "background-color:#dfd">            void* SystemMetrics::OpenProcessByName(const String&amp; sProcessName, unsigned long dwDesiredAccess, int&amp; iOutProcessId) {
                 return SystemMetricsWin32Helper::OpenProcByName(sProcessName, dwDesiredAccess, iOutProcessId);
-            }
+            }</span>
 
             String SystemMetrics::ReadProcessCommandLineHandle(void* hProc) {
                 return SystemMetricsWin32Helper::ReadProcCmdLine(hProc);
@@ -440,8 +440,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            String SystemMetrics::GetProcessCommandLine(const String&amp; sProcessName) {</span>
                 /// Step: Open target process and query full command line.
-                int iPid = -1;
-<span style = "background-color:#dfd">                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
+<span style = "background-color:#dfd">                int iPid = -1;
+                HANDLE hProc = static_cast&lt;HANDLE&gt;(OpenProcessByName(sProcessName, PROCESS_QUERY_LIMITED_INFORMATION | PROCESS_VM_READ, iPid));
                 if (!hProc) return String("");
                 String sCmd = ReadProcessCommandLineHandle(hProc);
                 if (sCmd.IsEmpty()) {</span>

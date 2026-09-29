@@ -178,27 +178,27 @@ namespace DotNetDupe {
                         return arr;
                     }</span>
 
-                    static void ParseUnicodeEscape(const std::string&amp; s, size_t&amp; index, std::string&amp; res) {
+<span style = "background-color:#dfd">                    static void ParseUnicodeEscape(const std::string&amp; s, size_t&amp; index, std::string&amp; res) {</span>
                         /// Step: Decode 4-digit hex unicode escape into UTF-8 sequence.
-                        if (index + 4 &gt; s.length()) {
-                            throw JsonException("Invalid unicode escape sequence");
+<span style = "background-color:#dfd">                        if (index + 4 &gt; s.length()) {</span>
+<span style = "background-color:#fdd">                            throw JsonException("Invalid unicode escape sequence");</span>
                         }
 
-                        std::string hexStr = s.substr(index, 4);
+<span style = "background-color:#dfd">                        std::string hexStr = s.substr(index, 4);
                         index += 4;
-                        unsigned int codePoint = std::stoul(hexStr, nullptr, 16);
+                        unsigned int codePoint = std::stoul(hexStr, nullptr, 16);</span>
 
-                        if (codePoint &lt;= 0x7f) {
+<span style = "background-color:#dfd">                        if (codePoint &lt;= 0x7f) {
                             res += static_cast&lt;char&gt;(codePoint);
                         } else if (codePoint &lt;= 0x7ff) {
-                            res += static_cast&lt;char&gt;(0xc0 | ((codePoint &gt;&gt; 6) &amp; 0x1f));
+                            res += static_cast&lt;char&gt;(0xc0 | ((codePoint &gt;&gt; 6) &amp; 0x1f));</span>
                             res += static_cast&lt;char&gt;(0x80 | (codePoint &amp; 0x3f));
-                        } else {
-                            res += static_cast&lt;char&gt;(0xe0 | ((codePoint &gt;&gt; 12) &amp; 0x0f));
-                            res += static_cast&lt;char&gt;(0x80 | ((codePoint &gt;&gt; 6) &amp; 0x3f));
+<span style = "background-color:#dfd">                        } else {</span>
+<span style = "background-color:#fdd">                            res += static_cast&lt;char&gt;(0xe0 | ((codePoint &gt;&gt; 12) &amp; 0x0f));
+                            res += static_cast&lt;char&gt;(0x80 | ((codePoint &gt;&gt; 6) &amp; 0x3f));</span>
                             res += static_cast&lt;char&gt;(0x80 | (codePoint &amp; 0x3f));
                         }
-                    }
+<span style = "background-color:#dfd">                    }</span>
 
 <span style = "background-color:#dfd">                    static JsonElement ParseString(const std::string&amp; s, size_t&amp; index) {</span>
                         /// Step: Parse quoted string content and escape sequences.
@@ -429,8 +429,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                bool JsonElement::TryGetProperty(const String&amp; sPropertyName, JsonElement&amp; objValue) const {</span>
                     /// Guard: Ensure element is Object kind.
 <span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) return false;
-                    return m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue);
-                }</span>
+                    return m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue);</span>
+<span style = "background-color:#fdd">                }</span>
 
 <span style = "background-color:#dfd">                void JsonElement::SetProperty(const String&amp; sPropertyName, const JsonElement&amp; objValue) {</span>
                     /// Guard: Ensure element is Object kind.

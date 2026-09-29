@@ -188,19 +188,19 @@ namespace DotNetDupe {
                 return hSub;
             }
 
-<span style = "background-color:#dfd">            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List&lt;String&gt;&amp; lstChannels) {</span>
+            void EtwLogReader::EnumerateWin32Channels(Collections::Generic::List&lt;String&gt;&amp; lstChannels) {
                 /// Step: Open channel enumerator and iterate paths.
-<span style = "background-color:#dfd">                EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
-                if (hEnum == NULL) return;</span>
+                EVT_HANDLE hEnum = ::EvtOpenChannelEnum(NULL, 0);
+                if (hEnum == NULL) return;
 
-<span style = "background-color:#dfd">                WCHAR wBuffer[512] = { 0 };
+                WCHAR wBuffer[512] = { 0 };
                 DWORD dwReturned = 0;
                 while (::EvtNextChannelPath(hEnum, 512, wBuffer, &amp;dwReturned)) {
                     std::string sPath = Utils::StringConvert::WCharToUtf8(wBuffer);
                     lstChannels.Add(String(sPath.c_str()));
                 }
                 ::EvtClose(hEnum);
-            }</span>
+            }
 
             static std::wstring BuildLevelQuery(EtwEventLevel level) {
                 /// Step: Build XPath query string for the requested severity level.
@@ -221,8 +221,8 @@ namespace DotNetDupe {
                     lstEvents.Add(evt);
                     if (iMaxEvents &gt; 0 &amp;&amp; lstEvents.GetCount() &gt;= iMaxEvents) return true;</span>
                 }
-<span style = "background-color:#dfd">                return false;
-            }</span>
+<span style = "background-color:#fdd">                return false;</span>
+<span style = "background-color:#dfd">            }</span>
 
             static void HandleQueryFailure(DWORD err) {
                 /// Step: Handle known query failures or propagate unauthorized access.

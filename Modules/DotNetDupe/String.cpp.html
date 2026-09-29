@@ -75,16 +75,16 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">		String::String() { m_pImpl = new StringImpl("");  }
 		String::~String() { delete m_pImpl; }</span>
 
-		static void AppendExplicitArg(const std::string&amp; sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string&amp; sRes) {
+<span style = "background-color:#dfd">		static void AppendExplicitArg(const std::string&amp; sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string&amp; sRes) {</span>
 			/// Extract integer argument index between placeholder braces {N}.
-			std::string num = sFmt.substr(i + 1, end - i - 1);
+<span style = "background-color:#dfd">			std::string num = sFmt.substr(i + 1, end - i - 1);</span>
 			size_t idx = 0;
-			int argIdx = std::stoi(num, &amp;idx);
-			if (idx != num.length() || argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");
+<span style = "background-color:#dfd">			int argIdx = std::stoi(num, &amp;idx);
+			if (idx != num.length() || argIdx &lt; 0 || argIdx &gt;= iArgCount) throw FormatException("Index out of bounds");</span>
 
 			/// Append resolved string argument to target buffer.
-			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
-		}
+<span style = "background-color:#dfd">			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+		}</span>
 
 <span style = "background-color:#dfd">		static void FormatOpenBrace(const std::string&amp; sFmt, size_t&amp; i, int&amp; iAutoIndex, const String* pArgs, int iArgCount, std::string&amp; sRes) {</span>
 			/// Handle escaped open brace '{{' by appending a single literal '{'.

@@ -212,9 +212,9 @@ namespace DotNetDupe {
 
                         int iFileMode = 1; // FileMode::Create
 <span style = "background-color:#fdd">                        long long llRangeContentLen = ParseContentLengthFromResponse(pResponse);</span>
-<span style = "background-color:#dfd">                        if (iStatusCode == 206) {
+<span style = "background-color:#dfd">                        if (iStatusCode == 206) {</span>
                             iFileMode = 5; // FileMode::Append
-                        } else if (iStatusCode == 200) {
+<span style = "background-color:#dfd">                        } else if (iStatusCode == 200) {
                             iFileMode = 1; // FileMode::Create
                             llExistingBytes = 0;
                             m_llDownloadedBytes = 0;</span>

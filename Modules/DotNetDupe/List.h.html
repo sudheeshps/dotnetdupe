@@ -19,6 +19,8 @@
 #include "Common.h"
 #include "System/Object.h"
 #include "System/Array.h"
+#include "System/Collections/Generic/IList.h"
+#include "System/EqualityHelper.h"
 #include &lt;new&gt;
 #include &lt;utility&gt;
 #include &lt;initializer_list&gt;
@@ -33,14 +35,43 @@ namespace DotNetDupe {
 				/// \tparam T The type of elements in the list.
 				/// 
 				/// Implements dynamic array resizing with amortized O(1) additions, binary search,
-				/// sorting, and placement new allocation without STL container leakage.
+				/// sorting, placement new allocation, and full .NET IList&lt;T&gt; interface compliance.
 				/// \note Thread Safety: Public static members of this type are thread safe. Instance members are not guaranteed to be thread safe.
 				/// Standard Citation: ECMA-335 CLI Common Language Infrastructure.
 				template &lt;typename T&gt;
-				class List : public Object {
+				class List : public virtual IList&lt;T&gt; {
 				public:
+					/// \class ListEnumerator
+					/// \brief Enumerates the elements of a List&lt;T&gt;.
+					class ListEnumerator : public virtual IEnumerator&lt;T&gt; {
+					private:
+						const List&lt;T&gt;* m_pList;
+						int m_iIndex;
+					public:
+						ListEnumerator(const List&lt;T&gt;* pList) : m_pList(pList), m_iIndex(-1) {}
+<span style = "background-color:#fdd">						bool MoveNext() override {
+							if (!m_pList) return false;
+							m_iIndex++;
+							return m_iIndex &lt; m_pList-&gt;GetCount();
+						}
+						const T&amp; Current() const override {
+							return (*m_pList)[m_iIndex];</span>
+						}
+<span style = "background-color:#fdd">						const T&amp; GetCurrent() const override {
+							return Current();</span>
+						}
+<span style = "background-color:#fdd">						void Reset() override {
+							m_iIndex = -1;
+						}</span>
+					};
+
+					/// \brief Returns an enumerator that iterates through the List&lt;T&gt;.
+					/// \return A SmartPointer to an IEnumerator&lt;T&gt; for the List&lt;T&gt;.
+<span style = "background-color:#fdd">					SmartPointer&lt;IEnumerator&lt;T&gt;&gt; GetEnumerator() const override {
+						return SmartPointer&lt;IEnumerator&lt;T&gt;&gt;(new ListEnumerator(this), true);
+					}</span>
 					/// \brief Initializes a new instance of the List class that is empty.
-					List() { }
+<span style = "background-color:#dfd">					List() { }</span>
 
 					/// \brief Initializes a new instance of the List class with specified initial capacity.
 					/// \param iCapacity Initial buffer capacity.
@@ -66,24 +97,24 @@ namespace DotNetDupe {
 					/// \brief Copy assignment operator.
 					/// \param lstOther The list to copy.
 					/// \return Reference to this list.
-					List&amp; operator=(const List&amp; lstOther) {
+<span style = "background-color:#fdd">					List&amp; operator=(const List&amp; lstOther) {
                         if (this != &amp;lstOther) {
                             Clear();
                             SetCapacity(lstOther.m_iCapacity);
                             for (int i = 0; i &lt; lstOther.m_iCount; ++i) {
-                                Add(lstOther.m_pData[i]);
+                                Add(lstOther.m_pData[i]);</span>
                             }
                         }
-                        return *this;
-                    }
+<span style = "background-color:#fdd">                        return *this;
+                    }</span>
 
 					/// \brief Move constructor.
 					/// \param lstOther The list to move from.
-					List(List&amp;&amp; lstOther) noexcept : m_pData(lstOther.m_pData), m_iCount(lstOther.m_iCount), m_iCapacity(lstOther.m_iCapacity) {
+<span style = "background-color:#dfd">					List(List&amp;&amp; lstOther) noexcept : m_pData(lstOther.m_pData), m_iCount(lstOther.m_iCount), m_iCapacity(lstOther.m_iCapacity) {</span>
                         lstOther.m_pData = nullptr;
                         lstOther.m_iCount = 0;
                         lstOther.m_iCapacity = 0;
-                    }
+<span style = "background-color:#dfd">                    }</span>
 
 					/// \brief Move assignment operator.
 					/// \param lstOther The list to move from.
@@ -103,12 +134,16 @@ namespace DotNetDupe {
 
 					/// \brief Destructor releasing internal buffer resources.
 <span style = "background-color:#dfd">                    ~List() override {
-                        FreeBuffer();
-                    }</span>
+                        FreeBuffer();</span>
+                    }
 
 					/// \brief Gets the number of elements contained in the List.
 					/// \return The number of elements contained in the List.
-					int GetCount() const { return m_iCount; }
+<span style = "background-color:#dfd">					int GetCount() const override { return m_iCount; }</span>
+
+					/// \brief Gets a value indicating whether the List is read-only.
+					/// \return Always false for List&lt;T&gt;.
+<span style = "background-color:#dfd">					bool IsReadOnly() const override { return false; }</span>
 
 					/// \brief Gets the total number of elements the internal data structure can hold without resizing.
 					/// \return The capacity of the List.
@@ -132,21 +167,21 @@ namespace DotNetDupe {
 					/// \brief Gets a reference to the element at the specified index.
 					/// \param iIndex The zero-based index of the element to get.
 					/// \return Reference to the element at index.
-					T&amp; operator[](int iIndex) {
+<span style = "background-color:#dfd">					T&amp; operator[](int iIndex) override {
 						return m_pData[iIndex];
-					}
+					}</span>
 
 					/// \brief Gets a const reference to the element at the specified index.
 					/// \param iIndex The zero-based index of the element to get.
 					/// \return Const reference to the element at index.
-					const T&amp; operator[](int iIndex) const {
+<span style = "background-color:#dfd">					const T&amp; operator[](int iIndex) const override {
 						return m_pData[iIndex];
-					}
+					}</span>
 
 					/// \brief Adds an object to the end of the List.
 					/// \param item The object to be added to the end of the List.
 					/// \note Amortized O(1) insertion: doubles capacity when current storage is exhausted.
-<span style = "background-color:#dfd">					void Add(const T&amp; item) {
+<span style = "background-color:#dfd">					void Add(const T&amp; item) override {
                         if (m_iCount == m_iCapacity) {
                             SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);</span>
                         }
@@ -168,9 +203,9 @@ namespace DotNetDupe {
 					}
 
 					/// \brief Removes all elements from the List.
-<span style = "background-color:#dfd">					void Clear() {
-                        for (int i = 0; i &lt; m_iCount; ++i) {</span>
-<span style = "background-color:#fdd">                            m_pData[i].~T();</span>
+<span style = "background-color:#dfd">					void Clear() override {
+                        for (int i = 0; i &lt; m_iCount; ++i) {
+                            m_pData[i].~T();</span>
                         }
 <span style = "background-color:#dfd">                        m_iCount = 0;
 					}</span>
@@ -178,19 +213,19 @@ namespace DotNetDupe {
 					/// \brief Determines whether an element is in the List.
 					/// \param item The object to locate in the List.
 					/// \return True if item is found; otherwise, false.
-					bool Contains(const T&amp; item) const {
+<span style = "background-color:#dfd">					bool Contains(const T&amp; item) const override {
 						return IndexOf(item) != -1;
-					}
+					}</span>
 
 					/// \brief Searches for the specified object and returns the zero-based index of the first occurrence within the entire List.
 					/// \param item The object to locate in the List.
 					/// \return The zero-based index of the first occurrence if found; otherwise, -1.
-					int IndexOf(const T&amp; item) const {
+<span style = "background-color:#dfd">					int IndexOf(const T&amp; item) const override {
                         for (int i = 0; i &lt; m_iCount; ++i) {
-                            if (m_pData[i] == item) return i;
+                            if (EqualityHelper&lt;T&gt;::Equals(m_pData[i], item)) return i;</span>
                         }
-                        return -1;
-					}
+<span style = "background-color:#dfd">                        return -1;
+					}</span>
 
 					/// \brief Searches the entire sorted List for an element using the default comparer.
 					/// \param item The object to locate.
@@ -214,45 +249,54 @@ namespace DotNetDupe {
 					/// \brief Inserts an element into the List at the specified index.
 					/// \param iIndex The zero-based index at which item should be inserted.
 					/// \param item The object to insert.
-					void Insert(int iIndex, const T&amp; item) {
+<span style = "background-color:#fdd">					void Insert(int iIndex, const T&amp; item) override {
                         if (m_iCount == m_iCapacity) {
-                            SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);
+                            SetCapacity(m_iCapacity == 0 ? 4 : m_iCapacity * 2);</span>
                         }
-                        if (iIndex &lt; m_iCount) {
+<span style = "background-color:#fdd">                        if (iIndex &lt; m_iCount) {
                             ::new ((void*)&amp;m_pData[m_iCount]) T(std::move(m_pData[m_iCount - 1]));
                             for (int i = m_iCount - 1; i &gt; iIndex; --i) {
-                                m_pData[i] = std::move(m_pData[i - 1]);
+                                m_pData[i] = std::move(m_pData[i - 1]);</span>
                             }
-                            m_pData[iIndex] = item;
+<span style = "background-color:#fdd">                            m_pData[iIndex] = item;
                         } else {
-                            ::new ((void*)&amp;m_pData[m_iCount]) T(item);
+                            ::new ((void*)&amp;m_pData[m_iCount]) T(item);</span>
                         }
-                        m_iCount++;
-					}
+<span style = "background-color:#fdd">                        m_iCount++;
+					}</span>
 
 					/// \brief Removes the first occurrence of a specific object from the List.
 					/// \param item The object to remove from the List.
 					/// \return True if item is successfully removed; otherwise, false.
-					bool Remove(const T&amp; item) {
+<span style = "background-color:#fdd">					bool Remove(const T&amp; item) override {
                         int idx = IndexOf(item);
                         if (idx != -1) {
                             RemoveAt(idx);
-                            return true;
+                            return true;</span>
                         }
-                        return false;
-					}
+<span style = "background-color:#fdd">                        return false;
+					}</span>
 
 					/// \brief Removes the element at the specified index of the List.
 					/// \param iIndex The zero-based index of the element to remove.
-					void RemoveAt(int iIndex) {
+<span style = "background-color:#dfd">					void RemoveAt(int iIndex) override {
                         if (iIndex &gt;= 0 &amp;&amp; iIndex &lt; m_iCount) {
                             for (int i = iIndex; i &lt; m_iCount - 1; ++i) {
-                                m_pData[i] = std::move(m_pData[i + 1]);
+                                m_pData[i] = std::move(m_pData[i + 1]);</span>
                             }
-                            m_pData[m_iCount - 1].~T();
-                            m_iCount--;
+<span style = "background-color:#dfd">                            m_pData[m_iCount - 1].~T();
+                            m_iCount--;</span>
                         }
-					}
+<span style = "background-color:#dfd">					}</span>
+
+					/// \brief Copies the elements of the List to an Array starting at a specified index.
+					/// \param array The destination Array.
+					/// \param arrayIndex The zero-based starting index.
+<span style = "background-color:#fdd">					void CopyTo(Array&lt;T&gt;&amp; array, int arrayIndex) const override {
+						for (int i = 0; i &lt; m_iCount; ++i) {
+							array[arrayIndex + i] = m_pData[i];</span>
+						}
+<span style = "background-color:#fdd">					}</span>
 
                     void SwapElements(T&amp; a, T&amp; b) {
                         T temp = std::move(a);

@@ -20,9 +20,12 @@
 #include "System/Object.h"
 #include "System/ArgumentException.h"
 #include "System/ArgumentOutOfRangeException.h"
+#include "System/InvalidOperationException.h"
 #include "System/Predicate.h"
 #include "System/Action.h"
 #include "System/String.h"
+#include "System/Collections/Generic/IList.h"
+#include "System/EqualityHelper.h"
 #include &lt;new&gt;
 #include &lt;initializer_list&gt;
 #include &lt;utility&gt;
@@ -37,7 +40,7 @@ namespace DotNetDupe {
 		/// \tparam T The element type contained in the array.
 		/// \note Conforms to ECMA-335 Partition IV Section 5.20 (System.Array).
 		template &lt;class T&gt;
-		class Array : public Object {
+		class Array : public virtual Collections::Generic::IList&lt;T&gt; {
 		private:
 <span style = "background-color:#dfd">			T* m_pData = nullptr;
 			int m_iLength = 0;</span>
@@ -67,6 +70,84 @@ namespace DotNetDupe {
 			}
 
 		public:
+			/// \class ArrayEnumerator
+			/// \brief Enumerates elements of an Array&lt;T&gt;.
+			class ArrayEnumerator : public virtual Collections::Generic::IEnumerator&lt;T&gt; {
+			private:
+				const Array&lt;T&gt;* m_pArray;
+				int m_iIndex;
+			public:
+				ArrayEnumerator(const Array&lt;T&gt;* pArray) : m_pArray(pArray), m_iIndex(-1) {}
+<span style = "background-color:#fdd">				bool MoveNext() override {
+					if (!m_pArray) return false;
+					m_iIndex++;
+					return m_iIndex &lt; m_pArray-&gt;GetLength();
+				}
+				const T&amp; Current() const override {
+					return (*m_pArray)[m_iIndex];</span>
+				}
+<span style = "background-color:#fdd">				const T&amp; GetCurrent() const override {
+					return Current();</span>
+				}
+<span style = "background-color:#fdd">				void Reset() override {
+					m_iIndex = -1;
+				}</span>
+			};
+
+			/// \brief Returns an enumerator that iterates through the Array&lt;T&gt;.
+			/// \return A SmartPointer to an IEnumerator&lt;T&gt; for the Array&lt;T&gt;.
+<span style = "background-color:#fdd">			SmartPointer&lt;Collections::Generic::IEnumerator&lt;T&gt;&gt; GetEnumerator() const override {
+				return SmartPointer&lt;Collections::Generic::IEnumerator&lt;T&gt;&gt;(new ArrayEnumerator(this), true);
+			}</span>
+
+			/// \brief Gets the number of elements in the Array.
+<span style = "background-color:#dfd">			int GetCount() const override { return m_iLength; }</span>
+
+			/// \brief Gets a value indicating whether the Array is read-only.
+<span style = "background-color:#dfd">			bool IsReadOnly() const override { return false; }</span>
+
+			/// \brief Adds an item (throws InvalidOperationException for fixed-size arrays).
+<span style = "background-color:#fdd">			void Add(const T&amp; item) override {</span>
+				(void)item;
+<span style = "background-color:#fdd">				throw InvalidOperationException("Collection was of a fixed size.");</span>
+			}
+
+			/// \brief Clears all elements by resetting to default values.
+<span style = "background-color:#fdd">			void Clear() override {
+				for (int i = 0; i &lt; m_iLength; ++i) m_pData[i] = T();
+			}</span>
+
+			/// \brief Determines whether an element is in the Array.
+<span style = "background-color:#dfd">			bool Contains(const T&amp; item) const override {
+				return IndexOf(item) != -1;
+			}</span>
+
+			/// \brief Copies elements to another Array starting at arrayIndex.
+<span style = "background-color:#fdd">			void CopyTo(Array&lt;T&gt;&amp; array, int arrayIndex) const override {
+				for (int i = 0; i &lt; m_iLength; ++i) {
+					array[arrayIndex + i] = m_pData[i];</span>
+				}
+<span style = "background-color:#fdd">			}</span>
+
+			/// \brief Removes an item (throws InvalidOperationException for fixed-size arrays).
+<span style = "background-color:#fdd">			bool Remove(const T&amp; item) override {</span>
+				(void)item;
+<span style = "background-color:#fdd">				throw InvalidOperationException("Collection was of a fixed size.");</span>
+			}
+
+			/// \brief Inserts an item (throws InvalidOperationException for fixed-size arrays).
+<span style = "background-color:#fdd">			void Insert(int index, const T&amp; item) override {</span>
+				(void)index;
+				(void)item;
+<span style = "background-color:#fdd">				throw InvalidOperationException("Collection was of a fixed size.");</span>
+			}
+
+			/// \brief Removes at index (throws InvalidOperationException for fixed-size arrays).
+<span style = "background-color:#fdd">			void RemoveAt(int index) override {</span>
+				(void)index;
+<span style = "background-color:#fdd">				throw InvalidOperationException("Collection was of a fixed size.");</span>
+			}
+
 			/// \brief Initializes an empty Array instance.
 			Array() = default;
 
@@ -82,18 +163,18 @@ namespace DotNetDupe {
 			/// \brief Initializes an Array by copying elements from a raw pointer buffer.
 			/// \param pData Pointer to the source elements buffer.
 			/// \param iLength The number of elements to copy.
-			Array(const T* pData, int iLength) {
+<span style = "background-color:#dfd">			Array(const T* pData, int iLength) {
 				Allocate(iLength);
 				if (pData) {
 					for (int i = 0; i &lt; m_iLength; ++i) {
-						::new ((void*)&amp;m_pData[i]) T(pData[i]);
+						::new ((void*)&amp;m_pData[i]) T(pData[i]);</span>
 					}
-				} else {
-					for (int i = 0; i &lt; m_iLength; ++i) {
-						::new ((void*)&amp;m_pData[i]) T();
+<span style = "background-color:#dfd">				} else {</span>
+<span style = "background-color:#fdd">					for (int i = 0; i &lt; m_iLength; ++i) {
+						::new ((void*)&amp;m_pData[i]) T();</span>
 					}
 				}
-			}
+<span style = "background-color:#dfd">			}</span>
 
 			/// \brief Initializes an Array from an initializer list of elements.
 			/// \param vItems Initializer list containing array elements.
@@ -126,10 +207,10 @@ namespace DotNetDupe {
 			}
 
 			/// \brief Move constructor.
-			Array(Array&amp;&amp; other) noexcept : m_pData(other.m_pData), m_iLength(other.m_iLength) {
+<span style = "background-color:#dfd">			Array(Array&amp;&amp; other) noexcept : m_pData(other.m_pData), m_iLength(other.m_iLength) {</span>
 				other.m_pData = nullptr;
 				other.m_iLength = 0;
-			}
+<span style = "background-color:#dfd">			}</span>
 
 			/// \brief Move assignment operator.
 			Array&amp; operator=(Array&amp;&amp; other) noexcept {
@@ -144,9 +225,9 @@ namespace DotNetDupe {
 			}
 
 			/// \brief Destroys array elements and releases allocated storage.
-<span style = "background-color:#fdd">			~Array() override {
+			~Array() override {
 				Free();
-			}</span>
+			}
 
 			/// \brief Gets the total number of elements in all dimensions of the Array.
 			/// \return The total number of elements.
@@ -177,27 +258,27 @@ namespace DotNetDupe {
 			bool IsNull() const { return m_iLength == 0; }
 
 			/// \brief Accesses the element at the specified index.
-			T&amp; operator[](int iIndex) { return m_pData[iIndex]; }
+<span style = "background-color:#dfd">			T&amp; operator[](int iIndex) { return m_pData[iIndex]; }</span>
 
 			/// \brief Accesses the const element at the specified index.
-			const T&amp; operator[](int iIndex) const { return m_pData[iIndex]; }
+<span style = "background-color:#dfd">			const T&amp; operator[](int iIndex) const { return m_pData[iIndex]; }</span>
 
 			/// \brief Searches for the specified object and returns the index of its first occurrence.
 			/// \param value The object to locate in the Array.
 			/// \return The zero-based index of the first occurrence of value, if found; otherwise, -1.
-			int IndexOf(const T&amp; value) const {
+<span style = "background-color:#fdd">			int IndexOf(const T&amp; value) const {
 				for (int iIdx = 0; iIdx &lt; m_iLength; ++iIdx) {
-					if (m_pData[iIdx] == value) return iIdx;
+					if (EqualityHelper&lt;T&gt;::Equals(m_pData[iIdx], value)) return iIdx;</span>
 				}
-				return -1;
-			}
+<span style = "background-color:#fdd">				return -1;
+			}</span>
 
 			/// \brief Searches for the specified object and returns the index of the last occurrence.
 			/// \param value The object to locate in the Array.
 			/// \return The zero-based index of the last occurrence of value, if found; otherwise, -1.
 			int LastIndexOf(const T&amp; value) const {
 				for (int iIdx = m_iLength - 1; iIdx &gt;= 0; --iIdx) {
-					if (m_pData[iIdx] == value) return iIdx;
+					if (EqualityHelper&lt;T&gt;::Equals(m_pData[iIdx], value)) return iIdx;
 				}
 				return -1;
 			}
@@ -224,12 +305,6 @@ namespace DotNetDupe {
 				}
 			}
 
-			/// \brief Sets a range of elements in the Array to the default value of each element type.
-			void Clear() {
-				for (int i = 0; i &lt; m_iLength; ++i) {
-					m_pData[i] = T();
-				}
-			}
 
 			/// \brief Copies all elements of the current Array to the specified destination Array starting at the specified destination index.
 			void CopyTo(Array&lt;T&gt;&amp; arrTarget, int iIndex);

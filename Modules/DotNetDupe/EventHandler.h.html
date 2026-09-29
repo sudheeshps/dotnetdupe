@@ -92,14 +92,14 @@ namespace DotNetDupe {
             /// \brief Subscribes an Action delegate handler and returns a monotonic subscription token.
             /// \param fnHandler The delegate to invoke on event dispatch.
             /// \return A unique subscription token used to unsubscribe.
-<span style = "background-color:#dfd">            size_t Add(const Action&lt;const void*, const TEventArgs&amp;&gt;&amp; fnHandler) {</span>
+            size_t Add(const Action&lt;const void*, const TEventArgs&amp;&gt;&amp; fnHandler) {
                 /// Assign monotonic unique subscription token.
-<span style = "background-color:#dfd">                size_t nAssignedToken = m_nNextToken++;</span>
+                size_t nAssignedToken = m_nNextToken++;
 
                 /// Append subscriber to registration list.
-<span style = "background-color:#dfd">                m_lstSubscribers.Add(SubscriberEntry(nAssignedToken, fnHandler));</span>
+                m_lstSubscribers.Add(SubscriberEntry(nAssignedToken, fnHandler));
                 return nAssignedToken;
-<span style = "background-color:#dfd">            }</span>
+            }
 
             /// \brief Subscribes a generic callable object (lambda or function pointer).
             template &lt;typename F, typename = std::enable_if_t&lt;!std::is_same_v&lt;std::decay_t&lt;F&gt;, EventHandler&gt; &amp;&amp; !std::is_same_v&lt;std::decay_t&lt;F&gt;, Action&lt;const void*, const TEventArgs&amp;&gt;&gt; &amp;&amp; std::is_invocable_v&lt;std::decay_t&lt;F&gt;, const void*, const TEventArgs&amp;&gt;&gt;&gt;

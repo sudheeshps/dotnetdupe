@@ -40,8 +40,8 @@ namespace DotNetDupe {
                         m_pImpl-&gt;m_nCurrentIndex++;
                         return true;</span>
                     }
-<span style = "background-color:#dfd">                    return false;
-                }</span>
+                    return false;
+<span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::GetString(int iOrdinal) {</span>
                     /// Guard: Check row and column bounds.
@@ -74,8 +74,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                int SqlDataReader::GetFieldCount() const {</span>
                     /// Return number of columns.
-<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_columns.GetCount();
-                }</span>
+<span style = "background-color:#dfd">                    return m_pImpl-&gt;m_columns.GetCount();</span>
+                }
 
 <span style = "background-color:#dfd">                DotNetDupe::System::String SqlDataReader::GetName(int iOrdinal) {</span>
                     /// Guard: Check column index bounds.

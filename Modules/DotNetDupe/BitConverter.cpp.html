@@ -24,72 +24,72 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(bool bValue) {</span>
             /// Step: Convert boolean to single byte.
 <span style = "background-color:#dfd">            Array&lt;byte&gt; result(1);
-            result[0] = bValue ? 1 : 0;</span>
+            result[0] = bValue ? 1 : 0;
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(char chValue) {</span>
             /// Step: Convert char to single byte.
 <span style = "background-color:#dfd">            Array&lt;byte&gt; result(1);
-            result[0] = (byte)chValue;</span>
+            result[0] = (byte)chValue;
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(double value) {</span>
             /// Step: Copy IEEE 754 64-bit double bytes into byte array.
 <span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);
-            std::memcpy(result.GetData(), &amp;value, 8);</span>
+            std::memcpy(result.GetData(), &amp;value, 8);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(short iValue) {</span>
             /// Step: Copy 16-bit signed integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(int iValue) {</span>
             /// Step: Copy 32-bit signed integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(long long llValue) {</span>
             /// Step: Copy 64-bit signed integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(float value) {</span>
             /// Step: Copy IEEE 754 32-bit float bytes into byte array.
 <span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);
-            std::memcpy(result.GetData(), &amp;value, 4);</span>
+            std::memcpy(result.GetData(), &amp;value, 4);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned short iValue) {</span>
             /// Step: Copy 16-bit unsigned integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(2);
             std::memcpy(result.GetData(), &amp;iValue, 2);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned int iValue) {</span>
             /// Step: Copy 32-bit unsigned integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(4);
             std::memcpy(result.GetData(), &amp;iValue, 4);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        Array&lt;byte&gt; BitConverter::GetBytes(unsigned long long llValue) {</span>
             /// Step: Copy 64-bit unsigned integer bytes into byte array.
-<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);</span>
+<span style = "background-color:#dfd">            Array&lt;byte&gt; result(8);
             std::memcpy(result.GetData(), &amp;llValue, 8);
             return result;
-<span style = "background-color:#dfd">        }</span>
+        }</span>
 
 <span style = "background-color:#dfd">        bool BitConverter::ToBoolean(Array&lt;byte&gt;&amp; value, int iStartIndex) {</span>
             /// Guard: Validate input buffer bounds.

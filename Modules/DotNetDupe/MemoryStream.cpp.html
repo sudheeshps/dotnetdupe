@@ -162,9 +162,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">            Array&lt;char&gt; MemoryStream::ToArray() const {</span>
                 /// Allocate library array and copy buffer contents.
 <span style = "background-color:#fdd">                int size = static_cast&lt;int&gt;(m_pImpl-&gt;m_buffer.size());
-                Array&lt;char&gt; arr(size);</span>
+                Array&lt;char&gt; arr(size);
                 if (size &gt; 0) {
-<span style = "background-color:#fdd">                    std::memcpy(arr.GetData(), m_pImpl-&gt;m_buffer.data(), size);</span>
+                    std::memcpy(arr.GetData(), m_pImpl-&gt;m_buffer.data(), size);</span>
                 }
                 return arr;
 <span style = "background-color:#fdd">            }</span>

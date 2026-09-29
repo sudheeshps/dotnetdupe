@@ -145,8 +145,8 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);</span>
-                std::error_code ec;
+                std::regex reg = PatternToRegex(sSearchPattern);
+                std::error_code ec;</span>
 
                 /// Step: Iterate entries and collect matching files.
 <span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
@@ -174,8 +174,8 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);</span>
-                std::error_code ec;
+                std::regex reg = PatternToRegex(sSearchPattern);
+                std::error_code ec;</span>
 
                 /// Step: Iterate entries and collect matching directories.
 <span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
@@ -203,8 +203,8 @@ namespace DotNetDupe {
                     throw IO::IOException("Directory does not exist.");</span>
                 }
 <span style = "background-color:#fdd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);</span>
-                std::error_code ec;
+                std::regex reg = PatternToRegex(sSearchPattern);
+                std::error_code ec;</span>
 
                 /// Step: Iterate entries and collect matching items.
 <span style = "background-color:#fdd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {

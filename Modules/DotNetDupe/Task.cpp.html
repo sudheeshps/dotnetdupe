@@ -33,9 +33,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    m_pCompletionEvent = SmartPointer&lt;ManualResetEvent&gt;::NewShared(false);
                 }</span>
 
-<span style = "background-color:#fdd">                Task::~Task() {</span>
+<span style = "background-color:#dfd">                Task::~Task() {</span>
                     /// Step: Release task resources.
-<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">                }</span>
 
 <span style = "background-color:#dfd">                void Task::Start() {</span>
                     /// Guard: Ensure task has not already started.
@@ -141,11 +141,11 @@ namespace DotNetDupe {
                     }
 <span style = "background-color:#dfd">                }</span>
 
-<span style = "background-color:#dfd">                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {</span>
+                void Task::RetainTask(SmartPointer&lt;Task&gt; pTask) {
                     /// Step: Add task to global active task retention registry.
-<span style = "background-color:#dfd">                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
+                    Lock&lt;CriticalSection&gt; lock(s_csActiveTasks);
                     s_pvActiveTasks.Add(pTask);
-                }</span>
+                }
 
                 void Task::ReleaseTask(Task* pTask) {
                     /// Step: Remove task from global active task retention registry.
