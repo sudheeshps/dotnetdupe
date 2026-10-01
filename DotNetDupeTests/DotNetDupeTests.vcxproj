@@ -181,6 +181,7 @@
     <ClCompile Include="ThreadPoolTests.cpp" />
     <ClCompile Include="TaskTests.cpp" />
     <ClCompile Include="JsonSerializerTests.cpp" />
+    <ClCompile Include="MathTests.cpp" />
     <ClCompile Include="SocketsTests.cpp" />
     <ClCompile Include="HttpTests.cpp" />
     <ClCompile Include="FileDownloaderTests.cpp" />

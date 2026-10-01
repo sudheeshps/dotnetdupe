@@ -283,4 +283,24 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::Text::Json::JsonElement -->
+  <Type Name="DotNetDupe::System::Text::Json::JsonElement">
+    <DisplayString Condition="m_pImpl.m_pObject == 0">&lt;null&gt;</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::String">{m_pImpl.m_pObject-&gt;sStrValue}</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Number">{m_pImpl.m_pObject-&gt;dNumValue}</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::True">true</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::False">false</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Null">null</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Array">{{ array, size={m_pImpl.m_pObject-&gt;lstArray.m_iCount} }}</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Object">{{ object, size={m_pImpl.m_pObject-&gt;dictObject.m_iCount} }}</DisplayString>
+    <DisplayString Condition="m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Undefined">undefined</DisplayString>
+    <Expand>
+      <Item Name="[Kind]" Condition="m_pImpl.m_pObject != 0">m_pImpl.m_pObject-&gt;eKind</Item>
+      <Item Name="[Value]" Condition="m_pImpl.m_pObject != 0 &amp;&amp; m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::String">m_pImpl.m_pObject-&gt;sStrValue</Item>
+      <Item Name="[Value]" Condition="m_pImpl.m_pObject != 0 &amp;&amp; m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Number">m_pImpl.m_pObject-&gt;dNumValue</Item>
+      <Item Name="[Array]" Condition="m_pImpl.m_pObject != 0 &amp;&amp; m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Array">m_pImpl.m_pObject-&gt;lstArray</Item>
+      <Item Name="[Object]" Condition="m_pImpl.m_pObject != 0 &amp;&amp; m_pImpl.m_pObject-&gt;eKind == DotNetDupe::System::Text::Json::JsonValueKind::Object">m_pImpl.m_pObject-&gt;dictObject</Item>
+    </Expand>
+  </Type>
+
 </AutoVisualizer>

@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -227,6 +227,8 @@
     <ClInclude Include="..\Include\System\OverflowException.h" />
     <ClInclude Include="..\Include\System\IO\Path.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="..\Include\System\Math.h" />
+    <ClInclude Include="..\Include\System\Numerics\Statistics.h" />
     <ClInclude Include="..\Include\System\String.h" />
     <ClInclude Include="..\Include\System\SystemException.h" />
     <ClInclude Include="..\Include\System\UnauthorizedAccessException.h" />
@@ -367,6 +369,9 @@
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="EventArgs.cpp" />
     <ClCompile Include="JsonElement.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="MathStatistics.cpp" />
+    <ClCompile Include="Statistics.cpp" />
     <ClCompile Include="Socket.cpp" />
     <ClCompile Include="NetworkStream.cpp" />
     <ClCompile Include="TcpClient.cpp" />

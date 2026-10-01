@@ -43,4 +43,5 @@ void DemonstrateFileDownloader();
 void DemonstrateProcessStreamer();
 void DemonstrateEventHandler();
 void DemonstrateLinq();
+void DemonstrateMath();
 

@@ -28,9 +28,36 @@ if (Test-Path $rcPath) {
     Write-Warning "DotNetDupe.rc not found at $rcPath"
 }
 
+# Find msbuild executable
+$msbuild = "msbuild"
+if (-not (Get-Command msbuild -ErrorAction SilentlyContinue)) {
+    $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+    if (Test-Path $vswhere) {
+        $vsPath = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
+        if ($vsPath) {
+            $candidate = Join-Path $vsPath "MSBuild\Current\Bin\MSBuild.exe"
+            if (Test-Path $candidate) { $msbuild = $candidate }
+        }
+    }
+    if ($msbuild -eq "msbuild") {
+        $fallbacks = @(
+            "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe",
+            "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe",
+            "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe",
+            "C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\MSBuild.exe"
+        )
+        foreach ($fb in $fallbacks) {
+            if (Test-Path $fb) {
+                $msbuild = $fb
+                break
+            }
+        }
+    }
+}
+
 # 2. Build x64 Solution
 Write-Host "[2/4] Building solution (x64 $Configuration)..." -ForegroundColor Yellow
-& msbuild DotNetDupe.sln /p:Configuration=$Configuration /p:Platform=x64 /v:m
+& $msbuild DotNetDupe.sln /p:Configuration=$Configuration /p:Platform=x64 /v:m
 if ($LASTEXITCODE -ne 0) {
     Throw "MSBuild x64 build failed with exit code $LASTEXITCODE"
 }
@@ -38,7 +65,7 @@ Write-Host "   x64 Build successful." -ForegroundColor Green
 
 # 3. Build Win32 (x86) Solution
 Write-Host "[3/4] Building solution (x86 $Configuration)..." -ForegroundColor Yellow
-& msbuild DotNetDupe.sln /p:Configuration=$Configuration /p:Platform=x86 /v:m
+& $msbuild DotNetDupe.sln /p:Configuration=$Configuration /p:Platform=x86 /v:m
 if ($LASTEXITCODE -ne 0) {
     Throw "MSBuild x86 build failed with exit code $LASTEXITCODE"
 }

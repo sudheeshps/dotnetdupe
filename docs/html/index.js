@@ -84,21 +84,22 @@ var index =
       [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html\"><span class=\"tt\">DotNetDupe::System::Net</span></a>, <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_sockets.html\"><span class=\"tt\">Sockets</span></a> &amp; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_security.html\"><span class=\"tt\">Security</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net.html\">📖</a>", "index.html#autotoc_md94", null ],
       [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html\"><span class=\"tt\">DotNetDupe::System::Net::Http</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_net_1_1_http.html\">📖</a>", "index.html#autotoc_md96", null ],
       [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html\"><span class=\"tt\">DotNetDupe::System::Text</span></a> &amp; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html\"><span class=\"tt\">System::Text::Json</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_text.html\">📖</a>", "index.html#autotoc_md98", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html\"><span class=\"tt\">DotNetDupe::System::Utils</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html\">📖</a>", "index.html#autotoc_md100", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html\"><span class=\"tt\">DotNetDupe::System::Security</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html\">📖</a>", "index.html#autotoc_md102", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html\"><span class=\"tt\">DotNetDupe::System::Data::SqlClient</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html\">📖</a>", "index.html#autotoc_md104", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html\"><span class=\"tt\">DotNetDupe::Extensions::DependencyInjection</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html\">📖</a>", "index.html#autotoc_md106", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html\"><span class=\"tt\">DotNetDupe::Extensions::Logging</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html\">📖</a>", "index.html#autotoc_md108", null ],
-      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_web_app_core.html\"><span class=\"tt\">DotNetDupe::WebAppCore</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_web_app_core.html\">📖</a>", "index.html#autotoc_md110", null ]
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_numerics.html\"><span class=\"tt\">DotNetDupe::System::Numerics</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_numerics.html\">📖</a>", "index.html#autotoc_md100", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html\"><span class=\"tt\">DotNetDupe::System::Utils</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_utils.html\">📖</a>", "index.html#autotoc_md102", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html\"><span class=\"tt\">DotNetDupe::System::Security</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_security.html\">📖</a>", "index.html#autotoc_md104", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html\"><span class=\"tt\">DotNetDupe::System::Data::SqlClient</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html\">📖</a>", "index.html#autotoc_md106", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html\"><span class=\"tt\">DotNetDupe::Extensions::DependencyInjection</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html\">📖</a>", "index.html#autotoc_md108", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html\"><span class=\"tt\">DotNetDupe::Extensions::Logging</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_extensions_1_1_logging.html\">📖</a>", "index.html#autotoc_md110", null ],
+      [ "Namespace: <a href=\"docs/html/namespace_dot_net_dupe_1_1_web_app_core.html\"><span class=\"tt\">DotNetDupe::WebAppCore</span></a> &#160; <a href=\"docs/html/namespace_dot_net_dupe_1_1_web_app_core.html\">📖</a>", "index.html#autotoc_md112", null ]
     ] ],
-    [ "Project Status 🚧", "index.html#autotoc_md112", null ],
-    [ "Contributions 👋", "index.html#autotoc_md113", null ],
-    [ "CI/CD Pipeline 🚀", "index.html#autotoc_md114", [
-      [ "Workflow Details", "index.html#autotoc_md115", null ],
-      [ "Code Coverage &amp; Static Analysis 📊", "index.html#autotoc_md116", null ],
-      [ "How to Release", "index.html#autotoc_md117", null ]
+    [ "Project Status 🚧", "index.html#autotoc_md114", null ],
+    [ "Contributions 👋", "index.html#autotoc_md115", null ],
+    [ "CI/CD Pipeline 🚀", "index.html#autotoc_md116", [
+      [ "Workflow Details", "index.html#autotoc_md117", null ],
+      [ "Code Coverage &amp; Static Analysis 📊", "index.html#autotoc_md118", null ],
+      [ "How to Release", "index.html#autotoc_md119", null ]
     ] ],
-    [ "License 📄", "index.html#autotoc_md118", null ],
-    [ "Generated Content 🤖", "index.html#autotoc_md119", null ],
-    [ "Contact 📧", "index.html#autotoc_md120", null ]
+    [ "License 📄", "index.html#autotoc_md120", null ],
+    [ "Generated Content 🤖", "index.html#autotoc_md121", null ],
+    [ "Contact 📧", "index.html#autotoc_md122", null ]
 ];

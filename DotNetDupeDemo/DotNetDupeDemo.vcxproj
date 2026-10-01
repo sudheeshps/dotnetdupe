@@ -198,6 +198,7 @@
     <ClCompile Include="ProcessStreamerDemo.cpp" />
     <ClCompile Include="EventHandlerDemo.cpp" />
     <ClCompile Include="LinqDemo.cpp" />
+    <ClCompile Include="MathDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

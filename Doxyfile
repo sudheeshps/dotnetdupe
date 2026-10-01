@@ -1,9 +1,9 @@
-# Doxyfile for DotNetDupe
+﻿# Doxyfile for DotNetDupe
 # Comprehensive C++17/20 .NET Base Class Library API Reference
 
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = "DotNetDupe"
-PROJECT_NUMBER         = "5.0.2"
+PROJECT_NUMBER         = "5.0.3"
 PROJECT_BRIEF          = "C++17/20 Implementation of the .NET Base Class Library (BCL)"
 OUTPUT_DIRECTORY       = docs
 CREATE_SUBDIRS         = NO
@@ -116,4 +116,5 @@ WARNINGS               = YES
 WARN_IF_UNDOCUMENTED   = NO
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
+
 

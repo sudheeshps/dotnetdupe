@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.2</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -178,6 +178,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:ad25c691062a42bf0b2d39f7de35a8f0e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor releasing element resources.  <br /></td></tr>
 <tr class="memitem:ac177bc53bbe65f6ba45a5b7d7e9a69ff" id="r_ac177bc53bbe65f6ba45a5b7d7e9a69ff"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ac177bc53bbe65f6ba45a5b7d7e9a69ff">AddArrayElement</a> (const <a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;objElement)</td></tr>
 <tr class="memdesc:ac177bc53bbe65f6ba45a5b7d7e9a69ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds an element to the current JSON array.  <br /></td></tr>
+<tr class="memitem:abad2cb09605f64dbeb6f057d425696a9" id="r_abad2cb09605f64dbeb6f057d425696a9"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:abad2cb09605f64dbeb6f057d425696a9 template"><td class="memItemLeft">T&#160;</td><td class="memItemRight"><a class="el" href="#abad2cb09605f64dbeb6f057d425696a9">Deserialize</a> () const</td></tr>
+<tr class="memdesc:abad2cb09605f64dbeb6f057d425696a9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deserializes the current element into type T.  <br /></td></tr>
 <tr class="memitem:aa285bfe3f7b96d92cc1cfcf85ddfabf2" id="r_aa285bfe3f7b96d92cc1cfcf85ddfabf2"><td class="memItemLeft"><a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a>&#160;</td><td class="memItemRight"><a class="el" href="#aa285bfe3f7b96d92cc1cfcf85ddfabf2">GetArrayElement</a> (int iIndex) const</td></tr>
 <tr class="memdesc:aa285bfe3f7b96d92cc1cfcf85ddfabf2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value at the specified index in the current JSON array.  <br /></td></tr>
 <tr class="memitem:a04fa3ab6a692a4101eec56d166c155ed" id="r_a04fa3ab6a692a4101eec56d166c155ed"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a04fa3ab6a692a4101eec56d166c155ed">GetArrayLength</a> () const</td></tr>
@@ -190,12 +193,32 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a070506f66ce852b2eb2ac1414cc29080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current JSON number as a 32-bit signed integer.  <br /></td></tr>
 <tr class="memitem:acb30806723b53709f2777e395eb69444" id="r_acb30806723b53709f2777e395eb69444"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#acb30806723b53709f2777e395eb69444">GetInt64</a> () const</td></tr>
 <tr class="memdesc:acb30806723b53709f2777e395eb69444"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current JSON number as a 64-bit signed integer.  <br /></td></tr>
+<tr class="memitem:a804795110ab3db4fe2f841e71f05a001" id="r_a804795110ab3db4fe2f841e71f05a001"><td class="memItemLeft"><a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a>&#160;</td><td class="memItemRight"><a class="el" href="#a804795110ab3db4fe2f841e71f05a001">GetProperty</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName) const</td></tr>
+<tr class="memdesc:a804795110ab3db4fe2f841e71f05a001"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the property with the specified name.  <br /></td></tr>
+<tr class="memitem:ad7cb53ba8b1cec231f5c633b1f1193ae" id="r_ad7cb53ba8b1cec231f5c633b1f1193ae"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:ad7cb53ba8b1cec231f5c633b1f1193ae template"><td class="memItemLeft">T&#160;</td><td class="memItemRight"><a class="el" href="#ad7cb53ba8b1cec231f5c633b1f1193ae">GetPropertyAs</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName) const</td></tr>
+<tr class="memdesc:ad7cb53ba8b1cec231f5c633b1f1193ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the specified property deserialized to type T.  <br /></td></tr>
+<tr class="memitem:a5da4e0b49ec5d1eca1f5b6df0654e9ab" id="r_a5da4e0b49ec5d1eca1f5b6df0654e9ab"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a5da4e0b49ec5d1eca1f5b6df0654e9ab">GetPropertyBoolean</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, bool bDefault=false) const</td></tr>
+<tr class="memdesc:a5da4e0b49ec5d1eca1f5b6df0654e9ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the boolean value of the specified property, or default if not found.  <br /></td></tr>
+<tr class="memitem:a0e3c76b3e051843109fe3b361b8ef86d" id="r_a0e3c76b3e051843109fe3b361b8ef86d"><td class="memItemLeft">double&#160;</td><td class="memItemRight"><a class="el" href="#a0e3c76b3e051843109fe3b361b8ef86d">GetPropertyDouble</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, double dDefault=0.0) const</td></tr>
+<tr class="memdesc:a0e3c76b3e051843109fe3b361b8ef86d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the double-precision floating point value of the specified property, or default if not found.  <br /></td></tr>
+<tr class="memitem:a9044cd11fd08656cb4a13e5be67b7d5f" id="r_a9044cd11fd08656cb4a13e5be67b7d5f"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a9044cd11fd08656cb4a13e5be67b7d5f">GetPropertyInt32</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, int iDefault=0) const</td></tr>
+<tr class="memdesc:a9044cd11fd08656cb4a13e5be67b7d5f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 32-bit integer value of the specified property, or default if not found.  <br /></td></tr>
+<tr class="memitem:a63e84a3deb39db1a12643e56599355ba" id="r_a63e84a3deb39db1a12643e56599355ba"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a63e84a3deb39db1a12643e56599355ba">GetPropertyInt64</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, long long llDefault=0) const</td></tr>
+<tr class="memdesc:a63e84a3deb39db1a12643e56599355ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 64-bit integer value of the specified property, or default if not found.  <br /></td></tr>
 <tr class="memitem:a50297f9ff3627eac6dc24e13faf2a8b1" id="r_a50297f9ff3627eac6dc24e13faf2a8b1"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a50297f9ff3627eac6dc24e13faf2a8b1">GetPropertyNames</a> () const</td></tr>
 <tr class="memdesc:a50297f9ff3627eac6dc24e13faf2a8b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets an array containing the names of all properties on the current JSON object.  <br /></td></tr>
+<tr class="memitem:a474c42bb7cd65c4a64ed075bf5529c2e" id="r_a474c42bb7cd65c4a64ed075bf5529c2e"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:a474c42bb7cd65c4a64ed075bf5529c2e template"><td class="memItemLeft">T&#160;</td><td class="memItemRight"><a class="el" href="#a474c42bb7cd65c4a64ed075bf5529c2e">GetPropertyOrDefault</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, const T &amp;defaultValue=T()) const</td></tr>
+<tr class="memdesc:a474c42bb7cd65c4a64ed075bf5529c2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the specified property deserialized to type T, or returns defaultValue if absent.  <br /></td></tr>
+<tr class="memitem:aacc619098cebf547cf8c247bf78b5874" id="r_aacc619098cebf547cf8c247bf78b5874"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#aacc619098cebf547cf8c247bf78b5874">GetPropertyString</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDefault=<a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>()) const</td></tr>
+<tr class="memdesc:aacc619098cebf547cf8c247bf78b5874"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the string value of the specified property, or default if not found.  <br /></td></tr>
 <tr class="memitem:a02e182a3b93259b2d66752d8e42e6fdb" id="r_a02e182a3b93259b2d66752d8e42e6fdb"><td class="memItemLeft"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a02e182a3b93259b2d66752d8e42e6fdb">GetString</a> () const</td></tr>
 <tr class="memdesc:a02e182a3b93259b2d66752d8e42e6fdb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the value of the element as a string.  <br /></td></tr>
 <tr class="memitem:a605390eea607d72fd3b0019044a42391" id="r_a605390eea607d72fd3b0019044a42391"><td class="memItemLeft"><a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_text_1_1_json.html#a5d60994a11a8c08ce95bb3c913a563e4">JsonValueKind</a>&#160;</td><td class="memItemRight"><a class="el" href="#a605390eea607d72fd3b0019044a42391">GetValueKind</a> () const</td></tr>
 <tr class="memdesc:a605390eea607d72fd3b0019044a42391"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the type of the current JSON value.  <br /></td></tr>
+<tr class="memitem:a131038c8d0a848524a80187c6e86a7e4" id="r_a131038c8d0a848524a80187c6e86a7e4"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a131038c8d0a848524a80187c6e86a7e4">HasProperty</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName) const</td></tr>
+<tr class="memdesc:a131038c8d0a848524a80187c6e86a7e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the current JSON object contains a property with the specified name.  <br /></td></tr>
 <tr class="memitem:a68950d739fe786bef8f4e960eaf9ec57" id="r_a68950d739fe786bef8f4e960eaf9ec57"><td class="memItemLeft"><a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#a68950d739fe786bef8f4e960eaf9ec57">operator=</a> (const <a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;objOther)</td></tr>
 <tr class="memitem:ad9361e624c5c4f666b1ee08d658eb937" id="r_ad9361e624c5c4f666b1ee08d658eb937"><td class="memItemLeft"><a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;&#160;</td><td class="memItemRight"><a class="el" href="#ad9361e624c5c4f666b1ee08d658eb937">operator=</a> (<a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;&amp;objOther) noexcept</td></tr>
 <tr class="memitem:afe30de1a4ada66ca869dae40052fbf2f" id="r_afe30de1a4ada66ca869dae40052fbf2f"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#afe30de1a4ada66ca869dae40052fbf2f">SetProperty</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, const <a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;objValue)</td></tr>
@@ -204,6 +227,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a977bb34a0f3841dfa2230ba819e25ec7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serializes the element into a JSON string representation.  <br /></td></tr>
 <tr class="memitem:a792d45f4976ccd9313b8c87610e967ef" id="r_a792d45f4976ccd9313b8c87610e967ef"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a792d45f4976ccd9313b8c87610e967ef">TryGetProperty</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, <a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> &amp;objValue) const</td></tr>
 <tr class="memdesc:a792d45f4976ccd9313b8c87610e967ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Looks for a property named propertyName in the current JSON object.  <br /></td></tr>
+<tr class="memitem:a5372830e07b88b55ef9592863cba0d91" id="r_a5372830e07b88b55ef9592863cba0d91"><td class="memTemplParams" colspan="2">template&lt;typename T&gt; </td></tr>
+<tr class="memitem:a5372830e07b88b55ef9592863cba0d91 template"><td class="memItemLeft">bool&#160;</td><td class="memItemRight"><a class="el" href="#a5372830e07b88b55ef9592863cba0d91">TryGetPropertyAs</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPropertyName, T &amp;outValue) const</td></tr>
+<tr class="memdesc:a5372830e07b88b55ef9592863cba0d91"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempts to get and deserialize the specified property.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a99e032a446efd968fcfd47bf350f25ce"><td class="memItemLeft">virtual&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a99e032a446efd968fcfd47bf350f25ce">~Object</a> ()=default</td></tr>
 <tr class="memdesc:a99e032a446efd968fcfd47bf350f25ce inherit pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Virtual destructor ensuring polymorphic cleanup.  <br /></td></tr>
@@ -254,7 +280,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_json_element_8h_source.html#l00022">DotNetDupe::System::Text::Json::Undefined</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00282">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00325">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00338">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00412">AddArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00406">GetArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00302">operator=()</a>, <a class="el" href="_json_element_8cpp_source.html#l00330">operator=()</a>, <a class="el" href="_json_element_8cpp_source.html#l00486">Parse()</a>, <a class="el" href="_json_element_8cpp_source.html#l00424">SetProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>, <a class="el" href="_json_serializer_8h_source.html#l00103">DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00081">DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00092">DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00059">DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00070">DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;::Write()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00114">DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;::Write()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00282">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00325">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00338">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00412">AddArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00406">GetArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00431">GetProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00479">GetPropertyBoolean()</a>, <a class="el" href="_json_element_8cpp_source.html#l00470">GetPropertyDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00452">GetPropertyInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00461">GetPropertyInt64()</a>, <a class="el" href="_json_serializer_8h_source.html#l00350">GetPropertyOrDefault()</a>, <a class="el" href="_json_element_8cpp_source.html#l00443">GetPropertyString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00424">HasProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00302">operator=()</a>, <a class="el" href="_json_element_8cpp_source.html#l00330">operator=()</a>, <a class="el" href="_json_element_8cpp_source.html#l00552">Parse()</a>, <a class="el" href="_json_element_8cpp_source.html#l00490">SetProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>, <a class="el" href="_json_serializer_8h_source.html#l00359">TryGetPropertyAs()</a>, <a class="el" href="_json_serializer_8h_source.html#l00210">DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00221">DotNetDupe::System::Text::Json::JsonConverter&lt; char &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00256">DotNetDupe::System::Text::Json::JsonConverter&lt; DateTime &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00188">DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00199">DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00267">DotNetDupe::System::Text::Json::JsonConverter&lt; Guid &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00122">DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00166">DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00133">DotNetDupe::System::Text::Json::JsonConverter&lt; short &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00245">DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00234">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned char &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00155">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned int &gt;::Write()</a>, <a class="el" href="_json_serializer_8h_source.html#l00177">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned long long &gt;::Write()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00144">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned short &gt;::Write()</a>.</p>
 
 </div>
 </div>
@@ -543,7 +569,47 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8h_source.html#l00024">DotNetDupe::System::Text::Json::Array</a>, and <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00125">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Write()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00278">DotNetDupe::System::Text::Json::JsonConverter&lt; Array&lt; U &gt; &gt;::Write()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00298">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Write()</a>.</p>
+
+</div>
+</div>
+<a id="abad2cb09605f64dbeb6f057d425696a9" name="abad2cb09605f64dbeb6f057d425696a9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abad2cb09605f64dbeb6f057d425696a9">&#9670;&#160;</a></span>Deserialize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T DotNetDupe::System::Text::Json::JsonElement::Deserialize </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Deserializes the current element into type T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Target type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An instance of T deserialized from this element. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_json_serializer_8h_source.html#l00340">340</a> of file <a class="el" href="_json_serializer_8h_source.html">JsonSerializer.h</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00345">GetPropertyAs()</a>, <a class="el" href="_json_serializer_8h_source.html#l00350">GetPropertyOrDefault()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00359">TryGetPropertyAs()</a>.</p>
 
 </div>
 </div>
@@ -576,7 +642,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8h_source.html#l00024">DotNetDupe::System::Text::Json::Array</a>, and <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00132">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00285">DotNetDupe::System::Text::Json::JsonConverter&lt; Array&lt; U &gt; &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00305">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -609,7 +675,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8h_source.html#l00024">DotNetDupe::System::Text::Json::Array</a>, and <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00132">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00285">DotNetDupe::System::Text::Json::JsonConverter&lt; Array&lt; U &gt; &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00305">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -642,7 +708,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8h_source.html#l00028">DotNetDupe::System::Text::Json::False</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00027">DotNetDupe::System::Text::Json::True</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00106">DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00213">DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -675,7 +741,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00384">GetInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00389">GetInt64()</a>, <a class="el" href="_json_serializer_8h_source.html#l00084">DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00095">DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00384">GetInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00389">GetInt64()</a>, <a class="el" href="_json_element_8cpp_source.html#l00470">GetPropertyDouble()</a>, <a class="el" href="_json_serializer_8h_source.html#l00191">DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00202">DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -708,7 +774,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00378">GetDouble()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00062">DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00452">GetPropertyInt32()</a>, <a class="el" href="_json_serializer_8h_source.html#l00125">DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;::Read()</a>, <a class="el" href="_json_serializer_8h_source.html#l00136">DotNetDupe::System::Text::Json::JsonConverter&lt; short &gt;::Read()</a>, <a class="el" href="_json_serializer_8h_source.html#l00237">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned char &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00147">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned short &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -741,7 +807,236 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00378">GetDouble()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00073">DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00461">GetPropertyInt64()</a>, <a class="el" href="_json_serializer_8h_source.html#l00169">DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;::Read()</a>, <a class="el" href="_json_serializer_8h_source.html#l00158">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned int &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00180">DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned long long &gt;::Read()</a>.</p>
+
+</div>
+</div>
+<a id="a804795110ab3db4fe2f841e71f05a001" name="a804795110ab3db4fe2f841e71f05a001"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a804795110ab3db4fe2f841e71f05a001">&#9670;&#160;</a></span>GetProperty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="#aa8e615b00cbc72a60dfb7535e8a18c6b">JsonElement</a> DotNetDupe::System::Text::Json::JsonElement::GetProperty </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the value of the property with the specified name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property to find. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The <a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html" title="Represents a specific JSON value within a JsonDocument or object hierarchy.">JsonElement</a> representing the property value. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_exception.html" title="Exception thrown during JSON serialization or deserialization per RFC 8259.">JsonException</a></td><td>If property is not found or element is not an <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy.">Object</a>. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Guard: Ensure element is <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy.">Object</a> kind.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00431">431</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_exception_8h_source.html#l00021">DotNetDupe::System::Text::Json::JsonException::JsonException()</a>, <a class="el" href="_string_8h_source.html#l00239">DotNetDupe::System::String::Format()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00345">GetPropertyAs()</a>.</p>
+
+</div>
+</div>
+<a id="ad7cb53ba8b1cec231f5c633b1f1193ae" name="ad7cb53ba8b1cec231f5c633b1f1193ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7cb53ba8b1cec231f5c633b1f1193ae">&#9670;&#160;</a></span>GetPropertyAs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T DotNetDupe::System::Text::Json::JsonElement::GetPropertyAs </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the specified property deserialized to type T. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Target type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>Property name. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An instance of T deserialized from the property. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_json_serializer_8h_source.html#l00345">345</a> of file <a class="el" href="_json_serializer_8h_source.html">JsonSerializer.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_serializer_8h_source.html#l00340">Deserialize()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00431">GetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="a5da4e0b49ec5d1eca1f5b6df0654e9ab" name="a5da4e0b49ec5d1eca1f5b6df0654e9ab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5da4e0b49ec5d1eca1f5b6df0654e9ab">&#9670;&#160;</a></span>GetPropertyBoolean()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::Text::Json::JsonElement::GetPropertyBoolean </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bDefault</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the boolean value of the specified property, or default if not found. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property. </td></tr>
+    <tr><td class="paramname">bDefault</td><td>Default value to return if not found or not boolean. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Property boolean value or default. </dd></dl>
+<p>Step: Attempt property retrieval and return boolean value or default.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00479">479</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8h_source.html#l00028">DotNetDupe::System::Text::Json::False</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, <a class="el" href="_json_element_8h_source.html#l00027">DotNetDupe::System::Text::Json::True</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="a0e3c76b3e051843109fe3b361b8ef86d" name="a0e3c76b3e051843109fe3b361b8ef86d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e3c76b3e051843109fe3b361b8ef86d">&#9670;&#160;</a></span>GetPropertyDouble()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double DotNetDupe::System::Text::Json::JsonElement::GetPropertyDouble </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double</td>          <td class="paramname"><span class="paramname"><em>dDefault</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0.0</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the double-precision floating point value of the specified property, or default if not found. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property. </td></tr>
+    <tr><td class="paramname">dDefault</td><td>Default value to return if not found or not number. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Property double value or default. </dd></dl>
+<p>Step: Attempt property retrieval and return double value or default.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00470">470</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00378">GetDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="a9044cd11fd08656cb4a13e5be67b7d5f" name="a9044cd11fd08656cb4a13e5be67b7d5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9044cd11fd08656cb4a13e5be67b7d5f">&#9670;&#160;</a></span>GetPropertyInt32()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int DotNetDupe::System::Text::Json::JsonElement::GetPropertyInt32 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iDefault</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the 32-bit integer value of the specified property, or default if not found. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property. </td></tr>
+    <tr><td class="paramname">iDefault</td><td>Default value to return if not found or not number. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Property integer value or default. </dd></dl>
+<p>Step: Attempt property retrieval and return integer value or default.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00452">452</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00384">GetInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="a63e84a3deb39db1a12643e56599355ba" name="a63e84a3deb39db1a12643e56599355ba"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63e84a3deb39db1a12643e56599355ba">&#9670;&#160;</a></span>GetPropertyInt64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long DotNetDupe::System::Text::Json::JsonElement::GetPropertyInt64 </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>llDefault</em></span><span class="paramdefsep"> = </span><span class="paramdefval">0</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the 64-bit integer value of the specified property, or default if not found. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property. </td></tr>
+    <tr><td class="paramname">llDefault</td><td>Default value to return if not found or not number. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Property 64-bit integer value or default. </dd></dl>
+<p>Step: Attempt property retrieval and return 64-bit integer or default.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00461">461</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00389">GetInt64()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
 
 </div>
 </div>
@@ -764,11 +1059,98 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>An array of property names. </dd></dl>
 <p>Guard: Ensure element is <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy.">Object</a> kind.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00434">434</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00500">500</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00153">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00326">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Read()</a>.</p>
+
+</div>
+</div>
+<a id="a474c42bb7cd65c4a64ed075bf5529c2e" name="a474c42bb7cd65c4a64ed075bf5529c2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a474c42bb7cd65c4a64ed075bf5529c2e">&#9670;&#160;</a></span>GetPropertyOrDefault()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">T DotNetDupe::System::Text::Json::JsonElement::GetPropertyOrDefault </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const T &amp;</td>          <td class="paramname"><span class="paramname"><em>defaultValue</em></span><span class="paramdefsep"> = </span><span class="paramdefval">T()</span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the specified property deserialized to type T, or returns defaultValue if absent. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Target type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>Property name. </td></tr>
+    <tr><td class="paramname">defaultValue</td><td>Default fallback value. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>An instance of T. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_json_serializer_8h_source.html#l00350">350</a> of file <a class="el" href="_json_serializer_8h_source.html">JsonSerializer.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_serializer_8h_source.html#l00340">Deserialize()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="aacc619098cebf547cf8c247bf78b5874" name="aacc619098cebf547cf8c247bf78b5874"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacc619098cebf547cf8c247bf78b5874">&#9670;&#160;</a></span>GetPropertyString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> DotNetDupe::System::Text::Json::JsonElement::GetPropertyString </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sDefault</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>()</span>&#160;) const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Gets the string value of the specified property, or default if not found. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property. </td></tr>
+    <tr><td class="paramname">sDefault</td><td>Default value to return if not found or not string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Property string value or default. </dd></dl>
+<p>Step: Attempt property retrieval and return string value or default.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00443">443</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00394">GetString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, <a class="el" href="_json_element_8h_source.html#l00025">DotNetDupe::System::Text::Json::String</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
 
 </div>
 </div>
@@ -801,7 +1183,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00025">DotNetDupe::System::Text::Json::String</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00117">DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00443">GetPropertyString()</a>, <a class="el" href="_json_serializer_8h_source.html#l00225">DotNetDupe::System::Text::Json::JsonConverter&lt; char &gt;::Read()</a>, <a class="el" href="_json_serializer_8h_source.html#l00259">DotNetDupe::System::Text::Json::JsonConverter&lt; DateTime &gt;::Read()</a>, <a class="el" href="_json_serializer_8h_source.html#l00270">DotNetDupe::System::Text::Json::JsonConverter&lt; Guid &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00248">DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;::Read()</a>.</p>
 
 </div>
 </div>
@@ -828,7 +1210,38 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_json_element_8h_source.html#l00022">DotNetDupe::System::Text::Json::Undefined</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00412">AddArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00406">GetArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00400">GetArrayLength()</a>, <a class="el" href="_json_element_8cpp_source.html#l00371">GetBoolean()</a>, <a class="el" href="_json_element_8cpp_source.html#l00378">GetDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00434">GetPropertyNames()</a>, <a class="el" href="_json_element_8cpp_source.html#l00394">GetString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00424">SetProperty()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00412">AddArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00406">GetArrayElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00400">GetArrayLength()</a>, <a class="el" href="_json_element_8cpp_source.html#l00371">GetBoolean()</a>, <a class="el" href="_json_element_8cpp_source.html#l00378">GetDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00431">GetProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00479">GetPropertyBoolean()</a>, <a class="el" href="_json_element_8cpp_source.html#l00470">GetPropertyDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00452">GetPropertyInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00461">GetPropertyInt64()</a>, <a class="el" href="_json_element_8cpp_source.html#l00500">GetPropertyNames()</a>, <a class="el" href="_json_element_8cpp_source.html#l00443">GetPropertyString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00394">GetString()</a>, <a class="el" href="_json_element_8cpp_source.html#l00424">HasProperty()</a>, <a class="el" href="_json_element_8cpp_source.html#l00490">SetProperty()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
+
+</div>
+</div>
+<a id="a131038c8d0a848524a80187c6e86a7e4" name="a131038c8d0a848524a80187c6e86a7e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a131038c8d0a848524a80187c6e86a7e4">&#9670;&#160;</a></span>HasProperty()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::Text::Json::JsonElement::HasProperty </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines whether the current JSON object contains a property with the specified name. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>The name of the property to locate. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the property exists; otherwise, false. </dd></dl>
+<p>Guard: Ensure element is <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy.">Object</a> kind.</p>
+
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00424">424</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>.</p>
 
 </div>
 </div>
@@ -925,11 +1338,11 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <p>Forward: Delegate JSON parsing to parser engine.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00486">486</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00552">552</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00048">DotNetDupe::System::Text::Json::JsonSerializer::Deserialize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00102">DotNetDupe::System::Text::Json::JsonSerializer::Deserialize()</a>.</p>
 
 </div>
 </div>
@@ -962,11 +1375,11 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <p>Guard: Ensure element is <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html" title="Supports all classes in the DotNetDupe class hierarchy.">Object</a> kind.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00424">424</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00490">490</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_invalid_operation_exception_8h_source.html#l00020">DotNetDupe::System::InvalidOperationException::InvalidOperationException()</a>, <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00124">DotNetDupe::Extensions::Logging::AddJsonLogProperties()</a>, <a class="el" href="_logger_base_8cpp_source.html#l00139">DotNetDupe::Extensions::Logging::BuildJsonLog()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00145">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Write()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00124">DotNetDupe::Extensions::Logging::AddJsonLogProperties()</a>, <a class="el" href="_logger_base_8cpp_source.html#l00139">DotNetDupe::Extensions::Logging::BuildJsonLog()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00318">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Write()</a>.</p>
 
 </div>
 </div>
@@ -989,11 +1402,11 @@ Static Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>A JSON string. </dd></dl>
 <p>Step: Format <a class="el" href="class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html" title="Represents a specific JSON value within a JsonDocument or object hierarchy.">JsonElement</a> based on current kind.</p>
 
-<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00471">471</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_json_element_8cpp_source.html#l00537">537</a> of file <a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_json_element_8h_source.html#l00024">DotNetDupe::System::Text::Json::Array</a>, <a class="el" href="_json_element_8cpp_source.html#l00032">DotNetDupe::System::Text::Json::EscapeString()</a>, <a class="el" href="_json_element_8h_source.html#l00028">DotNetDupe::System::Text::Json::False</a>, <a class="el" href="_json_element_8cpp_source.html#l00440">DotNetDupe::System::Text::Json::FormatJsonArray()</a>, <a class="el" href="_json_element_8cpp_source.html#l00463">DotNetDupe::System::Text::Json::FormatJsonNumber()</a>, <a class="el" href="_json_element_8cpp_source.html#l00450">DotNetDupe::System::Text::Json::FormatJsonObject()</a>, <a class="el" href="_json_element_8h_source.html#l00029">DotNetDupe::System::Text::Json::Null</a>, <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>, <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>, <a class="el" href="_json_element_8h_source.html#l00025">DotNetDupe::System::Text::Json::String</a>, and <a class="el" href="_json_element_8h_source.html#l00027">DotNetDupe::System::Text::Json::True</a>.</p>
+<p class="reference">References <a class="el" href="_json_element_8h_source.html#l00024">DotNetDupe::System::Text::Json::Array</a>, <a class="el" href="_json_element_8cpp_source.html#l00032">DotNetDupe::System::Text::Json::EscapeString()</a>, <a class="el" href="_json_element_8h_source.html#l00028">DotNetDupe::System::Text::Json::False</a>, <a class="el" href="_json_element_8cpp_source.html#l00506">DotNetDupe::System::Text::Json::FormatJsonArray()</a>, <a class="el" href="_json_element_8cpp_source.html#l00529">DotNetDupe::System::Text::Json::FormatJsonNumber()</a>, <a class="el" href="_json_element_8cpp_source.html#l00516">DotNetDupe::System::Text::Json::FormatJsonObject()</a>, <a class="el" href="_json_element_8h_source.html#l00029">DotNetDupe::System::Text::Json::Null</a>, <a class="el" href="_json_element_8h_source.html#l00026">DotNetDupe::System::Text::Json::Number</a>, <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>, <a class="el" href="_json_element_8h_source.html#l00025">DotNetDupe::System::Text::Json::String</a>, and <a class="el" href="_json_element_8h_source.html#l00027">DotNetDupe::System::Text::Json::True</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00139">DotNetDupe::Extensions::Logging::BuildJsonLog()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00038">DotNetDupe::System::Text::Json::JsonSerializer::Serialize()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_logger_base_8cpp_source.html#l00139">DotNetDupe::Extensions::Logging::BuildJsonLog()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00083">DotNetDupe::System::Text::Json::JsonSerializer::Serialize()</a>.</p>
 
 </div>
 </div>
@@ -1031,12 +1444,64 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_element_8cpp_source.html#l00366">GetValueKind()</a>, and <a class="el" href="_json_element_8h_source.html#l00023">DotNetDupe::System::Text::Json::Object</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_json_serializer_8h_source.html#l00153">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Read()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_json_element_8cpp_source.html#l00479">GetPropertyBoolean()</a>, <a class="el" href="_json_element_8cpp_source.html#l00470">GetPropertyDouble()</a>, <a class="el" href="_json_element_8cpp_source.html#l00452">GetPropertyInt32()</a>, <a class="el" href="_json_element_8cpp_source.html#l00461">GetPropertyInt64()</a>, <a class="el" href="_json_serializer_8h_source.html#l00350">GetPropertyOrDefault()</a>, <a class="el" href="_json_element_8cpp_source.html#l00443">GetPropertyString()</a>, <a class="el" href="_json_serializer_8h_source.html#l00326">DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;::Read()</a>, and <a class="el" href="_json_serializer_8h_source.html#l00359">TryGetPropertyAs()</a>.</p>
+
+</div>
+</div>
+<a id="a5372830e07b88b55ef9592863cba0d91" name="a5372830e07b88b55ef9592863cba0d91"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5372830e07b88b55ef9592863cba0d91">&#9670;&#160;</a></span>TryGetPropertyAs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::Text::Json::JsonElement::TryGetPropertyAs </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPropertyName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">T &amp;</td>          <td class="paramname"><span class="paramname"><em>outValue</em></span>&#160;) const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Attempts to get and deserialize the specified property. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Target type. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPropertyName</td><td>Property name. </td></tr>
+    <tr><td class="paramname">outValue</td><td>Output parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if found and deserialized; otherwise false. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="_json_serializer_8h_source.html#l00359">359</a> of file <a class="el" href="_json_serializer_8h_source.html">JsonSerializer.h</a>.</p>
+
+<p class="reference">References <a class="el" href="_json_element_8cpp_source.html#l00273">JsonElement()</a>, <a class="el" href="_json_serializer_8h_source.html#l00340">Deserialize()</a>, and <a class="el" href="_json_element_8cpp_source.html#l00418">TryGetProperty()</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Include/System/Text/Json/<a class="el" href="_json_element_8h_source.html">JsonElement.h</a></li>
+<li>Include/System/Text/Json/<a class="el" href="_json_serializer_8h_source.html">JsonSerializer.h</a></li>
 <li>DotNetDupe/<a class="el" href="_json_element_8cpp_source.html">JsonElement.cpp</a></li>
 </ul>
 </div><!-- contents -->

@@ -421,6 +421,72 @@ namespace DotNetDupe {
                     return m_pImpl->dictObject.TryGetValue(sPropertyName, objValue);
                 }
 
+                bool JsonElement::HasProperty(const String& sPropertyName) const {
+                    /// Guard: Ensure element is Object kind.
+                    if (GetValueKind() != JsonValueKind::Object) return false;
+                    JsonElement objValue;
+                    return m_pImpl->dictObject.TryGetValue(sPropertyName, objValue);
+                }
+
+                JsonElement JsonElement::GetProperty(const String& sPropertyName) const {
+                    /// Guard: Ensure element is Object kind.
+                    if (GetValueKind() != JsonValueKind::Object) {
+                        throw InvalidOperationException("JsonElement is not an object.");
+                    }
+                    JsonElement objValue;
+                    if (!m_pImpl->dictObject.TryGetValue(sPropertyName, objValue)) {
+                        throw JsonException(String::Format("Property '{0}' not found on JsonElement.", sPropertyName));
+                    }
+                    return objValue;
+                }
+
+                String JsonElement::GetPropertyString(const String& sPropertyName, const String& sDefault) const {
+                    /// Step: Attempt property retrieval and return string value or default.
+                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) && objValue.GetValueKind() == JsonValueKind::String) {
+                        return objValue.GetString();
+                    }
+                    return sDefault;
+                }
+
+                int JsonElement::GetPropertyInt32(const String& sPropertyName, int iDefault) const {
+                    /// Step: Attempt property retrieval and return integer value or default.
+                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) && objValue.GetValueKind() == JsonValueKind::Number) {
+                        return objValue.GetInt32();
+                    }
+                    return iDefault;
+                }
+
+                long long JsonElement::GetPropertyInt64(const String& sPropertyName, long long llDefault) const {
+                    /// Step: Attempt property retrieval and return 64-bit integer or default.
+                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) && objValue.GetValueKind() == JsonValueKind::Number) {
+                        return objValue.GetInt64();
+                    }
+                    return llDefault;
+                }
+
+                double JsonElement::GetPropertyDouble(const String& sPropertyName, double dDefault) const {
+                    /// Step: Attempt property retrieval and return double value or default.
+                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) && objValue.GetValueKind() == JsonValueKind::Number) {
+                        return objValue.GetDouble();
+                    }
+                    return dDefault;
+                }
+
+                bool JsonElement::GetPropertyBoolean(const String& sPropertyName, bool bDefault) const {
+                    /// Step: Attempt property retrieval and return boolean value or default.
+                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue)) {
+                        JsonValueKind eKind = objValue.GetValueKind();
+                        if (eKind == JsonValueKind::True) return true;
+                        if (eKind == JsonValueKind::False) return false;
+                    }
+                    return bDefault;
+                }
+
                 void JsonElement::SetProperty(const String& sPropertyName, const JsonElement& objValue) {
                     /// Guard: Ensure element is Object kind.
                     if (GetValueKind() != JsonValueKind::Object) throw InvalidOperationException("JsonElement is not an object.");

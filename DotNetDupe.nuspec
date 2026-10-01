@@ -2,10 +2,10 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>5.0.2</version>
+    <version>5.0.3</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v5.0.2: Interface hierarchy retrofit across concurrent collections (ConcurrentQueue, ConcurrentStack, ConcurrentBag, BlockingCollection, ConcurrentDictionary) inheriting generic base interfaces (IReadOnlyCollection, IEnumerable, IDictionary) and introducing IProducerConsumerCollection; lock-free snapshot enumeration and direct LINQ method chaining on concurrent collections; added dedicated Smart Pointers and Collections sections with code snippets to README; updated Natvis debugger visualizers. Previous: v5.0.1: Documentation updates, added dedicated LINQ section with practical examples and updated Table of Contents in README. Previous: v5.0.0: Major version release introducing System::Linq (Language Integrated Query) query operators (Where, Select, SelectMany, OrderBy, OrderByDescending, ThenBy, ThenByDescending, GroupBy, Distinct, Take, Skip, Concat, Union, Intersect, Except, Zip, Reverse, Any, All, Contains, First, Single, ElementAt, Count, Sum, Min, Max, Average, Aggregate, Range, Repeat, ToList, ToArray, ToDictionary, ToHashSet) with zero-STL allocation algorithms and range-for loop support; SmartX file querying integration; cross-platform Linux and Windows parity.</releaseNotes>
+    <releaseNotes>v5.0.3: Included pre-built Linux native shared library (runtimes/linux-x64/native/libDotNetDupe.so) for turnkey Linux NuGet package restoration; added System::Math and System::Numerics::Statistics with standard IEEE 754 arithmetic and financial time-series moving window indicators (MovingAverage, MovingAverageSeries, ExponentialMovingAverage, ExponentialMovingAverageSeries, Variance, StandardDeviation, StdDev); enhanced System::Text::Json::JsonSerializer and JsonElement with strongly-typed generic DTO serialization/deserialization, property accessors, and converters for Array, short, uint, int64, Guid, DateTime. Previous: v5.0.2: Interface hierarchy retrofit across concurrent collections (ConcurrentQueue, ConcurrentStack, ConcurrentBag, BlockingCollection, ConcurrentDictionary) inheriting generic base interfaces (IReadOnlyCollection, IEnumerable, IDictionary) and introducing IProducerConsumerCollection; lock-free snapshot enumeration and direct LINQ method chaining on concurrent collections; added dedicated Smart Pointers and Collections sections with code snippets to README; updated Natvis debugger visualizers. Previous: v5.0.1: Documentation updates, added dedicated LINQ section with practical examples and updated Table of Contents in README. Previous: v5.0.0: Major version release introducing System::Linq query operators with zero-STL allocation algorithms and range-for loop support; SmartX file querying integration; cross-platform Linux and Windows parity.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />
@@ -43,5 +43,8 @@
     <!-- Windows x86 -->
     <file src="external\openssl-4.0.1\x86\bin\libssl-4.dll" target="runtimes\win-x86\native\libssl-4.dll" />
     <file src="external\openssl-4.0.1\x86\bin\libcrypto-4.dll" target="runtimes\win-x86\native\libcrypto-4.dll" />
+
+    <!-- Linux x64 -->
+    <file src="build-wsl\libDotNetDupe.so" target="runtimes\linux-x64\native\libDotNetDupe.so" />
   </files>
 </package>

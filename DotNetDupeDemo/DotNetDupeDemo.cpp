@@ -52,6 +52,7 @@ int main() {
     DemonstrateProcessStreamer();
     DemonstrateEventHandler();
     DemonstrateLinq();
+    DemonstrateMath();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");
