@@ -27,7 +27,13 @@ if(WIN32)
     set(OPENSSL_USE_STATIC_LIBS FALSE)
     set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64")
 else()
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libssl.a")
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libssl.so")
+        set(OPENSSL_USE_STATIC_LIBS FALSE)
+        set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64")
+        set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libcrypto.so")
+        set(OPENSSL_SSL_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libssl.so")
+        set(OPENSSL_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/include")
+    elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libssl.a")
         set(OPENSSL_USE_STATIC_LIBS TRUE)
         set(OPENSSL_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64")
         set(OPENSSL_CRYPTO_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/x64/lib/linux/libcrypto.a")
@@ -88,6 +94,12 @@ target_link_libraries(DotNetDupeTests PRIVATE DotNetDupe gtest_main)
 
 add_test(NAME DotNetDupeTests COMMAND DotNetDupeTests)
 
+if(NOT WIN32)
+    set_target_properties(DotNetDupe PROPERTIES INSTALL_RPATH "$ORIGIN" BUILD_WITH_INSTALL_RPATH TRUE)
+    set_target_properties(DotNetDupeDemo PROPERTIES INSTALL_RPATH "$ORIGIN" BUILD_WITH_INSTALL_RPATH TRUE)
+    set_target_properties(DotNetDupeTests PROPERTIES INSTALL_RPATH "$ORIGIN" BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+
 if(WIN32)
     # Copy OpenSSL runtime DLLs to output directories on Windows
     add_custom_command(TARGET DotNetDupe POST_BUILD
@@ -97,4 +109,17 @@ if(WIN32)
             $<TARGET_FILE_DIR:DotNetDupe>
         COMMENT "Copying OpenSSL runtime DLLs to output directory"
     )
+else()
+    # Copy OpenSSL runtime shared libraries to output directories on Linux
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libssl.so")
+        add_custom_command(TARGET DotNetDupe POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libssl.so"
+                "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libssl.so.4"
+                "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libcrypto.so"
+                "${CMAKE_CURRENT_SOURCE_DIR}/external/openssl-4.0.1/linux-x64/lib/libcrypto.so.4"
+                $<TARGET_FILE_DIR:DotNetDupe>
+            COMMENT "Copying OpenSSL runtime SOs to output directory"
+        )
+    endif()
 endif()

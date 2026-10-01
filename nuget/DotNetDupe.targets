@@ -37,11 +37,13 @@
   <ItemDefinitionGroup Condition="'$(OS)' != 'Windows_NT'">
     <Link>
       <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>-lDotNetDupe;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>-lDotNetDupe;-lssl;-lcrypto;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
 
   <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libDotNetDupe.so" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libssl*.so*" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libcrypto*.so*" />
   </ItemGroup>
 </Project>

@@ -174,7 +174,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 *   CMake 3.15+ (for building on Linux / WSL)
 *   **OpenSSL / SSL Runtime Dependencies**:
     *   **Windows**: The NuGet package bundles pre-built OpenSSL runtime binaries (`libssl-4-x64.dll`, `libcrypto-4-x64.dll` for x64, and `libssl-4.dll`, `libcrypto-4.dll` for x86) which are automatically copied into the target build output directory via MSBuild `.targets`.
-    *   **Linux**: Requires system OpenSSL 3.x / 1.1.x runtime libraries (`libssl.so`, `libcrypto.so`). Install via `sudo apt-get install -y libssl-dev` (Ubuntu/Debian) or `sudo dnf install -y openssl-devel` (Fedora/RHEL).
+    *   **Linux**: The NuGet package bundles pre-built OpenSSL 4.0.1 runtime libraries (`libssl.so.4`, `libcrypto.so.4`, and symlinks `libssl.so`, `libcrypto.so`) under `runtimes/linux-x64/native/` which are automatically copied to output directories via MSBuild `.targets`. Pre-compiled libraries and headers are also provided in `external/openssl-4.0.1/linux-x64/`.
 
 ### Installation ⬇️
 
@@ -224,13 +224,13 @@ DotNetDupe is designed for high portability and officially supports **Windows** 
 DotNetDupe is distributed as a multi-platform NuGet package. It contains native binaries for:
 - `win-x64` (`DotNetDupe.dll`, `libssl-4-x64.dll`, `libcrypto-4-x64.dll`)
 - `win-x86` (`DotNetDupe.dll`, `libssl-4.dll`, `libcrypto-4.dll`)
-- `linux-x64` (`libDotNetDupe.so`)
+- `linux-x64` (`libDotNetDupe.so`, `libssl.so.4`, `libcrypto.so.4`)
 
 When you add the NuGet package to your project, the appropriate binary and dependencies are automatically selected based on your target platform.
 
 #### SSL Runtime Dependencies
 * **Windows**: Dynamic OpenSSL dependencies (`libssl-4-x64.dll` & `libcrypto-4-x64.dll`) are packaged directly inside the NuGet package and deployed next to `DotNetDupe.dll` at build time.
-* **Linux**: Dynamically links against standard host OpenSSL libraries (`libssl.so.3` / `libssl.so.1.1`). Ensure OpenSSL is installed on target runtime hosts (`apt-get install libssl3` or `libssl1.1`).
+* **Linux**: Dynamic OpenSSL 4.0.1 dependencies (`libssl.so.4` & `libcrypto.so.4`) are packaged directly inside the NuGet package and deployed alongside `libDotNetDupe.so` at build time via MSBuild `.targets`.
 
 #### Note for Linux Users
 On Linux, NuGet packages are typically managed via `dotnet` CLI or integrated into CMake projects using tools like `vcpkg` or by manually extracting the shared library (`.so`) and headers from the `.nupkg` (which is a ZIP file).
