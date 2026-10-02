@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>Math.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Math.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include &lt;cmath&gt;
+
+namespace DotNetDupe {
+    namespace System {
+
+<span style = "background-color:#dfd">        int Math::Abs(int iValue) {</span>
+            /// Return: Absolute value of 32-bit signed integer.
+<span style = "background-color:#dfd">            return std::abs(iValue);
+        }</span>
+
+<span style = "background-color:#dfd">        long long Math::Abs(long long llValue) {</span>
+            /// Return: Absolute value of 64-bit signed integer.
+<span style = "background-color:#dfd">            return std::abs(llValue);
+        }</span>
+
+<span style = "background-color:#dfd">        float Math::Abs(float fValue) {</span>
+            /// Return: Absolute value of single-precision float.
+<span style = "background-color:#dfd">            return std::fabs(fValue);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Abs(double dValue) {</span>
+            /// Return: Absolute value of double-precision float.
+<span style = "background-color:#dfd">            return std::fabs(dValue);
+        }</span>
+
+<span style = "background-color:#dfd">        int Math::Max(int iVal1, int iVal2) {</span>
+            /// Return: Maximum of two 32-bit integers.
+<span style = "background-color:#dfd">            return (iVal1 &gt;= iVal2) ? iVal1 : iVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        long long Math::Max(long long llVal1, long long llVal2) {</span>
+            /// Return: Maximum of two 64-bit integers.
+<span style = "background-color:#dfd">            return (llVal1 &gt;= llVal2) ? llVal1 : llVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        float Math::Max(float fVal1, float fVal2) {</span>
+            /// Return: Maximum of two single-precision floats.
+<span style = "background-color:#dfd">            return (fVal1 &gt;= fVal2) ? fVal1 : fVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Max(double dVal1, double dVal2) {</span>
+            /// Return: Maximum of two double-precision floats.
+<span style = "background-color:#dfd">            return (dVal1 &gt;= dVal2) ? dVal1 : dVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        int Math::Min(int iVal1, int iVal2) {</span>
+            /// Return: Minimum of two 32-bit integers.
+<span style = "background-color:#dfd">            return (iVal1 &lt;= iVal2) ? iVal1 : iVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        long long Math::Min(long long llVal1, long long llVal2) {</span>
+            /// Return: Minimum of two 64-bit integers.
+<span style = "background-color:#dfd">            return (llVal1 &lt;= llVal2) ? llVal1 : llVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        float Math::Min(float fVal1, float fVal2) {</span>
+            /// Return: Minimum of two single-precision floats.
+<span style = "background-color:#dfd">            return (fVal1 &lt;= fVal2) ? fVal1 : fVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Min(double dVal1, double dVal2) {</span>
+            /// Return: Minimum of two double-precision floats.
+<span style = "background-color:#dfd">            return (dVal1 &lt;= dVal2) ? dVal1 : dVal2;
+        }</span>
+
+<span style = "background-color:#dfd">        int Math::Clamp(int iValue, int iMin, int iMax) {</span>
+            /// Guard: Validate range boundaries.
+<span style = "background-color:#dfd">            if (iMin &gt; iMax) throw ArgumentException("min cannot be greater than max.");
+            if (iValue &lt; iMin) return iMin;
+            if (iValue &gt; iMax) return iMax;</span>
+            return iValue;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        long long Math::Clamp(long long llValue, long long llMin, long long llMax) {</span>
+            /// Guard: Validate range boundaries.
+<span style = "background-color:#dfd">            if (llMin &gt; llMax) throw ArgumentException("min cannot be greater than max.");
+            if (llValue &lt; llMin) return llMin;
+            if (llValue &gt; llMax) return llMax;</span>
+            return llValue;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        double Math::Clamp(double dValue, double dMin, double dMax) {</span>
+            /// Guard: Validate range boundaries.
+<span style = "background-color:#dfd">            if (dMin &gt; dMax) throw ArgumentException("min cannot be greater than max.");
+            if (dValue &lt; dMin) return dMin;
+            if (dValue &gt; dMax) return dMax;</span>
+            return dValue;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        int Math::Sign(int iValue) {</span>
+            /// Return: Sign of 32-bit integer.
+<span style = "background-color:#dfd">            if (iValue &gt; 0) return 1;
+            if (iValue &lt; 0) return -1;</span>
+            return 0;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        int Math::Sign(long long llValue) {</span>
+            /// Return: Sign of 64-bit integer.
+<span style = "background-color:#dfd">            if (llValue &gt; 0) return 1;
+            if (llValue &lt; 0) return -1;</span>
+            return 0;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        int Math::Sign(double dValue) {</span>
+            /// Return: Sign of double-precision float.
+<span style = "background-color:#dfd">            if (dValue &gt; 0.0) return 1;
+            if (dValue &lt; 0.0) return -1;</span>
+            return 0;
+<span style = "background-color:#dfd">        }</span>
+
+<span style = "background-color:#dfd">        double Math::Floor(double dValue) {</span>
+            /// Return: Largest integer less than or equal to value.
+<span style = "background-color:#dfd">            return std::floor(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Ceiling(double dValue) {</span>
+            /// Return: Smallest integer greater than or equal to value.
+<span style = "background-color:#dfd">            return std::ceil(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Round(double dValue) {</span>
+            /// Return: Round to nearest integral value.
+<span style = "background-color:#dfd">            return std::round(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Round(double dValue, int iDigits) {</span>
+            /// Guard: Validate digits parameter.
+<span style = "background-color:#dfd">            if (iDigits &lt; 0 || iDigits &gt; 15) throw ArgumentOutOfRangeException("Digits must be between 0 and 15.");
+            double dFactor = std::pow(10.0, iDigits);
+            return std::round(dValue * dFactor) / dFactor;
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Truncate(double dValue) {</span>
+            /// Return: Integral part of value.
+<span style = "background-color:#dfd">            return std::trunc(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Sqrt(double dValue) {</span>
+            /// Return: Square root of value.
+<span style = "background-color:#dfd">            return std::sqrt(dValue);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Cbrt(double dValue) {</span>
+            /// Return: Cube root of value.
+<span style = "background-color:#dfd">            return std::cbrt(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Pow(double dBase, double dExponent) {</span>
+            /// Return: Value raised to exponent.
+<span style = "background-color:#dfd">            return std::pow(dBase, dExponent);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Exp(double dValue) {</span>
+            /// Return: e raised to power.
+<span style = "background-color:#dfd">            return std::exp(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Log(double dValue) {</span>
+            /// Return: Natural logarithm.
+<span style = "background-color:#dfd">            return std::log(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Log(double dValue, double dNewBase) {</span>
+            /// Guard: Validate logarithm base.
+<span style = "background-color:#dfd">            if (dNewBase &lt;= 0.0 || dNewBase == 1.0) throw ArgumentException("Base must be positive and not equal to 1.");
+            return std::log(dValue) / std::log(dNewBase);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Log10(double dValue) {</span>
+            /// Return: Base 10 logarithm.
+<span style = "background-color:#dfd">            return std::log10(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Log2(double dValue) {</span>
+            /// Return: Base 2 logarithm.
+<span style = "background-color:#dfd">            return std::log2(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Sin(double dValue) {</span>
+            /// Return: Sine of angle.
+<span style = "background-color:#dfd">            return std::sin(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Cos(double dValue) {</span>
+            /// Return: Cosine of angle.
+<span style = "background-color:#dfd">            return std::cos(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Tan(double dValue) {</span>
+            /// Return: Tangent of angle.
+<span style = "background-color:#dfd">            return std::tan(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Asin(double dValue) {</span>
+            /// Return: Arc sine.
+<span style = "background-color:#dfd">            return std::asin(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Acos(double dValue) {</span>
+            /// Return: Arc cosine.
+<span style = "background-color:#dfd">            return std::acos(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Atan(double dValue) {</span>
+            /// Return: Arc tangent.
+<span style = "background-color:#dfd">            return std::atan(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Atan2(double dY, double dX) {</span>
+            /// Return: Four-quadrant arc tangent.
+<span style = "background-color:#dfd">            return std::atan2(dY, dX);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Sinh(double dValue) {</span>
+            /// Return: Hyperbolic sine.
+<span style = "background-color:#dfd">            return std::sinh(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Cosh(double dValue) {</span>
+            /// Return: Hyperbolic cosine.
+<span style = "background-color:#dfd">            return std::cosh(dValue);</span>
+        }
+
+<span style = "background-color:#dfd">        double Math::Tanh(double dValue) {</span>
+            /// Return: Hyperbolic tangent.
+<span style = "background-color:#dfd">            return std::tanh(dValue);</span>
+        }
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -37,35 +37,35 @@ namespace DotNetDupe {
 		constexpr int DaysToMonth366 [] = { 0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366 };
 
 		/// \brief Converts a Gregorian calendar date into total 100-nanosecond ticks since CE 0001-01-01.
-<span style = "background-color:#fdd">		static int64_t DateToTicks(int year, int month, int day) {</span>
+<span style = "background-color:#dfd">		static int64_t DateToTicks(int year, int month, int day) {</span>
 			/// Guard: Validate Gregorian calendar range.
-<span style = "background-color:#fdd">			if (year &lt; 1 || year &gt; 9999 || month &lt; 1 || month &gt; 12) {
-				throw ArgumentOutOfRangeException("Year, Month, and Day parameters describe an un-representable DateTime.");</span>
+<span style = "background-color:#dfd">			if (year &lt; 1 || year &gt; 9999 || month &lt; 1 || month &gt; 12) {</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Year, Month, and Day parameters describe an un-representable DateTime.");</span>
 			}
 
 			/// Guard: Validate day count within month bounds.
-<span style = "background-color:#fdd">			const int* days = DateTime::IsLeapYear(year) ? DaysToMonth366 : DaysToMonth365;
-			if (day &lt; 1 || day &gt; days [month] - days [month - 1]) {
-				throw ArgumentOutOfRangeException("Year, Month, and Day parameters describe an un-representable DateTime.");</span>
+<span style = "background-color:#dfd">			const int* days = DateTime::IsLeapYear(year) ? DaysToMonth366 : DaysToMonth365;
+			if (day &lt; 1 || day &gt; days [month] - days [month - 1]) {</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Year, Month, and Day parameters describe an un-representable DateTime.");</span>
 			}
 
 			/// Compute cumulative days according to 400-year Gregorian leap cycle.
 			int y = year - 1;
-<span style = "background-color:#fdd">			int n = y * 365 + y / 4 - y / 100 + y / 400 + days [month - 1] + day - 1;</span>
+<span style = "background-color:#dfd">			int n = y * 365 + y / 4 - y / 100 + y / 400 + days [month - 1] + day - 1;</span>
 
 			/// Scale days to ticks.
-<span style = "background-color:#fdd">			return (int64_t)n * TicksPerDay;
+<span style = "background-color:#dfd">			return (int64_t)n * TicksPerDay;
 		}</span>
 
 		/// \brief Converts hour, minute, and second into total 100-nanosecond ticks.
-<span style = "background-color:#fdd">		static int64_t TimeToTicks(int hour, int minute, int second) {</span>
+<span style = "background-color:#dfd">		static int64_t TimeToTicks(int hour, int minute, int second) {</span>
 			/// Guard: Validate 24-hour time boundaries.
-<span style = "background-color:#fdd">			if (hour &lt; 0 || hour &gt;= 24 || minute &lt; 0 || minute &gt;= 60 || second &lt; 0 || second &gt;= 60) {
-				throw ArgumentOutOfRangeException("Hour, Minute, and Second parameters describe an un-representable DateTime.");</span>
+<span style = "background-color:#dfd">			if (hour &lt; 0 || hour &gt;= 24 || minute &lt; 0 || minute &gt;= 60 || second &lt; 0 || second &gt;= 60) {</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Hour, Minute, and Second parameters describe an un-representable DateTime.");</span>
 			}
 
 			/// Calculate total seconds and scale to ticks.
-<span style = "background-color:#fdd">			int64_t totalSeconds = (int64_t)hour * 3600 + (int64_t)minute * 60 + (int64_t)second;
+<span style = "background-color:#dfd">			int64_t totalSeconds = (int64_t)hour * 3600 + (int64_t)minute * 60 + (int64_t)second;
 			return totalSeconds * TicksPerSecond;
 		}</span>
 
@@ -94,7 +94,7 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">			: m_nTicks(DateToTicks(year, month, day)), m_kind(DateTimeKind::Unspecified) { }</span>
 
 		DateTime::DateTime(int year, int month, int day, int hour, int minute, int second)
-<span style = "background-color:#fdd">			: m_nTicks(DateToTicks(year, month, day) + TimeToTicks(hour, minute, second)), m_kind(DateTimeKind::Unspecified) { }</span>
+<span style = "background-color:#dfd">			: m_nTicks(DateToTicks(year, month, day) + TimeToTicks(hour, minute, second)), m_kind(DateTimeKind::Unspecified) { }</span>
 
 		DateTime::DateTime(int year, int month, int day, int hour, int minute, int second, DateTimeKind kind)
 <span style = "background-color:#fdd">			: m_nTicks(DateToTicks(year, month, day) + TimeToTicks(hour, minute, second)), m_kind(kind) { }</span>
@@ -115,26 +115,26 @@ namespace DotNetDupe {
 			}
 <span style = "background-color:#fdd">		}</span>
 
-<span style = "background-color:#fdd">		int DateTime::GetYear() const {</span>
+<span style = "background-color:#dfd">		int DateTime::GetYear() const {</span>
 			/// Decompose ticks to calendar date.
 			int y, m, d;
-<span style = "background-color:#fdd">			GetDatePart(m_nTicks, y, m, d);
+<span style = "background-color:#dfd">			GetDatePart(m_nTicks, y, m, d);
 			return y;
 		}</span>
 
-<span style = "background-color:#fdd">		int DateTime::GetMonth() const {</span>
+<span style = "background-color:#dfd">		int DateTime::GetMonth() const {</span>
 			/// Decompose ticks to calendar date.
 			int y, m, d;
-<span style = "background-color:#fdd">			GetDatePart(m_nTicks, y, m, d);</span>
+<span style = "background-color:#dfd">			GetDatePart(m_nTicks, y, m, d);</span>
 			return m;
-<span style = "background-color:#fdd">		}</span>
+<span style = "background-color:#dfd">		}</span>
 
-<span style = "background-color:#fdd">		int DateTime::GetDay() const {</span>
+<span style = "background-color:#dfd">		int DateTime::GetDay() const {</span>
 			/// Decompose ticks to calendar date.
 			int y, m, d;
-<span style = "background-color:#fdd">			GetDatePart(m_nTicks, y, m, d);</span>
+<span style = "background-color:#dfd">			GetDatePart(m_nTicks, y, m, d);</span>
 			return d;
-<span style = "background-color:#fdd">		}</span>
+<span style = "background-color:#dfd">		}</span>
 
 <span style = "background-color:#fdd">		int DateTime::GetHour() const {</span>
 			/// Calculate hour from ticks quotient modulo 24.
@@ -325,20 +325,20 @@ namespace DotNetDupe {
 			return DateTime(TmToTicks(t, m_nTicks % TicksPerSecond), DateTimeKind::Utc);
 		}</span>
 
-<span style = "background-color:#fdd">		String DateTime::ToString() const {</span>
+<span style = "background-color:#dfd">		String DateTime::ToString() const {</span>
 			/// Format using default ISO 8601 extended pattern.
-<span style = "background-color:#fdd">			return ToString("yyyy-MM-dd HH:mm:ss");
+<span style = "background-color:#dfd">			return ToString("yyyy-MM-dd HH:mm:ss");
 		}</span>
 
-<span style = "background-color:#fdd">		String DateTime::ToString(const String&amp; sFormat) const {</span>
+<span style = "background-color:#dfd">		String DateTime::ToString(const String&amp; sFormat) const {</span>
 			/// Format date components using standard ISO format.
-<span style = "background-color:#fdd">			std::stringstream ss;
+<span style = "background-color:#dfd">			std::stringstream ss;
 			int y, m, d; GetDatePart(m_nTicks, y, m, d);</span>
 
-<span style = "background-color:#fdd">			ss &lt;&lt; std::setfill('0') &lt;&lt; std::setw(4) &lt;&lt; y &lt;&lt; "-"</span>
+<span style = "background-color:#dfd">			ss &lt;&lt; std::setfill('0') &lt;&lt; std::setw(4) &lt;&lt; y &lt;&lt; "-"</span>
 				&lt;&lt; std::setw(2) &lt;&lt; m &lt;&lt; "-" &lt;&lt; std::setw(2) &lt;&lt; d &lt;&lt; " "
 				&lt;&lt; std::setw(2) &lt;&lt; GetHour() &lt;&lt; ":" &lt;&lt; std::setw(2) &lt;&lt; GetMinute() &lt;&lt; ":" &lt;&lt; std::setw(2) &lt;&lt; GetSecond();
-<span style = "background-color:#fdd">			return String(ss.str().c_str());
+<span style = "background-color:#dfd">			return String(ss.str().c_str());
 		}</span>
 
 <span style = "background-color:#fdd">		int DateTime::DaysInMonth(int year, int month) {</span>
@@ -352,40 +352,40 @@ namespace DotNetDupe {
 			return days [month] - days [month - 1];
 		}</span>
 
-<span style = "background-color:#fdd">		bool DateTime::IsLeapYear(int year) {</span>
+<span style = "background-color:#dfd">		bool DateTime::IsLeapYear(int year) {</span>
 			/// Guard: Validate Gregorian year boundaries.
-<span style = "background-color:#fdd">			if (year &lt; 1 || year &gt; 9999) {
-				throw ArgumentOutOfRangeException("Year must be between 1 and 9999.");</span>
+<span style = "background-color:#dfd">			if (year &lt; 1 || year &gt; 9999) {</span>
+<span style = "background-color:#fdd">				throw ArgumentOutOfRangeException("Year must be between 1 and 9999.");</span>
 			}
 
 			/// Gregorian leap year rule: divisible by 4, not divisible by 100 unless divisible by 400.
-<span style = "background-color:#fdd">			return (year % 4 == 0) &amp;&amp; (year % 100 != 0 || year % 400 == 0);
+<span style = "background-color:#dfd">			return (year % 4 == 0) &amp;&amp; (year % 100 != 0 || year % 400 == 0);
 		}</span>
 
-<span style = "background-color:#fdd">		static std::string ConvertFormat(const String&amp; format) {</span>
+<span style = "background-color:#dfd">		static std::string ConvertFormat(const String&amp; format) {</span>
 			/// Convert .NET DateTime format specifiers to strftime format specifiers.
-<span style = "background-color:#fdd">			std::string f = format.GetRawString();</span>
+<span style = "background-color:#dfd">			std::string f = format.GetRawString();</span>
 			size_t pos = 0;
-<span style = "background-color:#fdd">			while ((pos = f.find("yyyy")) != std::string::npos) f.replace(pos, 4, "%Y");
+<span style = "background-color:#dfd">			while ((pos = f.find("yyyy")) != std::string::npos) f.replace(pos, 4, "%Y");
 			while ((pos = f.find("MM")) != std::string::npos) f.replace(pos, 2, "%m");
 			while ((pos = f.find("dd")) != std::string::npos) f.replace(pos, 2, "%d");
 			while ((pos = f.find("HH")) != std::string::npos) f.replace(pos, 2, "%H");
 			while ((pos = f.find("mm")) != std::string::npos) f.replace(pos, 2, "%M");
 			while ((pos = f.find("ss")) != std::string::npos) f.replace(pos, 2, "%S");</span>
 			return f;
-<span style = "background-color:#fdd">		}</span>
+<span style = "background-color:#dfd">		}</span>
 
-<span style = "background-color:#fdd">		static bool ParseDateTimeStr(const String&amp; s, const String&amp; format, DateTime&amp; result) {</span>
+<span style = "background-color:#dfd">		static bool ParseDateTimeStr(const String&amp; s, const String&amp; format, DateTime&amp; result) {</span>
 			/// Parse date string according to format pattern.
-<span style = "background-color:#fdd">			std::istringstream ss(s.GetRawString());
+<span style = "background-color:#dfd">			std::istringstream ss(s.GetRawString());
 			std::tm t = {};
 			std::string f = ConvertFormat(format);
 			ss &gt;&gt; std::get_time(&amp;t, f.c_str());</span>
 
-<span style = "background-color:#fdd">			if (ss.fail()) return false;</span>
+<span style = "background-color:#dfd">			if (ss.fail()) return false;</span>
 
 			try {
-<span style = "background-color:#fdd">				result = DateTime(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+<span style = "background-color:#dfd">				result = DateTime(t.tm_year + 1900, t.tm_mon + 1, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
 				return true;</span>
 			}
 <span style = "background-color:#fdd">			catch (const Exception&amp;) {</span>
@@ -403,9 +403,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">			return ParseDateTimeStr(s, format, result);</span>
 		}
 
-<span style = "background-color:#fdd">		bool DateTime::TryParse(const String&amp; s, DateTime&amp; result) {</span>
+<span style = "background-color:#dfd">		bool DateTime::TryParse(const String&amp; s, DateTime&amp; result) {</span>
 			/// Attempt parse against default ISO format.
-<span style = "background-color:#fdd">			return ParseDateTimeStr(s, "yyyy-MM-dd HH:mm:ss", result);
+<span style = "background-color:#dfd">			return ParseDateTimeStr(s, "yyyy-MM-dd HH:mm:ss", result);
 		}</span>
 
 <span style = "background-color:#fdd">		DateTime DateTime::ParseExact(const String&amp; s, const String&amp; format) {</span>
@@ -418,14 +418,14 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">			return result;
 		}</span>
 
-<span style = "background-color:#fdd">		DateTime DateTime::Parse(const String&amp; s) {</span>
+<span style = "background-color:#dfd">		DateTime DateTime::Parse(const String&amp; s) {</span>
 			/// Attempt parse and throw FormatException on failure.
-<span style = "background-color:#fdd">			DateTime result(1, 1, 1);
-			if (!TryParse(s, result)) {
-				throw FormatException("String was not recognized as a valid DateTime.");</span>
+<span style = "background-color:#dfd">			DateTime result(1, 1, 1);
+			if (!TryParse(s, result)) {</span>
+<span style = "background-color:#fdd">				throw FormatException("String was not recognized as a valid DateTime.");</span>
 			}
 
-<span style = "background-color:#fdd">			return result;
+<span style = "background-color:#dfd">			return result;
 		}</span>
 
 	} // namespace System

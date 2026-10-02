@@ -247,10 +247,10 @@ namespace DotNetDupe {
             DOTNETDUPE_API static String InternalFormat(const char* pFormat, const String* pArgs, int iArgCount);
 
             template &lt;typename Arg1, typename... Args&gt;
-            static String Format(const char* pFormat, const Arg1&amp; arg1, const Args&amp;... args) {
+<span style = "background-color:#dfd">            static String Format(const char* pFormat, const Arg1&amp; arg1, const Args&amp;... args) {
                 String arrArgs[] = { FormatArgHelper(arg1), FormatArgHelper(args)... };
                 return InternalFormat(pFormat, arrArgs, 1 + sizeof...(Args));
-            }
+            }</span>
             static String Format(const char* pFormat) {
                 return InternalFormat(pFormat, nullptr, 0);
             }

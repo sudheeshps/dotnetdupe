@@ -18,6 +18,9 @@
 
 #include "Common.h"
 #include "System/String.h"
+#include "System/Array.h"
+#include "System/DateTime.h"
+#include "System/Guid.h"
 #include "System/Text/Json/JsonElement.h"
 #include "System/Collections/Generic/List.h"
 #include "System/Collections/Generic/Dictionary.h"
@@ -33,6 +36,48 @@ namespace DotNetDupe {
                 /// \tparam T Type to serialize or deserialize.
                 template &lt;typename T, typename Enable = void&gt;
                 struct JsonConverter;
+
+                template &lt;typename T, typename = void&gt;
+                struct has_to_json : std::false_type {};
+
+                template &lt;typename T&gt;
+                struct has_to_json&lt;T, std::void_t&lt;decltype(std::declval&lt;const T&amp;&gt;().ToJson())&gt;&gt; : std::true_type {};
+
+                template &lt;typename T, typename = void&gt;
+                struct has_static_from_json : std::false_type {};
+
+                template &lt;typename T&gt;
+                struct has_static_from_json&lt;T, std::void_t&lt;decltype(T::FromJson(std::declval&lt;const JsonElement&amp;&gt;()))&gt;&gt; : std::true_type {};
+
+                template &lt;typename T, typename = void&gt;
+                struct has_member_from_json : std::false_type {};
+
+                template &lt;typename T&gt;
+                struct has_member_from_json&lt;T, std::void_t&lt;decltype(std::declval&lt;T&amp;&gt;().FromJson(std::declval&lt;const JsonElement&amp;&gt;()))&gt;&gt; : std::true_type {};
+
+                /// \brief Generic converter for types implementing ToJson() and static FromJson(const JsonElement&amp;).
+                template &lt;typename T&gt;
+                struct JsonConverter&lt;T, std::enable_if_t&lt;has_to_json&lt;T&gt;::value &amp;&amp; has_static_from_json&lt;T&gt;::value&gt;&gt; {
+                    static JsonElement Write(const T&amp; value) {
+                        return value.ToJson();
+                    }
+                    static T Read(const JsonElement&amp; element) {
+                        return T::FromJson(element);
+                    }
+                };
+
+                /// \brief Generic converter for types implementing ToJson() and member FromJson(const JsonElement&amp;).
+                template &lt;typename T&gt;
+                struct JsonConverter&lt;T, std::enable_if_t&lt;has_to_json&lt;T&gt;::value &amp;&amp; !has_static_from_json&lt;T&gt;::value &amp;&amp; has_member_from_json&lt;T&gt;::value&gt;&gt; {
+                    static JsonElement Write(const T&amp; value) {
+                        return value.ToJson();
+                    }
+                    static T Read(const JsonElement&amp; element) {
+                        T obj;
+                        obj.FromJson(element);
+                        return obj;
+                    }
+                };
 
                 /// \class JsonSerializer
                 /// \brief Provides functionality to serialize objects to JSON strings and deserialize JSON strings to objects.
@@ -51,6 +96,15 @@ namespace DotNetDupe {
                         return element.ToString();
                     }
 
+                    /// \brief Converts the value of a type specified by a generic type parameter into a JsonElement.
+                    /// \tparam T The type of the value to serialize.
+                    /// \param value The value to convert.
+                    /// \return A JsonElement representation of the value.
+                    template &lt;typename T&gt;
+                    static JsonElement SerializeToElement(const T&amp; value) {
+                        return JsonConverter&lt;T&gt;::Write(value);
+                    }
+
                     /// \brief Parses the text representing a single JSON value into an instance of the type specified by a generic type parameter.
                     /// \tparam T The target type of the JSON value.
                     /// \param sJson The JSON text to parse.
@@ -58,6 +112,15 @@ namespace DotNetDupe {
                     template &lt;typename T&gt;
                     static T Deserialize(const String&amp; sJson) {
                         JsonElement element = JsonElement::Parse(sJson);
+                        return JsonConverter&lt;T&gt;::Read(element);
+                    }
+
+                    /// \brief Deserializes the JsonElement into an instance of type T.
+                    /// \tparam T Target type.
+                    /// \param element JsonElement to deserialize.
+                    /// \return Deserialized object of type T.
+                    template &lt;typename T&gt;
+                    static T Deserialize(const JsonElement&amp; element) {
                         return JsonConverter&lt;T&gt;::Read(element);
                     }
                 };
@@ -75,6 +138,39 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \brief JsonConverter specialization for short.
+                template &lt;&gt;
+                struct JsonConverter&lt;short&gt; {
+                    static JsonElement Write(const short&amp; value) {
+                        return JsonElement(static_cast&lt;double&gt;(value));
+                    }
+                    static short Read(const JsonElement&amp; element) {
+                        return static_cast&lt;short&gt;(element.GetInt32());
+                    }
+                };
+
+                /// \brief JsonConverter specialization for unsigned short.
+                template &lt;&gt;
+                struct JsonConverter&lt;unsigned short&gt; {
+                    static JsonElement Write(const unsigned short&amp; value) {
+                        return JsonElement(static_cast&lt;double&gt;(value));
+                    }
+                    static unsigned short Read(const JsonElement&amp; element) {
+                        return static_cast&lt;unsigned short&gt;(element.GetInt32());
+                    }
+                };
+
+                /// \brief JsonConverter specialization for unsigned int.
+                template &lt;&gt;
+                struct JsonConverter&lt;unsigned int&gt; {
+                    static JsonElement Write(const unsigned int&amp; value) {
+                        return JsonElement(static_cast&lt;double&gt;(value));
+                    }
+                    static unsigned int Read(const JsonElement&amp; element) {
+                        return static_cast&lt;unsigned int&gt;(element.GetInt64());
+                    }
+                };
+
                 /// \brief JsonConverter specialization for long long.
                 template &lt;&gt;
                 struct JsonConverter&lt;long long&gt; {
@@ -83,6 +179,17 @@ namespace DotNetDupe {
                     }
                     static long long Read(const JsonElement&amp; element) {
                         return element.GetInt64();
+                    }
+                };
+
+                /// \brief JsonConverter specialization for unsigned long long.
+                template &lt;&gt;
+                struct JsonConverter&lt;unsigned long long&gt; {
+                    static JsonElement Write(const unsigned long long&amp; value) {
+                        return JsonElement(static_cast&lt;double&gt;(value));
+                    }
+                    static unsigned long long Read(const JsonElement&amp; element) {
+                        return static_cast&lt;unsigned long long&gt;(element.GetInt64());
                     }
                 };
 
@@ -119,6 +226,30 @@ namespace DotNetDupe {
                     }
                 };
 
+                /// \brief JsonConverter specialization for char.
+                template &lt;&gt;
+                struct JsonConverter&lt;char&gt; {
+                    static JsonElement Write(const char&amp; value) {
+                        char szBuf[2] = { value, '\0' };
+                        return JsonElement(String(szBuf));
+                    }
+                    static char Read(const JsonElement&amp; element) {
+                        String sStr = element.GetString();
+                        return (sStr.GetLength() &gt; 0) ? sStr[0] : '\0';
+                    }
+                };
+
+                /// \brief JsonConverter specialization for unsigned char.
+                template &lt;&gt;
+                struct JsonConverter&lt;unsigned char&gt; {
+                    static JsonElement Write(const unsigned char&amp; value) {
+                        return JsonElement(static_cast&lt;double&gt;(value));
+                    }
+                    static unsigned char Read(const JsonElement&amp; element) {
+                        return static_cast&lt;unsigned char&gt;(element.GetInt32());
+                    }
+                };
+
                 /// \brief JsonConverter specialization for String.
                 template &lt;&gt;
                 struct JsonConverter&lt;String&gt; {
@@ -127,6 +258,48 @@ namespace DotNetDupe {
                     }
                     static String Read(const JsonElement&amp; element) {
                         return element.GetString();
+                    }
+                };
+
+                /// \brief JsonConverter specialization for DateTime.
+                template &lt;&gt;
+                struct JsonConverter&lt;DateTime&gt; {
+                    static JsonElement Write(const DateTime&amp; value) {
+                        return JsonElement(value.ToString());
+                    }
+                    static DateTime Read(const JsonElement&amp; element) {
+                        return DateTime::Parse(element.GetString());
+                    }
+                };
+
+                /// \brief JsonConverter specialization for Guid.
+                template &lt;&gt;
+                struct JsonConverter&lt;Guid&gt; {
+                    static JsonElement Write(const Guid&amp; value) {
+                        return JsonElement(value.ToString());
+                    }
+                    static Guid Read(const JsonElement&amp; element) {
+                        return Guid(element.GetString());
+                    }
+                };
+
+                /// \brief JsonConverter specialization for Array&lt;U&gt;.
+                template &lt;typename U&gt;
+                struct JsonConverter&lt;Array&lt;U&gt;&gt; {
+                    static JsonElement Write(const Array&lt;U&gt;&amp; value) {
+                        JsonElement arr(JsonValueKind::Array);
+                        for (int i = 0; i &lt; value.GetLength(); ++i) {
+                            arr.AddArrayElement(JsonConverter&lt;U&gt;::Write(value[i]));
+                        }
+                        return arr;
+                    }
+                    static Array&lt;U&gt; Read(const JsonElement&amp; element) {
+                        int iLen = element.GetArrayLength();
+                        Array&lt;U&gt; arr(iLen);
+                        for (int i = 0; i &lt; iLen; ++i) {
+                            arr[i] = JsonConverter&lt;U&gt;::Read(element.GetArrayElement(i));
+                        }
+                        return arr;
                     }
                 };
 
@@ -173,6 +346,35 @@ namespace DotNetDupe {
                         return dict;
                     }</span>
                 };
+
+                template &lt;typename T&gt;
+                inline T JsonElement::Deserialize() const {
+                    return JsonConverter&lt;T&gt;::Read(*this);
+                }
+
+                template &lt;typename T&gt;
+                inline T JsonElement::GetPropertyAs(const String&amp; sPropertyName) const {
+                    return GetProperty(sPropertyName).Deserialize&lt;T&gt;();
+                }
+
+                template &lt;typename T&gt;
+                inline T JsonElement::GetPropertyOrDefault(const String&amp; sPropertyName, const T&amp; defaultValue) const {
+                    JsonElement objVal;
+                    if (!TryGetProperty(sPropertyName, objVal)) {
+                        return defaultValue;
+                    }
+                    return objVal.Deserialize&lt;T&gt;();
+                }
+
+                template &lt;typename T&gt;
+                inline bool JsonElement::TryGetPropertyAs(const String&amp; sPropertyName, T&amp; outValue) const {
+                    JsonElement objVal;
+                    if (!TryGetProperty(sPropertyName, objVal)) {
+                        return false;
+                    }
+                    outValue = objVal.Deserialize&lt;T&gt;();
+                    return true;
+                }
 
             }
         }

@@ -320,8 +320,8 @@ namespace DotNetDupe {
                             m_pImpl-&gt;dNumValue = objOther.m_pImpl-&gt;dNumValue;
                             m_pImpl-&gt;sStrValue = objOther.m_pImpl-&gt;sStrValue;</span>
                             
-<span style = "background-color:#dfd">                            for (int i = 0; i &lt; objOther.m_pImpl-&gt;lstArray.GetCount(); ++i) {</span>
-<span style = "background-color:#fdd">                                m_pImpl-&gt;lstArray.Add(objOther.m_pImpl-&gt;lstArray[i]);</span>
+<span style = "background-color:#dfd">                            for (int i = 0; i &lt; objOther.m_pImpl-&gt;lstArray.GetCount(); ++i) {
+                                m_pImpl-&gt;lstArray.Add(objOther.m_pImpl-&gt;lstArray[i]);</span>
                             }
                             
 <span style = "background-color:#dfd">                            auto keys = objOther.m_pImpl-&gt;dictObject.GetKeys();
@@ -397,9 +397,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    return static_cast&lt;int&gt;(GetDouble());
                 }</span>
 
-<span style = "background-color:#fdd">                long long JsonElement::GetInt64() const {</span>
+<span style = "background-color:#dfd">                long long JsonElement::GetInt64() const {</span>
                     /// Return: Truncated 64-bit signed integer.
-<span style = "background-color:#fdd">                    return static_cast&lt;long long&gt;(GetDouble());
+<span style = "background-color:#dfd">                    return static_cast&lt;long long&gt;(GetDouble());
                 }</span>
 
 <span style = "background-color:#dfd">                String JsonElement::GetString() const {</span>
@@ -431,6 +431,72 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) return false;
                     return m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue);</span>
 <span style = "background-color:#fdd">                }</span>
+
+<span style = "background-color:#dfd">                bool JsonElement::HasProperty(const String&amp; sPropertyName) const {</span>
+                    /// Guard: Ensure element is Object kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) return false;
+                    JsonElement objValue;
+                    return m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue);
+                }</span>
+
+<span style = "background-color:#dfd">                JsonElement JsonElement::GetProperty(const String&amp; sPropertyName) const {</span>
+                    /// Guard: Ensure element is Object kind.
+<span style = "background-color:#dfd">                    if (GetValueKind() != JsonValueKind::Object) {</span>
+<span style = "background-color:#fdd">                        throw InvalidOperationException("JsonElement is not an object.");</span>
+                    }
+<span style = "background-color:#dfd">                    JsonElement objValue;
+                    if (!m_pImpl-&gt;dictObject.TryGetValue(sPropertyName, objValue)) {
+                        throw JsonException(String::Format("Property '{0}' not found on JsonElement.", sPropertyName));</span>
+                    }
+<span style = "background-color:#dfd">                    return objValue;
+                }</span>
+
+<span style = "background-color:#dfd">                String JsonElement::GetPropertyString(const String&amp; sPropertyName, const String&amp; sDefault) const {</span>
+                    /// Step: Attempt property retrieval and return string value or default.
+<span style = "background-color:#dfd">                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) &amp;&amp; objValue.GetValueKind() == JsonValueKind::String) {
+                        return objValue.GetString();</span>
+                    }
+<span style = "background-color:#dfd">                    return sDefault;
+                }</span>
+
+<span style = "background-color:#dfd">                int JsonElement::GetPropertyInt32(const String&amp; sPropertyName, int iDefault) const {</span>
+                    /// Step: Attempt property retrieval and return integer value or default.
+<span style = "background-color:#dfd">                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) &amp;&amp; objValue.GetValueKind() == JsonValueKind::Number) {
+                        return objValue.GetInt32();</span>
+                    }
+<span style = "background-color:#dfd">                    return iDefault;
+                }</span>
+
+<span style = "background-color:#fdd">                long long JsonElement::GetPropertyInt64(const String&amp; sPropertyName, long long llDefault) const {</span>
+                    /// Step: Attempt property retrieval and return 64-bit integer or default.
+<span style = "background-color:#fdd">                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) &amp;&amp; objValue.GetValueKind() == JsonValueKind::Number) {
+                        return objValue.GetInt64();</span>
+                    }
+<span style = "background-color:#fdd">                    return llDefault;
+                }</span>
+
+<span style = "background-color:#dfd">                double JsonElement::GetPropertyDouble(const String&amp; sPropertyName, double dDefault) const {</span>
+                    /// Step: Attempt property retrieval and return double value or default.
+<span style = "background-color:#dfd">                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue) &amp;&amp; objValue.GetValueKind() == JsonValueKind::Number) {</span>
+                        return objValue.GetDouble();
+                    }
+<span style = "background-color:#dfd">                    return dDefault;
+                }</span>
+
+<span style = "background-color:#dfd">                bool JsonElement::GetPropertyBoolean(const String&amp; sPropertyName, bool bDefault) const {</span>
+                    /// Step: Attempt property retrieval and return boolean value or default.
+<span style = "background-color:#dfd">                    JsonElement objValue;
+                    if (TryGetProperty(sPropertyName, objValue)) {
+                        JsonValueKind eKind = objValue.GetValueKind();
+                        if (eKind == JsonValueKind::True) return true;</span>
+<span style = "background-color:#fdd">                        if (eKind == JsonValueKind::False) return false;</span>
+                    }
+<span style = "background-color:#dfd">                    return bDefault;
+                }</span>
 
 <span style = "background-color:#dfd">                void JsonElement::SetProperty(const String&amp; sPropertyName, const JsonElement&amp; objValue) {</span>
                     /// Guard: Ensure element is Object kind.

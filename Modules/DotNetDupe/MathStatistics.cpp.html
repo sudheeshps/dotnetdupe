@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>MathStatistics.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Math.h"
+#include "System/ArgumentException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include &lt;cmath&gt;
+
+namespace DotNetDupe {
+    namespace System {
+
+<span style = "background-color:#dfd">        double Math::Mean(const Collections::Generic::List&lt;double&gt;&amp; listValues) {</span>
+            /// Guard: Ensure list is not empty.
+<span style = "background-color:#dfd">            int iCount = listValues.GetCount();
+            if (iCount == 0) throw ArgumentException("Values list cannot be empty.");
+            double dSum = 0.0;
+            for (int i = 0; i &lt; iCount; ++i) {
+                dSum += listValues[i];</span>
+            }
+<span style = "background-color:#dfd">            return dSum / static_cast&lt;double&gt;(iCount);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::Variance(const Collections::Generic::List&lt;double&gt;&amp; listValues, bool bIsSample) {</span>
+            /// Guard: Validate sufficient observations.
+<span style = "background-color:#dfd">            int iCount = listValues.GetCount();
+            int iMinCount = bIsSample ? 2 : 1;
+            if (iCount &lt; iMinCount) throw ArgumentException("Insufficient values to compute variance.");
+            double dMean = Mean(listValues);</span>
+            double dSumSquares = 0.0;
+<span style = "background-color:#dfd">            for (int i = 0; i &lt; iCount; ++i) {
+                double dDiff = listValues[i] - dMean;
+                dSumSquares += dDiff * dDiff;</span>
+            }
+<span style = "background-color:#dfd">            int iDivisor = bIsSample ? (iCount - 1) : iCount;
+            return dSumSquares / static_cast&lt;double&gt;(iDivisor);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::StandardDeviation(const Collections::Generic::List&lt;double&gt;&amp; listValues, bool bIsSample) {</span>
+            /// Return: Square root of variance.
+<span style = "background-color:#dfd">            return std::sqrt(Variance(listValues, bIsSample));
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::StdDev(const Collections::Generic::List&lt;double&gt;&amp; listValues, bool bIsSample) {</span>
+            /// Forward: Delegate to StandardDeviation.
+<span style = "background-color:#dfd">            return StandardDeviation(listValues, bIsSample);
+        }</span>
+
+<span style = "background-color:#dfd">        double Math::MovingAverage(const Collections::Generic::List&lt;double&gt;&amp; listValues, int iPeriod) {</span>
+            /// Guard: Validate period range and item count.
+<span style = "background-color:#dfd">            if (iPeriod &lt;= 0) throw ArgumentOutOfRangeException("Period must be greater than zero.");
+            int iCount = listValues.GetCount();
+            if (iCount &lt; iPeriod) throw ArgumentException("Not enough data points for moving average window.");</span>
+            double dSum = 0.0;
+<span style = "background-color:#dfd">            int iStart = iCount - iPeriod;
+            for (int i = iStart; i &lt; iCount; ++i) {
+                dSum += listValues[i];</span>
+            }
+<span style = "background-color:#dfd">            return dSum / static_cast&lt;double&gt;(iPeriod);
+        }</span>
+
+        Collections::Generic::List&lt;double&gt; Math::MovingAverageSeries(
+<span style = "background-color:#dfd">            const Collections::Generic::List&lt;double&gt;&amp; listValues, int iPeriod) {</span>
+            /// Guard: Validate period range.
+<span style = "background-color:#dfd">            if (iPeriod &lt;= 0) throw ArgumentOutOfRangeException("Period must be greater than zero.");
+            Collections::Generic::List&lt;double&gt; listResult;
+            int iCount = listValues.GetCount();
+            if (iCount &lt; iPeriod) return listResult;
+            double dCurrentSum = 0.0;
+            for (int i = 0; i &lt; iPeriod; ++i) {
+                dCurrentSum += listValues[i];</span>
+            }
+<span style = "background-color:#dfd">            listResult.Add(dCurrentSum / static_cast&lt;double&gt;(iPeriod));
+            for (int i = iPeriod; i &lt; iCount; ++i) {
+                dCurrentSum += listValues[i] - listValues[i - iPeriod];
+                listResult.Add(dCurrentSum / static_cast&lt;double&gt;(iPeriod));</span>
+            }
+<span style = "background-color:#dfd">            return listResult;
+        }</span>
+
+<span style = "background-color:#dfd">        static double ComputeInitialSma(const Collections::Generic::List&lt;double&gt;&amp; listValues, int iPeriod) {</span>
+            /// Step: Compute initial simple moving average for EMA seed.
+<span style = "background-color:#dfd">            double dSum = 0.0;
+            for (int i = 0; i &lt; iPeriod; ++i) {
+                dSum += listValues[i];</span>
+            }
+            return dSum / static_cast&lt;double&gt;(iPeriod);
+<span style = "background-color:#dfd">        }</span>
+
+        double Math::ExponentialMovingAverage(
+<span style = "background-color:#dfd">            const Collections::Generic::List&lt;double&gt;&amp; listValues, int iPeriod, double dSmoothing) {</span>
+            /// Guard: Validate period and items.
+<span style = "background-color:#dfd">            if (iPeriod &lt;= 0) throw ArgumentOutOfRangeException("Period must be greater than zero.");
+            int iCount = listValues.GetCount();
+            if (iCount &lt; iPeriod) throw ArgumentException("Not enough data points for EMA.");
+            double dMultiplier = dSmoothing / (static_cast&lt;double&gt;(iPeriod) + 1.0);
+            double dEma = ComputeInitialSma(listValues, iPeriod);
+            for (int i = iPeriod; i &lt; iCount; ++i) {
+                dEma = (listValues[i] - dEma) * dMultiplier + dEma;</span>
+            }
+<span style = "background-color:#dfd">            return dEma;
+        }</span>
+
+        Collections::Generic::List&lt;double&gt; Math::ExponentialMovingAverageSeries(
+<span style = "background-color:#dfd">            const Collections::Generic::List&lt;double&gt;&amp; listValues, int iPeriod, double dSmoothing) {</span>
+            /// Guard: Validate period parameter.
+<span style = "background-color:#dfd">            if (iPeriod &lt;= 0) throw ArgumentOutOfRangeException("Period must be greater than zero.");
+            Collections::Generic::List&lt;double&gt; listResult;
+            int iCount = listValues.GetCount();
+            if (iCount &lt; iPeriod) return listResult;
+            double dMultiplier = dSmoothing / (static_cast&lt;double&gt;(iPeriod) + 1.0);
+            double dEma = ComputeInitialSma(listValues, iPeriod);
+            listResult.Add(dEma);
+            for (int i = iPeriod; i &lt; iCount; ++i) {
+                dEma = (listValues[i] - dEma) * dMultiplier + dEma;
+                listResult.Add(dEma);</span>
+            }
+<span style = "background-color:#dfd">            return listResult;
+        }</span>
+
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
