@@ -270,6 +270,208 @@ namespace DotNetDupeTests {
         EXPECT_EQ(result, input);
     }
 
+    // --- Strongly-Typed Generic DTO & Nested Mapping Tests ---
+
+    struct TestStockQuote {
+        String Symbol;
+        double Price;
+        int Volume;
+        List<double> History;
+
+        JsonElement ToJson() const {
+            JsonElement obj(JsonValueKind::Object);
+            obj.SetProperty("Symbol", JsonElement(Symbol));
+            obj.SetProperty("Price", JsonElement(Price));
+            obj.SetProperty("Volume", JsonElement(static_cast<double>(Volume)));
+            obj.SetProperty("History", JsonSerializer::SerializeToElement(History));
+            return obj;
+        }
+
+        static TestStockQuote FromJson(const JsonElement& elem) {
+            TestStockQuote q;
+            q.Symbol = elem.GetPropertyString("Symbol");
+            q.Price = elem.GetPropertyDouble("Price");
+            q.Volume = elem.GetPropertyInt32("Volume");
+            q.History = elem.GetPropertyAs<List<double>>("History");
+            return q;
+        }
+
+        bool operator==(const TestStockQuote& other) const {
+            if (Symbol != other.Symbol || Price != other.Price || Volume != other.Volume) return false;
+            if (History.GetCount() != other.History.GetCount()) return false;
+            for (int i = 0; i < History.GetCount(); ++i) {
+                if (History[i] != other.History[i]) return false;
+            }
+            return true;
+        }
+    };
+
+    struct TestOrderDto {
+        String OrderId;
+        double Amount;
+
+        JsonElement ToJson() const {
+            JsonElement obj(JsonValueKind::Object);
+            obj.SetProperty("OrderId", JsonElement(OrderId));
+            obj.SetProperty("Amount", JsonElement(Amount));
+            return obj;
+        }
+
+        void FromJson(const JsonElement& elem) {
+            OrderId = elem.GetPropertyString("OrderId");
+            Amount = elem.GetPropertyDouble("Amount");
+        }
+
+        bool operator==(const TestOrderDto& other) const {
+            return OrderId == other.OrderId && Amount == other.Amount;
+        }
+    };
+
+    TEST(JsonSerializerTests, GivenDtoWithStaticFromJson_WhenSerializedAndDeserialized_ThenMapsAutomatically) {
+        // Given
+        TestStockQuote quote;
+        quote.Symbol = "AAPL";
+        quote.Price = 175.50;
+        quote.Volume = 50000;
+        quote.History = { 174.0, 174.5, 175.5 };
+
+        // When
+        String json = JsonSerializer::Serialize(quote);
+        TestStockQuote restored = JsonSerializer::Deserialize<TestStockQuote>(json);
+
+        // Then
+        EXPECT_EQ(restored, quote);
+    }
+
+    TEST(JsonSerializerTests, GivenNestedListOfDtos_WhenSerializedAndDeserialized_ThenMapsNestedCollections) {
+        // Given
+        List<TestStockQuote> portfolio;
+        TestStockQuote q1 = { "MSFT", 400.0, 1000, { 395.0, 400.0 } };
+        TestStockQuote q2 = { "NVDA", 120.0, 2000, { 115.0, 120.0 } };
+        portfolio.Add(q1);
+        portfolio.Add(q2);
+
+        // When
+        String json = JsonSerializer::Serialize(portfolio);
+        List<TestStockQuote> restored = JsonSerializer::Deserialize<List<TestStockQuote>>(json);
+
+        // Then
+        EXPECT_EQ(restored.GetCount(), 2);
+        EXPECT_EQ(restored[0], q1);
+        EXPECT_EQ(restored[1], q2);
+    }
+
+    TEST(JsonSerializerTests, GivenDtoWithMemberFromJson_WhenSerializedAndDeserialized_ThenMapsAutomatically) {
+        // Given
+        TestOrderDto order = { "ORD-12345", 99.95 };
+
+        // When
+        String json = JsonSerializer::Serialize(order);
+        TestOrderDto restored = JsonSerializer::Deserialize<TestOrderDto>(json);
+
+        // Then
+        EXPECT_EQ(restored, order);
+    }
+
+    // --- Array & Additional Primitives Tests ---
+
+    TEST(JsonSerializerTests, GivenArrayInt_WhenSerializedAndDeserialized_ThenPreservesElements) {
+        // Given
+        Array<int> arr(3);
+        arr[0] = 10;
+        arr[1] = 20;
+        arr[2] = 30;
+
+        // When
+        String json = JsonSerializer::Serialize(arr);
+        Array<int> restored = JsonSerializer::Deserialize<Array<int>>(json);
+
+        // Then
+        EXPECT_EQ(restored.GetLength(), 3);
+        EXPECT_EQ(restored[0], 10);
+        EXPECT_EQ(restored[1], 20);
+        EXPECT_EQ(restored[2], 30);
+    }
+
+    TEST(JsonSerializerTests, GivenNumericPrimitives_WhenSerializedAndDeserialized_ThenPreservesValues) {
+        // Given & When & Then
+        short sVal = 1234;
+        EXPECT_EQ(JsonSerializer::Deserialize<short>(JsonSerializer::Serialize(sVal)), sVal);
+
+        unsigned short usVal = 5678;
+        EXPECT_EQ(JsonSerializer::Deserialize<unsigned short>(JsonSerializer::Serialize(usVal)), usVal);
+
+        unsigned int uiVal = 999999U;
+        EXPECT_EQ(JsonSerializer::Deserialize<unsigned int>(JsonSerializer::Serialize(uiVal)), uiVal);
+
+        unsigned long long ullVal = 12345678901234ULL;
+        EXPECT_EQ(JsonSerializer::Deserialize<unsigned long long>(JsonSerializer::Serialize(ullVal)), ullVal);
+
+        char cVal = 'Z';
+        EXPECT_EQ(JsonSerializer::Deserialize<char>(JsonSerializer::Serialize(cVal)), cVal);
+
+        unsigned char ucVal = 200;
+        EXPECT_EQ(JsonSerializer::Deserialize<unsigned char>(JsonSerializer::Serialize(ucVal)), ucVal);
+    }
+
+    TEST(JsonSerializerTests, GivenDateTimeAndGuid_WhenSerializedAndDeserialized_ThenRoundTrips) {
+        // Given
+        DateTime dt(2026, 10, 1, 12, 30, 45);
+        Guid guid = Guid::NewGuid();
+
+        // When
+        String jsonDt = JsonSerializer::Serialize(dt);
+        String jsonGuid = JsonSerializer::Serialize(guid);
+
+        DateTime restoredDt = JsonSerializer::Deserialize<DateTime>(jsonDt);
+        Guid restoredGuid = JsonSerializer::Deserialize<Guid>(jsonGuid);
+
+        // Then
+        EXPECT_EQ(restoredDt.GetYear(), 2026);
+        EXPECT_EQ(restoredDt.GetMonth(), 10);
+        EXPECT_EQ(restoredDt.GetDay(), 1);
+        EXPECT_EQ(restoredGuid, guid);
+    }
+
+    // --- JsonElement Helper Methods Tests ---
+
+    TEST(JsonSerializerTests, GivenJsonObject_WhenHelperGettersCalled_ThenReturnsExpectedValues) {
+        // Given
+        String json = "{\"name\":\"Alpha\",\"age\":25,\"score\":98.5,\"active\":true}";
+        JsonElement elem = JsonElement::Parse(json);
+
+        // When & Then
+        EXPECT_TRUE(elem.HasProperty("name"));
+        EXPECT_FALSE(elem.HasProperty("missing"));
+
+        EXPECT_EQ(elem.GetPropertyString("name"), "Alpha");
+        EXPECT_EQ(elem.GetPropertyString("missing", "default"), "default");
+
+        EXPECT_EQ(elem.GetPropertyInt32("age"), 25);
+        EXPECT_EQ(elem.GetPropertyInt32("missing", 99), 99);
+
+        EXPECT_DOUBLE_EQ(elem.GetPropertyDouble("score"), 98.5);
+        EXPECT_DOUBLE_EQ(elem.GetPropertyDouble("missing", 0.0), 0.0);
+
+        EXPECT_TRUE(elem.GetPropertyBoolean("active"));
+        EXPECT_FALSE(elem.GetPropertyBoolean("missing", false));
+
+        // GetProperty and template accessors
+        JsonElement prop = elem.GetProperty("name");
+        EXPECT_EQ(prop.GetString(), "Alpha");
+        EXPECT_THROW(elem.GetProperty("missing"), JsonException);
+
+        EXPECT_EQ(elem.GetPropertyAs<String>("name"), "Alpha");
+        EXPECT_EQ(elem.GetPropertyAs<int>("age"), 25);
+        EXPECT_EQ(elem.GetPropertyOrDefault<String>("missing", "fallback"), "fallback");
+
+        int outAge = 0;
+        EXPECT_TRUE(elem.TryGetPropertyAs("age", outAge));
+        EXPECT_EQ(outAge, 25);
+        int outMissing = 0;
+        EXPECT_FALSE(elem.TryGetPropertyAs("missing", outMissing));
+    }
+
     // --- Negative / Error Cases Tests ---
 
     TEST(JsonSerializerTests, GivenInvalidJson_WhenDeserialized_ThenThrowsException) {

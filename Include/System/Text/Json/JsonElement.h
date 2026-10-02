@@ -117,6 +117,76 @@ namespace DotNetDupe {
                     /// \return true if the property was found; otherwise, false.
                     DOTNETDUPE_API bool TryGetProperty(const String& sPropertyName, JsonElement& objValue) const;
 
+                    /// \brief Determines whether the current JSON object contains a property with the specified name.
+                    /// \param sPropertyName The name of the property to locate.
+                    /// \return true if the property exists; otherwise, false.
+                    DOTNETDUPE_API bool HasProperty(const String& sPropertyName) const;
+
+                    /// \brief Gets the value of the property with the specified name.
+                    /// \param sPropertyName The name of the property to find.
+                    /// \return The JsonElement representing the property value.
+                    /// \throws JsonException If property is not found or element is not an Object.
+                    DOTNETDUPE_API JsonElement GetProperty(const String& sPropertyName) const;
+
+                    /// \brief Gets the string value of the specified property, or default if not found.
+                    /// \param sPropertyName The name of the property.
+                    /// \param sDefault Default value to return if not found or not string.
+                    /// \return Property string value or default.
+                    DOTNETDUPE_API String GetPropertyString(const String& sPropertyName, const String& sDefault = String()) const;
+
+                    /// \brief Gets the 32-bit integer value of the specified property, or default if not found.
+                    /// \param sPropertyName The name of the property.
+                    /// \param iDefault Default value to return if not found or not number.
+                    /// \return Property integer value or default.
+                    DOTNETDUPE_API int GetPropertyInt32(const String& sPropertyName, int iDefault = 0) const;
+
+                    /// \brief Gets the 64-bit integer value of the specified property, or default if not found.
+                    /// \param sPropertyName The name of the property.
+                    /// \param llDefault Default value to return if not found or not number.
+                    /// \return Property 64-bit integer value or default.
+                    DOTNETDUPE_API long long GetPropertyInt64(const String& sPropertyName, long long llDefault = 0) const;
+
+                    /// \brief Gets the double-precision floating point value of the specified property, or default if not found.
+                    /// \param sPropertyName The name of the property.
+                    /// \param dDefault Default value to return if not found or not number.
+                    /// \return Property double value or default.
+                    DOTNETDUPE_API double GetPropertyDouble(const String& sPropertyName, double dDefault = 0.0) const;
+
+                    /// \brief Gets the boolean value of the specified property, or default if not found.
+                    /// \param sPropertyName The name of the property.
+                    /// \param bDefault Default value to return if not found or not boolean.
+                    /// \return Property boolean value or default.
+                    DOTNETDUPE_API bool GetPropertyBoolean(const String& sPropertyName, bool bDefault = false) const;
+
+                    /// \brief Deserializes the current element into type T.
+                    /// \tparam T Target type.
+                    /// \return An instance of T deserialized from this element.
+                    template <typename T>
+                    T Deserialize() const;
+
+                    /// \brief Gets the specified property deserialized to type T.
+                    /// \tparam T Target type.
+                    /// \param sPropertyName Property name.
+                    /// \return An instance of T deserialized from the property.
+                    template <typename T>
+                    T GetPropertyAs(const String& sPropertyName) const;
+
+                    /// \brief Gets the specified property deserialized to type T, or returns defaultValue if absent.
+                    /// \tparam T Target type.
+                    /// \param sPropertyName Property name.
+                    /// \param defaultValue Default fallback value.
+                    /// \return An instance of T.
+                    template <typename T>
+                    T GetPropertyOrDefault(const String& sPropertyName, const T& defaultValue = T()) const;
+
+                    /// \brief Attempts to get and deserialize the specified property.
+                    /// \tparam T Target type.
+                    /// \param sPropertyName Property name.
+                    /// \param outValue Output parameter.
+                    /// \return true if found and deserialized; otherwise false.
+                    template <typename T>
+                    bool TryGetPropertyAs(const String& sPropertyName, T& outValue) const;
+
                     /// \brief Sets or replaces a property on the current JSON object.
                     /// \param sPropertyName The name of the property to set.
                     /// \param objValue The value of the property.

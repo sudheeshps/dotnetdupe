@@ -97,8 +97,10 @@ var hierarchy =
       [ "DotNetDupe::System::Linq::Internal::KeyComparer< T, FKey >", "struct_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_key_comparer.html", null ]
     ] ],
     [ "DotNetDupe::System::Linq::Internal::LinqSortHelper&lt; T &gt;", "class_dot_net_dupe_1_1_system_1_1_linq_1_1_internal_1_1_linq_sort_helper.html", null ],
+    [ "DotNetDupe::System::Math", "class_dot_net_dupe_1_1_system_1_1_math.html", null ],
     [ "DotNetDupe::System::Net::Dns", "class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html", null ],
     [ "DotNetDupe::System::Net::Http::DownloadProgress", "struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html", null ],
+    [ "DotNetDupe::System::Numerics::Statistics", "class_dot_net_dupe_1_1_system_1_1_numerics_1_1_statistics.html", null ],
     [ "DotNetDupe::System::Object", "class_dot_net_dupe_1_1_system_1_1_object.html", [
       [ "DotNetDupe::System::Collections::Generic::IEnumerable< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
         [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< ServiceDescriptor >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
@@ -593,14 +595,25 @@ var hierarchy =
     [ "DotNetDupe::System::SmartPointer&lt; T &gt;", "class_dot_net_dupe_1_1_system_1_1_smart_pointer.html", null ],
     [ "DotNetDupe::System::String", "class_dot_net_dupe_1_1_system_1_1_string.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; T, Enable &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Array&lt; U &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_array_3_01_u_01_4_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; bool &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01bool_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; char &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01char_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::Dictionary&lt; String, U &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic05e1b583119e4fd20abff0d3b5d9685a.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Collections::Generic::List&lt; U &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_collections_1_1_generic_1_1_list_3_01_u_01_4_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; DateTime &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_date_time_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; double &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01double_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; float &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01float_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; Guid &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_guid_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; int &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01int_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; long long &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01long_01long_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; short &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01short_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonConverter&lt; String &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_string_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; T, std::enable_if_t&lt; has_to_json&lt; T &gt;::value &amp;&amp;!has_static_from_json&lt; T &gt;::value &amp;&amp;has_member_from_json&lt; T &gt;::value &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_t_00_01std_1_1enable__id2e13e36e550f1aa73c1176c47710a4b.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; T, std::enable_if_t&lt; has_to_json&lt; T &gt;::value &amp;&amp;has_static_from_json&lt; T &gt;::value &gt; &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01_t_00_01std_1_1enable__ifaf0cff17638372dccd31bfdbfb64348.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned char &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01unsigned_01char_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned int &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01unsigned_01int_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned long long &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01unsigned_01long_01long_01_4.html", null ],
+    [ "DotNetDupe::System::Text::Json::JsonConverter&lt; unsigned short &gt;", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_converter_3_01unsigned_01short_01_4.html", null ],
     [ "DotNetDupe::System::Text::Json::JsonSerializer", "class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html", null ],
     [ "DotNetDupe::System::Threading::InterlockedInternal", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_interlocked_internal.html", null ],
     [ "DotNetDupe::System::Threading::Lock&lt; T &gt;", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_lock.html", null ],
@@ -658,11 +671,20 @@ var hierarchy =
     [ "std::false_type", null, [
       [ "DotNetDupe::System::Internal::HasEqualityOperator< T, std::void_t< decltype(std::declval< const T & >()==std::declval< const T & >())> >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator_3_01_t_00_01std_1_1void__t51657a7b966636b1e5b61159bfc8a6ae.html", null ],
       [ "DotNetDupe::System::IsComplete< T, std::void_t< decltype(sizeof(T))> >", "struct_dot_net_dupe_1_1_system_1_1_is_complete_3_01_t_00_01std_1_1void__t_3_01decltype_07sizeof_07_t_08_08_4_01_4.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_member_from_json< T, std::void_t< decltype(std::declval< T & >().FromJson(std::declval< const JsonElement & >()))> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__member__from__json_3_01_t_00_01std_1_1vc5130af0cea3aae98ff376e28f32d838.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_static_from_json< T, std::void_t< decltype(T::FromJson(std::declval< const JsonElement & >()))> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__static__from__json_3_01_t_00_01std_1_1vc9660f399243a9e4f67acbbbf73099fa.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_to_json< T, std::void_t< decltype(std::declval< const T & >().ToJson())> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__to__json_3_01_t_00_01std_1_1void__t_3_0733a1679c75eb8295cebcf3920b1407e.html", null ],
       [ "DotNetDupe::System::Internal::HasEqualityOperator< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator.html", null ],
-      [ "DotNetDupe::System::IsComplete< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_is_complete.html", null ]
+      [ "DotNetDupe::System::IsComplete< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_is_complete.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_member_from_json< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__member__from__json.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_static_from_json< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__static__from__json.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_to_json< T, typename >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__to__json.html", null ]
     ] ],
     [ "std::true_type", null, [
       [ "DotNetDupe::System::Internal::HasEqualityOperator< T, std::void_t< decltype(std::declval< const T & >()==std::declval< const T & >())> >", "struct_dot_net_dupe_1_1_system_1_1_internal_1_1_has_equality_operator_3_01_t_00_01std_1_1void__t51657a7b966636b1e5b61159bfc8a6ae.html", null ],
-      [ "DotNetDupe::System::IsComplete< T, std::void_t< decltype(sizeof(T))> >", "struct_dot_net_dupe_1_1_system_1_1_is_complete_3_01_t_00_01std_1_1void__t_3_01decltype_07sizeof_07_t_08_08_4_01_4.html", null ]
+      [ "DotNetDupe::System::IsComplete< T, std::void_t< decltype(sizeof(T))> >", "struct_dot_net_dupe_1_1_system_1_1_is_complete_3_01_t_00_01std_1_1void__t_3_01decltype_07sizeof_07_t_08_08_4_01_4.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_member_from_json< T, std::void_t< decltype(std::declval< T & >().FromJson(std::declval< const JsonElement & >()))> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__member__from__json_3_01_t_00_01std_1_1vc5130af0cea3aae98ff376e28f32d838.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_static_from_json< T, std::void_t< decltype(T::FromJson(std::declval< const JsonElement & >()))> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__static__from__json_3_01_t_00_01std_1_1vc9660f399243a9e4f67acbbbf73099fa.html", null ],
+      [ "DotNetDupe::System::Text::Json::has_to_json< T, std::void_t< decltype(std::declval< const T & >().ToJson())> >", "struct_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1has__to__json_3_01_t_00_01std_1_1void__t_3_0733a1679c75eb8295cebcf3920b1407e.html", null ]
     ] ]
 ];

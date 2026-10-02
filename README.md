@@ -16,6 +16,9 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Latest Published Version ([![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue&label=version)](https://www.nuget.org/packages/DotNetDupe)):** Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:
+> - 🧮 **Mathematical Primitives & Time-Series Statistics (`System::Math` & `System::Numerics::Statistics`):** Full suite of IEEE 754 arithmetic and transcendental methods (`Abs`, `Min`, `Max`, `Clamp`, `Round`, `Sqrt`, `Pow`, `Log`, `Sin`, `Cos`, `Tan`) and time-series statistics (`Mean`, `Variance`, `StandardDeviation`, `MovingAverage`, `MovingAverageSeries`, `ExponentialMovingAverage`, `ExponentialMovingAverageSeries`).
+> - 🔣 **Generic JSON Serialization & DOM Accessors (`System::Text::Json`):** Strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (`ToJson`/`FromJson`), expanded primitive/container converters (`Array<T>`, `DateTime`, `Guid`), and `JsonElement` property helpers (`HasProperty`, `GetProperty`, `GetPropertyString`, `GetPropertyInt32`, `GetPropertyDouble`, `GetPropertyAs<T>`, `Deserialize<T>`).
+> - 🐧 **Linux Native NuGet Runtime Support (`libDotNetDupe.so`):** Native Linux x64 shared library bundled under `runtimes/linux-x64/native/libDotNetDupe.so` with automated MSBuild `.targets` and CMake integration.
 > - ⚡ **Concurrent Collections & Producer-Consumer Hierarchy (`System::Collections::Concurrent`):** Full interface hierarchy retrofit across `ConcurrentQueue<T>`, `ConcurrentStack<T>`, `ConcurrentBag<T>`, `BlockingCollection<T>`, and `ConcurrentDictionary<TKey, TValue>` inheriting generic collection base interfaces (`IReadOnlyCollection<T>`, `IEnumerable<T>`, `IDictionary<TKey, TValue>`) and introducing `IProducerConsumerCollection<T>` with lock-free snapshot enumeration and direct LINQ method chaining.
 > - 🧠 **Dedicated Smart Pointers & Collections Documentation:** Comprehensive architectural guides, comparison tables, and compile-ready code snippets showcasing unique/shared ownership, polymorphic abstractions, fast dictionaries/hash sets, bounded blocking pipelines, and snapshot iteration.
 > - ⚡ **First-Class C# `EventHandler<TEventArgs>` & `EventArgs` Model:** Idiomatic C# .NET event-driven delegate system with multicast subscription (`+=`, `-=`), member method binding (`Add(pInstance, &Class::Method)`), token-based unsubscription, and thread-safe dispatch.
@@ -171,7 +174,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
 *   CMake 3.15+ (for building on Linux / WSL)
 *   **OpenSSL / SSL Runtime Dependencies**:
     *   **Windows**: The NuGet package bundles pre-built OpenSSL runtime binaries (`libssl-4-x64.dll`, `libcrypto-4-x64.dll` for x64, and `libssl-4.dll`, `libcrypto-4.dll` for x86) which are automatically copied into the target build output directory via MSBuild `.targets`.
-    *   **Linux**: Requires system OpenSSL 3.x / 1.1.x runtime libraries (`libssl.so`, `libcrypto.so`). Install via `sudo apt-get install -y libssl-dev` (Ubuntu/Debian) or `sudo dnf install -y openssl-devel` (Fedora/RHEL).
+    *   **Linux**: The NuGet package bundles pre-built OpenSSL 4.0.1 runtime libraries (`libssl.so.4`, `libcrypto.so.4`, and symlinks `libssl.so`, `libcrypto.so`) under `runtimes/linux-x64/native/` which are automatically copied to output directories via MSBuild `.targets`. Pre-compiled libraries and headers are also provided in `external/openssl-4.0.1/linux-x64/`.
 
 ### Installation ⬇️
 
@@ -185,7 +188,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.2.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.3.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -221,13 +224,13 @@ DotNetDupe is designed for high portability and officially supports **Windows** 
 DotNetDupe is distributed as a multi-platform NuGet package. It contains native binaries for:
 - `win-x64` (`DotNetDupe.dll`, `libssl-4-x64.dll`, `libcrypto-4-x64.dll`)
 - `win-x86` (`DotNetDupe.dll`, `libssl-4.dll`, `libcrypto-4.dll`)
-- `linux-x64` (`libDotNetDupe.so`)
+- `linux-x64` (`libDotNetDupe.so`, `libssl.so.4`, `libcrypto.so.4`)
 
 When you add the NuGet package to your project, the appropriate binary and dependencies are automatically selected based on your target platform.
 
 #### SSL Runtime Dependencies
 * **Windows**: Dynamic OpenSSL dependencies (`libssl-4-x64.dll` & `libcrypto-4-x64.dll`) are packaged directly inside the NuGet package and deployed next to `DotNetDupe.dll` at build time.
-* **Linux**: Dynamically links against standard host OpenSSL libraries (`libssl.so.3` / `libssl.so.1.1`). Ensure OpenSSL is installed on target runtime hosts (`apt-get install libssl3` or `libssl1.1`).
+* **Linux**: Dynamic OpenSSL 4.0.1 dependencies (`libssl.so.4` & `libcrypto.so.4`) are packaged directly inside the NuGet package and deployed alongside `libDotNetDupe.so` at build time via MSBuild `.targets`.
 
 #### Note for Linux Users
 On Linux, NuGet packages are typically managed via `dotnet` CLI or integrated into CMake projects using tools like `vcpkg` or by manually extracting the shared library (`.so`) and headers from the `.nupkg` (which is a ZIP file).
@@ -1391,6 +1394,7 @@ For detailed information on the available classes, methods, and their usage, ple
 | [UriFormat](Include/System/UriEnums.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system.html) | Controls how URI information is escaped. |
 | [UriParser](Include/System/UriParser.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_uri_parser.html) | Parses and validates URI schemes. |
 | [GenericUriParser](Include/System/UriParser.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_generic_uri_parser.html) | Customizable parser for hierarchical URI schemes. |
+| [Math](Include/System/Math.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_math.html) | Provides constants and static methods for trigonometric, logarithmic, and other common mathematical functions, as well as time-series statistics. |
 | [Version](Include/System/Version.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_version.html) | Represents version numbers (`major.minor.build.revision`). |
 
 **Core Interfaces**
@@ -1603,7 +1607,18 @@ For detailed information on the available classes, methods, and their usage, ple
 |---|---|
 | [StringBuilder](Include/System/Text/StringBuilder.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_string_builder.html) | Mutable string buffer for high-performance string concatenation. |
 | [TextEncoding](Include/System/Text/TextEncoding.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_text_encoding.html) | Represents character encodings (UTF-8, ASCII, UTF-16). |
-| [JsonSerializer](Include/System/Text/Json/JsonSerializer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html) | Serializes objects to JSON strings and deserializes JSON to C++ types. |
+| [JsonElement](Include/System/Text/Json/JsonElement.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_element.html) | Represents a specific JSON value within a JSON document or object hierarchy, supporting property querying, type conversion, and deserialization. |
+| [JsonSerializer](Include/System/Text/Json/JsonSerializer.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_text_1_1_json_1_1_json_serializer.html) | Serializes objects to JSON strings and deserializes JSON to C++ types with compile-time DTO mapping and container converters. |
+
+---
+
+### Namespace: [`DotNetDupe::System::Numerics`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_numerics.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_numerics.html)
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [Statistics](Include/System/Numerics/Statistics.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_numerics_1_1_statistics.html) | Provides statistical calculation functions and time-series moving averages (`Mean`, `Variance`, `StdDev`, `MovingAverage`, `ExponentialMovingAverage`). |
 
 ---
 

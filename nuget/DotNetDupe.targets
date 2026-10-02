@@ -33,6 +33,17 @@
     <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\$(DotNetDupe_Platform)\native\libcrypto*.dll" />
   </ItemGroup>
 
-  <!-- Linux/iOS support for MSBuild (e.g. via .NET MAUI or mono) would go here -->
-  <!-- Note: Most Linux/iOS consumers would use CMake, which doesn't use .targets files directly. -->
+  <!-- Linux Implementation -->
+  <ItemDefinitionGroup Condition="'$(OS)' != 'Windows_NT'">
+    <Link>
+      <AdditionalLibraryDirectories>$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>-lDotNetDupe;-lssl;-lcrypto;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libDotNetDupe.so" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libssl*.so*" />
+    <ReferenceCopyLocalPaths Include="$(MSBuildThisFileDirectory)..\..\runtimes\linux-x64\native\libcrypto*.so*" />
+  </ItemGroup>
 </Project>
