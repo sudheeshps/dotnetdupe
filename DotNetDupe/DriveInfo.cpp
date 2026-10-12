@@ -20,20 +20,22 @@ namespace DotNetDupe {
                 /// Step: Initialize default instance.
             }
 
+            static String NormalizeDrivePath(const String& sDriveName) {
+                String sName = sDriveName;
+#if defined(_WIN32)
+                if (sName.GetLength() == 1 && isalpha(static_cast<unsigned char>(sName[0]))) return sName + ":\\";
+                if (sName.GetLength() == 2 && sName[1] == ':') return sName + "\\";
+                if (!sName.EndsWith('\\', false) && !sName.EndsWith('/', false)) return sName + "\\";
+#else
+                if (!sName.EndsWith('/', false)) return sName + "/";
+#endif
+                return sName;
+            }
+
             DriveInfo::DriveInfo(const String& sDriveName) {
                 /// Guard: Validate input argument.
-                if (sDriveName.IsEmpty()) {
-                    throw ArgumentException("Drive name cannot be empty.");
-                }
-                String sName = sDriveName;
-                if (sName.GetLength() == 1 && isalpha(static_cast<unsigned char>(sName[0]))) {
-                    sName = sName + ":\\";
-                } else if (sName.GetLength() == 2 && sName[1] == ':') {
-                    sName = sName + "\\";
-                } else if (!sName.EndsWith('\\', false) && !sName.EndsWith('/', false)) {
-                    sName = sName + "\\";
-                }
-                m_sName = sName;
+                if (sDriveName.IsEmpty()) throw ArgumentException("Drive name cannot be empty.");
+                m_sName = NormalizeDrivePath(sDriveName);
             }
 
             String DriveInfo::GetName() const {
@@ -102,7 +104,11 @@ namespace DotNetDupe {
                 }
                 return 0LL;
 #else
-                return GetAvailableFreeSpace();
+                struct statvfs vfs;
+                if (statvfs(m_sName.GetRawString(), &vfs) == 0) {
+                    return static_cast<long long>(vfs.f_bfree) * static_cast<long long>(vfs.f_frsize);
+                }
+                return 0LL;
 #endif
             }
 
@@ -139,6 +145,8 @@ namespace DotNetDupe {
                 if (!::SetVolumeLabelA(m_sName.GetRawString(), sVolumeLabel.GetRawString())) {
                     throw IOException("Failed to set volume label.");
                 }
+#else
+                (void)sVolumeLabel;
 #endif
             }
 

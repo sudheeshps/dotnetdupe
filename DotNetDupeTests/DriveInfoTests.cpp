@@ -11,8 +11,13 @@ TEST(DriveInfoTests, GivenEmptyDriveName_WhenConstructed_ThenThrowsArgumentExcep
 }
 
 TEST(DriveInfoTests, GivenValidDriveName_WhenConstructed_ThenReturnsCorrectProperties) {
+#if defined(_WIN32)
     DriveInfo drive("C");
     EXPECT_TRUE(drive.GetName().StartsWith("C", true));
+#else
+    DriveInfo drive("/");
+    EXPECT_TRUE(drive.GetName().StartsWith("/", true));
+#endif
     EXPECT_NE(drive.GetDriveType(), DriveType::Unknown);
     EXPECT_GT(drive.GetTotalSize(), 0LL);
     EXPECT_GE(drive.GetTotalFreeSpace(), 0LL);
@@ -24,12 +29,19 @@ TEST(DriveInfoTests, GivenValidDriveName_WhenConstructed_ThenReturnsCorrectPrope
 TEST(DriveInfoTests, GivenSystemDrives_WhenGetDrivesCalled_ThenReturnsNonEmptyList) {
     Array<DriveInfo> drives = DriveInfo::GetDrives();
     EXPECT_GT(drives.GetLength(), 0);
-    bool bFoundC = false;
+    bool bFoundRoot = false;
     for (int i = 0; i < drives.GetLength(); i++) {
+#if defined(_WIN32)
         if (drives[i].GetName().StartsWith("C", true)) {
-            bFoundC = true;
+            bFoundRoot = true;
             break;
         }
+#else
+        if (drives[i].GetName().StartsWith("/", true)) {
+            bFoundRoot = true;
+            break;
+        }
+#endif
     }
-    EXPECT_TRUE(bFoundC);
+    EXPECT_TRUE(bFoundRoot);
 }
