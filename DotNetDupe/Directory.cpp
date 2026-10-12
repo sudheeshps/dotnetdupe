@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/IO/Directory.h"
+#include "System/IO/SearchOption.h"
 #include "System/IO/Path.h"
 #include "System/IOException.h"
 #include "System/ArgumentException.h"
@@ -255,6 +256,57 @@ namespace DotNetDupe {
                 /// Forward: Delegate to GetLastWriteTime.
                 return GetLastWriteTime(sPath);
             }
+        
+            static void CollectRecursiveFiles(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
+                for (auto it = fs::recursive_directory_iterator(root, options, ec); it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                    if (!ec && it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                        results.push_back(String(it->path().string().c_str()));
+                    }
+                }
+            }
+
+            static void CollectRecursiveDirs(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
+                for (auto it = fs::recursive_directory_iterator(root, options, ec); it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                    if (!ec && it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                        results.push_back(String(it->path().string().c_str()));
+                    }
+                }
+            }
+
+            Array<String> Directory::GetFiles(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetFiles(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector<String> results;
+                CollectRecursiveFiles(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                Array<String> arr((int)results.size());
+                for (int i = 0; i < (int)results.size(); i++) arr[i] = results[i];
+                return arr;
+            }
+
+            Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetDirectories(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector<String> results;
+                CollectRecursiveDirs(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                Array<String> arr((int)results.size());
+                for (int i = 0; i < (int)results.size(); i++) arr[i] = results[i];
+                return arr;
+            }
+
+            Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                /// Step: Collect files and subdirectories for the given search option.
+                Array<String> files = GetFiles(sPath, sSearchPattern, eSearchOption);
+                Array<String> dirs = GetDirectories(sPath, sSearchPattern, eSearchOption);
+                Array<String> combined(files.GetLength() + dirs.GetLength());
+                for (int i = 0; i < files.GetLength(); i++) combined[i] = files[i];
+                for (int j = 0; j < dirs.GetLength(); j++) combined[files.GetLength() + j] = dirs[j];
+                return combined;
+            }
+
         }
     }
 }

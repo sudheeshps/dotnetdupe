@@ -16,6 +16,11 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Latest Published Version ([![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue&label=version)](https://www.nuget.org/packages/DotNetDupe)):** Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:
+> - 💾 **Drive Metrics & Free Space Telemetry (`System::IO::DriveInfo`):** Full drive metrics, file system format, volume label, total size, and available/free space queries via `DriveInfo::GetDrives()`, `GetTotalSize()`, `GetTotalFreeSpace()`, and `GetAvailableFreeSpace()`.
+> - 📂 **Recursive Directory Searching (`System::IO::Directory` & `SearchOption`):** Added `SearchOption::TopDirectoryOnly` and `SearchOption::AllDirectories` overloads to `Directory::GetFiles`, `GetDirectories`, and `GetFileSystemEntries` with permission-resilient traversal.
+> - 📊 **64-bit Multi-Terabyte Stream Precision (`System::IO::Stream` & `FileStream`):** Seamless support for multi-gigabyte/terabyte files via `GetLength64()`, `GetPosition64()`, `SetPosition64()`, and `Seek64()`.
+> - 🔐 **Streaming Cryptographic SHA-256 (`System::Security::Cryptography::SHA256`):** FIPS 180-2 compliant streaming SHA-256 hash algorithm supporting byte buffers, streams (`ComputeHash(Stream*)`), static one-shot hashing (`HashData`), and hex string formatting (`ToHexString`).
+> - 🧩 **Batch Task Synchronization (`System::Threading::Tasks::Task::WaitAll`):** Parallel task completion barrier enabling multi-threaded worker pools to synchronize cleanly.
 > - 🧮 **Mathematical Primitives & Time-Series Statistics (`System::Math` & `System::Numerics::Statistics`):** Full suite of IEEE 754 arithmetic and transcendental methods (`Abs`, `Min`, `Max`, `Clamp`, `Round`, `Sqrt`, `Pow`, `Log`, `Sin`, `Cos`, `Tan`) and time-series statistics (`Mean`, `Variance`, `StandardDeviation`, `MovingAverage`, `MovingAverageSeries`, `ExponentialMovingAverage`, `ExponentialMovingAverageSeries`).
 > - 🔣 **Generic JSON Serialization & DOM Accessors (`System::Text::Json`):** Strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (`ToJson`/`FromJson`), expanded primitive/container converters (`Array<T>`, `DateTime`, `Guid`), and `JsonElement` property helpers (`HasProperty`, `GetProperty`, `GetPropertyString`, `GetPropertyInt32`, `GetPropertyDouble`, `GetPropertyAs<T>`, `Deserialize<T>`).
 > - 🐧 **Linux Native NuGet Runtime Support (`libDotNetDupe.so`):** Native Linux x64 shared library bundled under `runtimes/linux-x64/native/libDotNetDupe.so` with automated MSBuild `.targets` and CMake integration.
@@ -188,7 +193,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.3.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.4.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:

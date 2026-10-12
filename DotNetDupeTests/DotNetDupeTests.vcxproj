@@ -146,6 +146,11 @@
     <ClCompile Include="FileStreamTests.cpp" />
     <ClCompile Include="FileTests.cpp" />
     <ClCompile Include="DirectoryTests.cpp" />
+    <ClCompile Include="DriveInfoTests.cpp" />
+    <ClCompile Include="SHA256Tests.cpp" />
+    <ClCompile Include="SearchOptionTests.cpp" />
+    <ClCompile Include="TaskWaitAllTests.cpp" />
+
     <ClCompile Include="OperatingSystemTests.cpp" />
     <ClCompile Include="PathTests.cpp" />
     <ClCompile Include="ProcessTests.cpp" />

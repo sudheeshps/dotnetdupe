@@ -147,6 +147,19 @@ namespace DotNetDupe {
                     }
                 }
 
+            
+                bool Task::WaitAll(const Array<SmartPointer<Task>>& arrTasks, int iMillisecondsTimeout) {
+                    /// Guard: Check empty array.
+                    int nTasks = arrTasks.GetLength();
+                    if (nTasks == 0) return true;
+                    for (int iIdx = 0; iIdx < nTasks; ++iIdx) {
+                        if (arrTasks[iIdx] != nullptr) {
+                            if (!arrTasks[iIdx]->Wait(iMillisecondsTimeout)) return false;
+                        }
+                    }
+                    return true;
+                }
+
             }
         }
     }

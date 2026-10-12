@@ -73,6 +73,19 @@ namespace DotNetDupe {
 
                 /// \brief Releases all resources used by the Stream.
                 virtual void Dispose() = 0;
+
+                /// \brief Gets the length in bytes of the stream with 64-bit precision.
+                virtual long long GetLength64() const { return static_cast<long long>(GetLength()); }
+
+                /// \brief Gets the position within the current stream with 64-bit precision.
+                virtual long long GetPosition64() const { return static_cast<long long>(GetPosition()); }
+
+                /// \brief Sets the position within the current stream with 64-bit precision.
+                virtual void SetPosition64(long long value) { SetPosition(static_cast<long>(value)); }
+
+                /// \brief Sets the position within the current stream with 64-bit precision.
+                virtual long long Seek64(long long offset, int origin) { return static_cast<long long>(Seek(static_cast<long>(offset), origin)); }
+
             };
         }
     }

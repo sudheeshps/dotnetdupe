@@ -196,6 +196,43 @@ namespace DotNetDupe {
                 m_bCanWrite = false;
                 m_bCanSeek = false;
             }
+        
+            long long FileStream::GetLength64() const {
+                /// Guard: Validate seek capability.
+                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                auto& mutableStream = m_pImpl->fs;
+                auto iCurrentPos = mutableStream.tellg();
+                mutableStream.seekg(0, std::ios_base::end);
+                auto iLength = mutableStream.tellg();
+                mutableStream.seekg(iCurrentPos);
+                return static_cast<long long>(iLength);
+            }
+
+            long long FileStream::GetPosition64() const {
+                /// Guard: Validate seek capability.
+                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                return static_cast<long long>(m_pImpl->fs.tellg());
+            }
+
+            void FileStream::SetPosition64(long long llValue) {
+                /// Guard: Validate position bounds.
+                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                if (llValue < 0) throw ArgumentException("Position cannot be negative.");
+                m_pImpl->fs.seekg(static_cast<std::streamoff>(llValue));
+                m_pImpl->fs.seekp(static_cast<std::streamoff>(llValue));
+            }
+
+            long long FileStream::Seek64(long long llOffset, int iOrigin) {
+                /// Guard: Validate seek capability.
+                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                std::ios_base::seekdir dir = std::ios_base::beg;
+                if (iOrigin == 1) dir = std::ios_base::cur;
+                else if (iOrigin == 2) dir = std::ios_base::end;
+                m_pImpl->fs.seekg(static_cast<std::streamoff>(llOffset), dir);
+                m_pImpl->fs.seekp(static_cast<std::streamoff>(llOffset), dir);
+                return static_cast<long long>(m_pImpl->fs.tellg());
+            }
+
         }
     }
 }

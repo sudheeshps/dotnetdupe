@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.10)
-project(DotNetDupe VERSION 5.0.3)
+﻿cmake_minimum_required(VERSION 3.10)
+project(DotNetDupe VERSION 5.0.4)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -123,3 +123,4 @@ else()
         )
     endif()
 endif()
+
