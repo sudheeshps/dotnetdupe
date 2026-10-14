@@ -7,8 +7,9 @@ var searchData=
   ['fastdiscoveryonly_4',['FastDiscoveryOnly',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2e3c260599e9dda8062f8bc48bac2fffa1de7b829a82b7b2ba2182270f0b71f7d',1,'DotNetDupe::System::Diagnostics']]],
   ['faulted_5',['Faulted',['../namespace_dot_net_dupe_1_1_system_1_1_net_1_1_web_sockets.html#ad7fc4faab09a617139de632659119190a2b310d05c23325e2935ec87b25a60b8f',1,'DotNetDupe::System::Net::WebSockets::Faulted'],['../namespace_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks.html#a3d0d702060f8a501f43e4986db96d4d1a2b310d05c23325e2935ec87b25a60b8f',1,'DotNetDupe::System::Threading::Tasks::Faulted']]],
   ['favorites_6',['Favorites',['../class_dot_net_dupe_1_1_system_1_1_environment.html#a4ca37a1abac65d81a6f9318d3b64cca1ad78986947356ddd37b43d57df289dee9',1,'DotNetDupe::System::Environment']]],
-  ['forbidden_7',['Forbidden',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a722969577a96ca3953e84e3d949dee81',1,'DotNetDupe::System::Net']]],
-  ['found_8',['Found',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a5d695cc28c6a7ea955162fbdd0ae42b9',1,'DotNetDupe::System::Net']]],
-  ['fragment_9',['Fragment',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a37d01b98065725fe3a1d30acf3a0064a',1,'DotNetDupe::System']]],
-  ['fullsynchronized_10',['FullSynchronized',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2e3c260599e9dda8062f8bc48bac2fffac089b75e6ebf17cde991bbf9b97749da',1,'DotNetDupe::System::Diagnostics']]]
+  ['fixed_7',['Fixed',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39a4457d440870ad6d42bab9082d9bf9b61',1,'DotNetDupe::System::IO']]],
+  ['forbidden_8',['Forbidden',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a722969577a96ca3953e84e3d949dee81',1,'DotNetDupe::System::Net']]],
+  ['found_9',['Found',['../namespace_dot_net_dupe_1_1_system_1_1_net.html#a4b626774352891a310251a1ed7ee7982a5d695cc28c6a7ea955162fbdd0ae42b9',1,'DotNetDupe::System::Net']]],
+  ['fragment_10',['Fragment',['../namespace_dot_net_dupe_1_1_system.html#ae58d6679ece4f65709af1355a6a6c620a37d01b98065725fe3a1d30acf3a0064a',1,'DotNetDupe::System']]],
+  ['fullsynchronized_11',['FullSynchronized',['../namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html#a2e3c260599e9dda8062f8bc48bac2fffac089b75e6ebf17cde991bbf9b97749da',1,'DotNetDupe::System::Diagnostics']]]
 ];

@@ -546,6 +546,38 @@ namespace SystemTests {
             ASSERT_THROW(String::Format(formatStr, "world"), FormatException);
         }
 
+        TEST(StringTest, Format_Should_FormatFloatingPoint_When_FixedPointSpecifierProvided) {
+            // Given / When
+            String resultF2 = String::Format("{0:F2}", 102.7857);
+            String resultF4 = String::Format("{0:F4}", 2.821428);
+
+            // Then
+            ASSERT_EQ(resultF2, "102.79");
+            ASSERT_EQ(resultF4, "2.8214");
+        }
+
+        TEST(StringTest, Format_Should_FormatInteger_When_DecimalAndHexSpecifierProvided) {
+            // Given / When
+            String resultDec = String::Format("{0:D4}", 42);
+            String resultHex = String::Format("{0:X}", 255);
+
+            // Then
+            ASSERT_EQ(resultDec, "0042");
+            ASSERT_EQ(resultHex, "FF");
+        }
+
+        TEST(StringTest, Format_Should_ApplyAlignment_When_AlignmentProvided) {
+            // Given / When
+            String resultRight = String::Format("{0,8}", "test");
+            String resultLeft = String::Format("{0,-8}", "test");
+            String resultCombined = String::Format("{0,8:F2}", 12.3456);
+
+            // Then
+            ASSERT_EQ(resultRight, "    test");
+            ASSERT_EQ(resultLeft, "test    ");
+            ASSERT_EQ(resultCombined, "   12.35");
+        }
+
         TEST(StringConvertTest, WCharToUtf8_Should_ConvertWideStringToUtf8_When_ValidWideStringPassed) {
             // Given
             const wchar_t* pwszInput = L"DotNetDupe Wide String";

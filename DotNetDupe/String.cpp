@@ -11,6 +11,7 @@
 #include <vector>
 #include <initializer_list>
 #include <sstream>
+#include <iomanip>
 #include <type_traits>
 #include <algorithm>
 #include <iostream>
@@ -64,15 +65,110 @@ namespace DotNetDupe {
 		String::String() { m_pImpl = new StringImpl("");  }
 		String::~String() { delete m_pImpl; m_pImpl = nullptr; }
 
-		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
-			/// Extract integer argument index between placeholder braces {N}.
-			std::string num = sFmt.substr(i + 1, end - i - 1);
-			size_t idx = 0;
-			int argIdx = std::stoi(num, &idx);
-			if (idx != num.length() || argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
+		static void ApplyFixedPointFormat(std::string& sVal, int iPrecision) {
+			/// Format floating-point value to fixed decimal precision.
+			try {
+				size_t idx = 0;
+				double dVal = std::stod(sVal, &idx);
+				if (idx == sVal.length()) {
+					std::ostringstream ss;
+					ss << std::fixed << std::setprecision(iPrecision >= 0 ? iPrecision : 2) << dVal;
+					sVal = ss.str();
+				}
+			} catch (...) {
+				/// Suppress: retain original string if conversion fails.
+				(void)0;
+			}
+		}
 
-			/// Append resolved string argument to target buffer.
-			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+		static void ApplyIntegerFormat(std::string& sVal, char cSpec, int iPrecision) {
+			/// Format integer value as decimal or hexadecimal representation.
+			try {
+				size_t idx = 0;
+				long long llVal = std::stoll(sVal, &idx);
+				if (idx != sVal.length()) return;
+				std::ostringstream ss;
+				if (cSpec == 'X') ss << std::uppercase << std::hex;
+				else if (cSpec == 'x') ss << std::hex;
+				if (iPrecision > 0) ss << std::setw(iPrecision) << std::setfill('0');
+				ss << llVal;
+				sVal = ss.str();
+			} catch (...) {
+				/// Suppress: retain original string if conversion fails.
+				(void)0;
+			}
+		}
+
+		static void ApplyFormatSpecifier(std::string& sVal, const std::string& sFmt) {
+			/// Guard: Return early if no format specifier specified.
+			if (sFmt.empty()) return;
+			char cSpec = sFmt[0];
+			int iPrecision = -1;
+			if (sFmt.length() > 1) {
+				try { iPrecision = std::stoi(sFmt.substr(1)); }
+				catch (...) { (void)0; }
+			}
+			if (cSpec == 'F' || cSpec == 'f') {
+				ApplyFixedPointFormat(sVal, iPrecision);
+			} else if (cSpec == 'D' || cSpec == 'd' || cSpec == 'X' || cSpec == 'x') {
+				ApplyIntegerFormat(sVal, cSpec, iPrecision);
+			}
+		}
+
+		static void ApplyAlignment(std::string& sVal, const std::string& sAlign) {
+			/// Guard: Return early if alignment string is empty.
+			if (sAlign.empty()) return;
+			try {
+				int iAlign = std::stoi(sAlign);
+				int iWidth = std::abs(iAlign);
+				if ((int)sVal.length() >= iWidth) return;
+				int iPad = iWidth - static_cast<int>(sVal.length());
+				if (iAlign > 0) sVal = std::string(iPad, ' ') + sVal;
+				else sVal = sVal + std::string(iPad, ' ');
+			} catch (...) {
+				/// Suppress: ignore malformed alignment specifier.
+				(void)0;
+			}
+		}
+
+		static void ParsePlaceholderParts(const std::string& sRaw, std::string& sIndex, std::string& sAlign, std::string& sFmt) {
+			/// Extract index, alignment, and format specifier tokens.
+			size_t colonPos = sRaw.find(':');
+			std::string indexAndAlign = (colonPos != std::string::npos) ? sRaw.substr(0, colonPos) : sRaw;
+			sFmt = (colonPos != std::string::npos) ? sRaw.substr(colonPos + 1) : "";
+			size_t commaPos = indexAndAlign.find(',');
+			sIndex = (commaPos != std::string::npos) ? indexAndAlign.substr(0, commaPos) : indexAndAlign;
+			sAlign = (commaPos != std::string::npos) ? indexAndAlign.substr(commaPos + 1) : "";
+		}
+
+		static int ResolveArgIndex(const std::string& sIndex, int iArgCount) {
+			/// Guard: Parse argument index and validate against argument count bounds.
+			if (sIndex.empty()) throw FormatException("Index out of bounds");
+			size_t idx = 0;
+			int argIdx = -1;
+			try {
+				argIdx = std::stoi(sIndex, &idx);
+			} catch (...) {
+				throw FormatException("Index out of bounds");
+			}
+			if (idx != sIndex.length() || argIdx < 0 || argIdx >= iArgCount) {
+				throw FormatException("Index out of bounds");
+			}
+			return argIdx;
+		}
+
+		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
+			/// Extract placeholder token and parse components.
+			std::string raw = sFmt.substr(i + 1, end - i - 1);
+			std::string sIndex, sAlign, sFormatSpec;
+			ParsePlaceholderParts(raw, sIndex, sAlign, sFormatSpec);
+			int argIdx = ResolveArgIndex(sIndex, iArgCount);
+
+			/// Format resolved argument and apply alignment padding.
+			std::string sArgVal = pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+			ApplyFormatSpecifier(sArgVal, sFormatSpec);
+			ApplyAlignment(sArgVal, sAlign);
+			sRes += sArgVal;
 		}
 
 		static void FormatOpenBrace(const std::string& sFmt, size_t& i, int& iAutoIndex, const String* pArgs, int iArgCount, std::string& sRes) {

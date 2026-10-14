@@ -137,11 +137,16 @@ namespace DotNetDupe {
                 return GetFiles(sPath, "*");
             }
 
+            static Array<String> ToArray(const std::vector<String>& results) {
+                /// Step: Convert std::vector of results to library Array.
+                Array<String> arr(static_cast<int>(results.size()));
+                for (int iIdx = 0; iIdx < static_cast<int>(results.size()); ++iIdx) arr[iIdx] = results[iIdx];
+                return arr;
+            }
+
             Array<String> Directory::GetFiles(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
@@ -151,19 +156,15 @@ namespace DotNetDupe {
                 try {
                     for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
                         if (ec) break;
-                        if (it->is_regular_file(ec)) {
-                            std::string filename = it->path().filename().string();
-                            if (std::regex_match(filename, reg)) {
-                                results.push_back(FromFsPath(it->path()));
-                            }
+                        if (it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
                         }
                     }
                 } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching file paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetDirectories(const String& sPath) {
@@ -173,9 +174,7 @@ namespace DotNetDupe {
 
             Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
@@ -185,19 +184,15 @@ namespace DotNetDupe {
                 try {
                     for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
                         if (ec) break;
-                        if (it->is_directory(ec)) {
-                            std::string filename = it->path().filename().string();
-                            if (std::regex_match(filename, reg)) {
-                                results.push_back(FromFsPath(it->path()));
-                            }
+                        if (it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
                         }
                     }
                 } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching directory paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath) {
@@ -207,9 +202,7 @@ namespace DotNetDupe {
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
@@ -219,17 +212,15 @@ namespace DotNetDupe {
                 try {
                     for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
                         if (ec) break;
-                        std::string filename = it->path().filename().string();
-                        if (std::regex_match(filename, reg)) {
+                        if (std::regex_match(it->path().filename().string(), reg)) {
                             results.push_back(FromFsPath(it->path()));
                         }
                     }
                 } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching entry paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             String Directory::GetCurrentDirectory() {
@@ -291,6 +282,8 @@ namespace DotNetDupe {
                         }
                     }
                 } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
             }
 
@@ -305,6 +298,8 @@ namespace DotNetDupe {
                         }
                     }
                 } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
             }
 
@@ -313,9 +308,7 @@ namespace DotNetDupe {
                 if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 CollectRecursiveFiles(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
-                Array<String> arr((int)results.size());
-                for (int i = 0; i < (int)results.size(); i++) arr[i] = results[i];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
@@ -323,9 +316,7 @@ namespace DotNetDupe {
                 if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 CollectRecursiveDirs(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
-                Array<String> arr((int)results.size());
-                for (int i = 0; i < (int)results.size(); i++) arr[i] = results[i];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {

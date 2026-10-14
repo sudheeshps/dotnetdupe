@@ -22,5 +22,6 @@ var searchData=
   ['dns_19',['Dns',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_dns.html',1,'DotNetDupe::System::Net']]],
   ['downloadcompletedeventargs_20',['DownloadCompletedEventArgs',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_completed_event_args.html',1,'DotNetDupe::System::Net::Http']]],
   ['downloadprogress_21',['DownloadProgress',['../struct_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress.html',1,'DotNetDupe::System::Net::Http']]],
-  ['downloadprogresschangedeventargs_22',['DownloadProgressChangedEventArgs',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html',1,'DotNetDupe::System::Net::Http']]]
+  ['downloadprogresschangedeventargs_22',['DownloadProgressChangedEventArgs',['../class_dot_net_dupe_1_1_system_1_1_net_1_1_http_1_1_download_progress_changed_event_args.html',1,'DotNetDupe::System::Net::Http']]],
+  ['driveinfo_23',['DriveInfo',['../class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html',1,'DotNetDupe::System::IO']]]
 ];

@@ -515,6 +515,7 @@ var hierarchy =
       [ "DotNetDupe::System::IO::BinaryReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_reader.html", null ],
       [ "DotNetDupe::System::IO::BinaryWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer.html", null ],
       [ "DotNetDupe::System::IO::Directory", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html", null ],
+      [ "DotNetDupe::System::IO::DriveInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html", null ],
       [ "DotNetDupe::System::IO::File", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html", null ],
       [ "DotNetDupe::System::IO::Stream", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html", null ],
       [ "DotNetDupe::System::IO::TextReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_reader.html", null ],
@@ -542,6 +543,7 @@ var hierarchy =
       [ "DotNetDupe::System::OperatingSystem", "class_dot_net_dupe_1_1_system_1_1_operating_system.html", null ],
       [ "DotNetDupe::System::Random", "class_dot_net_dupe_1_1_system_1_1_random.html", null ],
       [ "DotNetDupe::System::Security::Cryptography::HMACSHA256", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html", null ],
+      [ "DotNetDupe::System::Security::Cryptography::SHA256", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_s_h_a256.html", null ],
       [ "DotNetDupe::System::Security::Cryptography::X509Certificates::X509Certificate2", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html", null ],
       [ "DotNetDupe::System::Security::Principal::UserPrincipal", "class_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_principal.html", null ],
       [ "DotNetDupe::System::Text::Encoding", "class_dot_net_dupe_1_1_system_1_1_text_1_1_encoding.html", [

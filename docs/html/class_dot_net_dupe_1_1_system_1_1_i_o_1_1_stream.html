@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -180,16 +180,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a5c5dfb4d26fc3df43578dc9d41db23fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears all buffers for this stream and causes any buffered data to be written to the underlying device.  <br /></td></tr>
 <tr class="memitem:a696b97ca1f371315afc35fd62994c1a6" id="r_a696b97ca1f371315afc35fd62994c1a6"><td class="memItemLeft">virtual long&#160;</td><td class="memItemRight"><a class="el" href="#a696b97ca1f371315afc35fd62994c1a6">GetLength</a> () const =0</td></tr>
 <tr class="memdesc:a696b97ca1f371315afc35fd62994c1a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length in bytes of the stream.  <br /></td></tr>
+<tr class="memitem:a8ee48909c396c1c018d55254a9747221" id="r_a8ee48909c396c1c018d55254a9747221"><td class="memItemLeft">virtual long long&#160;</td><td class="memItemRight"><a class="el" href="#a8ee48909c396c1c018d55254a9747221">GetLength64</a> () const</td></tr>
+<tr class="memdesc:a8ee48909c396c1c018d55254a9747221"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length in bytes of the stream with 64-bit precision.  <br /></td></tr>
 <tr class="memitem:a89419326fc850b9333ee6b6d5e3ff05d" id="r_a89419326fc850b9333ee6b6d5e3ff05d"><td class="memItemLeft">virtual long&#160;</td><td class="memItemRight"><a class="el" href="#a89419326fc850b9333ee6b6d5e3ff05d">GetPosition</a> () const =0</td></tr>
 <tr class="memdesc:a89419326fc850b9333ee6b6d5e3ff05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position within the current stream.  <br /></td></tr>
+<tr class="memitem:a5cf3c4047d82be4627409cdb8134d59f" id="r_a5cf3c4047d82be4627409cdb8134d59f"><td class="memItemLeft">virtual long long&#160;</td><td class="memItemRight"><a class="el" href="#a5cf3c4047d82be4627409cdb8134d59f">GetPosition64</a> () const</td></tr>
+<tr class="memdesc:a5cf3c4047d82be4627409cdb8134d59f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the position within the current stream with 64-bit precision.  <br /></td></tr>
 <tr class="memitem:aa616ba9a72b6f675b9ad1cbb2e506492" id="r_aa616ba9a72b6f675b9ad1cbb2e506492"><td class="memItemLeft">virtual int&#160;</td><td class="memItemRight"><a class="el" href="#aa616ba9a72b6f675b9ad1cbb2e506492">Read</a> (char *buffer, int offset, int count)=0</td></tr>
 <tr class="memdesc:aa616ba9a72b6f675b9ad1cbb2e506492"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a sequence of bytes from the current stream and advances the position within the stream by the number of bytes read.  <br /></td></tr>
 <tr class="memitem:a115f97e9d4c7a1e7d682b10cd593f4a7" id="r_a115f97e9d4c7a1e7d682b10cd593f4a7"><td class="memItemLeft">virtual long&#160;</td><td class="memItemRight"><a class="el" href="#a115f97e9d4c7a1e7d682b10cd593f4a7">Seek</a> (long offset, int origin)=0</td></tr>
 <tr class="memdesc:a115f97e9d4c7a1e7d682b10cd593f4a7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream.  <br /></td></tr>
+<tr class="memitem:addf246175ccf4e0d35972e048f61978a" id="r_addf246175ccf4e0d35972e048f61978a"><td class="memItemLeft">virtual long long&#160;</td><td class="memItemRight"><a class="el" href="#addf246175ccf4e0d35972e048f61978a">Seek64</a> (long long offset, int origin)</td></tr>
+<tr class="memdesc:addf246175ccf4e0d35972e048f61978a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream with 64-bit precision.  <br /></td></tr>
 <tr class="memitem:a6a5a9084b834de206517bae322398773" id="r_a6a5a9084b834de206517bae322398773"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#a6a5a9084b834de206517bae322398773">SetLength</a> (long value)=0</td></tr>
 <tr class="memdesc:a6a5a9084b834de206517bae322398773"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the length of the current stream.  <br /></td></tr>
 <tr class="memitem:a67c0bfb7a506be493733e6ef3841d15a" id="r_a67c0bfb7a506be493733e6ef3841d15a"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#a67c0bfb7a506be493733e6ef3841d15a">SetPosition</a> (long value)=0</td></tr>
 <tr class="memdesc:a67c0bfb7a506be493733e6ef3841d15a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream.  <br /></td></tr>
+<tr class="memitem:a63ce692a370320d5d2d719b6322396ae" id="r_a63ce692a370320d5d2d719b6322396ae"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#a63ce692a370320d5d2d719b6322396ae">SetPosition64</a> (long long value)</td></tr>
+<tr class="memdesc:a63ce692a370320d5d2d719b6322396ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the position within the current stream with 64-bit precision.  <br /></td></tr>
 <tr class="memitem:a2c62cb51e45b210084260a28c4b6ba2e" id="r_a2c62cb51e45b210084260a28c4b6ba2e"><td class="memItemLeft">virtual void&#160;</td><td class="memItemRight"><a class="el" href="#a2c62cb51e45b210084260a28c4b6ba2e">Write</a> (const char *buffer, int offset, int count)=0</td></tr>
 <tr class="memdesc:a2c62cb51e45b210084260a28c4b6ba2e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a sequence of bytes to the current stream and advances the current position within this stream by the number of bytes written.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
@@ -433,6 +441,41 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a82d457c825a4c6f6576c40dbfa3b1beb">DotNetDupe::System::IO::FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html#aa103fefd809b2b4204c605dcfbdd95d8">DotNetDupe::System::IO::MemoryStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html#a694dea4304b4d577876b7171428ced7b">DotNetDupe::System::IO::MockStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html#a43e60b1cfa90e2bf12c6490771d2cfcc">DotNetDupe::System::Net::Security::SslStream</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#ae5df5eb25aeddeda24d0d51f249afd85">DotNetDupe::System::Net::Sockets::NetworkStream</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="_stream_8h_source.html#l00078">GetLength64()</a>.</p>
+
+</div>
+</div>
+<a id="a8ee48909c396c1c018d55254a9747221" name="a8ee48909c396c1c018d55254a9747221"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ee48909c396c1c018d55254a9747221">&#9670;&#160;</a></span>GetLength64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual long long DotNetDupe::System::IO::Stream::GetLength64 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the length in bytes of the stream with 64-bit precision. </p>
+
+<p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a171842a0483c9b52c949629f0473bf2a">DotNetDupe::System::IO::FileStream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_stream_8h_source.html#l00078">78</a> of file <a class="el" href="_stream_8h_source.html">Stream.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a696b97ca1f371315afc35fd62994c1a6">GetLength()</a>.</p>
+
 </div>
 </div>
 <a id="a89419326fc850b9333ee6b6d5e3ff05d" name="a89419326fc850b9333ee6b6d5e3ff05d"></a>
@@ -468,6 +511,41 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a922efedaba58b75a98b716ad6734e5b7">DotNetDupe::System::IO::FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html#a44bf7c180e521dfa4f65928a7939df4f">DotNetDupe::System::IO::MemoryStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html#afbfb5dfc9a7a71d6295a8992246b3f79">DotNetDupe::System::IO::MockStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html#a46e4b9a4146bb5b4dec0f73f545f67f1">DotNetDupe::System::Net::Security::SslStream</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#acf0488f1845926b206d37f0f0fd06d08">DotNetDupe::System::Net::Sockets::NetworkStream</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_stream_8h_source.html#l00081">GetPosition64()</a>.</p>
+
+</div>
+</div>
+<a id="a5cf3c4047d82be4627409cdb8134d59f" name="a5cf3c4047d82be4627409cdb8134d59f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5cf3c4047d82be4627409cdb8134d59f">&#9670;&#160;</a></span>GetPosition64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual long long DotNetDupe::System::IO::Stream::GetPosition64 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the position within the current stream with 64-bit precision. </p>
+
+<p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a3049d24fa884ca038e2d48cd8145feb9">DotNetDupe::System::IO::FileStream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_stream_8h_source.html#l00081">81</a> of file <a class="el" href="_stream_8h_source.html">Stream.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a89419326fc850b9333ee6b6d5e3ff05d">GetPosition()</a>.</p>
 
 </div>
 </div>
@@ -516,7 +594,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a0e9ccae5404358c3af51b0e5e559e727">DotNetDupe::System::IO::FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html#a3c320898c9b3dbed09975628aebfc988">DotNetDupe::System::IO::MemoryStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html#a175c83faaf8ab551e518bf9a3a53cd90">DotNetDupe::System::IO::MockStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html#a8bf04e9dab5c624c0f7135b2fc7e5425">DotNetDupe::System::Net::Security::SslStream</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a907fedaf28494f75d429008cc7c3913e">DotNetDupe::System::Net::Sockets::NetworkStream</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_ssl_stream_8cpp_source.html#l00145">DotNetDupe::System::Net::Security::PumpNetworkToBio()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_s_h_a256_8cpp_source.html#l00125">DotNetDupe::System::Security::Cryptography::SHA256::ComputeHash()</a>, and <a class="el" href="_ssl_stream_8cpp_source.html#l00145">DotNetDupe::System::Net::Security::PumpNetworkToBio()</a>.</p>
 
 </div>
 </div>
@@ -558,6 +636,45 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>The new position within the current stream. </dd></dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a4f6d281c0887e1139fe9a9acdaf76cc5">DotNetDupe::System::IO::FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html#a9989db2bdc79c6ca5e1ba79113b373ab">DotNetDupe::System::IO::MemoryStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html#a232050c9606361777124ab17ab134540">DotNetDupe::System::IO::MockStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html#ac629b6757c5f4999b1b91b8bca78c6c4">DotNetDupe::System::Net::Security::SslStream</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#aeca6a5bff51c83340b7a76d6b81b8a5a">DotNetDupe::System::Net::Sockets::NetworkStream</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_stream_8h_source.html#l00087">Seek64()</a>.</p>
+
+</div>
+</div>
+<a id="addf246175ccf4e0d35972e048f61978a" name="addf246175ccf4e0d35972e048f61978a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addf246175ccf4e0d35972e048f61978a">&#9670;&#160;</a></span>Seek64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual long long DotNetDupe::System::IO::Stream::Seek64 </td>
+          <td>(</td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>offset</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>origin</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the position within the current stream with 64-bit precision. </p>
+
+<p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a2a342f8c47999ea3a9ac3323f5efbd71">DotNetDupe::System::IO::FileStream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_stream_8h_source.html#l00087">87</a> of file <a class="el" href="_stream_8h_source.html">Stream.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a115f97e9d4c7a1e7d682b10cd593f4a7">Seek()</a>.</p>
 
 </div>
 </div>
@@ -634,6 +751,41 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a67ba60162632a9ae3ee10ac129f615a3">DotNetDupe::System::IO::FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html#a79af0ec1960d9f59e646a6d8866c4288">DotNetDupe::System::IO::MemoryStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_mock_stream.html#a889d116d80d7efdb4ce132c5064bde7a">DotNetDupe::System::IO::MockStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_security_1_1_ssl_stream.html#a4b2727cadb875de6b0847e8d36482ca4">DotNetDupe::System::Net::Security::SslStream</a>, and <a class="el" href="class_dot_net_dupe_1_1_system_1_1_net_1_1_sockets_1_1_network_stream.html#a522313a3a781c3fe3644aae0c2c8e8b9">DotNetDupe::System::Net::Sockets::NetworkStream</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_stream_8h_source.html#l00084">SetPosition64()</a>.</p>
+
+</div>
+</div>
+<a id="a63ce692a370320d5d2d719b6322396ae" name="a63ce692a370320d5d2d719b6322396ae"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63ce692a370320d5d2d719b6322396ae">&#9670;&#160;</a></span>SetPosition64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void DotNetDupe::System::IO::Stream::SetPosition64 </td>
+          <td>(</td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel inline">inline</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the position within the current stream with 64-bit precision. </p>
+
+<p>Reimplemented in <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#a3001555993da880b3ccf7afc7f057ce9">DotNetDupe::System::IO::FileStream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_stream_8h_source.html#l00084">84</a> of file <a class="el" href="_stream_8h_source.html">Stream.h</a>.</p>
+
+<p class="reference">References <a class="el" href="#a67c0bfb7a506be493733e6ef3841d15a">SetPosition()</a>.</p>
 
 </div>
 </div>

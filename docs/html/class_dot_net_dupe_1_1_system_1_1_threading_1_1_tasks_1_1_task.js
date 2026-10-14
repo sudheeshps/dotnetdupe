@@ -9,5 +9,6 @@ var class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task =
     [ "Run", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a4c294e33a1d67697fbb2943ece8c740b", null ],
     [ "Start", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a95101099720100942d72b970a9f2c255", null ],
     [ "Wait", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a0dddb0f6d5c3b883daa97047536657fc", null ],
-    [ "Wait", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a662c552b53f0b6c11805d15b0dd3a911", null ]
+    [ "Wait", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a662c552b53f0b6c11805d15b0dd3a911", null ],
+    [ "WaitAll", "class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html#a1fd2dcb66d2604cd2f9646be1bc6a698", null ]
 ];

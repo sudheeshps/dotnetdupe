@@ -4,6 +4,7 @@ var namespace_dot_net_dupe_1_1_system_1_1_i_o =
     [ "BinaryWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer" ],
     [ "Directory", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory" ],
     [ "DirectoryNotFoundException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception" ],
+    [ "DriveInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info" ],
     [ "EndOfStreamException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception" ],
     [ "File", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file" ],
     [ "FileNotFoundException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception" ],
@@ -20,6 +21,15 @@ var namespace_dot_net_dupe_1_1_system_1_1_i_o =
     [ "TextWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer" ],
     [ "BinaryReaderPtr", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#ae4577f14d16049484b87004f74adafae", null ],
     [ "BinaryWriterPtr", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a23d6f23c3af3e2c6cf3720c7b805feed", null ],
+    [ "DriveType", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39", [
+      [ "Unknown", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39a88183b946cc5f0e8c96b2e66e1c74a7e", null ],
+      [ "NoRootDirectory", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39ac220addabeeaeb5a9e38e2b19fb6f90f", null ],
+      [ "Removable", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39aedfbad801b81c89d3173940f0d4f36de", null ],
+      [ "Fixed", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39a4457d440870ad6d42bab9082d9bf9b61", null ],
+      [ "Network", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39aeec89088ee408b80387155272b113256", null ],
+      [ "CDRom", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39aa9d0190c0b85654779d96e011d0b6d07", null ],
+      [ "Ram", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a6347f141ddfbd0dd500ecf98e003aa39ae5d284b6015067eaa11e06b809fe6f13", null ]
+    ] ],
     [ "FileAttributes", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280", [
       [ "Normal", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a960b44c579bc2f6818d2daaf9e4c16f0", null ],
       [ "ReadOnly", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a131fb182a881796e7606ed6da27f1197", null ],
@@ -38,12 +48,21 @@ var namespace_dot_net_dupe_1_1_system_1_1_i_o =
       [ "IntegrityStream", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a97031c48f2f5f2e9a5dac76901c1dfcf", null ],
       [ "NoScrubData", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280a46fb5b0b5312031f598898350090ca38", null ]
     ] ],
+    [ "SearchOption", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a21f33544c53eda83560d5090c43354d4", [
+      [ "TopDirectoryOnly", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a21f33544c53eda83560d5090c43354d4a32166234cf352707e3d7b05bd208af0f", null ],
+      [ "AllDirectories", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a21f33544c53eda83560d5090c43354d4a1a3a6757e2842b56dbab97e26ad7f269", null ]
+    ] ],
     [ "AppendPathSegment", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#af2bcb6685ddf73e1d792c1580bc7a48a", null ],
     [ "CalculateSeekPosition", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a88376631843af60e033468edded5d157", null ],
+    [ "CollectRecursiveDirs", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#ad029a50212f20d6e44bbb6339ee9f39f", null ],
+    [ "CollectRecursiveFiles", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a5530eef4bba945aa29e38537cd69c229", null ],
     [ "DetermineOpenMode", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a312a7e2ea513bbe821a4e85de9a7b978", null ],
+    [ "EnumerateNativeDrives", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#af5cd71d837845f35651dadac4b700e29", null ],
     [ "FindNewlineIndex", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#ac4c671eb5ffbd9455569a7c401c7b943", null ],
     [ "GenerateRandomTempFileName", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a4e3d083757b07b331322cb1aa77846d1", null ],
+    [ "NormalizeDrivePath", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#ab7a39ad6304aeef3798a61c072438267", null ],
     [ "ReverseBytes", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#af3229ba3c5b6004a74f43f986c376792", null ],
     [ "ReverseBytes", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#af3229ba3c5b6004a74f43f986c376792", null ],
+    [ "ToArray", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#afc53d4cc278d66d7f2a82bf586042825", null ],
     [ "ValidatePathChars", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html#a1012709bfe045bde805fa1153eda7774", null ]
 ];
