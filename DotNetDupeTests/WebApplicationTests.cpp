@@ -920,4 +920,50 @@ namespace WebApplicationTests {
             FAIL() << "Unknown exception thrown";
         }
     }
+
+    TEST(WebApplicationTests, GivenWebApplication_WhenUnknownVerbOrMalformedRequestReceived_DoesNotCrash) {
+        try {
+            // Given: Web application builder and instance
+            auto builder = WebApplication::CreateBuilder();
+            auto app = builder->Build();
+
+            app->MapGet("/status", [](SmartPointer<DotNetDupe::WebAppCore::Http::HttpContext>) {
+                return String("Running");
+            });
+
+            Thread serverThread([app]() {
+                app->Run("http://127.0.0.1:28094");
+            });
+            serverThread.Start();
+
+            ServerScopeGuard guard(app, serverThread);
+            Thread::Sleep(500);
+
+            // When: Client sends an unhandled HTTP method verb
+            TcpClient client;
+            client.Connect("127.0.0.1", 28094);
+            auto stream = client.GetStream();
+
+            std::string req = "PATCH /status HTTP/1.1\r\nHost: 127.0.0.1:28094\r\n\r\n";
+            stream->Write(req.data(), 0, static_cast<int>(req.length()));
+
+            char buffer[512] = { 0 };
+            int bytesRead = stream->Read(buffer, 0, sizeof(buffer) - 1);
+            ASSERT_GT(bytesRead, 0);
+
+            // Then: Returns 404 Not Found without crashing
+            std::string response(buffer);
+            EXPECT_TRUE(response.find("404 Not Found") != std::string::npos);
+
+            client.Close();
+        } catch (const SystemException& ex) {
+            FAIL() << "BasicException thrown: " << ex.What();
+        } catch (const std::exception& ex) {
+            FAIL() << "std::exception thrown: " << ex.what();
+        } catch (...) {
+            FAIL() << "Unknown exception thrown";
+        }
+    }
 }
+
+
