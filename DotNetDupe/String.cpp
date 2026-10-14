@@ -62,7 +62,7 @@ namespace DotNetDupe {
 			throw FormatException(msg);
 		}
 		String::String() { m_pImpl = new StringImpl("");  }
-		String::~String() { delete m_pImpl; }
+		String::~String() { delete m_pImpl; m_pImpl = nullptr; }
 
 		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
 			/// Extract integer argument index between placeholder braces {N}.
@@ -144,7 +144,7 @@ namespace DotNetDupe {
 
 		String String::operator+(const char* pStr) const {
 			String sNewStr = *this;
-			if (pStr) {
+			if (pStr && sNewStr.m_pImpl) {
 				sNewStr.m_pImpl->s.append(pStr);
 			}
 			return sNewStr;
@@ -152,23 +152,28 @@ namespace DotNetDupe {
 
 		String String::operator+(char ch) const {
 			String sNewStr = *this;
-			sNewStr.m_pImpl->s.push_back(ch);
+			if (sNewStr.m_pImpl) {
+				sNewStr.m_pImpl->s.push_back(ch);
+			}
 			return sNewStr;
 		}
 
 		String& String::operator+=(const String& sStr) {
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s.append(sStr.GetRawString());
 			return *this;
 		}
 
 		String& String::operator+=(const char* pStr) {
 			if (pStr) {
+				if (!m_pImpl) m_pImpl = new StringImpl();
 				m_pImpl->s.append(pStr);
 			}
 			return *this;
 		}
 
 		String& String::operator+=(char ch) {
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s.push_back(ch);
 			return *this;
 		}
@@ -191,19 +196,28 @@ namespace DotNetDupe {
 			m_pImpl->s = pStr;
 		}
 
-		String::String(const String& sStr) { m_pImpl = new StringImpl(sStr.m_pImpl->s);  }
+		String::String(const String& sStr) {
+			m_pImpl = new StringImpl(sStr.m_pImpl ? sStr.m_pImpl->s : "");
+		}
 
 		String& String::operator=(const String& sStr) {
 			if (this != &sStr) {
-				m_pImpl->s = sStr.m_pImpl->s;
+				if (!m_pImpl) m_pImpl = new StringImpl();
+				m_pImpl->s = sStr.m_pImpl ? sStr.m_pImpl->s : "";
 			}
 			return *this;
 		}
 
-		String::String(String&& sStr) noexcept { m_pImpl = new StringImpl(std::move(sStr.m_pImpl->s));  }
+		String::String(String&& sStr) noexcept {
+			m_pImpl = sStr.m_pImpl;
+			sStr.m_pImpl = nullptr;
+		}
+
 		String& String::operator=(String&& sStr) noexcept {
 			if (this != &sStr) {
-				m_pImpl->s = std::move(sStr.m_pImpl->s);
+				delete m_pImpl;
+				m_pImpl = sStr.m_pImpl;
+				sStr.m_pImpl = nullptr;
 			}
 			return *this;
 		}
@@ -216,19 +230,19 @@ namespace DotNetDupe {
 
 		String& String::operator=(const wchar_t* pStr) {
 			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
-
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s = Utils::StringConvert::WCharToUtf8(pStr);
-
 			return *this;
 		}
 
 		String& String::operator=(const char* pStr) {
 			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s = pStr;
 			return *this;
 		}
 		const char* String::GetRawString() const {
-			return m_pImpl->s.c_str();
+			return m_pImpl ? m_pImpl->s.c_str() : "";
 		}
 		const char* String::GetChars() const {
 			return GetRawString();
@@ -245,7 +259,7 @@ namespace DotNetDupe {
 			return (int)hash;
 		}
 		int String::GetLength() const {
-			return static_cast<int>(m_pImpl->s.length());
+			return m_pImpl ? static_cast<int>(m_pImpl->s.length()) : 0;
 		}
 
 		String String::Clone() const {
@@ -254,8 +268,8 @@ namespace DotNetDupe {
 
 
 		char String::operator[](int iIndex) const {
-			if (iIndex >= (int)m_pImpl->s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
-			return GetRawString() [iIndex];
+			if (!m_pImpl || iIndex < 0 || iIndex >= (int)m_pImpl->s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
+			return m_pImpl->s[iIndex];
 		}
 		static std::string ToLowerString(const std::string& s) {
 			std::string res = s;
@@ -396,7 +410,7 @@ namespace DotNetDupe {
 			return *this;
 		}
 		bool String::IsEmpty() const {
-			return m_pImpl->s.empty();
+			return !m_pImpl || m_pImpl->s.empty();
 		}
 
 		String String::Join(
@@ -665,11 +679,13 @@ namespace DotNetDupe {
 			if (iStartIndex < 0 || iStartIndex > iLen || iLength < 0 || (iStartIndex + iLength) > iLen) {
 				throw ArgumentOutOfRangeException("Invalid iStartIndex or iLength");
 			}
+			if (!m_pImpl || iLength == 0) return "";
 			return String(m_pImpl->s.substr(iStartIndex, iLength).c_str());
 		}
 
 
 		String String::ToLower() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			std::string sRet = m_pImpl->s;
 			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -> char {
 				return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
@@ -678,6 +694,7 @@ namespace DotNetDupe {
 		}
 
 		String String::ToUpper() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			std::string sRet = m_pImpl->s;
 			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -> char {
 				return static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
@@ -690,6 +707,7 @@ namespace DotNetDupe {
 		}
 
 		String String::TrimStart() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			auto it = std::find_if(m_pImpl->s.begin(), m_pImpl->s.end(), [](char ch) {
 				return !std::isspace(static_cast<unsigned char>(ch));
 								   });
@@ -698,6 +716,7 @@ namespace DotNetDupe {
 		}
 
 		String String::TrimEnd() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			auto it = std::find_if(m_pImpl->s.rbegin(), m_pImpl->s.rend(), [](char ch) {
 				return !std::isspace(static_cast<unsigned char>(ch));
 								   });

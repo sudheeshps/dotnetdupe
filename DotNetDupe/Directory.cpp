@@ -24,6 +24,14 @@ namespace {
 #endif
     }
 
+    DotNetDupe::System::String FromFsPath(const fs::path& p) {
+#if defined(_WIN32)
+        return DotNetDupe::System::String(DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8(p.c_str()).c_str());
+#else
+        return DotNetDupe::System::String(p.string().c_str());
+#endif
+    }
+
     std::regex PatternToRegex(const DotNetDupe::System::String& sPattern) {
         std::string sPat = sPattern.GetRawString();
         std::string sRegexStr;
@@ -137,15 +145,20 @@ namespace DotNetDupe {
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching files.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_regular_file(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_regular_file(ec)) {
+                            std::string filename = it->path().filename().string();
+                            if (std::regex_match(filename, reg)) {
+                                results.push_back(FromFsPath(it->path()));
+                            }
                         }
                     }
+                } catch (...) {
                 }
                 /// Return: Array of matching file paths.
                 Array<String> arr((int)results.size());
@@ -166,15 +179,20 @@ namespace DotNetDupe {
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching directories.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_directory(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_directory(ec)) {
+                            std::string filename = it->path().filename().string();
+                            if (std::regex_match(filename, reg)) {
+                                results.push_back(FromFsPath(it->path()));
+                            }
                         }
                     }
+                } catch (...) {
                 }
                 /// Return: Array of matching directory paths.
                 Array<String> arr((int)results.size());
@@ -195,13 +213,18 @@ namespace DotNetDupe {
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching items.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    std::string filename = entry.path().filename().string();
-                    if (std::regex_match(filename, reg)) {
-                        results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        std::string filename = it->path().filename().string();
+                        if (std::regex_match(filename, reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
                     }
+                } catch (...) {
                 }
                 /// Return: Array of matching entry paths.
                 Array<String> arr((int)results.size());
@@ -216,7 +239,7 @@ namespace DotNetDupe {
                 if (ec) {
                     throw IO::IOException(ec.message().c_str());
                 }
-                return String(p.string().c_str());
+                return FromFsPath(p);
             }
 
             void Directory::SetCurrentDirectory(const String& sPath) {
@@ -260,20 +283,28 @@ namespace DotNetDupe {
             static void CollectRecursiveFiles(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
                 std::error_code ec;
                 auto options = fs::directory_options::skip_permission_denied;
-                for (auto it = fs::recursive_directory_iterator(root, options, ec); it != fs::recursive_directory_iterator(); it.increment(ec)) {
-                    if (!ec && it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
-                        results.push_back(String(it->path().string().c_str()));
+                try {
+                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
                     }
+                } catch (...) {
                 }
             }
 
             static void CollectRecursiveDirs(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
                 std::error_code ec;
                 auto options = fs::directory_options::skip_permission_denied;
-                for (auto it = fs::recursive_directory_iterator(root, options, ec); it != fs::recursive_directory_iterator(); it.increment(ec)) {
-                    if (!ec && it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
-                        results.push_back(String(it->path().string().c_str()));
+                try {
+                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
                     }
+                } catch (...) {
                 }
             }
 
