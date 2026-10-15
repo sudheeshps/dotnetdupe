@@ -100,6 +100,7 @@ DotNetDupe aims to simplify C++ development by providing C#-like interfaces for 
   - [License 📄](#license-)
   - [Generated Content 🤖](#generated-content-)
   - [Contact 📧](#contact-)
+  - [Release Notes 📝](#release-notes-)
 
 ## Project Overview 💡
 
@@ -1763,3 +1764,214 @@ This project is a unique blend of manual craftsmanship and AI-powered developmen
 ## Contact 📧
 
 For questions or support, please open an issue on the [GitHub repository](https://github.com/sudheeshps/DotNetDupe/issues) or contact [sudheeshps@gmail.com](mailto:sudheeshps@gmail.com).
+
+---
+
+## Release Notes 📝
+
+### [v5.0.4](https://github.com/sudheeshps/dotnetdupe/releases) (Current / Latest)
+- **Drive Metrics & Telemetry (`System::IO::DriveInfo`)**:
+  - Added full support for querying drive metrics, volume labels, drive formats (NTFS, FAT32, ext4), total drive capacity, and available/total free space via `DriveInfo::GetDrives()`, `GetTotalSize()`, `GetTotalFreeSpace()`, and `GetAvailableFreeSpace()`.
+- **Recursive Directory Traversal (`System::IO::Directory` & `SearchOption`)**:
+  - Introduced `SearchOption` enumeration (`SearchOption::TopDirectoryOnly` and `SearchOption::AllDirectories`).
+  - Added recursive directory searching overloads to `Directory::GetFiles`, `Directory::GetDirectories`, and `Directory::GetFileSystemEntries` with permission-resilient folder iteration.
+- **64-bit Stream Precision (`System::IO::Stream` & `FileStream`)**:
+  - Upgraded core stream architecture with 64-bit positioning (`int64_t`) supporting multi-terabyte file streaming: `GetLength64()`, `GetPosition64()`, `SetPosition64()`, and `Seek64()`.
+- **Streaming Cryptographic SHA-256 (`System::Security::Cryptography::SHA256`)**:
+  - Added FIPS 180-2 compliant streaming SHA-256 hash algorithm.
+  - Supports continuous byte buffers, stream sources (`ComputeHash(Stream*)`), static one-shot hashing (`HashData`), and hexadecimal output formatting (`ToHexString`).
+- **Batch Task Synchronization (`System::Threading::Tasks::Task::WaitAll`)**:
+  - Added barrier synchronization to wait on collections or arrays of asynchronous `Task` instances concurrently.
+
+### [v5.0.3](https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3) - 2026-10-01
+- **Linux Native NuGet Runtime Packaging**:
+  - Bundled pre-built Linux native shared library (`runtimes/linux-x64/native/libDotNetDupe.so`) alongside Windows x64 binaries.
+  - Updated MSBuild `DotNetDupe.targets` to automatically link and stage native OpenSSL libraries (`-lssl -lcrypto`).
+- **OpenSSL 4.0.1 Native Dependencies**:
+  - Bundled native OpenSSL 4.0.1 binaries for Linux (`libssl.so.4`, `libcrypto.so.4`) and Windows (`libssl-4-x64.dll`, `libcrypto-4-x64.dll`, `libssl-4.dll`, `libcrypto-4.dll`).
+- **Mathematical Primitives & Time-Series Statistics (`System::Math` & `System::Numerics::Statistics`)**:
+  - Implemented IEEE 754 arithmetic and transcendental methods: `Abs`, `Min`, `Max`, `Clamp`, `Round`, `Sqrt`, `Pow`, `Log`, `Sin`, `Cos`, and `Tan`.
+  - Added statistical operations and financial time-series moving window indicators: `Mean`, `Variance`, `StandardDeviation` (`StdDev`), `MovingAverage`, `MovingAverageSeries`, `ExponentialMovingAverage`, and `ExponentialMovingAverageSeries`.
+- **Generic JSON DTO Serialization & DOM Accessors (`System::Text::Json`)**:
+  - Added strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (`JsonSerializer::Serialize<T>`, `JsonSerializer::Deserialize<T>`).
+  - Added built-in type converters for `Array<T>`, `short`, `uint`, `int64`, `Guid`, and `DateTime`.
+  - Added `JsonElement` property helpers: `HasProperty`, `GetProperty`, `GetPropertyString`, `GetPropertyInt32`, `GetPropertyDouble`, `GetPropertyAs<T>`, and `Deserialize<T>`.
+
+### [v5.0.2](https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.2) - 2026-09-29
+- **Concurrent Collections Interface Hierarchy Retrofit**:
+  - Retrofitted `ConcurrentQueue<T>`, `ConcurrentStack<T>`, `ConcurrentBag<T>`, `BlockingCollection<T>`, and `ConcurrentDictionary<TKey, TValue>` to inherit generic base collection interfaces (`IReadOnlyCollection<T>`, `IEnumerable<T>`, `IDictionary<TKey, TValue>`).
+  - Introduced `IProducerConsumerCollection<T>` base interface.
+- **Lock-Free Snapshot Enumeration & Direct LINQ Integration**:
+  - Implemented thread-safe snapshot iteration across all concurrent collections.
+  - Enabled direct LINQ method chaining directly on concurrent collections without intermediate conversions.
+- **Debugger Visualizer & Documentation**:
+  - Updated `DotNetDupe.natvis` visualizers for concurrent containers.
+  - Added dedicated Smart Pointers and Collections documentation sections with compile-ready code snippets to `README.md`.
+
+### [v5.0.1](https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1) - 2026-09-29
+- **LINQ Documentation & Guide**:
+  - Added dedicated Language Integrated Query (LINQ) section to `README.md` with practical code examples.
+  - Updated repository Table of Contents and navigation anchors.
+
+### [v5.0.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.0) - 2026-09-28
+- **Language Integrated Query (`System::Linq`)**:
+  - Major milestone release introducing zero-STL-allocation LINQ query operators: `Where`, `Select`, `SelectMany`, `OrderBy`, `OrderByDescending`, `ThenBy`, `ThenByDescending`, `GroupBy`, `Distinct`, `Take`, `Skip`, `Concat`, `Union`, `Intersect`, `Except`, `Zip`, and `Reverse`.
+  - Added numeric aggregations and quantifiers: `Any`, `All`, `Contains`, `First`, `Single`, `ElementAt`, `Count`, `Sum`, `Min`, `Max`, `Average`, and `Aggregate`.
+  - Added sequence generators: `Range` and `Repeat`.
+  - Added collection materialization: `ToList`, `ToArray`, `ToDictionary`, and `ToHashSet`.
+  - Supported standard C++ range-based `for` loops across all queryable sequences.
+- **Cross-Platform Parity**:
+  - Full functional and test parity across Linux (WSL/GCC/CMake) and Windows (MSVC).
+- **SmartX File Querying**:
+  - Integrated LINQ querying directly over file system entries.
+
+### [v4.0.7](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7) - 2026-09-10
+- **Documentation & Report Links**:
+  - Fixed documentation and report links on NuGet.org and GitHub Pages.
+  - Published OpenCppCoverage and Quality Gate static analysis reports under `docs/CodeCoverage`.
+
+### [v4.0.6](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6) - 2026-09-10
+- **Standardized Documentation Header**:
+  - Standardized documentation navigation headers across all API reference pages with real-time NuGet versioning.
+  - Resolved GitHub Pages 404 Not Found errors on header and source navigation links.
+
+### [v4.0.5](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5) - 2026-09-09
+- **Package Documentation Links**:
+  - Fixed NuGet package documentation links to the Interactive Documentation Portal and Doxygen API reference URLs.
+
+### [v4.0.4](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.4) - 2026-09-09
+- **Binary I/O Streams (`System::IO`)**:
+  - Added `BinaryReader` and `BinaryWriter` with configurable endianness and stream seeking support.
+- **String Enhancements**:
+  - Added `GetChars()` method to `DotNetDupe::System::String`.
+- **Smart Pointer Safety**:
+  - Added safe handling for `this` smart pointer patterns.
+- **Documentation Revamp**:
+  - Executed complete 7-phase documentation audit and standardization across all public headers and classes.
+
+### [v4.0.3](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.3) - 2026-08-20
+- **C# .NET Event Model (`System::EventHandler<TEventArgs>`)**:
+  - Introduced idiomatic multicast delegate event model (`+=`, `-=`) with member method binding (`Add(pInstance, &Class::Method)`) and thread-safe dispatch.
+- **Native Process Discovery (`System::Diagnostics::Process`)**:
+  - Added ultra-fast process discovery matching .NET BCL: `Process::GetProcesses()`, `Process::GetProcessById()`, and `Process::GetProcessesByName()`.
+- **On-Demand Process Enrichment**:
+  - Added `SystemMetrics::EnrichProcessInfo()` for detailed per-process CPU, memory, and handle telemetry.
+- **Version String Parsing**:
+  - Added strict, .NET-compliant `Version::Parse` and `Version::TryParse` supporting 2, 3, and 4-component versions with full error validation.
+- **Event Modernization**:
+  - Modernized `FileDownloader` and `ProcessStreamer` to typed multicast `EventHandler` callbacks.
+
+### [v4.0.2](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2) - 2026-08-19
+- **Observable Process Streaming (`ProcessStreamer`)**:
+  - Added progressive two-tier process discovery and telemetry streaming events.
+- **Network & WebSocket Hardening**:
+  - Improved `WebSocketException` error handling and connection teardown.
+- **Pimpl Move & ABI Stability**:
+  - Enhanced Pimpl idiom destruction and move semantics.
+- **Code Coverage & Quality**:
+  - Updated demo application code and refreshed test coverage reports.
+
+### [v4.0.1](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1) - 2026-08-17
+- **Full API Reference Transpilation**:
+  - Transpiled and validated complete API reference across all namespaces and classes.
+- **Markdown & HTML Rendering**:
+  - Enhanced table rendering and cross-namespace link navigation in documentation.
+- **Bug Fix**:
+  - Resolved event tracking issue in `EtwLogReader`.
+- **NuGet Packaging Cleanup**:
+  - Cleaned up package assets for seamless local IDE and online web navigation.
+
+### [v4.0.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0) - 2026-08-15
+- **Zero-STL Public Header Architecture**:
+  - Major architectural refactoring eliminating STL types (`std::string`, `std::vector`, `std::map`, etc.) from all public headers, guaranteeing ABI stability.
+- **Pure Library Data Structures**:
+  - Added pure library implementations for `List<T>`, `Dictionary<K, V>`, `HashSet<T>`, `Queue<T>`, `Stack<T>`, `PriorityQueue<T>`, `SortedDictionary<K, V>`, `SortedSet<T>`, and `LinkedList<T>`.
+- **Thread-Safe Concurrent Collections**:
+  - Added lock-free and fine-grained concurrent collections: `ConcurrentDictionary`, `ConcurrentQueue`, `ConcurrentStack`, `ConcurrentBag`, and `BlockingCollection`.
+- **Console Stream Redirection**:
+  - Added standard stream redirection via `Console::SetOut`, `Console::SetError`, and `Console::SetIn` using `SmartPointer`.
+- **Logging Subsystem**:
+  - Added `LoggerTextWriter` stream redirector and global `LogManager` category caching.
+- **Resilient File I/O**:
+  - Added `FileDownloader` utility with prompt file handle cleanup.
+  - Added recursive `Directory::CreateDirectory` overload.
+- **Dependency Injection**:
+  - Improved `ServiceCollection` DI container with refined lifetime management.
+- **Debugger Natvis Visualizer**:
+  - Introduced `DotNetDupe.natvis` visualizer for inspecting Pimpl internal types in Visual Studio.
+- **Quality Gate System**:
+  - Introduced 11 automated Quality Gate metrics and CI/CD validation.
+
+### [v3.0.6](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.6) - 2026-08-06
+- **CI/CD Quality Gate Automation**:
+  - Added automated `Check-QualityGates.ps1` static analysis validation in CI/CD pipeline.
+  - Enforced zero compiler warnings (`/WX` on MSVC, `-Werror` on GCC).
+- **Live Reporting**:
+  - Configured live GitHub Pages badging for code coverage and static analysis compliance.
+
+### [v3.0.5](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5) - 2026-08-06
+- **Smart Pointer Standardization**:
+  - Eliminated raw pointer usage in favor of `SmartPointer<T>` across all remaining classes.
+- **Pipeline Optimization**:
+  - Refactored build scripts and CI workflow directory layouts.
+
+### [v3.0.4](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.4) - 2026-08-05
+- **C++20 Standard Upgrade**:
+  - Upgraded project compilation to ISO C++20.
+- **Mini `WebAppServer`**:
+  - Added embedded web server hosting static files (`index.html`, CSS, JS) and REST APIs simultaneously.
+- **Hardware Telemetry (`SystemMetrics`)**:
+  - Added real-time CPU, memory, disk I/O, and network bandwidth telemetry.
+- **Session Enumeration**:
+  - Added `TerminalSession` and `ActiveUserSession` to enumerate active, disconnected, and remote desktop user sessions.
+- **Named Synchronization**:
+  - Added cross-process named support for mutexes and synchronization events.
+
+### [v3.0.3](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.3) - 2026-08-05
+- **Documentation Refinements**:
+  - Minor updates to `README.md` and WSL setup guidelines.
+
+### [v3.0.2](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.2) - 2026-08-05
+- **Web API & Database Subsystem**:
+  - Added database abstraction layer and SQLite connectivity.
+  - Added authentication and authorization with secure HTTPS (SSL) and JWT token handling.
+  - Added `WebApplication` host and `RestClient` supporting GET, POST, PUT, and DELETE.
+  - Added structured logging framework (`Logger`).
+  - Added code samples to class API reference documentation.
+
+### [v3.0.1](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1) - 2026-06-20
+- **Web API & Database Support**:
+  - Initial introduction of WebApplication, REST endpoints, JWT authentication, and dependency injection container.
+- **WSL Guide**:
+  - Added WSL environment provisioning and setup documentation.
+
+### [v3.0.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.0) - 2026-05-31
+- **Cross-Platform Support**:
+  - Added multi-platform build support for Linux (Ubuntu on WSL) via CMake/GCC alongside Windows (MSBuild).
+- **Smart Pointer Ownership**:
+  - Introduced `DotNetDupe::System::SmartPointer<T>` with unique and shared ownership semantics.
+- **C++ Core Guidelines**:
+  - Refactored core codebase to follow modern C++ Core Guidelines.
+
+### [v2.1.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0) - 2026-05-21
+- **Threading Refinement**:
+  - Threading enhancements and corrected documentation for `Interlocked` atomic operations.
+
+### [v2.0.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.0.0) - 2026-05-20
+- **Threading & Synchronization (`System::Threading`)**:
+  - Introduced `Thread`, `ThreadPool`, `Mutex`, `AutoResetEvent`, `ManualResetEvent`, `Monitor`, `Interlocked`, and `Semaphore`.
+- **Text I/O Streams (`System::IO`)**:
+  - Added `TextWriter`, `TextReader`, `StringWriter`, and `StringReader`.
+- **Time Zone Support (`System`)**:
+  - Added `TimeZone` and `TimeZoneInfo` classes.
+- **Unit Testing**:
+  - Added unit test suites and sample code in `DotNetDupeDemo` for threading and synchronization.
+
+### [v1.0.0](https://github.com/sudheeshps/dotnetdupe/releases/tag/v1.0.0) - 2026-05-09
+- **Initial NuGet Release**:
+  - First official release of DotNetDupe on NuGet.
+- **Core Base Class Library**:
+  - Foundational types: `Object`, `String`, `Char`, `BitConverter`, `Convert`, `Console`, `Environment`, and `Math`.
+  - Stream and file I/O: `Stream`, `FileStream`, `MemoryStream`, `File`, and `Path`.
+- **Build Integration**:
+  - Shipped MSBuild `.targets` and platform toolset v143 support for seamless Visual Studio integration.
