@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>DriveInfo.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/DriveInfo.h"
+#include "System/IO/Path.h"
+#include "System/ArgumentException.h"
+#include "System/IOException.h"
+#include &lt;vector&gt;
+#include &lt;cctype&gt;
+
+#if defined(_WIN32)
+#include &lt;windows.h&gt;
+#else
+#include &lt;sys/statvfs.h&gt;
+#endif
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+
+<span style = "background-color:#fdd">            DriveInfo::DriveInfo() : m_sName("") {</span>
+                /// Step: Initialize default instance.
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            static String NormalizeDrivePath(const String&amp; sDriveName) {
+                String sName = sDriveName;</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                if (sName.GetLength() == 1 &amp;&amp; isalpha(static_cast&lt;unsigned char&gt;(sName[0]))) return sName + ":\\";
+                if (sName.GetLength() == 2 &amp;&amp; sName[1] == ':') return sName + "\\";
+                if (!sName.EndsWith('\\', false) &amp;&amp; !sName.EndsWith('/', false)) return sName + "\\";</span>
+#else
+                if (!sName.EndsWith('/', false)) return sName + "/";
+#endif
+<span style = "background-color:#dfd">                return sName;
+            }</span>
+
+<span style = "background-color:#dfd">            DriveInfo::DriveInfo(const String&amp; sDriveName) {</span>
+                /// Guard: Validate input argument.
+<span style = "background-color:#dfd">                if (sDriveName.IsEmpty()) throw ArgumentException("Drive name cannot be empty.");
+                m_sName = NormalizeDrivePath(sDriveName);
+            }</span>
+
+<span style = "background-color:#dfd">            String DriveInfo::GetName() const {</span>
+                /// Return: Canonical drive path.
+<span style = "background-color:#dfd">                return m_sName;
+            }</span>
+
+<span style = "background-color:#dfd">            DriveType DriveInfo::GetDriveType() const {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                UINT uType = ::GetDriveTypeA(m_sName.GetRawString());
+                if (uType == DRIVE_REMOVABLE) return DriveType::Removable;
+                if (uType == DRIVE_FIXED) return DriveType::Fixed;</span>
+<span style = "background-color:#fdd">                if (uType == DRIVE_REMOTE) return DriveType::Network;
+                if (uType == DRIVE_CDROM) return DriveType::CDRom;
+                if (uType == DRIVE_RAMDISK) return DriveType::Ram;
+                if (uType == DRIVE_NO_ROOT_DIR) return DriveType::NoRootDirectory;</span>
+                return DriveType::Unknown;
+#else
+                return DriveType::Fixed;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            String DriveInfo::GetDriveFormat() const {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                char szFsName[MAX_PATH + 1] = { 0 };
+                if (::GetVolumeInformationA(m_sName.GetRawString(), NULL, 0, NULL, NULL, NULL, szFsName, MAX_PATH)) {
+                    return String(szFsName);</span>
+                }
+<span style = "background-color:#fdd">                return String("NTFS");</span>
+#else
+                return String("ext4");
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            bool DriveInfo::GetIsReady() const {</span>
+#if defined(_WIN32)
+                ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
+<span style = "background-color:#fdd">                return ::GetDiskFreeSpaceExA(m_sName.GetRawString(), &amp;freeBytes, &amp;totalBytes, &amp;totalFreeBytes) != 0;</span>
+#else
+                struct statvfs vfs;
+                return statvfs(m_sName.GetRawString(), &amp;vfs) == 0;
+#endif
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            long long DriveInfo::GetAvailableFreeSpace() const {</span>
+#if defined(_WIN32)
+                ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
+<span style = "background-color:#dfd">                if (::GetDiskFreeSpaceExA(m_sName.GetRawString(), &amp;freeBytes, &amp;totalBytes, &amp;totalFreeBytes)) {</span>
+                    return static_cast&lt;long long&gt;(freeBytes.QuadPart);
+                }
+                return 0LL;
+#else
+                struct statvfs vfs;
+                if (statvfs(m_sName.GetRawString(), &amp;vfs) == 0) {
+                    return static_cast&lt;long long&gt;(vfs.f_bavail) * static_cast&lt;long long&gt;(vfs.f_frsize);
+                }
+                return 0LL;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            long long DriveInfo::GetTotalFreeSpace() const {</span>
+#if defined(_WIN32)
+                ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
+<span style = "background-color:#dfd">                if (::GetDiskFreeSpaceExA(m_sName.GetRawString(), &amp;freeBytes, &amp;totalBytes, &amp;totalFreeBytes)) {</span>
+                    return static_cast&lt;long long&gt;(totalFreeBytes.QuadPart);
+                }
+                return 0LL;
+#else
+                struct statvfs vfs;
+                if (statvfs(m_sName.GetRawString(), &amp;vfs) == 0) {
+                    return static_cast&lt;long long&gt;(vfs.f_bfree) * static_cast&lt;long long&gt;(vfs.f_frsize);
+                }
+                return 0LL;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            long long DriveInfo::GetTotalSize() const {</span>
+#if defined(_WIN32)
+                ULARGE_INTEGER freeBytes, totalBytes, totalFreeBytes;
+<span style = "background-color:#dfd">                if (::GetDiskFreeSpaceExA(m_sName.GetRawString(), &amp;freeBytes, &amp;totalBytes, &amp;totalFreeBytes)) {</span>
+                    return static_cast&lt;long long&gt;(totalBytes.QuadPart);
+                }
+                return 0LL;
+#else
+                struct statvfs vfs;
+                if (statvfs(m_sName.GetRawString(), &amp;vfs) == 0) {
+                    return static_cast&lt;long long&gt;(vfs.f_blocks) * static_cast&lt;long long&gt;(vfs.f_frsize);
+                }
+                return 0LL;
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#fdd">            String DriveInfo::GetVolumeLabel() const {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">                char szVolName[MAX_PATH + 1] = { 0 };
+                if (::GetVolumeInformationA(m_sName.GetRawString(), szVolName, MAX_PATH, NULL, NULL, NULL, NULL, 0)) {
+                    return String(szVolName);</span>
+                }
+<span style = "background-color:#fdd">                return String("");</span>
+#else
+                return String("");
+#endif
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#fdd">            void DriveInfo::SetVolumeLabel(const String&amp; sVolumeLabel) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#fdd">                if (!::SetVolumeLabelA(m_sName.GetRawString(), sVolumeLabel.GetRawString())) {
+                    throw IOException("Failed to set volume label.");</span>
+                }
+#else
+                (void)sVolumeLabel;
+#endif
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            String DriveInfo::ToString() const {</span>
+                /// Return: Drive path string representation.
+<span style = "background-color:#dfd">                return m_sName;
+            }</span>
+
+            static void EnumerateNativeDrives(std::vector&lt;DriveInfo&gt;&amp; listDrives) {
+#if defined(_WIN32)
+                char szBuffer[512] = { 0 };
+                DWORD dwLen = ::GetLogicalDriveStringsA(sizeof(szBuffer) - 1, szBuffer);
+                for (char* p = szBuffer; p &lt; szBuffer + dwLen &amp;&amp; *p; p += strlen(p) + 1) {
+                    listDrives.push_back(DriveInfo(String(p)));
+                }
+#else
+                listDrives.push_back(DriveInfo(String("/")));
+#endif
+            }
+
+<span style = "background-color:#dfd">            Array&lt;DriveInfo&gt; DriveInfo::GetDrives() {
+                std::vector&lt;DriveInfo&gt; listDrives;
+                EnumerateNativeDrives(listDrives);
+                Array&lt;DriveInfo&gt; arrDrives(static_cast&lt;int&gt;(listDrives.size()));
+                for (int i = 0; i &lt; static_cast&lt;int&gt;(listDrives.size()); ++i) arrDrives[i] = listDrives[i];
+                return arrDrives;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

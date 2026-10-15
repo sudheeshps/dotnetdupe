@@ -341,8 +341,8 @@ namespace DotNetDupe {
                 } else {</span>
 <span style = "background-color:#fdd">                    s_mapSourceToLog[sSource] = sTargetLog;</span>
                 }
-<span style = "background-color:#dfd">                EventLogStoreEntry entry{ sMessage, eType, iEventID, sSource, DateTimeOffset::Now() };
-                s_mapLogEntries[sTargetLog].push_back(entry);
+<span style = "background-color:#fdd">                EventLogStoreEntry entry{ sMessage, eType, iEventID, sSource, DateTimeOffset::Now() };</span>
+<span style = "background-color:#dfd">                s_mapLogEntries[sTargetLog].push_back(entry);
             }</span>
 
 <span style = "background-color:#dfd">            void EventLog::WriteEntry(const String&amp; sSource, const String&amp; sMessage, EventLogEntryType eType, int iEventID) {</span>

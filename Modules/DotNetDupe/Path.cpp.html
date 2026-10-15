@@ -204,8 +204,8 @@ namespace DotNetDupe {
                 /// Step: Parse UNC path or root path components.
 <span style = "background-color:#dfd">                if (sPath.StartsWith("\\", false))</span>
                 {
-                    int nLen = sPath.GetLength();
-<span style = "background-color:#dfd">                    if (nLen &gt; 2)</span>
+<span style = "background-color:#dfd">                    int nLen = sPath.GetLength();
+                    if (nLen &gt; 2)</span>
                     {
 <span style = "background-color:#dfd">                        int iIdx = sPath.IndexOf("\\", 2, false);
                         if (iIdx != -1)</span>
@@ -362,8 +362,8 @@ namespace DotNetDupe {
                 if (chLastChar == '\\' || chLastChar == '/') {
                     return sPath.Substring(0, sPath.GetLength() - 1);</span>
                 }
-<span style = "background-color:#dfd">                return sPath;
-            }</span>
+                return sPath;
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#fdd">            char Path::GetDirectorySeparatorChar() {</span>
                 /// Return: Preferred directory separator character.

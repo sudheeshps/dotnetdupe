@@ -199,20 +199,20 @@ namespace DotNetDupe {
                 }</span>
 
 #if defined(_WIN32)
-                static UserInfo QueryWin32User(const String&amp; sUsername) {
+<span style = "background-color:#dfd">                static UserInfo QueryWin32User(const String&amp; sUsername) {</span>
                     /// Step: Query account details via NetUserGetInfo.
-                    std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
+<span style = "background-color:#dfd">                    std::wstring wUsername = StringConvertInternal::Utf8ToWChar(sUsername.GetRawString() ? sUsername.GetRawString() : "");
                     LPUSER_INFO_1 pBuf = NULL;
                     NET_API_STATUS nStatus = ::NetUserGetInfo(NULL, wUsername.c_str(), 1, (LPBYTE*)&amp;pBuf);
                     if (nStatus == NERR_Success &amp;&amp; pBuf != NULL) {
                         UserInfo info = BuildWin32UserInfo(pBuf);
                         ::NetApiBufferFree(pBuf);
-                        return info;
+                        return info;</span>
                     }
-                    if (nStatus == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
-                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) throw ArgumentException("User not found: " + sUsername);
-                    throw ComponentModel::Win32Exception(nStatus, "Failed to query user information for: " + sUsername);
-                }
+<span style = "background-color:#dfd">                    if (nStatus == ERROR_ACCESS_DENIED) throw UnauthorizedAccessException("Access denied querying user information for: " + sUsername);
+                    if (nStatus == NERR_UserNotFound || nStatus == ERROR_NO_SUCH_USER) throw ArgumentException("User not found: " + sUsername);</span>
+<span style = "background-color:#fdd">                    throw ComponentModel::Win32Exception(nStatus, "Failed to query user information for: " + sUsername);</span>
+<span style = "background-color:#dfd">                }</span>
 
                 static std::string GetCurrentWin32UserName() {
                     /// Step: Query current thread / process security context username.

@@ -207,6 +207,43 @@ namespace DotNetDupe {
                 m_bCanWrite = false;
 <span style = "background-color:#dfd">                m_bCanSeek = false;
             }</span>
+        
+<span style = "background-color:#fdd">            long long FileStream::GetLength64() const {</span>
+                /// Guard: Validate seek capability.
+<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");</span>
+                auto&amp; mutableStream = m_pImpl-&gt;fs;
+<span style = "background-color:#fdd">                auto iCurrentPos = mutableStream.tellg();
+                mutableStream.seekg(0, std::ios_base::end);
+                auto iLength = mutableStream.tellg();
+                mutableStream.seekg(iCurrentPos);
+                return static_cast&lt;long long&gt;(iLength);
+            }</span>
+
+<span style = "background-color:#fdd">            long long FileStream::GetPosition64() const {</span>
+                /// Guard: Validate seek capability.
+<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                return static_cast&lt;long long&gt;(m_pImpl-&gt;fs.tellg());
+            }</span>
+
+<span style = "background-color:#fdd">            void FileStream::SetPosition64(long long llValue) {</span>
+                /// Guard: Validate position bounds.
+<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                if (llValue &lt; 0) throw ArgumentException("Position cannot be negative.");
+                m_pImpl-&gt;fs.seekg(static_cast&lt;std::streamoff&gt;(llValue));
+                m_pImpl-&gt;fs.seekp(static_cast&lt;std::streamoff&gt;(llValue));
+            }</span>
+
+<span style = "background-color:#fdd">            long long FileStream::Seek64(long long llOffset, int iOrigin) {</span>
+                /// Guard: Validate seek capability.
+<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+                std::ios_base::seekdir dir = std::ios_base::beg;
+                if (iOrigin == 1) dir = std::ios_base::cur;
+                else if (iOrigin == 2) dir = std::ios_base::end;
+                m_pImpl-&gt;fs.seekg(static_cast&lt;std::streamoff&gt;(llOffset), dir);
+                m_pImpl-&gt;fs.seekp(static_cast&lt;std::streamoff&gt;(llOffset), dir);
+                return static_cast&lt;long long&gt;(m_pImpl-&gt;fs.tellg());
+            }</span>
+
         }
     }
 }</pre>

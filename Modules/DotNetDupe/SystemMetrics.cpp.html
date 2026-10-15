@@ -388,26 +388,26 @@ namespace DotNetDupe {
                     proc.bHasEstablishedConnection = netInfo.bHasEstablishedInboundConnection;
                 }
 
-<span style = "background-color:#dfd">                static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {</span>
+                static String GetServiceStartType(SC_HANDLE hSCM, LPCWSTR lpServiceName) {
                     /// Step: Query service configuration for startup mode.
-<span style = "background-color:#dfd">                    SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
+                    SC_HANDLE hService = ::OpenServiceW(hSCM, lpServiceName, SERVICE_QUERY_CONFIG);
                     if (!hService) return "Manual";
-                    BYTE buffer[1024]; DWORD dwNeeded = 0;</span>
+                    BYTE buffer[1024]; DWORD dwNeeded = 0;
                     QUERY_SERVICE_CONFIGW* pConfig = reinterpret_cast&lt;QUERY_SERVICE_CONFIGW*&gt;(buffer);
-<span style = "background-color:#dfd">                    String sType = "Manual";
+                    String sType = "Manual";
                     if (::QueryServiceConfigW(hService, pConfig, sizeof(buffer), &amp;dwNeeded)) {
                         switch (pConfig-&gt;dwStartType) {
                         case SERVICE_AUTO_START: sType = "Automatic"; break;
                         case SERVICE_DEMAND_START: sType = "Manual"; break;
-                        case SERVICE_DISABLED: sType = "Disabled"; break;</span>
-<span style = "background-color:#fdd">                        case SERVICE_BOOT_START: sType = "Boot"; break;
+                        case SERVICE_DISABLED: sType = "Disabled"; break;
+                        case SERVICE_BOOT_START: sType = "Boot"; break;
                         case SERVICE_SYSTEM_START: sType = "System"; break;
-                        default: sType = "Manual"; break;</span>
+                        default: sType = "Manual"; break;
                         }
                     }
-<span style = "background-color:#dfd">                    ::CloseServiceHandle(hService);
+                    ::CloseServiceHandle(hService);
                     return sType;
-                }</span>
+                }
 
 <span style = "background-color:#dfd">                static void ParseServiceStatus(ENUM_SERVICE_STATUS_PROCESSW&amp; svc, SC_HANDLE hSCM, ServiceInfo&amp; info) {</span>
                     /// Step: Map native service status and startup type.

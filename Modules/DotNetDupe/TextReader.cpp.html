@@ -60,8 +60,8 @@ namespace DotNetDupe {
                         return String("");</span>
                     }
 <span style = "background-color:#fdd">                    if (iCh == '\r' || iCh == '\n') {
-                        if (iCh == '\r' &amp;&amp; Peek() == '\n') Read();</span>
-                        return sbOutput.ToString();
+                        if (iCh == '\r' &amp;&amp; Peek() == '\n') Read();
+                        return sbOutput.ToString();</span>
                     }
 <span style = "background-color:#fdd">                    sbOutput.Append((char)iCh);</span>
                 }

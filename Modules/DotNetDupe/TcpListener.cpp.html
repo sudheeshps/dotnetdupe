@@ -35,9 +35,9 @@ namespace DotNetDupe {
 <span style = "background-color:#fdd">                    : m_sIp(std::move(other.m_sIp)),
                       m_nPort(other.m_nPort),
                       m_pListenerSocket(std::move(other.m_pListenerSocket)),
-                      m_bActive(other.m_bActive) {
+                      m_bActive(other.m_bActive) {</span>
                     other.m_bActive = false;
-                }</span>
+<span style = "background-color:#fdd">                }</span>
 
 <span style = "background-color:#fdd">                TcpListener&amp; TcpListener::operator=(TcpListener&amp;&amp; other) noexcept {</span>
                     /// Guard: Check self-assignment.
@@ -46,11 +46,11 @@ namespace DotNetDupe {
                         m_sIp = std::move(other.m_sIp);
                         m_nPort = other.m_nPort;
                         m_pListenerSocket = std::move(other.m_pListenerSocket);
-                        m_bActive = other.m_bActive;
-                        other.m_bActive = false;</span>
+                        m_bActive = other.m_bActive;</span>
+                        other.m_bActive = false;
                     }
-                    return *this;
-<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#fdd">                    return *this;
+                }</span>
 
 <span style = "background-color:#dfd">                void TcpListener::Start() {
                     Start(100);</span>

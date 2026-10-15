@@ -285,12 +285,25 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return true;
             }</span>
 
+            static const char* GetHttpStatusMessage(int code) {
+                /// Map: Return standard HTTP status reason phrase.
+                if (code == 404) return "Not Found";
+                if (code == 500) return "Internal Server Error";
+                if (code == 201) return "Created";
+                if (code == 204) return "No Content";
+                return "OK";
+            }
+
 <span style = "background-color:#dfd">            static void SendHttpResponseData(const System::SmartPointer&lt;System::IO::Stream&gt;&amp; stream, Http::HttpResponse* resp, const std::string&amp; method) {</span>
+                /// Guard: Ensure stream and response instances are valid.
+<span style = "background-color:#dfd">                if (stream.IsNull() || !resp) return;</span>
                 /// Prepare: Build HTTP status line, headers, and content length.
-<span style = "background-color:#dfd">                std::string respBody = resp-&gt;GetBody().GetRawString();
+<span style = "background-color:#dfd">                System::String body = resp-&gt;GetBody();
+                std::string respBody = body.GetRawString() ? body.GetRawString() : "";
                 int code = resp-&gt;GetStatusCode();
-                std::string statusMsg = (code == 404) ? "Not Found" : ((code == 500) ? "Internal Server Error" : ((code == 201) ? "Created" : ((code == 204) ? "No Content" : "OK")));
-                std::string respStr = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\nContent-Type: " + std::string(resp-&gt;GetContentType().GetRawString() ? resp-&gt;GetContentType().GetRawString() : "") + "\r\nContent-Length: " + std::to_string(respBody.length()) + "\r\nConnection: close\r\nServer: DotNetDupeWebApplication/1.0\r\n";
+                System::String contentType = resp-&gt;GetContentType();
+                const char* pType = contentType.GetRawString();
+                std::string respStr = "HTTP/1.1 " + std::to_string(code) + " " + GetHttpStatusMessage(code) + "\r\nContent-Type: " + std::string(pType ? pType : "") + "\r\nContent-Length: " + std::to_string(respBody.length()) + "\r\nConnection: close\r\nServer: DotNetDupeWebApplication/1.0\r\n";
                 auto keys = resp-&gt;GetHeaders().GetKeys(); auto values = resp-&gt;GetHeaders().GetValues();
                 for (int i = 0; i &lt; keys.GetLength(); ++i) {
                     respStr += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";</span>
@@ -365,7 +378,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            static bool TryHandleWebSocket(const System::SmartPointer&lt;System::Net::Sockets::NetworkStream&gt;&amp; stream, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext, const System::Collections::Generic::Dictionary&lt;System::String, System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt;&gt;&amp; wsMap) {</span>
                 /// Guard: Match route path against registered WebSocket handlers.
-<span style = "background-color:#dfd">                auto spRequest = spContext-&gt;GetRequest();
+<span style = "background-color:#dfd">                if (stream.IsNull() || spContext.IsNull()) return false;
+                auto spRequest = spContext-&gt;GetRequest();
+                if (spRequest.IsNull()) return false;
                 System::SmartPointer&lt;WebSockets::IWebSocketHandler&gt; spWsHandler;
                 if (!wsMap.TryGetValue(spRequest-&gt;GetPath(), spWsHandler) || spWsHandler.IsNull()) return false;</span>
 
@@ -382,6 +397,8 @@ namespace DotNetDupe {
             }</span>
 
 <span style = "background-color:#dfd">            static void DispatchResponse(Http::HttpResponse* pResp, bool bFound, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&amp; pHandler, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext) {</span>
+                /// Guard: Verify target response instance is valid.
+<span style = "background-color:#dfd">                if (!pResp) return;</span>
                 /// Dispatch: Invoke matched route handler or set 404 Not Found.
 <span style = "background-color:#dfd">                if (bFound) {
                     try { pResp-&gt;SetBody(pHandler(spContext)); }</span>
@@ -393,36 +410,53 @@ namespace DotNetDupe {
                 }
 <span style = "background-color:#dfd">            }</span>
 
+            static bool ResolveRouteHandler(const std::string&amp; method, Http::HttpRequest* pReq,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; getHandlers,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; postHandlers,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; putHandlers,
+                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; deleteHandlers,
+<span style = "background-color:#dfd">                System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&amp; pHandler) {</span>
+                /// Resolve: Route HTTP verb to respective method handler map.
+<span style = "background-color:#dfd">                if (!pReq) return false;
+                if (method == "GET" || method == "HEAD") return MatchAndFindHandler(pReq, getHandlers, pHandler);
+                if (method == "POST") return MatchAndFindHandler(pReq, postHandlers, pHandler);
+                if (method == "PUT") return MatchAndFindHandler(pReq, putHandlers, pHandler);
+                if (method == "DELETE") return MatchAndFindHandler(pReq, deleteHandlers, pHandler);
+                return false;
+            }</span>
+
             static void RouteAndSendResponse(const std::string&amp; method, const System::SmartPointer&lt;Http::HttpContext&gt;&amp; spContext, const System::SmartPointer&lt;System::IO::Stream&gt;&amp; spBaseStream,
                 const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; getHandlers,
                 const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; postHandlers,
                 const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; putHandlers,
 <span style = "background-color:#dfd">                const System::Collections::Generic::Dictionary&lt;System::String, System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt;&gt;&amp; deleteHandlers) {</span>
+                /// Guard: Validate context, base stream, request and response.
+<span style = "background-color:#dfd">                if (spContext.IsNull() || spBaseStream.IsNull()) return;
+                auto spReq = spContext-&gt;GetRequest();
+                auto spResp = spContext-&gt;GetResponse();
+                if (spReq.IsNull() || spResp.IsNull()) return;</span>
                 /// Route: Look up handler delegate based on HTTP method.
 <span style = "background-color:#dfd">                System::Func&lt;System::String, System::SmartPointer&lt;Http::HttpContext&gt;&gt; pHandler;
-                bool bFound = false;
-                if (method == "GET" || method == "HEAD") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), getHandlers, pHandler);
-                else if (method == "POST") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), postHandlers, pHandler);
-                else if (method == "PUT") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), putHandlers, pHandler);
-                else if (method == "DELETE") bFound = MatchAndFindHandler(spContext-&gt;GetRequest().Get(), deleteHandlers, pHandler);</span>
+                bool bFound = ResolveRouteHandler(method, spReq.Get(), getHandlers, postHandlers, putHandlers, deleteHandlers, pHandler);</span>
                 /// Execute: Dispatch handler and write output response.
-<span style = "background-color:#dfd">                DispatchResponse(spContext-&gt;GetResponse().Get(), bFound, pHandler, spContext);
-                if (spContext-&gt;GetResponse()-&gt;IsHeadersSent()) spContext-&gt;GetResponse()-&gt;Flush();
-                else SendHttpResponseData(spBaseStream, spContext-&gt;GetResponse().Get(), method);
+<span style = "background-color:#dfd">                DispatchResponse(spResp.Get(), bFound, pHandler, spContext);
+                if (spResp-&gt;IsHeadersSent()) spResp-&gt;Flush();
+                else SendHttpResponseData(spBaseStream, spResp.Get(), method);
             }</span>
 
 <span style = "background-color:#dfd">            void WebApplication::HandleConnection(System::SmartPointer&lt;System::Net::Sockets::TcpClient&gt; spClient) {</span>
                 /// Guard: Obtain active client network stream.
-<span style = "background-color:#dfd">                auto stream = spClient-&gt;GetStream();
+<span style = "background-color:#dfd">                if (spClient.IsNull()) return;
+                auto stream = spClient-&gt;GetStream();
                 if (stream.IsNull()) return;
                 std::vector&lt;std::string&gt; lines;
                 System::SmartPointer&lt;System::IO::Stream&gt; spBaseStream = stream;
-                if (!ReadHeaderLines(spBaseStream, lines, m_bRunning)) return;</span>
+                if (!ReadHeaderLines(spBaseStream, lines, m_bRunning) || lines.empty()) return;</span>
                 /// Parse: Extract request line, headers, and body.
 <span style = "background-color:#dfd">                auto spContext = System::SmartPointer&lt;Http::HttpContext&gt;::NewShared();
                 std::string method = ParseRequestLine(lines[0], spContext-&gt;GetRequest().Get());
                 ReadHeadersAndBody(spBaseStream, lines, spContext-&gt;GetRequest().Get());
-                spContext-&gt;GetResponse()-&gt;BindStream(stream);</span>
+                if (!spContext-&gt;GetResponse().IsNull()) spContext-&gt;GetResponse()-&gt;BindStream(stream);</span>
                 /// Process: Handle WebSocket upgrade or dispatch standard HTTP route.
 <span style = "background-color:#dfd">                if (TryHandleWebSocket(stream, spContext, m_wsHandlers)) { spClient-&gt;Close(); return; }
                 RouteAndSendResponse(method, spContext, spBaseStream, m_getHandlers, m_postHandlers, m_putHandlers, m_deleteHandlers);

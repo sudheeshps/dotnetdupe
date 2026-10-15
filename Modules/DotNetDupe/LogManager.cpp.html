@@ -102,9 +102,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            void LogManager::Configure(const LoggerConfiguration&amp; config) {</span>
                 /// Synchronize global reconfiguration.
-<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);
+<span style = "background-color:#dfd">                std::lock_guard&lt;std::mutex&gt; lk(s_mutex);</span>
                 s_globalConfig = config;
-                s_pLoggerCache.clear();
+<span style = "background-color:#dfd">                s_pLoggerCache.clear();
                 s_pConsoleLoggerCache.clear();
                 s_pFileLoggerCache.clear();</span>
                 

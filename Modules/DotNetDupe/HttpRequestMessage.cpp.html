@@ -39,8 +39,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                void HttpRequestMessage::SetMethod(const HttpMethod&amp; method) {</span>
                     /// Mutate request HTTP verb.
-<span style = "background-color:#dfd">                    m_method = method;</span>
-<span style = "background-color:#fdd">                }</span>
+                    m_method = method;
+                }
 
 <span style = "background-color:#dfd">                Uri HttpRequestMessage::GetRequestUri() const {</span>
                     /// Return target request Uri.
@@ -49,8 +49,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">                void HttpRequestMessage::SetRequestUri(const Uri&amp; requestUri) {</span>
                     /// Mutate target request Uri.
-<span style = "background-color:#dfd">                    m_requestUri = requestUri;</span>
-                }
+<span style = "background-color:#dfd">                    m_requestUri = requestUri;
+                }</span>
 
 <span style = "background-color:#dfd">                HttpContentPtr HttpRequestMessage::GetContent() const {</span>
                     /// Return message entity body content pointer.

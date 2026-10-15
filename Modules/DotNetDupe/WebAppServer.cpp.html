@@ -51,14 +51,14 @@ namespace DotNetDupe {
                     m_bStaticFilesEnabled = other.m_bStaticFilesEnabled;</span>
                 }
                 /// Return result: Return self reference.
-                return *this;
-<span style = "background-color:#fdd">            }</span>
+<span style = "background-color:#fdd">                return *this;
+            }</span>
 
 <span style = "background-color:#dfd">            void WebAppServer::EnableStaticFiles(const DotNetDupe::System::String&amp; defaultDocument) {</span>
                 /// Configure: Enable static file serving flag and update default fallback document.
 <span style = "background-color:#dfd">                m_bStaticFilesEnabled = true;
                 m_sDefaultDocument = defaultDocument;</span>
-<span style = "background-color:#fdd">            }</span>
+            }
 
 <span style = "background-color:#dfd">            DotNetDupe::System::String WebAppServer::GetMimeType(const DotNetDupe::System::String&amp; filePath) {</span>
                 /// Parse: Extract and lowercase file extension.
@@ -100,9 +100,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            static DotNetDupe::System::String ServeStaticFile(DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt; spContext, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {</span>
                 /// Resolve: Map request URI to filesystem path.
-<span style = "background-color:#dfd">                DotNetDupe::System::String target = ResolveStaticPath(spContext-&gt;GetRequest()-&gt;GetPath(), webRoot, defaultDoc);
-                if (target.IsEmpty()) {</span>
-<span style = "background-color:#fdd">                    spContext-&gt;GetResponse()-&gt;SetStatusCode(403); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
+<span style = "background-color:#dfd">                DotNetDupe::System::String target = ResolveStaticPath(spContext-&gt;GetRequest()-&gt;GetPath(), webRoot, defaultDoc);</span>
+<span style = "background-color:#fdd">                if (target.IsEmpty()) {
+                    spContext-&gt;GetResponse()-&gt;SetStatusCode(403); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     return "403 Forbidden: Invalid file path";</span>
                 }
                 /// Verify: Check that the requested file exists on disk.
@@ -111,8 +111,8 @@ namespace DotNetDupe {
                     return "404 Not Found";</span>
                 }
                 /// Read: Read file content and set appropriate Content-Type headers.
-                try {
-<span style = "background-color:#dfd">                    DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
+<span style = "background-color:#dfd">                try {
+                    DotNetDupe::System::String content = DotNetDupe::System::IO::File::ReadAllText(target);
                     spContext-&gt;GetResponse()-&gt;SetStatusCode(200);
                     spContext-&gt;GetResponse()-&gt;SetContentType(WebAppServer::GetMimeType(target));
                     spContext-&gt;GetResponse()-&gt;GetHeaders()["Content-Disposition"] = "inline";
@@ -121,7 +121,7 @@ namespace DotNetDupe {
                     spContext-&gt;GetResponse()-&gt;SetStatusCode(500); spContext-&gt;GetResponse()-&gt;SetContentType("text/plain");
                     return "500 Internal Server Error: Unable to open file";</span>
                 }
-<span style = "background-color:#fdd">            }</span>
+<span style = "background-color:#dfd">            }</span>
 
 <span style = "background-color:#dfd">            static DotNetDupe::System::String HandleStaticRouteOrWebSocket(const DotNetDupe::System::SmartPointer&lt;Builder::WebApplication&gt;&amp; spApp, const DotNetDupe::System::SmartPointer&lt;Http::HttpContext&gt;&amp; ctx, const DotNetDupe::System::String&amp; webRoot, const DotNetDupe::System::String&amp; defaultDoc) {</span>
                 /// Check: Check if path matches an active WebSocket endpoint.

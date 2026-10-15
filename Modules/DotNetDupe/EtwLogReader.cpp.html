@@ -246,9 +246,9 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            void EtwLogReader::ReadWin32EvtChannel(const String&amp; sChannelName, int iMaxEvents, int iStartIndex, bool bReverseDirection, EtwEventLevel level, Collections::Generic::List&lt;EtwEvent&gt;&amp; lstEvents) {</span>
                 /// Step: Query channel events using EvtQuery.
-<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
-                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);
-                DWORD dwFlags = EvtQueryChannelPath | EvtQueryTolerateQueryErrors | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
+<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";</span>
+<span style = "background-color:#fdd">                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);</span>
+<span style = "background-color:#dfd">                DWORD dwFlags = EvtQueryChannelPath | EvtQueryTolerateQueryErrors | (bReverseDirection ? EvtQueryReverseDirection : EvtQueryForwardDirection);
                 EVT_HANDLE hResults = ::EvtQuery(NULL, wChannel.c_str(), BuildLevelQuery(level).c_str(), dwFlags);
                 if (!hResults) return HandleQueryFailure(::GetLastError());</span>
 
@@ -285,8 +285,8 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                if (sChannelName.IsEmpty()) return 0;
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
 #if defined(_WIN32) || defined(_WIN64)
-<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
-                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);</span>
+<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";</span>
+<span style = "background-color:#fdd">                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);</span>
                 unsigned long long uCount = 0;
 <span style = "background-color:#dfd">                if (QueryWin32LogRecordCount(wChannel, uCount)) return uCount;</span>
 #endif
@@ -325,9 +325,9 @@ namespace DotNetDupe {
                 if (sChannelName.IsEmpty()) return counts;
                 std::lock_guard&lt;std::mutex&gt; lock(s_mtxEtw);</span>
 #if defined(_WIN32) || defined(_WIN64)
-<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";
-                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);
-                CountWin32EventsByLevel(wChannel, counts);</span>
+<span style = "background-color:#dfd">                const char* pszRaw = sChannelName.GetRawString() ? sChannelName.GetRawString() : "";</span>
+<span style = "background-color:#fdd">                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(pszRaw);</span>
+<span style = "background-color:#dfd">                CountWin32EventsByLevel(wChannel, counts);</span>
 #endif
 <span style = "background-color:#dfd">                return counts;
             }</span>

@@ -11,6 +11,7 @@
         <pre class="prettyprint lang-cpp linenums">
 #include "pch.h"
 #include "System/IO/Directory.h"
+#include "System/IO/SearchOption.h"
 #include "System/IO/Path.h"
 #include "System/IOException.h"
 #include "System/ArgumentException.h"
@@ -33,6 +34,14 @@ namespace {
         return fs::path(sPath.GetRawString());
 #endif
     }
+
+<span style = "background-color:#dfd">    DotNetDupe::System::String FromFsPath(const fs::path&amp; p) {</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">        return DotNetDupe::System::String(DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8(p.c_str()).c_str());</span>
+#else
+        return DotNetDupe::System::String(p.string().c_str());
+#endif
+<span style = "background-color:#dfd">    }</span>
 
 <span style = "background-color:#dfd">    std::regex PatternToRegex(const DotNetDupe::System::String&amp; sPattern) {
         std::string sPat = sPattern.GetRawString();
@@ -139,28 +148,34 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                return GetFiles(sPath, "*");
             }</span>
 
+<span style = "background-color:#dfd">            static Array&lt;String&gt; ToArray(const std::vector&lt;String&gt;&amp; results) {</span>
+                /// Step: Convert std::vector of results to library Array.
+<span style = "background-color:#dfd">                Array&lt;String&gt; arr(static_cast&lt;int&gt;(results.size()));
+                for (int iIdx = 0; iIdx &lt; static_cast&lt;int&gt;(results.size()); ++iIdx) arr[iIdx] = results[iIdx];</span>
+                return arr;
+<span style = "background-color:#dfd">            }</span>
+
 <span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
                 /// Guard: Validate directory existence.
-<span style = "background-color:#dfd">                if (!Exists(sPath)) {</span>
-<span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
-                }
-<span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);
-                std::error_code ec;</span>
+<span style = "background-color:#dfd">                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching files.
-<span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_regular_file(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));</span>
+                try {
+<span style = "background-color:#dfd">                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec &amp;&amp; it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it-&gt;is_regular_file(ec) &amp;&amp; std::regex_match(it-&gt;path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it-&gt;path()));</span>
                         }
-<span style = "background-color:#dfd">                    }
-                }</span>
-                /// Return: Array of matching file paths.
-<span style = "background-color:#dfd">                Array&lt;String&gt; arr((int)results.size());
-                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+<span style = "background-color:#dfd">                    }</span>
+<span style = "background-color:#fdd">                } catch (...) {</span>
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">                return ToArray(results);
             }</span>
 
 <span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath) {</span>
@@ -170,26 +185,25 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
                 /// Guard: Validate directory existence.
-<span style = "background-color:#dfd">                if (!Exists(sPath)) {</span>
-<span style = "background-color:#fdd">                    throw IO::IOException("Directory does not exist.");</span>
-                }
-<span style = "background-color:#dfd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);
-                std::error_code ec;</span>
+<span style = "background-color:#dfd">                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching directories.
-<span style = "background-color:#dfd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_directory(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));</span>
+                try {
+<span style = "background-color:#dfd">                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec &amp;&amp; it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it-&gt;is_directory(ec) &amp;&amp; std::regex_match(it-&gt;path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it-&gt;path()));</span>
                         }
-<span style = "background-color:#dfd">                    }
-                }</span>
-                /// Return: Array of matching directory paths.
-<span style = "background-color:#dfd">                Array&lt;String&gt; arr((int)results.size());
-                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+<span style = "background-color:#dfd">                    }</span>
+<span style = "background-color:#fdd">                } catch (...) {</span>
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">                return ToArray(results);
             }</span>
 
 <span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath) {</span>
@@ -199,24 +213,25 @@ namespace DotNetDupe {
 
 <span style = "background-color:#fdd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath, const String&amp; sSearchPattern) {</span>
                 /// Guard: Validate directory existence.
-<span style = "background-color:#fdd">                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");</span>
-                }
-<span style = "background-color:#fdd">                std::vector&lt;String&gt; results;
-                std::regex reg = PatternToRegex(sSearchPattern);
-                std::error_code ec;</span>
+<span style = "background-color:#fdd">                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;String&gt; results;
+                std::regex reg = PatternToRegex(sSearchPattern);</span>
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching items.
-<span style = "background-color:#fdd">                for (const auto&amp; entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    std::string filename = entry.path().filename().string();
-                    if (std::regex_match(filename, reg)) {
-                        results.push_back(String(entry.path().string().c_str()));</span>
-                    }
-<span style = "background-color:#fdd">                }</span>
-                /// Return: Array of matching entry paths.
-<span style = "background-color:#fdd">                Array&lt;String&gt; arr((int)results.size());
-                for (int iIdx = 0; iIdx &lt; (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                try {
+<span style = "background-color:#fdd">                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec &amp;&amp; it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (std::regex_match(it-&gt;path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it-&gt;path()));</span>
+                        }
+<span style = "background-color:#fdd">                    }
+                } catch (...) {</span>
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+<span style = "background-color:#fdd">                }
+                return ToArray(results);
             }</span>
 
 <span style = "background-color:#dfd">            String Directory::GetCurrentDirectory() {</span>
@@ -226,7 +241,7 @@ namespace DotNetDupe {
                 if (ec) {</span>
 <span style = "background-color:#fdd">                    throw IO::IOException(ec.message().c_str());</span>
                 }
-<span style = "background-color:#dfd">                return String(p.string().c_str());
+<span style = "background-color:#dfd">                return FromFsPath(p);
             }</span>
 
 <span style = "background-color:#fdd">            void Directory::SetCurrentDirectory(const String&amp; sPath) {</span>
@@ -266,6 +281,65 @@ namespace DotNetDupe {
                 /// Forward: Delegate to GetLastWriteTime.
 <span style = "background-color:#fdd">                return GetLastWriteTime(sPath);
             }</span>
+        
+<span style = "background-color:#dfd">            static void CollectRecursiveFiles(const fs::path&amp; root, const std::regex&amp; reg, std::vector&lt;String&gt;&amp; results) {
+                std::error_code ec;</span>
+                auto options = fs::directory_options::skip_permission_denied;
+                try {
+<span style = "background-color:#dfd">                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec &amp;&amp; it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it-&gt;is_regular_file(ec) &amp;&amp; std::regex_match(it-&gt;path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it-&gt;path()));</span>
+                        }
+<span style = "background-color:#dfd">                    }</span>
+<span style = "background-color:#fdd">                } catch (...) {</span>
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            static void CollectRecursiveDirs(const fs::path&amp; root, const std::regex&amp; reg, std::vector&lt;String&gt;&amp; results) {
+                std::error_code ec;</span>
+                auto options = fs::directory_options::skip_permission_denied;
+                try {
+<span style = "background-color:#dfd">                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec &amp;&amp; it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it-&gt;is_directory(ec) &amp;&amp; std::regex_match(it-&gt;path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it-&gt;path()));</span>
+                        }
+<span style = "background-color:#dfd">                    }</span>
+<span style = "background-color:#fdd">                } catch (...) {</span>
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+<span style = "background-color:#fdd">                }</span>
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFiles(const String&amp; sPath, const String&amp; sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetFiles(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;String&gt; results;
+                CollectRecursiveFiles(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                return ToArray(results);
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetDirectories(const String&amp; sPath, const String&amp; sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetDirectories(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;String&gt; results;
+                CollectRecursiveDirs(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                return ToArray(results);
+            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;String&gt; Directory::GetFileSystemEntries(const String&amp; sPath, const String&amp; sSearchPattern, SearchOption eSearchOption) {</span>
+                /// Step: Collect files and subdirectories for the given search option.
+<span style = "background-color:#dfd">                Array&lt;String&gt; files = GetFiles(sPath, sSearchPattern, eSearchOption);
+                Array&lt;String&gt; dirs = GetDirectories(sPath, sSearchPattern, eSearchOption);
+                Array&lt;String&gt; combined(files.GetLength() + dirs.GetLength());
+                for (int i = 0; i &lt; files.GetLength(); i++) combined[i] = files[i];
+                for (int j = 0; j &lt; dirs.GetLength(); j++) combined[files.GetLength() + j] = dirs[j];
+                return combined;
+            }</span>
+
         }
     }
 }</pre>

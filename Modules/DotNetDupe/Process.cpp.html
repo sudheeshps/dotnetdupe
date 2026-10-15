@@ -49,7 +49,7 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                : FileName(sFileName), CreateNoWindow(false), UseShellExecute(false) {}</span>
 
             ProcessStartInfo::ProcessStartInfo(const String&amp; sFileName, const String&amp; sArguments) 
-<span style = "background-color:#dfd">                : FileName(sFileName), Arguments(sArguments), CreateNoWindow(false), UseShellExecute(false) {}</span>
+<span style = "background-color:#fdd">                : FileName(sFileName), Arguments(sArguments), CreateNoWindow(false), UseShellExecute(false) {}</span>
 
             Process::Process() 
 <span style = "background-color:#dfd">                : m_iId(0), m_iExitCode(0), m_bHasExited(true), m_pProcessHandle(nullptr) {}</span>
@@ -59,8 +59,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            Process::~Process() {</span>
 #if defined(_WIN32)
-<span style = "background-color:#dfd">                if (m_pProcessHandle != nullptr) {</span>
-<span style = "background-color:#fdd">                    CloseHandle((HANDLE)m_pProcessHandle);</span>
+<span style = "background-color:#dfd">                if (m_pProcessHandle != nullptr) {
+                    CloseHandle((HANDLE)m_pProcessHandle);</span>
                 }
 #endif
 <span style = "background-color:#dfd">            }</span>
@@ -231,8 +231,8 @@ namespace DotNetDupe {
 
 <span style = "background-color:#dfd">            bool Process::Start() {
                 if (m_objStartInfo.FileName.GetLength() == 0) return false;
-                return StartProcessPlatform(m_objStartInfo, m_iId, m_pProcessHandle, m_bHasExited);
-            }</span>
+                return StartProcessPlatform(m_objStartInfo, m_iId, m_pProcessHandle, m_bHasExited);</span>
+<span style = "background-color:#fdd">            }</span>
 
 <span style = "background-color:#dfd">            SmartPointer&lt;Process&gt; Process::Start(const String&amp; sFileName) {
                 return Start(ProcessStartInfo(sFileName));
@@ -315,9 +315,9 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                WCHAR szPath[MAX_PATH] = { 0 }; DWORD dwLen = MAX_PATH;
                 if (::QueryFullProcessImageNameW(hOutProc, 0, szPath, &amp;dwLen)) {
                     std::wstring ws(szPath);
-                    size_t pos = ws.find_last_of(L"\\/");
-                    std::wstring wsName = (pos != std::wstring::npos) ? ws.substr(pos + 1) : ws;
-                    sOutName = StringConvertInternal::WCharToUtf8(wsName.c_str()).c_str();
+                    size_t pos = ws.find_last_of(L"\\/");</span>
+<span style = "background-color:#fdd">                    std::wstring wsName = (pos != std::wstring::npos) ? ws.substr(pos + 1) : ws;</span>
+<span style = "background-color:#dfd">                    sOutName = StringConvertInternal::WCharToUtf8(wsName.c_str()).c_str();
                     return true;</span>
                 }
 <span style = "background-color:#dfd">                return false;

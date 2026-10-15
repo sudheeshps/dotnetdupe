@@ -135,22 +135,22 @@ namespace DotNetDupe {
             DOTNETDUPE_API int GetLength() const;
             DOTNETDUPE_API String Clone() const;
 
-<span style = "background-color:#fdd">            DOTNETDUPE_API bool operator&lt;(const String&amp; sStr) const {
+<span style = "background-color:#dfd">            DOTNETDUPE_API bool operator&lt;(const String&amp; sStr) const {
                 const char* p1 = GetRawString();
                 const char* p2 = sStr.GetRawString();
-                if (!p1 &amp;&amp; !p2) return false;
-                if (!p1) return true;
-                if (!p2) return false;
+                if (!p1 &amp;&amp; !p2) return false;</span>
+<span style = "background-color:#fdd">                if (!p1) return true;</span>
+<span style = "background-color:#dfd">                if (!p2) return false;
                 return strcmp(p1, p2) &lt; 0;
             }</span>
 
-            friend bool operator==(const String&amp; sStr1, const String&amp; sStr2) {
+<span style = "background-color:#dfd">            friend bool operator==(const String&amp; sStr1, const String&amp; sStr2) {
                 const char* p1 = sStr1.GetRawString();
                 const char* p2 = sStr2.GetRawString();
                 if (p1 == p2) return true;
                 if (!p1 || !p2) return false;
                 return strcmp(p1, p2) == 0;
-            }
+            }</span>
             friend bool operator==(const String&amp; sStr1, const char* pStr2) {
                 const char* p1 = sStr1.GetRawString();
                 if (p1 == pStr2) return true;

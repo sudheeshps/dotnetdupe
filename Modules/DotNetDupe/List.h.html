@@ -158,9 +158,9 @@ namespace DotNetDupe {
                             for (int i = 0; i &lt; m_iCount; ++i) {
                                 ::new ((void*)&amp;pNewData[i]) T(std::move(m_pData[i]));</span>
                             }
-<span style = "background-color:#dfd">                            FreeBuffer();
-                            m_pData = pNewData;
-                            m_iCapacity = iValue;</span>
+<span style = "background-color:#dfd">                            FreeBuffer();</span>
+<span style = "background-color:#fdd">                            m_pData = pNewData;</span>
+<span style = "background-color:#dfd">                            m_iCapacity = iValue;</span>
                         }
 <span style = "background-color:#dfd">                    }</span>
 

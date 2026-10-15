@@ -158,6 +158,19 @@ namespace DotNetDupe {
                     }
                 }
 
+            
+<span style = "background-color:#dfd">                bool Task::WaitAll(const Array&lt;SmartPointer&lt;Task&gt;&gt;&amp; arrTasks, int iMillisecondsTimeout) {</span>
+                    /// Guard: Check empty array.
+<span style = "background-color:#dfd">                    int nTasks = arrTasks.GetLength();
+                    if (nTasks == 0) return true;
+                    for (int iIdx = 0; iIdx &lt; nTasks; ++iIdx) {
+                        if (arrTasks[iIdx] != nullptr) {
+                            if (!arrTasks[iIdx]-&gt;Wait(iMillisecondsTimeout)) return false;</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                    return true;
+                }</span>
+
             }
         }
     }
