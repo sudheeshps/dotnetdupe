@@ -1,4 +1,32 @@
 var searchData=
 [
-  ['✨_0',['Features &amp;amp; Library Capabilities ✨',['../index.html#autotoc_md3',1,'']]]
+  ['v1_200_200_202026_2005_2009_0',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v1.0.0&quot;&gt;v1.0.0&lt;/a&gt; - 2026-05-09',['../index.html#autotoc_md147',1,'']]],
+  ['v2_200_200_202026_2005_2020_1',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.0.0&quot;&gt;v2.0.0&lt;/a&gt; - 2026-05-20',['../index.html#autotoc_md146',1,'']]],
+  ['v2_201_200_202026_2005_2021_2',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0&quot;&gt;v2.1.0&lt;/a&gt; - 2026-05-21',['../index.html#autotoc_md145',1,'']]],
+  ['v3_200_200_202026_2005_2031_3',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.0&quot;&gt;v3.0.0&lt;/a&gt; - 2026-05-31',['../index.html#autotoc_md144',1,'']]],
+  ['v3_200_201_202026_2006_2020_4',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1&quot;&gt;v3.0.1&lt;/a&gt; - 2026-06-20',['../index.html#autotoc_md143',1,'']]],
+  ['v3_200_202_202026_2008_2005_5',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.2&quot;&gt;v3.0.2&lt;/a&gt; - 2026-08-05',['../index.html#autotoc_md142',1,'']]],
+  ['v3_200_203_202026_2008_2005_6',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.3&quot;&gt;v3.0.3&lt;/a&gt; - 2026-08-05',['../index.html#autotoc_md141',1,'']]],
+  ['v3_200_204_202026_2008_2005_7',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.4&quot;&gt;v3.0.4&lt;/a&gt; - 2026-08-05',['../index.html#autotoc_md140',1,'']]],
+  ['v3_200_205_202026_2008_2006_8',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5&quot;&gt;v3.0.5&lt;/a&gt; - 2026-08-06',['../index.html#autotoc_md139',1,'']]],
+  ['v3_200_206_202026_2008_2006_9',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.6&quot;&gt;v3.0.6&lt;/a&gt; - 2026-08-06',['../index.html#autotoc_md138',1,'']]],
+  ['v4_200_200_202026_2008_2015_10',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0&quot;&gt;v4.0.0&lt;/a&gt; - 2026-08-15',['../index.html#autotoc_md137',1,'']]],
+  ['v4_200_201_202026_2008_2017_11',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1&quot;&gt;v4.0.1&lt;/a&gt; - 2026-08-17',['../index.html#autotoc_md136',1,'']]],
+  ['v4_200_202_202026_2008_2019_12',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2&quot;&gt;v4.0.2&lt;/a&gt; - 2026-08-19',['../index.html#autotoc_md135',1,'']]],
+  ['v4_200_203_202026_2008_2020_13',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.3&quot;&gt;v4.0.3&lt;/a&gt; - 2026-08-20',['../index.html#autotoc_md134',1,'']]],
+  ['v4_200_204_202026_2009_2009_14',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.4&quot;&gt;v4.0.4&lt;/a&gt; - 2026-09-09',['../index.html#autotoc_md133',1,'']]],
+  ['v4_200_205_202026_2009_2009_15',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5&quot;&gt;v4.0.5&lt;/a&gt; - 2026-09-09',['../index.html#autotoc_md132',1,'']]],
+  ['v4_200_206_202026_2009_2010_16',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6&quot;&gt;v4.0.6&lt;/a&gt; - 2026-09-10',['../index.html#autotoc_md131',1,'']]],
+  ['v4_200_207_202026_2009_2010_17',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7&quot;&gt;v4.0.7&lt;/a&gt; - 2026-09-10',['../index.html#autotoc_md130',1,'']]],
+  ['v5_200_200_202026_2009_2028_18',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.0&quot;&gt;v5.0.0&lt;/a&gt; - 2026-09-28',['../index.html#autotoc_md129',1,'']]],
+  ['v5_200_201_202026_2009_2029_19',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1&quot;&gt;v5.0.1&lt;/a&gt; - 2026-09-29',['../index.html#autotoc_md128',1,'']]],
+  ['v5_200_202_202026_2009_2029_20',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.2&quot;&gt;v5.0.2&lt;/a&gt; - 2026-09-29',['../index.html#autotoc_md127',1,'']]],
+  ['v5_200_203_202026_2010_2001_21',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3&quot;&gt;v5.0.3&lt;/a&gt; - 2026-10-01',['../index.html#autotoc_md126',1,'']]],
+  ['v5_200_204_20current_20latest_22',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases&quot;&gt;v5.0.4&lt;/a&gt; (Current / Latest)',['../index.html#autotoc_md125',1,'']]],
+  ['value_20dictionaries_20hash_20sets_23',['2. Key/Value Dictionaries &amp;amp; Hash Sets',['../index.html#autotoc_md50',1,'']]],
+  ['via_20nuget_24',['Integration via NuGet',['../index.html#autotoc_md9',1,'']]],
+  ['via_20nuget_20package_25',['2. Integrating via NuGet Package',['../index.html#autotoc_md21',1,'']]],
+  ['visual_20studio_20windows_26',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
+  ['vs_20dotnetdupe_20comparison_20⚖️_27',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md77',1,'']]],
+  ['vs_20shared_20ownership_28',['1. Unique vs. Shared Ownership',['../index.html#autotoc_md39',1,'']]]
 ];

@@ -1,11 +1,20 @@
 var searchData=
 [
-  ['2_20consuming_20rest_20apis_0',['2. Consuming REST APIs',['../index.html#autotoc_md71',1,'']]],
-  ['2_20environment_20provisioning_1',['2. Environment Provisioning',['../index.html#autotoc_md14',1,'']]],
-  ['2_20grouping_20bucket_20aggregations_2',['2. Grouping &amp;amp; Bucket Aggregations',['../index.html#autotoc_md61',1,'']]],
-  ['2_20integrating_20via_20nuget_20package_3',['2. Integrating via NuGet Package',['../index.html#autotoc_md21',1,'']]],
-  ['2_20key_20value_20dictionaries_20hash_20sets_4',['2. Key/Value Dictionaries &amp;amp; Hash Sets',['../index.html#autotoc_md50',1,'']]],
-  ['2_20multi_20threading_20asynchronous_20tasks_5',['2. Multi-Threading &amp;amp; Asynchronous Tasks',['../index.html#autotoc_md33',1,'']]],
-  ['2_20polymorphic_20abstractions_20interfaces_6',['2. Polymorphic Abstractions &amp;amp; Interfaces',['../index.html#autotoc_md41',1,'']]],
-  ['2_3a_20c_20application_20main_20cpp_7',['Step 2: C++ Application (&lt;span class=&quot;tt&quot;&gt;main.cpp&lt;/span&gt;)',['../index.html#autotoc_md29',1,'']]]
+  ['1_200_202026_2005_2021_0',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0&quot;&gt;v2.1.0&lt;/a&gt; - 2026-05-21',['../index.html#autotoc_md145',1,'']]],
+  ['1_202026_2006_2020_1',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1&quot;&gt;v3.0.1&lt;/a&gt; - 2026-06-20',['../index.html#autotoc_md143',1,'']]],
+  ['1_202026_2008_2017_2',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1&quot;&gt;v4.0.1&lt;/a&gt; - 2026-08-17',['../index.html#autotoc_md136',1,'']]],
+  ['1_202026_2009_2029_3',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1&quot;&gt;v5.0.1&lt;/a&gt; - 2026-09-29',['../index.html#autotoc_md128',1,'']]],
+  ['1_20cross_20platform_20project_20architecture_4',['1. Cross-Platform Project Architecture',['../index.html#autotoc_md19',1,'']]],
+  ['1_20filtering_20sorting_20projections_5',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md59',1,'']]],
+  ['1_20generic_20collections_20interface_20hierarchy_6',['1. Generic Collections &amp;amp; Interface Hierarchy',['../index.html#autotoc_md48',1,'']]],
+  ['1_20hosting_20rest_20api_20controllers_7',['1. Hosting REST API Controllers',['../index.html#autotoc_md68',1,'']]],
+  ['1_20install_20wsl_8',['1. Install WSL',['../index.html#autotoc_md13',1,'']]],
+  ['1_20strings_20dates_20console_9',['1. Strings, Dates &amp;amp; Console',['../index.html#autotoc_md32',1,'']]],
+  ['1_20unique_20vs_20shared_20ownership_10',['1. Unique vs. Shared Ownership',['../index.html#autotoc_md39',1,'']]],
+  ['10_11',['10',['../index.html#autotoc_md131',1,'&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6&quot;&gt;v4.0.6&lt;/a&gt; - 2026-09-10'],['../index.html#autotoc_md130',1,'&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7&quot;&gt;v4.0.7&lt;/a&gt; - 2026-09-10']]],
+  ['10_2001_12',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3&quot;&gt;v5.0.3&lt;/a&gt; - 2026-10-01',['../index.html#autotoc_md126',1,'']]],
+  ['15_13',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0&quot;&gt;v4.0.0&lt;/a&gt; - 2026-08-15',['../index.html#autotoc_md137',1,'']]],
+  ['17_14',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1&quot;&gt;v4.0.1&lt;/a&gt; - 2026-08-17',['../index.html#autotoc_md136',1,'']]],
+  ['19_15',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2&quot;&gt;v4.0.2&lt;/a&gt; - 2026-08-19',['../index.html#autotoc_md135',1,'']]],
+  ['1_3a_20create_20wwwroot_20index_20html_16',['Step 1: Create &lt;span class=&quot;tt&quot;&gt;wwwroot/index.html&lt;/span&gt;',['../index.html#autotoc_md28',1,'']]]
 ];

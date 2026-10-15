@@ -31,9 +31,10 @@ namespace DotNetDupe {
                     DOTNETDUPE_API Array<byte> ComputeHash(const Array<byte>& buffer);
 
                     /// \brief Computes the hash value for the specified Stream object.
-                    /// \param pStream The input stream to compute the hash code for.
+                    /// \param pStream Smart pointer to the input stream to compute the hash code for.
                     /// \return The computed 32-byte SHA-256 hash code.
-                    DOTNETDUPE_API Array<byte> ComputeHash(IO::Stream* pStream);
+                    /// \throws ArgumentNullException Thrown when pStream is null.
+                    DOTNETDUPE_API Array<byte> ComputeHash(const SmartPointer<IO::Stream>& pStream);
 
                     /// \brief Creates an instance of the default implementation of SHA256.
                     DOTNETDUPE_API static SmartPointer<SHA256> Create();
@@ -42,7 +43,10 @@ namespace DotNetDupe {
                     DOTNETDUPE_API static Array<byte> HashData(const Array<byte>& buffer);
 
                     /// \brief Computes the hash value for the specified stream using a static helper.
-                    DOTNETDUPE_API static Array<byte> HashData(IO::Stream* pStream);
+                    /// \param pStream Smart pointer to the input stream to hash.
+                    /// \return The computed 32-byte SHA-256 hash code.
+                    /// \throws ArgumentNullException Thrown when pStream is null.
+                    DOTNETDUPE_API static Array<byte> HashData(const SmartPointer<IO::Stream>& pStream);
 
                     /// \brief Formats a byte array into a lowercase hex string.
                     DOTNETDUPE_API static String ToHexString(const Array<byte>& arrHash);

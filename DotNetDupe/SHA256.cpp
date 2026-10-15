@@ -104,45 +104,73 @@ namespace DotNetDupe {
                     unsigned int h[8];
                 };
 
+                namespace {
+                    /// \brief Finalizes the SHA-256 digest into a 32-byte Array.
+                    static Array<byte> FinalizeDigest(PureSha256& sha) {
+                        /// Extract computed 32-byte hash digest.
+                        unsigned char digest[32];
+                        sha.Final(digest);
+
+                        /// Construct and copy bytes to result array.
+                        Array<byte> result(32);
+                        for (int i = 0; i < 32; i++) {
+                            result[i] = digest[i];
+                        }
+
+                        return result;
+                    }
+                }
+
                 SHA256::SHA256() {}
 
                 SmartPointer<SHA256> SHA256::Create() {
+                    /// Initialize and return a new shared SHA256 instance.
                     return SmartPointer<SHA256>::NewShared();
                 }
 
                 Array<byte> SHA256::ComputeHash(const Array<byte>& buffer) {
-                    PureSha256 sha; sha.Init();
+                    /// Initialize pure SHA-256 engine.
+                    PureSha256 sha;
+                    sha.Init();
+
+                    /// Process buffer bytes if non-empty.
                     if (buffer.GetLength() > 0) {
                         sha.Update(reinterpret_cast<const unsigned char*>(buffer.GetData()), static_cast<unsigned int>(buffer.GetLength()));
                     }
-                    unsigned char digest[32];
-                    sha.Final(digest);
-                    Array<byte> result(32);
-                    for (int i = 0; i < 32; i++) result[i] = digest[i];
-                    return result;
+
+                    /// Finalize digest and return hash array.
+                    return FinalizeDigest(sha);
                 }
 
-                Array<byte> SHA256::ComputeHash(IO::Stream* pStream) {
-                    if (!pStream) throw ArgumentNullException("Stream cannot be null.");
-                    PureSha256 sha; sha.Init();
+                Array<byte> SHA256::ComputeHash(const SmartPointer<IO::Stream>& pStream) {
+                    /// Guard: Validate stream parameter is not null.
+                    if (!pStream) {
+                        throw ArgumentNullException("Stream cannot be null.");
+                    }
+
+                    /// Initialize pure SHA-256 engine.
+                    PureSha256 sha;
+                    sha.Init();
+
+                    /// Read and stream-process chunks of 4KB.
                     char szChunk[4096];
                     int nBytesRead = 0;
                     while ((nBytesRead = pStream->Read(szChunk, 0, 4096)) > 0) {
                         sha.Update(reinterpret_cast<const unsigned char*>(szChunk), static_cast<unsigned int>(nBytesRead));
                     }
-                    unsigned char digest[32];
-                    sha.Final(digest);
-                    Array<byte> result(32);
-                    for (int i = 0; i < 32; i++) result[i] = digest[i];
-                    return result;
+
+                    /// Finalize digest and return hash array.
+                    return FinalizeDigest(sha);
                 }
 
                 Array<byte> SHA256::HashData(const Array<byte>& buffer) {
+                    /// Execute one-shot hash computation on byte buffer.
                     SHA256 hasher;
                     return hasher.ComputeHash(buffer);
                 }
 
-                Array<byte> SHA256::HashData(IO::Stream* pStream) {
+                Array<byte> SHA256::HashData(const SmartPointer<IO::Stream>& pStream) {
+                    /// Execute one-shot hash computation on stream source.
                     SHA256 hasher;
                     return hasher.ComputeHash(pStream);
                 }

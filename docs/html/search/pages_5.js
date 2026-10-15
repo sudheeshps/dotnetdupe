@@ -1,9 +1,5 @@
 var searchData=
 [
-  ['b_20consuming_20nuget_20package_20in_20visual_20studio_20windows_0',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
-  ['b_3a_20strongly_20typed_20client_20restclient_20recommended_1',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
-  ['bucket_20aggregations_2',['2. Grouping &amp;amp; Bucket Aggregations',['../index.html#autotoc_md61',1,'']]],
-  ['build_20test_20in_20wsl_3',['3. Build &amp;amp; Test in WSL',['../index.html#autotoc_md15',1,'']]],
-  ['building_20a_20web_20application_20with_20static_20files_20rest_20apis_4',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
-  ['building_20and_20testing_5',['Building and Testing',['../index.html#autotoc_md8',1,'']]]
+  ['5_202026_2008_2006_0',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5&quot;&gt;v3.0.5&lt;/a&gt; - 2026-08-06',['../index.html#autotoc_md139',1,'']]],
+  ['5_202026_2009_2009_1',['&lt;a href=&quot;https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5&quot;&gt;v4.0.5&lt;/a&gt; - 2026-09-09',['../index.html#autotoc_md132',1,'']]]
 ];

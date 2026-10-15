@@ -1,15 +1,12 @@
 var searchData=
 [
-  ['language_20integrated_20query_20linq_20⚡_0',['Language Integrated Query (LINQ) ⚡',['../index.html#autotoc_md56',1,'']]],
-  ['layer_1',['3. Using the Database Layer',['../index.html#autotoc_md75',1,'']]],
-  ['layout_2',['Project Directory Layout',['../index.html#autotoc_md27',1,'']]],
-  ['level_20http_20client_20httpclient_3',['Option A: Low-level HTTP Client (&lt;span class=&quot;tt&quot;&gt;HttpClient&lt;/span&gt;)',['../index.html#autotoc_md72',1,'']]],
-  ['library_20capabilities_20✨_4',['Features &amp;amp; Library Capabilities ✨',['../index.html#autotoc_md3',1,'']]],
-  ['license_20📄_5',['License 📄',['../index.html#autotoc_md120',1,'']]],
-  ['lifetime_20controls_20safety_20guarantees_6',['3. Lifetime Controls &amp;amp; Safety Guarantees',['../index.html#autotoc_md43',1,'']]],
-  ['linq_20⚡_7',['Language Integrated Query (LINQ) ⚡',['../index.html#autotoc_md56',1,'']]],
-  ['linq_20integration_8',['4. Snapshot Iteration &amp;amp; Direct LINQ Integration',['../index.html#autotoc_md54',1,'']]],
-  ['linux_20cmake_20wsl_9',['C. Consuming NuGet Package on Linux / CMake (WSL)',['../index.html#autotoc_md24',1,'']]],
-  ['linux_20users_10',['Note for Linux Users',['../index.html#autotoc_md11',1,'']]],
-  ['low_20level_20http_20client_20httpclient_11',['Option A: Low-level HTTP Client (&lt;span class=&quot;tt&quot;&gt;HttpClient&lt;/span&gt;)',['../index.html#autotoc_md72',1,'']]]
+  ['generated_20content_20🤖_0',['Generated Content 🤖',['../index.html#autotoc_md121',1,'']]],
+  ['generating_20the_20nuget_20package_1',['A. Generating the NuGet Package',['../index.html#autotoc_md22',1,'']]],
+  ['generators_20materialization_2',['4. Set Operations, Generators &amp;amp; Materialization',['../index.html#autotoc_md65',1,'']]],
+  ['generic_20collections_20interface_20hierarchy_3',['1. Generic Collections &amp;amp; Interface Hierarchy',['../index.html#autotoc_md48',1,'']]],
+  ['getting_20started_20🚀_4',['Getting Started 🚀',['../index.html#autotoc_md4',1,'']]],
+  ['grouping_20bucket_20aggregations_5',['2. Grouping &amp;amp; Bucket Aggregations',['../index.html#autotoc_md61',1,'']]],
+  ['guarantees_6',['3. Lifetime Controls &amp;amp; Safety Guarantees',['../index.html#autotoc_md43',1,'']]],
+  ['guide_20🌐🗄️_7',['Web API &amp;amp; Database Integration Guide 🌐🗄️',['../index.html#autotoc_md67',1,'']]],
+  ['guide_20windows_20🐧_8',['WSL Setup Guide (Windows) 🐧',['../index.html#autotoc_md12',1,'']]]
 ];

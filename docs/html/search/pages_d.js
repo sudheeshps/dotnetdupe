@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['key_20capabilities_0',['Key Capabilities',['../index.html#autotoc_md37',1,'Key Capabilities'],['../index.html#autotoc_md57',1,'Key Capabilities']]],
-  ['key_20value_20dictionaries_20hash_20sets_1',['2. Key/Value Dictionaries &amp;amp; Hash Sets',['../index.html#autotoc_md50',1,'']]]
+  ['features_20library_20capabilities_20✨_0',['Features &amp;amp; Library Capabilities ✨',['../index.html#autotoc_md3',1,'']]],
+  ['files_20rest_20apis_1',['3. Building a Web Application with Static Files &amp;amp; REST APIs',['../index.html#autotoc_md26',1,'']]],
+  ['filtering_20sorting_20projections_2',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md59',1,'']]],
+  ['for_20linux_20users_3',['Note for Linux Users',['../index.html#autotoc_md11',1,'']]],
+  ['from_20powershell_4',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]]
 ];

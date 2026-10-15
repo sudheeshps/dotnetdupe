@@ -19,7 +19,7 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 > - 💾 **Drive Metrics & Free Space Telemetry (`System::IO::DriveInfo`):** Full drive metrics, file system format, volume label, total size, and available/free space queries via `DriveInfo::GetDrives()`, `GetTotalSize()`, `GetTotalFreeSpace()`, and `GetAvailableFreeSpace()`.
 > - 📂 **Recursive Directory Searching (`System::IO::Directory` & `SearchOption`):** Added `SearchOption::TopDirectoryOnly` and `SearchOption::AllDirectories` overloads to `Directory::GetFiles`, `GetDirectories`, and `GetFileSystemEntries` with permission-resilient traversal.
 > - 📊 **64-bit Multi-Terabyte Stream Precision (`System::IO::Stream` & `FileStream`):** Seamless support for multi-gigabyte/terabyte files via `GetLength64()`, `GetPosition64()`, `SetPosition64()`, and `Seek64()`.
-> - 🔐 **Streaming Cryptographic SHA-256 (`System::Security::Cryptography::SHA256`):** FIPS 180-2 compliant streaming SHA-256 hash algorithm supporting byte buffers, streams (`ComputeHash(Stream*)`), static one-shot hashing (`HashData`), and hex string formatting (`ToHexString`).
+> - 🔐 **Streaming Cryptographic SHA-256 (`System::Security::Cryptography::SHA256`):** FIPS 180-2 compliant streaming SHA-256 hash algorithm supporting byte buffers, streams (`ComputeHash(SmartPointer<Stream>)`), static one-shot hashing (`HashData`), and hex string formatting (`ToHexString`).
 > - 🧩 **Batch Task Synchronization (`System::Threading::Tasks::Task::WaitAll`):** Parallel task completion barrier enabling multi-threaded worker pools to synchronize cleanly.
 > - 🧮 **Mathematical Primitives & Time-Series Statistics (`System::Math` & `System::Numerics::Statistics`):** Full suite of IEEE 754 arithmetic and transcendental methods (`Abs`, `Min`, `Max`, `Clamp`, `Round`, `Sqrt`, `Pow`, `Log`, `Sin`, `Cos`, `Tan`) and time-series statistics (`Mean`, `Variance`, `StandardDeviation`, `MovingAverage`, `MovingAverageSeries`, `ExponentialMovingAverage`, `ExponentialMovingAverageSeries`).
 > - 🔣 **Generic JSON Serialization & DOM Accessors (`System::Text::Json`):** Strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (`ToJson`/`FromJson`), expanded primitive/container converters (`Array<T>`, `DateTime`, `Guid`), and `JsonElement` property helpers (`HasProperty`, `GetProperty`, `GetPropertyString`, `GetPropertyInt32`, `GetPropertyDouble`, `GetPropertyAs<T>`, `Deserialize<T>`).
@@ -1779,7 +1779,7 @@ For questions or support, please open an issue on the [GitHub repository](https:
   - Upgraded core stream architecture with 64-bit positioning (`int64_t`) supporting multi-terabyte file streaming: `GetLength64()`, `GetPosition64()`, `SetPosition64()`, and `Seek64()`.
 - **Streaming Cryptographic SHA-256 (`System::Security::Cryptography::SHA256`)**:
   - Added FIPS 180-2 compliant streaming SHA-256 hash algorithm.
-  - Supports continuous byte buffers, stream sources (`ComputeHash(Stream*)`), static one-shot hashing (`HashData`), and hexadecimal output formatting (`ToHexString`).
+  - Supports continuous byte buffers, stream sources (`ComputeHash(SmartPointer<Stream>)`), static one-shot hashing (`HashData`), and hexadecimal output formatting (`ToHexString`).
 - **Batch Task Synchronization (`System::Threading::Tasks::Task::WaitAll`)**:
   - Added barrier synchronization to wait on collections or arrays of asynchronous `Task` instances concurrently.
 

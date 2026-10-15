@@ -1,14 +1,21 @@
 var searchData=
 [
-  ['table_20of_20contents_20📚_0',['Table of Contents 📚',['../index.html#autotoc_md1',1,'']]],
-  ['tasks_1',['2. Multi-Threading &amp;amp; Asynchronous Tasks',['../index.html#autotoc_md33',1,'']]],
-  ['test_20code_20🧪_2',['Sample Client and Test Code 🧪',['../index.html#autotoc_md78',1,'']]],
-  ['test_20in_20wsl_3',['3. Build &amp;amp; Test in WSL',['../index.html#autotoc_md15',1,'']]],
-  ['testing_4',['Building and Testing',['../index.html#autotoc_md8',1,'']]],
-  ['the_20database_20layer_5',['3. Using the Database Layer',['../index.html#autotoc_md75',1,'']]],
-  ['the_20nuget_20package_6',['A. Generating the NuGet Package',['../index.html#autotoc_md22',1,'']]],
-  ['thread_20safe_20concurrent_20collections_7',['Thread Safe Concurrent Collections',['../index.html#autotoc_md34',1,'3. Thread-Safe Concurrent Collections'],['../index.html#autotoc_md52',1,'3. Thread-Safe Concurrent Collections']]],
-  ['threading_20asynchronous_20tasks_8',['2. Multi-Threading &amp;amp; Asynchronous Tasks',['../index.html#autotoc_md33',1,'']]],
-  ['to_20release_9',['How to Release',['../index.html#autotoc_md119',1,'']]],
-  ['typed_20client_20restclient_20recommended_10',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]]
+  ['package_0',['Package',['../index.html#autotoc_md21',1,'2. Integrating via NuGet Package'],['../index.html#autotoc_md22',1,'A. Generating the NuGet Package']]],
+  ['package_20in_20visual_20studio_20windows_1',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
+  ['package_20on_20linux_20cmake_20wsl_2',['C. Consuming NuGet Package on Linux / CMake (WSL)',['../index.html#autotoc_md24',1,'']]],
+  ['patterns_3',['Recommended Usage Patterns',['../index.html#autotoc_md76',1,'']]],
+  ['pipeline_20🚀_4',['CI/CD Pipeline 🚀',['../index.html#autotoc_md116',1,'']]],
+  ['platform_20applications_20🌐💻_5',['Developing Cross-Platform Applications 🌐💻',['../index.html#autotoc_md17',1,'']]],
+  ['platform_20project_20architecture_6',['1. Cross-Platform Project Architecture',['../index.html#autotoc_md19',1,'']]],
+  ['platform_20support_20🌐_7',['Cross-Platform Support 🌐',['../index.html#autotoc_md7',1,'']]],
+  ['pointers_20memory_20management_20🧠_8',['Smart Pointers &amp;amp; Memory Management 🧠',['../index.html#autotoc_md36',1,'']]],
+  ['polymorphic_20abstractions_20interfaces_9',['2. Polymorphic Abstractions &amp;amp; Interfaces',['../index.html#autotoc_md41',1,'']]],
+  ['powershell_10',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]],
+  ['prerequisites_20📋_11',['Prerequisites 📋',['../index.html#autotoc_md5',1,'']]],
+  ['project_20architecture_12',['1. Cross-Platform Project Architecture',['../index.html#autotoc_md19',1,'']]],
+  ['project_20directory_20layout_13',['Project Directory Layout',['../index.html#autotoc_md27',1,'']]],
+  ['project_20overview_20💡_14',['Project Overview 💡',['../index.html#autotoc_md2',1,'']]],
+  ['project_20status_20🚧_15',['Project Status 🚧',['../index.html#autotoc_md114',1,'']]],
+  ['projections_16',['1. Filtering, Sorting &amp;amp; Projections',['../index.html#autotoc_md59',1,'']]],
+  ['provisioning_17',['2. Environment Provisioning',['../index.html#autotoc_md14',1,'']]]
 ];
