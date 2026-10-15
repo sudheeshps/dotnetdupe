@@ -87,6 +87,19 @@ namespace DotNetDupe {
                 /// \brief Releases all unmanaged resources used by the FileStream.
                 DOTNETDUPE_API void Dispose() override;
 
+                /// \brief Gets the 64-bit length in bytes of the stream.
+                DOTNETDUPE_API long long GetLength64() const override;
+
+                /// \brief Gets the 64-bit position within the stream.
+                DOTNETDUPE_API long long GetPosition64() const override;
+
+                /// \brief Sets the 64-bit position within the stream.
+                DOTNETDUPE_API void SetPosition64(long long llValue) override;
+
+                /// \brief Sets the 64-bit position within the stream.
+                DOTNETDUPE_API long long Seek64(long long llOffset, int iOrigin) override;
+
+
             private:
                 struct Impl;
                 Impl* m_pImpl;

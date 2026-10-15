@@ -352,6 +352,8 @@
     <ClCompile Include="Environment.cpp" />
     <ClCompile Include="File.cpp" />
     <ClCompile Include="Directory.cpp" />
+    <ClCompile Include="DriveInfo.cpp" />
+    <ClCompile Include="SHA256.cpp" />
     <ClCompile Include="Guid.cpp" />
     <ClCompile Include="FileStream.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

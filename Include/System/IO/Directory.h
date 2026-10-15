@@ -5,6 +5,7 @@
 #include "System/String.h"
 #include "System/Array.h"
 #include "System/DateTimeOffset.h"
+#include "System/IO/SearchOption.h"
 
 #if defined(_WIN32)
 #undef CreateDirectory
@@ -60,6 +61,9 @@ namespace DotNetDupe {
                 /// \param sSearchPattern The search string to match against the names of files in sPath.
                 /// \return An array of the full names (including paths) for the files matching pattern.
                 DOTNETDUPE_API static Array<String> GetFiles(const String& sPath, const String& sSearchPattern);
+
+                /// \brief Returns files in directory matching search pattern with search option.
+                DOTNETDUPE_API static Array<String> GetFiles(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption);
                 
                 /// \brief Returns the names of subdirectories (including their paths) in the specified directory.
                 /// \param sPath The relative or absolute path to the directory to search.
@@ -68,12 +72,18 @@ namespace DotNetDupe {
 
                 /// \brief Returns the names of subdirectories (including their paths) matching pattern.
                 DOTNETDUPE_API static Array<String> GetDirectories(const String& sPath, const String& sSearchPattern);
+
+                /// \brief Returns directories matching search pattern with search option.
+                DOTNETDUPE_API static Array<String> GetDirectories(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption);
                 
                 /// \brief Returns the names of all files and subdirectories in the specified directory.
                 DOTNETDUPE_API static Array<String> GetFileSystemEntries(const String& sPath);
 
                 /// \brief Returns the names of all files and subdirectories matching pattern.
                 DOTNETDUPE_API static Array<String> GetFileSystemEntries(const String& sPath, const String& sSearchPattern);
+
+                /// \brief Returns filesystem entries matching pattern with search option.
+                DOTNETDUPE_API static Array<String> GetFileSystemEntries(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption);
                 
                 /// \brief Gets the current working directory of the application.
                 /// \return A string that contains the path of the current working directory.

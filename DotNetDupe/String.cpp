@@ -11,6 +11,7 @@
 #include <vector>
 #include <initializer_list>
 #include <sstream>
+#include <iomanip>
 #include <type_traits>
 #include <algorithm>
 #include <iostream>
@@ -62,17 +63,112 @@ namespace DotNetDupe {
 			throw FormatException(msg);
 		}
 		String::String() { m_pImpl = new StringImpl("");  }
-		String::~String() { delete m_pImpl; }
+		String::~String() { delete m_pImpl; m_pImpl = nullptr; }
+
+		static void ApplyFixedPointFormat(std::string& sVal, int iPrecision) {
+			/// Format floating-point value to fixed decimal precision.
+			try {
+				size_t idx = 0;
+				double dVal = std::stod(sVal, &idx);
+				if (idx == sVal.length()) {
+					std::ostringstream ss;
+					ss << std::fixed << std::setprecision(iPrecision >= 0 ? iPrecision : 2) << dVal;
+					sVal = ss.str();
+				}
+			} catch (...) {
+				/// Suppress: retain original string if conversion fails.
+				(void)0;
+			}
+		}
+
+		static void ApplyIntegerFormat(std::string& sVal, char cSpec, int iPrecision) {
+			/// Format integer value as decimal or hexadecimal representation.
+			try {
+				size_t idx = 0;
+				long long llVal = std::stoll(sVal, &idx);
+				if (idx != sVal.length()) return;
+				std::ostringstream ss;
+				if (cSpec == 'X') ss << std::uppercase << std::hex;
+				else if (cSpec == 'x') ss << std::hex;
+				if (iPrecision > 0) ss << std::setw(iPrecision) << std::setfill('0');
+				ss << llVal;
+				sVal = ss.str();
+			} catch (...) {
+				/// Suppress: retain original string if conversion fails.
+				(void)0;
+			}
+		}
+
+		static void ApplyFormatSpecifier(std::string& sVal, const std::string& sFmt) {
+			/// Guard: Return early if no format specifier specified.
+			if (sFmt.empty()) return;
+			char cSpec = sFmt[0];
+			int iPrecision = -1;
+			if (sFmt.length() > 1) {
+				try { iPrecision = std::stoi(sFmt.substr(1)); }
+				catch (...) { (void)0; }
+			}
+			if (cSpec == 'F' || cSpec == 'f') {
+				ApplyFixedPointFormat(sVal, iPrecision);
+			} else if (cSpec == 'D' || cSpec == 'd' || cSpec == 'X' || cSpec == 'x') {
+				ApplyIntegerFormat(sVal, cSpec, iPrecision);
+			}
+		}
+
+		static void ApplyAlignment(std::string& sVal, const std::string& sAlign) {
+			/// Guard: Return early if alignment string is empty.
+			if (sAlign.empty()) return;
+			try {
+				int iAlign = std::stoi(sAlign);
+				int iWidth = std::abs(iAlign);
+				if ((int)sVal.length() >= iWidth) return;
+				int iPad = iWidth - static_cast<int>(sVal.length());
+				if (iAlign > 0) sVal = std::string(iPad, ' ') + sVal;
+				else sVal = sVal + std::string(iPad, ' ');
+			} catch (...) {
+				/// Suppress: ignore malformed alignment specifier.
+				(void)0;
+			}
+		}
+
+		static void ParsePlaceholderParts(const std::string& sRaw, std::string& sIndex, std::string& sAlign, std::string& sFmt) {
+			/// Extract index, alignment, and format specifier tokens.
+			size_t colonPos = sRaw.find(':');
+			std::string indexAndAlign = (colonPos != std::string::npos) ? sRaw.substr(0, colonPos) : sRaw;
+			sFmt = (colonPos != std::string::npos) ? sRaw.substr(colonPos + 1) : "";
+			size_t commaPos = indexAndAlign.find(',');
+			sIndex = (commaPos != std::string::npos) ? indexAndAlign.substr(0, commaPos) : indexAndAlign;
+			sAlign = (commaPos != std::string::npos) ? indexAndAlign.substr(commaPos + 1) : "";
+		}
+
+		static int ResolveArgIndex(const std::string& sIndex, int iArgCount) {
+			/// Guard: Parse argument index and validate against argument count bounds.
+			if (sIndex.empty()) throw FormatException("Index out of bounds");
+			size_t idx = 0;
+			int argIdx = -1;
+			try {
+				argIdx = std::stoi(sIndex, &idx);
+			} catch (...) {
+				throw FormatException("Index out of bounds");
+			}
+			if (idx != sIndex.length() || argIdx < 0 || argIdx >= iArgCount) {
+				throw FormatException("Index out of bounds");
+			}
+			return argIdx;
+		}
 
 		static void AppendExplicitArg(const std::string& sFmt, size_t i, size_t end, const String* pArgs, int iArgCount, std::string& sRes) {
-			/// Extract integer argument index between placeholder braces {N}.
-			std::string num = sFmt.substr(i + 1, end - i - 1);
-			size_t idx = 0;
-			int argIdx = std::stoi(num, &idx);
-			if (idx != num.length() || argIdx < 0 || argIdx >= iArgCount) throw FormatException("Index out of bounds");
+			/// Extract placeholder token and parse components.
+			std::string raw = sFmt.substr(i + 1, end - i - 1);
+			std::string sIndex, sAlign, sFormatSpec;
+			ParsePlaceholderParts(raw, sIndex, sAlign, sFormatSpec);
+			int argIdx = ResolveArgIndex(sIndex, iArgCount);
 
-			/// Append resolved string argument to target buffer.
-			sRes += pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+			/// Format resolved argument and apply alignment padding.
+			std::string sArgVal = pArgs[argIdx].GetRawString() ? pArgs[argIdx].GetRawString() : "";
+			ApplyFormatSpecifier(sArgVal, sFormatSpec);
+			ApplyAlignment(sArgVal, sAlign);
+			sRes += sArgVal;
 		}
 
 		static void FormatOpenBrace(const std::string& sFmt, size_t& i, int& iAutoIndex, const String* pArgs, int iArgCount, std::string& sRes) {
@@ -144,7 +240,7 @@ namespace DotNetDupe {
 
 		String String::operator+(const char* pStr) const {
 			String sNewStr = *this;
-			if (pStr) {
+			if (pStr && sNewStr.m_pImpl) {
 				sNewStr.m_pImpl->s.append(pStr);
 			}
 			return sNewStr;
@@ -152,23 +248,28 @@ namespace DotNetDupe {
 
 		String String::operator+(char ch) const {
 			String sNewStr = *this;
-			sNewStr.m_pImpl->s.push_back(ch);
+			if (sNewStr.m_pImpl) {
+				sNewStr.m_pImpl->s.push_back(ch);
+			}
 			return sNewStr;
 		}
 
 		String& String::operator+=(const String& sStr) {
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s.append(sStr.GetRawString());
 			return *this;
 		}
 
 		String& String::operator+=(const char* pStr) {
 			if (pStr) {
+				if (!m_pImpl) m_pImpl = new StringImpl();
 				m_pImpl->s.append(pStr);
 			}
 			return *this;
 		}
 
 		String& String::operator+=(char ch) {
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s.push_back(ch);
 			return *this;
 		}
@@ -191,19 +292,28 @@ namespace DotNetDupe {
 			m_pImpl->s = pStr;
 		}
 
-		String::String(const String& sStr) { m_pImpl = new StringImpl(sStr.m_pImpl->s);  }
+		String::String(const String& sStr) {
+			m_pImpl = new StringImpl(sStr.m_pImpl ? sStr.m_pImpl->s : "");
+		}
 
 		String& String::operator=(const String& sStr) {
 			if (this != &sStr) {
-				m_pImpl->s = sStr.m_pImpl->s;
+				if (!m_pImpl) m_pImpl = new StringImpl();
+				m_pImpl->s = sStr.m_pImpl ? sStr.m_pImpl->s : "";
 			}
 			return *this;
 		}
 
-		String::String(String&& sStr) noexcept { m_pImpl = new StringImpl(std::move(sStr.m_pImpl->s));  }
+		String::String(String&& sStr) noexcept {
+			m_pImpl = sStr.m_pImpl;
+			sStr.m_pImpl = nullptr;
+		}
+
 		String& String::operator=(String&& sStr) noexcept {
 			if (this != &sStr) {
-				m_pImpl->s = std::move(sStr.m_pImpl->s);
+				delete m_pImpl;
+				m_pImpl = sStr.m_pImpl;
+				sStr.m_pImpl = nullptr;
 			}
 			return *this;
 		}
@@ -216,19 +326,19 @@ namespace DotNetDupe {
 
 		String& String::operator=(const wchar_t* pStr) {
 			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
-
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s = Utils::StringConvert::WCharToUtf8(pStr);
-
 			return *this;
 		}
 
 		String& String::operator=(const char* pStr) {
 			if (pStr == nullptr) throw ArgumentException("Invalid input pointer");
+			if (!m_pImpl) m_pImpl = new StringImpl();
 			m_pImpl->s = pStr;
 			return *this;
 		}
 		const char* String::GetRawString() const {
-			return m_pImpl->s.c_str();
+			return m_pImpl ? m_pImpl->s.c_str() : "";
 		}
 		const char* String::GetChars() const {
 			return GetRawString();
@@ -245,7 +355,7 @@ namespace DotNetDupe {
 			return (int)hash;
 		}
 		int String::GetLength() const {
-			return static_cast<int>(m_pImpl->s.length());
+			return m_pImpl ? static_cast<int>(m_pImpl->s.length()) : 0;
 		}
 
 		String String::Clone() const {
@@ -254,8 +364,8 @@ namespace DotNetDupe {
 
 
 		char String::operator[](int iIndex) const {
-			if (iIndex >= (int)m_pImpl->s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
-			return GetRawString() [iIndex];
+			if (!m_pImpl || iIndex < 0 || iIndex >= (int)m_pImpl->s.size()) throw ArgumentOutOfRangeException("Invalid iIndex");
+			return m_pImpl->s[iIndex];
 		}
 		static std::string ToLowerString(const std::string& s) {
 			std::string res = s;
@@ -396,7 +506,7 @@ namespace DotNetDupe {
 			return *this;
 		}
 		bool String::IsEmpty() const {
-			return m_pImpl->s.empty();
+			return !m_pImpl || m_pImpl->s.empty();
 		}
 
 		String String::Join(
@@ -665,11 +775,13 @@ namespace DotNetDupe {
 			if (iStartIndex < 0 || iStartIndex > iLen || iLength < 0 || (iStartIndex + iLength) > iLen) {
 				throw ArgumentOutOfRangeException("Invalid iStartIndex or iLength");
 			}
+			if (!m_pImpl || iLength == 0) return "";
 			return String(m_pImpl->s.substr(iStartIndex, iLength).c_str());
 		}
 
 
 		String String::ToLower() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			std::string sRet = m_pImpl->s;
 			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -> char {
 				return static_cast<char>(std::tolower(static_cast<unsigned char>(ch)));
@@ -678,6 +790,7 @@ namespace DotNetDupe {
 		}
 
 		String String::ToUpper() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			std::string sRet = m_pImpl->s;
 			std::transform(sRet.begin(), sRet.end(), sRet.begin(), [](char ch) -> char {
 				return static_cast<char>(std::toupper(static_cast<unsigned char>(ch)));
@@ -690,6 +803,7 @@ namespace DotNetDupe {
 		}
 
 		String String::TrimStart() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			auto it = std::find_if(m_pImpl->s.begin(), m_pImpl->s.end(), [](char ch) {
 				return !std::isspace(static_cast<unsigned char>(ch));
 								   });
@@ -698,6 +812,7 @@ namespace DotNetDupe {
 		}
 
 		String String::TrimEnd() const {
+			if (!m_pImpl || m_pImpl->s.empty()) return "";
 			auto it = std::find_if(m_pImpl->s.rbegin(), m_pImpl->s.rend(), [](char ch) {
 				return !std::isspace(static_cast<unsigned char>(ch));
 								   });

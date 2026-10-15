@@ -11,9 +11,10 @@ var searchData=
   ['nextbytes_8',['NextBytes',['../class_dot_net_dupe_1_1_system_1_1_random.html#ad94c443381d235a8d4f85b0a6b828521',1,'DotNetDupe::System::Random']]],
   ['nextdouble_9',['NextDouble',['../class_dot_net_dupe_1_1_system_1_1_random.html#a2e17ba10bc167b0e7af5b3f1d8248f83',1,'DotNetDupe::System::Random']]],
   ['nocontent_10',['NoContent',['../class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html#a4fee47224bb50e37fe926583313c6fb4',1,'DotNetDupe::WebAppCore::Controllers::ControllerBase']]],
-  ['notfound_11',['NotFound',['../class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html#a1ac75661ca079c3e50282077278390a4',1,'DotNetDupe::WebAppCore::Controllers::ControllerBase']]],
-  ['notimplementedexception_12',['NotImplementedException',['../class_dot_net_dupe_1_1_system_1_1_not_implemented_exception.html#a9fe2f5abd637ba83971f53f30890109a',1,'DotNetDupe::System::NotImplementedException']]],
-  ['notsupportedexception_13',['NotSupportedException',['../class_dot_net_dupe_1_1_system_1_1_not_supported_exception.html#ab24288f6d8ba80e8e6d01a852c3305b2',1,'DotNetDupe::System::NotSupportedException']]],
-  ['now_14',['Now',['../class_dot_net_dupe_1_1_system_1_1_date_time.html#a4ad98129c7e762cf4f40f99f06849e1e',1,'DotNetDupe::System::DateTime::Now()'],['../class_dot_net_dupe_1_1_system_1_1_date_time_offset.html#a6fe1ce68ca61e0e974a5db125be3b092',1,'DotNetDupe::System::DateTimeOffset::Now()']]],
-  ['nullreferenceexception_15',['NullReferenceException',['../class_dot_net_dupe_1_1_system_1_1_null_reference_exception.html#abb67e0156011ce027ad30578dc757ac9',1,'DotNetDupe::System::NullReferenceException']]]
+  ['normalizedrivepath_11',['NormalizeDrivePath',['../namespace_dot_net_dupe_1_1_system_1_1_i_o.html#ab7a39ad6304aeef3798a61c072438267',1,'DotNetDupe::System::IO']]],
+  ['notfound_12',['NotFound',['../class_dot_net_dupe_1_1_web_app_core_1_1_controllers_1_1_controller_base.html#a1ac75661ca079c3e50282077278390a4',1,'DotNetDupe::WebAppCore::Controllers::ControllerBase']]],
+  ['notimplementedexception_13',['NotImplementedException',['../class_dot_net_dupe_1_1_system_1_1_not_implemented_exception.html#a9fe2f5abd637ba83971f53f30890109a',1,'DotNetDupe::System::NotImplementedException']]],
+  ['notsupportedexception_14',['NotSupportedException',['../class_dot_net_dupe_1_1_system_1_1_not_supported_exception.html#ab24288f6d8ba80e8e6d01a852c3305b2',1,'DotNetDupe::System::NotSupportedException']]],
+  ['now_15',['Now',['../class_dot_net_dupe_1_1_system_1_1_date_time.html#a4ad98129c7e762cf4f40f99f06849e1e',1,'DotNetDupe::System::DateTime::Now()'],['../class_dot_net_dupe_1_1_system_1_1_date_time_offset.html#a6fe1ce68ca61e0e974a5db125be3b092',1,'DotNetDupe::System::DateTimeOffset::Now()']]],
+  ['nullreferenceexception_16',['NullReferenceException',['../class_dot_net_dupe_1_1_system_1_1_null_reference_exception.html#abb67e0156011ce027ad30578dc757ac9',1,'DotNetDupe::System::NullReferenceException']]]
 ];

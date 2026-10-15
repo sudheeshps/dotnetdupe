@@ -19,5 +19,7 @@ var searchData=
   ['directorynotfoundexception_2eh_16',['DirectoryNotFoundException.h',['../_directory_not_found_exception_8h.html',1,'']]],
   ['dllmain_2ecpp_17',['dllmain.cpp',['../dllmain_8cpp.html',1,'']]],
   ['dns_2ecpp_18',['Dns.cpp',['../_dns_8cpp.html',1,'']]],
-  ['dns_2eh_19',['Dns.h',['../_dns_8h.html',1,'']]]
+  ['dns_2eh_19',['Dns.h',['../_dns_8h.html',1,'']]],
+  ['driveinfo_2ecpp_20',['DriveInfo.cpp',['../_drive_info_8cpp.html',1,'']]],
+  ['driveinfo_2eh_21',['DriveInfo.h',['../_drive_info_8h.html',1,'']]]
 ];

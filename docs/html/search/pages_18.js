@@ -1,9 +1,13 @@
 var searchData=
 [
-  ['value_20dictionaries_20hash_20sets_0',['2. Key/Value Dictionaries &amp;amp; Hash Sets',['../index.html#autotoc_md50',1,'']]],
-  ['via_20nuget_1',['Integration via NuGet',['../index.html#autotoc_md9',1,'']]],
-  ['via_20nuget_20package_2',['2. Integrating via NuGet Package',['../index.html#autotoc_md21',1,'']]],
-  ['visual_20studio_20windows_3',['B. Consuming NuGet Package in Visual Studio (Windows)',['../index.html#autotoc_md23',1,'']]],
-  ['vs_20dotnetdupe_20comparison_20⚖️_4',['STL vs DotNetDupe Comparison ⚖️',['../index.html#autotoc_md77',1,'']]],
-  ['vs_20shared_20ownership_5',['1. Unique vs. Shared Ownership',['../index.html#autotoc_md39',1,'']]]
+  ['recommended_0',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
+  ['recommended_20usage_20patterns_1',['Recommended Usage Patterns',['../index.html#autotoc_md76',1,'']]],
+  ['reference_20📖_2',['API Reference 📖',['../index.html#autotoc_md79',1,'']]],
+  ['release_3',['How to Release',['../index.html#autotoc_md119',1,'']]],
+  ['release_20notes_20📝_4',['Release Notes 📝',['../index.html#autotoc_md124',1,'']]],
+  ['rest_20api_20controllers_5',['1. Hosting REST API Controllers',['../index.html#autotoc_md68',1,'']]],
+  ['rest_20apis_6',['REST APIs',['../index.html#autotoc_md71',1,'2. Consuming REST APIs'],['../index.html#autotoc_md26',1,'3. Building a Web Application with Static Files &amp;amp; REST APIs']]],
+  ['restclient_20recommended_7',['Option B: Strongly-Typed Client (&lt;span class=&quot;tt&quot;&gt;RestClient&amp;lt;T&amp;gt;&lt;/span&gt;) - &lt;em&gt;Recommended&lt;/em&gt;',['../index.html#autotoc_md73',1,'']]],
+  ['running_20wsl_20commands_20from_20powershell_8',['4. Running WSL Commands from PowerShell',['../index.html#autotoc_md16',1,'']]],
+  ['runtime_20dependencies_9',['SSL Runtime Dependencies',['../index.html#autotoc_md10',1,'']]]
 ];

@@ -274,12 +274,25 @@ namespace DotNetDupe {
                 return true;
             }
 
+            static const char* GetHttpStatusMessage(int code) {
+                /// Map: Return standard HTTP status reason phrase.
+                if (code == 404) return "Not Found";
+                if (code == 500) return "Internal Server Error";
+                if (code == 201) return "Created";
+                if (code == 204) return "No Content";
+                return "OK";
+            }
+
             static void SendHttpResponseData(const System::SmartPointer<System::IO::Stream>& stream, Http::HttpResponse* resp, const std::string& method) {
+                /// Guard: Ensure stream and response instances are valid.
+                if (stream.IsNull() || !resp) return;
                 /// Prepare: Build HTTP status line, headers, and content length.
-                std::string respBody = resp->GetBody().GetRawString();
+                System::String body = resp->GetBody();
+                std::string respBody = body.GetRawString() ? body.GetRawString() : "";
                 int code = resp->GetStatusCode();
-                std::string statusMsg = (code == 404) ? "Not Found" : ((code == 500) ? "Internal Server Error" : ((code == 201) ? "Created" : ((code == 204) ? "No Content" : "OK")));
-                std::string respStr = "HTTP/1.1 " + std::to_string(code) + " " + statusMsg + "\r\nContent-Type: " + std::string(resp->GetContentType().GetRawString() ? resp->GetContentType().GetRawString() : "") + "\r\nContent-Length: " + std::to_string(respBody.length()) + "\r\nConnection: close\r\nServer: DotNetDupeWebApplication/1.0\r\n";
+                System::String contentType = resp->GetContentType();
+                const char* pType = contentType.GetRawString();
+                std::string respStr = "HTTP/1.1 " + std::to_string(code) + " " + GetHttpStatusMessage(code) + "\r\nContent-Type: " + std::string(pType ? pType : "") + "\r\nContent-Length: " + std::to_string(respBody.length()) + "\r\nConnection: close\r\nServer: DotNetDupeWebApplication/1.0\r\n";
                 auto keys = resp->GetHeaders().GetKeys(); auto values = resp->GetHeaders().GetValues();
                 for (int i = 0; i < keys.GetLength(); ++i) {
                     respStr += std::string(keys[i].GetRawString() ? keys[i].GetRawString() : "") + ": " + std::string(values[i].GetRawString() ? values[i].GetRawString() : "") + "\r\n";
@@ -354,7 +367,9 @@ namespace DotNetDupe {
 
             static bool TryHandleWebSocket(const System::SmartPointer<System::Net::Sockets::NetworkStream>& stream, const System::SmartPointer<Http::HttpContext>& spContext, const System::Collections::Generic::Dictionary<System::String, System::SmartPointer<WebSockets::IWebSocketHandler>>& wsMap) {
                 /// Guard: Match route path against registered WebSocket handlers.
+                if (stream.IsNull() || spContext.IsNull()) return false;
                 auto spRequest = spContext->GetRequest();
+                if (spRequest.IsNull()) return false;
                 System::SmartPointer<WebSockets::IWebSocketHandler> spWsHandler;
                 if (!wsMap.TryGetValue(spRequest->GetPath(), spWsHandler) || spWsHandler.IsNull()) return false;
 
@@ -371,6 +386,8 @@ namespace DotNetDupe {
             }
 
             static void DispatchResponse(Http::HttpResponse* pResp, bool bFound, System::Func<System::String, System::SmartPointer<Http::HttpContext>>& pHandler, const System::SmartPointer<Http::HttpContext>& spContext) {
+                /// Guard: Verify target response instance is valid.
+                if (!pResp) return;
                 /// Dispatch: Invoke matched route handler or set 404 Not Found.
                 if (bFound) {
                     try { pResp->SetBody(pHandler(spContext)); }
@@ -382,36 +399,53 @@ namespace DotNetDupe {
                 }
             }
 
+            static bool ResolveRouteHandler(const std::string& method, Http::HttpRequest* pReq,
+                const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& getHandlers,
+                const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& postHandlers,
+                const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& putHandlers,
+                const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& deleteHandlers,
+                System::Func<System::String, System::SmartPointer<Http::HttpContext>>& pHandler) {
+                /// Resolve: Route HTTP verb to respective method handler map.
+                if (!pReq) return false;
+                if (method == "GET" || method == "HEAD") return MatchAndFindHandler(pReq, getHandlers, pHandler);
+                if (method == "POST") return MatchAndFindHandler(pReq, postHandlers, pHandler);
+                if (method == "PUT") return MatchAndFindHandler(pReq, putHandlers, pHandler);
+                if (method == "DELETE") return MatchAndFindHandler(pReq, deleteHandlers, pHandler);
+                return false;
+            }
+
             static void RouteAndSendResponse(const std::string& method, const System::SmartPointer<Http::HttpContext>& spContext, const System::SmartPointer<System::IO::Stream>& spBaseStream,
                 const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& getHandlers,
                 const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& postHandlers,
                 const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& putHandlers,
                 const System::Collections::Generic::Dictionary<System::String, System::Func<System::String, System::SmartPointer<Http::HttpContext>>>& deleteHandlers) {
+                /// Guard: Validate context, base stream, request and response.
+                if (spContext.IsNull() || spBaseStream.IsNull()) return;
+                auto spReq = spContext->GetRequest();
+                auto spResp = spContext->GetResponse();
+                if (spReq.IsNull() || spResp.IsNull()) return;
                 /// Route: Look up handler delegate based on HTTP method.
                 System::Func<System::String, System::SmartPointer<Http::HttpContext>> pHandler;
-                bool bFound = false;
-                if (method == "GET" || method == "HEAD") bFound = MatchAndFindHandler(spContext->GetRequest().Get(), getHandlers, pHandler);
-                else if (method == "POST") bFound = MatchAndFindHandler(spContext->GetRequest().Get(), postHandlers, pHandler);
-                else if (method == "PUT") bFound = MatchAndFindHandler(spContext->GetRequest().Get(), putHandlers, pHandler);
-                else if (method == "DELETE") bFound = MatchAndFindHandler(spContext->GetRequest().Get(), deleteHandlers, pHandler);
+                bool bFound = ResolveRouteHandler(method, spReq.Get(), getHandlers, postHandlers, putHandlers, deleteHandlers, pHandler);
                 /// Execute: Dispatch handler and write output response.
-                DispatchResponse(spContext->GetResponse().Get(), bFound, pHandler, spContext);
-                if (spContext->GetResponse()->IsHeadersSent()) spContext->GetResponse()->Flush();
-                else SendHttpResponseData(spBaseStream, spContext->GetResponse().Get(), method);
+                DispatchResponse(spResp.Get(), bFound, pHandler, spContext);
+                if (spResp->IsHeadersSent()) spResp->Flush();
+                else SendHttpResponseData(spBaseStream, spResp.Get(), method);
             }
 
             void WebApplication::HandleConnection(System::SmartPointer<System::Net::Sockets::TcpClient> spClient) {
                 /// Guard: Obtain active client network stream.
+                if (spClient.IsNull()) return;
                 auto stream = spClient->GetStream();
                 if (stream.IsNull()) return;
                 std::vector<std::string> lines;
                 System::SmartPointer<System::IO::Stream> spBaseStream = stream;
-                if (!ReadHeaderLines(spBaseStream, lines, m_bRunning)) return;
+                if (!ReadHeaderLines(spBaseStream, lines, m_bRunning) || lines.empty()) return;
                 /// Parse: Extract request line, headers, and body.
                 auto spContext = System::SmartPointer<Http::HttpContext>::NewShared();
                 std::string method = ParseRequestLine(lines[0], spContext->GetRequest().Get());
                 ReadHeadersAndBody(spBaseStream, lines, spContext->GetRequest().Get());
-                spContext->GetResponse()->BindStream(stream);
+                if (!spContext->GetResponse().IsNull()) spContext->GetResponse()->BindStream(stream);
                 /// Process: Handle WebSocket upgrade or dispatch standard HTTP route.
                 if (TryHandleWebSocket(stream, spContext, m_wsHandlers)) { spClient->Close(); return; }
                 RouteAndSendResponse(method, spContext, spBaseStream, m_getHandlers, m_postHandlers, m_putHandlers, m_deleteHandlers);

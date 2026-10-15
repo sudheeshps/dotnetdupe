@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -196,6 +196,8 @@ Public Member Functions</h2></td></tr>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a4c294e33a1d67697fbb2943ece8c740b" id="r_a4c294e33a1d67697fbb2943ece8c740b"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="#a2db293cc29b858467c3d845962199c32">Task</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a4c294e33a1d67697fbb2943ece8c740b">Run</a> (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt;&gt; objAction)</td></tr>
 <tr class="memdesc:a4c294e33a1d67697fbb2943ece8c740b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Queues the specified work to run on the <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_thread_pool.html" title="Provides a pool of threads that can be used to execute tasks, post work items, and process timers.">ThreadPool</a> and returns a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html" title="Represents an asynchronous operation.">Task</a> representing that work.  <br /></td></tr>
+<tr class="memitem:a1fd2dcb66d2604cd2f9646be1bc6a698" id="r_a1fd2dcb66d2604cd2f9646be1bc6a698"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a1fd2dcb66d2604cd2f9646be1bc6a698">WaitAll</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="#a2db293cc29b858467c3d845962199c32">Task</a> &gt; &gt; &amp;arrTasks, int iMillisecondsTimeout=-1)</td></tr>
+<tr class="memdesc:a1fd2dcb66d2604cd2f9646be1bc6a698"><td class="mdescLeft">&#160;</td><td class="mdescRight">Waits for all of the provided <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html" title="Represents an asynchronous operation.">Task</a> objects to complete execution.  <br /></td></tr>
 <tr class="inherit_header pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Static Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">DotNetDupe::System::Object</a></td></tr>
 <tr class="memitem:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object" id="r_a673e20d41bbdd37d81a0bad12cbf1d13"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html#a673e20d41bbdd37d81a0bad12cbf1d13">Equals</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj1, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_object.html">Object</a> &amp;obj2)</td></tr>
 <tr class="memdesc:a673e20d41bbdd37d81a0bad12cbf1d13 inherit pub_static_methods_class_dot_net_dupe_1_1_system_1_1_object"><td class="mdescLeft">&#160;</td><td class="mdescRight">Static helper determining whether two object instances are equal.  <br /></td></tr>
@@ -451,6 +453,8 @@ Static Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_task_8cpp_source.html#l00043">43</a> of file <a class="el" href="_task_8cpp_source.html">Task.cpp</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="_task_8cpp_source.html#l00151">WaitAll()</a>.</p>
+
 </div>
 </div>
 <a id="a662c552b53f0b6c11805d15b0dd3a911" name="a662c552b53f0b6c11805d15b0dd3a911"></a>
@@ -479,6 +483,50 @@ Static Public Member Functions</h2></td></tr>
 <p>Step: Wait for completion with timeout.</p>
 
 <p class="definition">Definition at line <a class="el" href="_task_8cpp_source.html#l00048">48</a> of file <a class="el" href="_task_8cpp_source.html">Task.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a1fd2dcb66d2604cd2f9646be1bc6a698" name="a1fd2dcb66d2604cd2f9646be1bc6a698"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fd2dcb66d2604cd2f9646be1bc6a698">&#9670;&#160;</a></span>WaitAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::Threading::Tasks::Task::WaitAll </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">SmartPointer</a>&lt; <a class="el" href="#a2db293cc29b858467c3d845962199c32">Task</a> &gt; &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>arrTasks</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iMillisecondsTimeout</em></span><span class="paramdefsep"> = </span><span class="paramdefval">-1</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Waits for all of the provided <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html" title="Represents an asynchronous operation.">Task</a> objects to complete execution. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">arrTasks</td><td>An array of <a class="el" href="class_dot_net_dupe_1_1_system_1_1_threading_1_1_tasks_1_1_task.html" title="Represents an asynchronous operation.">Task</a> instances on which to wait. </td></tr>
+    <tr><td class="paramname">iMillisecondsTimeout</td><td>Timeout in milliseconds, or -1 for infinite. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if all tasks completed; otherwise, false. </dd></dl>
+<p>Guard: Check empty array.</p>
+
+<p class="definition">Definition at line <a class="el" href="_task_8cpp_source.html#l00151">151</a> of file <a class="el" href="_task_8cpp_source.html">Task.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_task_8cpp_source.html#l00043">Wait()</a>.</p>
 
 </div>
 </div>

@@ -101,5 +101,30 @@ var index =
     ] ],
     [ "License 📄", "index.html#autotoc_md120", null ],
     [ "Generated Content 🤖", "index.html#autotoc_md121", null ],
-    [ "Contact 📧", "index.html#autotoc_md122", null ]
+    [ "Contact 📧", "index.html#autotoc_md122", null ],
+    [ "Release Notes 📝", "index.html#autotoc_md124", [
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases\">v5.0.4</a> (Current / Latest)", "index.html#autotoc_md125", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3\">v5.0.3</a> - 2026-10-01", "index.html#autotoc_md126", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.2\">v5.0.2</a> - 2026-09-29", "index.html#autotoc_md127", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1\">v5.0.1</a> - 2026-09-29", "index.html#autotoc_md128", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.0\">v5.0.0</a> - 2026-09-28", "index.html#autotoc_md129", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7\">v4.0.7</a> - 2026-09-10", "index.html#autotoc_md130", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6\">v4.0.6</a> - 2026-09-10", "index.html#autotoc_md131", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5\">v4.0.5</a> - 2026-09-09", "index.html#autotoc_md132", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.4\">v4.0.4</a> - 2026-09-09", "index.html#autotoc_md133", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.3\">v4.0.3</a> - 2026-08-20", "index.html#autotoc_md134", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2\">v4.0.2</a> - 2026-08-19", "index.html#autotoc_md135", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1\">v4.0.1</a> - 2026-08-17", "index.html#autotoc_md136", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0\">v4.0.0</a> - 2026-08-15", "index.html#autotoc_md137", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.6\">v3.0.6</a> - 2026-08-06", "index.html#autotoc_md138", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5\">v3.0.5</a> - 2026-08-06", "index.html#autotoc_md139", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.4\">v3.0.4</a> - 2026-08-05", "index.html#autotoc_md140", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.3\">v3.0.3</a> - 2026-08-05", "index.html#autotoc_md141", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.2\">v3.0.2</a> - 2026-08-05", "index.html#autotoc_md142", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1\">v3.0.1</a> - 2026-06-20", "index.html#autotoc_md143", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.0\">v3.0.0</a> - 2026-05-31", "index.html#autotoc_md144", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0\">v2.1.0</a> - 2026-05-21", "index.html#autotoc_md145", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.0.0\">v2.0.0</a> - 2026-05-20", "index.html#autotoc_md146", null ],
+      [ "<a href=\"https://github.com/sudheeshps/dotnetdupe/releases/tag/v1.0.0\">v1.0.0</a> - 2026-05-09", "index.html#autotoc_md147", null ]
+    ] ]
 ];

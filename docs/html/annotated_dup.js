@@ -144,6 +144,7 @@ var annotated_dup =
           [ "BinaryWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_binary_writer" ],
           [ "Directory", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory" ],
           [ "DirectoryNotFoundException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception" ],
+          [ "DriveInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info" ],
           [ "EndOfStreamException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception" ],
           [ "File", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file" ],
           [ "FileNotFoundException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception" ],
@@ -212,7 +213,8 @@ var annotated_dup =
             [ "X509Certificates", "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates.html", [
               [ "X509Certificate2", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2" ]
             ] ],
-            [ "HMACSHA256", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256" ]
+            [ "HMACSHA256", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256" ],
+            [ "SHA256", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_s_h_a256.html", "class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_s_h_a256" ]
           ] ],
           [ "Principal", "namespace_dot_net_dupe_1_1_system_1_1_security_1_1_principal.html", [
             [ "UserInfo", "struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info.html", "struct_dot_net_dupe_1_1_system_1_1_security_1_1_principal_1_1_user_info" ],

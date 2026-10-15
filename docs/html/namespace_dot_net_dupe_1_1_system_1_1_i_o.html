@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -153,6 +153,8 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Exposes static methods for creating, moving, and enumerating through directories and subdirectories.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#details">More...</a><br /></td></tr>
 <tr class="memitem:DirectoryNotFoundException" id="r_DirectoryNotFoundException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html">DirectoryNotFoundException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The exception that is thrown when part of a file or directory cannot be found.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_not_found_exception.html#details">More...</a><br /></td></tr>
+<tr class="memitem:DriveInfo" id="r_DriveInfo"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html">DriveInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides access to information on a drive.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html#details">More...</a><br /></td></tr>
 <tr class="memitem:EndOfStreamException" id="r_EndOfStreamException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html">EndOfStreamException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The exception that is thrown when reading is attempted past the end of a stream.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:File" id="r_File"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html">File</a></td></tr>
@@ -189,6 +191,18 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-enum-members" class="groupheader"><a id="enum-members" name="enum-members"></a>
 Enumerations</h2></td></tr>
+<tr class="memitem:a6347f141ddfbd0dd500ecf98e003aa39" id="r_a6347f141ddfbd0dd500ecf98e003aa39"><td class="memItemLeft">enum class &#160;</td><td class="memItemRight"><a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39">DriveType</a> { <br />
+&#160;&#160;<a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39a88183b946cc5f0e8c96b2e66e1c74a7e">Unknown</a> = 0
+, <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39ac220addabeeaeb5a9e38e2b19fb6f90f">NoRootDirectory</a> = 1
+, <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39aedfbad801b81c89d3173940f0d4f36de">Removable</a> = 2
+, <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39a4457d440870ad6d42bab9082d9bf9b61">Fixed</a> = 3
+, <br />
+&#160;&#160;<a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39aeec89088ee408b80387155272b113256">Network</a> = 4
+, <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39aa9d0190c0b85654779d96e011d0b6d07">CDRom</a> = 5
+, <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39ae5d284b6015067eaa11e06b809fe6f13">Ram</a> = 6
+<br />
+ }</td></tr>
+<tr class="memdesc:a6347f141ddfbd0dd500ecf98e003aa39"><td class="mdescLeft">&#160;</td><td class="mdescRight">Defines constants for drive types.  <a href="#a6347f141ddfbd0dd500ecf98e003aa39">More...</a><br /></td></tr>
 <tr class="memitem:adef5f5670b488fe552e8d3e28ea92280" id="r_adef5f5670b488fe552e8d3e28ea92280"><td class="memItemLeft">enum class &#160;</td><td class="memItemRight"><a class="el" href="#adef5f5670b488fe552e8d3e28ea92280">FileAttributes</a> { <br />
 &#160;&#160;<a class="el" href="#adef5f5670b488fe552e8d3e28ea92280a960b44c579bc2f6818d2daaf9e4c16f0">Normal</a> = 0
 , <a class="el" href="#adef5f5670b488fe552e8d3e28ea92280a131fb182a881796e7606ed6da27f1197">ReadOnly</a> = 1
@@ -212,21 +226,30 @@ Enumerations</h2></td></tr>
 <br />
  }</td></tr>
 <tr class="memdesc:adef5f5670b488fe552e8d3e28ea92280"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides attributes for files and directories.  <a href="#adef5f5670b488fe552e8d3e28ea92280">More...</a><br /></td></tr>
+<tr class="memitem:a21f33544c53eda83560d5090c43354d4" id="r_a21f33544c53eda83560d5090c43354d4"><td class="memItemLeft">enum class &#160;</td><td class="memItemRight"><a class="el" href="#a21f33544c53eda83560d5090c43354d4">SearchOption</a> { <a class="el" href="#a21f33544c53eda83560d5090c43354d4a32166234cf352707e3d7b05bd208af0f">TopDirectoryOnly</a> = 0
+, <a class="el" href="#a21f33544c53eda83560d5090c43354d4a1a3a6757e2842b56dbab97e26ad7f269">AllDirectories</a> = 1
+ }</td></tr>
+<tr class="memdesc:a21f33544c53eda83560d5090c43354d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specifies whether to search the current directory, or the current directory and all subdirectories.  <a href="#a21f33544c53eda83560d5090c43354d4">More...</a><br /></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 id="header-func-members" class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:af2bcb6685ddf73e1d792c1580bc7a48a" id="r_af2bcb6685ddf73e1d792c1580bc7a48a"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af2bcb6685ddf73e1d792c1580bc7a48a">AppendPathSegment</a> (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sJoined, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memitem:a88376631843af60e033468edded5d157" id="r_a88376631843af60e033468edded5d157"><td class="memItemLeft">static long&#160;</td><td class="memItemRight"><a class="el" href="#a88376631843af60e033468edded5d157">CalculateSeekPosition</a> (long currentPos, long length, long offset, int origin)</td></tr>
 <tr class="memdesc:a88376631843af60e033468edded5d157"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate new absolute position from origin and offset.  <br /></td></tr>
+<tr class="memitem:ad029a50212f20d6e44bbb6339ee9f39f" id="r_ad029a50212f20d6e44bbb6339ee9f39f"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ad029a50212f20d6e44bbb6339ee9f39f">CollectRecursiveDirs</a> (const fs::path &amp;root, const std::regex &amp;reg, std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;results)</td></tr>
+<tr class="memitem:a5530eef4bba945aa29e38537cd69c229" id="r_a5530eef4bba945aa29e38537cd69c229"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a5530eef4bba945aa29e38537cd69c229">CollectRecursiveFiles</a> (const fs::path &amp;root, const std::regex &amp;reg, std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;results)</td></tr>
 <tr class="memitem:a312a7e2ea513bbe821a4e85de9a7b978" id="r_a312a7e2ea513bbe821a4e85de9a7b978"><td class="memItemLeft">static std::ios_base::openmode&#160;</td><td class="memItemRight"><a class="el" href="#a312a7e2ea513bbe821a4e85de9a7b978">DetermineOpenMode</a> (int iMode, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, bool &amp;bCanRead, bool &amp;bCanWrite, bool &amp;bCanSeek)</td></tr>
 <tr class="memdesc:a312a7e2ea513bbe821a4e85de9a7b978"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine stream openmode and capability flags from FileMode.  <br /></td></tr>
+<tr class="memitem:af5cd71d837845f35651dadac4b700e29" id="r_af5cd71d837845f35651dadac4b700e29"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af5cd71d837845f35651dadac4b700e29">EnumerateNativeDrives</a> (std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html">DriveInfo</a> &gt; &amp;listDrives)</td></tr>
 <tr class="memitem:ac4c671eb5ffbd9455569a7c401c7b943" id="r_ac4c671eb5ffbd9455569a7c401c7b943"><td class="memItemLeft">static int&#160;</td><td class="memItemRight"><a class="el" href="#ac4c671eb5ffbd9455569a7c401c7b943">FindNewlineIndex</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSource, int startPos, int length)</td></tr>
 <tr class="memdesc:ac4c671eb5ffbd9455569a7c401c7b943"><td class="mdescLeft">&#160;</td><td class="mdescRight">Find index of newline character in source string.  <br /></td></tr>
 <tr class="memitem:a4e3d083757b07b331322cb1aa77846d1" id="r_a4e3d083757b07b331322cb1aa77846d1"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#a4e3d083757b07b331322cb1aa77846d1">GenerateRandomTempFileName</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sTempDir)</td></tr>
+<tr class="memitem:ab7a39ad6304aeef3798a61c072438267" id="r_ab7a39ad6304aeef3798a61c072438267"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab7a39ad6304aeef3798a61c072438267">NormalizeDrivePath</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDriveName)</td></tr>
 <tr class="memitem:af3229ba3c5b6004a74f43f986c376792" id="r_af3229ba3c5b6004a74f43f986c376792"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af3229ba3c5b6004a74f43f986c376792">ReverseBytes</a> (char *pBuf, int iSize)</td></tr>
 <tr class="memdesc:af3229ba3c5b6004a74f43f986c376792"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reverse bytes in place for endian conversion.  <br /></td></tr>
 <tr class="memitem:af3229ba3c5b6004a74f43f986c376792" id="r_af3229ba3c5b6004a74f43f986c376792"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#af3229ba3c5b6004a74f43f986c376792">ReverseBytes</a> (char *pBuf, int iSize)</td></tr>
 <tr class="memdesc:af3229ba3c5b6004a74f43f986c376792"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reverse bytes in place for endian conversion.  <br /></td></tr>
+<tr class="memitem:afc53d4cc278d66d7f2a82bf586042825" id="r_afc53d4cc278d66d7f2a82bf586042825"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#afc53d4cc278d66d7f2a82bf586042825">ToArray</a> (const std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;results)</td></tr>
 <tr class="memitem:a1012709bfe045bde805fa1153eda7774" id="r_a1012709bfe045bde805fa1153eda7774"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a1012709bfe045bde805fa1153eda7774">ValidatePathChars</a> (const std::initializer_list&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;sPaths)</td></tr>
 </table>
 <a name="doc-typedef-members" id="doc-typedef-members"></a><h2 id="header-doc-typedef-members" class="groupheader">Typedef Documentation</h2>
@@ -263,6 +286,41 @@ Functions</h2></td></tr>
 </div>
 </div>
 <a name="doc-enum-members" id="doc-enum-members"></a><h2 id="header-doc-enum-members" class="groupheader">Enumeration Type Documentation</h2>
+<a id="a6347f141ddfbd0dd500ecf98e003aa39" name="a6347f141ddfbd0dd500ecf98e003aa39"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6347f141ddfbd0dd500ecf98e003aa39">&#9670;&#160;</a></span>DriveType</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a6347f141ddfbd0dd500ecf98e003aa39">DotNetDupe::System::IO::DriveType</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Defines constants for drive types. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39a88183b946cc5f0e8c96b2e66e1c74a7e" name="a6347f141ddfbd0dd500ecf98e003aa39a88183b946cc5f0e8c96b2e66e1c74a7e"></a>Unknown&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39ac220addabeeaeb5a9e38e2b19fb6f90f" name="a6347f141ddfbd0dd500ecf98e003aa39ac220addabeeaeb5a9e38e2b19fb6f90f"></a>NoRootDirectory&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39aedfbad801b81c89d3173940f0d4f36de" name="a6347f141ddfbd0dd500ecf98e003aa39aedfbad801b81c89d3173940f0d4f36de"></a>Removable&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39a4457d440870ad6d42bab9082d9bf9b61" name="a6347f141ddfbd0dd500ecf98e003aa39a4457d440870ad6d42bab9082d9bf9b61"></a>Fixed&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39aeec89088ee408b80387155272b113256" name="a6347f141ddfbd0dd500ecf98e003aa39aeec89088ee408b80387155272b113256"></a>Network&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39aa9d0190c0b85654779d96e011d0b6d07" name="a6347f141ddfbd0dd500ecf98e003aa39aa9d0190c0b85654779d96e011d0b6d07"></a>CDRom&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="a6347f141ddfbd0dd500ecf98e003aa39ae5d284b6015067eaa11e06b809fe6f13" name="a6347f141ddfbd0dd500ecf98e003aa39ae5d284b6015067eaa11e06b809fe6f13"></a>Ram&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="_drive_info_8h_source.html#l00016">16</a> of file <a class="el" href="_drive_info_8h_source.html">DriveInfo.h</a>.</p>
+
+</div>
+</div>
 <a id="adef5f5670b488fe552e8d3e28ea92280" name="adef5f5670b488fe552e8d3e28ea92280"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adef5f5670b488fe552e8d3e28ea92280">&#9670;&#160;</a></span>FileAttributes</h2>
 
@@ -307,6 +365,39 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a21f33544c53eda83560d5090c43354d4" name="a21f33544c53eda83560d5090c43354d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21f33544c53eda83560d5090c43354d4">&#9670;&#160;</a></span>SearchOption</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum class <a class="el" href="#a21f33544c53eda83560d5090c43354d4">DotNetDupe::System::IO::SearchOption</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel strong">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Specifies whether to search the current directory, or the current directory and all subdirectories. </p>
+<p>Conforms to ECMA-335 Partition IV Section 5.49 (<a class="el" href="#a21f33544c53eda83560d5090c43354d4" title="Specifies whether to search the current directory, or the current directory and all subdirectories.">System.IO.SearchOption</a>). </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a21f33544c53eda83560d5090c43354d4a32166234cf352707e3d7b05bd208af0f" name="a21f33544c53eda83560d5090c43354d4a32166234cf352707e3d7b05bd208af0f"></a>TopDirectoryOnly&#160;</td><td class="fielddoc"><p>Includes only the current directory in a search operation. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a21f33544c53eda83560d5090c43354d4a1a3a6757e2842b56dbab97e26ad7f269" name="a21f33544c53eda83560d5090c43354d4a1a3a6757e2842b56dbab97e26ad7f269"></a>AllDirectories&#160;</td><td class="fielddoc"><p>Includes the current directory and all its subdirectories in a search operation. </p>
+</td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="_search_option_8h_source.html#l00013">13</a> of file <a class="el" href="_search_option_8h_source.html">SearchOption.h</a>.</p>
+
+</div>
+</div>
 <a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Function Documentation</h2>
 <a id="af2bcb6685ddf73e1d792c1580bc7a48a" name="af2bcb6685ddf73e1d792c1580bc7a48a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af2bcb6685ddf73e1d792c1580bc7a48a">&#9670;&#160;</a></span>AppendPathSegment()</h2>
@@ -339,7 +430,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00315">315</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00380">DotNetDupe::System::String::Append()</a>, <a class="el" href="_path_8cpp_source.html#l00315">AppendPathSegment()</a>, <a class="el" href="_string_8cpp_source.html#l00247">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00398">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_string_8cpp_source.html#l00659">DotNetDupe::System::String::Substring()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00490">DotNetDupe::System::String::Append()</a>, <a class="el" href="_path_8cpp_source.html#l00315">AppendPathSegment()</a>, <a class="el" href="_string_8cpp_source.html#l00357">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00508">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_string_8cpp_source.html#l00769">DotNetDupe::System::String::Substring()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00315">AppendPathSegment()</a>, and <a class="el" href="_path_8cpp_source.html#l00332">DotNetDupe::System::IO::Path::TryJoin()</a>.</p>
 
@@ -389,6 +480,88 @@ Functions</h2></td></tr>
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_memory_stream_8cpp_source.html#l00096">CalculateSeekPosition()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_memory_stream_8cpp_source.html#l00096">CalculateSeekPosition()</a>, and <a class="el" href="_memory_stream_8cpp_source.html#l00103">DotNetDupe::System::IO::MemoryStream::Seek()</a>.</p>
+
+</div>
+</div>
+<a id="ad029a50212f20d6e44bbb6339ee9f39f" name="ad029a50212f20d6e44bbb6339ee9f39f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad029a50212f20d6e44bbb6339ee9f39f">&#9670;&#160;</a></span>CollectRecursiveDirs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::CollectRecursiveDirs </td>
+          <td>(</td>
+          <td class="paramtype">const fs::path &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::regex &amp;</td>          <td class="paramname"><span class="paramname"><em>reg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>results</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Suppress: Ignore directory enumeration errors.</p>
+
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00290">290</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00290">CollectRecursiveDirs()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00290">CollectRecursiveDirs()</a>, and <a class="el" href="_directory_8cpp_source.html#l00314">DotNetDupe::System::IO::Directory::GetDirectories()</a>.</p>
+
+</div>
+</div>
+<a id="a5530eef4bba945aa29e38537cd69c229" name="a5530eef4bba945aa29e38537cd69c229"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5530eef4bba945aa29e38537cd69c229">&#9670;&#160;</a></span>CollectRecursiveFiles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::CollectRecursiveFiles </td>
+          <td>(</td>
+          <td class="paramtype">const fs::path &amp;</td>          <td class="paramname"><span class="paramname"><em>root</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::regex &amp;</td>          <td class="paramname"><span class="paramname"><em>reg</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>results</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Suppress: Ignore directory enumeration errors.</p>
+
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00274">274</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00274">CollectRecursiveFiles()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00274">CollectRecursiveFiles()</a>, and <a class="el" href="_directory_8cpp_source.html#l00306">DotNetDupe::System::IO::Directory::GetFiles()</a>.</p>
 
 </div>
 </div>
@@ -444,6 +617,37 @@ Functions</h2></td></tr>
 <p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00034">DetermineOpenMode()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_file_stream_8cpp_source.html#l00052">DotNetDupe::System::IO::FileStream::FileStream()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00034">DetermineOpenMode()</a>.</p>
+
+</div>
+</div>
+<a id="af5cd71d837845f35651dadac4b700e29" name="af5cd71d837845f35651dadac4b700e29"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af5cd71d837845f35651dadac4b700e29">&#9670;&#160;</a></span>EnumerateNativeDrives()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::EnumerateNativeDrives </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html">DriveInfo</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>listDrives</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_drive_info_8cpp_source.html#l00158">158</a> of file <a class="el" href="_drive_info_8cpp_source.html">DriveInfo.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_drive_info_8cpp_source.html#l00019">DotNetDupe::System::IO::DriveInfo::DriveInfo()</a>, <a class="el" href="_string_8cpp_source.html#l00065">DotNetDupe::System::String::String()</a>, and <a class="el" href="_drive_info_8cpp_source.html#l00158">EnumerateNativeDrives()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_drive_info_8cpp_source.html#l00158">EnumerateNativeDrives()</a>, and <a class="el" href="_drive_info_8cpp_source.html#l00170">DotNetDupe::System::IO::DriveInfo::GetDrives()</a>.</p>
 
 </div>
 </div>
@@ -515,9 +719,40 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00228">228</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, <a class="el" href="_string_8cpp_source.html#l00064">DotNetDupe::System::String::String()</a>, and <a class="el" href="_path_8cpp_source.html#l00228">GenerateRandomTempFileName()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, <a class="el" href="_string_8cpp_source.html#l00065">DotNetDupe::System::String::String()</a>, and <a class="el" href="_path_8cpp_source.html#l00228">GenerateRandomTempFileName()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00228">GenerateRandomTempFileName()</a>, and <a class="el" href="_path_8cpp_source.html#l00247">DotNetDupe::System::IO::Path::GetTempFileName()</a>.</p>
+
+</div>
+</div>
+<a id="ab7a39ad6304aeef3798a61c072438267" name="ab7a39ad6304aeef3798a61c072438267"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab7a39ad6304aeef3798a61c072438267">&#9670;&#160;</a></span>NormalizeDrivePath()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> DotNetDupe::System::IO::NormalizeDrivePath </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sDriveName</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="_drive_info_8cpp_source.html#l00023">23</a> of file <a class="el" href="_drive_info_8cpp_source.html">DriveInfo.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00425">DotNetDupe::System::String::EndsWith()</a>, <a class="el" href="_string_8cpp_source.html#l00357">DotNetDupe::System::String::GetLength()</a>, and <a class="el" href="_drive_info_8cpp_source.html#l00023">NormalizeDrivePath()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_drive_info_8cpp_source.html#l00035">DotNetDupe::System::IO::DriveInfo::DriveInfo()</a>, and <a class="el" href="_drive_info_8cpp_source.html#l00023">NormalizeDrivePath()</a>.</p>
 
 </div>
 </div>
@@ -595,6 +830,38 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="afc53d4cc278d66d7f2a82bf586042825" name="afc53d4cc278d66d7f2a82bf586042825"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc53d4cc278d66d7f2a82bf586042825">&#9670;&#160;</a></span>ToArray()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; DotNetDupe::System::IO::ToArray </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>results</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Step: <a class="el" href="class_dot_net_dupe_1_1_system_1_1_convert.html" title="Converts a base data type to another base data type.">Convert</a> std::vector of results to library <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html" title="Provides methods for creating, manipulating, searching, and sorting arrays, thereby serving as the ba...">Array</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_directory_8cpp_source.html#l00140">140</a> of file <a class="el" href="_directory_8cpp_source.html">Directory.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00140">ToArray()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_directory_8cpp_source.html#l00175">DotNetDupe::System::IO::Directory::GetDirectories()</a>, <a class="el" href="_directory_8cpp_source.html#l00314">DotNetDupe::System::IO::Directory::GetDirectories()</a>, <a class="el" href="_directory_8cpp_source.html#l00147">DotNetDupe::System::IO::Directory::GetFiles()</a>, <a class="el" href="_directory_8cpp_source.html#l00306">DotNetDupe::System::IO::Directory::GetFiles()</a>, <a class="el" href="_directory_8cpp_source.html#l00203">DotNetDupe::System::IO::Directory::GetFileSystemEntries()</a>, and <a class="el" href="_directory_8cpp_source.html#l00140">ToArray()</a>.</p>
+
+</div>
+</div>
 <a id="a1012709bfe045bde805fa1153eda7774" name="a1012709bfe045bde805fa1153eda7774"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1012709bfe045bde805fa1153eda7774">&#9670;&#160;</a></span>ValidatePathChars()</h2>
 
@@ -621,7 +888,7 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00304">304</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00292">DotNetDupe::System::String::Contains()</a>, <a class="el" href="_path_8cpp_source.html#l00152">DotNetDupe::System::IO::Path::GetInvalidPathChars()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">ValidatePathChars()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00402">DotNetDupe::System::String::Contains()</a>, <a class="el" href="_path_8cpp_source.html#l00152">DotNetDupe::System::IO::Path::GetInvalidPathChars()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">ValidatePathChars()</a>.</p>
 
 <p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00332">DotNetDupe::System::IO::Path::TryJoin()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">ValidatePathChars()</a>.</p>
 

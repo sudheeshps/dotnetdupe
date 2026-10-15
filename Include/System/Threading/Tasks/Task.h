@@ -65,6 +65,13 @@ namespace DotNetDupe {
                     /// \return A SmartPointer to the running Task.
                     DOTNETDUPE_API static SmartPointer<Task> Run(Action<> objAction);
 
+                    /// \brief Waits for all of the provided Task objects to complete execution.
+                    /// \param arrTasks An array of Task instances on which to wait.
+                    /// \param iMillisecondsTimeout Timeout in milliseconds, or -1 for infinite.
+                    /// \return true if all tasks completed; otherwise, false.
+                    DOTNETDUPE_API static bool WaitAll(const Array<SmartPointer<Task>>& arrTasks, int iMillisecondsTimeout = -1);
+
+
                 private:
                     Action<> m_objAction;
                     TaskStatus m_eStatus;

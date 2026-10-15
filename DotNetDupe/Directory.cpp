@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "System/IO/Directory.h"
+#include "System/IO/SearchOption.h"
 #include "System/IO/Path.h"
 #include "System/IOException.h"
 #include "System/ArgumentException.h"
@@ -20,6 +21,14 @@ namespace {
         return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
 #else
         return fs::path(sPath.GetRawString());
+#endif
+    }
+
+    DotNetDupe::System::String FromFsPath(const fs::path& p) {
+#if defined(_WIN32)
+        return DotNetDupe::System::String(DotNetDupe::System::Internal::StringConvertInternal::WCharToUtf8(p.c_str()).c_str());
+#else
+        return DotNetDupe::System::String(p.string().c_str());
 #endif
     }
 
@@ -128,28 +137,34 @@ namespace DotNetDupe {
                 return GetFiles(sPath, "*");
             }
 
+            static Array<String> ToArray(const std::vector<String>& results) {
+                /// Step: Convert std::vector of results to library Array.
+                Array<String> arr(static_cast<int>(results.size()));
+                for (int iIdx = 0; iIdx < static_cast<int>(results.size()); ++iIdx) arr[iIdx] = results[iIdx];
+                return arr;
+            }
+
             Array<String> Directory::GetFiles(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching files.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_regular_file(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
                         }
                     }
+                } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching file paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetDirectories(const String& sPath) {
@@ -159,26 +174,25 @@ namespace DotNetDupe {
 
             Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching directories.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    if (entry.is_directory(ec)) {
-                        std::string filename = entry.path().filename().string();
-                        if (std::regex_match(filename, reg)) {
-                            results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
                         }
                     }
+                } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching directory paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath) {
@@ -188,24 +202,25 @@ namespace DotNetDupe {
 
             Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern) {
                 /// Guard: Validate directory existence.
-                if (!Exists(sPath)) {
-                    throw IO::IOException("Directory does not exist.");
-                }
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
                 std::vector<String> results;
                 std::regex reg = PatternToRegex(sSearchPattern);
                 std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
 
                 /// Step: Iterate entries and collect matching items.
-                for (const auto& entry : fs::directory_iterator(ToFsPath(sPath), ec)) {
-                    std::string filename = entry.path().filename().string();
-                    if (std::regex_match(filename, reg)) {
-                        results.push_back(String(entry.path().string().c_str()));
+                try {
+                    for (auto it = fs::directory_iterator(ToFsPath(sPath), options, ec); !ec && it != fs::directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
                     }
+                } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
                 }
-                /// Return: Array of matching entry paths.
-                Array<String> arr((int)results.size());
-                for (int iIdx = 0; iIdx < (int)results.size(); iIdx++) arr[iIdx] = results[iIdx];
-                return arr;
+                return ToArray(results);
             }
 
             String Directory::GetCurrentDirectory() {
@@ -215,7 +230,7 @@ namespace DotNetDupe {
                 if (ec) {
                     throw IO::IOException(ec.message().c_str());
                 }
-                return String(p.string().c_str());
+                return FromFsPath(p);
             }
 
             void Directory::SetCurrentDirectory(const String& sPath) {
@@ -255,6 +270,65 @@ namespace DotNetDupe {
                 /// Forward: Delegate to GetLastWriteTime.
                 return GetLastWriteTime(sPath);
             }
+        
+            static void CollectRecursiveFiles(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
+                try {
+                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_regular_file(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
+                    }
+                } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+                }
+            }
+
+            static void CollectRecursiveDirs(const fs::path& root, const std::regex& reg, std::vector<String>& results) {
+                std::error_code ec;
+                auto options = fs::directory_options::skip_permission_denied;
+                try {
+                    for (auto it = fs::recursive_directory_iterator(root, options, ec); !ec && it != fs::recursive_directory_iterator(); it.increment(ec)) {
+                        if (ec) break;
+                        if (it->is_directory(ec) && std::regex_match(it->path().filename().string(), reg)) {
+                            results.push_back(FromFsPath(it->path()));
+                        }
+                    }
+                } catch (...) {
+                    /// Suppress: Ignore directory enumeration errors.
+                    (void)0;
+                }
+            }
+
+            Array<String> Directory::GetFiles(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetFiles(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector<String> results;
+                CollectRecursiveFiles(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                return ToArray(results);
+            }
+
+            Array<String> Directory::GetDirectories(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                if (eSearchOption == SearchOption::TopDirectoryOnly) return GetDirectories(sPath, sSearchPattern);
+                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector<String> results;
+                CollectRecursiveDirs(ToFsPath(sPath), PatternToRegex(sSearchPattern), results);
+                return ToArray(results);
+            }
+
+            Array<String> Directory::GetFileSystemEntries(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption) {
+                /// Step: Collect files and subdirectories for the given search option.
+                Array<String> files = GetFiles(sPath, sSearchPattern, eSearchOption);
+                Array<String> dirs = GetDirectories(sPath, sSearchPattern, eSearchOption);
+                Array<String> combined(files.GetLength() + dirs.GetLength());
+                for (int i = 0; i < files.GetLength(); i++) combined[i] = files[i];
+                for (int j = 0; j < dirs.GetLength(); j++) combined[files.GetLength() + j] = dirs[j];
+                return combined;
+            }
+
         }
     }
 }

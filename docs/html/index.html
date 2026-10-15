@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -147,6 +147,11 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 <p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
 <p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
 <dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
+<li>💾 <b>Drive Metrics &amp; Free Space Telemetry (<span class="tt">System::IO::DriveInfo</span>):</b> Full drive metrics, file system format, volume label, total size, and available/free space queries via <span class="tt">DriveInfo::GetDrives()</span>, <span class="tt">GetTotalSize()</span>, <span class="tt">GetTotalFreeSpace()</span>, and <span class="tt">GetAvailableFreeSpace()</span>.</li>
+<li>📂 <b>Recursive Directory Searching (<span class="tt">System::IO::Directory</span> &amp; <span class="tt">SearchOption</span>):</b> Added <span class="tt">SearchOption::TopDirectoryOnly</span> and <span class="tt">SearchOption::AllDirectories</span> overloads to <span class="tt">Directory::GetFiles</span>, <span class="tt">GetDirectories</span>, and <span class="tt">GetFileSystemEntries</span> with permission-resilient traversal.</li>
+<li>📊 <b>64-bit Multi-Terabyte Stream Precision (<span class="tt">System::IO::Stream</span> &amp; <span class="tt">FileStream</span>):</b> Seamless support for multi-gigabyte/terabyte files via <span class="tt">GetLength64()</span>, <span class="tt">GetPosition64()</span>, <span class="tt">SetPosition64()</span>, and <span class="tt">Seek64()</span>.</li>
+<li>🔐 <b>Streaming Cryptographic SHA-256 (<span class="tt">System::Security::Cryptography::SHA256</span>):</b> FIPS 180-2 compliant streaming SHA-256 hash algorithm supporting byte buffers, streams (<span class="tt">ComputeHash(SmartPointer&lt;Stream&gt;)</span>), static one-shot hashing (<span class="tt">HashData</span>), and hex string formatting (<span class="tt">ToHexString</span>).</li>
+<li>🧩 <b>Batch Task Synchronization (<span class="tt">System::Threading::Tasks::Task::WaitAll</span>):</b> Parallel task completion barrier enabling multi-threaded worker pools to synchronize cleanly.</li>
 <li>🧮 <b>Mathematical Primitives &amp; Time-Series Statistics (<span class="tt">System::Math</span> &amp; <span class="tt">System::Numerics::Statistics</span>):</b> Full suite of IEEE 754 arithmetic and transcendental methods (<span class="tt">Abs</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Clamp</span>, <span class="tt">Round</span>, <span class="tt">Sqrt</span>, <span class="tt">Pow</span>, <span class="tt">Log</span>, <span class="tt">Sin</span>, <span class="tt">Cos</span>, <span class="tt">Tan</span>) and time-series statistics (<span class="tt">Mean</span>, <span class="tt">Variance</span>, <span class="tt">StandardDeviation</span>, <span class="tt">MovingAverage</span>, <span class="tt">MovingAverageSeries</span>, <span class="tt">ExponentialMovingAverage</span>, <span class="tt">ExponentialMovingAverageSeries</span>).</li>
 <li>🔣 <b>Generic JSON Serialization &amp; DOM Accessors (<span class="tt">System::Text::Json</span>):</b> Strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (<span class="tt">ToJson</span>/<span class="tt">FromJson</span>), expanded primitive/container converters (<span class="tt">Array&lt;T&gt;</span>, <span class="tt">DateTime</span>, <span class="tt">Guid</span>), and <span class="tt">JsonElement</span> property helpers (<span class="tt">HasProperty</span>, <span class="tt">GetProperty</span>, <span class="tt">GetPropertyString</span>, <span class="tt">GetPropertyInt32</span>, <span class="tt">GetPropertyDouble</span>, <span class="tt">GetPropertyAs&lt;T&gt;</span>, <span class="tt">Deserialize&lt;T&gt;</span>).</li>
 <li>🐧 <b>Linux Native NuGet Runtime Support (<span class="tt">libDotNetDupe.so</span>):</b> Native Linux x64 shared library bundled under <span class="tt">runtimes/linux-x64/native/libDotNetDupe.so</span> with automated MSBuild <span class="tt">.targets</span> and CMake integration.</li>
@@ -242,6 +247,7 @@ Table of Contents 📚</h1>
 <li>License 📄</li>
 <li>Generated Content 🤖</li>
 <li>Contact 📧</li>
+<li>Release Notes 📝</li>
 </ul>
 </li>
 </ul>
@@ -338,7 +344,7 @@ Prerequisites 📋</h2>
 <li>CMake 3.15+ (for building on Linux / WSL)</li>
 <li><b>OpenSSL / SSL Runtime Dependencies</b>:<ul>
 <li><b>Windows</b>: The NuGet package bundles pre-built OpenSSL runtime binaries (<span class="tt">libssl-4-x64.dll</span>, <span class="tt">libcrypto-4-x64.dll</span> for x64, and <span class="tt">libssl-4.dll</span>, <span class="tt">libcrypto-4.dll</span> for x86) which are automatically copied into the target build output directory via MSBuild <span class="tt">.targets</span>.</li>
-<li><b>Linux</b>: Requires system OpenSSL 3.x / 1.1.x runtime libraries (<span class="tt">libssl.so</span>, <span class="tt">libcrypto.so</span>). Install via <span class="tt">sudo apt-get install -y libssl-dev</span> (Ubuntu/Debian) or <span class="tt">sudo dnf install -y openssl-devel</span> (Fedora/RHEL).</li>
+<li><b>Linux</b>: The NuGet package bundles pre-built OpenSSL 4.0.1 runtime libraries (<span class="tt">libssl.so.4</span>, <span class="tt">libcrypto.so.4</span>, and symlinks <span class="tt">libssl.so</span>, <span class="tt">libcrypto.so</span>) under <span class="tt">runtimes/linux-x64/native/</span> which are automatically copied to output directories via MSBuild <span class="tt">.targets</span>. Pre-compiled libraries and headers are also provided in <span class="tt">external/openssl-4.0.1/linux-x64/</span>.</li>
 </ul>
 </li>
 </ul>
@@ -351,7 +357,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.3.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.4.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -378,14 +384,14 @@ Integration via NuGet</h2>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is distributed as a multi-platform NuGet package. It contains native binaries for:</p><ul>
 <li><span class="tt">win-x64</span> (<span class="tt">DotNetDupe.dll</span>, <span class="tt">libssl-4-x64.dll</span>, <span class="tt">libcrypto-4-x64.dll</span>)</li>
 <li><span class="tt">win-x86</span> (<span class="tt">DotNetDupe.dll</span>, <span class="tt">libssl-4.dll</span>, <span class="tt">libcrypto-4.dll</span>)</li>
-<li><span class="tt">linux-x64</span> (<span class="tt">libDotNetDupe.so</span>)</li>
+<li><span class="tt">linux-x64</span> (<span class="tt">libDotNetDupe.so</span>, <span class="tt">libssl.so.4</span>, <span class="tt">libcrypto.so.4</span>)</li>
 </ul>
 <p>When you add the NuGet package to your project, the appropriate binary and dependencies are automatically selected based on your target platform.</p>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md10"></a>
 SSL Runtime Dependencies</h3>
 <ul>
 <li><b>Windows</b>: Dynamic OpenSSL dependencies (<span class="tt">libssl-4-x64.dll</span> &amp; <span class="tt">libcrypto-4-x64.dll</span>) are packaged directly inside the NuGet package and deployed next to <span class="tt">DotNetDupe.dll</span> at build time.</li>
-<li><b>Linux</b>: Dynamically links against standard host OpenSSL libraries (<span class="tt">libssl.so.3</span> / <span class="tt">libssl.so.1.1</span>). Ensure OpenSSL is installed on target runtime hosts (<span class="tt">apt-get install libssl3</span> or <span class="tt">libssl1.1</span>).</li>
+<li><b>Linux</b>: Dynamic OpenSSL 4.0.1 dependencies (<span class="tt">libssl.so.4</span> &amp; <span class="tt">libcrypto.so.4</span>) are packaged directly inside the NuGet package and deployed alongside <span class="tt">libDotNetDupe.so</span> at build time via MSBuild <span class="tt">.targets</span>.</li>
 </ul>
 <h3 class="doxsection"><a class="anchor" id="autotoc_md11"></a>
 Note for Linux Users</h3>
@@ -569,8 +575,8 @@ Step 2: C++ Application (<span class="tt">main.cpp</span>)</h3>
 <div class="ttc" id="a_web_application_8h_html"><div class="ttname"><a href="_web_application_8h.html">WebApplication.h</a></div><div class="ttdoc">Represents the web application used to configure the HTTP pipeline and routes mirroring ASP....</div></div>
 <div class="ttc" id="a_web_application_builder_8h_html"><div class="ttname"><a href="_web_application_builder_8h.html">WebApplicationBuilder.h</a></div><div class="ttdoc">Builder pattern orchestrator for configuring services, controllers, and constructing WebApplication i...</div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_console_html_a9ac4b759f46575696d499176d1c23789"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_console.html#a9ac4b759f46575696d499176d1c23789">DotNetDupe::System::Console::WriteLine</a></div><div class="ttdeci">static void WriteLine()</div><div class="ttdef"><b>Definition</b> <a href="_console_8cpp_source.html#l00097">Console.cpp:97</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a1e37a4da2786bb51228ce5e254907417"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a1e37a4da2786bb51228ce5e254907417">DotNetDupe::System::IO::Directory::CreateDirectory</a></div><div class="ttdeci">static void CreateDirectory(const String &amp;sPath)</div><div class="ttdoc">Creates all directories and subdirectories in the specified path unless they already exist.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00064">Directory.cpp:64</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a9d1a2f0c070b13f512e1fb63e199df01"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a9d1a2f0c070b13f512e1fb63e199df01">DotNetDupe::System::IO::Directory::Exists</a></div><div class="ttdeci">static bool Exists(const String &amp;sPath)</div><div class="ttdoc">Determines whether the given path refers to an existing directory on disk.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00056">Directory.cpp:56</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a1e37a4da2786bb51228ce5e254907417"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a1e37a4da2786bb51228ce5e254907417">DotNetDupe::System::IO::Directory::CreateDirectory</a></div><div class="ttdeci">static void CreateDirectory(const String &amp;sPath)</div><div class="ttdoc">Creates all directories and subdirectories in the specified path unless they already exist.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00073">Directory.cpp:73</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory_html_a9d1a2f0c070b13f512e1fb63e199df01"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a9d1a2f0c070b13f512e1fb63e199df01">DotNetDupe::System::IO::Directory::Exists</a></div><div class="ttdeci">static bool Exists(const String &amp;sPath)</div><div class="ttdoc">Determines whether the given path refers to an existing directory on disk.</div><div class="ttdef"><b>Definition</b> <a href="_directory_8cpp_source.html#l00065">Directory.cpp:65</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_smart_pointer_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html">DotNetDupe::System::SmartPointer</a></div><div class="ttdoc">A unified smart pointer that supports both unique and shared ownership semantics.</div><div class="ttdef"><b>Definition</b> <a href="_smart_pointer_8h_source.html#l00072">SmartPointer.h:72</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html">DotNetDupe::System::String</a></div><div class="ttdoc">Represents text as a sequence of UTF-8 code units with culture-invariant operations.</div><div class="ttdef"><b>Definition</b> <a href="_string_8h_source.html#l00074">String.h:74</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application_html_abdaa13d29107d83e44661da72737e726"><div class="ttname"><a href="class_dot_net_dupe_1_1_web_app_core_1_1_builder_1_1_web_application.html#abdaa13d29107d83e44661da72737e726">DotNetDupe::WebAppCore::Builder::WebApplication::CreateBuilder</a></div><div class="ttdeci">static DotNetDupe::System::SmartPointer&lt; WebApplicationBuilder &gt; CreateBuilder()</div><div class="ttdoc">Initializes a new instance of the WebApplicationBuilder class with pre-configured defaults.</div><div class="ttdef"><b>Definition</b> <a href="_web_application_8cpp_source.html#l00067">WebApplication.cpp:67</a></div></div>
@@ -1302,7 +1308,7 @@ Key Capabilities</h2>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_a9ca11c3d98c02f9c3a5672652a3cbd9f"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#a9ca11c3d98c02f9c3a5672652a3cbd9f">DotNetDupe::System::Collections::Generic::IEnumerable::Except</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Except(const IEnumerable&lt; T &gt; &amp;other) const</div><div class="ttdoc">Produces the set difference of two sequences.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00898">Enumerable.h:898</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable_html_acc6af114b49edb03bd434a22d97c1892"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html#acc6af114b49edb03bd434a22d97c1892">DotNetDupe::System::Collections::Generic::IEnumerable::Union</a></div><div class="ttdeci">Linq::Enumerable&lt; T &gt; Union(const IEnumerable&lt; T &gt; &amp;other) const</div><div class="ttdoc">Produces the set union of two sequences.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00888">Enumerable.h:888</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable_html_a65c275bb49a546554d7142271e79efb1"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_linq_1_1_enumerable.html#a65c275bb49a546554d7142271e79efb1">DotNetDupe::System::Linq::Enumerable::Range</a></div><div class="ttdeci">static Enumerable&lt; int &gt; Range(int start, int count)</div><div class="ttdoc">Generates a sequence of integral numbers within a specified range.</div><div class="ttdef"><b>Definition</b> <a href="_enumerable_8h_source.html#l00685">Enumerable.h:685</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html_a60521ef141e31fe99185d0817de53198"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html#a60521ef141e31fe99185d0817de53198">DotNetDupe::System::String::GetLength</a></div><div class="ttdeci">int GetLength() const</div><div class="ttdef"><b>Definition</b> <a href="_string_8cpp_source.html#l00247">String.cpp:247</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html_a60521ef141e31fe99185d0817de53198"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html#a60521ef141e31fe99185d0817de53198">DotNetDupe::System::String::GetLength</a></div><div class="ttdeci">int GetLength() const</div><div class="ttdef"><b>Definition</b> <a href="_string_8cpp_source.html#l00357">String.cpp:357</a></div></div>
 </div><!-- fragment --><hr  />
 <h1 class="doxsection"><a class="anchor" id="autotoc_md67"></a>
 Web API &amp; Database Integration Guide 🌐🗄️</h1>
@@ -2094,7 +2100,401 @@ Generated Content 🤖</h1>
 <p>This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.</p>
 <h1 class="doxsection"><a class="anchor" id="autotoc_md122"></a>
 Contact 📧</h1>
-<p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>. </p>
+<p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>.</p>
+<hr  />
+<h1 class="doxsection"><a class="anchor" id="autotoc_md124"></a>
+Release Notes 📝</h1>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md125"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases">v5.0.4</a> (Current / Latest)</h2>
+<ul>
+<li><b>Drive Metrics &amp; Telemetry (<span class="tt">System::IO::DriveInfo</span>)</b>:<ul>
+<li>Added full support for querying drive metrics, volume labels, drive formats (NTFS, FAT32, ext4), total drive capacity, and available/total free space via <span class="tt">DriveInfo::GetDrives()</span>, <span class="tt">GetTotalSize()</span>, <span class="tt">GetTotalFreeSpace()</span>, and <span class="tt">GetAvailableFreeSpace()</span>.</li>
+</ul>
+</li>
+<li><b>Recursive Directory Traversal (<span class="tt">System::IO::Directory</span> &amp; <span class="tt">SearchOption</span>)</b>:<ul>
+<li>Introduced <span class="tt">SearchOption</span> enumeration (<span class="tt">SearchOption::TopDirectoryOnly</span> and <span class="tt">SearchOption::AllDirectories</span>).</li>
+<li>Added recursive directory searching overloads to <span class="tt">Directory::GetFiles</span>, <span class="tt">Directory::GetDirectories</span>, and <span class="tt">Directory::GetFileSystemEntries</span> with permission-resilient folder iteration.</li>
+</ul>
+</li>
+<li><b>64-bit Stream Precision (<span class="tt">System::IO::Stream</span> &amp; <span class="tt">FileStream</span>)</b>:<ul>
+<li>Upgraded core stream architecture with 64-bit positioning (<span class="tt">int64_t</span>) supporting multi-terabyte file streaming: <span class="tt">GetLength64()</span>, <span class="tt">GetPosition64()</span>, <span class="tt">SetPosition64()</span>, and <span class="tt">Seek64()</span>.</li>
+</ul>
+</li>
+<li><b>Streaming Cryptographic SHA-256 (<span class="tt">System::Security::Cryptography::SHA256</span>)</b>:<ul>
+<li>Added FIPS 180-2 compliant streaming SHA-256 hash algorithm.</li>
+<li>Supports continuous byte buffers, stream sources (<span class="tt">ComputeHash(SmartPointer&lt;Stream&gt;)</span>), static one-shot hashing (<span class="tt">HashData</span>), and hexadecimal output formatting (<span class="tt">ToHexString</span>).</li>
+</ul>
+</li>
+<li><b>Batch Task Synchronization (<span class="tt">System::Threading::Tasks::Task::WaitAll</span>)</b>:<ul>
+<li>Added barrier synchronization to wait on collections or arrays of asynchronous <span class="tt">Task</span> instances concurrently.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md126"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3">v5.0.3</a> - 2026-10-01</h2>
+<ul>
+<li><b>Linux Native NuGet Runtime Packaging</b>:<ul>
+<li>Bundled pre-built Linux native shared library (<span class="tt">runtimes/linux-x64/native/libDotNetDupe.so</span>) alongside Windows x64 binaries.</li>
+<li>Updated MSBuild <span class="tt">DotNetDupe.targets</span> to automatically link and stage native OpenSSL libraries (<span class="tt">-lssl -lcrypto</span>).</li>
+</ul>
+</li>
+<li><b>OpenSSL 4.0.1 Native Dependencies</b>:<ul>
+<li>Bundled native OpenSSL 4.0.1 binaries for Linux (<span class="tt">libssl.so.4</span>, <span class="tt">libcrypto.so.4</span>) and Windows (<span class="tt">libssl-4-x64.dll</span>, <span class="tt">libcrypto-4-x64.dll</span>, <span class="tt">libssl-4.dll</span>, <span class="tt">libcrypto-4.dll</span>).</li>
+</ul>
+</li>
+<li><b>Mathematical Primitives &amp; Time-Series Statistics (<span class="tt">System::Math</span> &amp; <span class="tt">System::Numerics::Statistics</span>)</b>:<ul>
+<li>Implemented IEEE 754 arithmetic and transcendental methods: <span class="tt">Abs</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Clamp</span>, <span class="tt">Round</span>, <span class="tt">Sqrt</span>, <span class="tt">Pow</span>, <span class="tt">Log</span>, <span class="tt">Sin</span>, <span class="tt">Cos</span>, and <span class="tt">Tan</span>.</li>
+<li>Added statistical operations and financial time-series moving window indicators: <span class="tt">Mean</span>, <span class="tt">Variance</span>, <span class="tt">StandardDeviation</span> (<span class="tt">StdDev</span>), <span class="tt">MovingAverage</span>, <span class="tt">MovingAverageSeries</span>, <span class="tt">ExponentialMovingAverage</span>, and <span class="tt">ExponentialMovingAverageSeries</span>.</li>
+</ul>
+</li>
+<li><b>Generic JSON DTO Serialization &amp; DOM Accessors (<span class="tt">System::Text::Json</span>)</b>:<ul>
+<li>Added strongly-typed generic serialization and deserialization via compile-time SFINAE DTO mapping (<span class="tt">JsonSerializer::Serialize&lt;T&gt;</span>, <span class="tt">JsonSerializer::Deserialize&lt;T&gt;</span>).</li>
+<li>Added built-in type converters for <span class="tt">Array&lt;T&gt;</span>, <span class="tt">short</span>, <span class="tt">uint</span>, <span class="tt">int64</span>, <span class="tt">Guid</span>, and <span class="tt">DateTime</span>.</li>
+<li>Added <span class="tt">JsonElement</span> property helpers: <span class="tt">HasProperty</span>, <span class="tt">GetProperty</span>, <span class="tt">GetPropertyString</span>, <span class="tt">GetPropertyInt32</span>, <span class="tt">GetPropertyDouble</span>, <span class="tt">GetPropertyAs&lt;T&gt;</span>, and <span class="tt">Deserialize&lt;T&gt;</span>.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md127"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.2">v5.0.2</a> - 2026-09-29</h2>
+<ul>
+<li><b>Concurrent Collections Interface Hierarchy Retrofit</b>:<ul>
+<li>Retrofitted <span class="tt">ConcurrentQueue&lt;T&gt;</span>, <span class="tt">ConcurrentStack&lt;T&gt;</span>, <span class="tt">ConcurrentBag&lt;T&gt;</span>, <span class="tt">BlockingCollection&lt;T&gt;</span>, and <span class="tt">ConcurrentDictionary&lt;TKey, TValue&gt;</span> to inherit generic base collection interfaces (<span class="tt">IReadOnlyCollection&lt;T&gt;</span>, <span class="tt">IEnumerable&lt;T&gt;</span>, <span class="tt">IDictionary&lt;TKey, TValue&gt;</span>).</li>
+<li>Introduced <span class="tt">IProducerConsumerCollection&lt;T&gt;</span> base interface.</li>
+</ul>
+</li>
+<li><b>Lock-Free Snapshot Enumeration &amp; Direct LINQ Integration</b>:<ul>
+<li>Implemented thread-safe snapshot iteration across all concurrent collections.</li>
+<li>Enabled direct LINQ method chaining directly on concurrent collections without intermediate conversions.</li>
+</ul>
+</li>
+<li><b>Debugger Visualizer &amp; Documentation</b>:<ul>
+<li>Updated <span class="tt">DotNetDupe.natvis</span> visualizers for concurrent containers.</li>
+<li>Added dedicated Smart Pointers and Collections documentation sections with compile-ready code snippets to <span class="tt"><a class="el" href="_r_e_a_d_m_e_8md.html">README.md</a></span>.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md128"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1">v5.0.1</a> - 2026-09-29</h2>
+<ul>
+<li><b>LINQ Documentation &amp; Guide</b>:<ul>
+<li>Added dedicated Language Integrated Query (LINQ) section to <span class="tt"><a class="el" href="_r_e_a_d_m_e_8md.html">README.md</a></span> with practical code examples.</li>
+<li>Updated repository Table of Contents and navigation anchors.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md129"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.0">v5.0.0</a> - 2026-09-28</h2>
+<ul>
+<li><b>Language Integrated Query (<span class="tt">System::Linq</span>)</b>:<ul>
+<li>Major milestone release introducing zero-STL-allocation LINQ query operators: <span class="tt">Where</span>, <span class="tt">Select</span>, <span class="tt">SelectMany</span>, <span class="tt">OrderBy</span>, <span class="tt">OrderByDescending</span>, <span class="tt">ThenBy</span>, <span class="tt">ThenByDescending</span>, <span class="tt">GroupBy</span>, <span class="tt">Distinct</span>, <span class="tt">Take</span>, <span class="tt">Skip</span>, <span class="tt">Concat</span>, <span class="tt">Union</span>, <span class="tt">Intersect</span>, <span class="tt">Except</span>, <span class="tt">Zip</span>, and <span class="tt">Reverse</span>.</li>
+<li>Added numeric aggregations and quantifiers: <span class="tt">Any</span>, <span class="tt">All</span>, <span class="tt">Contains</span>, <span class="tt">First</span>, <span class="tt">Single</span>, <span class="tt">ElementAt</span>, <span class="tt">Count</span>, <span class="tt">Sum</span>, <span class="tt">Min</span>, <span class="tt">Max</span>, <span class="tt">Average</span>, and <span class="tt">Aggregate</span>.</li>
+<li>Added sequence generators: <span class="tt">Range</span> and <span class="tt">Repeat</span>.</li>
+<li>Added collection materialization: <span class="tt">ToList</span>, <span class="tt">ToArray</span>, <span class="tt">ToDictionary</span>, and <span class="tt">ToHashSet</span>.</li>
+<li>Supported standard C++ range-based <span class="tt">for</span> loops across all queryable sequences.</li>
+</ul>
+</li>
+<li><b>Cross-Platform Parity</b>:<ul>
+<li>Full functional and test parity across Linux (WSL/GCC/CMake) and Windows (MSVC).</li>
+</ul>
+</li>
+<li><b>SmartX File Querying</b>:<ul>
+<li>Integrated LINQ querying directly over file system entries.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md130"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7">v4.0.7</a> - 2026-09-10</h2>
+<ul>
+<li><b>Documentation &amp; Report Links</b>:<ul>
+<li>Fixed documentation and report links on NuGet.org and GitHub Pages.</li>
+<li>Published OpenCppCoverage and Quality Gate static analysis reports under <span class="tt">docs/CodeCoverage</span>.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md131"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6">v4.0.6</a> - 2026-09-10</h2>
+<ul>
+<li><b>Standardized Documentation Header</b>:<ul>
+<li>Standardized documentation navigation headers across all API reference pages with real-time NuGet versioning.</li>
+<li>Resolved GitHub Pages 404 Not Found errors on header and source navigation links.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md132"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5">v4.0.5</a> - 2026-09-09</h2>
+<ul>
+<li><b>Package Documentation Links</b>:<ul>
+<li>Fixed NuGet package documentation links to the Interactive Documentation Portal and Doxygen API reference URLs.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md133"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.4">v4.0.4</a> - 2026-09-09</h2>
+<ul>
+<li><b>Binary I/O Streams (<span class="tt">System::IO</span>)</b>:<ul>
+<li>Added <span class="tt">BinaryReader</span> and <span class="tt">BinaryWriter</span> with configurable endianness and stream seeking support.</li>
+</ul>
+</li>
+<li><b>String Enhancements</b>:<ul>
+<li>Added <span class="tt">GetChars()</span> method to <span class="tt"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html" title="Represents text as a sequence of UTF-8 code units with culture-invariant operations.">DotNetDupe::System::String</a></span>.</li>
+</ul>
+</li>
+<li><b>Smart Pointer Safety</b>:<ul>
+<li>Added safe handling for <span class="tt">this</span> smart pointer patterns.</li>
+</ul>
+</li>
+<li><b>Documentation Revamp</b>:<ul>
+<li>Executed complete 7-phase documentation audit and standardization across all public headers and classes.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md134"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.3">v4.0.3</a> - 2026-08-20</h2>
+<ul>
+<li><b>C# .NET Event Model (<span class="tt">System::EventHandler&lt;TEventArgs&gt;</span>)</b>:<ul>
+<li>Introduced idiomatic multicast delegate event model (<span class="tt">+=</span>, <span class="tt">-=</span>) with member method binding (<span class="tt">Add(pInstance, &amp;Class::Method)</span>) and thread-safe dispatch.</li>
+</ul>
+</li>
+<li><b>Native Process Discovery (<span class="tt">System::Diagnostics::Process</span>)</b>:<ul>
+<li>Added ultra-fast process discovery matching .NET BCL: <span class="tt">Process::GetProcesses()</span>, <span class="tt">Process::GetProcessById()</span>, and <span class="tt">Process::GetProcessesByName()</span>.</li>
+</ul>
+</li>
+<li><b>On-Demand Process Enrichment</b>:<ul>
+<li>Added <span class="tt">SystemMetrics::EnrichProcessInfo()</span> for detailed per-process CPU, memory, and handle telemetry.</li>
+</ul>
+</li>
+<li><b>Version String Parsing</b>:<ul>
+<li>Added strict, .NET-compliant <span class="tt">Version::Parse</span> and <span class="tt">Version::TryParse</span> supporting 2, 3, and 4-component versions with full error validation.</li>
+</ul>
+</li>
+<li><b>Event Modernization</b>:<ul>
+<li>Modernized <span class="tt">FileDownloader</span> and <span class="tt">ProcessStreamer</span> to typed multicast <span class="tt">EventHandler</span> callbacks.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md135"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2">v4.0.2</a> - 2026-08-19</h2>
+<ul>
+<li><b>Observable Process Streaming (<span class="tt">ProcessStreamer</span>)</b>:<ul>
+<li>Added progressive two-tier process discovery and telemetry streaming events.</li>
+</ul>
+</li>
+<li><b>Network &amp; WebSocket Hardening</b>:<ul>
+<li>Improved <span class="tt">WebSocketException</span> error handling and connection teardown.</li>
+</ul>
+</li>
+<li><b>Pimpl Move &amp; ABI Stability</b>:<ul>
+<li>Enhanced Pimpl idiom destruction and move semantics.</li>
+</ul>
+</li>
+<li><b>Code Coverage &amp; Quality</b>:<ul>
+<li>Updated demo application code and refreshed test coverage reports.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md136"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1">v4.0.1</a> - 2026-08-17</h2>
+<ul>
+<li><b>Full API Reference Transpilation</b>:<ul>
+<li>Transpiled and validated complete API reference across all namespaces and classes.</li>
+</ul>
+</li>
+<li><b>Markdown &amp; HTML Rendering</b>:<ul>
+<li>Enhanced table rendering and cross-namespace link navigation in documentation.</li>
+</ul>
+</li>
+<li><b>Bug Fix</b>:<ul>
+<li>Resolved event tracking issue in <span class="tt">EtwLogReader</span>.</li>
+</ul>
+</li>
+<li><b>NuGet Packaging Cleanup</b>:<ul>
+<li>Cleaned up package assets for seamless local IDE and online web navigation.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md137"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0">v4.0.0</a> - 2026-08-15</h2>
+<ul>
+<li><b>Zero-STL Public Header Architecture</b>:<ul>
+<li>Major architectural refactoring eliminating STL types (<span class="tt">std::string</span>, <span class="tt">std::vector</span>, <span class="tt">std::map</span>, etc.) from all public headers, guaranteeing ABI stability.</li>
+</ul>
+</li>
+<li><b>Pure Library Data Structures</b>:<ul>
+<li>Added pure library implementations for <span class="tt">List&lt;T&gt;</span>, <span class="tt">Dictionary&lt;K, V&gt;</span>, <span class="tt">HashSet&lt;T&gt;</span>, <span class="tt">Queue&lt;T&gt;</span>, <span class="tt">Stack&lt;T&gt;</span>, <span class="tt">PriorityQueue&lt;T&gt;</span>, <span class="tt">SortedDictionary&lt;K, V&gt;</span>, <span class="tt">SortedSet&lt;T&gt;</span>, and <span class="tt">LinkedList&lt;T&gt;</span>.</li>
+</ul>
+</li>
+<li><b>Thread-Safe Concurrent Collections</b>:<ul>
+<li>Added lock-free and fine-grained concurrent collections: <span class="tt">ConcurrentDictionary</span>, <span class="tt">ConcurrentQueue</span>, <span class="tt">ConcurrentStack</span>, <span class="tt">ConcurrentBag</span>, and <span class="tt">BlockingCollection</span>.</li>
+</ul>
+</li>
+<li><b>Console Stream Redirection</b>:<ul>
+<li>Added standard stream redirection via <span class="tt">Console::SetOut</span>, <span class="tt">Console::SetError</span>, and <span class="tt">Console::SetIn</span> using <span class="tt">SmartPointer</span>.</li>
+</ul>
+</li>
+<li><b>Logging Subsystem</b>:<ul>
+<li>Added <span class="tt">LoggerTextWriter</span> stream redirector and global <span class="tt">LogManager</span> category caching.</li>
+</ul>
+</li>
+<li><b>Resilient File I/O</b>:<ul>
+<li>Added <span class="tt">FileDownloader</span> utility with prompt file handle cleanup.</li>
+<li>Added recursive <span class="tt">Directory::CreateDirectory</span> overload.</li>
+</ul>
+</li>
+<li><b>Dependency Injection</b>:<ul>
+<li>Improved <span class="tt">ServiceCollection</span> DI container with refined lifetime management.</li>
+</ul>
+</li>
+<li><b>Debugger Natvis Visualizer</b>:<ul>
+<li>Introduced <span class="tt">DotNetDupe.natvis</span> visualizer for inspecting Pimpl internal types in Visual Studio.</li>
+</ul>
+</li>
+<li><b>Quality Gate System</b>:<ul>
+<li>Introduced 11 automated Quality Gate metrics and CI/CD validation.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.6">v3.0.6</a> - 2026-08-06</h2>
+<ul>
+<li><b>CI/CD Quality Gate Automation</b>:<ul>
+<li>Added automated <span class="tt">Check-QualityGates.ps1</span> static analysis validation in CI/CD pipeline.</li>
+<li>Enforced zero compiler warnings (<span class="tt">/WX</span> on MSVC, <span class="tt">-Werror</span> on GCC).</li>
+</ul>
+</li>
+<li><b>Live Reporting</b>:<ul>
+<li>Configured live GitHub Pages badging for code coverage and static analysis compliance.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md139"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5">v3.0.5</a> - 2026-08-06</h2>
+<ul>
+<li><b>Smart Pointer Standardization</b>:<ul>
+<li>Eliminated raw pointer usage in favor of <span class="tt">SmartPointer&lt;T&gt;</span> across all remaining classes.</li>
+</ul>
+</li>
+<li><b>Pipeline Optimization</b>:<ul>
+<li>Refactored build scripts and CI workflow directory layouts.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md140"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.4">v3.0.4</a> - 2026-08-05</h2>
+<ul>
+<li><b>C++20 Standard Upgrade</b>:<ul>
+<li>Upgraded project compilation to ISO C++20.</li>
+</ul>
+</li>
+<li><b>Mini <span class="tt">WebAppServer</span></b>:<ul>
+<li>Added embedded web server hosting static files (<span class="tt">index.html</span>, CSS, JS) and REST APIs simultaneously.</li>
+</ul>
+</li>
+<li><b>Hardware Telemetry (<span class="tt">SystemMetrics</span>)</b>:<ul>
+<li>Added real-time CPU, memory, disk I/O, and network bandwidth telemetry.</li>
+</ul>
+</li>
+<li><b>Session Enumeration</b>:<ul>
+<li>Added <span class="tt">TerminalSession</span> and <span class="tt">ActiveUserSession</span> to enumerate active, disconnected, and remote desktop user sessions.</li>
+</ul>
+</li>
+<li><b>Named Synchronization</b>:<ul>
+<li>Added cross-process named support for mutexes and synchronization events.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md141"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.3">v3.0.3</a> - 2026-08-05</h2>
+<ul>
+<li><b>Documentation Refinements</b>:<ul>
+<li>Minor updates to <span class="tt"><a class="el" href="_r_e_a_d_m_e_8md.html">README.md</a></span> and WSL setup guidelines.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md142"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.2">v3.0.2</a> - 2026-08-05</h2>
+<ul>
+<li><b>Web API &amp; Database Subsystem</b>:<ul>
+<li>Added database abstraction layer and SQLite connectivity.</li>
+<li>Added authentication and authorization with secure HTTPS (SSL) and JWT token handling.</li>
+<li>Added <span class="tt">WebApplication</span> host and <span class="tt">RestClient</span> supporting GET, POST, PUT, and DELETE.</li>
+<li>Added structured logging framework (<span class="tt">Logger</span>).</li>
+<li>Added code samples to class API reference documentation.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md143"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1">v3.0.1</a> - 2026-06-20</h2>
+<ul>
+<li><b>Web API &amp; Database Support</b>:<ul>
+<li>Initial introduction of WebApplication, REST endpoints, JWT authentication, and dependency injection container.</li>
+</ul>
+</li>
+<li><b>WSL Guide</b>:<ul>
+<li>Added WSL environment provisioning and setup documentation.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md144"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.0">v3.0.0</a> - 2026-05-31</h2>
+<ul>
+<li><b>Cross-Platform Support</b>:<ul>
+<li>Added multi-platform build support for Linux (Ubuntu on WSL) via CMake/GCC alongside Windows (MSBuild).</li>
+</ul>
+</li>
+<li><b>Smart Pointer Ownership</b>:<ul>
+<li>Introduced <span class="tt"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_smart_pointer.html" title="A unified smart pointer that supports both unique and shared ownership semantics.">DotNetDupe::System::SmartPointer</a>&lt;T&gt;</span> with unique and shared ownership semantics.</li>
+</ul>
+</li>
+<li><b>C++ Core Guidelines</b>:<ul>
+<li>Refactored core codebase to follow modern C++ Core Guidelines.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md145"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0">v2.1.0</a> - 2026-05-21</h2>
+<ul>
+<li><b>Threading Refinement</b>:<ul>
+<li>Threading enhancements and corrected documentation for <span class="tt">Interlocked</span> atomic operations.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md146"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.0.0">v2.0.0</a> - 2026-05-20</h2>
+<ul>
+<li><b>Threading &amp; Synchronization (<span class="tt">System::Threading</span>)</b>:<ul>
+<li>Introduced <span class="tt">Thread</span>, <span class="tt">ThreadPool</span>, <span class="tt">Mutex</span>, <span class="tt">AutoResetEvent</span>, <span class="tt">ManualResetEvent</span>, <span class="tt">Monitor</span>, <span class="tt">Interlocked</span>, and <span class="tt">Semaphore</span>.</li>
+</ul>
+</li>
+<li><b>Text I/O Streams (<span class="tt">System::IO</span>)</b>:<ul>
+<li>Added <span class="tt">TextWriter</span>, <span class="tt">TextReader</span>, <span class="tt">StringWriter</span>, and <span class="tt">StringReader</span>.</li>
+</ul>
+</li>
+<li><b>Time Zone Support (<span class="tt">System</span>)</b>:<ul>
+<li>Added <span class="tt">TimeZone</span> and <span class="tt">TimeZoneInfo</span> classes.</li>
+</ul>
+</li>
+<li><b>Unit Testing</b>:<ul>
+<li>Added unit test suites and sample code in <span class="tt">DotNetDupeDemo</span> for threading and synchronization.</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md147"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v1.0.0">v1.0.0</a> - 2026-05-09</h2>
+<ul>
+<li><b>Initial NuGet Release</b>:<ul>
+<li>First official release of <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> on NuGet.</li>
+</ul>
+</li>
+<li><b>Core Base Class Library</b>:<ul>
+<li>Foundational types: <span class="tt">Object</span>, <span class="tt">String</span>, <span class="tt">Char</span>, <span class="tt">BitConverter</span>, <span class="tt">Convert</span>, <span class="tt">Console</span>, <span class="tt">Environment</span>, and <span class="tt">Math</span>.</li>
+<li>Stream and file I/O: <span class="tt">Stream</span>, <span class="tt">FileStream</span>, <span class="tt">MemoryStream</span>, <span class="tt">File</span>, and <span class="tt">Path</span>.</li>
+</ul>
+</li>
+<li><b>Build Integration</b>:<ul>
+<li>Shipped MSBuild <span class="tt">.targets</span> and platform toolset v143 support for seamless Visual Studio integration. </li>
+</ul>
+</li>
+</ul>
 </div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"></a>
 </div><!-- contents -->

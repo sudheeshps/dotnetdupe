@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.3</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -178,16 +178,24 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a86bee751c09d4aac0a27ef68c454af15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Clears buffers for this stream and causes any unwritten data to be written to the file.  <br /></td></tr>
 <tr class="memitem:a82d457c825a4c6f6576c40dbfa3b1beb" id="r_a82d457c825a4c6f6576c40dbfa3b1beb"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a82d457c825a4c6f6576c40dbfa3b1beb">GetLength</a> () const override</td></tr>
 <tr class="memdesc:a82d457c825a4c6f6576c40dbfa3b1beb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the length in bytes of the stream.  <br /></td></tr>
+<tr class="memitem:a171842a0483c9b52c949629f0473bf2a" id="r_a171842a0483c9b52c949629f0473bf2a"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a171842a0483c9b52c949629f0473bf2a">GetLength64</a> () const override</td></tr>
+<tr class="memdesc:a171842a0483c9b52c949629f0473bf2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 64-bit length in bytes of the stream.  <br /></td></tr>
 <tr class="memitem:a922efedaba58b75a98b716ad6734e5b7" id="r_a922efedaba58b75a98b716ad6734e5b7"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a922efedaba58b75a98b716ad6734e5b7">GetPosition</a> () const override</td></tr>
 <tr class="memdesc:a922efedaba58b75a98b716ad6734e5b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current position within the stream.  <br /></td></tr>
+<tr class="memitem:a3049d24fa884ca038e2d48cd8145feb9" id="r_a3049d24fa884ca038e2d48cd8145feb9"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a3049d24fa884ca038e2d48cd8145feb9">GetPosition64</a> () const override</td></tr>
+<tr class="memdesc:a3049d24fa884ca038e2d48cd8145feb9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 64-bit position within the stream.  <br /></td></tr>
 <tr class="memitem:a0e9ccae5404358c3af51b0e5e559e727" id="r_a0e9ccae5404358c3af51b0e5e559e727"><td class="memItemLeft">int&#160;</td><td class="memItemRight"><a class="el" href="#a0e9ccae5404358c3af51b0e5e559e727">Read</a> (char *pBuffer, int iOffset, int nCount) override</td></tr>
 <tr class="memdesc:a0e9ccae5404358c3af51b0e5e559e727"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a block of bytes from the stream and writes the data in a given buffer.  <br /></td></tr>
 <tr class="memitem:a4f6d281c0887e1139fe9a9acdaf76cc5" id="r_a4f6d281c0887e1139fe9a9acdaf76cc5"><td class="memItemLeft">long&#160;</td><td class="memItemRight"><a class="el" href="#a4f6d281c0887e1139fe9a9acdaf76cc5">Seek</a> (long llOffset, int iOrigin) override</td></tr>
 <tr class="memdesc:a4f6d281c0887e1139fe9a9acdaf76cc5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current position of this stream to the given value.  <br /></td></tr>
+<tr class="memitem:a2a342f8c47999ea3a9ac3323f5efbd71" id="r_a2a342f8c47999ea3a9ac3323f5efbd71"><td class="memItemLeft">long long&#160;</td><td class="memItemRight"><a class="el" href="#a2a342f8c47999ea3a9ac3323f5efbd71">Seek64</a> (long long llOffset, int iOrigin) override</td></tr>
+<tr class="memdesc:a2a342f8c47999ea3a9ac3323f5efbd71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the 64-bit position within the stream.  <br /></td></tr>
 <tr class="memitem:ad8dac22b1f32c88df49f636f879ca654" id="r_ad8dac22b1f32c88df49f636f879ca654"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#ad8dac22b1f32c88df49f636f879ca654">SetLength</a> (long llValue) override</td></tr>
 <tr class="memdesc:ad8dac22b1f32c88df49f636f879ca654"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the length of this stream to the given value.  <br /></td></tr>
 <tr class="memitem:a67ba60162632a9ae3ee10ac129f615a3" id="r_a67ba60162632a9ae3ee10ac129f615a3"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a67ba60162632a9ae3ee10ac129f615a3">SetPosition</a> (long llValue) override</td></tr>
 <tr class="memdesc:a67ba60162632a9ae3ee10ac129f615a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the current position within the stream.  <br /></td></tr>
+<tr class="memitem:a3001555993da880b3ccf7afc7f057ce9" id="r_a3001555993da880b3ccf7afc7f057ce9"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a3001555993da880b3ccf7afc7f057ce9">SetPosition64</a> (long long llValue) override</td></tr>
+<tr class="memdesc:a3001555993da880b3ccf7afc7f057ce9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the 64-bit position within the stream.  <br /></td></tr>
 <tr class="memitem:a48cb25af5ac43449010bb2fe715d808b" id="r_a48cb25af5ac43449010bb2fe715d808b"><td class="memItemLeft">void&#160;</td><td class="memItemRight"><a class="el" href="#a48cb25af5ac43449010bb2fe715d808b">Write</a> (const char *pBuffer, int iOffset, int nCount) override</td></tr>
 <tr class="memdesc:a48cb25af5ac43449010bb2fe715d808b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Writes a block of bytes to the file stream.  <br /></td></tr>
 <tr class="inherit_header pub_methods_class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream"><td colspan="2" class="dyn-inherit"><span class="dynarrow"><span class="arrowhead closed"></span></span>Public Member Functions inherited from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html">DotNetDupe::System::IO::Stream</a></td></tr>
@@ -362,7 +370,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00074">74</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_file_stream_8cpp_source.html#l00082">GetLength()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00097">GetPosition()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00148">Seek()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00107">SetPosition()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_file_stream_8cpp_source.html#l00082">GetLength()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00200">GetLength64()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00097">GetPosition()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00211">GetPosition64()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00148">Seek()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00225">Seek64()</a>, <a class="el" href="_file_stream_8cpp_source.html#l00107">SetPosition()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00217">SetPosition64()</a>.</p>
 
 </div>
 </div>
@@ -518,6 +526,40 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a171842a0483c9b52c949629f0473bf2a" name="a171842a0483c9b52c949629f0473bf2a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a171842a0483c9b52c949629f0473bf2a">&#9670;&#160;</a></span>GetLength64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long DotNetDupe::System::IO::FileStream::GetLength64 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the 64-bit length in bytes of the stream. </p>
+<p>Guard: Validate seek capability.</p>
+
+<p>Reimplemented from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a8ee48909c396c1c018d55254a9747221">DotNetDupe::System::IO::Stream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00200">200</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
+
+</div>
+</div>
 <a id="a922efedaba58b75a98b716ad6734e5b7" name="a922efedaba58b75a98b716ad6734e5b7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a922efedaba58b75a98b716ad6734e5b7">&#9670;&#160;</a></span>GetPosition()</h2>
 
@@ -555,6 +597,40 @@ Additional Inherited Members</h2></td></tr>
 <p>Implements <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a89419326fc850b9333ee6b6d5e3ff05d">DotNetDupe::System::IO::Stream</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00097">97</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
+
+</div>
+</div>
+<a id="a3049d24fa884ca038e2d48cd8145feb9" name="a3049d24fa884ca038e2d48cd8145feb9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3049d24fa884ca038e2d48cd8145feb9">&#9670;&#160;</a></span>GetPosition64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long DotNetDupe::System::IO::FileStream::GetPosition64 </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the 64-bit position within the stream. </p>
+<p>Guard: Validate seek capability.</p>
+
+<p>Reimplemented from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a5cf3c4047d82be4627409cdb8134d59f">DotNetDupe::System::IO::Stream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00211">211</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
 
@@ -675,6 +751,44 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a2a342f8c47999ea3a9ac3323f5efbd71" name="a2a342f8c47999ea3a9ac3323f5efbd71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a342f8c47999ea3a9ac3323f5efbd71">&#9670;&#160;</a></span>Seek64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long DotNetDupe::System::IO::FileStream::Seek64 </td>
+          <td>(</td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>llOffset</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>iOrigin</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the 64-bit position within the stream. </p>
+<p>Guard: Validate seek capability.</p>
+
+<p>Reimplemented from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#addf246175ccf4e0d35972e048f61978a">DotNetDupe::System::IO::Stream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00225">225</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
+
+</div>
+</div>
 <a id="ad8dac22b1f32c88df49f636f879ca654" name="ad8dac22b1f32c88df49f636f879ca654"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad8dac22b1f32c88df49f636f879ca654">&#9670;&#160;</a></span>SetLength()</h2>
 
@@ -764,6 +878,40 @@ Additional Inherited Members</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00107">107</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
 
 <p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
+
+</div>
+</div>
+<a id="a3001555993da880b3ccf7afc7f057ce9" name="a3001555993da880b3ccf7afc7f057ce9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3001555993da880b3ccf7afc7f057ce9">&#9670;&#160;</a></span>SetPosition64()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::FileStream::SetPosition64 </td>
+          <td>(</td>
+          <td class="paramtype">long long</td>          <td class="paramname"><span class="paramname"><em>llValue</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel override">override</span><span class="mlabel virtual">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the 64-bit position within the stream. </p>
+<p>Guard: Validate position bounds.</p>
+
+<p>Reimplemented from <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html#a63ce692a370320d5d2d719b6322396ae">DotNetDupe::System::IO::Stream</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_stream_8cpp_source.html#l00217">217</a> of file <a class="el" href="_file_stream_8cpp_source.html">FileStream.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, and <a class="el" href="_file_stream_8cpp_source.html#l00074">CanSeek()</a>.</p>
 
 </div>
 </div>
