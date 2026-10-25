@@ -1,9 +1,11 @@
 var namespace_dot_net_dupe_1_1_system =
 [
+    [ "AI", "namespace_dot_net_dupe_1_1_system_1_1_a_i.html", "namespace_dot_net_dupe_1_1_system_1_1_a_i" ],
     [ "Collections", "namespace_dot_net_dupe_1_1_system_1_1_collections.html", "namespace_dot_net_dupe_1_1_system_1_1_collections" ],
     [ "ComponentModel", "namespace_dot_net_dupe_1_1_system_1_1_component_model.html", "namespace_dot_net_dupe_1_1_system_1_1_component_model" ],
     [ "Data", "namespace_dot_net_dupe_1_1_system_1_1_data.html", "namespace_dot_net_dupe_1_1_system_1_1_data" ],
     [ "Diagnostics", "namespace_dot_net_dupe_1_1_system_1_1_diagnostics.html", "namespace_dot_net_dupe_1_1_system_1_1_diagnostics" ],
+    [ "Drawing", "namespace_dot_net_dupe_1_1_system_1_1_drawing.html", "namespace_dot_net_dupe_1_1_system_1_1_drawing" ],
     [ "IdentityModel", "namespace_dot_net_dupe_1_1_system_1_1_identity_model.html", "namespace_dot_net_dupe_1_1_system_1_1_identity_model" ],
     [ "Internal", "namespace_dot_net_dupe_1_1_system_1_1_internal.html", "namespace_dot_net_dupe_1_1_system_1_1_internal" ],
     [ "IO", "namespace_dot_net_dupe_1_1_system_1_1_i_o.html", "namespace_dot_net_dupe_1_1_system_1_1_i_o" ],

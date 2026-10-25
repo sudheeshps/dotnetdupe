@@ -28,6 +28,7 @@ namespace DotNetDupe {
                 /// \param sPaths An array of parts of the path.
                 /// \return The combined paths.
                 DOTNETDUPE_API static String Combine(const std::initializer_list<String> sPaths);
+                DOTNETDUPE_API static String Combine(const String& sPath1, const String& sPath2);
 
                 /// \brief Returns a value that indicates whether the specified path ends in a directory separator.
                 /// \param sFilePath The path to analyze.

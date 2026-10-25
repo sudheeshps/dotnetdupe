@@ -2,6 +2,7 @@ var class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path =
 [
     [ "ChangeExtension", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a08c38d5960b7556da2f691c3660ce806", null ],
     [ "Combine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a76be9ffc0acbe817339579dba254b088", null ],
+    [ "Combine", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#ace01eb85da087f0068446a1f83c19c48", null ],
     [ "EndsInDirectorySeparator", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a2a5d1d90793a04a8a66f2c59d005f3f9", null ],
     [ "Exists", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a043cf1a8d20c691009396f12c8ff9e9d", null ],
     [ "GetAltDirectorySeparatorChar", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#aa08aba384f4b7a81f90a1bc658d921fc", null ],

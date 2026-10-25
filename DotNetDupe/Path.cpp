@@ -40,6 +40,11 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
+            String Path::Combine(const String& sPath1, const String& sPath2) {
+                /// Delegate two-argument path combination to initializer_list overload.
+                return Combine({ sPath1, sPath2 });
+            }
+
             String Path::ChangeExtension(const String& sFilePath, const String& sExtension) {
                 /// Guard: Validate input path and extension parameters.
                 if (sFilePath.GetLength() <= 0 || sExtension.GetLength() <= 0)

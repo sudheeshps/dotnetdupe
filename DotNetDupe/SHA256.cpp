@@ -1,10 +1,14 @@
 #include "pch.h"
 #include "System/Security/Cryptography/SHA256.h"
 #include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/IO/FileStream.h"
+#include "System/IO/File.h"
 #include "System/Text/StringBuilder.h"
 #include <cstring>
 #include <iomanip>
 #include <sstream>
+#include <vector>
 
 namespace DotNetDupe {
     namespace System {
@@ -105,19 +109,25 @@ namespace DotNetDupe {
                 };
 
                 namespace {
-                    /// \brief Finalizes the SHA-256 digest into a 32-byte Array.
                     static Array<byte> FinalizeDigest(PureSha256& sha) {
-                        /// Extract computed 32-byte hash digest.
+                        /// Extract computed 32-byte hash digest into library Array.
                         unsigned char digest[32];
                         sha.Final(digest);
-
-                        /// Construct and copy bytes to result array.
                         Array<byte> result(32);
-                        for (int i = 0; i < 32; i++) {
-                            result[i] = digest[i];
-                        }
-
+                        for (int i = 0; i < 32; i++) result[i] = digest[i];
                         return result;
+                    }
+
+                    static void HashStreamChunked(PureSha256& sha, const SmartPointer<IO::Stream>& pStream, long long llRemaining) {
+                        /// Read and hash up to llRemaining bytes from pStream in 4KB chunks.
+                        char szChunk[4096];
+                        while (llRemaining > 0) {
+                            int iToRead = (llRemaining < 4096LL) ? static_cast<int>(llRemaining) : 4096;
+                            int nRead = pStream->Read(szChunk, 0, iToRead);
+                            if (nRead <= 0) break;
+                            sha.Update(reinterpret_cast<const unsigned char*>(szChunk), static_cast<unsigned int>(nRead));
+                            llRemaining -= static_cast<long long>(nRead);
+                        }
                     }
                 }
 
@@ -129,16 +139,12 @@ namespace DotNetDupe {
                 }
 
                 Array<byte> SHA256::ComputeHash(const Array<byte>& buffer) {
-                    /// Initialize pure SHA-256 engine.
+                    /// Initialize pure SHA-256 engine and hash byte buffer.
                     PureSha256 sha;
                     sha.Init();
-
-                    /// Process buffer bytes if non-empty.
                     if (buffer.GetLength() > 0) {
                         sha.Update(reinterpret_cast<const unsigned char*>(buffer.GetData()), static_cast<unsigned int>(buffer.GetLength()));
                     }
-
-                    /// Finalize digest and return hash array.
                     return FinalizeDigest(sha);
                 }
 
@@ -148,18 +154,14 @@ namespace DotNetDupe {
                         throw ArgumentNullException("Stream cannot be null.");
                     }
 
-                    /// Initialize pure SHA-256 engine.
+                    /// Read and stream-process chunks of 4KB until EOF.
                     PureSha256 sha;
                     sha.Init();
-
-                    /// Read and stream-process chunks of 4KB.
                     char szChunk[4096];
                     int nBytesRead = 0;
                     while ((nBytesRead = pStream->Read(szChunk, 0, 4096)) > 0) {
                         sha.Update(reinterpret_cast<const unsigned char*>(szChunk), static_cast<unsigned int>(nBytesRead));
                     }
-
-                    /// Finalize digest and return hash array.
                     return FinalizeDigest(sha);
                 }
 
@@ -175,7 +177,45 @@ namespace DotNetDupe {
                     return hasher.ComputeHash(pStream);
                 }
 
+                Array<byte> SHA256::HashData(const SmartPointer<IO::Stream>& pStream, long long llOffset, long long llCount) {
+                    /// Guard: Validate stream and range bounds.
+                    if (!pStream) throw ArgumentNullException("Stream cannot be null.");
+                    if (llOffset < 0 || llCount < 0) throw ArgumentOutOfRangeException("Offset and count must be non-negative.");
+
+                    /// Seek to offset and hash bounded byte range.
+                    PureSha256 sha;
+                    sha.Init();
+                    pStream->SetPosition64(llOffset);
+                    HashStreamChunked(sha, pStream, llCount);
+                    return FinalizeDigest(sha);
+                }
+
+                String SHA256::ComputeFastEdgeHash(const String& sFilePath, int iEdgeBytes) {
+                    /// Guard: Validate edge sample size and open file stream.
+                    if (iEdgeBytes <= 0) throw ArgumentOutOfRangeException("Edge byte count must be positive.");
+                    SmartPointer<IO::Stream> pStream = SmartPointer<IO::FileStream>::NewShared(sFilePath, 3);
+                    long long llFileLen = pStream->GetLength64();
+                    if (llFileLen <= static_cast<long long>(iEdgeBytes) * 2LL) return ToHexString(HashData(pStream));
+
+                    /// Hash head edge, tail edge, and 64-bit file size into a single SHA-256 digest.
+                    PureSha256 sha;
+                    sha.Init();
+                    pStream->SetPosition64(0);
+                    HashStreamChunked(sha, pStream, iEdgeBytes);
+                    pStream->SetPosition64(llFileLen - static_cast<long long>(iEdgeBytes));
+                    HashStreamChunked(sha, pStream, iEdgeBytes);
+                    sha.Update(reinterpret_cast<const unsigned char*>(&llFileLen), sizeof(llFileLen));
+                    return ToHexString(FinalizeDigest(sha));
+                }
+
+                String SHA256::HashFileToHex(const String& sFilePath) {
+                    /// Open read-only FileStream (FileMode::Open = 3) and return lowercase hex SHA-256 digest.
+                    SmartPointer<IO::Stream> pStream = SmartPointer<IO::FileStream>::NewShared(sFilePath, 3);
+                    return ToHexString(HashData(pStream));
+                }
+
                 String SHA256::ToHexString(const Array<byte>& arrHash) {
+                    /// Format byte array into lowercase hexadecimal string.
                     static const char szHexDigits[] = "0123456789abcdef";
                     std::string strResult;
                     strResult.reserve(arrHash.GetLength() * 2);

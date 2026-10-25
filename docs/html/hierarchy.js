@@ -160,6 +160,18 @@ var hierarchy =
           ] ]
         ] ]
       ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Array< float >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< float >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
       [ "DotNetDupe::System::Collections::Generic::IEnumerable< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
         [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
           [ "DotNetDupe::System::Collections::Generic::ICollection< ElementPriorityPair >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
@@ -265,6 +277,18 @@ var hierarchy =
           ] ],
           [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
             [ "DotNetDupe::System::Collections::Generic::IList< SubscriberEntry >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
+          ] ]
+        ] ]
+      ] ],
+      [ "DotNetDupe::System::Collections::Generic::IEnumerable< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_enumerable.html", [
+        [ "DotNetDupe::System::Collections::Generic::IReadOnlyCollection< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_collection.html", [
+          [ "DotNetDupe::System::Collections::Generic::ICollection< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_collection.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", [
+              [ "DotNetDupe::System::Array< byte >", "class_dot_net_dupe_1_1_system_1_1_array.html", null ]
+            ] ]
+          ] ],
+          [ "DotNetDupe::System::Collections::Generic::IReadOnlyList< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_read_only_list.html", [
+            [ "DotNetDupe::System::Collections::Generic::IList< byte >", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_generic_1_1_i_list.html", null ]
           ] ]
         ] ]
       ] ],
@@ -419,6 +443,10 @@ var hierarchy =
         [ "DotNetDupe::Extensions::Logging::FileLoggerProvider", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_file_logger_provider.html", null ]
       ] ],
       [ "DotNetDupe::Extensions::Logging::LogManager", "class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_log_manager.html", null ],
+      [ "DotNetDupe::System::AI::DetectedFace", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_detected_face.html", null ],
+      [ "DotNetDupe::System::AI::FaceRecognitionEngine", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_face_recognition_engine.html", null ],
+      [ "DotNetDupe::System::AI::IFaceRecognitionBackend", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_i_face_recognition_backend.html", null ],
+      [ "DotNetDupe::System::AI::VectorMath", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_vector_math.html", null ],
       [ "DotNetDupe::System::BitConverter", "class_dot_net_dupe_1_1_system_1_1_bit_converter.html", null ],
       [ "DotNetDupe::System::Buffer", "class_dot_net_dupe_1_1_system_1_1_buffer.html", null ],
       [ "DotNetDupe::System::Char", "class_dot_net_dupe_1_1_system_1_1_char.html", null ],
@@ -503,6 +531,8 @@ var hierarchy =
       [ "DotNetDupe::System::Diagnostics::Stopwatch", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_stopwatch.html", null ],
       [ "DotNetDupe::System::Diagnostics::SystemMetrics", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_system_metrics.html", null ],
       [ "DotNetDupe::System::Diagnostics::TerminalSession", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session.html", null ],
+      [ "DotNetDupe::System::Drawing::Imaging::ExifMetadata", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata.html", null ],
+      [ "DotNetDupe::System::Drawing::Imaging::RawImage", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_raw_image.html", null ],
       [ "DotNetDupe::System::Environment", "class_dot_net_dupe_1_1_system_1_1_environment.html", null ],
       [ "DotNetDupe::System::EventArgs", "class_dot_net_dupe_1_1_system_1_1_event_args.html", [
         [ "DotNetDupe::System::Diagnostics::ProcessBatchEventArgs", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_process_batch_event_args.html", null ],
@@ -517,6 +547,8 @@ var hierarchy =
       [ "DotNetDupe::System::IO::Directory", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html", null ],
       [ "DotNetDupe::System::IO::DriveInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html", null ],
       [ "DotNetDupe::System::IO::File", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html", null ],
+      [ "DotNetDupe::System::IO::FileInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html", null ],
+      [ "DotNetDupe::System::IO::FileSystemEntry", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html", null ],
       [ "DotNetDupe::System::IO::Stream", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html", null ],
       [ "DotNetDupe::System::IO::TextReader", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_reader.html", null ],
       [ "DotNetDupe::System::IO::TextWriter", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_text_writer.html", null ],

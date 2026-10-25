@@ -48,6 +48,24 @@ namespace DotNetDupe {
                     /// \throws ArgumentNullException Thrown when pStream is null.
                     DOTNETDUPE_API static Array<byte> HashData(const SmartPointer<IO::Stream>& pStream);
 
+                    /// \brief Computes the SHA-256 hash over a bounded byte range within a seekable stream.
+                    /// \param pStream Smart pointer to the seekable input stream.
+                    /// \param llOffset Zero-based 64-bit byte offset from which to start reading.
+                    /// \param llCount Maximum number of bytes to hash from the stream.
+                    /// \return The computed 32-byte SHA-256 hash code.
+                    DOTNETDUPE_API static Array<byte> HashData(const SmartPointer<IO::Stream>& pStream, long long llOffset, long long llCount);
+
+                    /// \brief Computes a fast Stage-2 duplicate elimination fingerprint hashing the head, tail, and 64-bit length of a file.
+                    /// \param sFilePath Path to the file to fingerprint.
+                    /// \param iEdgeBytes Number of bytes to sample at the beginning and end of the file (default 4096).
+                    /// \return Lowercase 64-character hexadecimal SHA-256 edge fingerprint.
+                    DOTNETDUPE_API static String ComputeFastEdgeHash(const String& sFilePath, int iEdgeBytes = 4096);
+
+                    /// \brief Computes the full streaming SHA-256 hash of a file on disk and formats it as a lowercase hex string.
+                    /// \param sFilePath Path to the file to hash.
+                    /// \return Lowercase 64-character hexadecimal SHA-256 digest.
+                    DOTNETDUPE_API static String HashFileToHex(const String& sFilePath);
+
                     /// \brief Formats a byte array into a lowercase hex string.
                     DOTNETDUPE_API static String ToHexString(const Array<byte>& arrHash);
                 };

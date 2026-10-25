@@ -199,6 +199,7 @@
     <ClCompile Include="EventHandlerDemo.cpp" />
     <ClCompile Include="LinqDemo.cpp" />
     <ClCompile Include="MathDemo.cpp" />
+    <ClCompile Include="DiskAndPhotoAiDemo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Demos.h" />

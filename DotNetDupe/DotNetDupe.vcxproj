@@ -342,6 +342,12 @@
     <ClInclude Include="..\Include\Extensions\Logging\AggregateLogger.h" />
     <ClInclude Include="..\Include\Extensions\Logging\LogManager.h" />
     <ClInclude Include="..\Include\Extensions\Logging\LoggerTextWriter.h" />
+    <ClInclude Include="..\Include\System\IO\FileSystemEntry.h" />
+    <ClInclude Include="..\Include\System\IO\FileInfo.h" />
+    <ClInclude Include="..\Include\System\Drawing\Imaging\ExifMetadata.h" />
+    <ClInclude Include="..\Include\System\Drawing\Imaging\RawImage.h" />
+    <ClInclude Include="..\Include\System\AI\VectorMath.h" />
+    <ClInclude Include="..\Include\System\AI\FaceRecognitionEngine.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitConverter.cpp" />
@@ -467,6 +473,14 @@
     <ClCompile Include="LoggerTextWriter.cpp" />
     <ClCompile Include="UserPrincipal.cpp" />
     <ClCompile Include="TerminalSession.cpp" />
+    <ClCompile Include="FileSystemEntry.cpp" />
+    <ClCompile Include="FileInfo.cpp" />
+    <ClCompile Include="FileOperations.cpp" />
+    <ClCompile Include="DirectoryMetadata.cpp" />
+    <ClCompile Include="ExifMetadata.cpp" />
+    <ClCompile Include="RawImage.cpp" />
+    <ClCompile Include="VectorMath.cpp" />
+    <ClCompile Include="FaceRecognitionEngine.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="DotNetDupe.rc" />

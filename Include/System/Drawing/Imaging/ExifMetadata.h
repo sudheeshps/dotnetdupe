@@ -1,0 +1,110 @@
+/// \file ExifMetadata.h
+/// \brief Extracts and represents image dimensions and EXIF camera/timestamp metadata from JPEG, PNG, and BMP files.
+
+#pragma once
+
+#include "Common.h"
+#include "System/Object.h"
+#include "System/String.h"
+#include "System/Array.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Drawing {
+            namespace Imaging {
+
+                /// \class ExifMetadata
+                /// \brief Represents EXIF and header metadata extracted from an image file or byte buffer.
+                ///
+                /// Supports JPEG APP1 EXIF (TIFF IFD0 and ExifSubIFD tags), PNG IHDR dimensions,
+                /// and BMP BITMAPINFOHEADER dimensions without external third-party libraries.
+                ///
+                /// \note Conforms to JEITA CP-3451 (Exif 2.3) and ISO/IEC 15948 (PNG).
+                class ExifMetadata : public Object {
+                public:
+                    /// \brief Initializes a new empty ExifMetadata instance.
+                    DOTNETDUPE_API ExifMetadata();
+
+                    /// \brief Virtual destructor.
+                    DOTNETDUPE_API ~ExifMetadata() override = default;
+
+                    /// \brief Gets the image width in pixels.
+                    /// \return Image width in pixels.
+                    DOTNETDUPE_API int GetWidth() const noexcept;
+
+                    /// \brief Sets the image width in pixels.
+                    /// \param iWidth Image width in pixels.
+                    DOTNETDUPE_API void SetWidth(int iWidth) noexcept;
+
+                    /// \brief Gets the image height in pixels.
+                    /// \return Image height in pixels.
+                    DOTNETDUPE_API int GetHeight() const noexcept;
+
+                    /// \brief Sets the image height in pixels.
+                    /// \param iHeight Image height in pixels.
+                    DOTNETDUPE_API void SetHeight(int iHeight) noexcept;
+
+                    /// \brief Gets the EXIF orientation tag (1 = Normal, 3 = 180 deg, 6 = 90 CW, 8 = 270 CW).
+                    /// \return Orientation code (default 1).
+                    DOTNETDUPE_API int GetOrientation() const noexcept;
+
+                    /// \brief Sets the EXIF orientation tag.
+                    /// \param iOrientation Orientation code.
+                    DOTNETDUPE_API void SetOrientation(int iOrientation) noexcept;
+
+                    /// \brief Gets the EXIF DateTimeOriginal or DateTime string (format "YYYY:MM:DD HH:MM:SS").
+                    /// \return Date taken string, or empty if not present.
+                    DOTNETDUPE_API String GetDateTaken() const;
+
+                    /// \brief Sets the EXIF DateTaken string.
+                    /// \param sDateTaken Date taken string.
+                    DOTNETDUPE_API void SetDateTaken(const String& sDateTaken);
+
+                    /// \brief Gets the camera manufacturer make string.
+                    /// \return Camera make string.
+                    DOTNETDUPE_API String GetCameraMake() const;
+
+                    /// \brief Sets the camera manufacturer make string.
+                    /// \param sCameraMake Camera make string.
+                    DOTNETDUPE_API void SetCameraMake(const String& sCameraMake);
+
+                    /// \brief Gets the camera model string.
+                    /// \return Camera model string.
+                    DOTNETDUPE_API String GetCameraModel() const;
+
+                    /// \brief Sets the camera model string.
+                    /// \param sCameraModel Camera model string.
+                    DOTNETDUPE_API void SetCameraModel(const String& sCameraModel);
+
+                    /// \brief Gets whether valid EXIF or image header metadata was discovered.
+                    /// \return True if metadata was parsed; otherwise false.
+                    DOTNETDUPE_API bool GetHasExif() const noexcept;
+
+                    /// \brief Sets whether valid EXIF or image header metadata was discovered.
+                    /// \param bHasExif True if metadata was parsed.
+                    DOTNETDUPE_API void SetHasExif(bool bHasExif) noexcept;
+
+                    /// \brief Extracts image dimensions and EXIF metadata from a raw image byte buffer.
+                    /// \param arrBytes Raw image file bytes (JPEG, PNG, or BMP).
+                    /// \return Populated ExifMetadata instance.
+                    DOTNETDUPE_API static ExifMetadata ExtractFromBytes(const Array<byte>& arrBytes);
+
+                    /// \brief Extracts image dimensions and EXIF metadata from an image file on disk.
+                    /// \param sFilePath Path to the image file.
+                    /// \return Populated ExifMetadata instance.
+                    DOTNETDUPE_API static ExifMetadata ExtractFromFile(const String& sFilePath);
+
+                private:
+                    int m_iWidth;
+                    int m_iHeight;
+                    int m_iOrientation;
+                    String m_sDateTaken;
+                    String m_sCameraMake;
+                    String m_sCameraModel;
+                    bool m_bHasExif;
+                };
+
+            }
+        }
+    }
+}

@@ -33,6 +33,12 @@ var annotated_dup =
         ] ]
       ] ],
       [ "System", "namespace_dot_net_dupe_1_1_system.html", [
+        [ "AI", "namespace_dot_net_dupe_1_1_system_1_1_a_i.html", [
+          [ "DetectedFace", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_detected_face.html", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_detected_face" ],
+          [ "FaceRecognitionEngine", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_face_recognition_engine.html", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_face_recognition_engine" ],
+          [ "IFaceRecognitionBackend", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_i_face_recognition_backend.html", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_i_face_recognition_backend" ],
+          [ "VectorMath", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_vector_math.html", "class_dot_net_dupe_1_1_system_1_1_a_i_1_1_vector_math" ]
+        ] ],
         [ "Collections", "namespace_dot_net_dupe_1_1_system_1_1_collections.html", [
           [ "Concurrent", "namespace_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent.html", [
             [ "BlockingCollection", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection.html", "class_dot_net_dupe_1_1_system_1_1_collections_1_1_concurrent_1_1_blocking_collection" ],
@@ -123,6 +129,12 @@ var annotated_dup =
           [ "TerminalSession", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session.html", "class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_terminal_session" ],
           [ "UserSessionInfo", "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info.html", "struct_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_user_session_info" ]
         ] ],
+        [ "Drawing", "namespace_dot_net_dupe_1_1_system_1_1_drawing.html", [
+          [ "Imaging", "namespace_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging.html", [
+            [ "ExifMetadata", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata.html", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata" ],
+            [ "RawImage", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_raw_image.html", "class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_raw_image" ]
+          ] ]
+        ] ],
         [ "IdentityModel", "namespace_dot_net_dupe_1_1_system_1_1_identity_model.html", [
           [ "Tokens", "namespace_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens.html", [
             [ "Jwt", "namespace_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt.html", [
@@ -147,8 +159,10 @@ var annotated_dup =
           [ "DriveInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info" ],
           [ "EndOfStreamException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception" ],
           [ "File", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file" ],
+          [ "FileInfo", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info" ],
           [ "FileNotFoundException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception" ],
           [ "FileStream", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream" ],
+          [ "FileSystemEntry", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry" ],
           [ "IDisposable", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_disposable.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_disposable" ],
           [ "IOException", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception" ],
           [ "MemoryStream", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream.html", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_memory_stream" ],

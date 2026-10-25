@@ -20,5 +20,6 @@ var searchData=
   ['eventlog_17',['EventLog',['../class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log.html',1,'DotNetDupe::System::Diagnostics']]],
   ['eventlogentry_18',['EventLogEntry',['../class_dot_net_dupe_1_1_system_1_1_diagnostics_1_1_event_log_entry.html',1,'DotNetDupe::System::Diagnostics']]],
   ['eventwaithandle_19',['EventWaitHandle',['../class_dot_net_dupe_1_1_system_1_1_threading_1_1_event_wait_handle.html',1,'DotNetDupe::System::Threading']]],
-  ['exception_20',['Exception',['../class_dot_net_dupe_1_1_system_1_1_exception.html',1,'DotNetDupe::System']]]
+  ['exception_20',['Exception',['../class_dot_net_dupe_1_1_system_1_1_exception.html',1,'DotNetDupe::System']]],
+  ['exifmetadata_21',['ExifMetadata',['../class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata.html',1,'DotNetDupe::System::Drawing::Imaging']]]
 ];

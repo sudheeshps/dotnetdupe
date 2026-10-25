@@ -303,4 +303,49 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::IO::FileSystemEntry -->
+  <Type Name="DotNetDupe::System::IO::FileSystemEntry">
+    <DisplayString>{{ Path={m_sFullPath}, Size={m_llLength64}, Attrs={m_eAttributes} }}</DisplayString>
+    <Expand>
+      <Item Name="[FullPath]">m_sFullPath</Item>
+      <Item Name="[Name]">m_sName</Item>
+      <Item Name="[Length64]">m_llLength64</Item>
+      <Item Name="[Attributes]">m_eAttributes</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::IO::FileInfo -->
+  <Type Name="DotNetDupe::System::IO::FileInfo">
+    <DisplayString>{{ Path={m_sFullPath}, Exists={m_bExists}, Size={m_llLength64} }}</DisplayString>
+    <Expand>
+      <Item Name="[FullPath]">m_sFullPath</Item>
+      <Item Name="[Exists]">m_bExists</Item>
+      <Item Name="[Length64]">m_llLength64</Item>
+      <Item Name="[Attributes]">m_eAttributes</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::Drawing::Imaging::RawImage -->
+  <Type Name="DotNetDupe::System::Drawing::Imaging::RawImage">
+    <DisplayString>{{ {m_iWidth}x{m_iHeight} RGBA }}</DisplayString>
+    <Expand>
+      <Item Name="[Width]">m_iWidth</Item>
+      <Item Name="[Height]">m_iHeight</Item>
+      <Item Name="[Pixels]">m_arrPixels</Item>
+    </Expand>
+  </Type>
+
+  <!-- DotNetDupe::System::AI::DetectedFace -->
+  <Type Name="DotNetDupe::System::AI::DetectedFace">
+    <DisplayString>{{ Rect=({m_iX},{m_iY},{m_iWidth}x{m_iHeight}), Conf={m_fConfidence} }}</DisplayString>
+    <Expand>
+      <Item Name="[X]">m_iX</Item>
+      <Item Name="[Y]">m_iY</Item>
+      <Item Name="[Width]">m_iWidth</Item>
+      <Item Name="[Height]">m_iHeight</Item>
+      <Item Name="[Confidence]">m_fConfidence</Item>
+      <Item Name="[Embedding]">m_arrEmbedding</Item>
+    </Expand>
+  </Type>
+
 </AutoVisualizer>
