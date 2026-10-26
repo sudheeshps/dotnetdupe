@@ -1,17 +1,54 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>5.0.4</version>
+    <version>5.0.5</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v5.0.4: Added System::IO::DriveInfo with drive metrics, volume labels, and free space telemetry; added SearchOption enumeration and recursive search overloads to System::IO::Directory; upgraded System::IO::Stream and FileStream with 64-bit positioning (int64_t); added System::Security::Cryptography::SHA256 streaming hash algorithm with FIPS 180-2 compliance; added Task::WaitAll batch synchronization in System::Threading::Tasks. Previous: v5.0.3: Bundled OpenSSL 4.0.1 native dependencies for Linux (libssl.so.4, libcrypto.so.4) and Windows (libssl-4-x64.dll, libcrypto-4-x64.dll); included pre-built Linux native shared library (runtimes/linux-x64/native/libDotNetDupe.so) with automatic -lssl -lcrypto linking and staging in DotNetDupe.targets; added System::Math and System::Numerics::Statistics with standard IEEE 754 arithmetic and financial time-series moving window indicators (MovingAverage, MovingAverageSeries, ExponentialMovingAverage, ExponentialMovingAverageSeries, Variance, StandardDeviation, StdDev); enhanced System::Text::Json::JsonSerializer and JsonElement with strongly-typed generic DTO serialization/deserialization, property accessors, and converters for Array, short, uint, int64, Guid, DateTime. Previous: v5.0.2: Interface hierarchy retrofit across concurrent collections (ConcurrentQueue, ConcurrentStack, ConcurrentBag, BlockingCollection, ConcurrentDictionary) inheriting generic base interfaces (IReadOnlyCollection, IEnumerable, IDictionary) and introducing IProducerConsumerCollection; lock-free snapshot enumeration and direct LINQ method chaining on concurrent collections; added dedicated Smart Pointers and Collections sections with code snippets to README; updated Natvis debugger visualizers. Previous: v5.0.1: Documentation updates, added dedicated LINQ section with practical examples and updated Table of Contents in README. Previous: v5.0.0: Major version release introducing System::Linq query operators with zero-STL allocation algorithms and range-for loop support; SmartX file querying integration; cross-platform Linux and Windows parity.</releaseNotes>
+    <releaseNotes>v5.0.5 (Latest)
+- Zero-Re-Stat File Metadata &amp; Atomic Verified Copy (System::IO::FileInfo, FileSystemEntry, File, Directory):
+  * Added FileSystemEntry and Directory::GetFileSystemEntriesWithMetadata() to harvest 64-bit file size, creation/modification timestamps, attributes, and symlink/reparse-point flags in a single OS traversal pass without secondary stat calls.
+  * Added FileInfo for object-oriented file metadata inspection (GetLength64, GetCreationTime, GetLastWriteTime, GetExtension, GetDirectoryName, GetIsReparsePoint, CopyTo, MoveTo, Delete).
+  * Extended File with GetLength, GetCreationTime, GetLastWriteTime, SetLastWriteTime, ReadAllBytes, WriteAllBytes, AreFilesByteIdentical, timestamp-preserving Copy, and atomic CopyVerified (staging .part copy + read-back SHA-256 verification).
+  * Added two-argument Path::Combine(sPath1, sPath2) overload.
+- Partial &amp; Fast Edge SHA-256 Hashing (System::Security::Cryptography::SHA256):
+  * Added SHA256::HashData(pStream, llOffset, llCount) for bounded stream slice hashing.
+  * Added SHA256::ComputeFastEdgeHash(sFilePath, iEdgeBytes) and SHA256::HashFileToHex(sFilePath) for high-speed multi-stage duplicate elimination.
+- Cross-Platform Image Decoding &amp; EXIF Extraction (System::Drawing::Imaging):
+  * Added RawImage for 32-bit ARGB pixel buffer management, cropping (Crop), bilinear scaling (ResizeBilinear), normalized RGB float tensor conversion (ToNormalizedRgbTensor), and BMP loading/saving.
+  * Added ExifMetadata for extracting image dimensions, orientation, capture timestamps (DateTimeOriginal), and camera make/model from JPEG APP1 EXIF, PNG IHDR, and BMP headers.
+- Local ML Face Recognition &amp; Vector Mathematics (System::AI):
+  * Added VectorMath (DotProduct, Magnitude, L2Normalize, CosineSimilarity, EuclideanDistance).
+  * Added FaceRecognitionEngine, DetectedFace, and IFaceRecognitionBackend for local face detection, 128-D L2-normalized embedding extraction, and identity matching (ComputeSimilarity, IsSamePerson).
+
+v5.0.4
+- Added System::IO::DriveInfo with drive metrics, volume labels, and free space telemetry (GetDrives, GetTotalSize, GetTotalFreeSpace, GetAvailableFreeSpace).
+- Added SearchOption enumeration and recursive search overloads to System::IO::Directory.
+- Upgraded System::IO::Stream and FileStream with 64-bit positioning (GetLength64, GetPosition64, SetPosition64, Seek64).
+- Added System::Security::Cryptography::SHA256 streaming hash algorithm with FIPS 180-2 compliance.
+- Added Task::WaitAll batch synchronization in System::Threading::Tasks.
+
+v5.0.3
+- Bundled OpenSSL 4.0.1 native dependencies for Linux (libssl.so.4, libcrypto.so.4) and Windows (libssl-4-x64.dll, libcrypto-4-x64.dll).
+- Included pre-built Linux native shared library (runtimes/linux-x64/native/libDotNetDupe.so) with automatic -lssl -lcrypto linking and staging in DotNetDupe.targets.
+- Added System::Math and System::Numerics::Statistics with standard IEEE 754 arithmetic and financial time-series moving window indicators.
+- Enhanced System::Text::Json::JsonSerializer and JsonElement with strongly-typed generic DTO serialization/deserialization and property accessors.
+
+v5.0.2
+- Retrofitted ConcurrentQueue, ConcurrentStack, ConcurrentBag, BlockingCollection, and ConcurrentDictionary to inherit generic collection interfaces (IReadOnlyCollection, IEnumerable, IDictionary) and introduced IProducerConsumerCollection.
+- Added lock-free snapshot enumeration and direct LINQ method chaining on concurrent collections.
+
+v5.0.1
+- Documentation updates, dedicated LINQ guide with practical examples, and updated Table of Contents in README.
+
+v5.0.0
+- Major version release introducing System::Linq query operators with zero-STL allocation algorithms, range-for loop support, and full Linux/Windows parity.</releaseNotes>
     <readme>README.md</readme>
     <projectUrl>https://sudheeshps.github.io/dotnetdupe/</projectUrl>
     <repository type="git" url="https://github.com/sudheeshps/dotnetdupe" branch="main" />
     <license type="expression">MIT</license>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>native c++ dotnet multi-platform linux windows</tags>
+    <tags>native c++ dotnet multi-platform linux windows bcl linq io sha256 imaging ai</tags>
     <dependencies>
     </dependencies>
     <contentFiles>
@@ -52,4 +89,3 @@
     <file src="external\openssl-4.0.1\linux-x64\lib\libcrypto.so" target="runtimes\linux-x64\native\libcrypto.so" />
   </files>
 </package>
-

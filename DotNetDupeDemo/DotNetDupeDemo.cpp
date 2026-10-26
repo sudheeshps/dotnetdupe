@@ -53,6 +53,7 @@ int main() {
     DemonstrateEventHandler();
     DemonstrateLinq();
     DemonstrateMath();
+    DemonstrateDiskAndPhotoAi();
     
     Console::WriteLine("\n--- Demonstration Complete ---");
     Console::WriteLine("Press Enter to exit...");

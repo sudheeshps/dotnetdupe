@@ -17,6 +17,8 @@ var class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory =
     [ "GetFileSystemEntries", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#ae249568592161b226d3efa8eb0e9e5a8", null ],
     [ "GetFileSystemEntries", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#af8364b2a98f816c3b78cdaaa82eb488f", null ],
     [ "GetFileSystemEntries", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#ac298acfda93bf5113e88df7ec898667e", null ],
+    [ "GetFileSystemEntriesWithMetadata", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#af81463409797914fcb1f06e53d39e256", null ],
+    [ "GetFileSystemEntriesWithMetadata", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a6e76bcf89e43ee56d837c989b4a0b0e1", null ],
     [ "GetLastAccessTime", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#ac8497ebadccd10b52524e42e099d9014", null ],
     [ "GetLastWriteTime", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a5152a54bc41b0b687fd66beff4d47abc", null ],
     [ "Move", "class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html#a8a8d2644e8150086eff305d3c4bacbae", null ],

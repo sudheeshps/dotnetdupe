@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.5</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -147,6 +147,10 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('index.html',''
 <p>Ever admired the elegance and developer-friendliness of .NET APIs? 🤔 While the C++ Standard Template Library (STL) is powerful, its learning curve can be steep. This project, <b><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></b>, bridges that gap! 🌉</p>
 <p>Inspired by the clear and concise API design of C# .NET, <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is a C++ library that brings a familiar, streamlined development experience to your C++ projects. ✨</p>
 <dl class="section important"><dt>Important</dt><dd><b>Latest Published Version (<a href="https://www.nuget.org/packages/DotNetDupe"><img src="https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&amp;logo=nuget&amp;color=blue&amp;label=version" alt="NuGet Version" class="inline"/></a>):</b> Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:<ul>
+<li>🗂️ <b>Zero-Re-Stat File Metadata &amp; Verified Atomic Copy (<span class="tt">System::IO::FileInfo</span>, <span class="tt">FileSystemEntry</span> &amp; <span class="tt">File</span>):</b> Ultra-fast directory traversal returning size, timestamps, and symlink flags in a single OS pass via <span class="tt">Directory::GetFileSystemEntriesWithMetadata()</span>, rich <span class="tt">FileInfo</span> inspection, byte-exact comparison (<span class="tt">File::AreFilesByteIdentical</span>), and atomic verified file cloning (<span class="tt">File::CopyVerified</span>).</li>
+<li>⚡ <b>Partial &amp; Edge Cryptographic Hashing (<span class="tt">System::Security::Cryptography::SHA256</span>):</b> Sub-millisecond pre-hashing of large files via <span class="tt">SHA256::ComputeFastEdgeHash()</span>, stream slice hashing (<span class="tt">SHA256::HashData(pStream, llOffset, llCount)</span>), and one-call file hex digests (<span class="tt">SHA256::HashFileToHex()</span>).</li>
+<li>🖼️ <b>Cross-Platform RGBA Image Decoding &amp; EXIF Metadata (<span class="tt">System::Drawing::Imaging</span>):</b> Native RGBA pixel buffer decoding, resizing, and BMP export (<span class="tt">RawImage</span>), alongside JPEG/PNG camera and capture timestamp extraction (<span class="tt">ExifMetadata</span>).</li>
+<li>🤖 <b>Local ML Face Detection &amp; 128-D Embedding Engine (<span class="tt">System::AI</span>):</b> High-performance vector math (<span class="tt">VectorMath::CosineSimilarity</span>, <span class="tt">L2Normalize</span>, <span class="tt">EuclideanDistance</span>) and pluggable local face recognition (<span class="tt">FaceRecognitionEngine</span>, <span class="tt">DetectedFace</span>, <span class="tt">IFaceRecognitionBackend</span>).</li>
 <li>💾 <b>Drive Metrics &amp; Free Space Telemetry (<span class="tt">System::IO::DriveInfo</span>):</b> Full drive metrics, file system format, volume label, total size, and available/free space queries via <span class="tt">DriveInfo::GetDrives()</span>, <span class="tt">GetTotalSize()</span>, <span class="tt">GetTotalFreeSpace()</span>, and <span class="tt">GetAvailableFreeSpace()</span>.</li>
 <li>📂 <b>Recursive Directory Searching (<span class="tt">System::IO::Directory</span> &amp; <span class="tt">SearchOption</span>):</b> Added <span class="tt">SearchOption::TopDirectoryOnly</span> and <span class="tt">SearchOption::AllDirectories</span> overloads to <span class="tt">Directory::GetFiles</span>, <span class="tt">GetDirectories</span>, and <span class="tt">GetFileSystemEntries</span> with permission-resilient traversal.</li>
 <li>📊 <b>64-bit Multi-Terabyte Stream Precision (<span class="tt">System::IO::Stream</span> &amp; <span class="tt">FileStream</span>):</b> Seamless support for multi-gigabyte/terabyte files via <span class="tt">GetLength64()</span>, <span class="tt">GetPosition64()</span>, <span class="tt">SetPosition64()</span>, and <span class="tt">Seek64()</span>.</li>
@@ -292,6 +296,17 @@ Features &amp; Library Capabilities ✨</h1>
 <li>High-level static primitives: <span class="tt">File</span> (<span class="tt">ReadAllText</span>, <span class="tt">WriteAllText</span>, <span class="tt">AppendAllText</span>, <span class="tt">Exists</span>, <span class="tt">Delete</span>) and <span class="tt">Directory</span> (<span class="tt">CreateDirectory(path, recursive)</span>, <span class="tt">Exists</span>, <span class="tt">EnumerateFiles</span>).</li>
 <li>Cross-platform path calculations: <span class="tt">Path</span> (<span class="tt">Combine</span>, <span class="tt">GetFullPath</span>, <span class="tt">GetDirectoryName</span>, <span class="tt">GetFileName</span>, <span class="tt">GetExtension</span>).</li>
 <li>Stream &amp; Reader/Writer hierarchy: <span class="tt">FileStream</span>, <span class="tt">MemoryStream</span>, <span class="tt">BufferedStream</span>, <span class="tt">StreamReader</span>, <span class="tt">StreamWriter</span>, <span class="tt">BinaryReader</span>, <span class="tt">BinaryWriter</span>, <span class="tt">StringReader</span>, <span class="tt">StringWriter</span>.</li>
+<li>Rich file and volume metadata &amp; verified atomic cloning: <span class="tt">FileInfo</span>, <span class="tt">FileSystemEntry</span>, <span class="tt">DriveInfo</span>, <span class="tt">SearchOption</span>, <span class="tt">Directory::GetFileSystemEntriesWithMetadata()</span>, <span class="tt">File::AreFilesByteIdentical()</span>, and <span class="tt">File::CopyVerified()</span>.</li>
+</ul>
+</li>
+<li>🖼️ <b>Image Decoding &amp; EXIF Metadata (<span class="tt">System::Drawing::Imaging</span>)</b>:<ul>
+<li><span class="tt">RawImage</span>: Cross-platform 32-bit ARGB pixel buffer with BMP loading/saving (<span class="tt">LoadFromFile</span>, <span class="tt">SaveToBmp</span>), sub-region cropping (<span class="tt">Crop</span>), bilinear scaling (<span class="tt">ResizeBilinear</span>), and ML RGB float tensor conversion (<span class="tt">ToNormalizedRgbTensor</span>).</li>
+<li><span class="tt">ExifMetadata</span>: Extracts image dimensions, orientation tag, capture timestamp (<span class="tt">DateTimeOriginal</span>), and camera make/model from JPEG APP1 EXIF, PNG IHDR, and BMP headers.</li>
+</ul>
+</li>
+<li>🤖 <b>Local ML Face Recognition &amp; Vector Mathematics (<span class="tt">System::AI</span>)</b>:<ul>
+<li><span class="tt">VectorMath</span>: High-performance floating-point embedding operations (<span class="tt">DotProduct</span>, <span class="tt">Magnitude</span>, <span class="tt">L2Normalize</span>, <span class="tt">CosineSimilarity</span>, <span class="tt">EuclideanDistance</span>).</li>
+<li><span class="tt">FaceRecognitionEngine</span>, <span class="tt">DetectedFace</span>, &amp; <span class="tt">IFaceRecognitionBackend</span>: Pluggable local face detection, 128-D L2-normalized feature embedding extraction (<span class="tt">DetectAndEmbedFaces</span>, <span class="tt">ComputeFaceRegionEmbedding</span>), and cosine similarity identity matching (<span class="tt">ComputeSimilarity</span>, <span class="tt">IsSamePerson</span>).</li>
 </ul>
 </li>
 <li>📟 <b>Console &amp; Stream Redirection (<span class="tt">System::Console</span>)</b>:<ul>
@@ -357,7 +372,7 @@ Installation ⬇️</h2>
     </span></li>
 <li><b>Build the solution and generate NuGet package:</b> Run the automated build script from PowerShell: <span class="tt">powershell
     .\BuildAndPack.ps1
-    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.4.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
+    </span> This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (<span class="tt">DotNetDupe.5.0.5.nupkg</span>) into the <span class="tt">nuget_packages</span> directory.</li>
 <li><b>Add local NuGet package source:</b> To use the locally generated NuGet package, add the <span class="tt">nuget_packages</span> directory as a local NuGet source: <span class="tt">bash
     nuget sources Add -Name "DotNetDupeLocal" -Source "D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a>\nuget_packages"
     </span> (Replace <span class="tt">D:\Personal\Projects\C++\<a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a></span> with your actual solution root path.)</li>
@@ -624,8 +639,8 @@ Usage 💻</h1>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html">DotNetDupe::System::DateTime</a></div><div class="ttdoc">Represents an instant in time, typically expressed as a date and time of day.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8h_source.html#l00031">DateTime.h:31</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html_a4ad98129c7e762cf4f40f99f06849e1e"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html#a4ad98129c7e762cf4f40f99f06849e1e">DotNetDupe::System::DateTime::Now</a></div><div class="ttdeci">static DateTime Now()</div><div class="ttdoc">Gets a DateTime object set to the current date and time on this computer, expressed as local time.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8cpp_source.html#l00242">DateTime.cpp:242</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_date_time_html_afa7302558cb9e4bc6d5c095cf238d4cc"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_date_time.html#afa7302558cb9e4bc6d5c095cf238d4cc">DotNetDupe::System::DateTime::AddDays</a></div><div class="ttdeci">DateTime AddDays(double value) const</div><div class="ttdoc">Returns a new DateTime that adds the specified number of days.</div><div class="ttdef"><b>Definition</b> <a href="_date_time_8cpp_source.html#l00177">DateTime.cpp:177</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a44d58d831cbf3981a90230e9e150a027"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a44d58d831cbf3981a90230e9e150a027">DotNetDupe::System::IO::Path::GetExtension</a></div><div class="ttdeci">static String GetExtension(const String &amp;sFilePath)</div><div class="ttdoc">Returns the extension of the specified path string.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00111">Path.cpp:111</a></div></div>
-<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a76be9ffc0acbe817339579dba254b088"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a76be9ffc0acbe817339579dba254b088">DotNetDupe::System::IO::Path::Combine</a></div><div class="ttdeci">static String Combine(const std::initializer_list&lt; String &gt; sPaths)</div><div class="ttdoc">Combines an array of strings into a path.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00063">Path.cpp:63</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a44d58d831cbf3981a90230e9e150a027"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a44d58d831cbf3981a90230e9e150a027">DotNetDupe::System::IO::Path::GetExtension</a></div><div class="ttdeci">static String GetExtension(const String &amp;sFilePath)</div><div class="ttdoc">Returns the extension of the specified path string.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00116">Path.cpp:116</a></div></div>
+<div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_i_o_1_1_path_html_a76be9ffc0acbe817339579dba254b088"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html#a76be9ffc0acbe817339579dba254b088">DotNetDupe::System::IO::Path::Combine</a></div><div class="ttdeci">static String Combine(const std::initializer_list&lt; String &gt; sPaths)</div><div class="ttdoc">Combines an array of strings into a path.</div><div class="ttdef"><b>Definition</b> <a href="_path_8cpp_source.html#l00068">Path.cpp:68</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_string_html_aa2996c3f645a32e13cf4350fef2b1240"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_string.html#aa2996c3f645a32e13cf4350fef2b1240">DotNetDupe::System::String::Format</a></div><div class="ttdeci">static String Format(const char *pFormat, const Arg1 &amp;arg1, const Args &amp;... args)</div><div class="ttdef"><b>Definition</b> <a href="_string_8h_source.html#l00239">String.h:239</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_time_span_html"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_time_span.html">DotNetDupe::System::TimeSpan</a></div><div class="ttdoc">Represents a time interval (duration of time or elapsed time) measured as a positive or negative numb...</div><div class="ttdef"><b>Definition</b> <a href="_time_span_8h_source.html#l00020">TimeSpan.h:20</a></div></div>
 <div class="ttc" id="aclass_dot_net_dupe_1_1_system_1_1_time_span_html_af635a141da2b2147ee6c95b5613437d2"><div class="ttname"><a href="class_dot_net_dupe_1_1_system_1_1_time_span.html#af635a141da2b2147ee6c95b5613437d2">DotNetDupe::System::TimeSpan::GetTotalHours</a></div><div class="ttdeci">double GetTotalHours() const</div><div class="ttdoc">Gets the value of the current TimeSpan expressed in whole and fractional hours.</div><div class="ttdef"><b>Definition</b> <a href="_time_span_8h_source.html#l00062">TimeSpan.h:62</a></div></div>
@@ -1743,7 +1758,15 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html"><span class=
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><a href="../../Include/System/IO/File.h">File</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html">📖</a>  </td><td class="markdownTableBodyNone">Static helper methods for file creation, reading, writing, moving, and deletion.  </td></tr>
+<td class="markdownTableBodyNone"><a href="../../Include/System/IO/File.h">File</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html">📖</a>  </td><td class="markdownTableBodyNone">Static helper methods for file creation, reading, writing, byte comparison (<span class="tt">AreFilesByteIdentical</span>), atomic verified cloning (<span class="tt">CopyVerified</span>), moving, and deletion.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/IO/FileInfo.h">FileInfo</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html">📖</a>  </td><td class="markdownTableBodyNone">Instance methods and cached properties for inspecting and manipulating a single file (<span class="tt">GetLength64</span>, <span class="tt">GetCreationTime</span>, <span class="tt">GetLastWriteTime</span>, <span class="tt">GetIsReparsePoint</span>, <span class="tt">CopyTo</span>, <span class="tt">MoveTo</span>, <span class="tt">Delete</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/IO/FileSystemEntry.h">FileSystemEntry</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html">📖</a>  </td><td class="markdownTableBodyNone">Lightweight metadata record populated during single-pass OS directory enumeration (<span class="tt">GetFullPath</span>, <span class="tt">GetName</span>, <span class="tt">GetLength64</span>, <span class="tt">GetAttributes</span>, <span class="tt">GetIsDirectory</span>, <span class="tt">GetIsReparsePoint</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/IO/DriveInfo.h">DriveInfo</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html">📖</a>  </td><td class="markdownTableBodyNone">Queries logical drive metrics, volume labels, file system formats, total capacity, and free/available space (<span class="tt">GetDrives</span>, <span class="tt">GetTotalSize</span>, <span class="tt">GetAvailableFreeSpace</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/IO/SearchOption.h">SearchOption</a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html">📖</a>  </td><td class="markdownTableBodyNone">Specifies whether to search the current directory (<span class="tt">TopDirectoryOnly</span>) or all subdirectories (<span class="tt">AllDirectories</span>).  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/IO/Directory.h">Directory</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html">📖</a>  </td><td class="markdownTableBodyNone">Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories.  </td></tr>
 <tr class="markdownTableRowOdd">
@@ -1960,9 +1983,39 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_security.html"><span c
 <td class="markdownTableBodyNone"><a href="../../Include/System/Security/Cryptography/X509Certificates/X509Certificate2.h">X509Certificate2</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html">📖</a>  </td><td class="markdownTableBodyNone">Loads and inspects X.509 SSL/TLS certificates and private keys.  </td></tr>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><a href="../../Include/System/IdentityModel/Tokens/Jwt/JWTToken.h">JWTToken</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html">📖</a>  </td><td class="markdownTableBodyNone">Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification.  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Security/Cryptography/SHA256.h">SHA256</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_s_h_a256.html">📖</a>  </td><td class="markdownTableBodyNone">FIPS 180-2 streaming SHA-256 hash engine supporting buffers, bounded stream slices (<span class="tt">HashData</span>), fast head/tail edge fingerprints (<span class="tt">ComputeFastEdgeHash</span>), and hex digests (<span class="tt">HashFileToHex</span>).  </td></tr>
 </table>
 <hr  />
 <h2 class="doxsection"><a class="anchor" id="autotoc_md106"></a>
+Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging.html"><span class="tt">DotNetDupe::System::Drawing::Imaging</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging.html">📖</a></h2>
+<p><b>Classes</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Class  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Drawing/Imaging/RawImage.h">RawImage</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_raw_image.html">📖</a>  </td><td class="markdownTableBodyNone">Uncompressed 32-bit ARGB raster pixel buffer supporting BMP loading/saving, sub-region cropping (<span class="tt">Crop</span>), bilinear scaling (<span class="tt">ResizeBilinear</span>), and normalized RGB float tensor extraction (<span class="tt">ToNormalizedRgbTensor</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/Drawing/Imaging/ExifMetadata.h">ExifMetadata</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata.html">📖</a>  </td><td class="markdownTableBodyNone">Extracts and represents image dimensions, EXIF orientation, capture timestamps (<span class="tt">DateTimeOriginal</span>), and camera make/model from JPEG, PNG, and BMP headers.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md108"></a>
+Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_a_i.html"><span class="tt">DotNetDupe::System::AI</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_a_i.html">📖</a></h2>
+<p><b>Classes &amp; Interfaces</b></p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Type  </th><th class="markdownTableHeadNone">Description  </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/AI/VectorMath.h">VectorMath</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_a_i_1_1_vector_math.html">📖</a>  </td><td class="markdownTableBodyNone">High-performance vector arithmetic and similarity metrics for ML embeddings (<span class="tt">DotProduct</span>, <span class="tt">Magnitude</span>, <span class="tt">L2Normalize</span>, <span class="tt">CosineSimilarity</span>, <span class="tt">EuclideanDistance</span>).  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/AI/FaceRecognitionEngine.h">FaceRecognitionEngine</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_a_i_1_1_face_recognition_engine.html">📖</a>  </td><td class="markdownTableBodyNone">Local machine-learning face detector, 128-D L2-normalized embedding extractor, and cosine similarity identity matcher (<span class="tt">DetectAndEmbedFaces</span>, <span class="tt">ComputeFaceRegionEmbedding</span>, <span class="tt">IsSamePerson</span>).  </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><a href="../../Include/System/AI/FaceRecognitionEngine.h">DetectedFace</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_a_i_1_1_detected_face.html">📖</a>  </td><td class="markdownTableBodyNone">Encapsulates a detected face bounding box (<span class="tt">X</span>, <span class="tt">Y</span>, <span class="tt">Width</span>, <span class="tt">Height</span>), detection confidence, and 128-D embedding vector.  </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><a href="../../Include/System/AI/FaceRecognitionEngine.h">IFaceRecognitionBackend</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_a_i_1_1_i_face_recognition_backend.html">📖</a>  </td><td class="markdownTableBodyNone">Pluggable backend interface for custom face detection and 128-D feature embedding models.  </td></tr>
+</table>
+<hr  />
+<h2 class="doxsection"><a class="anchor" id="autotoc_md110"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html"><span class="tt">DotNetDupe::System::Data::SqlClient</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.html">📖</a></h2>
 <p><b>Classes</b></p>
 <table class="markdownTable">
@@ -1978,7 +2031,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client.ht
 <td class="markdownTableBodyNone"><a href="../../Include/System/Data/SqlClient/SqlParameter.h">SqlParameter</a> &#160; <a href="class_dot_net_dupe_1_1_system_1_1_data_1_1_sql_client_1_1_sql_parameter.html">📖</a>  </td><td class="markdownTableBodyNone">Parameter for parameterized SQL commands protecting against SQL injection.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md108"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md112"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html"><span class="tt">DotNetDupe::Extensions::DependencyInjection</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injection.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -2000,7 +2053,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_dependency_injecti
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/DependencyInjection/IServiceScopeFactory.h">IServiceScopeFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_dependency_injection_1_1_i_service_scope_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Contract for service scope factories.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md110"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md114"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><span class="tt">DotNetDupe::Extensions::Logging</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html">📖</a></h2>
 <p><b>Classes &amp; Interfaces</b></p>
 <table class="markdownTable">
@@ -2028,7 +2081,7 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_extensions_1_1_logging.html"><spa
 <td class="markdownTableBodyNone"><a href="../../Include/Extensions/Logging/ILogger.h">ILoggerFactory</a> &#160; <a href="class_dot_net_dupe_1_1_extensions_1_1_logging_1_1_i_logger_factory.html">📖</a>  </td><td class="markdownTableBodyNone">Logging factory interface.  </td></tr>
 </table>
 <hr  />
-<h2 class="doxsection"><a class="anchor" id="autotoc_md112"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md116"></a>
 Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="tt">DotNetDupe::WebAppCore</span></a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core.html">📖</a></h2>
 <p><b>Builder, Controllers &amp; Server</b></p>
 <table class="markdownTable">
@@ -2054,16 +2107,16 @@ Namespace: <a href="namespace_dot_net_dupe_1_1_web_app_core.html"><span class="t
 <td class="markdownTableBodyNone"><a href="../../Include/WebAppCore/WebSockets/">Push Notifications (SSE &amp; WebSockets)</a> &#160; <a href="namespace_dot_net_dupe_1_1_web_app_core_1_1_web_sockets.html">📖</a>  </td><td class="markdownTableBodyNone">Real-time push notifications via Server-Sent Events (SSE) and full-duplex WebSockets.  </td></tr>
 </table>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md114"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md118"></a>
 Project Status 🚧</h1>
 <p><a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> is currently <b>under active development</b>. I am continuously working on expanding the API coverage and improving stability.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md115"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md119"></a>
 Contributions 👋</h1>
 <p>Contributions to the <a class="el" href="namespace_dot_net_dupe.html">DotNetDupe</a> project are highly welcome! Whether it's bug reports, feature requests, code contributions, or documentation improvements, your help is invaluable. Please refer to <a href="https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project">GitHub's general contributing guidelines</a> for more information on how to get started.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md116"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md120"></a>
 CI/CD Pipeline 🚀</h1>
 <p>This repository uses GitHub Actions to automate the build, test, and release process.</p>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md117"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md121"></a>
 Workflow Details</h2>
 <ul>
 <li><b>Build &amp; Test Matrix</b>: Every push to <span class="tt">main</span> and all pull requests trigger a full build (Debug &amp; Release) across Windows (MSBuild) and Linux (CMake/GCC), running all 660 Google Tests.</li>
@@ -2072,7 +2125,7 @@ Workflow Details</h2>
 <li><b>Code Coverage</b>: Automated code coverage measurement via OpenCppCoverage (&gt; 80% line coverage required) and static analysis HTML report generation.</li>
 <li><b>NuGet Release</b>: Pushing a tag (e.g., <span class="tt">v1.0.0</span>) triggers the creation and publishing of the NuGet package to <a href="https://www.nuget.org/">nuget.org</a>.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md118"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md122"></a>
 Code Coverage &amp; Static Analysis 📊</h2>
 <ul>
 <li><b>Online Reports:</b><ul>
@@ -2083,7 +2136,7 @@ Code Coverage &amp; Static Analysis 📊</h2>
 <li><b>Live Documentation Portal:</b> <a href="https://sudheeshps.github.io/dotnetdupe/">https://sudheeshps.github.io/dotnetdupe/</a></li>
 <li><b>Local Generation:</b> Run <span class="tt">powershell .\scripts\Generate-CoverageReport.ps1</span> to execute tests under OpenCppCoverage and refresh the <span class="tt">CodeCoverage/</span> folder.</li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md119"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md123"></a>
 How to Release</h2>
 <ol type="1">
 <li>Update the version in <span class="tt">DotNetDupe.nuspec</span>.</li>
@@ -2092,20 +2145,45 @@ How to Release</h2>
 <div class="line">git push origin v1.0.0</div>
 </div><!-- fragment --> <em>Note: Requires <span class="tt">NUGET_API_KEY</span> to be set in GitHub repository secrets.</em></li>
 </ol>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md120"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md124"></a>
 License 📄</h1>
 <p>This project is licensed under the <b>MIT License</b>. See the [LICENSE](LICENSE) file for details.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md121"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md125"></a>
 Generated Content 🤖</h1>
 <p>This project is a unique blend of manual craftsmanship and AI-powered development, built collaboratively by myself and my peer Antigravity. While the initial core components were meticulously crafted by hand, the remaining code, including many classes, methods, and their corresponding unit tests, were developed and expanded with Antigravity. This project stands as a testimonial on how persistent human effort—spanning weekends and late evenings—combined with generative AI can build an entire, robust system from scratch.</p>
-<h1 class="doxsection"><a class="anchor" id="autotoc_md122"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md126"></a>
 Contact 📧</h1>
 <p>For questions or support, please open an issue on the <a href="https://github.com/sudheeshps/DotNetDupe/issues">GitHub repository</a> or contact <a href="mai'+'lto:+'sud'+'he'+'esh'+'ps'+'@gm'+'ai'+'l.c'+'om'">sudheeshps@gmail.com</a>.</p>
 <hr  />
-<h1 class="doxsection"><a class="anchor" id="autotoc_md124"></a>
+<h1 class="doxsection"><a class="anchor" id="autotoc_md128"></a>
 Release Notes 📝</h1>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md125"></a>
-<a href="https://github.com/sudheeshps/dotnetdupe/releases">v5.0.4</a> (Current / Latest)</h2>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md129"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases">v5.0.5</a> (Current / Latest)</h2>
+<ul>
+<li><b>Zero-Re-Stat File Metadata &amp; Atomic Verified Copy (<span class="tt">System::IO::FileInfo</span>, <span class="tt">FileSystemEntry</span>, <span class="tt">File</span>, <span class="tt">Directory</span>)</b>:<ul>
+<li>Added <span class="tt">FileSystemEntry</span> and <span class="tt">Directory::GetFileSystemEntriesWithMetadata()</span> to harvest file size, creation/modification timestamps, attributes, and symlink/reparse-point flags directly during OS directory iteration without secondary <span class="tt">stat</span> calls.</li>
+<li>Added <span class="tt">FileInfo</span> for object-oriented file metadata inspection (<span class="tt">GetLength</span>, <span class="tt">GetCreationTime</span>, <span class="tt">GetLastWriteTime</span>, <span class="tt">GetExtension</span>, <span class="tt">IsSymbolicLink</span>).</li>
+<li>Extended <span class="tt">File</span> with <span class="tt">GetLength</span>, <span class="tt">GetCreationTime</span>, <span class="tt">GetLastWriteTime</span>, <span class="tt">SetLastWriteTime</span>, <span class="tt">ReadAllBytes</span>, <span class="tt">WriteAllBytes</span>, <span class="tt">AreFilesByteIdentical</span>, timestamp-preserving <span class="tt">Copy</span>, and atomic <span class="tt">CopyVerified</span>.</li>
+</ul>
+</li>
+<li><b>Partial &amp; Fast Edge SHA-256 Hashing (<span class="tt">System::Security::Cryptography::SHA256</span>)</b>:<ul>
+<li>Added <span class="tt">SHA256::HashData(pStream, llOffset, llCount)</span> for partial stream slice hashing.</li>
+<li>Added <span class="tt">SHA256::ComputeFastEdgeHash(sFilePath, llEdgeBytes)</span> and <span class="tt">SHA256::HashFileToHex(sFilePath)</span> for multi-stage duplicate detection.</li>
+</ul>
+</li>
+<li><b>Image Decoding &amp; EXIF Extraction (<span class="tt">System::Drawing::Imaging</span>)</b>:<ul>
+<li>Added <span class="tt">RawImage</span> for RGBA pixel buffer management, bilinear image resizing (<span class="tt">CreateResized</span>), and image file loading/saving.</li>
+<li>Added <span class="tt">ExifMetadata</span> for extracting capture timestamps, camera make/model, orientation, and dimensions from image headers.</li>
+</ul>
+</li>
+<li><b>Local ML Face Recognition &amp; Vector Mathematics (<span class="tt">System::AI</span>)</b>:<ul>
+<li>Added <span class="tt">VectorMath</span> (<span class="tt">DotProduct</span>, <span class="tt">Magnitude</span>, <span class="tt">L2Normalize</span>, <span class="tt">CosineSimilarity</span>, <span class="tt">EuclideanDistance</span>).</li>
+<li>Added <span class="tt">FaceRecognitionEngine</span>, <span class="tt">DetectedFace</span>, and <span class="tt">IFaceRecognitionBackend</span> for local face detection, 128-D L2-normalized embedding extraction, and identity matching (<span class="tt">IsSamePerson</span>).</li>
+</ul>
+</li>
+</ul>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md130"></a>
+<a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.4">v5.0.4</a> - 2026-10-15</h2>
 <ul>
 <li><b>Drive Metrics &amp; Telemetry (<span class="tt">System::IO::DriveInfo</span>)</b>:<ul>
 <li>Added full support for querying drive metrics, volume labels, drive formats (NTFS, FAT32, ext4), total drive capacity, and available/total free space via <span class="tt">DriveInfo::GetDrives()</span>, <span class="tt">GetTotalSize()</span>, <span class="tt">GetTotalFreeSpace()</span>, and <span class="tt">GetAvailableFreeSpace()</span>.</li>
@@ -2130,7 +2208,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md126"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md131"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.3">v5.0.3</a> - 2026-10-01</h2>
 <ul>
 <li><b>Linux Native NuGet Runtime Packaging</b>:<ul>
@@ -2154,7 +2232,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md127"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md132"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.2">v5.0.2</a> - 2026-09-29</h2>
 <ul>
 <li><b>Concurrent Collections Interface Hierarchy Retrofit</b>:<ul>
@@ -2173,7 +2251,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md128"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md133"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.1">v5.0.1</a> - 2026-09-29</h2>
 <ul>
 <li><b>LINQ Documentation &amp; Guide</b>:<ul>
@@ -2182,7 +2260,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md129"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md134"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.0">v5.0.0</a> - 2026-09-28</h2>
 <ul>
 <li><b>Language Integrated Query (<span class="tt">System::Linq</span>)</b>:<ul>
@@ -2202,7 +2280,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md130"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md135"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.7">v4.0.7</a> - 2026-09-10</h2>
 <ul>
 <li><b>Documentation &amp; Report Links</b>:<ul>
@@ -2211,7 +2289,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md131"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md136"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.6">v4.0.6</a> - 2026-09-10</h2>
 <ul>
 <li><b>Standardized Documentation Header</b>:<ul>
@@ -2220,7 +2298,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md132"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md137"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.5">v4.0.5</a> - 2026-09-09</h2>
 <ul>
 <li><b>Package Documentation Links</b>:<ul>
@@ -2228,7 +2306,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md133"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.4">v4.0.4</a> - 2026-09-09</h2>
 <ul>
 <li><b>Binary I/O Streams (<span class="tt">System::IO</span>)</b>:<ul>
@@ -2248,7 +2326,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md134"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md139"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.3">v4.0.3</a> - 2026-08-20</h2>
 <ul>
 <li><b>C# .NET Event Model (<span class="tt">System::EventHandler&lt;TEventArgs&gt;</span>)</b>:<ul>
@@ -2272,7 +2350,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md135"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md140"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.2">v4.0.2</a> - 2026-08-19</h2>
 <ul>
 <li><b>Observable Process Streaming (<span class="tt">ProcessStreamer</span>)</b>:<ul>
@@ -2292,7 +2370,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md136"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md141"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.1">v4.0.1</a> - 2026-08-17</h2>
 <ul>
 <li><b>Full API Reference Transpilation</b>:<ul>
@@ -2312,7 +2390,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md137"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md142"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v4.0.0">v4.0.0</a> - 2026-08-15</h2>
 <ul>
 <li><b>Zero-STL Public Header Architecture</b>:<ul>
@@ -2353,7 +2431,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md138"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md143"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.6">v3.0.6</a> - 2026-08-06</h2>
 <ul>
 <li><b>CI/CD Quality Gate Automation</b>:<ul>
@@ -2366,7 +2444,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md139"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md144"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.5">v3.0.5</a> - 2026-08-06</h2>
 <ul>
 <li><b>Smart Pointer Standardization</b>:<ul>
@@ -2378,7 +2456,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md140"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md145"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.4">v3.0.4</a> - 2026-08-05</h2>
 <ul>
 <li><b>C++20 Standard Upgrade</b>:<ul>
@@ -2402,7 +2480,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md141"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md146"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.3">v3.0.3</a> - 2026-08-05</h2>
 <ul>
 <li><b>Documentation Refinements</b>:<ul>
@@ -2410,7 +2488,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md142"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md147"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.2">v3.0.2</a> - 2026-08-05</h2>
 <ul>
 <li><b>Web API &amp; Database Subsystem</b>:<ul>
@@ -2422,7 +2500,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md143"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md148"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.1">v3.0.1</a> - 2026-06-20</h2>
 <ul>
 <li><b>Web API &amp; Database Support</b>:<ul>
@@ -2434,7 +2512,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md144"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md149"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v3.0.0">v3.0.0</a> - 2026-05-31</h2>
 <ul>
 <li><b>Cross-Platform Support</b>:<ul>
@@ -2450,7 +2528,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md145"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md150"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.1.0">v2.1.0</a> - 2026-05-21</h2>
 <ul>
 <li><b>Threading Refinement</b>:<ul>
@@ -2458,7 +2536,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md146"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md151"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v2.0.0">v2.0.0</a> - 2026-05-20</h2>
 <ul>
 <li><b>Threading &amp; Synchronization (<span class="tt">System::Threading</span>)</b>:<ul>
@@ -2478,7 +2556,7 @@ Release Notes 📝</h1>
 </ul>
 </li>
 </ul>
-<h2 class="doxsection"><a class="anchor" id="autotoc_md147"></a>
+<h2 class="doxsection"><a class="anchor" id="autotoc_md152"></a>
 <a href="https://github.com/sudheeshps/dotnetdupe/releases/tag/v1.0.0">v1.0.0</a> - 2026-05-09</h2>
 <ul>
 <li><b>Initial NuGet Release</b>:<ul>

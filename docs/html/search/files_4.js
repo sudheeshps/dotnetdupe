@@ -15,5 +15,7 @@ var searchData=
   ['eventwaithandle_2ecpp_12',['EventWaitHandle.cpp',['../_event_wait_handle_8cpp.html',1,'']]],
   ['eventwaithandle_2eh_13',['EventWaitHandle.h',['../_event_wait_handle_8h.html',1,'']]],
   ['exception_2ecpp_14',['Exception.cpp',['../_exception_8cpp.html',1,'']]],
-  ['exception_2eh_15',['Exception.h',['../_exception_8h.html',1,'']]]
+  ['exception_2eh_15',['Exception.h',['../_exception_8h.html',1,'']]],
+  ['exifmetadata_2ecpp_16',['ExifMetadata.cpp',['../_exif_metadata_8cpp.html',1,'']]],
+  ['exifmetadata_2eh_17',['ExifMetadata.h',['../_exif_metadata_8h.html',1,'']]]
 ];

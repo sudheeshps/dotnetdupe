@@ -6,6 +6,7 @@
 #include "System/Array.h"
 #include "System/DateTimeOffset.h"
 #include "System/IO/SearchOption.h"
+#include "System/IO/FileSystemEntry.h"
 
 #if defined(_WIN32)
 #undef CreateDirectory
@@ -84,6 +85,21 @@ namespace DotNetDupe {
 
                 /// \brief Returns filesystem entries matching pattern with search option.
                 DOTNETDUPE_API static Array<String> GetFileSystemEntries(const String& sPath, const String& sSearchPattern, SearchOption eSearchOption);
+
+                /// \brief Enumerates all files and directories in the specified path with full metadata in a single OS pass.
+                /// \param sPath The directory path to enumerate.
+                /// \return An array of FileSystemEntry objects containing paths, 64-bit sizes, timestamps, and attributes.
+                DOTNETDUPE_API static Array<FileSystemEntry> GetFileSystemEntriesWithMetadata(const String& sPath);
+
+                /// \brief Enumerates files and directories matching a search pattern with full metadata in a single OS pass.
+                /// \param sPath The directory path to enumerate.
+                /// \param sSearchPattern Wildcard pattern (e.g., "*", "*.cpp").
+                /// \param eSearchOption TopDirectoryOnly or AllDirectories (automatically skips reparse point loops).
+                /// \return An array of FileSystemEntry objects containing paths, 64-bit sizes, timestamps, and attributes.
+                DOTNETDUPE_API static Array<FileSystemEntry> GetFileSystemEntriesWithMetadata(
+                    const String& sPath,
+                    const String& sSearchPattern,
+                    SearchOption eSearchOption = SearchOption::TopDirectoryOnly);
                 
                 /// \brief Gets the current working directory of the application.
                 /// \return A string that contains the path of the current working directory.

@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.5</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -162,20 +162,38 @@ document.addEventListener('DOMContentLoaded',() => { initNavTree('class_dot_net_
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ae31f7a4e0839cdeabf6db96a2d118429" id="r_ae31f7a4e0839cdeabf6db96a2d118429"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ae31f7a4e0839cdeabf6db96a2d118429">AppendAllLines</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;sContents)</td></tr>
 <tr class="memitem:a83b1143bee698f2fafef5dc595f89619" id="r_a83b1143bee698f2fafef5dc595f89619"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a83b1143bee698f2fafef5dc595f89619">AppendAllText</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sContents)</td></tr>
+<tr class="memitem:aebd4663afdcb81d88029fcab86b325ce" id="r_aebd4663afdcb81d88029fcab86b325ce"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#aebd4663afdcb81d88029fcab86b325ce">AreFilesByteIdentical</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPathA, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPathB)</td></tr>
+<tr class="memdesc:aebd4663afdcb81d88029fcab86b325ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs a strict size and byte-by-byte stream comparison of two files to guarantee 100% content identity.  <br /></td></tr>
 <tr class="memitem:a45220fc820e33e13c3aa2409eaefda3f" id="r_a45220fc820e33e13c3aa2409eaefda3f"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a45220fc820e33e13c3aa2409eaefda3f">Copy</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSourceFileName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDestFileName, bool bOverwrite)</td></tr>
 <tr class="memdesc:a45220fc820e33e13c3aa2409eaefda3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies an existing file to a new file, allowing overwriting of an existing file.  <br /></td></tr>
+<tr class="memitem:ac593fe7a7ec234a30d0e10ca09bcb90e" id="r_ac593fe7a7ec234a30d0e10ca09bcb90e"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#ac593fe7a7ec234a30d0e10ca09bcb90e">Copy</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSourceFileName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDestFileName, bool bOverwrite, bool bPreserveTimestamps)</td></tr>
+<tr class="memdesc:ac593fe7a7ec234a30d0e10ca09bcb90e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Copies an existing file to a new file, allowing overwriting and optional timestamp preservation.  <br /></td></tr>
+<tr class="memitem:a41fff8ce779b087533c2effd417accad" id="r_a41fff8ce779b087533c2effd417accad"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a41fff8ce779b087533c2effd417accad">CopyVerified</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSourceFileName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDestFileName, bool bOverwrite=true, bool bPreserveTimestamps=true, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt; long long, long long &gt; fnProgress=<a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt; long long, long long &gt;())</td></tr>
+<tr class="memdesc:a41fff8ce779b087533c2effd417accad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomically copies a file via a staging .part file, flushes to disk, verifies target SHA-256 and size, and renames to destination.  <br /></td></tr>
 <tr class="memitem:afa9d9e778a74c456d4dfa59d94419414" id="r_afa9d9e778a74c456d4dfa59d94419414"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#afa9d9e778a74c456d4dfa59d94419414">Create</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memitem:aebeed68ce3ee805392c22f11df696fa6" id="r_aebeed68ce3ee805392c22f11df696fa6"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aebeed68ce3ee805392c22f11df696fa6">Delete</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memdesc:aebeed68ce3ee805392c22f11df696fa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Deletes the specified file.  <br /></td></tr>
 <tr class="memitem:a8272e47ff1bd4e43b3475ca796910c0a" id="r_a8272e47ff1bd4e43b3475ca796910c0a"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a8272e47ff1bd4e43b3475ca796910c0a">Exists</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memdesc:a8272e47ff1bd4e43b3475ca796910c0a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether the specified file exists.  <br /></td></tr>
 <tr class="memitem:a21c5143f27cdff62e6847f4ccf07d8df" id="r_a21c5143f27cdff62e6847f4ccf07d8df"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a21c5143f27cdff62e6847f4ccf07d8df">GetAttributes</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280">FileAttributes</a> &amp;attrAttributes)</td></tr>
+<tr class="memitem:ab58bbdc571102e23eee051d6d2c03eab" id="r_ab58bbdc571102e23eee051d6d2c03eab"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#ab58bbdc571102e23eee051d6d2c03eab">GetCreationTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
+<tr class="memdesc:ab58bbdc571102e23eee051d6d2c03eab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the creation date and time of the specified file.  <br /></td></tr>
+<tr class="memitem:abbad7cf3c6aac961a2ef79c8ce396eef" id="r_abbad7cf3c6aac961a2ef79c8ce396eef"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a>&#160;</td><td class="memItemRight"><a class="el" href="#abbad7cf3c6aac961a2ef79c8ce396eef">GetLastWriteTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
+<tr class="memdesc:abbad7cf3c6aac961a2ef79c8ce396eef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the date and time the specified file was last written to.  <br /></td></tr>
+<tr class="memitem:aba1f6c106ed176683750e65b5e24285b" id="r_aba1f6c106ed176683750e65b5e24285b"><td class="memItemLeft">static long long&#160;</td><td class="memItemRight"><a class="el" href="#aba1f6c106ed176683750e65b5e24285b">GetLength</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
+<tr class="memdesc:aba1f6c106ed176683750e65b5e24285b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the 64-bit size in bytes of the specified file without opening a persistent stream.  <br /></td></tr>
 <tr class="memitem:aff55200679a299b6c71c29fc48a8c31c" id="r_aff55200679a299b6c71c29fc48a8c31c"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aff55200679a299b6c71c29fc48a8c31c">Move</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sSourceFileName, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sDestFileName)</td></tr>
 <tr class="memdesc:aff55200679a299b6c71c29fc48a8c31c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Moves a specified file to a new location.  <br /></td></tr>
+<tr class="memitem:a2c645b204f581221739efc49ad2cdab6" id="r_a2c645b204f581221739efc49ad2cdab6"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="namespace_dot_net_dupe_1_1_system.html#aec8618e96a4d83f2ea7cc9fedb135059">byte</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#a2c645b204f581221739efc49ad2cdab6">ReadAllBytes</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
+<tr class="memdesc:a2c645b204f581221739efc49ad2cdab6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a binary file, reads the contents of the file into a byte array, and then closes the file.  <br /></td></tr>
 <tr class="memitem:affa93c3bde35a7230ceddee484fea2bb" id="r_affa93c3bde35a7230ceddee484fea2bb"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt;&#160;</td><td class="memItemRight"><a class="el" href="#affa93c3bde35a7230ceddee484fea2bb">ReadAllLines</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memitem:ac69b09a5193ac21c60aef019146021d7" id="r_ac69b09a5193ac21c60aef019146021d7"><td class="memItemLeft">static <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a>&#160;</td><td class="memItemRight"><a class="el" href="#ac69b09a5193ac21c60aef019146021d7">ReadAllText</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath)</td></tr>
 <tr class="memdesc:ac69b09a5193ac21c60aef019146021d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Opens a text file, reads all the text in the file, and then closes the file.  <br /></td></tr>
 <tr class="memitem:a55306150df057200db41bdb518ce7a32" id="r_a55306150df057200db41bdb518ce7a32"><td class="memItemLeft">static bool&#160;</td><td class="memItemRight"><a class="el" href="#a55306150df057200db41bdb518ce7a32">SetAttributes</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, <a class="el" href="namespace_dot_net_dupe_1_1_system_1_1_i_o.html#adef5f5670b488fe552e8d3e28ea92280">FileAttributes</a> attrAttributes)</td></tr>
+<tr class="memitem:a05411c73d002468e9d5f77933ba12abb" id="r_a05411c73d002468e9d5f77933ba12abb"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a05411c73d002468e9d5f77933ba12abb">SetLastWriteTime</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;dtLastWriteTime)</td></tr>
+<tr class="memdesc:a05411c73d002468e9d5f77933ba12abb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the date and time that the specified file was last written to.  <br /></td></tr>
+<tr class="memitem:a0e856004d1b8d09292601cd548dcd9ff" id="r_a0e856004d1b8d09292601cd548dcd9ff"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a0e856004d1b8d09292601cd548dcd9ff">WriteAllBytes</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="namespace_dot_net_dupe_1_1_system.html#aec8618e96a4d83f2ea7cc9fedb135059">byte</a> &gt; &amp;arrBytes)</td></tr>
+<tr class="memdesc:a0e856004d1b8d09292601cd548dcd9ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new file, writes the specified byte array to the file, and then closes the file.  <br /></td></tr>
 <tr class="memitem:aeb972217c8be4ca7e9d1d54c18b034bf" id="r_aeb972217c8be4ca7e9d1d54c18b034bf"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#aeb972217c8be4ca7e9d1d54c18b034bf">WriteAllLines</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &gt; &amp;sContents)</td></tr>
 <tr class="memitem:a7dbd4b4210a1544a7de60853eefcff6e" id="r_a7dbd4b4210a1544a7de60853eefcff6e"><td class="memItemLeft">static void&#160;</td><td class="memItemRight"><a class="el" href="#a7dbd4b4210a1544a7de60853eefcff6e">WriteAllText</a> (const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sPath, const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;sContents)</td></tr>
 <tr class="memdesc:a7dbd4b4210a1544a7de60853eefcff6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates a new file, writes the specified string to the file, and then closes the file.  <br /></td></tr>
@@ -201,11 +219,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 id="header-details" class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Provides static methods for the creation, copying, deletion, moving, and opening of files. </p>
-<p>Mirrors .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html" title="Provides static methods for the creation, copying, deletion, moving, and opening of files.">System.IO.File</a> with cross-platform filesystem handling, binary streaming, and UTF-8 text serialization. All static methods are thread-safe.</p>
+<p>Mirrors .NET <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html" title="Provides static methods for the creation, copying, deletion, moving, and opening of files.">System.IO.File</a> with cross-platform filesystem handling, binary streaming, atomic verified copying, and UTF-8 text serialization. All static methods are thread-safe.</p>
 <dl class="section note"><dt>Note</dt><dd>Conforms to ECMA-335 Partition IV Section 5.9 (<a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html" title="Provides static methods for the creation, copying, deletion, moving, and opening of files.">System.IO.File</a>). </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html" title="Exposes static methods for creating, moving, and enumerating through directories and subdirectories.">Directory</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html" title="Provides a Stream for a file, supporting both synchronous read and write operations.">FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html" title="Exposes static methods for creating, moving, and enumerating through directories and subdirectories.">Directory</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html" title="Provides a Stream for a file, supporting both synchronous read and write operations.">FileStream</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a>, <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html" title="Provides properties and instance methods for inspecting and manipulating a single file.">FileInfo</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="_file_8h_source.html#l00042">42</a> of file <a class="el" href="_file_8h_source.html">File.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_file_8h_source.html#l00044">44</a> of file <a class="el" href="_file_8h_source.html">File.h</a>.</p>
 </div><a name="doc-func-members" id="doc-func-members"></a><h2 id="header-doc-func-members" class="groupheader">Member Function Documentation</h2>
 <a id="ae31f7a4e0839cdeabf6db96a2d118429" name="ae31f7a4e0839cdeabf6db96a2d118429"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae31f7a4e0839cdeabf6db96a2d118429">&#9670;&#160;</a></span>AppendAllLines()</h2>
@@ -273,8 +291,53 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="aebd4663afdcb81d88029fcab86b325ce" name="aebd4663afdcb81d88029fcab86b325ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aebd4663afdcb81d88029fcab86b325ce">&#9670;&#160;</a></span>AreFilesByteIdentical()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::IO::File::AreFilesByteIdentical </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPathA</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPathB</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Performs a strict size and byte-by-byte stream comparison of two files to guarantee 100% content identity. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPathA</td><td><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a> to the first file. </td></tr>
+    <tr><td class="paramname">sPathB</td><td><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html" title="Performs operations on String instances that contain file or directory path information.">Path</a> to the second file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if both files exist, have identical 64-bit byte length, and match byte-for-byte; otherwise false. </dd></dl>
+<p>Guard: Verify both files exist and have identical 64-bit length.</p>
+<p>Open both streams and compare byte-for-byte.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00187">187</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_file_8cpp_source.html#l00031">Exists()</a>, and <a class="el" href="_file_operations_8cpp_source.html#l00107">GetLength()</a>.</p>
+
+</div>
+</div>
 <a id="a45220fc820e33e13c3aa2409eaefda3f" name="a45220fc820e33e13c3aa2409eaefda3f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a45220fc820e33e13c3aa2409eaefda3f">&#9670;&#160;</a></span>Copy()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a45220fc820e33e13c3aa2409eaefda3f">&#9670;&#160;</a></span>Copy() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -316,6 +379,127 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="_file_8cpp_source.html#l00063">63</a> of file <a class="el" href="_file_8cpp_source.html">File.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_operations_8cpp_source.html#l00201">Copy()</a>, and <a class="el" href="_file_info_8cpp_source.html#l00126">DotNetDupe::System::IO::FileInfo::CopyTo()</a>.</p>
+
+</div>
+</div>
+<a id="ac593fe7a7ec234a30d0e10ca09bcb90e" name="ac593fe7a7ec234a30d0e10ca09bcb90e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac593fe7a7ec234a30d0e10ca09bcb90e">&#9670;&#160;</a></span>Copy() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::File::Copy </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sSourceFileName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sDestFileName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bOverwrite</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bPreserveTimestamps</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Copies an existing file to a new file, allowing overwriting and optional timestamp preservation. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSourceFileName</td><td>The file to copy. </td></tr>
+    <tr><td class="paramname">sDestFileName</td><td>The name of the destination file. </td></tr>
+    <tr><td class="paramname">bOverwrite</td><td>True if the destination file can be overwritten; otherwise false. </td></tr>
+    <tr><td class="paramname">bPreserveTimestamps</td><td>True to preserve the source file's last write timestamp on the destination file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Perform standard file copy and optionally preserve last write timestamp.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00201">201</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_file_8cpp_source.html#l00063">Copy()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00141">GetLastWriteTime()</a>, and <a class="el" href="_file_operations_8cpp_source.html#l00151">SetLastWriteTime()</a>.</p>
+
+</div>
+</div>
+<a id="a41fff8ce779b087533c2effd417accad" name="a41fff8ce779b087533c2effd417accad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41fff8ce779b087533c2effd417accad">&#9670;&#160;</a></span>CopyVerified()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DotNetDupe::System::IO::File::CopyVerified </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sSourceFileName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sDestFileName</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bOverwrite</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>bPreserveTimestamps</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt; long long, long long &gt;</td>          <td class="paramname"><span class="paramname"><em>fnProgress</em></span><span class="paramdefsep"> = </span><span class="paramdefval"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_action.html">Action</a>&lt;long&#160;long,&#160;long&#160;long&gt;()</span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Atomically copies a file via a staging .part file, flushes to disk, verifies target SHA-256 and size, and renames to destination. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sSourceFileName</td><td>The source file to copy. </td></tr>
+    <tr><td class="paramname">sDestFileName</td><td>The target file path. </td></tr>
+    <tr><td class="paramname">bOverwrite</td><td>True to overwrite an existing destination file. </td></tr>
+    <tr><td class="paramname">bPreserveTimestamps</td><td>True to preserve the source file's last write timestamp. </td></tr>
+    <tr><td class="paramname">fnProgress</td><td>Optional progress callback invoked with (bytesCopied, totalBytes). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if the file was copied, verified by read-back SHA-256, and atomically committed. </dd></dl>
+<p>Guard: Validate source existence and destination overwrite policy.</p>
+<p>Ensure parent directory exists and stream to .part staging file.</p>
+<p>Read back staging file, verify SHA-256 and size, and atomically commit.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00209">209</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_directory_8cpp_source.html#l00073">DotNetDupe::System::IO::Directory::CreateDirectory()</a>, <a class="el" href="_directory_8cpp_source.html#l00065">DotNetDupe::System::IO::Directory::Exists()</a>, <a class="el" href="_file_8cpp_source.html#l00031">Exists()</a>, <a class="el" href="_path_8cpp_source.html#l00097">DotNetDupe::System::IO::Path::GetDirectoryName()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00107">GetLength()</a>, and <a class="el" href="_string_8cpp_source.html#l00508">DotNetDupe::System::String::IsEmpty()</a>.</p>
 
 </div>
 </div>
@@ -379,6 +563,8 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_file_8cpp_source.html#l00082">82</a> of file <a class="el" href="_file_8cpp_source.html">File.cpp</a>.</p>
 
+<p class="reference">Referenced by <a class="el" href="_file_info_8cpp_source.html#l00150">DotNetDupe::System::IO::FileInfo::Delete()</a>.</p>
+
 </div>
 </div>
 <a id="a8272e47ff1bd4e43b3475ca796910c0a" name="a8272e47ff1bd4e43b3475ca796910c0a"></a>
@@ -416,7 +602,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="_file_8cpp_source.html#l00031">31</a> of file <a class="el" href="_file_8cpp_source.html">File.cpp</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_logger_configuration_8cpp_source.html#l00183">DotNetDupe::Extensions::Logging::LoggerConfiguration::LoadFromFile()</a>, and <a class="el" href="_web_app_server_8cpp_source.html#l00090">DotNetDupe::WebAppCore::Server::ServeStaticFile()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_file_operations_8cpp_source.html#l00187">AreFilesByteIdentical()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00209">CopyVerified()</a>, <a class="el" href="_exif_metadata_8cpp_source.html#l00227">DotNetDupe::System::Drawing::Imaging::ExifMetadata::ExtractFromFile()</a>, <a class="el" href="_logger_configuration_8cpp_source.html#l00183">DotNetDupe::Extensions::Logging::LoggerConfiguration::LoadFromFile()</a>, <a class="el" href="_raw_image_8cpp_source.html#l00150">DotNetDupe::System::Drawing::Imaging::RawImage::LoadFromFile()</a>, <a class="el" href="_file_info_8cpp_source.html#l00040">DotNetDupe::System::IO::FileInfo::Refresh()</a>, and <a class="el" href="_web_app_server_8cpp_source.html#l00090">DotNetDupe::WebAppCore::Server::ServeStaticFile()</a>.</p>
 
 </div>
 </div>
@@ -451,7 +637,135 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="reference">References <a class="el" href="_string_8cpp_source.html#l00340">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_internal_string_convert_8h_source.html#l00018">DotNetDupe::System::Internal::Utf8ToWChar()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_web_app_server_8cpp_source.html#l00073">DotNetDupe::WebAppCore::Server::ResolveStaticPath()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_file_info_8cpp_source.html#l00040">DotNetDupe::System::IO::FileInfo::Refresh()</a>, and <a class="el" href="_web_app_server_8cpp_source.html#l00073">DotNetDupe::WebAppCore::Server::ResolveStaticPath()</a>.</p>
+
+</div>
+</div>
+<a id="ab58bbdc571102e23eee051d6d2c03eab" name="ab58bbdc571102e23eee051d6d2c03eab"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab58bbdc571102e23eee051d6d2c03eab">&#9670;&#160;</a></span>GetCreationTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> DotNetDupe::System::IO::File::GetCreationTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the creation date and time of the specified file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file for which to obtain creation date and time information. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> set to the creation date and time of the specified file. </dd></dl>
+<p>Query Win32 file creation time via GetFileAttributesExW.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00122">122</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_date_time_offset_8h_source.html#l00025">DotNetDupe::System::DateTimeOffset::DateTimeOffset()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00141">GetLastWriteTime()</a>, <a class="el" href="_string_8cpp_source.html#l00340">DotNetDupe::System::String::GetRawString()</a>, and <a class="el" href="_internal_string_convert_8cpp_source.html#l00033">DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_info_8cpp_source.html#l00040">DotNetDupe::System::IO::FileInfo::Refresh()</a>.</p>
+
+</div>
+</div>
+<a id="abbad7cf3c6aac961a2ef79c8ce396eef" name="abbad7cf3c6aac961a2ef79c8ce396eef"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abbad7cf3c6aac961a2ef79c8ce396eef">&#9670;&#160;</a></span>GetLastWriteTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> DotNetDupe::System::IO::File::GetLastWriteTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the date and time the specified file was last written to. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file for which to obtain write date and time information. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> set to the date and time that the specified file was last written to. </dd></dl>
+<p>Query last write timestamp from filesystem.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00141">141</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_operations_8cpp_source.html#l00201">Copy()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00122">GetCreationTime()</a>, and <a class="el" href="_file_info_8cpp_source.html#l00040">DotNetDupe::System::IO::FileInfo::Refresh()</a>.</p>
+
+</div>
+</div>
+<a id="aba1f6c106ed176683750e65b5e24285b" name="aba1f6c106ed176683750e65b5e24285b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba1f6c106ed176683750e65b5e24285b">&#9670;&#160;</a></span>GetLength()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">long long DotNetDupe::System::IO::File::GetLength </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the 64-bit size in bytes of the specified file without opening a persistent stream. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file to query. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The 64-bit length of the file in bytes. </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html" title="The exception that is thrown when an I/O error occurs.">IOException</a></td><td>Thrown when the file does not exist or cannot be queried. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Guard: Reject empty path.</p>
+<p>Query 64-bit file size from filesystem.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00107">107</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_argument_exception_8h_source.html#l00020">DotNetDupe::System::ArgumentException::ArgumentException()</a>, and <a class="el" href="_string_8cpp_source.html#l00508">DotNetDupe::System::String::IsEmpty()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_operations_8cpp_source.html#l00187">AreFilesByteIdentical()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00209">CopyVerified()</a>, <a class="el" href="_file_operations_8cpp_source.html#l00160">ReadAllBytes()</a>, and <a class="el" href="_file_info_8cpp_source.html#l00040">DotNetDupe::System::IO::FileInfo::Refresh()</a>.</p>
 
 </div>
 </div>
@@ -492,6 +806,50 @@ Additional Inherited Members</h2></td></tr>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="_file_8cpp_source.html#l00074">74</a> of file <a class="el" href="_file_8cpp_source.html">File.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_info_8cpp_source.html#l00137">DotNetDupe::System::IO::FileInfo::MoveTo()</a>.</p>
+
+</div>
+</div>
+<a id="a2c645b204f581221739efc49ad2cdab6" name="a2c645b204f581221739efc49ad2cdab6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c645b204f581221739efc49ad2cdab6">&#9670;&#160;</a></span>ReadAllBytes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="namespace_dot_net_dupe_1_1_system.html#aec8618e96a4d83f2ea7cc9fedb135059">byte</a> &gt; DotNetDupe::System::IO::File::ReadAllBytes </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Opens a binary file, reads the contents of the file into a byte array, and then closes the file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file to open for reading. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A byte array containing the contents of the file. </dd></dl>
+<p>Guard: Open binary file stream and query byte length.</p>
+<p>Allocate byte array and read complete content.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00160">160</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_array_8h_source.html#l00227">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_file_operations_8cpp_source.html#l00107">GetLength()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_raw_image_8cpp_source.html#l00150">DotNetDupe::System::Drawing::Imaging::RawImage::LoadFromFile()</a>.</p>
 
 </div>
 </div>
@@ -605,6 +963,94 @@ Additional Inherited Members</h2></td></tr>
 
 </div>
 </div>
+<a id="a05411c73d002468e9d5f77933ba12abb" name="a05411c73d002468e9d5f77933ba12abb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a05411c73d002468e9d5f77933ba12abb">&#9670;&#160;</a></span>SetLastWriteTime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::File::SetLastWriteTime </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html">DateTimeOffset</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>dtLastWriteTime</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the date and time that the specified file was last written to. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file for which to set the date and time information. </td></tr>
+    <tr><td class="paramname">dtLastWriteTime</td><td>A <a class="el" href="class_dot_net_dupe_1_1_system_1_1_date_time_offset.html" title="Represents a point in time, typically expressed as a date and time of day, relative to Coordinated Un...">DateTimeOffset</a> containing the value to set for the last write date and time of sPath. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Update last write timestamp on filesystem entry.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00151">151</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_file_operations_8cpp_source.html#l00201">Copy()</a>.</p>
+
+</div>
+</div>
+<a id="a0e856004d1b8d09292601cd548dcd9ff" name="a0e856004d1b8d09292601cd548dcd9ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e856004d1b8d09292601cd548dcd9ff">&#9670;&#160;</a></span>WriteAllBytes()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void DotNetDupe::System::IO::File::WriteAllBytes </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_string.html">String</a> &amp;</td>          <td class="paramname"><span class="paramname"><em>sPath</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="class_dot_net_dupe_1_1_system_1_1_array.html">Array</a>&lt; <a class="el" href="namespace_dot_net_dupe_1_1_system.html#aec8618e96a4d83f2ea7cc9fedb135059">byte</a> &gt; &amp;</td>          <td class="paramname"><span class="paramname"><em>arrBytes</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel static">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Creates a new file, writes the specified byte array to the file, and then closes the file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sPath</td><td>The file to write to. </td></tr>
+    <tr><td class="paramname">arrBytes</td><td>The bytes to write to the file. </td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Open binary output stream and write all bytes.</p>
+
+<p class="definition">Definition at line <a class="el" href="_file_operations_8cpp_source.html#l00176">176</a> of file <a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a>.</p>
+
+<p class="reference">References <a class="el" href="_array_8h_source.html#l00227">DotNetDupe::System::Array&lt; T &gt;::GetData()</a>, and <a class="el" href="_array_8h_source.html#l00223">DotNetDupe::System::Array&lt; T &gt;::GetLength()</a>.</p>
+
+<p class="reference">Referenced by <a class="el" href="_raw_image_8cpp_source.html#l00168">DotNetDupe::System::Drawing::Imaging::RawImage::SaveToBmp()</a>.</p>
+
+</div>
+</div>
 <a id="aeb972217c8be4ca7e9d1d54c18b034bf" name="aeb972217c8be4ca7e9d1d54c18b034bf"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeb972217c8be4ca7e9d1d54c18b034bf">&#9670;&#160;</a></span>WriteAllLines()</h2>
 
@@ -683,6 +1129,7 @@ Additional Inherited Members</h2></td></tr>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>Include/System/IO/<a class="el" href="_file_8h_source.html">File.h</a></li>
 <li>DotNetDupe/<a class="el" href="_file_8cpp_source.html">File.cpp</a></li>
+<li>DotNetDupe/<a class="el" href="_file_operations_8cpp_source.html">FileOperations.cpp</a></li>
 </ul>
 </div><!-- contents -->
 </div><!-- doc-content -->

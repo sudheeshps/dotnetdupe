@@ -44,4 +44,5 @@ void DemonstrateProcessStreamer();
 void DemonstrateEventHandler();
 void DemonstrateLinq();
 void DemonstrateMath();
+void DemonstrateDiskAndPhotoAi();
 

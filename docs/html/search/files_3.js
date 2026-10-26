@@ -16,10 +16,11 @@ var searchData=
   ['dictionary_2eh_13',['Dictionary.h',['../_dictionary_8h.html',1,'']]],
   ['directory_2ecpp_14',['Directory.cpp',['../_directory_8cpp.html',1,'']]],
   ['directory_2eh_15',['Directory.h',['../_directory_8h.html',1,'']]],
-  ['directorynotfoundexception_2eh_16',['DirectoryNotFoundException.h',['../_directory_not_found_exception_8h.html',1,'']]],
-  ['dllmain_2ecpp_17',['dllmain.cpp',['../dllmain_8cpp.html',1,'']]],
-  ['dns_2ecpp_18',['Dns.cpp',['../_dns_8cpp.html',1,'']]],
-  ['dns_2eh_19',['Dns.h',['../_dns_8h.html',1,'']]],
-  ['driveinfo_2ecpp_20',['DriveInfo.cpp',['../_drive_info_8cpp.html',1,'']]],
-  ['driveinfo_2eh_21',['DriveInfo.h',['../_drive_info_8h.html',1,'']]]
+  ['directorymetadata_2ecpp_16',['DirectoryMetadata.cpp',['../_directory_metadata_8cpp.html',1,'']]],
+  ['directorynotfoundexception_2eh_17',['DirectoryNotFoundException.h',['../_directory_not_found_exception_8h.html',1,'']]],
+  ['dllmain_2ecpp_18',['dllmain.cpp',['../dllmain_8cpp.html',1,'']]],
+  ['dns_2ecpp_19',['Dns.cpp',['../_dns_8cpp.html',1,'']]],
+  ['dns_2eh_20',['Dns.h',['../_dns_8h.html',1,'']]],
+  ['driveinfo_2ecpp_21',['DriveInfo.cpp',['../_drive_info_8cpp.html',1,'']]],
+  ['driveinfo_2eh_22',['DriveInfo.h',['../_drive_info_8h.html',1,'']]]
 ];

@@ -16,6 +16,10 @@ Inspired by the clear and concise API design of C# .NET, DotNetDupe is a C++ lib
 
 > [!IMPORTANT]
 > **Latest Published Version ([![NuGet Version](https://img.shields.io/nuget/v/DotNetDupe?style=flat-square&logo=nuget&color=blue&label=version)](https://www.nuget.org/packages/DotNetDupe)):** Comprehensive documentation, API reference updates, Pimpl ABI stability, and refined packaging! 🌐 Key highlights include:
+> - 🗂️ **Zero-Re-Stat File Metadata & Verified Atomic Copy (`System::IO::FileInfo`, `FileSystemEntry` & `File`):** Ultra-fast directory traversal returning size, timestamps, and symlink flags in a single OS pass via `Directory::GetFileSystemEntriesWithMetadata()`, rich `FileInfo` inspection, byte-exact comparison (`File::AreFilesByteIdentical`), and atomic verified file cloning (`File::CopyVerified`).
+> - ⚡ **Partial & Edge Cryptographic Hashing (`System::Security::Cryptography::SHA256`):** Sub-millisecond pre-hashing of large files via `SHA256::ComputeFastEdgeHash()`, stream slice hashing (`SHA256::HashData(pStream, llOffset, llCount)`), and one-call file hex digests (`SHA256::HashFileToHex()`).
+> - 🖼️ **Cross-Platform RGBA Image Decoding & EXIF Metadata (`System::Drawing::Imaging`):** Native RGBA pixel buffer decoding, resizing, and BMP export (`RawImage`), alongside JPEG/PNG camera and capture timestamp extraction (`ExifMetadata`).
+> - 🤖 **Local ML Face Detection & 128-D Embedding Engine (`System::AI`):** High-performance vector math (`VectorMath::CosineSimilarity`, `L2Normalize`, `EuclideanDistance`) and pluggable local face recognition (`FaceRecognitionEngine`, `DetectedFace`, `IFaceRecognitionBackend`).
 > - 💾 **Drive Metrics & Free Space Telemetry (`System::IO::DriveInfo`):** Full drive metrics, file system format, volume label, total size, and available/free space queries via `DriveInfo::GetDrives()`, `GetTotalSize()`, `GetTotalFreeSpace()`, and `GetAvailableFreeSpace()`.
 > - 📂 **Recursive Directory Searching (`System::IO::Directory` & `SearchOption`):** Added `SearchOption::TopDirectoryOnly` and `SearchOption::AllDirectories` overloads to `Directory::GetFiles`, `GetDirectories`, and `GetFileSystemEntries` with permission-resilient traversal.
 > - 📊 **64-bit Multi-Terabyte Stream Precision (`System::IO::Stream` & `FileStream`):** Seamless support for multi-gigabyte/terabyte files via `GetLength64()`, `GetPosition64()`, `SetPosition64()`, and `Seek64()`.
@@ -138,6 +142,15 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
   - High-level static primitives: `File` (`ReadAllText`, `WriteAllText`, `AppendAllText`, `Exists`, `Delete`) and `Directory` (`CreateDirectory(path, recursive)`, `Exists`, `EnumerateFiles`).
   - Cross-platform path calculations: `Path` (`Combine`, `GetFullPath`, `GetDirectoryName`, `GetFileName`, `GetExtension`).
   - Stream & Reader/Writer hierarchy: `FileStream`, `MemoryStream`, `BufferedStream`, `StreamReader`, `StreamWriter`, `BinaryReader`, `BinaryWriter`, `StringReader`, `StringWriter`.
+  - Rich file and volume metadata & verified atomic cloning: `FileInfo`, `FileSystemEntry`, `DriveInfo`, `SearchOption`, `Directory::GetFileSystemEntriesWithMetadata()`, `File::AreFilesByteIdentical()`, and `File::CopyVerified()`.
+
+- 🖼️ **Image Decoding & EXIF Metadata (`System::Drawing::Imaging`)**:
+  - `RawImage`: Cross-platform 32-bit ARGB pixel buffer with BMP loading/saving (`LoadFromFile`, `SaveToBmp`), sub-region cropping (`Crop`), bilinear scaling (`ResizeBilinear`), and ML RGB float tensor conversion (`ToNormalizedRgbTensor`).
+  - `ExifMetadata`: Extracts image dimensions, orientation tag, capture timestamp (`DateTimeOriginal`), and camera make/model from JPEG APP1 EXIF, PNG IHDR, and BMP headers.
+
+- 🤖 **Local ML Face Recognition & Vector Mathematics (`System::AI`)**:
+  - `VectorMath`: High-performance floating-point embedding operations (`DotProduct`, `Magnitude`, `L2Normalize`, `CosineSimilarity`, `EuclideanDistance`).
+  - `FaceRecognitionEngine`, `DetectedFace`, & `IFaceRecognitionBackend`: Pluggable local face detection, 128-D L2-normalized feature embedding extraction (`DetectAndEmbedFaces`, `ComputeFaceRegionEmbedding`), and cosine similarity identity matching (`ComputeSimilarity`, `IsSamePerson`).
 
 - 📟 **Console & Stream Redirection (`System::Console`)**:
   - Rich console text & background color controls (`SetForegroundColor`, `SetBackgroundColor`, `ResetColor`).
@@ -194,7 +207,7 @@ DotNetDupe has evolved into a feature-rich, multi-platform C++20 Base Class Libr
     ```powershell
     .\BuildAndPack.ps1
     ```
-    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.4.nupkg`) into the `nuget_packages` directory.
+    This script will update the resource build timestamp, compile the x64 and x86 Release binaries, and output the NuGet package (`DotNetDupe.5.0.5.nupkg`) into the `nuget_packages` directory.
 
 3.  **Add local NuGet package source:**
     To use the locally generated NuGet package, add the `nuget_packages` directory as a local NuGet source:
@@ -1494,7 +1507,11 @@ For detailed information on the available classes, methods, and their usage, ple
 
 | Class | Description |
 |---|---|
-| [File](Include/System/IO/File.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html) | Static helper methods for file creation, reading, writing, moving, and deletion. |
+| [File](Include/System/IO/File.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html) | Static helper methods for file creation, reading, writing, byte comparison (`AreFilesByteIdentical`), atomic verified cloning (`CopyVerified`), moving, and deletion. |
+| [FileInfo](Include/System/IO/FileInfo.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html) | Instance methods and cached properties for inspecting and manipulating a single file (`GetLength64`, `GetCreationTime`, `GetLastWriteTime`, `GetIsReparsePoint`, `CopyTo`, `MoveTo`, `Delete`). |
+| [FileSystemEntry](Include/System/IO/FileSystemEntry.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html) | Lightweight metadata record populated during single-pass OS directory enumeration (`GetFullPath`, `GetName`, `GetLength64`, `GetAttributes`, `GetIsDirectory`, `GetIsReparsePoint`). |
+| [DriveInfo](Include/System/IO/DriveInfo.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_drive_info.html) | Queries logical drive metrics, volume labels, file system formats, total capacity, and free/available space (`GetDrives`, `GetTotalSize`, `GetAvailableFreeSpace`). |
+| [SearchOption](Include/System/IO/SearchOption.h) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_i_o.html) | Specifies whether to search the current directory (`TopDirectoryOnly`) or all subdirectories (`AllDirectories`). |
 | [Directory](Include/System/IO/Directory.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_directory.html) | Static helper methods for creating (including recursive creation), moving, deleting, and enumerating directories. |
 | [Path](Include/System/IO/Path.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_path.html) | Performs cross-platform directory and file path string operations. |
 | [Stream](Include/System/IO/Stream.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html) | Abstract base class for byte sequence streams. |
@@ -1648,6 +1665,31 @@ For detailed information on the available classes, methods, and their usage, ple
 | [HMACSHA256](Include/System/Security/Cryptography/HMACSHA256.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_h_m_a_c_s_h_a256.html) | Computes SHA256 Hash-based Message Authentication Codes. |
 | [X509Certificate2](Include/System/Security/Cryptography/X509Certificates/X509Certificate2.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_x509_certificates_1_1_x509_certificate2.html) | Loads and inspects X.509 SSL/TLS certificates and private keys. |
 | [JWTToken](Include/System/IdentityModel/Tokens/Jwt/JWTToken.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_identity_model_1_1_tokens_1_1_jwt_1_1_j_w_t_token.html) | Encodes, parses, and validates JSON Web Tokens with HMAC-SHA256 signature verification. |
+| [SHA256](Include/System/Security/Cryptography/SHA256.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_security_1_1_cryptography_1_1_s_h_a256.html) | FIPS 180-2 streaming SHA-256 hash engine supporting buffers, bounded stream slices (`HashData`), fast head/tail edge fingerprints (`ComputeFastEdgeHash`), and hex digests (`HashFileToHex`). |
+
+---
+
+### Namespace: [`DotNetDupe::System::Drawing::Imaging`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging.html)
+
+**Classes**
+
+| Class | Description |
+|---|---|
+| [RawImage](Include/System/Drawing/Imaging/RawImage.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_raw_image.html) | Uncompressed 32-bit ARGB raster pixel buffer supporting BMP loading/saving, sub-region cropping (`Crop`), bilinear scaling (`ResizeBilinear`), and normalized RGB float tensor extraction (`ToNormalizedRgbTensor`). |
+| [ExifMetadata](Include/System/Drawing/Imaging/ExifMetadata.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_drawing_1_1_imaging_1_1_exif_metadata.html) | Extracts and represents image dimensions, EXIF orientation, capture timestamps (`DateTimeOriginal`), and camera make/model from JPEG, PNG, and BMP headers. |
+
+---
+
+### Namespace: [`DotNetDupe::System::AI`](docs/html/namespace_dot_net_dupe_1_1_system_1_1_a_i.html) &nbsp; [📖](docs/html/namespace_dot_net_dupe_1_1_system_1_1_a_i.html)
+
+**Classes & Interfaces**
+
+| Type | Description |
+|---|---|
+| [VectorMath](Include/System/AI/VectorMath.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_a_i_1_1_vector_math.html) | High-performance vector arithmetic and similarity metrics for ML embeddings (`DotProduct`, `Magnitude`, `L2Normalize`, `CosineSimilarity`, `EuclideanDistance`). |
+| [FaceRecognitionEngine](Include/System/AI/FaceRecognitionEngine.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_a_i_1_1_face_recognition_engine.html) | Local machine-learning face detector, 128-D L2-normalized embedding extractor, and cosine similarity identity matcher (`DetectAndEmbedFaces`, `ComputeFaceRegionEmbedding`, `IsSamePerson`). |
+| [DetectedFace](Include/System/AI/FaceRecognitionEngine.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_a_i_1_1_detected_face.html) | Encapsulates a detected face bounding box (`X`, `Y`, `Width`, `Height`), detection confidence, and 128-D embedding vector. |
+| [IFaceRecognitionBackend](Include/System/AI/FaceRecognitionEngine.h) &nbsp; [📖](docs/html/class_dot_net_dupe_1_1_system_1_1_a_i_1_1_i_face_recognition_backend.html) | Pluggable backend interface for custom face detection and 128-D feature embedding models. |
 
 ---
 
@@ -1769,7 +1811,22 @@ For questions or support, please open an issue on the [GitHub repository](https:
 
 ## Release Notes 📝
 
-### [v5.0.4](https://github.com/sudheeshps/dotnetdupe/releases) (Current / Latest)
+### [v5.0.5](https://github.com/sudheeshps/dotnetdupe/releases) (Current / Latest)
+- **Zero-Re-Stat File Metadata & Atomic Verified Copy (`System::IO::FileInfo`, `FileSystemEntry`, `File`, `Directory`)**:
+  - Added `FileSystemEntry` and `Directory::GetFileSystemEntriesWithMetadata()` to harvest file size, creation/modification timestamps, attributes, and symlink/reparse-point flags directly during OS directory iteration without secondary `stat` calls.
+  - Added `FileInfo` for object-oriented file metadata inspection (`GetLength`, `GetCreationTime`, `GetLastWriteTime`, `GetExtension`, `IsSymbolicLink`).
+  - Extended `File` with `GetLength`, `GetCreationTime`, `GetLastWriteTime`, `SetLastWriteTime`, `ReadAllBytes`, `WriteAllBytes`, `AreFilesByteIdentical`, timestamp-preserving `Copy`, and atomic `CopyVerified`.
+- **Partial & Fast Edge SHA-256 Hashing (`System::Security::Cryptography::SHA256`)**:
+  - Added `SHA256::HashData(pStream, llOffset, llCount)` for partial stream slice hashing.
+  - Added `SHA256::ComputeFastEdgeHash(sFilePath, llEdgeBytes)` and `SHA256::HashFileToHex(sFilePath)` for multi-stage duplicate detection.
+- **Image Decoding & EXIF Extraction (`System::Drawing::Imaging`)**:
+  - Added `RawImage` for RGBA pixel buffer management, bilinear image resizing (`CreateResized`), and image file loading/saving.
+  - Added `ExifMetadata` for extracting capture timestamps, camera make/model, orientation, and dimensions from image headers.
+- **Local ML Face Recognition & Vector Mathematics (`System::AI`)**:
+  - Added `VectorMath` (`DotProduct`, `Magnitude`, `L2Normalize`, `CosineSimilarity`, `EuclideanDistance`).
+  - Added `FaceRecognitionEngine`, `DetectedFace`, and `IFaceRecognitionBackend` for local face detection, 128-D L2-normalized embedding extraction, and identity matching (`IsSamePerson`).
+
+### [v5.0.4](https://github.com/sudheeshps/dotnetdupe/releases/tag/v5.0.4) - 2026-10-15
 - **Drive Metrics & Telemetry (`System::IO::DriveInfo`)**:
   - Added full support for querying drive metrics, volume labels, drive formats (NTFS, FAT32, ext4), total drive capacity, and available/total free space via `DriveInfo::GetDrives()`, `GetTotalSize()`, `GetTotalFreeSpace()`, and `GetAvailableFreeSpace()`.
 - **Recursive Directory Traversal (`System::IO::Directory` & `SearchOption`)**:

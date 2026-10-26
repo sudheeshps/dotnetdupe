@@ -55,7 +55,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.4</span>
+   <div id="projectname"><a href="../index.html" title="Return to DotNetDupe Documentation Portal" style="color: inherit; text-decoration: none;">DotNetDupe</a><span id="projectnumber">&#160;5.0.5</span>
    </div>
    <div id="projectbrief">C++17/20 Implementation of the .NET Base Class Library (BCL)</div>
   </td>
@@ -159,10 +159,14 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The exception that is thrown when reading is attempted past the end of a stream.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_end_of_stream_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:File" id="r_File"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html">File</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides static methods for the creation, copying, deletion, moving, and opening of files.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file.html#details">More...</a><br /></td></tr>
+<tr class="memitem:FileInfo" id="r_FileInfo"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html">FileInfo</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides properties and instance methods for inspecting and manipulating a single file.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_info.html#details">More...</a><br /></td></tr>
 <tr class="memitem:FileNotFoundException" id="r_FileNotFoundException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html">FileNotFoundException</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">The exception that is thrown when an attempt to access a file that does not exist on disk fails.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_not_found_exception.html#details">More...</a><br /></td></tr>
 <tr class="memitem:FileStream" id="r_FileStream"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html">FileStream</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a <a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_stream.html" title="Provides a generic view of a sequence of bytes.">Stream</a> for a file, supporting both synchronous read and write operations.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_stream.html#details">More...</a><br /></td></tr>
+<tr class="memitem:FileSystemEntry" id="r_FileSystemEntry"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html">FileSystemEntry</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Encapsulates path, 64-bit size, timestamps, and attributes for a filesystem entry.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_file_system_entry.html#details">More...</a><br /></td></tr>
 <tr class="memitem:IDisposable" id="r_IDisposable"><td class="memItemLeft">interface &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_disposable.html">IDisposable</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Provides a mechanism for releasing unmanaged resources.  <a href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_disposable.html#details">More...</a><br /></td></tr>
 <tr class="memitem:IOException" id="r_IOException"><td class="memItemLeft">class &#160;</td><td class="memItemRight"><a class="el" href="class_dot_net_dupe_1_1_system_1_1_i_o_1_1_i_o_exception.html">IOException</a></td></tr>
@@ -361,7 +365,7 @@ Functions</h2></td></tr>
 <tr><td class="fieldname"><a id="adef5f5670b488fe552e8d3e28ea92280a46fb5b0b5312031f598898350090ca38" name="adef5f5670b488fe552e8d3e28ea92280a46fb5b0b5312031f598898350090ca38"></a>NoScrubData&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="_file_8h_source.html#l00016">16</a> of file <a class="el" href="_file_8h_source.html">File.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_file_8h_source.html#l00018">18</a> of file <a class="el" href="_file_8h_source.html">File.h</a>.</p>
 
 </div>
 </div>
@@ -428,11 +432,11 @@ Functions</h2></td></tr>
 <p>Guard: Skip empty segment.</p>
 <p>Step: Append segment with separator as needed.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00315">315</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00320">320</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00490">DotNetDupe::System::String::Append()</a>, <a class="el" href="_path_8cpp_source.html#l00315">AppendPathSegment()</a>, <a class="el" href="_string_8cpp_source.html#l00357">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00508">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_string_8cpp_source.html#l00769">DotNetDupe::System::String::Substring()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00490">DotNetDupe::System::String::Append()</a>, <a class="el" href="_path_8cpp_source.html#l00320">AppendPathSegment()</a>, <a class="el" href="_string_8cpp_source.html#l00357">DotNetDupe::System::String::GetLength()</a>, <a class="el" href="_string_8cpp_source.html#l00508">DotNetDupe::System::String::IsEmpty()</a>, and <a class="el" href="_string_8cpp_source.html#l00769">DotNetDupe::System::String::Substring()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00315">AppendPathSegment()</a>, and <a class="el" href="_path_8cpp_source.html#l00332">DotNetDupe::System::IO::Path::TryJoin()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00320">AppendPathSegment()</a>, and <a class="el" href="_path_8cpp_source.html#l00337">DotNetDupe::System::IO::Path::TryJoin()</a>.</p>
 
 </div>
 </div>
@@ -717,11 +721,11 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Step: Generate and create empty unique temporary file in temp directory.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00228">228</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00233">233</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, <a class="el" href="_string_8cpp_source.html#l00065">DotNetDupe::System::String::String()</a>, and <a class="el" href="_path_8cpp_source.html#l00228">GenerateRandomTempFileName()</a>.</p>
+<p class="reference">References <a class="el" href="_exception_8cpp_source.html#l00056">DotNetDupe::System::IO::IOException::IOException()</a>, <a class="el" href="_string_8cpp_source.html#l00065">DotNetDupe::System::String::String()</a>, and <a class="el" href="_path_8cpp_source.html#l00233">GenerateRandomTempFileName()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00228">GenerateRandomTempFileName()</a>, and <a class="el" href="_path_8cpp_source.html#l00247">DotNetDupe::System::IO::Path::GetTempFileName()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00233">GenerateRandomTempFileName()</a>, and <a class="el" href="_path_8cpp_source.html#l00252">DotNetDupe::System::IO::Path::GetTempFileName()</a>.</p>
 
 </div>
 </div>
@@ -886,11 +890,11 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Step: Check whether any segment contains illegal path characters.</p>
 
-<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00304">304</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="_path_8cpp_source.html#l00309">309</a> of file <a class="el" href="_path_8cpp_source.html">Path.cpp</a>.</p>
 
-<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00402">DotNetDupe::System::String::Contains()</a>, <a class="el" href="_path_8cpp_source.html#l00152">DotNetDupe::System::IO::Path::GetInvalidPathChars()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">ValidatePathChars()</a>.</p>
+<p class="reference">References <a class="el" href="_string_8cpp_source.html#l00402">DotNetDupe::System::String::Contains()</a>, <a class="el" href="_path_8cpp_source.html#l00157">DotNetDupe::System::IO::Path::GetInvalidPathChars()</a>, and <a class="el" href="_path_8cpp_source.html#l00309">ValidatePathChars()</a>.</p>
 
-<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00332">DotNetDupe::System::IO::Path::TryJoin()</a>, and <a class="el" href="_path_8cpp_source.html#l00304">ValidatePathChars()</a>.</p>
+<p class="reference">Referenced by <a class="el" href="_path_8cpp_source.html#l00337">DotNetDupe::System::IO::Path::TryJoin()</a>, and <a class="el" href="_path_8cpp_source.html#l00309">ValidatePathChars()</a>.</p>
 
 </div>
 </div>

@@ -1,9 +1,11 @@
 var dir_3328f69e6c1e5de758824b82e827b4ad =
 [
+    [ "AI", "dir_c162afb9fa56f43425fe00daac00163e.html", "dir_c162afb9fa56f43425fe00daac00163e" ],
     [ "Collections", "dir_0c3c89bbcf026d6bfe58360b59536eb9.html", "dir_0c3c89bbcf026d6bfe58360b59536eb9" ],
     [ "ComponentModel", "dir_1f23e4bdf65c2b583c32cdaffda61458.html", "dir_1f23e4bdf65c2b583c32cdaffda61458" ],
     [ "Data", "dir_2ace2d1508654942175377e1cb12d678.html", "dir_2ace2d1508654942175377e1cb12d678" ],
     [ "Diagnostics", "dir_d997dfd9071809f81f2129ce329bd2b9.html", "dir_d997dfd9071809f81f2129ce329bd2b9" ],
+    [ "Drawing", "dir_94dabea3924ad4b62233b9a77b494821.html", "dir_94dabea3924ad4b62233b9a77b494821" ],
     [ "IdentityModel", "dir_2a4f650d2b5bc362d0b0e4a1b0a5c1d7.html", "dir_2a4f650d2b5bc362d0b0e4a1b0a5c1d7" ],
     [ "IO", "dir_f2b9318aa91843a4f533a52a6934bbdb.html", "dir_f2b9318aa91843a4f533a52a6934bbdb" ],
     [ "Linq", "dir_1dd33d2737da3380c0bae39cfc3be9e1.html", "dir_1dd33d2737da3380c0bae39cfc3be9e1" ],
