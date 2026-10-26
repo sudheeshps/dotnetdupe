@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FaceRecognitionEngine.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/AI/FaceRecognitionEngine.h"
+#include "System/AI/VectorMath.h"
+#include "System/ArgumentNullException.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include &lt;cmath&gt;
+
+namespace DotNetDupe {
+    namespace System {
+        namespace AI {
+
+            namespace {
+                /// \brief Samples a normalized RGB and luminance descriptor at a fractional (u, v) coordinate within a region.
+                static void SampleNormalizedPixel(
+                    const Drawing::Imaging::RawImage&amp; img,
+                    int iRectX,
+                    int iRectY,
+                    int iRectW,
+                    int iRectH,
+                    float fU,
+                    float fV,
+                    float&amp; refR,
+                    float&amp; refG,
+                    float&amp; refB,
+                    float&amp; refLuma) {
+                    /// Clamp fractional coordinates to valid image bounds.
+                    const int iClampedX = iRectX + static_cast&lt;int&gt;(fU * static_cast&lt;float&gt;(iRectW - 1));
+                    const int iClampedY = iRectY + static_cast&lt;int&gt;(fV * static_cast&lt;float&gt;(iRectH - 1));
+                    const int iSafeX = (iClampedX &lt; 0) ? 0 : ((iClampedX &gt;= img.GetWidth()) ? (img.GetWidth() - 1) : iClampedX);
+                    const int iSafeY = (iClampedY &lt; 0) ? 0 : ((iClampedY &gt;= img.GetHeight()) ? (img.GetHeight() - 1) : iClampedY);
+
+                    /// Unpack 32-bit ARGB channels and compute ITU-R BT.601 relative luminance.
+                    const unsigned int uArgb = img.GetPixelArgb(iSafeX, iSafeY);
+                    refR = static_cast&lt;float&gt;((uArgb &gt;&gt; 16) &amp; 0xFFU) / 255.0f;
+                    refG = static_cast&lt;float&gt;((uArgb &gt;&gt; 8) &amp; 0xFFU) / 255.0f;
+                    refB = static_cast&lt;float&gt;(uArgb &amp; 0xFFU) / 255.0f;
+                    refLuma = 0.299f * refR + 0.587f * refG + 0.114f * refB;
+                }
+
+                /// \brief Computes a 4-feature spatial cell descriptor at grid cell (iGridX, iGridY).
+                static void ComputeCellDescriptor(
+                    const Drawing::Imaging::RawImage&amp; img,
+                    int iRectX,
+                    int iRectY,
+                    int iRectW,
+                    int iRectH,
+                    int iGridX,
+                    int iGridY,
+                    Array&lt;float&gt;&amp; arrOut,
+<span style = "background-color:#dfd">                    int iBaseIdx) {</span>
+                    /// Sample center and adjacent horizontal points for the grid cell.
+<span style = "background-color:#dfd">                    const float fU = (static_cast&lt;float&gt;(iGridX) + 0.5f) / 8.0f;
+                    const float fV = (static_cast&lt;float&gt;(iGridY) + 0.5f) / 4.0f;</span>
+                    float fR = 0.0f, fG = 0.0f, fB = 0.0f, fLuma = 0.0f;
+<span style = "background-color:#dfd">                    SampleNormalizedPixel(img, iRectX, iRectY, iRectW, iRectH, fU, fV, fR, fG, fB, fLuma);</span>
+                    float fRightR = 0.0f, fRightG = 0.0f, fRightB = 0.0f, fRightLuma = 0.0f;
+<span style = "background-color:#dfd">                    const float fNextU = (fU + 0.125f &lt;= 1.0f) ? (fU + 0.125f) : 1.0f;
+                    SampleNormalizedPixel(img, iRectX, iRectY, iRectW, iRectH, fNextU, fV, fRightR, fRightG, fRightB, fRightLuma);</span>
+
+                    /// Store luminance, opponent color differences, and horizontal gradient.
+<span style = "background-color:#dfd">                    arrOut[iBaseIdx] = fLuma;
+                    arrOut[iBaseIdx + 1] = fR - fG;
+                    arrOut[iBaseIdx + 2] = fB - fG;
+                    arrOut[iBaseIdx + 3] = fRightLuma - fLuma;
+                }</span>
+
+                /// \brief Validates that the image and region dimensions are valid for feature extraction.
+                static void ValidateRegionArgs(
+                    const SmartPointer&lt;Drawing::Imaging::RawImage&gt;&amp; pImage,
+                    int iX,
+                    int iY,
+                    int iWidth,
+                    int iHeight) {
+                    /// Guard: Ensure image pointer is valid and bounding box lies within image dimensions.
+                    if (!pImage) {
+                        throw ArgumentNullException("pImage");
+                    }
+                    if (iWidth &lt;= 0 || iHeight &lt;= 0 || iX &lt; 0 || iY &lt; 0) {
+                        throw ArgumentOutOfRangeException("Face region dimensions must be positive and non-negative.");
+                    }
+                    if (iX + iWidth &gt; pImage-&gt;GetWidth() || iY + iHeight &gt; pImage-&gt;GetHeight()) {
+                        throw ArgumentOutOfRangeException("Face region exceeds image bounds.");
+                    }
+                }
+
+                /// \brief Evaluates whether a normalized RGB sample exhibits facial skin-tone and contrast characteristics.
+                static float ScoreFacialSkinAndContrast(
+                    const Drawing::Imaging::RawImage&amp; img,
+                    int iRectX,
+                    int iRectY,
+                    int iRectW,
+<span style = "background-color:#dfd">                    int iRectH) {</span>
+                    /// Sample central cheek/nose region and upper eye-line region.
+                    float fCenterR = 0.0f, fCenterG = 0.0f, fCenterB = 0.0f, fCenterLuma = 0.0f;
+<span style = "background-color:#dfd">                    SampleNormalizedPixel(img, iRectX, iRectY, iRectW, iRectH, 0.5f, 0.55f, fCenterR, fCenterG, fCenterB, fCenterLuma);</span>
+                    float fEyeR = 0.0f, fEyeG = 0.0f, fEyeB = 0.0f, fEyeLuma = 0.0f;
+<span style = "background-color:#dfd">                    SampleNormalizedPixel(img, iRectX, iRectY, iRectW, iRectH, 0.35f, 0.35f, fEyeR, fEyeG, fEyeB, fEyeLuma);</span>
+
+                    /// Combine skin warmth heuristic with eye-to-cheek luminance contrast.
+<span style = "background-color:#dfd">                    const float fWarmth = (fCenterR &gt;= fCenterG &amp;&amp; fCenterG &gt;= fCenterB * 0.85f) ? 0.55f : 0.25f;
+                    const float fEyeContrast = std::fabs(fCenterLuma - fEyeLuma);
+                    const float fRawScore = fWarmth + fEyeContrast * 0.85f;
+                    return (fRawScore &gt; 0.99f) ? 0.99f : fRawScore;
+                }</span>
+
+                /// \brief Default built-in local spatial-chromatic face detection and 128-D embedding backend.
+                class BuiltInFaceRecognitionBackend : public IFaceRecognitionBackend {
+                public:
+                    Array&lt;float&gt; ComputeRegionEmbedding(
+                        const SmartPointer&lt;Drawing::Imaging::RawImage&gt;&amp; pImage,
+                        int iX,
+                        int iY,
+                        int iWidth,
+<span style = "background-color:#dfd">                        int iHeight) override {</span>
+                        /// Validate region bounds and extract an 8x4 spatial grid of 4-channel descriptors (128 floats).
+<span style = "background-color:#dfd">                        ValidateRegionArgs(pImage, iX, iY, iWidth, iHeight);
+                        Array&lt;float&gt; arrRaw(FaceRecognitionEngine::EmbeddingDimension);
+                        for (int iCell = 0; iCell &lt; 32; ++iCell) {
+                            ComputeCellDescriptor(*pImage, iX, iY, iWidth, iHeight, iCell % 8, iCell / 8, arrRaw, iCell * 4);</span>
+                        }
+
+<span style = "background-color:#dfd">                        return VectorMath::L2Normalize(arrRaw);
+                    }</span>
+
+                    Collections::Generic::List&lt;DetectedFace&gt; DetectAndEmbedFaces(
+<span style = "background-color:#dfd">                        const SmartPointer&lt;Drawing::Imaging::RawImage&gt;&amp; pImage) override {</span>
+                        /// Guard: Validate input image pointer.
+<span style = "background-color:#dfd">                        if (!pImage) {</span>
+<span style = "background-color:#fdd">                            throw ArgumentNullException("pImage");</span>
+                        }
+
+                        /// Evaluate central candidate portrait region and extract embedding if score exceeds threshold.
+<span style = "background-color:#dfd">                        Collections::Generic::List&lt;DetectedFace&gt; lstFaces;
+                        const int iImgW = pImage-&gt;GetWidth();
+                        const int iImgH = pImage-&gt;GetHeight();</span>
+                        const int iBoxW = (iImgW &gt; 4) ? (iImgW / 2) : iImgW;
+<span style = "background-color:#dfd">                        const int iBoxH = (iImgH &gt; 4) ? (iImgH / 2) : iImgH;
+                        const int iBoxX = (iImgW - iBoxW) / 2;
+                        const int iBoxY = (iImgH - iBoxH) / 2;
+                        const float fScore = ScoreFacialSkinAndContrast(*pImage, iBoxX, iBoxY, iBoxW, iBoxH);
+                        if (fScore &gt;= 0.50f) {
+                            const Array&lt;float&gt; arrEmb = ComputeRegionEmbedding(pImage, iBoxX, iBoxY, iBoxW, iBoxH);
+                            lstFaces.Add(DetectedFace(iBoxX, iBoxY, iBoxW, iBoxH, fScore, arrEmb));
+                        }</span>
+
+<span style = "background-color:#dfd">                        return lstFaces;
+                    }</span>
+                };
+            }
+
+            DetectedFace::DetectedFace()
+                : m_iX(0)
+                , m_iY(0)
+                , m_iWidth(0)
+                , m_iHeight(0)
+                , m_fConfidence(0.0f)
+<span style = "background-color:#fdd">                , m_arrEmbedding(FaceRecognitionEngine::EmbeddingDimension) {</span>
+                /// Default constructor initializes a zeroed 128-D embedding vector.
+<span style = "background-color:#fdd">            }</span>
+
+            DetectedFace::DetectedFace(
+                int iX,
+                int iY,
+                int iWidth,
+                int iHeight,
+                float fConfidence,
+                const Array&lt;float&gt;&amp; arrEmbedding)
+                : m_iX(iX)
+                , m_iY(iY)
+                , m_iWidth(iWidth)
+                , m_iHeight(iHeight)
+<span style = "background-color:#dfd">                , m_fConfidence(fConfidence)
+                , m_arrEmbedding(arrEmbedding) {</span>
+                /// Parameterized constructor captures bounding box, confidence, and 128-D embedding.
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            DetectedFace::~DetectedFace() = default;</span>
+
+<span style = "background-color:#dfd">            int DetectedFace::GetX() const noexcept {</span>
+                /// Return left bounding box coordinate.
+<span style = "background-color:#dfd">                return m_iX;
+            }</span>
+
+<span style = "background-color:#dfd">            int DetectedFace::GetY() const noexcept {</span>
+                /// Return top bounding box coordinate.
+<span style = "background-color:#dfd">                return m_iY;
+            }</span>
+
+<span style = "background-color:#dfd">            int DetectedFace::GetWidth() const noexcept {</span>
+                /// Return bounding box width.
+<span style = "background-color:#dfd">                return m_iWidth;
+            }</span>
+
+<span style = "background-color:#dfd">            int DetectedFace::GetHeight() const noexcept {</span>
+                /// Return bounding box height.
+<span style = "background-color:#dfd">                return m_iHeight;
+            }</span>
+
+<span style = "background-color:#fdd">            float DetectedFace::GetConfidence() const noexcept {</span>
+                /// Return detection confidence in [0.0, 1.0].
+<span style = "background-color:#fdd">                return m_fConfidence;
+            }</span>
+
+<span style = "background-color:#dfd">            const Array&lt;float&gt;&amp; DetectedFace::GetEmbedding() const noexcept {</span>
+                /// Return immutable reference to the 128-D embedding vector.
+<span style = "background-color:#dfd">                return m_arrEmbedding;
+            }</span>
+
+            FaceRecognitionEngine::FaceRecognitionEngine()
+<span style = "background-color:#dfd">                : m_pBackend(SmartPointer&lt;IFaceRecognitionBackend&gt;(
+                    SmartPointer&lt;BuiltInFaceRecognitionBackend&gt;::NewShared())) {</span>
+                /// Initialize engine with built-in local face recognition backend.
+<span style = "background-color:#dfd">            }</span>
+
+            FaceRecognitionEngine::FaceRecognitionEngine(const SmartPointer&lt;IFaceRecognitionBackend&gt;&amp; pBackend)
+<span style = "background-color:#fdd">                : m_pBackend(pBackend) {</span>
+                /// Guard: Validate that the custom backend pointer is non-null.
+<span style = "background-color:#fdd">                if (!m_pBackend) {
+                    throw ArgumentNullException("pBackend");</span>
+                }
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            FaceRecognitionEngine::~FaceRecognitionEngine() = default;</span>
+
+<span style = "background-color:#dfd">            void FaceRecognitionEngine::SetBackend(const SmartPointer&lt;IFaceRecognitionBackend&gt;&amp; pBackend) {</span>
+                /// Guard: Validate backend pointer before replacement.
+<span style = "background-color:#dfd">                if (!pBackend) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentNullException("pBackend");</span>
+                }
+
+<span style = "background-color:#dfd">                m_pBackend = pBackend;
+            }</span>
+
+<span style = "background-color:#dfd">            SmartPointer&lt;IFaceRecognitionBackend&gt; FaceRecognitionEngine::GetBackend() const noexcept {</span>
+                /// Return current backend smart pointer.
+<span style = "background-color:#dfd">                return m_pBackend;
+            }</span>
+
+            Collections::Generic::List&lt;DetectedFace&gt; FaceRecognitionEngine::DetectAndEmbedFaces(
+<span style = "background-color:#dfd">                const SmartPointer&lt;Drawing::Imaging::RawImage&gt;&amp; pImage) {</span>
+                /// Delegate face detection and embedding extraction to the active backend.
+<span style = "background-color:#dfd">                return m_pBackend-&gt;DetectAndEmbedFaces(pImage);
+            }</span>
+
+            Array&lt;float&gt; FaceRecognitionEngine::ComputeFaceRegionEmbedding(
+                const SmartPointer&lt;Drawing::Imaging::RawImage&gt;&amp; pImage,
+                int iX,
+                int iY,
+                int iWidth,
+<span style = "background-color:#dfd">                int iHeight) {</span>
+                /// Delegate rectangular face region embedding extraction to the active backend.
+<span style = "background-color:#dfd">                return m_pBackend-&gt;ComputeRegionEmbedding(pImage, iX, iY, iWidth, iHeight);
+            }</span>
+
+            float FaceRecognitionEngine::ComputeSimilarity(
+                const Array&lt;float&gt;&amp; arrEmbeddingA,
+<span style = "background-color:#fdd">                const Array&lt;float&gt;&amp; arrEmbeddingB) {</span>
+                /// Compute cosine similarity between two face embeddings.
+<span style = "background-color:#fdd">                return VectorMath::CosineSimilarity(arrEmbeddingA, arrEmbeddingB);</span>
+            }
+
+            bool FaceRecognitionEngine::IsSamePerson(
+                const Array&lt;float&gt;&amp; arrEmbeddingA,
+                const Array&lt;float&gt;&amp; arrEmbeddingB,
+<span style = "background-color:#dfd">                float fThreshold) {</span>
+                /// Guard: Validate similarity threshold range.
+<span style = "background-color:#dfd">                if (fThreshold &lt;= 0.0f || fThreshold &gt; 1.0f) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentOutOfRangeException("Similarity threshold must be in (0.0, 1.0].");</span>
+                }
+
+<span style = "background-color:#dfd">                return ComputeSimilarity(arrEmbeddingA, arrEmbeddingB) &gt;= fThreshold;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

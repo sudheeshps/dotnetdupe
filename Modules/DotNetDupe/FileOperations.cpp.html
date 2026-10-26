@@ -1,0 +1,258 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FileOperations.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/File.h"
+#include "System/IO/FileStream.h"
+#include "System/IO/Directory.h"
+#include "System/IO/Path.h"
+#include "System/IOException.h"
+#include "System/ArgumentException.h"
+#include "System/Security/Cryptography/SHA256.h"
+#include &lt;filesystem&gt;
+#include &lt;fstream&gt;
+#include &lt;cstring&gt;
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+    fs::path ToFsPathOps(const DotNetDupe::System::String&amp; sPath) {
+        /// Convert UTF-8 library string to std::filesystem::path.
+#if defined(_WIN32)
+        return fs::path(DotNetDupe::System::Internal::StringConvertInternal::Utf8ToWChar(sPath.GetRawString()));
+#else
+        return fs::path(sPath.GetRawString());
+#endif
+    }
+
+    DotNetDupe::System::DateTimeOffset FsTimeToDateTimeOffset(fs::file_time_type ftime) {
+        /// Convert std::filesystem::file_time_type to DateTimeOffset ticks.
+        auto sctp = std::chrono::time_point_cast&lt;std::chrono::system_clock::duration&gt;(
+            ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now()
+        );
+        auto llSec = std::chrono::round&lt;std::chrono::seconds&gt;(sctp.time_since_epoch()).count();
+        int64_t llTicks = (llSec + 62135596800LL) * 10000000LL;
+        return DotNetDupe::System::DateTimeOffset(llTicks);
+    }
+
+    fs::file_time_type DateTimeOffsetToFsTime(const DotNetDupe::System::DateTimeOffset&amp; dtTime) {
+        /// Convert DateTimeOffset ticks to std::filesystem::file_time_type.
+        int64_t llUnixSec = (dtTime.GetTicks() / 10000000LL) - 62135596800LL;
+        auto sysTp = std::chrono::system_clock::time_point(std::chrono::seconds(llUnixSec));
+        return fs::file_time_type::clock::now() + (sysTp - std::chrono::system_clock::now());
+    }
+
+<span style = "background-color:#dfd">    static bool CompareStreamsByteByByte(std::ifstream&amp; stmA, std::ifstream&amp; stmB) {</span>
+        /// Read 8KB chunks from both streams and verify exact byte equality.
+        char szBufA[8192];
+        char szBufB[8192];
+<span style = "background-color:#dfd">        while (stmA.good() &amp;&amp; stmB.good()) {
+            stmA.read(szBufA, sizeof(szBufA));
+            stmB.read(szBufB, sizeof(szBufB));
+            if (stmA.gcount() != stmB.gcount()) return false;
+            if (stmA.gcount() &gt; 0 &amp;&amp; std::memcmp(szBufA, szBufB, static_cast&lt;size_t&gt;(stmA.gcount())) != 0) return false;</span>
+        }
+<span style = "background-color:#dfd">        return stmA.eof() &amp;&amp; stmB.eof();
+    }</span>
+
+    static bool StreamToStagingFile(
+        const DotNetDupe::System::String&amp; sSrc,
+        const DotNetDupe::System::String&amp; sPartPath,
+        long long llTotalBytes,
+<span style = "background-color:#dfd">        DotNetDupe::System::Action&lt;long long, long long&gt;&amp; fnProgress) {</span>
+        /// Stream bytes from source to staging .part file and invoke progress callback.
+<span style = "background-color:#dfd">        std::ifstream stmIn(ToFsPathOps(sSrc), std::ios::binary);
+        std::ofstream stmOut(ToFsPathOps(sPartPath), std::ios::binary | std::ios::trunc);
+        if (!stmIn.is_open() || !stmOut.is_open()) return false;</span>
+        char szBuf[65536];
+        long long llCopied = 0;
+<span style = "background-color:#dfd">        while (stmIn.good()) {
+            stmIn.read(szBuf, sizeof(szBuf));
+            std::streamsize nRead = stmIn.gcount();
+            if (nRead &lt;= 0) break;
+            stmOut.write(szBuf, nRead);
+            llCopied += static_cast&lt;long long&gt;(nRead);
+            if (fnProgress) fnProgress(llCopied, llTotalBytes);</span>
+        }
+<span style = "background-color:#dfd">        stmOut.flush();
+        return stmOut.good();
+    }</span>
+
+    static bool VerifyAndCommitStagingFile(
+        const DotNetDupe::System::String&amp; sSrc,
+        const DotNetDupe::System::String&amp; sPartPath,
+        const DotNetDupe::System::String&amp; sDst,
+        long long llExpectedSize,
+        bool bPreserveTimestamps) {
+        /// Verify staging file size and SHA-256 match source before atomic replacement.
+        if (DotNetDupe::System::IO::File::GetLength(sPartPath) != llExpectedSize) return false;
+        auto sSrcHash = DotNetDupe::System::Security::Cryptography::SHA256::HashFileToHex(sSrc);
+        auto sPartHash = DotNetDupe::System::Security::Cryptography::SHA256::HashFileToHex(sPartPath);
+        if (sSrcHash != sPartHash) return false;
+        if (DotNetDupe::System::IO::File::Exists(sDst)) DotNetDupe::System::IO::File::Delete(sDst);
+        DotNetDupe::System::IO::File::Move(sPartPath, sDst);
+        if (bPreserveTimestamps) {
+            DotNetDupe::System::IO::File::SetLastWriteTime(sDst, DotNetDupe::System::IO::File::GetLastWriteTime(sSrc));
+        }
+        return true;
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+
+<span style = "background-color:#dfd">            long long File::GetLength(const String&amp; sPath) {</span>
+                /// Guard: Reject empty path.
+<span style = "background-color:#dfd">                if (sPath.IsEmpty()) {</span>
+<span style = "background-color:#fdd">                    throw ArgumentException("Path cannot be empty.");</span>
+                }
+
+                /// Query 64-bit file size from filesystem.
+                std::error_code ec;
+<span style = "background-color:#dfd">                auto uSize = fs::file_size(ToFsPathOps(sPath), ec);
+                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to retrieve file length.");</span>
+                }
+<span style = "background-color:#dfd">                return static_cast&lt;long long&gt;(uSize);
+            }</span>
+
+<span style = "background-color:#dfd">            DateTimeOffset File::GetCreationTime(const String&amp; sPath) {</span>
+#if defined(_WIN32)
+                /// Query Win32 file creation time via GetFileAttributesExW.
+<span style = "background-color:#dfd">                WIN32_FILE_ATTRIBUTE_DATA data{};
+                std::wstring wsPath = StringConvertInternal::Utf8ToWChar(sPath.GetRawString());
+                if (!GetFileAttributesExW(wsPath.c_str(), GetFileExInfoStandard, &amp;data)) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to retrieve file creation time.");</span>
+                }
+                ULARGE_INTEGER uli{};
+<span style = "background-color:#dfd">                uli.LowPart = data.ftCreationTime.dwLowDateTime;
+                uli.HighPart = data.ftCreationTime.dwHighDateTime;</span>
+                int64_t llTicks = static_cast&lt;int64_t&gt;(uli.QuadPart) + 504911232000000000LL;
+<span style = "background-color:#dfd">                return DateTimeOffset(llTicks);</span>
+#else
+                /// Fallback to last write time on POSIX platforms.
+                return GetLastWriteTime(sPath);
+#endif
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            DateTimeOffset File::GetLastWriteTime(const String&amp; sPath) {</span>
+                /// Query last write timestamp from filesystem.
+                std::error_code ec;
+<span style = "background-color:#dfd">                auto ftime = fs::last_write_time(ToFsPathOps(sPath), ec);
+                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to retrieve file last write time.");</span>
+                }
+<span style = "background-color:#dfd">                return FsTimeToDateTimeOffset(ftime);
+            }</span>
+
+<span style = "background-color:#dfd">            void File::SetLastWriteTime(const String&amp; sPath, const DateTimeOffset&amp; dtLastWriteTime) {</span>
+                /// Update last write timestamp on filesystem entry.
+                std::error_code ec;
+<span style = "background-color:#dfd">                fs::last_write_time(ToFsPathOps(sPath), DateTimeOffsetToFsTime(dtLastWriteTime), ec);
+                if (ec) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to set file last write time.");</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            Array&lt;byte&gt; File::ReadAllBytes(const String&amp; sPath) {</span>
+                /// Guard: Open binary file stream and query byte length.
+<span style = "background-color:#dfd">                long long llLen = GetLength(sPath);
+                std::ifstream stmIn(ToFsPathOps(sPath), std::ios::binary);
+                if (!stmIn.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for reading bytes.");</span>
+                }
+
+                /// Allocate byte array and read complete content.
+<span style = "background-color:#dfd">                Array&lt;byte&gt; arrResult(static_cast&lt;int&gt;(llLen));
+                if (llLen &gt; 0) {
+                    stmIn.read(reinterpret_cast&lt;char*&gt;(arrResult.GetData()), static_cast&lt;std::streamsize&gt;(llLen));</span>
+                }
+<span style = "background-color:#dfd">                return arrResult;
+            }</span>
+
+<span style = "background-color:#dfd">            void File::WriteAllBytes(const String&amp; sPath, const Array&lt;byte&gt;&amp; arrBytes) {</span>
+                /// Open binary output stream and write all bytes.
+<span style = "background-color:#dfd">                std::ofstream stmOut(ToFsPathOps(sPath), std::ios::binary | std::ios::trunc);
+                if (!stmOut.is_open()) {</span>
+<span style = "background-color:#fdd">                    throw IO::IOException("Failed to open file for writing bytes.");</span>
+                }
+<span style = "background-color:#dfd">                if (arrBytes.GetLength() &gt; 0) {
+                    stmOut.write(reinterpret_cast&lt;const char*&gt;(arrBytes.GetData()), arrBytes.GetLength());</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            bool File::AreFilesByteIdentical(const String&amp; sPathA, const String&amp; sPathB) {</span>
+                /// Guard: Verify both files exist and have identical 64-bit length.
+<span style = "background-color:#dfd">                if (!Exists(sPathA) || !Exists(sPathB)) return false;
+                long long llLenA = GetLength(sPathA);
+                if (llLenA != GetLength(sPathB)) return false;
+                if (llLenA == 0) return true;</span>
+
+                /// Open both streams and compare byte-for-byte.
+<span style = "background-color:#dfd">                std::ifstream stmA(ToFsPathOps(sPathA), std::ios::binary);
+                std::ifstream stmB(ToFsPathOps(sPathB), std::ios::binary);
+                if (!stmA.is_open() || !stmB.is_open()) return false;
+                return CompareStreamsByteByByte(stmA, stmB);
+            }</span>
+
+<span style = "background-color:#dfd">            void File::Copy(const String&amp; sSourceFileName, const String&amp; sDestFileName, bool bOverwrite, bool bPreserveTimestamps) {</span>
+                /// Perform standard file copy and optionally preserve last write timestamp.
+<span style = "background-color:#dfd">                Copy(sSourceFileName, sDestFileName, bOverwrite);
+                if (bPreserveTimestamps) {
+                    SetLastWriteTime(sDestFileName, GetLastWriteTime(sSourceFileName));</span>
+                }
+<span style = "background-color:#dfd">            }</span>
+
+            bool File::CopyVerified(
+                const String&amp; sSourceFileName,
+                const String&amp; sDestFileName,
+                bool bOverwrite,
+                bool bPreserveTimestamps,
+<span style = "background-color:#dfd">                Action&lt;long long, long long&gt; fnProgress) {</span>
+                /// Guard: Validate source existence and destination overwrite policy.
+<span style = "background-color:#dfd">                if (!Exists(sSourceFileName)) throw IO::IOException("Source file does not exist.");
+                if (!bOverwrite &amp;&amp; Exists(sDestFileName)) throw IO::IOException("Destination file already exists.");</span>
+
+                /// Ensure parent directory exists and stream to .part staging file.
+<span style = "background-color:#dfd">                String sParentDir = Path::GetDirectoryName(sDestFileName);
+                if (!sParentDir.IsEmpty() &amp;&amp; !Directory::Exists(sParentDir)) Directory::CreateDirectory(sParentDir, true);
+                String sPartPath = sDestFileName + ".backman.part";
+                long long llTotalBytes = GetLength(sSourceFileName);
+                if (!StreamToStagingFile(sSourceFileName, sPartPath, llTotalBytes, fnProgress)) return false;</span>
+
+                /// Read back staging file, verify SHA-256 and size, and atomically commit.
+<span style = "background-color:#dfd">                return VerifyAndCommitStagingFile(sSourceFileName, sPartPath, sDestFileName, llTotalBytes, bPreserveTimestamps);
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

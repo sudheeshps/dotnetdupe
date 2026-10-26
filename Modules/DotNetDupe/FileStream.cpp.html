@@ -149,8 +149,8 @@ namespace DotNetDupe {
                 }
 
                 /// Clear EOF flag on partial reads to allow subsequent operations.
-<span style = "background-color:#dfd">                if (m_pImpl-&gt;fs.eof()) {</span>
-<span style = "background-color:#fdd">                    m_pImpl-&gt;fs.clear();</span>
+<span style = "background-color:#dfd">                if (m_pImpl-&gt;fs.eof()) {
+                    m_pImpl-&gt;fs.clear();</span>
                 }
 
 <span style = "background-color:#dfd">                return static_cast&lt;int&gt;(m_pImpl-&gt;fs.gcount());
@@ -208,11 +208,11 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                m_bCanSeek = false;
             }</span>
         
-<span style = "background-color:#fdd">            long long FileStream::GetLength64() const {</span>
+<span style = "background-color:#dfd">            long long FileStream::GetLength64() const {</span>
                 /// Guard: Validate seek capability.
-<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");</span>
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");</span>
                 auto&amp; mutableStream = m_pImpl-&gt;fs;
-<span style = "background-color:#fdd">                auto iCurrentPos = mutableStream.tellg();
+<span style = "background-color:#dfd">                auto iCurrentPos = mutableStream.tellg();
                 mutableStream.seekg(0, std::ios_base::end);
                 auto iLength = mutableStream.tellg();
                 mutableStream.seekg(iCurrentPos);
@@ -225,9 +225,9 @@ namespace DotNetDupe {
                 return static_cast&lt;long long&gt;(m_pImpl-&gt;fs.tellg());
             }</span>
 
-<span style = "background-color:#fdd">            void FileStream::SetPosition64(long long llValue) {</span>
+<span style = "background-color:#dfd">            void FileStream::SetPosition64(long long llValue) {</span>
                 /// Guard: Validate position bounds.
-<span style = "background-color:#fdd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
+<span style = "background-color:#dfd">                if (!CanSeek() || !m_pImpl) throw IOException("Stream does not support seeking.");
                 if (llValue &lt; 0) throw ArgumentException("Position cannot be negative.");
                 m_pImpl-&gt;fs.seekg(static_cast&lt;std::streamoff&gt;(llValue));
                 m_pImpl-&gt;fs.seekp(static_cast&lt;std::streamoff&gt;(llValue));

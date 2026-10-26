@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>DirectoryMetadata.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/Directory.h"
+#include "System/IO/Path.h"
+#include "System/IOException.h"
+#include &lt;filesystem&gt;
+#include &lt;vector&gt;
+#include &lt;regex&gt;
+
+#if defined(_WIN32)
+#include "Win32Internal.h"
+using namespace DotNetDupe::System::Internal;
+#endif
+
+namespace fs = std::filesystem;
+
+namespace {
+<span style = "background-color:#dfd">    std::regex BuildWildcardRegex(const DotNetDupe::System::String&amp; sPattern) {</span>
+        /// Convert wildcard search pattern (* and ?) into case-insensitive regular expression.
+<span style = "background-color:#dfd">        std::string sPat = sPattern.GetRawString();
+        std::string sReg;
+        for (char c : sPat) {
+            if (c == '*') sReg += ".*";</span>
+<span style = "background-color:#fdd">            else if (c == '?') sReg += ".";
+            else if (std::strchr(".\\/()[]^$+|{}", c) != nullptr) { sReg += "\\"; sReg += c; }</span>
+            else sReg += c;
+        }
+<span style = "background-color:#dfd">        return std::regex("^" + sReg + "$", std::regex_constants::icase);
+    }</span>
+
+#if defined(_WIN32)
+    DotNetDupe::System::DateTimeOffset FileTimeToDto(const FILETIME&amp; ft) noexcept {
+        /// Convert Win32 FILETIME (100-ns intervals since 1601) to DateTimeOffset ticks.
+        ULARGE_INTEGER uli{};
+        uli.LowPart = ft.dwLowDateTime;
+        uli.HighPart = ft.dwHighDateTime;
+        int64_t llTicks = static_cast&lt;int64_t&gt;(uli.QuadPart) + 504911232000000000LL;
+        return DotNetDupe::System::DateTimeOffset(llTicks);
+    }
+
+    bool IsDotOrDotDotW(const wchar_t* wzName) noexcept {
+        /// Return true if directory entry name is "." or "..".
+        if (wzName[0] != L'.') return false;
+        return (wzName[1] == L'\0') || (wzName[1] == L'.' &amp;&amp; wzName[2] == L'\0');
+    }
+
+    DotNetDupe::System::IO::FileSystemEntry CreateEntryFromFindData(
+        const DotNetDupe::System::String&amp; sDirPath,
+<span style = "background-color:#dfd">        const WIN32_FIND_DATAW&amp; fd) {</span>
+        /// Construct FileSystemEntry from Win32 WIN32_FIND_DATAW structure.
+<span style = "background-color:#dfd">        DotNetDupe::System::String sName(StringConvertInternal::WCharToUtf8(fd.cFileName).c_str());
+        DotNetDupe::System::String sFullPath = DotNetDupe::System::IO::Path::Combine(sDirPath, sName);</span>
+        ULARGE_INTEGER uliSize{};
+<span style = "background-color:#dfd">        uliSize.LowPart = fd.nFileSizeLow;
+        uliSize.HighPart = fd.nFileSizeHigh;
+        bool bIsDir = (fd.dwFileAttributes &amp; FILE_ATTRIBUTE_DIRECTORY) != 0;
+        long long llSize = bIsDir ? 0LL : static_cast&lt;long long&gt;(uliSize.QuadPart);</span>
+        auto eAttrs = static_cast&lt;DotNetDupe::System::IO::FileAttributes&gt;(fd.dwFileAttributes);
+<span style = "background-color:#dfd">        return DotNetDupe::System::IO::FileSystemEntry(</span>
+            sFullPath, sName, llSize, FileTimeToDto(fd.ftCreationTime), FileTimeToDto(fd.ftLastWriteTime), eAttrs);
+<span style = "background-color:#dfd">    }</span>
+
+    void EnumerateDirectorySinglePassWin32(
+        const DotNetDupe::System::String&amp; sDirPath,
+        const std::regex&amp; regPattern,
+        bool bRecursive,
+<span style = "background-color:#dfd">        std::vector&lt;DotNetDupe::System::IO::FileSystemEntry&gt;&amp; vecResults) {</span>
+        /// Enumerate directory via FindFirstFileExW with FindExInfoBasic and LARGE_FETCH.
+<span style = "background-color:#dfd">        DotNetDupe::System::String sSearchSpec = DotNetDupe::System::IO::Path::Combine(sDirPath, "*");
+        std::wstring wsSpec = StringConvertInternal::Utf8ToWChar(sSearchSpec.GetRawString());
+        WIN32_FIND_DATAW fd{};
+        HANDLE hFind = FindFirstFileExW(wsSpec.c_str(), FindExInfoBasic, &amp;fd, FindExSearchNameMatch, nullptr, FIND_FIRST_EX_LARGE_FETCH);
+        if (hFind == INVALID_HANDLE_VALUE) return;
+        std::vector&lt;DotNetDupe::System::String&gt; vecSubDirs;</span>
+        do {
+<span style = "background-color:#dfd">            if (IsDotOrDotDotW(fd.cFileName)) continue;
+            auto entry = CreateEntryFromFindData(sDirPath, fd);
+            if (std::regex_match(entry.GetName().GetRawString(), regPattern)) vecResults.push_back(entry);
+            if (bRecursive &amp;&amp; entry.GetIsDirectory() &amp;&amp; !entry.GetIsReparsePoint()) vecSubDirs.push_back(entry.GetFullPath());
+        } while (FindNextFileW(hFind, &amp;fd) != FALSE);
+        FindClose(hFind);
+        for (const auto&amp; sSubDir : vecSubDirs) EnumerateDirectorySinglePassWin32(sSubDir, regPattern, true, vecResults);
+    }</span>
+#else
+    DotNetDupe::System::DateTimeOffset PosixTimeToDto(fs::file_time_type ftime) {
+        /// Convert POSIX std::filesystem::file_time_type to DateTimeOffset ticks.
+        auto sctp = std::chrono::time_point_cast&lt;std::chrono::system_clock::duration&gt;(
+            ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now()
+        );
+        auto llSec = std::chrono::duration_cast&lt;std::chrono::seconds&gt;(sctp.time_since_epoch()).count();
+        return DotNetDupe::System::DateTimeOffset((llSec + 62135596800LL) * 10000000LL);
+    }
+
+    DotNetDupe::System::IO::FileSystemEntry CreateEntryFromDirEntryPosix(const fs::directory_entry&amp; de) {
+        /// Construct FileSystemEntry from POSIX std::filesystem::directory_entry without following symlink loops.
+        std::error_code ec;
+        auto symStatus = de.symlink_status(ec);
+        auto regStatus = de.status(ec);
+        bool bIsSymlink = fs::is_symlink(symStatus);
+        bool bIsDir = fs::is_directory(regStatus);
+        int iAttrs = static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::Normal);
+        if (bIsDir) iAttrs |= static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::Directory);
+        if (bIsSymlink) iAttrs |= static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::ReparsePoint);
+        std::string sNameStd = de.path().filename().string();
+        if (!sNameStd.empty() &amp;&amp; sNameStd[0] == '.') iAttrs |= static_cast&lt;int&gt;(DotNetDupe::System::IO::FileAttributes::Hidden);
+        long long llSize = (!bIsDir &amp;&amp; !bIsSymlink) ? static_cast&lt;long long&gt;(de.file_size(ec)) : 0LL;
+        if (ec) llSize = 0LL;
+        auto dtWrite = PosixTimeToDto(de.last_write_time(ec));
+        return DotNetDupe::System::IO::FileSystemEntry(
+            DotNetDupe::System::String(de.path().string().c_str()),
+            DotNetDupe::System::String(sNameStd.c_str()),
+            llSize, dtWrite, dtWrite, static_cast&lt;DotNetDupe::System::IO::FileAttributes&gt;(iAttrs));
+    }
+
+    void EnumerateDirectorySinglePassPosix(
+        const DotNetDupe::System::String&amp; sDirPath,
+        const std::regex&amp; regPattern,
+        bool bRecursive,
+        std::vector&lt;DotNetDupe::System::IO::FileSystemEntry&gt;&amp; vecResults) {
+        /// Enumerate POSIX directory and recurse into non-symlink subdirectories when requested.
+        std::error_code ec;
+        auto opts = fs::directory_options::skip_permission_denied;
+        std::vector&lt;DotNetDupe::System::String&gt; vecSubDirs;
+        for (auto it = fs::directory_iterator(fs::path(sDirPath.GetRawString()), opts, ec); !ec &amp;&amp; it != fs::directory_iterator(); it.increment(ec)) {
+            if (ec) break;
+            auto entry = CreateEntryFromDirEntryPosix(*it);
+            if (std::regex_match(entry.GetName().GetRawString(), regPattern)) vecResults.push_back(entry);
+            if (bRecursive &amp;&amp; entry.GetIsDirectory() &amp;&amp; !entry.GetIsReparsePoint()) vecSubDirs.push_back(entry.GetFullPath());
+        }
+        for (const auto&amp; sSubDir : vecSubDirs) EnumerateDirectorySinglePassPosix(sSubDir, regPattern, true, vecResults);
+    }
+#endif
+    DotNetDupe::System::Array&lt;DotNetDupe::System::IO::FileSystemEntry&gt; VectorToEntryArray(
+        const std::vector&lt;DotNetDupe::System::IO::FileSystemEntry&gt;&amp; vecEntries) {
+        /// Convert collected vector into ABI-safe Array&lt;FileSystemEntry&gt;.
+        DotNetDupe::System::Array&lt;DotNetDupe::System::IO::FileSystemEntry&gt; arrResult(static_cast&lt;int&gt;(vecEntries.size()));
+        for (int iIdx = 0; iIdx &lt; static_cast&lt;int&gt;(vecEntries.size()); ++iIdx) arrResult[iIdx] = vecEntries[iIdx];
+        return arrResult;
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+
+<span style = "background-color:#dfd">            Array&lt;FileSystemEntry&gt; Directory::GetFileSystemEntriesWithMetadata(const String&amp; sPath) {</span>
+                /// Delegate to wildcard overload with TopDirectoryOnly option.
+<span style = "background-color:#dfd">                return GetFileSystemEntriesWithMetadata(sPath, "*", SearchOption::TopDirectoryOnly);</span>
+<span style = "background-color:#fdd">            }</span>
+
+            Array&lt;FileSystemEntry&gt; Directory::GetFileSystemEntriesWithMetadata(
+                const String&amp; sPath,
+                const String&amp; sSearchPattern,
+<span style = "background-color:#dfd">                SearchOption eSearchOption) {</span>
+                /// Guard: Verify target directory exists before enumeration.
+<span style = "background-color:#dfd">                if (!Exists(sPath)) throw IO::IOException("Directory does not exist.");
+                std::vector&lt;FileSystemEntry&gt; vecEntries;
+                std::regex regPattern = BuildWildcardRegex(sSearchPattern);
+                bool bRecursive = (eSearchOption == SearchOption::AllDirectories);</span>
+#if defined(_WIN32)
+<span style = "background-color:#dfd">                EnumerateDirectorySinglePassWin32(sPath, regPattern, bRecursive, vecEntries);</span>
+#else
+                EnumerateDirectorySinglePassPosix(sPath, regPattern, bRecursive, vecEntries);
+#endif
+<span style = "background-color:#dfd">                return VectorToEntryArray(vecEntries);
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>FileSystemEntry.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/IO/FileSystemEntry.h"
+
+namespace DotNetDupe {
+    namespace System {
+        namespace IO {
+
+            FileSystemEntry::FileSystemEntry()
+<span style = "background-color:#dfd">                : m_sFullPath("")
+                , m_sName("")
+                , m_llLength64(0)
+                , m_dtCreationTime(0)
+                , m_dtLastWriteTime(0)
+                , m_eAttributes(FileAttributes::Normal) {</span>
+                /// Initialize default empty filesystem entry state.
+<span style = "background-color:#dfd">            }</span>
+
+            FileSystemEntry::FileSystemEntry(
+                const String&amp; sFullPath,
+                const String&amp; sName,
+                long long llLength64,
+                const DateTimeOffset&amp; dtCreationTime,
+                const DateTimeOffset&amp; dtLastWriteTime,
+                FileAttributes eAttributes)
+<span style = "background-color:#dfd">                : m_sFullPath(sFullPath)
+                , m_sName(sName)
+                , m_llLength64(llLength64)
+                , m_dtCreationTime(dtCreationTime)</span>
+                , m_dtLastWriteTime(dtLastWriteTime)
+<span style = "background-color:#dfd">                , m_eAttributes(eAttributes) {</span>
+                /// Initialize filesystem entry with populated OS metadata fields.
+<span style = "background-color:#dfd">            }</span>
+
+<span style = "background-color:#dfd">            String FileSystemEntry::GetFullPath() const {</span>
+                /// Return full path of entry.
+<span style = "background-color:#dfd">                return m_sFullPath;
+            }</span>
+
+<span style = "background-color:#fdd">            void FileSystemEntry::SetFullPath(const String&amp; sFullPath) {</span>
+                /// Update full path of entry.
+<span style = "background-color:#fdd">                m_sFullPath = sFullPath;</span>
+            }
+
+<span style = "background-color:#dfd">            String FileSystemEntry::GetName() const {</span>
+                /// Return filename or directory name.
+<span style = "background-color:#dfd">                return m_sName;
+            }</span>
+
+<span style = "background-color:#dfd">            void FileSystemEntry::SetName(const String&amp; sName) {</span>
+                /// Update filename or directory name.
+<span style = "background-color:#dfd">                m_sName = sName;</span>
+            }
+
+<span style = "background-color:#dfd">            long long FileSystemEntry::GetLength64() const noexcept {</span>
+                /// Return 64-bit byte size.
+<span style = "background-color:#dfd">                return m_llLength64;
+            }</span>
+
+<span style = "background-color:#fdd">            void FileSystemEntry::SetLength64(long long llLength64) noexcept {</span>
+                /// Update 64-bit byte size.
+<span style = "background-color:#fdd">                m_llLength64 = llLength64;
+            }</span>
+
+<span style = "background-color:#dfd">            DateTimeOffset FileSystemEntry::GetCreationTime() const {</span>
+                /// Return creation timestamp.
+<span style = "background-color:#dfd">                return m_dtCreationTime;
+            }</span>
+
+<span style = "background-color:#fdd">            void FileSystemEntry::SetCreationTime(const DateTimeOffset&amp; dtCreationTime) {</span>
+                /// Update creation timestamp.
+                m_dtCreationTime = dtCreationTime;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            DateTimeOffset FileSystemEntry::GetLastWriteTime() const {</span>
+                /// Return last write timestamp.
+<span style = "background-color:#dfd">                return m_dtLastWriteTime;
+            }</span>
+
+<span style = "background-color:#fdd">            void FileSystemEntry::SetLastWriteTime(const DateTimeOffset&amp; dtLastWriteTime) {</span>
+                /// Update last write timestamp.
+                m_dtLastWriteTime = dtLastWriteTime;
+<span style = "background-color:#fdd">            }</span>
+
+<span style = "background-color:#dfd">            FileAttributes FileSystemEntry::GetAttributes() const noexcept {</span>
+                /// Return attribute flags.
+<span style = "background-color:#dfd">                return m_eAttributes;
+            }</span>
+
+<span style = "background-color:#fdd">            void FileSystemEntry::SetAttributes(FileAttributes eAttributes) noexcept {</span>
+                /// Update attribute flags.
+<span style = "background-color:#fdd">                m_eAttributes = eAttributes;
+            }</span>
+
+<span style = "background-color:#dfd">            bool FileSystemEntry::GetIsDirectory() const noexcept {</span>
+                /// Check whether Directory bit flag is present.
+                int iFlags = static_cast&lt;int&gt;(m_eAttributes);
+<span style = "background-color:#dfd">                return (iFlags &amp; static_cast&lt;int&gt;(FileAttributes::Directory)) != 0;
+            }</span>
+
+<span style = "background-color:#dfd">            bool FileSystemEntry::GetIsReparsePoint() const noexcept {</span>
+                /// Check whether ReparsePoint bit flag is present.
+                int iFlags = static_cast&lt;int&gt;(m_eAttributes);
+<span style = "background-color:#dfd">                return (iFlags &amp; static_cast&lt;int&gt;(FileAttributes::ReparsePoint)) != 0;
+            }</span>
+
+<span style = "background-color:#fdd">            bool FileSystemEntry::GetIsReadOnly() const noexcept {</span>
+                /// Check whether ReadOnly bit flag is present.
+                int iFlags = static_cast&lt;int&gt;(m_eAttributes);
+<span style = "background-color:#fdd">                return (iFlags &amp; static_cast&lt;int&gt;(FileAttributes::ReadOnly)) != 0;
+            }</span>
+
+<span style = "background-color:#fdd">            bool FileSystemEntry::GetIsHidden() const noexcept {</span>
+                /// Check whether Hidden bit flag is present.
+                int iFlags = static_cast&lt;int&gt;(m_eAttributes);
+<span style = "background-color:#fdd">                return (iFlags &amp; static_cast&lt;int&gt;(FileAttributes::Hidden)) != 0;
+            }</span>
+
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

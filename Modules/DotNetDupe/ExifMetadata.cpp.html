@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>ExifMetadata.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Drawing/Imaging/ExifMetadata.h"
+#include "System/IO/File.h"
+#include "System/IO/FileStream.h"
+#include &lt;cstring&gt;
+
+namespace {
+    using DotNetDupe::System::Array;
+    using DotNetDupe::System::String;
+    using DotNetDupe::System::Drawing::Imaging::ExifMetadata;
+
+    unsigned short ReadU16(const byte* pData, int iOffset, bool bLittleEndian) noexcept {
+        /// Read 16-bit unsigned integer with specified byte order.
+        if (bLittleEndian) {
+            return static_cast&lt;unsigned short&gt;(pData[iOffset] | (pData[iOffset + 1] &lt;&lt; 8));
+        }
+        return static_cast&lt;unsigned short&gt;((pData[iOffset] &lt;&lt; 8) | pData[iOffset + 1]);
+    }
+
+    unsigned int ReadU32(const byte* pData, int iOffset, bool bLittleEndian) noexcept {
+        /// Read 32-bit unsigned integer with specified byte order.
+        if (bLittleEndian) {
+            return static_cast&lt;unsigned int&gt;(pData[iOffset]) | (static_cast&lt;unsigned int&gt;(pData[iOffset + 1]) &lt;&lt; 8)
+                | (static_cast&lt;unsigned int&gt;(pData[iOffset + 2]) &lt;&lt; 16) | (static_cast&lt;unsigned int&gt;(pData[iOffset + 3]) &lt;&lt; 24);
+        }
+        return (static_cast&lt;unsigned int&gt;(pData[iOffset]) &lt;&lt; 24) | (static_cast&lt;unsigned int&gt;(pData[iOffset + 1]) &lt;&lt; 16)
+            | (static_cast&lt;unsigned int&gt;(pData[iOffset + 2]) &lt;&lt; 8) | static_cast&lt;unsigned int&gt;(pData[iOffset + 3]);
+    }
+
+<span style = "background-color:#fdd">    String ReadExifAscii(const byte* pTiffBase, int iTiffLen, unsigned int uCount, unsigned int uValueOffset) {</span>
+        /// Extract null-terminated ASCII string from TIFF value offset.
+<span style = "background-color:#fdd">        if (uCount == 0 || uCount &gt; 256 || static_cast&lt;int&gt;(uValueOffset + uCount) &gt; iTiffLen) return String("");
+        std::string sVal(reinterpret_cast&lt;const char*&gt;(pTiffBase + uValueOffset), uCount);
+        while (!sVal.empty() &amp;&amp; (sVal.back() == '\0' || sVal.back() == ' ')) sVal.pop_back();
+        return String(sVal.c_str());
+    }</span>
+
+    void ApplyTiffEntry(
+        const byte* pTiff,
+        int iTiffLen,
+        int iEntryPos,
+        bool bLE,
+        unsigned int&amp; uSubIfdOffset,
+<span style = "background-color:#fdd">        ExifMetadata&amp; meta) {</span>
+        /// Decode a single 12-byte TIFF IFD entry and populate matching ExifMetadata fields.
+<span style = "background-color:#fdd">        unsigned short uTag = ReadU16(pTiff, iEntryPos, bLE);
+        unsigned short uType = ReadU16(pTiff, iEntryPos + 2, bLE);
+        unsigned int uCount = ReadU32(pTiff, iEntryPos + 4, bLE);
+        unsigned int uValOff = ReadU32(pTiff, iEntryPos + 8, bLE);
+        unsigned short uShortVal = ReadU16(pTiff, iEntryPos + 8, bLE);
+        if (uTag == 0x010F &amp;&amp; uType == 2) meta.SetCameraMake(ReadExifAscii(pTiff, iTiffLen, uCount, uValOff));
+        else if (uTag == 0x0110 &amp;&amp; uType == 2) meta.SetCameraModel(ReadExifAscii(pTiff, iTiffLen, uCount, uValOff));
+        else if (uTag == 0x0112 &amp;&amp; uType == 3) meta.SetOrientation(static_cast&lt;int&gt;(uShortVal));
+        else if ((uTag == 0x0132 || uTag == 0x9003) &amp;&amp; uType == 2) meta.SetDateTaken(ReadExifAscii(pTiff, iTiffLen, uCount, uValOff));
+        else if (uTag == 0xA002 || uTag == 0x0100) meta.SetWidth(static_cast&lt;int&gt;(uType == 3 ? uShortVal : uValOff));
+        else if (uTag == 0xA003 || uTag == 0x0101) meta.SetHeight(static_cast&lt;int&gt;(uType == 3 ? uShortVal : uValOff));
+        else if (uTag == 0x8769) uSubIfdOffset = uValOff;
+    }</span>
+
+<span style = "background-color:#fdd">    void ParseTiffIfd(const byte* pTiff, int iTiffLen, unsigned int uIfdOffset, bool bLE, ExifMetadata&amp; meta) {</span>
+        /// Parse all entries in a TIFF Image File Directory (IFD) and follow ExifSubIFD if present.
+<span style = "background-color:#fdd">        if (uIfdOffset + 2 &gt; static_cast&lt;unsigned int&gt;(iTiffLen)) return;
+        unsigned short uNumEntries = ReadU16(pTiff, static_cast&lt;int&gt;(uIfdOffset), bLE);
+        unsigned int uSubIfd = 0;
+        for (int iIdx = 0; iIdx &lt; static_cast&lt;int&gt;(uNumEntries); ++iIdx) {</span>
+            int iEntryPos = static_cast&lt;int&gt;(uIfdOffset) + 2 + (iIdx * 12);
+<span style = "background-color:#fdd">            if (iEntryPos + 12 &gt; iTiffLen) break;
+            ApplyTiffEntry(pTiff, iTiffLen, iEntryPos, bLE, uSubIfd, meta);</span>
+        }
+<span style = "background-color:#fdd">        if (uSubIfd &gt; 0 &amp;&amp; uSubIfd != uIfdOffset) ParseTiffIfd(pTiff, iTiffLen, uSubIfd, bLE, meta);
+    }</span>
+
+    void ParseTiffHeader(const byte* pTiff, int iTiffLen, ExifMetadata&amp; meta) {
+        /// Validate II/MM TIFF byte order header and parse root IFD0.
+        if (iTiffLen &lt; 8) return;
+        bool bLE = (pTiff[0] == 'I' &amp;&amp; pTiff[1] == 'I');
+        bool bBE = (pTiff[0] == 'M' &amp;&amp; pTiff[1] == 'M');
+        if (!bLE &amp;&amp; !bBE) return;
+        if (ReadU16(pTiff, 2, bLE) != 42) return;
+        meta.SetHasExif(true);
+        unsigned int uIfd0 = ReadU32(pTiff, 4, bLE);
+        ParseTiffIfd(pTiff, iTiffLen, uIfd0, bLE, meta);
+    }
+
+<span style = "background-color:#fdd">    void InspectJpegSegment(const byte* pData, int iPos, int iSegLen, ExifMetadata&amp; meta) {</span>
+        /// Inspect a single JPEG marker segment for APP1 Exif or SOF0/SOF2 dimensions.
+<span style = "background-color:#fdd">        byte bMarker = pData[iPos + 1];
+        if (bMarker == 0xE1 &amp;&amp; iSegLen &gt;= 14 &amp;&amp; std::memcmp(pData + iPos + 4, "Exif\0\0", 6) == 0) {
+            ParseTiffHeader(pData + iPos + 10, iSegLen - 8, meta);
+        } else if ((bMarker == 0xC0 || bMarker == 0xC2) &amp;&amp; iSegLen &gt;= 7) {
+            meta.SetHeight(static_cast&lt;int&gt;(ReadU16(pData, iPos + 5, false)));
+            meta.SetWidth(static_cast&lt;int&gt;(ReadU16(pData, iPos + 7, false)));
+            meta.SetHasExif(true);</span>
+        }
+<span style = "background-color:#fdd">    }</span>
+
+    void ParseJpegBytes(const byte* pData, int iLen, ExifMetadata&amp; meta) {
+        /// Traverse JPEG segments starting after SOI (0xFFD8) to extract APP1 Exif and SOF dimensions.
+        int iPos = 2;
+        while (iPos + 4 &lt;= iLen &amp;&amp; pData[iPos] == 0xFF) {
+            byte bMarker = pData[iPos + 1];
+            if (bMarker == 0xD9 || bMarker == 0xDA) break;
+            int iSegLen = static_cast&lt;int&gt;(ReadU16(pData, iPos + 2, false));
+            if (iSegLen &lt; 2 || iPos + 2 + iSegLen &gt; iLen) break;
+            InspectJpegSegment(pData, iPos, iSegLen, meta);
+            iPos += 2 + iSegLen;
+        }
+    }
+
+    void ParsePngOrBmpBytes(const byte* pData, int iLen, ExifMetadata&amp; meta) {
+        /// Extract width and height from PNG IHDR chunk or BMP BITMAPINFOHEADER.
+        if (iLen &gt;= 24 &amp;&amp; pData[0] == 0x89 &amp;&amp; pData[1] == 'P' &amp;&amp; pData[2] == 'N' &amp;&amp; pData[3] == 'G') {
+            meta.SetWidth(static_cast&lt;int&gt;(ReadU32(pData, 16, false)));
+            meta.SetHeight(static_cast&lt;int&gt;(ReadU32(pData, 20, false)));
+            meta.SetHasExif(true);
+        } else if (iLen &gt;= 26 &amp;&amp; pData[0] == 'B' &amp;&amp; pData[1] == 'M') {
+            meta.SetWidth(static_cast&lt;int&gt;(ReadU32(pData, 18, true)));
+            int iRawH = static_cast&lt;int&gt;(ReadU32(pData, 22, true));
+            meta.SetHeight(iRawH &lt; 0 ? -iRawH : iRawH);
+            meta.SetHasExif(true);
+        }
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Drawing {
+            namespace Imaging {
+
+                ExifMetadata::ExifMetadata()
+<span style = "background-color:#dfd">                    : m_iWidth(0)</span>
+                    , m_iHeight(0)
+<span style = "background-color:#dfd">                    , m_iOrientation(1)
+                    , m_sDateTaken("")
+                    , m_sCameraMake("")
+                    , m_sCameraModel("")
+                    , m_bHasExif(false) {</span>
+                    /// Initialize default ExifMetadata with normal orientation (1).
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                int ExifMetadata::GetWidth() const noexcept {</span>
+                    /// Return image width in pixels.
+<span style = "background-color:#dfd">                    return m_iWidth;
+                }</span>
+
+<span style = "background-color:#fdd">                void ExifMetadata::SetWidth(int iWidth) noexcept {</span>
+                    /// Set image width in pixels.
+<span style = "background-color:#fdd">                    m_iWidth = iWidth;
+                }</span>
+
+<span style = "background-color:#dfd">                int ExifMetadata::GetHeight() const noexcept {</span>
+                    /// Return image height in pixels.
+<span style = "background-color:#dfd">                    return m_iHeight;
+                }</span>
+
+<span style = "background-color:#fdd">                void ExifMetadata::SetHeight(int iHeight) noexcept {</span>
+                    /// Set image height in pixels.
+<span style = "background-color:#fdd">                    m_iHeight = iHeight;
+                }</span>
+
+<span style = "background-color:#dfd">                int ExifMetadata::GetOrientation() const noexcept {</span>
+                    /// Return EXIF orientation tag.
+<span style = "background-color:#dfd">                    return m_iOrientation;
+                }</span>
+
+<span style = "background-color:#fdd">                void ExifMetadata::SetOrientation(int iOrientation) noexcept {</span>
+                    /// Set EXIF orientation tag.
+<span style = "background-color:#fdd">                    m_iOrientation = iOrientation;
+                }</span>
+
+<span style = "background-color:#dfd">                String ExifMetadata::GetDateTaken() const {</span>
+                    /// Return EXIF DateTimeOriginal string.
+<span style = "background-color:#dfd">                    return m_sDateTaken;
+                }</span>
+
+<span style = "background-color:#dfd">                void ExifMetadata::SetDateTaken(const String&amp; sDateTaken) {</span>
+                    /// Set EXIF DateTimeOriginal string.
+<span style = "background-color:#dfd">                    m_sDateTaken = sDateTaken;</span>
+                }
+
+<span style = "background-color:#dfd">                String ExifMetadata::GetCameraMake() const {</span>
+                    /// Return camera manufacturer make string.
+<span style = "background-color:#dfd">                    return m_sCameraMake;
+                }</span>
+
+<span style = "background-color:#fdd">                void ExifMetadata::SetCameraMake(const String&amp; sCameraMake) {</span>
+                    /// Set camera manufacturer make string.
+<span style = "background-color:#fdd">                    m_sCameraMake = sCameraMake;</span>
+                }
+
+<span style = "background-color:#dfd">                String ExifMetadata::GetCameraModel() const {</span>
+                    /// Return camera model string.
+<span style = "background-color:#dfd">                    return m_sCameraModel;
+                }</span>
+
+<span style = "background-color:#dfd">                void ExifMetadata::SetCameraModel(const String&amp; sCameraModel) {</span>
+                    /// Set camera model string.
+<span style = "background-color:#dfd">                    m_sCameraModel = sCameraModel;</span>
+                }
+
+<span style = "background-color:#dfd">                bool ExifMetadata::GetHasExif() const noexcept {</span>
+                    /// Return whether valid EXIF or image header metadata was discovered.
+<span style = "background-color:#dfd">                    return m_bHasExif;
+                }</span>
+
+<span style = "background-color:#fdd">                void ExifMetadata::SetHasExif(bool bHasExif) noexcept {</span>
+                    /// Set whether valid EXIF or image header metadata was discovered.
+<span style = "background-color:#fdd">                    m_bHasExif = bHasExif;
+                }</span>
+
+<span style = "background-color:#dfd">                ExifMetadata ExifMetadata::ExtractFromBytes(const Array&lt;byte&gt;&amp; arrBytes) {</span>
+                    /// Guard: Ensure buffer has enough bytes for a magic header.
+<span style = "background-color:#dfd">                    ExifMetadata meta;
+                    int iLen = arrBytes.GetLength();
+                    if (iLen &lt; 4) return meta;</span>
+
+                    /// Dispatch to JPEG parser or PNG/BMP header parser.
+<span style = "background-color:#dfd">                    const byte* pData = arrBytes.GetData();
+                    if (pData[0] == 0xFF &amp;&amp; pData[1] == 0xD8) {</span>
+<span style = "background-color:#fdd">                        ParseJpegBytes(pData, iLen, meta);
+                    } else {</span>
+<span style = "background-color:#dfd">                        ParsePngOrBmpBytes(pData, iLen, meta);</span>
+                    }
+<span style = "background-color:#dfd">                    return meta;
+                }</span>
+
+<span style = "background-color:#fdd">                ExifMetadata ExifMetadata::ExtractFromFile(const String&amp; sFilePath) {</span>
+                    /// Guard: Return empty metadata if file does not exist.
+<span style = "background-color:#fdd">                    if (!IO::File::Exists(sFilePath)) return ExifMetadata();</span>
+
+                    /// Read up to the first 64KB of the image file to parse headers and APP1 EXIF tags.
+<span style = "background-color:#fdd">                    IO::FileStream stm(sFilePath, 3);
+                    long long llFileLen = stm.GetLength64();
+                    int iReadLen = (llFileLen &lt; 65536LL) ? static_cast&lt;int&gt;(llFileLen) : 65536;
+                    Array&lt;byte&gt; arrHeader(iReadLen);
+                    if (iReadLen &gt; 0) {
+                        stm.Read(reinterpret_cast&lt;char*&gt;(arrHeader.GetData()), 0, iReadLen);</span>
+                    }
+<span style = "background-color:#fdd">                    return ExtractFromBytes(arrHeader);
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>

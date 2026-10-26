@@ -51,6 +51,11 @@ namespace {
 namespace DotNetDupe {
     namespace System {
         namespace IO {
+<span style = "background-color:#dfd">            String Path::Combine(const String&amp; sPath1, const String&amp; sPath2) {</span>
+                /// Delegate two-argument path combination to initializer_list overload.
+<span style = "background-color:#dfd">                return Combine({ sPath1, sPath2 });
+            }</span>
+
 <span style = "background-color:#dfd">            String Path::ChangeExtension(const String&amp; sFilePath, const String&amp; sExtension) {</span>
                 /// Guard: Validate input path and extension parameters.
 <span style = "background-color:#dfd">                if (sFilePath.GetLength() &lt;= 0 || sExtension.GetLength() &lt;= 0)

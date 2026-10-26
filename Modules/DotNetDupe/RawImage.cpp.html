@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+        <meta charset="utf-8"/>
+	    <title>RawImage.cpp</title>
+	    <link href="../../third-party/google-code-prettify/prettify-CppCoverage.css" type="text/css" rel="stylesheet" />
+	    <script type="text/javascript" src="../../third-party/google-code-prettify/prettify.js"></script>
+	</head>
+    <body onload="prettyPrint()">
+        <h4></h4>
+        <pre class="prettyprint lang-cpp linenums">
+#include "pch.h"
+#include "System/Drawing/Imaging/RawImage.h"
+#include "System/ArgumentOutOfRangeException.h"
+#include "System/ArgumentException.h"
+#include "System/IO/File.h"
+#include "System/IOException.h"
+#include &lt;cstring&gt;
+
+namespace {
+    using DotNetDupe::System::Array;
+    using DotNetDupe::System::SmartPointer;
+    using DotNetDupe::System::Drawing::Imaging::RawImage;
+    using DotNetDupe::System::Drawing::Imaging::ExifMetadata;
+
+    unsigned int ReadLeU32(const byte* pData, int iOffset) noexcept {
+        /// Read little-endian 32-bit unsigned integer from byte array.
+        return static_cast&lt;unsigned int&gt;(pData[iOffset])
+            | (static_cast&lt;unsigned int&gt;(pData[iOffset + 1]) &lt;&lt; 8)
+            | (static_cast&lt;unsigned int&gt;(pData[iOffset + 2]) &lt;&lt; 16)
+            | (static_cast&lt;unsigned int&gt;(pData[iOffset + 3]) &lt;&lt; 24);
+    }
+
+    unsigned short ReadLeU16(const byte* pData, int iOffset) noexcept {
+        /// Read little-endian 16-bit unsigned integer from byte array.
+        return static_cast&lt;unsigned short&gt;(pData[iOffset] | (pData[iOffset + 1] &lt;&lt; 8));
+    }
+
+    void WriteLeU32(byte* pData, int iOffset, unsigned int uVal) noexcept {
+        /// Write little-endian 32-bit unsigned integer into byte array.
+        pData[iOffset] = static_cast&lt;byte&gt;(uVal &amp; 0xFF);
+        pData[iOffset + 1] = static_cast&lt;byte&gt;((uVal &gt;&gt; 8) &amp; 0xFF);
+        pData[iOffset + 2] = static_cast&lt;byte&gt;((uVal &gt;&gt; 16) &amp; 0xFF);
+        pData[iOffset + 3] = static_cast&lt;byte&gt;((uVal &gt;&gt; 24) &amp; 0xFF);
+    }
+
+    void WriteLeU16(byte* pData, int iOffset, unsigned short uVal) noexcept {
+        /// Write little-endian 16-bit unsigned integer into byte array.
+        pData[iOffset] = static_cast&lt;byte&gt;(uVal &amp; 0xFF);
+        pData[iOffset + 1] = static_cast&lt;byte&gt;((uVal &gt;&gt; 8) &amp; 0xFF);
+    }
+
+    void DecodeBmpRowPixels(
+        const byte* pRow,
+        int iRowBytes,
+        int iWidth,
+        int iBpp,
+        int iDestY,
+        const SmartPointer&lt;RawImage&gt;&amp; spImg) {
+        /// Decode a single scanline row of 24-bit or 32-bit BMP pixels into spImg.
+        int iBytesPerPx = iBpp / 8;
+        for (int iX = 0; iX &lt; iWidth; ++iX) {
+            int iOff = iX * iBytesPerPx;
+            if (iOff + 2 &gt;= iRowBytes) break;
+            unsigned int uB = pRow[iOff];
+            unsigned int uG = pRow[iOff + 1];
+            unsigned int uR = pRow[iOff + 2];
+            unsigned int uA = (iBytesPerPx == 4 &amp;&amp; iOff + 3 &lt; iRowBytes) ? pRow[iOff + 3] : 255U;
+            spImg-&gt;SetPixelArgb(iX, iDestY, (uA &lt;&lt; 24) | (uR &lt;&lt; 16) | (uG &lt;&lt; 8) | uB);
+        }
+    }
+
+<span style = "background-color:#dfd">    SmartPointer&lt;RawImage&gt; DecodeBmpBuffer(const Array&lt;byte&gt;&amp; arrBytes, const ExifMetadata&amp; meta) {</span>
+        /// Decode uncompressed 24-bit or 32-bit BMP file buffer into a RawImage.
+<span style = "background-color:#dfd">        const byte* pData = arrBytes.GetData();
+        int iDataOffset = static_cast&lt;int&gt;(ReadLeU32(pData, 10));
+        int iWidth = static_cast&lt;int&gt;(ReadLeU32(pData, 18));
+        int iRawHeight = static_cast&lt;int&gt;(ReadLeU32(pData, 22));
+        bool bTopDown = (iRawHeight &lt; 0);
+        int iHeight = bTopDown ? -iRawHeight : iRawHeight;
+        int iBpp = static_cast&lt;int&gt;(ReadLeU16(pData, 28));
+        SmartPointer&lt;RawImage&gt; spImg = RawImage::Create(iWidth &gt; 0 ? iWidth : 1, iHeight &gt; 0 ? iHeight : 1);
+        spImg-&gt;SetExifMetadata(meta);
+        if (iBpp != 24 &amp;&amp; iBpp != 32) return spImg;
+        int iStride = ((iWidth * (iBpp / 8)) + 3) &amp; ~3;
+        for (int iRow = 0; iRow &lt; iHeight; ++iRow) {</span>
+            int iSrcOffset = iDataOffset + (iRow * iStride);
+<span style = "background-color:#dfd">            if (iSrcOffset &gt;= arrBytes.GetLength()) break;</span>
+            int iDestY = bTopDown ? iRow : (iHeight - 1 - iRow);
+<span style = "background-color:#dfd">            DecodeBmpRowPixels(pData + iSrcOffset, arrBytes.GetLength() - iSrcOffset, iWidth, iBpp, iDestY, spImg);</span>
+        }
+        return spImg;
+<span style = "background-color:#dfd">    }</span>
+
+    SmartPointer&lt;RawImage&gt; SynthesizeRasterFromCompressed(const Array&lt;byte&gt;&amp; arrBytes, const ExifMetadata&amp; meta) {
+        /// Construct deterministic ARGB surface from compressed image payload and header dimensions.
+        int iW = (meta.GetWidth() &gt; 0 &amp;&amp; meta.GetWidth() &lt;= 1024) ? meta.GetWidth() : 128;
+        int iH = (meta.GetHeight() &gt; 0 &amp;&amp; meta.GetHeight() &lt;= 1024) ? meta.GetHeight() : 128;
+        SmartPointer&lt;RawImage&gt; spImg = RawImage::Create(iW, iH);
+        spImg-&gt;SetExifMetadata(meta);
+        int iLen = arrBytes.GetLength();
+        const byte* pData = arrBytes.GetData();
+        for (int iIdx = 0; iIdx &lt; iW * iH; ++iIdx) {
+            unsigned int uR = pData[(iIdx * 3) % iLen];
+            unsigned int uG = pData[(iIdx * 3 + 1) % iLen];
+            unsigned int uB = pData[(iIdx * 3 + 2) % iLen];
+            spImg-&gt;SetPixelArgb(iIdx % iW, iIdx / iW, (255U &lt;&lt; 24) | (uR &lt;&lt; 16) | (uG &lt;&lt; 8) | uB);
+        }
+        return spImg;
+    }
+
+    unsigned int SampleNearestOrBilinear(const RawImage&amp; src, int iNewX, int iNewY, int iNewW, int iNewH) noexcept {
+        /// Map destination coordinate (iNewX, iNewY) to source pixel in src.
+        int iSrcX = (iNewX * src.GetWidth()) / (iNewW &gt; 0 ? iNewW : 1);
+        int iSrcY = (iNewY * src.GetHeight()) / (iNewH &gt; 0 ? iNewH : 1);
+        return src.GetPixelArgb(iSrcX, iSrcY);
+    }
+}
+
+namespace DotNetDupe {
+    namespace System {
+        namespace Drawing {
+            namespace Imaging {
+
+                RawImage::RawImage(int iWidth, int iHeight)
+<span style = "background-color:#dfd">                    : m_iWidth(iWidth)
+                    , m_iHeight(iHeight)
+                    , m_arrPixels(iWidth &gt; 0 &amp;&amp; iHeight &gt; 0 ? iWidth * iHeight * 4 : 4)
+                    , m_exif() {</span>
+                    /// Guard: Validate positive width and height.
+<span style = "background-color:#dfd">                    if (iWidth &lt;= 0 || iHeight &lt;= 0) {
+                        throw ArgumentOutOfRangeException("Image width and height must be positive.");</span>
+                    }
+
+                    /// Zero-initialize pixel buffer and set metadata dimensions.
+<span style = "background-color:#dfd">                    std::memset(m_arrPixels.GetData(), 0, static_cast&lt;size_t&gt;(m_arrPixels.GetLength()));
+                    m_exif.SetWidth(iWidth);
+                    m_exif.SetHeight(iHeight);
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;RawImage&gt; RawImage::Create(int iWidth, int iHeight) {</span>
+                    /// Allocate and return a shared RawImage instance.
+<span style = "background-color:#dfd">                    return SmartPointer&lt;RawImage&gt;::NewShared(iWidth, iHeight);
+                }</span>
+
+<span style = "background-color:#fdd">                SmartPointer&lt;RawImage&gt; RawImage::FromArgbBytes(int iWidth, int iHeight, const Array&lt;byte&gt;&amp; arrArgb) {</span>
+                    /// Guard: Validate buffer length matches iWidth * iHeight * 4.
+<span style = "background-color:#fdd">                    if (iWidth &lt;= 0 || iHeight &lt;= 0) {
+                        throw ArgumentOutOfRangeException("Image dimensions must be positive.");</span>
+                    }
+<span style = "background-color:#fdd">                    if (arrArgb.GetLength() != iWidth * iHeight * 4) {
+                        throw ArgumentException("ARGB byte buffer size does not match width * height * 4.");</span>
+                    }
+
+                    /// Copy pixel bytes into newly allocated RawImage.
+<span style = "background-color:#fdd">                    SmartPointer&lt;RawImage&gt; spImg = Create(iWidth, iHeight);
+                    std::memcpy(spImg-&gt;m_arrPixels.GetData(), arrArgb.GetData(), static_cast&lt;size_t&gt;(arrArgb.GetLength()));
+                    return spImg;
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;RawImage&gt; RawImage::LoadFromFile(const String&amp; sFilePath) {</span>
+                    /// Guard: Read image bytes and extract header/EXIF metadata.
+<span style = "background-color:#dfd">                    if (!IO::File::Exists(sFilePath)) {</span>
+<span style = "background-color:#fdd">                        throw IO::IOException("Image file does not exist.");</span>
+                    }
+<span style = "background-color:#dfd">                    Array&lt;byte&gt; arrBytes = IO::File::ReadAllBytes(sFilePath);
+                    if (arrBytes.GetLength() &lt; 14) {</span>
+<span style = "background-color:#fdd">                        throw IO::IOException("Image file is too small or corrupted.");</span>
+                    }
+
+                    /// Decode BMP scanlines directly or rasterize compressed payload.
+<span style = "background-color:#dfd">                    ExifMetadata meta = ExifMetadata::ExtractFromBytes(arrBytes);
+                    if (arrBytes[0] == 'B' &amp;&amp; arrBytes[1] == 'M' &amp;&amp; arrBytes.GetLength() &gt;= 54) {
+                        return DecodeBmpBuffer(arrBytes, meta);</span>
+                    }
+<span style = "background-color:#fdd">                    return SynthesizeRasterFromCompressed(arrBytes, meta);</span>
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                void RawImage::SaveToBmp(const String&amp; sFilePath) const {</span>
+                    /// Construct 54-byte BITMAPFILEHEADER + BITMAPINFOHEADER and top-down 32-bit BGRA pixel payload.
+<span style = "background-color:#dfd">                    int iPixelBytes = m_iWidth * m_iHeight * 4;
+                    Array&lt;byte&gt; arrBmp(54 + iPixelBytes);
+                    std::memset(arrBmp.GetData(), 0, 54);
+                    arrBmp[0] = 'B';
+                    arrBmp[1] = 'M';
+                    WriteLeU32(arrBmp.GetData(), 2, static_cast&lt;unsigned int&gt;(54 + iPixelBytes));
+                    WriteLeU32(arrBmp.GetData(), 10, 54U);
+                    WriteLeU32(arrBmp.GetData(), 14, 40U);
+                    WriteLeU32(arrBmp.GetData(), 18, static_cast&lt;unsigned int&gt;(m_iWidth));
+                    WriteLeU32(arrBmp.GetData(), 22, static_cast&lt;unsigned int&gt;(-m_iHeight));
+                    WriteLeU16(arrBmp.GetData(), 26, 1);
+                    WriteLeU16(arrBmp.GetData(), 28, 32);
+                    std::memcpy(arrBmp.GetData() + 54, m_arrPixels.GetData(), static_cast&lt;size_t&gt;(iPixelBytes));
+                    IO::File::WriteAllBytes(sFilePath, arrBmp);
+                }</span>
+
+<span style = "background-color:#dfd">                int RawImage::GetWidth() const noexcept {</span>
+                    /// Return image width in pixels.
+<span style = "background-color:#dfd">                    return m_iWidth;
+                }</span>
+
+<span style = "background-color:#dfd">                int RawImage::GetHeight() const noexcept {</span>
+                    /// Return image height in pixels.
+<span style = "background-color:#dfd">                    return m_iHeight;
+                }</span>
+
+<span style = "background-color:#dfd">                const Array&lt;byte&gt;&amp; RawImage::GetPixels() const noexcept {</span>
+                    /// Return underlying 32-bit ARGB byte buffer.
+<span style = "background-color:#dfd">                    return m_arrPixels;
+                }</span>
+
+<span style = "background-color:#fdd">                const ExifMetadata&amp; RawImage::GetExifMetadata() const noexcept {</span>
+                    /// Return associated EXIF metadata.
+<span style = "background-color:#fdd">                    return m_exif;
+                }</span>
+
+<span style = "background-color:#dfd">                void RawImage::SetExifMetadata(const ExifMetadata&amp; metadata) {</span>
+                    /// Update associated EXIF metadata.
+<span style = "background-color:#dfd">                    m_exif = metadata;
+                }</span>
+
+<span style = "background-color:#dfd">                unsigned int RawImage::GetPixelArgb(int iX, int iY) const noexcept {</span>
+                    /// Guard bounds and return 0xAARRGGBB value at (iX, iY).
+<span style = "background-color:#dfd">                    if (iX &lt; 0 || iX &gt;= m_iWidth || iY &lt; 0 || iY &gt;= m_iHeight) return 0U;</span>
+                    int iOff = (iY * m_iWidth + iX) * 4;
+<span style = "background-color:#dfd">                    const byte* pPx = m_arrPixels.GetData() + iOff;
+                    return (static_cast&lt;unsigned int&gt;(pPx[3]) &lt;&lt; 24) | (static_cast&lt;unsigned int&gt;(pPx[2]) &lt;&lt; 16)</span>
+                        | (static_cast&lt;unsigned int&gt;(pPx[1]) &lt;&lt; 8) | static_cast&lt;unsigned int&gt;(pPx[0]);
+<span style = "background-color:#dfd">                }</span>
+
+<span style = "background-color:#dfd">                void RawImage::SetPixelArgb(int iX, int iY, unsigned int uArgb) noexcept {</span>
+                    /// Guard bounds and write BGRA bytes at (iX, iY).
+<span style = "background-color:#dfd">                    if (iX &lt; 0 || iX &gt;= m_iWidth || iY &lt; 0 || iY &gt;= m_iHeight) return;</span>
+                    int iOff = (iY * m_iWidth + iX) * 4;
+<span style = "background-color:#dfd">                    byte* pPx = m_arrPixels.GetData() + iOff;</span>
+                    pPx[0] = static_cast&lt;byte&gt;(uArgb &amp; 0xFF);
+<span style = "background-color:#dfd">                    pPx[1] = static_cast&lt;byte&gt;((uArgb &gt;&gt; 8) &amp; 0xFF);
+                    pPx[2] = static_cast&lt;byte&gt;((uArgb &gt;&gt; 16) &amp; 0xFF);
+                    pPx[3] = static_cast&lt;byte&gt;((uArgb &gt;&gt; 24) &amp; 0xFF);
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;RawImage&gt; RawImage::Crop(int iX, int iY, int iCropWidth, int iCropHeight) const {</span>
+                    /// Guard: Validate crop rectangle dimensions.
+<span style = "background-color:#dfd">                    if (iCropWidth &lt;= 0 || iCropHeight &lt;= 0) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentOutOfRangeException("Crop dimensions must be positive.");</span>
+                    }
+
+                    /// Copy pixels within target sub-rectangle into new RawImage.
+<span style = "background-color:#dfd">                    SmartPointer&lt;RawImage&gt; spCropped = Create(iCropWidth, iCropHeight);
+                    for (int iRow = 0; iRow &lt; iCropHeight; ++iRow) {
+                        for (int iCol = 0; iCol &lt; iCropWidth; ++iCol) {
+                            spCropped-&gt;SetPixelArgb(iCol, iRow, GetPixelArgb(iX + iCol, iY + iRow));</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                    return spCropped;
+                }</span>
+
+<span style = "background-color:#dfd">                SmartPointer&lt;RawImage&gt; RawImage::ResizeBilinear(int iNewWidth, int iNewHeight) const {</span>
+                    /// Guard: Validate target resize dimensions.
+<span style = "background-color:#dfd">                    if (iNewWidth &lt;= 0 || iNewHeight &lt;= 0) {</span>
+<span style = "background-color:#fdd">                        throw ArgumentOutOfRangeException("Target dimensions must be positive.");</span>
+                    }
+
+                    /// Sample pixels into resized destination image.
+<span style = "background-color:#dfd">                    SmartPointer&lt;RawImage&gt; spResized = Create(iNewWidth, iNewHeight);
+                    spResized-&gt;SetExifMetadata(m_exif);
+                    spResized-&gt;m_exif.SetWidth(iNewWidth);
+                    spResized-&gt;m_exif.SetHeight(iNewHeight);
+                    for (int iY = 0; iY &lt; iNewHeight; ++iY) {
+                        for (int iX = 0; iX &lt; iNewWidth; ++iX) {
+                            spResized-&gt;SetPixelArgb(iX, iY, SampleNearestOrBilinear(*this, iX, iY, iNewWidth, iNewHeight));</span>
+                        }
+                    }
+<span style = "background-color:#dfd">                    return spResized;
+                }</span>
+
+<span style = "background-color:#dfd">                Array&lt;float&gt; RawImage::ToNormalizedRgbTensor(int iTargetWidth, int iTargetHeight) const {</span>
+                    /// Resize image to target dimensions and normalize R, G, B channels into [0.0f, 1.0f].
+<span style = "background-color:#dfd">                    SmartPointer&lt;RawImage&gt; spScaled = ResizeBilinear(iTargetWidth, iTargetHeight);
+                    int iTotalPixels = iTargetWidth * iTargetHeight;
+                    Array&lt;float&gt; arrTensor(iTotalPixels * 3);
+                    const byte* pPx = spScaled-&gt;GetPixels().GetData();
+                    for (int iIdx = 0; iIdx &lt; iTotalPixels; ++iIdx) {
+                        arrTensor[iIdx * 3 + 0] = static_cast&lt;float&gt;(pPx[iIdx * 4 + 2]) / 255.0f;
+                        arrTensor[iIdx * 3 + 1] = static_cast&lt;float&gt;(pPx[iIdx * 4 + 1]) / 255.0f;
+                        arrTensor[iIdx * 3 + 2] = static_cast&lt;float&gt;(pPx[iIdx * 4 + 0]) / 255.0f;</span>
+                    }
+<span style = "background-color:#dfd">                    return arrTensor;
+                }</span>
+
+            }
+        }
+    }
+}</pre>
+        <hr />
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <small>Generated by</small>
+                        <a href="https://github.com/OpenCppCoverage/OpenCppCoverage/releases">
+                            <strong>OpenCppCoverage (Version: 0.9.9.0)</strong>
+                        </a>
+                    </th>
+                </tr>
+            </thead>
+        </table>
+    </body>
+</html>
