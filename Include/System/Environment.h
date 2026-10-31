@@ -15,6 +15,7 @@
 #undef SetEnvironmentVariable
 #undef GetUserName
 #undef GetOSVersion
+#undef GetTickCount64
 #endif
 
 #include "System/Char.h"
@@ -154,6 +155,14 @@ namespace DotNetDupe {
              * @brief Gets an OperatingSystem object that contains the current platform identifier and version.
              */
             DOTNETDUPE_API static OperatingSystem GetOperatingSystem();
+
+            /// \brief Gets the number of milliseconds elapsed since the system started (64-bit monotonic).
+            /// \return Signed 64-bit millisecond tick count.
+            DOTNETDUPE_API static int64_t GetTickCount64();
+
+            /// \brief Gets the number of milliseconds elapsed since the system started (unsigned 64-bit).
+            /// \return Unsigned 64-bit millisecond tick count.
+            DOTNETDUPE_API static unsigned long long TickCount64();
         };
     }
 }

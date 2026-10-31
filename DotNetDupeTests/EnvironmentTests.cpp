@@ -158,5 +158,17 @@ namespace SystemTests {
 #endif
             ASSERT_TRUE(os.GetVersion().GetMajor() >= 0);
         }
+
+        TEST(Environment, GetTickCount64_WhenCalled_ReturnsPositiveMonotonicTicks) {
+            // Given
+            int64_t llFirst = Environment::GetTickCount64();
+
+            // When
+            unsigned long long ullSecond = Environment::TickCount64();
+
+            // Then
+            ASSERT_GT(llFirst, 0);
+            ASSERT_GE(ullSecond, static_cast<unsigned long long>(llFirst));
+        }
     }
 }

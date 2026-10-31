@@ -266,3 +266,9 @@ TEST_F(EtwLogReaderTests, GivenEmptyChannel_WhenStartListeningCalled_ThenThrowsA
     // When & Then
     EXPECT_THROW(reader.StartListening("", [](const EtwEvent&) {}), ArgumentException);
 }
+
+TEST_F(EtwLogReaderTests, GivenEmptyArguments_WhenExportChannelCalled_ThenReturnsFalse) {
+    // Given / When / Then
+    EXPECT_FALSE(EtwLogReader::ExportChannel("", "out.evtx"));
+    EXPECT_FALSE(EtwLogReader::ExportChannel("Application", ""));
+}
