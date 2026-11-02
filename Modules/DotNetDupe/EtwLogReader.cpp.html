@@ -221,8 +221,8 @@ namespace DotNetDupe {
                     lstEvents.Add(evt);
                     if (iMaxEvents &gt; 0 &amp;&amp; lstEvents.GetCount() &gt;= iMaxEvents) return true;</span>
                 }
-<span style = "background-color:#fdd">                return false;</span>
-<span style = "background-color:#dfd">            }</span>
+<span style = "background-color:#dfd">                return false;
+            }</span>
 
             static void HandleQueryFailure(DWORD err) {
                 /// Step: Handle known query failures or propagate unauthorized access.
@@ -415,7 +415,23 @@ namespace DotNetDupe {
 <span style = "background-color:#dfd">                m_bListening = false;
                 m_sListeningChannel = "";
                 m_fnCallback = nullptr;
-            }</span>
+            }
+            bool EtwLogReader::ExportChannel(const String&amp; sChannelName, const String&amp; sFilePath) {</span>
+                /// Guard: Validate channel name and target file path.
+<span style = "background-color:#dfd">                if (sChannelName.IsEmpty() || sFilePath.IsEmpty()) {
+                    return false;</span>
+                }
+
+                /// Export channel events via Win32 EvtExportLog API when on Windows.
+#if defined(_WIN32)
+<span style = "background-color:#fdd">                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(sChannelName.GetRawString());
+                std::wstring wPath = Utils::StringConvert::Utf8ToWChar(sFilePath.GetRawString());
+                BOOL bResult = ::EvtExportLog(nullptr, wChannel.c_str(), L"*", wPath.c_str(), EvtExportLogChannelPath);
+                return bResult != FALSE;</span>
+#else
+                return false;
+#endif
+<span style = "background-color:#dfd">            }</span>
 
         }
     }
