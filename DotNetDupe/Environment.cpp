@@ -19,6 +19,7 @@ using namespace DotNetDupe::System::Internal;
 #include <pwd.h>
 #include <limits.h>
 #include <sys/utsname.h>
+#include <time.h>
 #include <fstream>
 #include <iostream>
 
@@ -326,6 +327,23 @@ namespace DotNetDupe {
             uname(&name);
             return OperatingSystem(PlatformID::Unix, Version(0, 0, 0, 0));
 #endif
+        }
+        int64_t Environment::GetTickCount64() {
+            /// Step: Query monotonic system uptime in milliseconds.
+#if defined(_WIN32)
+            return static_cast<int64_t>(::GetTickCount64());
+#else
+            struct timespec ts;
+            if (clock_gettime(CLOCK_MONOTONIC, &ts) == 0) {
+                return static_cast<int64_t>(ts.tv_sec) * 1000LL + static_cast<int64_t>(ts.tv_nsec / 1000000LL);
+            }
+            return 0;
+#endif
+        }
+
+        unsigned long long Environment::TickCount64() {
+            /// Forward: Return unsigned 64-bit monotonic tick count.
+            return static_cast<unsigned long long>(GetTickCount64());
         }
     }
 }

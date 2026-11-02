@@ -2,10 +2,15 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DotNetDupe</id>
-    <version>5.0.5</version>
+    <version>5.0.6</version>
     <authors>Sudheesh Subramanian</authors>
     <description>A modern, cross-platform C++ Base Class Library (BCL) bringing the elegance, productivity, and familiar APIs of .NET to C++.</description>
-    <releaseNotes>v5.0.5 (Latest)
+    <releaseNotes>v5.0.6 (Latest)
+- Added Environment::GetTickCount64() and Environment::TickCount64() for cross-platform monotonic millisecond uptime.
+- Added Diagnostics::EtwLogReader::ExportChannel() for native EVTX channel exporting.
+- Added Collections::Generic::LruCache&lt;TKey, TValue&gt; thread-safe bounded LRU cache with zero raw pointer allocations.
+
+v5.0.5
 - Zero-Re-Stat File Metadata &amp; Atomic Verified Copy (System::IO::FileInfo, FileSystemEntry, File, Directory):
   * Added FileSystemEntry and Directory::GetFileSystemEntriesWithMetadata() to harvest 64-bit file size, creation/modification timestamps, attributes, and symlink/reparse-point flags in a single OS traversal pass without secondary stat calls.
   * Added FileInfo for object-oriented file metadata inspection (GetLength64, GetCreationTime, GetLastWriteTime, GetExtension, GetDirectoryName, GetIsReparsePoint, CopyTo, MoveTo, Delete).

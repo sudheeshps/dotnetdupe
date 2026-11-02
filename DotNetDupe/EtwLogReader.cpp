@@ -405,6 +405,22 @@ namespace DotNetDupe {
                 m_sListeningChannel = "";
                 m_fnCallback = nullptr;
             }
+            bool EtwLogReader::ExportChannel(const String& sChannelName, const String& sFilePath) {
+                /// Guard: Validate channel name and target file path.
+                if (sChannelName.IsEmpty() || sFilePath.IsEmpty()) {
+                    return false;
+                }
+
+                /// Export channel events via Win32 EvtExportLog API when on Windows.
+#if defined(_WIN32)
+                std::wstring wChannel = Utils::StringConvert::Utf8ToWChar(sChannelName.GetRawString());
+                std::wstring wPath = Utils::StringConvert::Utf8ToWChar(sFilePath.GetRawString());
+                BOOL bResult = ::EvtExportLog(nullptr, wChannel.c_str(), L"*", wPath.c_str(), EvtExportLogChannelPath);
+                return bResult != FALSE;
+#else
+                return false;
+#endif
+            }
 
         }
     }

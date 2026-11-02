@@ -348,4 +348,14 @@
     </Expand>
   </Type>
 
+  <!-- DotNetDupe::System::Collections::Generic::LruCache -->
+  <Type Name="DotNetDupe::System::Collections::Generic::LruCache&lt;*,*&gt;">
+    <DisplayString>{{ Count={m_mapEntries.m_count}, Capacity={m_nCapacity} }}</DisplayString>
+    <Expand>
+      <Item Name="[Capacity]">m_nCapacity</Item>
+      <Item Name="[Entries]">m_mapEntries</Item>
+      <Item Name="[Order]">m_lstOrder</Item>
+    </Expand>
+  </Type>
+
 </AutoVisualizer>

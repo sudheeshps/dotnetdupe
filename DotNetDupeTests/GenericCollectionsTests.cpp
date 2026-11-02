@@ -7,6 +7,7 @@
 #include "System/Collections/Generic/SortedSet.h"
 #include "System/Collections/Generic/LinkedList.h"
 #include "System/Collections/Generic/PriorityQueue.h"
+#include "System/Collections/Generic/LruCache.h"
 #include "System/String.h"
 
 using namespace DotNetDupe::System;
@@ -130,5 +131,23 @@ namespace SystemTests {
             EXPECT_EQ(pq.Dequeue(), "TaskLow");
         }
 
+        TEST(LruCacheTest, GivenBoundedCache_WhenPutTryGetEvictAndRemoveCalled_ThenMaintainsLruOrder) {
+            LruCache<String, int> cache(2);
+            EXPECT_EQ(cache.GetCapacity(), 2u);
+            cache.Put("A", 1);
+            cache.Put("B", 2);
+
+            int iVal = 0;
+            EXPECT_TRUE(cache.TryGet("A", iVal));
+            EXPECT_EQ(iVal, 1);
+
+            cache.Put("C", 3);
+            EXPECT_FALSE(cache.TryGet("B", iVal));
+            EXPECT_TRUE(cache.TryGet("A", iVal));
+            EXPECT_TRUE(cache.Remove("A"));
+            EXPECT_FALSE(cache.Remove("Missing"));
+            cache.Clear();
+            EXPECT_EQ(cache.GetCount(), 0u);
+        }
     }
 }

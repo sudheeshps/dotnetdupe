@@ -124,6 +124,12 @@ namespace DotNetDupe {
                 /// \brief Terminates active real-time event listening and closes subscription handles.
                 DOTNETDUPE_API void StopListening();
 
+                /// \brief Exports events from the specified event channel to an EVTX log file.
+                /// \param sChannelName Source event channel name.
+                /// \param sFilePath Destination .evtx file path.
+                /// \return True if the export succeeded; otherwise false.
+                DOTNETDUPE_API static bool ExportChannel(const String& sChannelName, const String& sFilePath);
+
                 /// \brief Indicates whether an active subscription is running.
                 /// \return True if currently listening; otherwise false.
                 bool IsListening() const { return m_bListening; }
