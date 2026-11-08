@@ -79,7 +79,9 @@ enable_testing()
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG        v1.15.2
+  GIT_SHALLOW    TRUE
 )
 # For Windows: prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

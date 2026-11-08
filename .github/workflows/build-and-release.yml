@@ -162,8 +162,22 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
 
+    - name: Fetch GoogleTest with Retry
+      run: |
+        for attempt in 1 2 3 4 5; do
+          echo "Cloning GoogleTest v1.15.2 (attempt $attempt of 5)..."
+          rm -rf build/googletest-src
+          if git clone --depth 1 --branch v1.15.2 https://github.com/google/googletest.git build/googletest-src; then
+            echo "GoogleTest cloned successfully."
+            break
+          fi
+          echo "Attempt $attempt failed. Retrying in 5 seconds..."
+          sleep 5
+        done
+        test -f build/googletest-src/CMakeLists.txt
+
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DFETCHCONTENT_SOURCE_DIR_GOOGLETEST="$PWD/build/googletest-src"
 
     - name: Build Linux
       run: cmake --build build --config ${{ matrix.configuration }}
