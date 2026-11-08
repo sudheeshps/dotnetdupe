@@ -61,7 +61,33 @@ jobs:
       if: matrix.configuration == 'Release'
       shell: powershell
       run: |
-        choco install opencppcoverage -y
+        $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
+        $installerUrl = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe"
+        $installerPath = "$env:TEMP\OpenCppCoverageSetup-x64-0.9.9.0.exe"
+
+        for ($attempt = 1; $attempt -le 5; $attempt++) {
+            Write-Host "Downloading OpenCppCoverage installer (attempt $attempt of 5)..."
+            curl.exe -fL --retry 3 --retry-delay 5 --retry-all-errors -o $installerPath $installerUrl
+            if ($LASTEXITCODE -eq 0 -and (Test-Path $installerPath)) {
+                Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART" -Wait -NoNewWindow
+                if (Test-Path $exePath) {
+                    Write-Host "OpenCppCoverage installed successfully."
+                    break
+                }
+            }
+            Write-Warning "Attempt $attempt failed. Retrying in 5 seconds..."
+            Start-Sleep -Seconds 5
+        }
+
+        if (-not (Test-Path $exePath)) {
+            Write-Host "Falling back to Chocolatey installation..."
+            choco install opencppcoverage -y --no-progress
+        }
+
+        if (-not (Test-Path $exePath)) {
+            Write-Error "Failed to install OpenCppCoverage after multiple attempts."
+            exit 1
+        }
 
     - name: Run OpenCppCoverage & Quality Gate Check
       if: matrix.configuration == 'Release'
@@ -136,8 +162,22 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential cmake
 
+    - name: Fetch GoogleTest with Retry
+      run: |
+        for attempt in 1 2 3 4 5; do
+          echo "Cloning GoogleTest v1.15.2 (attempt $attempt of 5)..."
+          rm -rf build/googletest-src
+          if git clone --depth 1 --branch v1.15.2 https://github.com/google/googletest.git build/googletest-src; then
+            echo "GoogleTest cloned successfully."
+            break
+          fi
+          echo "Attempt $attempt failed. Retrying in 5 seconds..."
+          sleep 5
+        done
+        test -f build/googletest-src/CMakeLists.txt
+
     - name: Configure CMake
-      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }}
+      run: cmake -S . -B build -DCMAKE_BUILD_TYPE=${{ matrix.configuration }} -DFETCHCONTENT_SOURCE_DIR_GOOGLETEST="$PWD/build/googletest-src"
 
     - name: Build Linux
       run: cmake --build build --config ${{ matrix.configuration }}
@@ -154,6 +194,7 @@ jobs:
   package:
     needs: [build-windows, build-linux]
     runs-on: windows-latest
+    environment: release
     if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
     steps:
     - uses: actions/checkout@v4
