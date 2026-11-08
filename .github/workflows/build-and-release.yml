@@ -61,7 +61,33 @@ jobs:
       if: matrix.configuration == 'Release'
       shell: powershell
       run: |
-        choco install opencppcoverage -y
+        $exePath = "C:\Program Files\OpenCppCoverage\OpenCppCoverage.exe"
+        $installerUrl = "https://github.com/OpenCppCoverage/OpenCppCoverage/releases/download/release-0.9.9.0/OpenCppCoverageSetup-x64-0.9.9.0.exe"
+        $installerPath = "$env:TEMP\OpenCppCoverageSetup-x64-0.9.9.0.exe"
+
+        for ($attempt = 1; $attempt -le 5; $attempt++) {
+            Write-Host "Downloading OpenCppCoverage installer (attempt $attempt of 5)..."
+            curl.exe -fL --retry 3 --retry-delay 5 --retry-all-errors -o $installerPath $installerUrl
+            if ($LASTEXITCODE -eq 0 -and (Test-Path $installerPath)) {
+                Start-Process -FilePath $installerPath -ArgumentList "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART" -Wait -NoNewWindow
+                if (Test-Path $exePath) {
+                    Write-Host "OpenCppCoverage installed successfully."
+                    break
+                }
+            }
+            Write-Warning "Attempt $attempt failed. Retrying in 5 seconds..."
+            Start-Sleep -Seconds 5
+        }
+
+        if (-not (Test-Path $exePath)) {
+            Write-Host "Falling back to Chocolatey installation..."
+            choco install opencppcoverage -y --no-progress
+        }
+
+        if (-not (Test-Path $exePath)) {
+            Write-Error "Failed to install OpenCppCoverage after multiple attempts."
+            exit 1
+        }
 
     - name: Run OpenCppCoverage & Quality Gate Check
       if: matrix.configuration == 'Release'
